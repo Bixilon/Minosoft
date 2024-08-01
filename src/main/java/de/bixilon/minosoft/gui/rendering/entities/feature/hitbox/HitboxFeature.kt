@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,7 +41,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
     override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
         if (!_enabled) return unload()
-        if (renderer.entity.isInvisible(renderer.renderer.connection.camera.entity) && !manager.profile.showInvisible) return unload()
+        if (renderer.entity.isInvisible(renderer.renderer.session.camera.entity) && !manager.profile.showInvisible) return unload()
         if (!visible) return
 
         val offset = renderer.renderer.context.camera.offset.offset

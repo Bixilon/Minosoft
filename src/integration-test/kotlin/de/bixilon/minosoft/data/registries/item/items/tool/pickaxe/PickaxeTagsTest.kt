@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,8 +25,8 @@ import de.bixilon.minosoft.data.registries.item.items.tool.materials.IronTool
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.StoneTool
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.WoodenTool
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.tags.MinecraftTagTypes
 import de.bixilon.minosoft.tags.Tag
 import de.bixilon.minosoft.tags.TagList
@@ -39,101 +39,101 @@ import org.testng.annotations.Test
 class PickaxeTagsTest {
 
 
-    protected fun mine(connection: PlayConnection, item: Identified, block: ResourceLocation): Pair<Boolean, Float?> {
+    protected fun mine(session: PlaySession, item: Identified, block: ResourceLocation): Pair<Boolean, Float?> {
         val item: ToolItem = IT.REGISTRIES.item[item]!!.unsafeCast()
         val block = IT.REGISTRIES.block[block]!!.states.default
 
-        val suitable = item.isSuitableFor(connection, block, ItemStack(item))
-        val speed = item.getMiningSpeed(connection, block, ItemStack(item))
+        val suitable = item.isSuitableFor(session, block, ItemStack(item))
+        val speed = item.getMiningSpeed(session, block, ItemStack(item))
 
         return Pair(suitable, speed)
     }
 
     fun notMineable() {
-        val connection = createConnection()
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))))))
-        val (suitable, speed) = mine(connection, WoodenTool.WoodenPickaxe, MinecraftBlocks.BONE_BLOCK)
+        val session = createSession()
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))))))
+        val (suitable, speed) = mine(session, WoodenTool.WoodenPickaxe, MinecraftBlocks.BONE_BLOCK)
         assertFalse(suitable)
         assertEquals(speed, 1.0f)
     }
 
     fun mineable() {
-        val connection = createConnection()
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))))))
-        val (suitable, speed) = mine(connection, WoodenTool.WoodenPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))))))
+        val (suitable, speed) = mine(session, WoodenTool.WoodenPickaxe, MinecraftBlocks.BEACON)
         assertTrue(suitable)
         assertEquals(speed, 2.0f)
     }
 
     fun stone() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.STONE.tag!! to tag))))
-        val (suitable, speed) = mine(connection, WoodenTool.WoodenPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.STONE.tag!! to tag))))
+        val (suitable, speed) = mine(session, WoodenTool.WoodenPickaxe, MinecraftBlocks.BEACON)
         assertFalse(suitable)
         assertEquals(speed, 2.0f)
     }
 
     fun stoneStone() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.STONE.tag!! to tag))))
-        val (suitable, speed) = mine(connection, StoneTool.StonePickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.STONE.tag!! to tag))))
+        val (suitable, speed) = mine(session, StoneTool.StonePickaxe, MinecraftBlocks.BEACON)
         assertTrue(suitable)
         assertEquals(speed, 4.0f)
     }
 
     fun iron() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.IRON.tag!! to tag))))
-        val (suitable, speed) = mine(connection, StoneTool.StonePickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.IRON.tag!! to tag))))
+        val (suitable, speed) = mine(session, StoneTool.StonePickaxe, MinecraftBlocks.BEACON)
         assertFalse(suitable)
         assertEquals(speed, 4.0f)
     }
 
     fun ironIron() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.IRON.tag!! to tag))))
-        val (suitable, speed) = mine(connection, IronTool.IronPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.IRON.tag!! to tag))))
+        val (suitable, speed) = mine(session, IronTool.IronPickaxe, MinecraftBlocks.BEACON)
         assertTrue(suitable)
         assertEquals(speed, 6.0f)
     }
 
     fun ironStone() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.STONE.tag!! to tag))))
-        val (suitable, speed) = mine(connection, IronTool.IronPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.STONE.tag!! to tag))))
+        val (suitable, speed) = mine(session, IronTool.IronPickaxe, MinecraftBlocks.BEACON)
         assertTrue(suitable)
         assertEquals(speed, 6.0f)
     }
 
 
     fun diamond() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.DIAMOND.tag!! to tag))))
-        val (suitable, speed) = mine(connection, IronTool.IronPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.DIAMOND.tag!! to tag))))
+        val (suitable, speed) = mine(session, IronTool.IronPickaxe, MinecraftBlocks.BEACON)
         assertFalse(suitable)
         assertEquals(speed, 6.0f)
     }
 
     fun diamondDiamond() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.DIAMOND.tag!! to tag))))
-        val (suitable, speed) = mine(connection, DiamondTool.DiamondPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.DIAMOND.tag!! to tag))))
+        val (suitable, speed) = mine(session, DiamondTool.DiamondPickaxe, MinecraftBlocks.BEACON)
         assertTrue(suitable)
         assertEquals(speed, 8.0f)
     }
 
     fun diamondIron() {
-        val connection = createConnection()
-        val tag: Tag<RegistryItem> = Tag(setOf(connection.registries.block[MinecraftBlocks.BEACON]!!))
-        connection.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.IRON.tag!! to tag))))
-        val (suitable, speed) = mine(connection, DiamondTool.DiamondPickaxe, MinecraftBlocks.BEACON)
+        val session = createSession()
+        val tag: Tag<RegistryItem> = Tag(setOf(session.registries.block[MinecraftBlocks.BEACON]!!))
+        session.tags = TagManager(mapOf(MinecraftTagTypes.BLOCK to TagList(mapOf(PickaxeItem.TAG to tag, ToolLevels.IRON.tag!! to tag))))
+        val (suitable, speed) = mine(session, DiamondTool.DiamondPickaxe, MinecraftBlocks.BEACON)
         assertTrue(suitable)
         assertEquals(speed, 8.0f)
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.startInit
@@ -31,12 +31,12 @@ class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         val position: Vec3d = buffer.readVec3d()
 
-        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityType[LightningBolt.identifier]!!, EntityData(buffer.connection), position)
+        entity = LightningBolt(buffer.session, buffer.session.registries.entityType[LightningBolt.identifier]!!, EntityData(buffer.session), position)
         entity.startInit()
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.entities.add(entityId, null, entity)
+    override fun handle(session: PlaySession) {
+        session.world.entities.add(entityId, null, entity)
     }
 
     override fun log(reducedLog: Boolean) {

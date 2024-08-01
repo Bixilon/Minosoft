@@ -42,25 +42,25 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W12A
 import java.util.*
 
 abstract class PlayerEntity(
-    connection: PlayConnection,
+    session: PlaySession,
     entityType: EntityType,
     data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation.EMPTY,
     val additional: PlayerAdditional,
-) : LivingEntity(connection, entityType, data, position, rotation) {
+) : LivingEntity(session, entityType, data, position, rotation) {
 
     override val dimensions: Vec2
         get() = pose?.let { getDimensions(it) } ?: Vec2(type.width, type.height)
 
     override fun getDimensions(pose: Poses): Vec2? {
         if (pose == Poses.SNEAKING) {
-            return if (connection.version < V_19W12A) SNEAKING_LEGACY else SNEAKING
+            return if (session.version < V_19W12A) SNEAKING_LEGACY else SNEAKING
         }
         return DIMENSIONS[pose]
     }

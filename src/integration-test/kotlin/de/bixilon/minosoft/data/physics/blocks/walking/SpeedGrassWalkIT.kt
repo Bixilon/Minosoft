@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 import org.testng.annotations.Test
@@ -32,8 +32,8 @@ class SpeedGrassWalkIT : WalkIT() {
         this.block = IT.REGISTRIES.block[MinecraftBlocks.GRASS_BLOCK]?.states?.default ?: throw SkipException("Can not find grass block!")
     }
 
-    override fun createPlayer(connection: PlayConnection): LocalPlayerEntity {
-        val player = super.createPlayer(connection)
+    override fun createPlayer(session: PlaySession): LocalPlayerEntity {
+        val player = super.createPlayer(session)
         player.applySpeed(2)
         return player
     }

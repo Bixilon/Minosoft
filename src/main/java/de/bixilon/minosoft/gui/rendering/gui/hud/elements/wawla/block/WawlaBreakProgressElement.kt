@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.input.interaction.breaking.survival.BlockBreakProductivity
 
 class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRenderer) {
-    private val breaking = context.connection.camera.interactions.breaking
+    private val breaking = context.session.camera.interactions.breaking
     private val status = breaking.digging.status
 
     init {

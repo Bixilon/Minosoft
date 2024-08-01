@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,9 +26,9 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.physics.entities.item.FallingBlockPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+class FallingBlockEntity(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     var blockState: BlockState? by observed(null)
@@ -43,7 +43,7 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, dat
     override fun createPhysics() = FallingBlockPhysics(this)
 
     override fun setObjectData(data: Int) {
-        blockState = connection.registries.blockState.getOrNull(data)
+        blockState = session.registries.blockState.getOrNull(data)
     }
 
     override fun tick() {
@@ -56,8 +56,8 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, dat
         private val SPAWN_POSITION_DATA = EntityDataField("FALLING_BLOCK_SPAWN_POSITION")
 
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FallingBlockEntity {
-            return FallingBlockEntity(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FallingBlockEntity {
+            return FallingBlockEntity(session, entityType, data, position, rotation)
         }
     }
 }

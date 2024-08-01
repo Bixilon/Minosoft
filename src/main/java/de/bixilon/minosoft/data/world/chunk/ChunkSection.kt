@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
@@ -40,7 +40,7 @@ class ChunkSection(
     val light = SectionLight(this)
     var neighbours: Array<ChunkSection?>? = null
 
-    fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int, random: Random) {
+    fun tick(session: PlaySession, chunkPosition: Vec2i, sectionHeight: Int, random: Random) {
         if (blockEntities.isEmpty) return
 
         val offset = Vec3i.of(chunkPosition, sectionHeight)
@@ -57,7 +57,7 @@ class ChunkSection(
                     val entity = blockEntities[index] ?: continue
                     val state = blocks[index] ?: continue
                     position.x = offset.x + x
-                    entity.tick(connection, state, position, random)
+                    entity.tick(session, state, position, random)
                 }
             }
         }

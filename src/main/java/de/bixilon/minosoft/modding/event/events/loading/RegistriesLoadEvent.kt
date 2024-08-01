@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,14 +14,14 @@ package de.bixilon.minosoft.modding.event.events.loading
 
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.modding.event.events.AsyncEvent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class RegistriesLoadEvent(
-    connection: PlayConnection,
+    session: PlaySession,
     val registries: Registries,
     val state: States,
-) : PlayConnectionEvent(connection), AsyncEvent {
+) : PlaySessionEvent(session), AsyncEvent {
 
     enum class States {
         PRE,

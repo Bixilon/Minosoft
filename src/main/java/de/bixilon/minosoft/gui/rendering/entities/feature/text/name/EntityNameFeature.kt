@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -57,7 +57,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         if (invisible) return null
         if (this.isNameVisible) {
             var name = this.name
-            if (name == null && this is LivingEntity) name = connection.language.translate(type.translationKey) // TODO: Is that correct?
+            if (name == null && this is LivingEntity) name = session.language.translate(type.translationKey) // TODO: Is that correct?
             return name
         }
         if (!isTargeted()) return null
@@ -69,7 +69,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
 
         val renderer = this@EntityNameFeature.renderer.renderer
         val profile = renderer.profile.features.name
-        if (this === renderer.connection.camera.entity && (!renderer.context.camera.view.view.renderSelf || !profile.local)) return null
+        if (this === renderer.session.camera.entity && (!renderer.context.camera.view.view.renderSelf || !profile.local)) return null
         if (!this.isNameVisible) return null
 
         if (invisible) return null
@@ -111,7 +111,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
     }
 
     private fun isInvisible(): Boolean {
-        val camera = renderer.renderer.connection.camera.entity
+        val camera = renderer.renderer.session.camera.entity
         val entity = renderer.entity
         val invisible = entity.isInvisible(camera)
 
@@ -137,7 +137,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
     }
 
     private fun isTargeted(): Boolean {
-        val camera = renderer.renderer.connection.camera
+        val camera = renderer.renderer.session.camera
         val target = camera.target.target
         if (target !is EntityTarget || target.entity !== renderer.entity) return false
 

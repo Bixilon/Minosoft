@@ -28,16 +28,16 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Bu
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert
 import kotlin.math.abs
 
 object BakedModelTestUtil {
     private val texture = Minosoft::class.java.getResourceAsStream("/assets/minosoft/textures/debug.png")!!.readAll()
-    private val connection by lazy { createConnection() }
+    private val session by lazy { createSession() }
     private val rendering by lazy {
-        val rendering = Rendering(connection)
+        val rendering = Rendering(session)
         rendering.context.textures::debugTexture.forceSet(MemoryTexture(Vec2i.EMPTY_INSTANCE, mipmaps = 0, buffer = RGBA8Buffer(Vec2i(0, 0))))
         return@lazy rendering
     }
@@ -48,7 +48,7 @@ object BakedModelTestUtil {
         for (name in names) {
             assets.push(name.toResourceLocation().texture(), texture)
         }
-        connection::assetsManager.forceSet(assets.box())
+        session::assetsManager.forceSet(assets.box())
 
         return rendering.context.textures
     }

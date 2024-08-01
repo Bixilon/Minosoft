@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,21 +21,21 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 class SpectateHandler(
     private val interactions: InteractionManager,
 ) {
-    private val connection = interactions.connection
+    private val session = interactions.session
     private val rateLimiter = RateLimiter()
 
     fun init() {
-        connection.camera::entity.observe(this) { spectate(it) }
-        connection.player.additional::gamemode.observe(this) { spectate(interactions.camera.entity) }
+        session.camera::entity.observe(this) { spectate(it) }
+        session.player.additional::gamemode.observe(this) { spectate(interactions.camera.entity) }
     }
 
     // TODO: stop spectating (simulate sneak)
 
 
     fun spectate(entity: Entity?) {
-        var entity = entity ?: connection.player
-        if (connection.player.gamemode != Gamemodes.SPECTATOR) {
-            entity = connection.player
+        var entity = entity ?: session.player
+        if (session.player.gamemode != Gamemodes.SPECTATOR) {
+            entity = session.player
         }
         interactions.camera.entity = entity
     }

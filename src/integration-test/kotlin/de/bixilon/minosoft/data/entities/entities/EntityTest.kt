@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertSame
 import org.testng.annotations.Test
@@ -49,11 +49,11 @@ class EntityTest {
     }
 
 
-    private class TestEntity(connection: PlayConnection = createConnection()) : Entity(connection, EntityType(Companion.identifier, null, 1.0f, 1.0f, factory = Companion), EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY) {
+    private class TestEntity(session: PlaySession = createSession()) : Entity(session, EntityType(Companion.identifier, null, 1.0f, 1.0f, factory = Companion), EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY) {
 
 
         companion object : EntityFactory<TestEntity> {
-            override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) = Broken()
+            override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) = Broken()
             override val identifier = minosoft("test")
         }
     }

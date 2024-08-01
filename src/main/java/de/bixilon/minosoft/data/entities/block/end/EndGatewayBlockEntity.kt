@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+class EndGatewayBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
 
     override fun setBlockActionData(type: Int, data: Int) {
         // just emits the beacon like beam
@@ -32,8 +32,8 @@ class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection
     companion object : BlockEntityFactory<EndGatewayBlockEntity> {
         override val identifier: ResourceLocation = minecraft("end_gateway")
 
-        override fun build(connection: PlayConnection): EndGatewayBlockEntity {
-            return EndGatewayBlockEntity(connection)
+        override fun build(session: PlaySession): EndGatewayBlockEntity {
+            return EndGatewayBlockEntity(session)
         }
     }
 }

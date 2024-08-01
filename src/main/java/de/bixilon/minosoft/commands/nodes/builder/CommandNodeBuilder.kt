@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,9 +27,9 @@ class CommandNodeBuilder {
     var executable = false
 
 
-    fun build(connection: Boolean): CommandNode {
+    fun build(session: Boolean): CommandNode {
         return when (type) {
-            ArgumentNodes.ROOT -> if (connection) ConnectionNode(this) else RootNode(this)
+            ArgumentNodes.ROOT -> if (session) SessionNode(this) else RootNode(this)
             ArgumentNodes.LITERAL -> LiteralNode(this)
             ArgumentNodes.ARGUMENT -> ArgumentNode(this)
             else -> throw IllegalStateException("Type not set")

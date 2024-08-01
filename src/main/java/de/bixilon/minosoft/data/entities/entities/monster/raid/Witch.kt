@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,10 +21,9 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class Witch(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, data, position, rotation) {
+class Witch(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Raider(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val isDrinkingPotion: Boolean
@@ -39,8 +38,8 @@ class Witch(connection: PlayConnection, entityType: EntityType, data: EntityData
         private val IS_DRINKING_POTION_DATA = EntityDataField("WITCH_IS_DRINKING_POTION")
         private val LEGACY_IS_AGGRESSIVE_DATA = EntityDataField("LEGACY_WITCH_IS_AGGRESSIVE")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Witch {
-            return Witch(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Witch {
+            return Witch(session, entityType, data, position, rotation)
         }
     }
 }

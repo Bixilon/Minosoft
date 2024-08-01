@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,19 +31,19 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class SkyRenderer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : Renderer, PreDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = context.system
     override val framebuffer: IntegratedFramebuffer? = null
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
-    var effects by observed(connection.world.dimension.effects)
+    var effects by observed(session.world.dimension.effects)
     var matrix by observed(Mat4())
-    val profile = connection.profiles.rendering.sky
-    var time = connection.world.time
+    val profile = session.profiles.rendering.sky
+    var time = session.world.time
         private set
     private var updateTime: Boolean = true
 
@@ -67,16 +67,16 @@ class SkyRenderer(
         for (renderer in renderer) {
             renderer.postInit()
         }
-        connection.world::time.observe(this) { updateTime = true }
-        connection.events.listen<CameraMatrixChangeEvent> {
+        session.world::time.observe(this) { updateTime = true }
+        session.events.listen<CameraMatrixChangeEvent> {
             matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
         }
-        connection.world::dimension.observe(this) { effects = it.effects }
+        session.world::dimension.observe(this) { effects = it.effects }
     }
 
     override fun prepareDrawAsync() {
         if (updateTime) {
-            this.time = connection.world.time
+            this.time = session.world.time
             for (renderer in renderer) {
                 renderer.onTimeUpdate(time)
             }
@@ -107,8 +107,8 @@ class SkyRenderer(
 
     companion object : RendererBuilder<SkyRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): SkyRenderer {
-            return SkyRenderer(connection, context)
+        override fun build(session: PlaySession, context: RenderContext): SkyRenderer {
+            return SkyRenderer(session, context)
         }
     }
 }

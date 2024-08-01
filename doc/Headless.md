@@ -53,9 +53,9 @@ Minosoft features a command line shell, that can be used to manage it. Auto comp
 
 ### Connection
 
-- `connection list`
-- `connection disconnect @`
-- `connection select 1` (The current selected connection is used for connection specific other commands)
+- `session list`
+- `session disconnect @`
+- `session select 1` (The current selected session is used for session specific other commands)
 
 ### Say
 

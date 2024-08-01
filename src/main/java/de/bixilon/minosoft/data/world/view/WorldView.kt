@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.world.view
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 
 open class WorldView(
-    private val connection: PlayConnection,
+    private val session: PlaySession,
 ) {
     var serverViewDistance = Int.MAX_VALUE
         set(value) {
@@ -25,48 +25,48 @@ open class WorldView(
                 return
             }
             field = value
-            viewDistance = minOf(value, connection.profiles.block.viewDistance)
+            viewDistance = minOf(value, session.profiles.block.viewDistance)
         }
-    var viewDistance = connection.profiles.block.viewDistance
+    var viewDistance = session.profiles.block.viewDistance
         set(value) {
             val realValue = minOf(value, serverViewDistance)
             if (field == realValue) {
                 return
             }
             field = realValue
-            connection.events.fire(ViewDistanceChangeEvent(connection, realValue))
+            session.events.fire(ViewDistanceChangeEvent(session, realValue))
         }
 
     var serverSimulationDistance = Int.MAX_VALUE
         set(value) {
             field = value
-            simulationDistance = minOf(value, connection.profiles.block.simulationDistance)
+            simulationDistance = minOf(value, session.profiles.block.simulationDistance)
         }
-    var simulationDistance = connection.profiles.block.simulationDistance
+    var simulationDistance = session.profiles.block.simulationDistance
         set(value) {
             val realValue = minOf(value, serverSimulationDistance)
             if (field == realValue) {
                 return
             }
             field = realValue
-            connection.events.fire(SimulationDistanceChangeEvent(connection, realValue))
-            particleViewDistance = minOf(realValue, connection.profiles.particle.viewDistance)
+            session.events.fire(SimulationDistanceChangeEvent(session, realValue))
+            particleViewDistance = minOf(realValue, session.profiles.particle.viewDistance)
         }
 
-    var particleViewDistance = connection.profiles.particle.viewDistance
+    var particleViewDistance = session.profiles.particle.viewDistance
         set(value) {
             val realValue = minOf(value, simulationDistance)
             if (field == realValue) {
                 return
             }
             field = realValue
-            connection.events.fire(ParticleViewDistanceChangeEvent(connection, realValue))
+            session.events.fire(ParticleViewDistanceChangeEvent(session, realValue))
         }
 
     @Synchronized
     open fun updateServerDistance() {
-        val cameraPosition = connection.player.physics.positionInfo.chunkPosition
-        val size = connection.world.chunks.size.size
+        val cameraPosition = session.player.physics.positionInfo.chunkPosition
+        val size = session.world.chunks.size.size
         val max = size.max - cameraPosition
         val min = size.min - cameraPosition
         serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.y), abs(max.y)))

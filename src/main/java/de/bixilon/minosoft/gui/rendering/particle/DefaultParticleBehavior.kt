@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,20 +19,20 @@ import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitte
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object DefaultParticleBehavior {
 
-    fun register(connection: PlayConnection, renderer: ParticleRenderer) {
-        val profile = connection.profiles.particle
-        connection.explosion(renderer, profile)
+    fun register(session: PlaySession, renderer: ParticleRenderer) {
+        val profile = session.profiles.particle
+        session.explosion(renderer, profile)
     }
 
-    private fun PlayConnection.explosion(renderer: ParticleRenderer, profile: ParticleProfile) {
+    private fun PlaySession.explosion(renderer: ParticleRenderer, profile: ParticleProfile) {
         val explosion = registries.particleType[ExplosionParticle] ?: return
         val emitter = registries.particleType[ExplosionEmitterParticle] ?: return
 
-        this.listen<ExplosionEvent> {
+        this.events.listen<ExplosionEvent> {
             if (!profile.types.explosions) {
                 return@listen
             }

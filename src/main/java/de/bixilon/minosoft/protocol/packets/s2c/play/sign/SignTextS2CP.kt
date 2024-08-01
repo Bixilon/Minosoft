@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.sign
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -32,10 +32,10 @@ class SignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val lines = Array(SignBlockEntity.LINES) { buffer.readChatComponent() }
 
 
-    override fun handle(connection: PlayConnection) {
-        val entity = connection.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(connection)
+    override fun handle(session: PlaySession) {
+        val entity = session.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(session)
 
-        connection.world[position] = entity
+        session.world[position] = entity
 
         for ((index, line) in lines.withIndex()) {
             entity.front.text[index] = line

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityAttac
 class AttackHandler(
     val interactions: InteractionManager,
 ) : Tickable {
-    private val player = interactions.connection.player
+    private val player = interactions.session.player
     private val rateLimiter = RateLimiter()
     private var cooldown = 0
 
@@ -64,7 +64,7 @@ class AttackHandler(
             return
         }
 
-        interactions.connection.network.send(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
+        interactions.session.network.send(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return
         }
@@ -74,15 +74,15 @@ class AttackHandler(
         val critical = (cooldown / COOLDOWN.toFloat()) > 0.9f && player.physics.fallDistance != 0.0f && !player.physics.onGround && !player.physics().isClimbing() && (player.physics.submersion[WaterFluid]) <= 0.0f && player.effects[VisionEffect.Blindness] == null && player.attachment.vehicle == null && entity is LivingEntity
         // TODO: use attack speed entity attribute
 
-        val particle = interactions.connection.world.particle ?: return
+        val particle = interactions.session.world.particle ?: return
 
         if (critical) {
-            particle += EntityEmitterParticle(interactions.connection, entity, CritParticle)
+            particle += EntityEmitterParticle(interactions.session, entity, CritParticle)
         }
 
         if (sharpnessLevel > 0) {
             // ToDo: Entity animations
-            particle += EntityEmitterParticle(interactions.connection, entity, EnchantedHitParticle)
+            particle += EntityEmitterParticle(interactions.session, entity, EnchantedHitParticle)
         }
     }
 

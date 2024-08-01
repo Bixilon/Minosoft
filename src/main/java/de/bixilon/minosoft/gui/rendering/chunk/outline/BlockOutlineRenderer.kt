@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,14 +40,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class BlockOutlineRenderer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer, MeshSwapper {
     override val layers = LayerSettings()
-    private val profile = connection.profiles.block.outline
+    private val profile = session.profiles.block.outline
     override val renderSystem: RenderSystem = context.system
 
     private var position: Vec3i? = null
@@ -74,8 +74,8 @@ class BlockOutlineRenderer(
         this.profile::outlineColor.observe(this) { reload = true }
         this.profile::collisionColor.observe(this) { reload = true }
 
-        connection.events.listen<WorldUpdateEvent> {
-            if (connection.version.flattened) return@listen
+        session.events.listen<WorldUpdateEvent> {
+            if (session.version.flattened) return@listen
             // neighbour blocks might change other properties
             reload = true
         }
@@ -99,19 +99,19 @@ class BlockOutlineRenderer(
 
 
     override fun prepareDrawAsync() {
-        val target = context.connection.camera.target.target.nullCast<BlockTarget>()
+        val target = context.session.camera.target.target.nullCast<BlockTarget>()
 
-        if (target == null || target.state.block !is OutlinedBlock || connection.world.border.isOutside(target.blockPosition)) {
+        if (target == null || target.state.block !is OutlinedBlock || session.world.border.isOutside(target.blockPosition)) {
             unload = true
             return
         }
 
-        if (target.distance >= connection.player.reachDistance) {
+        if (target.distance >= session.player.reachDistance) {
             unload = true
             return
         }
 
-        if (connection.player.gamemode == Gamemodes.ADVENTURE || connection.player.gamemode == Gamemodes.SPECTATOR) {
+        if (session.player.gamemode == Gamemodes.ADVENTURE || session.player.gamemode == Gamemodes.SPECTATOR) {
             if (target.state.block !is BlockWithEntity<*>) {
                 unload = true
                 return
@@ -136,11 +136,11 @@ class BlockOutlineRenderer(
         }
 
 
-        target.state.block.getOutlineShape(connection, target.blockPosition, target.state)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor) }
+        target.state.block.getOutlineShape(session, target.blockPosition, target.state)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor) }
 
 
         if (target.state.block is CollidableBlock && profile.collisions) { // TODO: block entity
-            target.state.block.getCollisionShape(connection, EntityCollisionContext(connection.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f) }
+            target.state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f) }
         }
 
         this.nextMesh = mesh
@@ -162,8 +162,8 @@ class BlockOutlineRenderer(
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): BlockOutlineRenderer {
-            return BlockOutlineRenderer(connection, context)
+        override fun build(session: PlaySession, context: RenderContext): BlockOutlineRenderer {
+            return BlockOutlineRenderer(session, context)
         }
     }
 }

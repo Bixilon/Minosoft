@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ object DefaultKeyBindings {
     fun register(context: RenderContext) {
         val bindings = context.input.bindings
         val window = context.window
-        val connection = context.connection
+        val session = context.session
 
         bindings.register(SCREENSHOT, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_F2),
@@ -41,7 +41,7 @@ object DefaultKeyBindings {
         )) {
             val next = !window.fullscreen
             window.fullscreen = next
-            connection.util.sendDebugMessage("Fullscreen: ${next.format()}")
+            session.util.sendDebugMessage("Fullscreen: ${next.format()}")
         }
     }
 }

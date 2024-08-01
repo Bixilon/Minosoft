@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,9 +25,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+class AreaEffectCloud(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
     override var dimensions = Vec2.EMPTY
         private set
@@ -62,8 +62,8 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
         private val WAITING_DATA = EntityDataField("AREA_EFFECT_CLOUD_WAITING")
         private val PARTICLE_DATA = EntityDataField("AREA_EFFECT_CLOUD_PARTICLE")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): AreaEffectCloud {
-            return AreaEffectCloud(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): AreaEffectCloud {
+            return AreaEffectCloud(session, entityType, data, position, rotation)
         }
     }
 }

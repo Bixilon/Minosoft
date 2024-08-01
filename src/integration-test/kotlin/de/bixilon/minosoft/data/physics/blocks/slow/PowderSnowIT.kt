@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.LeatherArmor
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 import org.testng.annotations.Test
@@ -58,7 +58,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowLandingLeather() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.addLeatherBoots()
         landing(player)
 
@@ -68,7 +68,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowDescendingLeather() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.addLeatherBoots()
         landing(player)
         player.input = PlayerMovementInput(sneak = true)
@@ -88,7 +88,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowFallingLeather() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.addLeatherBoots()
         falling(player)
 
@@ -98,9 +98,9 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowLongFalling() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(5.0, 15.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.runTicks(20)
 
         player.assertPosition(5.0, 7.0703936080893826, 5.0)
@@ -116,7 +116,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowFallingForwardsMovement2() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.setFrozenTicks(20)
         super.fallingForwardsMovement(player)
 
@@ -133,7 +133,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowForwardsMovement2() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.setFrozenTicks(20)
         forwardsMovement(player)
 
@@ -143,7 +143,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowForwardsMovement3() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.setFrozenTicks(50)
         forwardsMovement(player)
 
@@ -153,7 +153,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowForwardsMovement4() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.setFrozenTicks(100)
         forwardsMovement(player)
 
@@ -163,7 +163,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowForwardsMovement5() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.setFrozenTicks(1000)
         forwardsMovement(player)
 
@@ -173,7 +173,7 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowForwardsMovement6() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.setFrozenTicks(1000000)
         forwardsMovement(player)
 
@@ -228,12 +228,12 @@ class PowderSnowIT : SlowMovementIT() {
     }
 
     fun powderSnowUnfreeze() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
-        player.connection.world[Vec3i(5, 9, 5)] = StoneTest0.state
-        player.connection.world[Vec3i(5, 10, 6)] = block
-        player.connection.world[Vec3i(5, 9, 6)] = StoneTest0.state
+        player.session.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 9, 5)] = StoneTest0.state
+        player.session.world[Vec3i(5, 10, 6)] = block
+        player.session.world[Vec3i(5, 9, 6)] = StoneTest0.state
 
         player.runTicks(5)
         player.input = PlayerMovementInput(forward = true)

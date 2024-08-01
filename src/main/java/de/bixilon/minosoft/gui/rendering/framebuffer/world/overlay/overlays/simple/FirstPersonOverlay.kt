@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.sim
 import de.bixilon.minosoft.gui.rendering.RenderContext
 
 abstract class FirstPersonOverlay(context: RenderContext) : SimpleOverlay(context) {
-    protected val player = context.connection.player
+    protected val player = context.session.player
     override val render: Boolean
         get() = context.camera.view.view.renderOverlays
 }

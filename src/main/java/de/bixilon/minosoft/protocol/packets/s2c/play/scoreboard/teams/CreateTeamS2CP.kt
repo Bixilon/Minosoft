@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamCreateEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -107,7 +107,7 @@ class CreateTeamS2CP(
     }
 
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         val visibility = TeamVisibility(canSeeInvisibleTeam, nameTagVisibility)
         val formatting = TeamFormatting(displayName, prefix, suffix, color)
         val team = Team(
@@ -118,15 +118,15 @@ class CreateTeamS2CP(
             visibility = visibility,
             members = members.toSynchronizedSet(),
         )
-        connection.scoreboard.teams[name] = team
+        session.scoreboard.teams[name] = team
 
         for (member in members) {
-            connection.tabList.name[member]?.team = team
+            session.tabList.name[member]?.team = team
         }
 
-        connection.scoreboard.updateScoreTeams(team, members)
+        session.scoreboard.updateScoreTeams(team, members)
 
-        connection.events.fire(TeamCreateEvent(connection, team))
+        session.events.fire(TeamCreateEvent(session, team))
     }
 
     override fun log(reducedLog: Boolean) {

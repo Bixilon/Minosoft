@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarTitleSetEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -27,15 +27,15 @@ class TitleBossbarS2CP(
 ) : BossbarS2CP {
     val title = buffer.readNbtChatComponent()
 
-    override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+    override fun handle(session: PlaySession) {
+        val bossbar = session.bossbarManager.bossbars[uuid] ?: return
 
         if (bossbar.title == title) {
             return
         }
         bossbar.title = title
 
-        connection.events.fire(BossbarTitleSetEvent(connection, uuid, bossbar))
+        session.events.fire(BossbarTitleSetEvent(session, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

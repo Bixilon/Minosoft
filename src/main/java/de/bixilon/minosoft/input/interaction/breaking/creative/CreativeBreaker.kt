@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC
 class CreativeBreaker(
     private val breaking: BreakHandler,
 ) {
-    private val connection = breaking.interactions.connection
+    private val session = breaking.interactions.session
 
     fun breakBlock(target: BlockTarget?): Boolean {
         if (target == null) return false
@@ -29,7 +29,7 @@ class CreativeBreaker(
         val sequence = breaking.executor.start(target.blockPosition, target.state)
         breaking.executor.finish()
 
-        connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
+        session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
         breaking.interactions.swingHand(Hands.MAIN)
         return true
     }

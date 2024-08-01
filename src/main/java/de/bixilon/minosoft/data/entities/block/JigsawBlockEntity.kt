@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class JigsawBlockEntity(session: PlaySession) : BlockEntity(session) {
     var joint: String = "rollable"
         private set
     var name: ResourceLocation = minecraft("empty")
@@ -42,8 +42,8 @@ class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     companion object : BlockEntityFactory<JigsawBlockEntity> {
         override val identifier: ResourceLocation = minecraft("jigsaw")
 
-        override fun build(connection: PlayConnection): JigsawBlockEntity {
-            return JigsawBlockEntity(connection)
+        override fun build(session: PlaySession): JigsawBlockEntity {
+            return JigsawBlockEntity(session)
         }
     }
 }

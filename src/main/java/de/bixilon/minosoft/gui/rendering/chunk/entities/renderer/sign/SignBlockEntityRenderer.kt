@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -96,7 +96,7 @@ class SignBlockEntityRenderer(
         val textPosition = offset.toVec3() + blockOffset
         val light = if (text.glowing) 0xFF else light
         val rotation = Vec3(0.0f, -yRotation, 0.0f)
-        val alignment = context.connection.profiles.block.rendering.entities.sign.fontAlignment
+        val alignment = context.session.profiles.block.rendering.entities.sign.fontAlignment
         val properties = if (alignment == TEXT_PROPERTIES.alignment) TEXT_PROPERTIES else TEXT_PROPERTIES.copy(alignment = alignment)
 
         mesh.ensureSize(text)

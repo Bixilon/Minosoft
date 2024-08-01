@@ -18,8 +18,8 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunksS2CP
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import org.testng.Assert.assertNotNull
@@ -28,11 +28,11 @@ import org.testng.annotations.Test
 @Test(groups = ["packet"])
 class ChunksS2CPTest {
 
-    private fun read(name: String, version: String, connection: PlayConnection = createConnection(version = version), dimension: DimensionProperties): ChunksS2CP {
+    private fun read(name: String, version: String, session: PlaySession = createSession(version = version), dimension: DimensionProperties): ChunksS2CP {
         val data = ChunksS2CPTest::class.java.getResourceAsStream("/packets/chunks/$name.bin")!!.readAll()
-        connection.world::dimension.forceSet(DataObserver(dimension))
+        session.world::dimension.forceSet(DataObserver(dimension))
 
-        val buffer = PlayInByteBuffer(data, connection)
+        val buffer = PlayInByteBuffer(data, session)
         val packet = ChunksS2CP(buffer)
 
         return packet

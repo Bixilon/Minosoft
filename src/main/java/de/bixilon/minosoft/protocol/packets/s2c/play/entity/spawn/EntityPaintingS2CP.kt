@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
 import de.bixilon.minosoft.datafixer.rls.MotifFixer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -39,9 +39,9 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val motif = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.readLegacyRegistryItem(buffer.connection.registries.motif, MotifFixer)!!
+            buffer.readLegacyRegistryItem(buffer.session.registries.motif, MotifFixer)!!
         } else {
-            buffer.readRegistryItem(buffer.connection.registries.motif)
+            buffer.readRegistryItem(buffer.session.registries.motif)
         }
         val position: Vec3i
         val direction: Directions
@@ -52,13 +52,13 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             position = buffer.readBlockPosition()
             direction = Directions[buffer.readUnsignedByte()]
         }
-        val type = buffer.connection.registries.entityType[Painting.identifier]!!
-        entity = Painting(buffer.connection, type, EntityData(buffer.connection), position, direction, motif)
+        val type = buffer.session.registries.entityType[Painting.identifier]!!
+        entity = Painting(buffer.session, type, EntityData(buffer.session), position, direction, motif)
         entity.startInit()
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.entities.add(entityId, entityUUID, entity)
+    override fun handle(session: PlaySession) {
+        session.world.entities.add(entityId, entityUUID, entity)
     }
 
     override fun log(reducedLog: Boolean) {

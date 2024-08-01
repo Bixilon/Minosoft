@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,7 +48,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
 
     override fun updateVisibility(occluded: Boolean, visible: Boolean) {
         if (visible) {
-            val team = renderer.connection.player.additional.team
+            val team = renderer.session.player.additional.team
             if (team == null || !team.canSee(entity.additional.team)) {
                 this.visible = false
             } else {

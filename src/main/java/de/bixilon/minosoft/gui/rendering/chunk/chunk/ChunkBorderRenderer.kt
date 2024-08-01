@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,17 +37,17 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ChunkBorderRenderer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer, MeshSwapper {
     override val layers = LayerSettings()
-    private val profile = connection.profiles.rendering
+    private val profile = session.profiles.rendering
     override val renderSystem: RenderSystem = context.system
     private var offset = Vec3i.EMPTY
     private var chunkPosition: Vec2i? = null
@@ -71,7 +71,7 @@ class ChunkBorderRenderer(
             ), pressed = profile.chunkBorder.enabled
         ) {
             profile.chunkBorder.enabled = it
-            connection.util.sendDebugMessage("Chunk borders: ${it.format()}")
+            session.util.sendDebugMessage("Chunk borders: ${it.format()}")
         }
     }
 
@@ -80,7 +80,7 @@ class ChunkBorderRenderer(
             this.unload = true
             return
         }
-        val eyePosition = connection.camera.entity.renderInfo.eyePosition.blockPosition
+        val eyePosition = session.camera.entity.renderInfo.eyePosition.blockPosition
         val chunkPosition = eyePosition.chunkPosition
         val sectionHeight = eyePosition.sectionHeight
         val offset = context.camera.offset.offset
@@ -90,7 +90,7 @@ class ChunkBorderRenderer(
         unload = true
         val mesh = LineMesh(context)
 
-        val dimension = context.connection.world.dimension
+        val dimension = context.session.world.dimension
         val basePosition = chunkPosition * Vec2i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_WIDTH_Z) - Vec2i(offset.x, offset.z)
 
         mesh.drawInnerChunkLines(Vec3i(basePosition.x, -offset.y, basePosition.y), dimension)
@@ -221,8 +221,8 @@ class ChunkBorderRenderer(
         private const val OUTER_CHUNK_SIZE = 3
 
 
-        override fun build(connection: PlayConnection, context: RenderContext): ChunkBorderRenderer {
-            return ChunkBorderRenderer(connection, context)
+        override fun build(session: PlaySession, context: RenderContext): ChunkBorderRenderer {
+            return ChunkBorderRenderer(session, context)
         }
     }
 }

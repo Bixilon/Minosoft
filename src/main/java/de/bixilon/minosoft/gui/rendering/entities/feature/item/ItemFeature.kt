@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,7 +69,7 @@ open class ItemFeature(
 
     private fun createMesh(stack: ItemStack) {
         val distance = this.distance ?: return
-        val model = stack.item.item.getModel(renderer.renderer.connection) ?: return
+        val model = stack.item.item.getModel(renderer.renderer.session) ?: return
         val display = model.getDisplay(display)
         this.displayMatrix = display?.matrix ?: Mat4.EMPTY_INSTANCE
         val mesh = BlockMesh(renderer.renderer.context)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,17 +17,16 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class SculkSensorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class SculkSensorBlockEntity(session: PlaySession) : BlockEntity(session) {
     // ToDo: lastVibrationFrequency
 
     companion object : BlockEntityFactory<SculkSensorBlockEntity> {
         override val identifier: ResourceLocation = minecraft("sculk_sensor")
 
-        override fun build(connection: PlayConnection): SculkSensorBlockEntity {
-            return SculkSensorBlockEntity(connection)
+        override fun build(session: PlaySession): SculkSensorBlockEntity {
+            return SculkSensorBlockEntity(session)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
@@ -45,15 +45,15 @@ class ChunkPrototype(
     }
 
 
-    fun createChunk(connection: PlayConnection, position: ChunkPosition): Chunk? {
+    fun createChunk(session: PlaySession, position: ChunkPosition): Chunk? {
         val blocks = this.blocks ?: return null
         val biomeSource = this.biomeSource ?: return null
 
-        val dimension = connection.world.dimension
+        val dimension = session.world.dimension
 
 
         val light = this.light
-        val chunk = Chunk(connection, position, biomeSource)
+        val chunk = Chunk(session, position, biomeSource)
 
         for ((index, blockData) in blocks.withIndex()) {
             if (blockData == null) continue
@@ -66,7 +66,7 @@ class ChunkPrototype(
 
             chunk.sections[index] = section
         }
-        this.blockEntities.update(dimension.minSection, chunk, null, connection)
+        this.blockEntities.update(dimension.minSection, chunk, null, session)
 
         if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
             this.topLight?.let { chunk.light.top.update(it) }
@@ -100,7 +100,7 @@ class ChunkPrototype(
         }
     }
 
-    private fun Map<Vec3i, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, connection: PlayConnection) {
+    private fun Map<Vec3i, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, session: PlaySession) {
         val position = Vec3i()
         for ((index, section) in chunk.sections.withIndex()) {
             if (section == null || section.blocks.isEmpty) continue
@@ -120,7 +120,7 @@ class ChunkPrototype(
                         }
                         var entity = section.blockEntities[index]
                         if (entity == null) {
-                            entity = block.createBlockEntity(connection) ?: continue
+                            entity = block.createBlockEntity(session) ?: continue
                             section.blockEntities[index] = entity
                         }
                         this?.get(position)?.let { entity.updateNBT(it) }
@@ -134,7 +134,7 @@ class ChunkPrototype(
     fun updateChunk(chunk: Chunk, replace: Boolean): IntOpenHashSet? {
         val affected = IntOpenHashSet()
         this.blocks?.update(chunk, replace, affected)
-        this.blockEntities?.update(chunk.minSection, chunk, affected, chunk.connection)
+        this.blockEntities?.update(chunk.minSection, chunk, affected, chunk.session)
 
         this.biomeSource?.let { chunk.biomeSource = it } // TODO: invalidate cache
 

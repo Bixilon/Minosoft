@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -66,7 +66,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     }
 
     override fun poll(): Boolean {
-        val riddenEntity = guiRenderer.context.connection.player.attachment.vehicle
+        val riddenEntity = guiRenderer.context.session.player.attachment.vehicle
         if (riddenEntity == null || riddenEntity !is LivingEntity) {
             if (this.shown) {
                 totalHealth = 0.0f

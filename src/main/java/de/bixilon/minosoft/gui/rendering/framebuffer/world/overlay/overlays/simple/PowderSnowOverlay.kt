@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,14 +22,14 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
-    private val config = context.connection.profiles.rendering.overlay
+    private val config = context.session.profiles.rendering.overlay
     override val texture: Texture = context.textures.static.create(OVERLAY_TEXTURE)
     private val strength = FloatAverage(1L * 1000000000L, 0.0f)
     override var render: Boolean = false
         get() = config.powderSnow && field
 
     override fun update() {
-        val ticksFrozen = context.connection.player.ticksFrozen
+        val ticksFrozen = context.session.player.ticksFrozen
         val strength = (minOf(ticksFrozen, FREEZE_DAMAGE_TICKS) / FREEZE_DAMAGE_TICKS.toFloat())
         this.strength += strength
 
@@ -49,7 +49,7 @@ class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
         private val OVERLAY_TEXTURE = "misc/powder_snow_outline".toResourceLocation().texture()
 
         override fun build(context: RenderContext): PowderSnowOverlay? {
-            if (!context.connection.assetsManager.contains(OVERLAY_TEXTURE)) {
+            if (!context.session.assetsManager.contains(OVERLAY_TEXTURE)) {
                 // overlay not yet available (< 1.17)
                 return null
             }

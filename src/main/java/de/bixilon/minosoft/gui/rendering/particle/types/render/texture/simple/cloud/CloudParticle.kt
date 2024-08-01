@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,11 +22,11 @@ import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.lang.Float.max
 
-open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
+open class CloudParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
 
     init {
         friction = 0.96f
@@ -48,7 +48,7 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
         }
         if (DefaultThreadPool.isBacklogging()) return // disable lagging a  bit
 
-        connection.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let { // TODO: optimize
+        session.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let { // TODO: optimize
             val y = it.physics.position.y
             if (this.position.y <= y) {
                 return@let
@@ -62,8 +62,8 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
     companion object : ParticleFactory<CloudParticle> {
         override val identifier: ResourceLocation = "minecraft:cloud".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): CloudParticle {
-            return CloudParticle(connection, position, velocity, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): CloudParticle {
+            return CloudParticle(session, position, velocity, data)
         }
     }
 }

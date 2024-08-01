@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -78,7 +78,7 @@ class RawItemElement(
         val textureSize = size - 1
 
         val item = stack.item.item
-        val model = item.getModel(guiRenderer.connection)
+        val model = item.getModel(guiRenderer.session)
         if (model != null) {
             val tints = context.tints.getItemTint(stack)
             model.render(guiRenderer, offset, consumer, options, textureSize, stack, tints)

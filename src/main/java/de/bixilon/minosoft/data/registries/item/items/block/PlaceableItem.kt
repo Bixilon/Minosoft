@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,12 +28,12 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.item.handler.ItemInteractBlockHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface PlaceableItem : ItemInteractBlockHandler {
 
-    fun canPlace(connection: PlayConnection, target: BlockTarget, stack: ItemStack): Boolean = true
-    fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack): BlockState
+    fun canPlace(session: PlaySession, target: BlockTarget, stack: ItemStack): Boolean = true
+    fun getPlacementState(session: PlaySession, target: BlockTarget, stack: ItemStack): BlockState
 
 
     fun place(player: LocalPlayerEntity, target: BlockTarget, stack: ItemStack): InteractionResults {
@@ -44,21 +44,21 @@ interface PlaceableItem : ItemInteractBlockHandler {
             // TODO: scaffolding
             return InteractionResults.INVALID // This is not valid with vanilla. Vanilla just inverts the direction and places a block.
         }
-        val connection = player.connection
-        val world = connection.world
+        val session = player.session
+        val world = session.world
 
         val placePosition = Vec3i(target.blockPosition)
-        if (target.state.block !is ReplaceableBlock || !target.state.block.canReplace(connection, target.state, target.blockPosition)) {
+        if (target.state.block !is ReplaceableBlock || !target.state.block.canReplace(session, target.state, target.blockPosition)) {
             placePosition += target.direction
 
-            val targetBlock = connection.world[placePosition]
-            if (targetBlock != null && (targetBlock.block !is ReplaceableBlock || !targetBlock.block.canReplace(connection, targetBlock, placePosition))) {
+            val targetBlock = session.world[placePosition]
+            if (targetBlock != null && (targetBlock.block !is ReplaceableBlock || !targetBlock.block.canReplace(session, targetBlock, placePosition))) {
                 return InteractionResults.IGNORED
             }
         }
 
 
-        if (!connection.world.isPositionChangeable(placePosition)) {
+        if (!session.world.isPositionChangeable(placePosition)) {
             return InteractionResults.INVALID
         }
 
@@ -67,10 +67,10 @@ interface PlaceableItem : ItemInteractBlockHandler {
         }
 
 
-        val state: BlockState = getPlacementState(connection, target, stack)
+        val state: BlockState = getPlacementState(session, target, stack)
         if (state.block is CollidableBlock) {
-            val shape = state.block.getCollisionShape(connection, EntityCollisionContext(player), placePosition, state, null)?.plus(placePosition)
-            if (shape != null && connection.world.entities.isEntityIn(shape)) {
+            val shape = state.block.getCollisionShape(session, EntityCollisionContext(player), placePosition, state, null)?.plus(placePosition)
+            if (shape != null && session.world.entities.isEntityIn(shape)) {
                 return InteractionResults.INVALID
             }
         }
@@ -82,7 +82,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
         DefaultThreadPool += {
             world[placePosition] = state
             if (state.block is BlockPlaceHandler) {
-                state.block.onPlace(connection, placePosition, state, null) // TODO: block entity
+                state.block.onPlace(session, placePosition, state, null) // TODO: block entity
             }
             // TODO: handle ReplaceableBlock::onDestroy
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation.PacketNotImplementedException
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.registry.factory.PacketFactory
 import de.bixilon.minosoft.protocol.packets.types.Packet
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
@@ -30,10 +30,10 @@ class PacketType(
     var factory: PacketFactory?,
 ) {
 
-    fun create(data: ByteArray, connection: Connection): Packet {
-        val factory = this.factory ?: throw PacketNotImplementedException(name, connection.network.state, connection.version)
+    fun create(data: ByteArray, session: Session): Packet {
+        val factory = this.factory ?: throw PacketNotImplementedException(name, session.network.state, session.version)
 
-        val buffer = if (connection is PlayConnection) PlayInByteBuffer(data, connection) else InByteBuffer(data)
+        val buffer = if (session is PlaySession) PlayInByteBuffer(data, session) else InByteBuffer(data)
         val packet = factory.create(buffer)
 
         if (buffer.pointer < buffer.size) {

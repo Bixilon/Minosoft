@@ -37,14 +37,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 
 object VerifyIntegratedBlockRegistry {
-    private val connection = createConnection()
+    private val session = createSession()
 
 
     private fun StringBuilder.appendBlock(block: Block) {
@@ -87,8 +87,8 @@ object VerifyIntegratedBlockRegistry {
         if (integrated.block is ScaffoldingBlock) return
         if (integrated.block is OffsetBlock) return // Don't compare, pixlyzer is probably wrong
 
-        val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, Vec3i.EMPTY, pixlyzer) else null
-        val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, Vec3i.EMPTY, pixlyzer) else null
+        val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, Vec3i.EMPTY, pixlyzer) else null
+        val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, Vec3i.EMPTY, pixlyzer) else null
 
         if (expected == actual) {
             return

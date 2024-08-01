@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,12 +22,12 @@ class SequencedExecutor(breaking: BreakHandler) : BreakingExecutor(breaking) {
 
     override fun start(position: BlockPosition, state: BlockState): Int {
         super.start(position, state)
-        return breaking.interactions.connection.sequence.getAndIncrement()
+        return breaking.interactions.session.sequence.getAndIncrement()
     }
 
     override fun finish(): Int {
         super.finish()
-        return breaking.interactions.connection.sequence.getAndIncrement()
+        return breaking.interactions.session.sequence.getAndIncrement()
     }
 
 

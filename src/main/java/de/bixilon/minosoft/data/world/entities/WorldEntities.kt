@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import java.util.*
@@ -189,7 +189,7 @@ class WorldEntities : Iterable<Entity> {
         lock.release()
     }
 
-    fun clear(connection: PlayConnection, local: Boolean = false) {
+    fun clear(session: PlaySession, local: Boolean = false) {
         this.lock.lock()
         for (entity in this.entities) {
             if (!local && entity is LocalPlayerEntity) continue
@@ -197,7 +197,7 @@ class WorldEntities : Iterable<Entity> {
             entityUUIDMap.remove(entity)?.let { uuidEntityMap.remove(it) }
         }
         val remove = this.entities.toMutableSet()
-        remove -= connection.player
+        remove -= session.player
         this.entities.removeAll(remove)
         this.lock.unlock()
     }

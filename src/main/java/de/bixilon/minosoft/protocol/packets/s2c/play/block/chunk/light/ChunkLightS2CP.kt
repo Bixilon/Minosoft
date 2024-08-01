@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.registry.PacketExtraHandler
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightUtil.readLightPacket
@@ -45,7 +45,7 @@ class ChunkLightS2CP(
         val emptySkyLightMask = buffer.readBitSet()
         val emptyBlockLightMask = buffer.readBitSet()
 
-        prototype = readLightPacket(buffer, skyLightMask, emptySkyLightMask, blockLightMask, emptyBlockLightMask, buffer.connection.world.dimension)
+        prototype = readLightPacket(buffer, skyLightMask, emptySkyLightMask, blockLightMask, emptyBlockLightMask, buffer.session.world.dimension)
     }
 
     override fun log(reducedLog: Boolean) {
@@ -55,12 +55,12 @@ class ChunkLightS2CP(
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunk light (position=$position)" }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.chunks[position] = this.prototype
+    override fun handle(session: PlaySession) {
+        session.world.chunks[position] = this.prototype
     }
 
     companion object : PacketExtraHandler {
 
-        override fun skip(connection: Connection) = StaticConfiguration.IGNORE_SERVER_LIGHT
+        override fun skip(session: Session) = StaticConfiguration.IGNORE_SERVER_LIGHT
     }
 }

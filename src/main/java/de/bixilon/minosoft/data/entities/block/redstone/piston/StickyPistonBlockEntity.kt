@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,15 +16,15 @@ package de.bixilon.minosoft.data.entities.block.redstone.piston
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class StickyPistonBlockEntity(connection: PlayConnection) : PistonBlockEntity(connection) {
+class StickyPistonBlockEntity(session: PlaySession) : PistonBlockEntity(session) {
 
     companion object : BlockEntityFactory<StickyPistonBlockEntity> {
         override val identifier: ResourceLocation = minecraft("sticky_piston")
 
-        override fun build(connection: PlayConnection): StickyPistonBlockEntity {
-            return StickyPistonBlockEntity(connection)
+        override fun build(session: PlaySession): StickyPistonBlockEntity {
+            return StickyPistonBlockEntity(session)
         }
     }
 }

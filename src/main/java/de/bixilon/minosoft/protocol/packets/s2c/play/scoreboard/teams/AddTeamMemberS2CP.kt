@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamMemberAddEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -34,16 +34,16 @@ class AddTeamMemberS2CP(
     ) { buffer.readString() }.toSet()
 
 
-    override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboard.teams[name] ?: return
+    override fun handle(session: PlaySession) {
+        val team = session.scoreboard.teams[name] ?: return
         team.members += members
 
         for (member in members) {
-            connection.tabList.name[member]?.team = team
+            session.tabList.name[member]?.team = team
         }
 
-        connection.scoreboard.updateScoreTeams(team, members)
-        connection.events.fire(TeamMemberAddEvent(connection, team, members))
+        session.scoreboard.updateScoreTeams(team, members)
+        session.events.fire(TeamMemberAddEvent(session, team, members))
     }
 
     override fun log(reducedLog: Boolean) {

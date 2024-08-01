@@ -16,11 +16,11 @@ package de.bixilon.minosoft.example
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionCreateEvent
+import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionCreateEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.mod.ModMain
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ExampleMod : ModMain() {
@@ -33,10 +33,10 @@ object ExampleMod : ModMain() {
 
     override fun postInit() {
         logger.warn { "This mod can not do much yet!" }
-        GlobalEventMaster.listen<PlayConnectionCreateEvent> { it.connection.startListening() }
+        GlobalEventMaster.listen<PlaySessionCreateEvent> { it.session.startListening() }
     }
 
-    private fun PlayConnection.startListening() {
+    private fun PlaySession.startListening() {
         if (this.address.hostname != "localhost" && this.address.hostname != "127.0.0.1") {
             return
         }

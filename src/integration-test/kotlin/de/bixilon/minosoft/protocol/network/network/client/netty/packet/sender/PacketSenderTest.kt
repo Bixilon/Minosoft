@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender
 
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue

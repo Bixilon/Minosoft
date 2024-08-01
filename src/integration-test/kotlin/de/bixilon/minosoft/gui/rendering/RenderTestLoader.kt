@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
@@ -27,17 +27,17 @@ import org.testng.annotations.Test
 class RenderTestLoader {
 
     fun init() {
-        val connection = createConnection(5)
+        val session = createSession(5)
         val latch = SimpleLatch(1)
-        connection::assetsManager.forceSet(AssetsLoader.create(connection.profiles.resources, connection.version, latch))
-        connection.assetsManager.load(latch)
-        connection::error.forceSet(DataObserver(null))
-        RenderTestUtil.rendering = Rendering(connection)
+        session::assetsManager.forceSet(AssetsLoader.create(session.profiles.resources, session.version, latch))
+        session.assetsManager.load(latch)
+        session::error.forceSet(DataObserver(null))
+        RenderTestUtil.rendering = Rendering(session)
         RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
         while (latch.count > 0) {
             Thread.sleep(10)
-            connection.error?.let { throw it }
+            session.error?.let { throw it }
         }
         val context = RenderTestUtil.rendering.context
         assertTrue(context.window is DummyWindow)

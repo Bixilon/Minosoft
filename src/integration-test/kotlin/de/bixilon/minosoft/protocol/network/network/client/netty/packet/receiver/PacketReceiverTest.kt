@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver
 
-import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
+import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.packets.registry.PacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import org.testng.Assert.assertEquals
@@ -80,7 +80,7 @@ class PacketReceiverTest {
 
         override fun log(reducedLog: Boolean) = Unit
 
-        override fun handle(connection: Connection) {
+        override fun handle(session: Session) {
             handled++
             if (!handle) throw Exception("Testing...")
         }

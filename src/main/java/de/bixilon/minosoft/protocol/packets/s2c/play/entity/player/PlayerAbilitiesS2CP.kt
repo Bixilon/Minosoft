@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.player
 
 import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -50,8 +50,8 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Player abilities (invulnerable=$invulnerable, flying=$flying, allowFly=$allowFly, creative=$creative, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.player.abilities = Abilities(invulnerable = invulnerable, flying = flying, allowFly = allowFly, flyingSpeed = flyingSpeed, walkingSpeed = walkingSpeed)
-        connection.player.physics().sender.flying = flying
+    override fun handle(session: PlaySession) {
+        session.player.abilities = Abilities(invulnerable = invulnerable, flying = flying, allowFly = allowFly, flyingSpeed = flyingSpeed, walkingSpeed = walkingSpeed)
+        session.player.physics().sender.flying = flying
     }
 }

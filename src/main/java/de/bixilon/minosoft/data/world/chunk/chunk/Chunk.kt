@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
@@ -41,12 +41,12 @@ import java.util.*
  * Collection of chunks sections (from the lowest section to the highest section in y axis)
  */
 class Chunk(
-    val connection: PlayConnection,
+    val session: PlaySession,
     val chunkPosition: ChunkPosition,
     var biomeSource: BiomeSource,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     val lock = ThreadLock()
-    val world = connection.world
+    val world = session.world
     val light = ChunkLight(this)
     val minSection = world.dimension.minSection
     val maxSection = world.dimension.maxSection
@@ -81,7 +81,7 @@ class Chunk(
             light.onBlockChange(x, y, z, section, previous, state)
         }
 
-        SingleBlockUpdate(Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + z), this, state, entity).fire(connection)
+        SingleBlockUpdate(Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + z), this, state, entity).fire(session)
     }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
@@ -105,7 +105,7 @@ class Chunk(
         if (state.block !is BlockWithEntity<*>) {
             return null
         }
-        blockEntity = state.block.createBlockEntity(connection) ?: return null
+        blockEntity = state.block.createBlockEntity(session) ?: return null
         (this.getOrPut(sectionHeight) ?: return null).blockEntities[x, inSectionHeight, z] = blockEntity
 
         return blockEntity
@@ -169,7 +169,7 @@ class Chunk(
 
         lock.unlock()
 
-        ChunkLocalBlockUpdate(chunkPosition, this, executed).fire(connection)
+        ChunkLocalBlockUpdate(chunkPosition, this, executed).fire(session)
     }
 
     fun getOrPut(sectionHeight: Int, calculateLight: Boolean = true, lock: Boolean = true): ChunkSection? {
@@ -213,11 +213,11 @@ class Chunk(
         return section
     }
 
-    fun tick(connection: PlayConnection, chunkPosition: Vec2i, random: Random) {
+    fun tick(session: PlaySession, chunkPosition: Vec2i, random: Random) {
         if (!neighbours.complete) return
         lock.acquire()
         for ((index, section) in sections.withIndex()) {
-            section?.tick(connection, chunkPosition, index + minSection, random)
+            section?.tick(session, chunkPosition, index + minSection, random)
         }
         lock.release()
     }
@@ -231,7 +231,7 @@ class Chunk(
         if (!cacheBiomes) {
             return biomeSource.get(x, y, z)
         }
-        return connection.world.biomes.getBiome(x, y, z, this)
+        return session.world.biomes.getBiome(x, y, z, this)
     }
 }
 

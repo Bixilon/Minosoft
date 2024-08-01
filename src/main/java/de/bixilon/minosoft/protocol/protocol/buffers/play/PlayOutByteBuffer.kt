@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.protocol.PlayerPublicKey
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
@@ -29,8 +29,8 @@ import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import java.time.Instant
 import java.util.*
 
-class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
-    val versionId = connection.version.versionId
+class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
+    val versionId = session.version.versionId
 
 
     override fun writeByteArray(data: ByteArray) {
@@ -56,7 +56,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             return
         }
         val item = stack.item.item
-        val id = connection.registries.item.getId(item)
+        val id = session.registries.item.getId(item)
         writeShort(id shr MetaTypes.ITEM.bits)
         writeByte(stack.item.count)
         writeShort(if (item is ItemWithMeta) item.getMeta(id, stack) else 0)
@@ -73,7 +73,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             return
         }
         stack!!
-        writeVarInt(connection.registries.item.getId(stack.item.item))
+        writeVarInt(session.registries.item.getId(stack.item.item))
         writeByte(stack.item.count)
         writeNBT(stack.getNBT())
     }

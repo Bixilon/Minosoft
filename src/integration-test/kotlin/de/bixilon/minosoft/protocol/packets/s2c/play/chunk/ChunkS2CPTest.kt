@@ -18,16 +18,14 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
-import de.bixilon.kutil.time.TimeUtil.nanos
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkS2CP
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import org.testng.Assert.*
@@ -36,7 +34,7 @@ import org.testng.annotations.Test
 @Test(groups = ["packet"])
 class ChunkS2CPTest {
 
-    private fun PlayConnection.readRegistries(name: String) {
+    private fun PlaySession.readRegistries(name: String) {
         val steam = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.mbf")
         val mbf = MBFBinaryReader(steam!!).readMBF()
         registries.update(version, mbf.data.unsafeCast())
@@ -46,11 +44,11 @@ class ChunkS2CPTest {
         return this[getIndex(x, y, z)]
     }
 
-    private fun read(name: String, version: String, connection: PlayConnection = createConnection(version = version), dimension: DimensionProperties): ChunkS2CP {
+    private fun read(name: String, version: String, session: PlaySession = createSession(version = version), dimension: DimensionProperties): ChunkS2CP {
         val data = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.bin")!!.readAll()
-        connection.world::dimension.forceSet(DataObserver(dimension))
+        session.world::dimension.forceSet(DataObserver(dimension))
 
-        val buffer = PlayInByteBuffer(data, connection)
+        val buffer = PlayInByteBuffer(data, session)
         val packet = ChunkS2CP(buffer)
         packet.parse()
 
@@ -59,8 +57,8 @@ class ChunkS2CPTest {
 
     // hypixel does some magic to their packets and it failed (22-02-05). This is used to test it
     fun hypixel1_19_3() {
-        val connection = createConnection(version = "1.19.3")
-        connection.readRegistries("hypixel_registries")
+        val session = createSession(version = "1.19.3")
+        session.readRegistries("hypixel_registries")
         val packet = read("hypixel_hub_1_19_3", "1.19.3", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
         assertEquals(packet.position, Vec2i(-10, 9))
         val blocks = packet.prototype.blocks!!

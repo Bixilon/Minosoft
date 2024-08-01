@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -72,7 +72,7 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun update(millis: Long, delta: Float) {
-        this.isInvisible = entity.isInvisible(renderer.connection.camera.entity)
+        this.isInvisible = entity.isInvisible(renderer.session.camera.entity)
         updateLight(delta)
         updateRenderInfo(millis)
         updateMatrix(delta)
@@ -85,7 +85,7 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun updateRenderInfo(millis: Long) {
         entity.draw(millis)
-        this.distance = (entity.renderInfo.eyePosition - renderer.connection.camera.entity.renderInfo.eyePosition).length2()
+        this.distance = (entity.renderInfo.eyePosition - renderer.session.camera.entity.renderInfo.eyePosition).length2()
     }
 
     private fun getCurrentLight(): Int {

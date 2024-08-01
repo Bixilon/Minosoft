@@ -28,7 +28,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 class FogManager(
     private val context: RenderContext,
 ) {
-    private val player = context.connection.player
+    private val player = context.session.player
 
     private var interpolation = FogInterpolationStart()
     val state = FogState()
@@ -49,12 +49,12 @@ class FogManager(
         val fluid = player.physics.submersion.eye
 
         return when {
-            fluid is FoggedFluid -> fluid.getFogOptions(context.connection.world, player.physics.positionInfo)
+            fluid is FoggedFluid -> fluid.getFogOptions(context.session.world, player.physics.positionInfo)
             player.effects[VisionEffect.Blindness] != null -> VisionEffect.Blindness.FOG_OPTIONS
             // TODO: void fog (if under minY)
             // TODO: powder snow
             else -> {
-                val end = (context.connection.world.view.viewDistance - 1.0f) * ProtocolDefinition.SECTION_WIDTH_X
+                val end = (context.session.world.view.viewDistance - 1.0f) * ProtocolDefinition.SECTION_WIDTH_X
                 val distance = end / 10.0f
 
                 FogOptions(effects.start * (end - distance), end)
@@ -63,8 +63,8 @@ class FogManager(
     }
 
     private fun update() {
-        val effects = context.connection.world.dimension.effects.fog
-        val enabled = effects != null && context.connection.profiles.rendering.fog.enabled
+        val effects = context.session.world.dimension.effects.fog
+        val enabled = effects != null && context.session.profiles.rendering.fog.enabled
         if (state.enabled != enabled) {
             state.revision++
         }

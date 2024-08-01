@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -36,9 +36,9 @@ import org.testng.annotations.Test
 class SprintIT {
 
     fun noSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput()
         player.runTicks(5)
         player.assertPosition(17.0, 9.0, 8.0)
@@ -47,9 +47,9 @@ class SprintIT {
     }
 
     fun noMovement() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput(sprint = true)
         player.runTicks(5)
         player.assertPosition(17.0, 9.0, 8.0)
@@ -58,9 +58,9 @@ class SprintIT {
     }
 
     fun stopSprinting() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(3)
         player.input = PlayerMovementInput()
@@ -72,9 +72,9 @@ class SprintIT {
     }
 
     fun forwardsSprinting() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(5)
         player.assertPosition(17.0, 9.0, 8.694907422181794)
@@ -83,9 +83,9 @@ class SprintIT {
     }
 
     fun hungerSprinting() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.healthCondition = HealthCondition(hunger = 1)
         player.runTicks(5)
@@ -95,9 +95,9 @@ class SprintIT {
     }
 
     fun backwardsSprinting() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput(backward = true, sprint = true)
         player.runTicks(5)
         player.assertPosition(17.0, 8.921599998474122, 7.449909533453662)
@@ -106,9 +106,9 @@ class SprintIT {
     }
 
     fun sidewaysSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
         player.input = PlayerMovementInput(left = true, sprint = true)
         player.runTicks(5)
         player.assertPosition(17.55009046654634, 9.0, 8.0)
@@ -117,10 +117,10 @@ class SprintIT {
     }
 
     fun collisionSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
-        player.connection.world[Vec3i(17, 9, 9)] = StoneTest0.state
+        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[Vec3i(17, 9, 9)] = StoneTest0.state
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(20)
         player.assertPosition(17.0, 9.0, 8.699999988079071)
@@ -129,10 +129,10 @@ class SprintIT {
     }
 
     fun waterStartSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
-        player.connection.world.fill(10, 9, 5, 20, 9, 15, WaterTest0.state)
+        player.session.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
+        player.session.world.fill(10, 9, 5, 20, 9, 15, WaterTest0.state)
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(20)
         player.assertPosition(17.0, 9.0, 9.572519513961863)
@@ -142,10 +142,10 @@ class SprintIT {
     }
 
     fun waterStopSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
-        player.connection.world.fill(10, 9, 9, 20, 9, 15, WaterTest0.state)
+        player.session.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
+        player.session.world.fill(10, 9, 9, 20, 9, 15, WaterTest0.state)
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(20)
         player.assertPosition(17.0, 9.0, 10.638288142020382)
@@ -155,10 +155,10 @@ class SprintIT {
     }
 
     fun lavaStopSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.connection.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
-        player.connection.world.fill(10, 9, 9, 20, 9, 15, player.connection.registries.block[LavaFluidBlock]!!.states.default)
+        player.session.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
+        player.session.world.fill(10, 9, 9, 20, 9, 15, player.session.registries.block[LavaFluidBlock]!!.states.default)
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(20)
         player.assertPosition(17.0, 9.0, 9.7527920785995)
@@ -168,7 +168,7 @@ class SprintIT {
     }
 
     fun airSprint() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(5)

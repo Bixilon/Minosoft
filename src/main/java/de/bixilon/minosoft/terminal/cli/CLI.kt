@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,9 +23,9 @@ import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.main.MinosoftBoot
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.Commands
-import de.bixilon.minosoft.terminal.commands.connection.ConnectionCommand
+import de.bixilon.minosoft.terminal.commands.session.SessionCommand
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -35,16 +35,16 @@ import org.jline.terminal.TerminalBuilder
 
 object CLI {
     const val CLI_PREFIX = '.'
-    var connection: PlayConnection? by observed(null)
+    var session: PlaySession? by observed(null)
     val commands = RootNode()
 
     @Synchronized
     private fun register() {
         commands.clear()
-        val connection = this.connection
+        val session = this.session
 
         for (command in Commands.COMMANDS) {
-            if (command is ConnectionCommand && connection == null) {
+            if (command is SessionCommand && session == null) {
                 continue
             }
             commands.addChild(command.node)
@@ -68,7 +68,7 @@ object CLI {
             .completer(NodeCompleter)
             .build()
 
-        this::connection.observe(this) { register() }
+        this::session.observe(this) { register() }
 
         MinosoftBoot.LATCH.await()
 
@@ -106,7 +106,7 @@ object CLI {
 
     fun execute(line: String) {
         try {
-            commands.execute(line, connection)
+            commands.execute(line, session)
         } catch (error: ReaderError) {
             Log.log(LogMessageType.OTHER, LogLevels.WARN) { error.message }
         } catch (error: Throwable) {

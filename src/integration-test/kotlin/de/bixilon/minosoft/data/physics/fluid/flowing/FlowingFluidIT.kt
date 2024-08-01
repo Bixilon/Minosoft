@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.SkipException
 import kotlin.math.abs
 
@@ -49,7 +49,7 @@ abstract class FlowingFluidIT {
 
 
     protected open fun create(): LocalPlayerEntity {
-        return createPlayer(createConnection(3))
+        return createPlayer(createSession(3))
     }
 
     protected fun World.star(x: Int = 4, y: Int = 4, z: Int = 4, start: Int = 7, size: Int = 8) {
@@ -72,7 +72,7 @@ abstract class FlowingFluidIT {
 
     protected fun starMiddle(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(4.5, 5.0, 4.5))
 
         player.runTicks(16)
@@ -82,7 +82,7 @@ abstract class FlowingFluidIT {
 
     protected fun starOffset(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(3.5, 5.0, 3.5))
 
         player.runTicks(16)
@@ -92,7 +92,7 @@ abstract class FlowingFluidIT {
 
     protected fun starOffset2(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(3.5, 5.0, 3.5))
 
         player.runTicks(25)
@@ -102,7 +102,7 @@ abstract class FlowingFluidIT {
 
     protected fun starOffset3(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(3.5, 5.0, 9.5))
 
         player.runTicks(25)
@@ -112,7 +112,7 @@ abstract class FlowingFluidIT {
 
     protected fun startJumping(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(3.5, 5.0, 3.5))
         player.runTicks(10)
         player.input = PlayerMovementInput(jump = true)
@@ -124,7 +124,7 @@ abstract class FlowingFluidIT {
 
     protected fun lowJumping(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(3.5, 5.0, 3.5))
         player.runTicks(20)
         player.input = PlayerMovementInput(jump = true)
@@ -135,7 +135,7 @@ abstract class FlowingFluidIT {
 
     protected fun lowJumping2(): LocalPlayerEntity {
         val player = create()
-        player.connection.world.star()
+        player.session.world.star()
         player.forceTeleport(Vec3d(3.5, 5.0, 10.0))
         player.runTicks(30)
         player.input = PlayerMovementInput(jump = true)

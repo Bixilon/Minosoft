@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val random = ThreadLocalRandom.current()
-    private val profile = guiRenderer.connection.profiles.gui
+    private val profile = guiRenderer.session.profiles.gui
     private val hungerProfile = profile.hud.hotbar.hunger
     private var ticks = 0
 
@@ -107,7 +107,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     override fun tick() {
-        val healthCondition = guiRenderer.context.connection.player.healthCondition
+        val healthCondition = guiRenderer.context.session.player.healthCondition
 
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
 
@@ -115,12 +115,12 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     override fun poll(): Boolean {
-        val healthCondition = guiRenderer.context.connection.player.healthCondition
+        val healthCondition = guiRenderer.context.session.player.healthCondition
 
         val hunger = healthCondition.hunger
         val saturation = healthCondition.saturation
 
-        val hungerEffect = guiRenderer.context.connection.player.effects[OtherEffect.Hunger] != null
+        val hungerEffect = guiRenderer.context.session.player.effects[OtherEffect.Hunger] != null
 
         if (this.hunger == hunger && this.saturation == saturation && this.hungerEffect == hungerEffect) {
             return false

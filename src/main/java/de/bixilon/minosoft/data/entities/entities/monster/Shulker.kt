@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,10 +26,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
+class Shulker(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val attachmentFace: Directions
@@ -56,8 +55,8 @@ class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityDa
         private val COLOR_DATA = EntityDataField("SHULKER_COLOR")
 
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Shulker {
-            return Shulker(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Shulker {
+            return Shulker(session, entityType, data, position, rotation)
         }
     }
 }

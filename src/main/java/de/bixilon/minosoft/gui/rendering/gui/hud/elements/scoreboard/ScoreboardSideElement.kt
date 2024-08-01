@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -162,39 +162,39 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     override fun postInit() {
-        val connection = context.connection
-        connection.events.listen<ObjectivePositionSetEvent> {
+        val session = context.session
+        session.events.listen<ObjectivePositionSetEvent> {
             if (it.position != ScoreboardPositions.SIDEBAR) {
                 return@listen
             }
 
             this.objective = it.objective
         }
-        connection.events.listen<ScoreboardObjectiveUpdateEvent> {
+        session.events.listen<ScoreboardObjectiveUpdateEvent> {
             if (it.objective != this.objective) {
                 return@listen
             }
             this.updateName()
         }
-        connection.events.listen<ScoreboardScoreRemoveEvent> {
+        session.events.listen<ScoreboardScoreRemoveEvent> {
             if (it.objective != this.objective) {
                 return@listen
             }
             this.removeScore(it.entity)
         }
-        connection.events.listen<ScoreboardScorePutEvent> {
+        session.events.listen<ScoreboardScorePutEvent> {
             if (it.objective != this.objective) {
                 return@listen
             }
             this.updateScore(it.entity, it.score)
         }
-        connection.events.listen<ScoreTeamChangeEvent> {
+        session.events.listen<ScoreTeamChangeEvent> {
             if (it.objective != this.objective) {
                 return@listen
             }
             this.updateScore(it.entity, it.score)
         }
-        connection.events.listen<TeamUpdateEvent> {
+        session.events.listen<TeamUpdateEvent> {
             val objective = this.objective ?: return@listen
             for ((entity, score) in objective.scores) {
                 if (it.team != score.team) {

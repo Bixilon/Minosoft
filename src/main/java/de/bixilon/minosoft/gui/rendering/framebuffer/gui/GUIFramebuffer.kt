@@ -35,7 +35,7 @@ class GUIFramebuffer(
 
     override fun init() {
         super.init()
-        context.connection.profiles.rendering.quality.resolution::guiScale.observe(this, instant = true) { this.scale = it }
+        context.session.profiles.rendering.quality.resolution::guiScale.observe(this, instant = true) { this.scale = it }
     }
 
     override fun resize(size: Vec2i) {

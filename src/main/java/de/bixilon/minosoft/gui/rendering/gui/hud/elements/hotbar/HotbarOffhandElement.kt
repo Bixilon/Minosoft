@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,11 +35,11 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         atlas["offhand_left"],
     )
 
-    val offArm = guiRenderer.context.connection.player.mainArm.opposite // ToDo: Support arm change
+    val offArm = guiRenderer.context.session.player.mainArm.opposite // ToDo: Support arm change
     private val frame = frames[offArm.ordinal]
 
     private var frameImage = AtlasImageElement(guiRenderer, frame)
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame?.slots ?: Int2ObjectOpenHashMap())
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.session.player.items.inventory, frame?.slots ?: Int2ObjectOpenHashMap())
 
     init {
         _size = Vec2(frame?.size ?: Vec2i.EMPTY)

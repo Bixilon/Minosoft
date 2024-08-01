@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -28,7 +28,7 @@ class EntityEmptyInteractC2SP(
     override val sneaking: Boolean,
 ) : EntityInteractC2SP(entityId, EntityInteractionActions.EMPTY) {
 
-    constructor(connection: PlayConnection, entity: Entity, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, hand, sneaking)
+    constructor(session: PlaySession, entity: Entity, hand: Hands, sneaking: Boolean) : this(session.world.entities.getId(entity)!!, hand, sneaking)
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,9 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, data, position, rotation) {
+class CommandBlockMinecart(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val command: String
@@ -42,8 +41,8 @@ class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, d
         private val LAST_OUTPUT_DATA = EntityDataField("MINECART_COMMAND_BLOCK_LAST_OUTPUT")
 
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): CommandBlockMinecart {
-            return CommandBlockMinecart(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): CommandBlockMinecart {
+            return CommandBlockMinecart(session, entityType, data, position, rotation)
         }
     }
 }

@@ -2,7 +2,7 @@
 
 <!--
   ~ Minosoft
-  ~ Copyright (C) 2020-2022 Moritz Zwerger
+  ~ Copyright (C) 2020-2024 Moritz Zwerger
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   ~
@@ -44,11 +44,11 @@
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints vgrow="ALWAYS"/>
             </rowConstraints>
-            <TextFlow fx:id="connectionCountFX">
+            <TextFlow fx:id="sessionCountFX">
                 <GridPane.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </GridPane.margin>
-                <Text text="0 connections"/>
+                <Text text="0 sessions"/>
             </TextFlow>
             <TextFlow fx:id="stateFX" GridPane.rowIndex="1">
                 <GridPane.margin>

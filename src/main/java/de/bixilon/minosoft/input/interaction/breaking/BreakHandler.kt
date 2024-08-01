@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ class BreakHandler(
     val interactions: InteractionManager,
 ) : KeyHandler() {
     private var cooldown = -1
-    private val connection = interactions.connection
+    private val session = interactions.session
     val executor = BreakingExecutor.create(this)
 
     val creative = CreativeBreaker(this)
@@ -36,15 +36,15 @@ class BreakHandler(
 
 
     private fun validateTarget(): BlockTarget? {
-        if (!connection.player.gamemode.canBreak) return null
+        if (!session.player.gamemode.canBreak) return null
         if (!isPressed) return null
 
         val target = interactions.camera.target.target ?: return null
 
 
         if (target !is BlockTarget) return null
-        if (!connection.world.isPositionChangeable(target.blockPosition)) return null
-        if (target.distance >= connection.player.reachDistance) return null
+        if (!session.world.isPositionChangeable(target.blockPosition)) return null
+        if (target.distance >= session.player.reachDistance) return null
 
 
         return target
@@ -72,7 +72,7 @@ class BreakHandler(
     }
 
     private fun tickBreaking(): Boolean {
-        val gamemode = connection.player.gamemode
+        val gamemode = session.player.gamemode
         val target = validateTarget()
 
         if (gamemode == Gamemodes.CREATIVE) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ class MovementPacketSender(
     private val physics: LocalPlayerPhysics,
 ) : Tickable {
     private val player = physics.entity
-    private val connection = player.connection
+    private val session = player.session
 
     var flying = false
     private var sprinting = false
@@ -50,7 +50,7 @@ class MovementPacketSender(
         if (this.sprinting == sprinting) {
             return
         }
-        connection.sendPacket(EntityActionC2SP(player, connection, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
+        session.network.send(EntityActionC2SP(player, session, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
         this.sprinting = sprinting
     }
 
@@ -58,7 +58,7 @@ class MovementPacketSender(
         if (this.sneaking == sneaking) {
             return
         }
-        connection.sendPacket(EntityActionC2SP(player, connection, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
+        session.network.send(EntityActionC2SP(player, session, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
         this.sneaking = sneaking
     }
 
@@ -70,7 +70,7 @@ class MovementPacketSender(
             return
         }
         this.flying = flying
-        connection.sendPacket(ToggleFlyC2SP(abilities))
+        session.network.send(ToggleFlyC2SP(abilities))
     }
 
     private fun sendMovement(position: Vec3d, rotation: EntityRotation, onGround: Boolean) {
@@ -87,7 +87,7 @@ class MovementPacketSender(
             onGround != this.onGround -> GroundChangeC2SP(onGround)
             else -> null
         }
-        packet?.let { connection.sendPacket(it) }
+        packet?.let { session.network.send(it) }
 
         if (sendPosition) {
             this.lastPacket = 0
@@ -105,23 +105,23 @@ class MovementPacketSender(
         sendSprinting(player.isSprinting)
         sendSneaking(player.isSneaking)
 
-        if (connection.camera.entity == connection.player) {
+        if (session.camera.entity == session.player) {
             sendMovement(player.physics.position, player.physics.rotation, player.physics.onGround)
         }
     }
 
     private fun sendVehicle(vehicle: Entity) {
-        connection.sendPacket(RotationC2SP(player.physics.rotation, player.physics.onGround))
-        connection.sendPacket(VehicleInputC2SP(physics.input.sideways, physics.input.forwards, player.input.jump, player.input.sneak))
+        session.network.send(RotationC2SP(player.physics.rotation, player.physics.onGround))
+        session.network.send(VehicleInputC2SP(physics.input.sideways, physics.input.forwards, player.input.jump, player.input.sneak))
         if (vehicle == player || !vehicle.clientControlled) {
             return
         }
-        connection.sendPacket(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
+        session.network.send(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
         sendSprinting(player.isSprinting)
     }
 
     fun sendPositionRotation() {
-        connection.sendPacket(PositionRotationC2SP(physics.position, physics.eyeY, physics.rotation, physics.onGround))
+        session.network.send(PositionRotationC2SP(physics.position, physics.eyeY, physics.rotation, physics.onGround))
     }
 
     override fun tick() {

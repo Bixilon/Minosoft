@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.camera.ConnectionCamera
+import de.bixilon.minosoft.camera.SessionCamera
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.camera.target.targets.FluidTarget
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
 import de.bixilon.minosoft.terminal.RunConfiguration
 
 class TargetHandler(
-    private val camera: ConnectionCamera,
+    private val camera: SessionCamera,
 ) {
     var target: GenericTarget? by observed(null)
         private set
@@ -72,7 +72,7 @@ class TargetHandler(
         var target: EntityTarget? = null
 
         val originF = Vec3(origin)
-        val world = camera.connection.world
+        val world = camera.session.world
 
         world.entities.lock.acquire()
         for (entity in world.entities) {
@@ -100,7 +100,7 @@ class TargetHandler(
             // no block, continue going into that direction
             return null
         }
-        var shape = state.block.getOutlineShape(camera.connection, blockPosition, state) ?: return null
+        var shape = state.block.getOutlineShape(camera.session, blockPosition, state) ?: return null
         state.block.nullCast<OffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
 
         shape += blockPosition
@@ -127,7 +127,7 @@ class TargetHandler(
             blockPosition.x = position.x.floor;blockPosition.y = position.y.floor;blockPosition.z = position.z.floor
             chunkPosition.x = blockPosition.x shr 4; chunkPosition.y = blockPosition.z shr 4
             if (chunk == null) {
-                chunk = camera.connection.world.chunks[chunkPosition] ?: break
+                chunk = camera.session.world.chunks[chunkPosition] ?: break
             } else if (chunk.chunkPosition != chunkPosition) {
                 chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: break
             }

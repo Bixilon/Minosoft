@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,10 +21,10 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
+class BubbleParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
 
     init {
         this.spacing = Vec3(0.02f)
@@ -53,8 +53,8 @@ class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
     companion object : ParticleFactory<BubbleParticle> {
         override val identifier: ResourceLocation = "minecraft:bubble".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BubbleParticle {
-            return BubbleParticle(connection, position, velocity, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): BubbleParticle {
+            return BubbleParticle(session, position, velocity, data)
         }
     }
 }

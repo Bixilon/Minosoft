@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
     private var perspective = Mat4()
@@ -53,7 +53,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        context.connection.events.listen<ResizeWindowEvent> { perspective = GLM.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE) }
+        context.session.events.listen<ResizeWindowEvent> { perspective = GLM.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE) }
     }
 
     private fun registerModels() {
@@ -82,7 +82,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
 
     override fun draw() {
         if (!context.camera.view.view.renderArm) return
-        val entity = context.connection.camera.entity.nullCast<PlayerEntity>() ?: return
+        val entity = context.session.camera.entity.nullCast<PlayerEntity>() ?: return
         val renderer = entity.renderer?.nullCast<PlayerRenderer<*>>() ?: return
         val arm = entity.mainArm
         val skin = renderer.model?.type ?: return
@@ -121,6 +121,6 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
         private val LEFT_ARM_SLIM = minosoft("left_arm_slim")
         private val RIGHT_ARM_SLIM = minosoft("right_arm_slim")
 
-        override fun build(connection: PlayConnection, context: RenderContext) = ArmRenderer(context)
+        override fun build(session: PlaySession, context: RenderContext) = ArmRenderer(context)
     }
 }

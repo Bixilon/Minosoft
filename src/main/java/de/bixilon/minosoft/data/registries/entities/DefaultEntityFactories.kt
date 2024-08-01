@@ -47,7 +47,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.ChestBoat
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
@@ -183,13 +183,13 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     Breeze, WindCharge,
 ) {
 
-    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, uuid: UUID?, versionId: Int): Entity? {
-        val tweakedResourceLocation = factory.tweak(connection, data, versionId)
+    fun buildEntity(factory: EntityFactory<out Entity>, session: PlaySession, position: Vec3d, rotation: EntityRotation, data: EntityData?, uuid: UUID?, versionId: Int): Entity? {
+        val tweakedResourceLocation = factory.tweak(session, data, versionId)
 
         val tweakedFactory = this[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")
 
-        val tweakedEntityType = connection.registries.entityType[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
-        return tweakedFactory.build(connection, tweakedEntityType, data ?: EntityData(connection), position, rotation, uuid)
+        val tweakedEntityType = session.registries.entityType[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${session.version}: $tweakedResourceLocation for $factory")
+        return tweakedFactory.build(session, tweakedEntityType, data ?: EntityData(session), position, rotation, uuid)
     }
 
     val ABSTRACT_ENTITY_DATA_CLASSES = mapOf(

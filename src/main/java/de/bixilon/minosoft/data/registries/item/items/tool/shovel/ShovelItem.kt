@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,17 +37,17 @@ abstract class ShovelItem(identifier: ResourceLocation, registries: Registries, 
 
     override fun interactBlock(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (target.state.block is LitBlock) {
-            if (target.state.block.extinguish(player.connection, target.blockPosition, target.state)) InteractionResults.SUCCESS else InteractionResults.FAILED
+            if (target.state.block.extinguish(player.session, target.blockPosition, target.state)) InteractionResults.SUCCESS else InteractionResults.FAILED
         }
-        if (!player.connection.profiles.controls.interaction.flattening) {
+        if (!player.session.profiles.controls.interaction.flattening) {
             return InteractionResults.INVALID
         }
-        if (player.connection.world[target.blockPosition + Directions.UP] != null) {
+        if (player.session.world[target.blockPosition + Directions.UP] != null) {
             return InteractionResults.IGNORED
         }
 
 
-        return super.interact(player.connection, target.blockPosition, flattenables?.get(target.state.block))
+        return super.interact(player.session, target.blockPosition, flattenables?.get(target.state.block))
     }
 
     companion object {

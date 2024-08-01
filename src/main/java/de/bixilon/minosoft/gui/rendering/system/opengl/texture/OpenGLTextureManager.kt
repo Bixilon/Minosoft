@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic.OpenGLDynamicTextureArray
 
 class OpenGLTextureManager(val context: RenderContext) : TextureManager() {
-    private val config = context.connection.profiles.rendering.textures
+    private val config = context.session.profiles.rendering.textures
     override val static = OpenGLTextureArray(context, true, config.mipmaps)
     override val dynamic = OpenGLDynamicTextureArray(context, context.system.unsafeCast(), resolution = 64, mipmaps = config.mipmaps)
     override val font = OpenGLFontTextureArray(context, config.fontCompression)

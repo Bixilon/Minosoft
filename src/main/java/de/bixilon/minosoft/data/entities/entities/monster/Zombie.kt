@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,11 +21,10 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
 
-open class Zombie(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
+open class Zombie(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val isBaby: Boolean
@@ -46,11 +45,11 @@ open class Zombie(connection: PlayConnection, entityType: EntityType, data: Enti
         private val SPECIAL_TYPE_DATA = EntityDataField("ZOMBIE_SPECIAL_TYPE")
         private val DROWNING_CONVERSION_DATA = EntityDataField("ZOMBIE_DROWNING_CONVERSION")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Zombie {
-            return Zombie(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Zombie {
+            return Zombie(session, entityType, data, position, rotation)
         }
 
-        override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
+        override fun tweak(session: PlaySession, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
                 return identifier
             }

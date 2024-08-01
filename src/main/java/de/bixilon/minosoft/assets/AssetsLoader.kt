@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.assets
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperty
+import de.bixilon.minosoft.assets.session.SessionAssetsManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.protocol.versions.Version
 
@@ -36,7 +36,7 @@ object AssetsLoader {
         return AssetsManagerProperties(PackProperties(packFormat))
     }
 
-    private fun ConnectionAssetsManager.addPacks(profile: ResourcesProfile, latch: AbstractLatch) {
+    private fun SessionAssetsManager.addPacks(profile: ResourcesProfile, latch: AbstractLatch) {
         for (resourcePack in profile.assets.resourcePacks.reversed()) {
             val manager = resourcePack.type.creator.invoke(resourcePack)
             manager.load(latch)
@@ -44,10 +44,10 @@ object AssetsLoader {
         }
     }
 
-    fun create(profile: ResourcesProfile, version: Version, latch: AbstractLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): ConnectionAssetsManager {
+    fun create(profile: ResourcesProfile, version: Version, latch: AbstractLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): SessionAssetsManager {
         val properties = profile.createPackProperties(version)
 
-        val assetsManager = ConnectionAssetsManager(properties)
+        val assetsManager = SessionAssetsManager(properties)
 
         assetsManager += IntegratedAssets.OVERRIDE
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -70,7 +70,7 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
-        if (context.connection.version.flattened) return super.bakeModel(context, model)
+        if (context.session.version.flattened) return super.bakeModel(context, model)
 
         // type was renamed to half
         for (state in states) {

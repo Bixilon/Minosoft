@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.SkinManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class TextureManager {
     abstract val static: StaticTextureArray
@@ -48,9 +48,9 @@ abstract class TextureManager {
         whiteTexture = CodeTexturePart(texture = static.create(minosoft("white").texture(), mipmaps = false), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
     }
 
-    fun initializeSkins(connection: PlayConnection) {
+    fun initializeSkins(session: PlaySession) {
         skins = SkinManager(this)
-        skins.initialize(connection.account, connection.assetsManager)
+        skins.initialize(session.account, session.assetsManager)
     }
 
     fun use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES) {

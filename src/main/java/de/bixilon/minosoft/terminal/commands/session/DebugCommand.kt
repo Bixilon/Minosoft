@@ -1,0 +1,48 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2024 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.terminal.commands.session
+
+import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
+import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.stack.print.PrintTarget
+import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
+import de.bixilon.minosoft.util.KUtil.format
+
+object DebugCommand : SessionCommand {
+    override var node = LiteralNode("debug")
+        .addChild(LiteralNode("allowFly", executor = { it.fly() }, allowArguments = true).addChild(ArgumentNode("value", BooleanParser, executable = true)))
+        .addChild(LiteralNode("network").addChild(
+            LiteralNode("detach", executor = { it.session.network.detach(); it.print.sendDebugMessage("Now you are alone on the wire...") }),
+        ))
+        .addChild(LiteralNode("cache").addChild(LiteralNode("biome", executor = { it.session.world.biomes.resetCache(); it.print.sendDebugMessage("Biome cache cleared!") })))
+
+
+    private fun CommandStack.fly() {
+        val value: Boolean = this["value"] ?: !session.player.abilities.allowFly
+        val abilities = session.player.abilities
+        if (abilities.allowFly == value) {
+            print.sendDebugMessage("Allow fly is already set to ${value.format()}§r!")
+        } else {
+            session.player.abilities = abilities.copy(allowFly = value)
+            print.sendDebugMessage("Allow fly set to ${value.format()}§r!")
+        }
+    }
+
+
+    private fun PrintTarget.sendDebugMessage(message: Any?) {
+        this.print(DebugChatMessage(message.format()))
+    }
+}

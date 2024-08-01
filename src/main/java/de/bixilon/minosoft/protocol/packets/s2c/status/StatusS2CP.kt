@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSessionStates
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
@@ -29,19 +29,19 @@ import java.util.concurrent.ThreadLocalRandom
 class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val status: ServerStatus = ServerStatus(buffer.readJson())
 
-    override fun handle(connection: StatusConnection) {
+    override fun handle(session: StatusSession) {
         val version: Version? = Versions.getByProtocol(status.protocolId ?: -1)
         if (version == null) {
             Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Server is running on unknown version (protocolId=${status.protocolId})" }
         } else {
-            connection.serverVersion = version
+            session.serverVersion = version
         }
 
-        connection.status = status
+        session.status = status
         val ping = StatusPing()
-        connection.ping = ping
-        connection.state = StatusConnectionStates.QUERYING_PING
-        connection.sendPacket(PingC2SP(ThreadLocalRandom.current().nextLong()))
+        session.ping = ping
+        session.state = StatusSessionStates.QUERYING_PING
+        session.network.send(PingC2SP(ThreadLocalRandom.current().nextLong()))
     }
 
     override fun log(reducedLog: Boolean) {

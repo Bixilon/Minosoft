@@ -29,9 +29,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
+class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(session, entityType, data, position, rotation) {
     private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
 
     private fun updateFlags() {
@@ -121,8 +121,8 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         private val LEFT_LEG_ROTATION = Vec3(-1.0f, 0.0f, -1.0f)
         private val RIGHT_LEG_ROTATION = Vec3(1.0f, 0.0f, 1.0f)
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
-            return ArmorStand(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
+            return ArmorStand(session, entityType, data, position, rotation)
         }
     }
 }

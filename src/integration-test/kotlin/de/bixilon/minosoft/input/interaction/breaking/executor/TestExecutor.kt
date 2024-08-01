@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,8 +19,8 @@ import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
 class TestExecutor(breaking: BreakHandler) : BreakingExecutor(breaking) {
 
     override fun finish(): Int {
-        val connection = breaking.interactions.connection
-        connection.world[this.position ?: Broken()] = null
+        val session = breaking.interactions.session
+        session.world[this.position ?: Broken()] = null
 
         return 0
     }

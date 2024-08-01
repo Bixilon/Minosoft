@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 
 class ParticleTicker(val renderer: ParticleRenderer) {
@@ -28,7 +28,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
 
 
     private fun canTick(): Boolean {
-        if (context.connection.state != PlayConnectionStates.PLAYING) return false
+        if (context.session.state != PlaySessionStates.PLAYING) return false
         if (!renderer.enabled) return false
         if (!context.state.running) return false
 
@@ -47,9 +47,9 @@ class ParticleTicker(val renderer: ParticleRenderer) {
     fun tick(collect: Boolean) {
         if (!canTick()) return
 
-        val camera = context.connection.camera.entity.physics.positionInfo
+        val camera = context.session.camera.entity.physics.positionInfo
         val cameraPosition = camera.chunkPosition
-        val viewDistance = context.connection.world.view.particleViewDistance
+        val viewDistance = context.session.world.view.particleViewDistance
         val start = millis()
         var time = start
 
@@ -83,7 +83,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
     }
 
     fun init() {
-        context.connection.ticker += { tick(false) }
+        context.session.ticker += { tick(false) }
     }
 
     companion object {

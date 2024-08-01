@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServe
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
+import de.bixilon.minosoft.protocol.network.session.status.StatusSessionStates
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
@@ -58,7 +58,7 @@ object CustomServerType : ServerType {
     override fun refresh(cards: List<ServerCard>) {
         for (serverCard in cards) {
             val ping = serverCard.ping
-            if (ping.state != StatusConnectionStates.PING_DONE && ping.state != StatusConnectionStates.ERROR) {
+            if (ping.state != StatusSessionStates.PING_DONE && ping.state != StatusSessionStates.ERROR) {
                 continue
             }
             DefaultThreadPool += ForcePooledRunnable {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ object FuelSlotType : SlotType {
         if (item is FilledBucketItem.LavaBucketItem) {
             return true
         }
-        val fuelTime = container.connection.registries.misc.getFuelTime(item)
+        val fuelTime = container.session.registries.misc.getFuelTime(item)
         return fuelTime > 0
     }
 }

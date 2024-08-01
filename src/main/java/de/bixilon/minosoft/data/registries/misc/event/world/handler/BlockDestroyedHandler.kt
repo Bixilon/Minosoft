@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,30 +24,30 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ceil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.max
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object BlockDestroyedHandler : WorldEventHandler {
     override val identifier: ResourceLocation = "minecraft:block_destroyed".toResourceLocation()
 
-    override fun handle(connection: PlayConnection, position: Vec3i, data: Int, isGlobal: Boolean) {
-        val state = connection.registries.blockState.getOrNull(data) ?: return
-        handleDestroy(connection, position, state)
+    override fun handle(session: PlaySession, position: Vec3i, data: Int, isGlobal: Boolean) {
+        val state = session.registries.blockState.getOrNull(data) ?: return
+        handleDestroy(session, position, state)
     }
 
-    fun handleDestroy(connection: PlayConnection, position: Vec3i, state: BlockState) {
+    fun handleDestroy(session: PlaySession, position: Vec3i, state: BlockState) {
         state.block.soundGroup?.let { group ->
-            group.destroy?.let { connection.world.playSoundEvent(it, position, group.volume, group.pitch) }
+            group.destroy?.let { session.world.playSoundEvent(it, position, group.volume, group.pitch) }
         }
 
-        addBlockBreakParticles(connection, position, state)
+        addBlockBreakParticles(session, position, state)
     }
 
-    private fun addBlockBreakParticles(connection: PlayConnection, position: Vec3i, state: BlockState) {
-        val particleRenderer = connection.world.particle ?: return
-        val type = connection.registries.particleType[BlockDustParticle] ?: return
+    private fun addBlockBreakParticles(session: PlaySession, position: Vec3i, state: BlockState) {
+        val particleRenderer = session.world.particle ?: return
+        val type = session.registries.particleType[BlockDustParticle] ?: return
         if (state.block !is OutlinedBlock) return
-        val shape = state.block.getOutlineShape(connection, position, state) ?: return
+        val shape = state.block.getOutlineShape(session, position, state) ?: return
         val particleData = BlockParticleData(state, type)
 
         for (aabb in shape) {
@@ -59,7 +59,7 @@ object BlockDestroyedHandler : WorldEventHandler {
                     for (z in 0 until max.z) {
                         val center = (Vec3d(x, y, z) + 0.5) / max
                         val particlePosition = center * delta + aabb.min
-                        particleRenderer += BlockDustParticle(connection, particlePosition + position, particlePosition - 0.5, particleData)
+                        particleRenderer += BlockDustParticle(session, particlePosition + position, particlePosition - 0.5, particleData)
                     }
                 }
             }

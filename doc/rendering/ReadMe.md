@@ -10,7 +10,7 @@ Everything is working in shaders (written in glsl), some things even have multip
 
 ## Integration
 
-The whole render system is like a separate module. There are almost no references to it, only in `PlayConnection.kt`. Everything is event driven (or abstract).
+The whole render system is like a separate module. There are almost no references to it, only in `PlaySession.kt`. Everything is event driven (or abstract).
 
 ## Loading
 

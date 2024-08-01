@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.registries.misc.event.game.DefaultGameEventHandlers
 import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -22,16 +22,16 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val event = buffer.connection.registries.gameEvent[buffer.readUnsignedByte()]
+    val event = buffer.session.registries.gameEvent[buffer.readUnsignedByte()]
     val data: Float = buffer.readFloat()
 
-    override fun handle(connection: PlayConnection) {
-        val event = GameEventChangeEvent(connection, this)
-        if (connection.events.fire(event)) {
+    override fun handle(session: PlaySession) {
+        val event = GameEventChangeEvent(session, this)
+        if (session.events.fire(event)) {
             return
         }
 
-        DefaultGameEventHandlers[this.event]?.handle(data, connection)
+        DefaultGameEventHandlers[this.event]?.handle(data, session)
     }
 
     override fun log(reducedLog: Boolean) {

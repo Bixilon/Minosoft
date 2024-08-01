@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,10 +25,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, data, position, rotation) {
+class Cat(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val variant: CatVariant?
@@ -38,7 +37,7 @@ class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, 
                 return variant
             }
             if (variant is Int) {
-                return connection.registries.catVariants[variant]
+                return session.registries.catVariants[variant]
             }
             return null
         }
@@ -62,8 +61,8 @@ class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, 
         private val IS_RELAXED_DATA = EntityDataField("CAT_IS_RELAXED")
         private val COLLAR_COLOR_DATA = EntityDataField("CAT_GET_COLLAR_COLOR")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Cat {
-            return Cat(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Cat {
+            return Cat(session, entityType, data, position, rotation)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,12 +20,12 @@ import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.commands.stack.print.SystemPrintTarget
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.security.PrivateKey
 import java.time.Instant
 
 class CommandStack(
-    connection: PlayConnection? = null,
+    session: PlaySession? = null,
     print: PrintTarget = SystemPrintTarget,
 ) {
     private val stack: MutableList<CommandStackEntry> = mutableListOf()
@@ -35,11 +35,11 @@ class CommandStack(
         private set
 
     var executor: Entity? = null
-    lateinit var connection: PlayConnection
+    lateinit var session: PlaySession
 
     init {
-        if (connection != null) {
-            this.connection = connection
+        if (session != null) {
+            this.session = session
         }
     }
 
@@ -67,7 +67,7 @@ class CommandStack(
                 continue
             }
             // TODO: properly sign
-            output[entry.node.name] = entry.sign(connection, signer, key, salt, time)
+            output[entry.node.name] = entry.sign(session, signer, key, salt, time)
         }
         return output
     }
@@ -77,8 +77,8 @@ class CommandStack(
         val stack = CommandStack(null, print)
         stack.stack += this.stack
         stack.executor = this.executor
-        if (this::connection.isInitialized) {
-            stack.connection = this.connection
+        if (this::session.isInitialized) {
+            stack.session = this.session
         }
 
         return stack
@@ -89,8 +89,8 @@ class CommandStack(
         this.stack += stack.stack
         this.print = stack.print
         this.executor = stack.executor
-        if (stack::connection.isInitialized) {
-            this.connection = stack.connection
+        if (stack::session.isInitialized) {
+            this.session = stack.session
         }
     }
 }

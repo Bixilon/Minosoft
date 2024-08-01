@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val listed: MutableList<Recipe> = mutableListOf()
-        val recipes = buffer.connection.registries.recipes
+        val recipes = buffer.session.registries.recipes
         for (i in 0 until buffer.readVarInt()) {
             val recipe = if (buffer.versionId < V_17W48A) recipes.getOrNull(buffer.readVarInt()) else recipes[buffer.readResourceLocation()]
             listed += recipe ?: continue
@@ -51,7 +51,7 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         val tagged: MutableList<Recipe> = mutableListOf()
         if (action == Actions.INITIALIZE) {
-            val recipes = buffer.connection.registries.recipes
+            val recipes = buffer.session.registries.recipes
             for (i in 0 until buffer.readVarInt()) {
                 tagged += recipes[if (buffer.versionId < V_17W48A) buffer.readVarInt() else buffer.readResourceLocation()] ?: continue
             }

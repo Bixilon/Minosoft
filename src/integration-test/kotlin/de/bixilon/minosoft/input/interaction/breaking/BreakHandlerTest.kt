@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,10 +45,10 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
 import de.bixilon.minosoft.input.interaction.breaking.executor.TestExecutor
 import de.bixilon.minosoft.input.interaction.breaking.survival.BlockBreakProductivity
 import de.bixilon.minosoft.input.interaction.breaking.survival.BlockDigStatus
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.test.ITUtil.todo
@@ -72,15 +72,15 @@ class BreakHandlerTest {
         distance: Double = 1.0,
         ticks: Int,
     ): BlockDigStatus? {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
         player.physics().onGround = onGround
-        connection.player.physics.submersion::eye.forceSet(if (inWater) connection.registries.fluid[WaterFluid] else null)
-        val state = createTarget(connection, block, distance)
+        session.player.physics.submersion::eye.forceSet(if (inWater) session.registries.fluid[WaterFluid] else null)
+        val state = createTarget(session, block, distance)
 
         player.additional.gamemode = gamemode
         if (tool != null) {
-            val item = connection.registries.item[tool] ?: Broken()
+            val item = session.registries.item[tool] ?: Broken()
             val stack = ItemStack(item)
             if (efficiency > 0) {
                 stack.enchanting.enchantments[MiningEnchantment.Efficiency] = efficiency
@@ -90,11 +90,11 @@ class BreakHandlerTest {
         if (haste > 0) player.effects += StatusEffectInstance(MiningEffect.Haste, haste, 100000)
         if (miningFatigue > 0) player.effects += StatusEffectInstance(MiningEffect.MiningFatigue, miningFatigue, 100000)
         if (aquaAffinity > 0) {
-            player.items.inventory[EquipmentSlots.HEAD] = ItemStack(connection.registries.item["minecraft:iron_helmet"]!!, 1).apply { enchanting.enchantments[ArmorEnchantment.AquaAffinity] = 1 }
+            player.items.inventory[EquipmentSlots.HEAD] = ItemStack(session.registries.item["minecraft:iron_helmet"]!!, 1).apply { enchanting.enchantments[ArmorEnchantment.AquaAffinity] = 1 }
         }
 
 
-        val handler = BreakHandler(connection.camera.interactions)
+        val handler = BreakHandler(session.camera.interactions)
         handler::executor.forceSet(TestExecutor(handler))
 
         handler.unsafePress()
@@ -102,7 +102,7 @@ class BreakHandlerTest {
         if (ticks > 1) {
             for (tick in 0 until ticks - 2) { // -1 for count, -1 for post ticking
                 handler.tick()
-                assertEquals(connection.world[Vec3i(1, 2, 3)], state, "Block got mined in tick $tick, expected $ticks")
+                assertEquals(session.world[Vec3i(1, 2, 3)], state, "Block got mined in tick $tick, expected $ticks")
             }
             status = handler.digging.status
             handler.tick()
@@ -112,7 +112,7 @@ class BreakHandlerTest {
         }
 
         if (ticks >= 0) {
-            val existing = connection.world[Vec3i(1, 2, 3)]
+            val existing = session.world[Vec3i(1, 2, 3)]
             assertNull(existing, "Block is still present, progress=${status?.progress}")
         }
 
@@ -371,88 +371,88 @@ class BreakHandlerTest {
     }
 
     fun packetCancel() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
         player.physics.onGround = true
-        createTarget(connection, MinecraftBlocks.COCOA, 1.0)
+        createTarget(session, MinecraftBlocks.COCOA, 1.0)
 
-        val handler = BreakHandler(connection.camera.interactions)
+        val handler = BreakHandler(session.camera.interactions)
         handler::executor.forceSet(TestExecutor(handler))
 
         handler.unsafePress()
 
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, 0))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        // vanilla sends 2: connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, 0))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        // vanilla sends 2: session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
 
         handler.tick()
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
 
         handler.unsafeRelease()
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, Vec3i(1, 2, 3), Directions.DOWN, 0))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, Vec3i(1, 2, 3), Directions.DOWN, 0))
+        session.assertNoPacket()
     }
 
     fun packetSuccess() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
         player.physics.onGround = true
-        createTarget(connection, MinecraftBlocks.CANDLE, 1.0)
+        createTarget(session, MinecraftBlocks.CANDLE, 1.0)
 
-        val handler = BreakHandler(connection.camera.interactions)
+        val handler = BreakHandler(session.camera.interactions)
         handler::executor.forceSet(TestExecutor(handler))
 
         handler.unsafePress()
 
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, 0))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        // vanilla sends 2: connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, 0))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        // vanilla sends 2: session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
 
         handler.tick()
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
 
         handler.tick()
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
 
         handler.tick()
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, Vec3i(1, 2, 3), Directions.UP, 0))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, Vec3i(1, 2, 3), Directions.UP, 0))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun packetInstantBreak() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
         player.physics.onGround = true
-        createTarget(connection, MinecraftBlocks.OAK_SAPLING, 1.0)
+        createTarget(session, MinecraftBlocks.OAK_SAPLING, 1.0)
 
-        val handler = BreakHandler(connection.camera.interactions)
+        val handler = BreakHandler(session.camera.interactions)
         handler::executor.forceSet(TestExecutor(handler))
 
         handler.unsafePress()
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, sequence = 0))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, sequence = 0))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun packetCreative() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
         player.additional.gamemode = Gamemodes.CREATIVE
-        createTarget(connection, MinecraftBlocks.BEDROCK, 1.0)
+        createTarget(session, MinecraftBlocks.BEDROCK, 1.0)
 
-        val handler = BreakHandler(connection.camera.interactions)
+        val handler = BreakHandler(session.camera.interactions)
         handler::executor.forceSet(TestExecutor(handler))
 
         handler.unsafePress()
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, sequence = 0))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, Vec3i(1, 2, 3), Directions.UP, sequence = 0))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     // TODO: multiple instant break
@@ -473,12 +473,12 @@ class BreakHandlerTest {
 
     companion object {
 
-        fun createTarget(connection: PlayConnection, block: ResourceLocation, distance: Double): BlockState {
-            val state = connection.registries.block[block]!!.states.default
-            connection.world[Vec3i(1, 2, 3)] = state
+        fun createTarget(session: PlaySession, block: ResourceLocation, distance: Double): BlockState {
+            val state = session.registries.block[block]!!.states.default
+            session.world[Vec3i(1, 2, 3)] = state
 
             val target = BlockTarget(Vec3d(1.0, 2.0, 3.0), distance, Directions.UP, state, null, Vec3i(1, 2, 3), false)
-            connection.camera.target::target.forceSet(DataObserver(target))
+            session.camera.target::target.forceSet(DataObserver(target))
 
             return state
         }

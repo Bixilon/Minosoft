@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.MiningSpeedTool
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.tags.MinecraftTagTypes
 import de.bixilon.minosoft.tags.TagManager
 
@@ -39,16 +39,16 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
         return true
     }
 
-    private fun isInTag(connection: PlayConnection, blockState: BlockState): Boolean? {
-        return isInTag(connection.tags, blockState) ?: isInTag(connection.legacyTags, blockState)
+    private fun isInTag(session: PlaySession, blockState: BlockState): Boolean? {
+        return isInTag(session.tags, blockState) ?: isInTag(session.legacyTags, blockState)
     }
 
-    protected open fun isLevelSuitable(connection: PlayConnection, blockState: BlockState): Boolean? {
-        return isInTag(connection, blockState)
+    protected open fun isLevelSuitable(session: PlaySession, blockState: BlockState): Boolean? {
+        return isInTag(session, blockState)
     }
 
-    override fun isSuitableFor(connection: PlayConnection, state: BlockState, stack: ItemStack): Boolean {
-        isLevelSuitable(connection, state)?.let { if (it) return true }
+    override fun isSuitableFor(session: PlaySession, state: BlockState, stack: ItemStack): Boolean {
+        isLevelSuitable(session, state)?.let { if (it) return true }
         if (state.block !is ToolRequirement) {
             // everything is effective, so …
             return true
@@ -56,16 +56,16 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
         return state.block.isCorrectTool(this)
     }
 
-    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack): Float {
+    override fun getMiningSpeed(session: PlaySession, state: BlockState, stack: ItemStack): Float {
         var speed = 1.0f
         if (this is MiningSpeedTool) {
             speed = this.miningSpeed
         }
 
         if (state.block is CustomDiggingBlock) {
-            speed = state.block.getMiningSpeed(connection, state, stack, speed)
+            speed = state.block.getMiningSpeed(session, state, stack, speed)
         }
-        isInTag(connection, state)?.let { if (it) return speed else 1.0f }
+        isInTag(session, state)?.let { if (it) return speed else 1.0f }
 
         if (state.block !is ToolRequirement) return speed
 

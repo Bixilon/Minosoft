@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -81,7 +81,7 @@ open class TextElement(
 
     override var text: Any = text
         set(value) {
-            chatComponent = ChatComponent.of(value, translator = IntegratedLanguage.LANGUAGE /*guiRenderer.connection.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
+            chatComponent = ChatComponent.of(value, translator = IntegratedLanguage.LANGUAGE /*guiRenderer.session.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
             field = value
         }
 

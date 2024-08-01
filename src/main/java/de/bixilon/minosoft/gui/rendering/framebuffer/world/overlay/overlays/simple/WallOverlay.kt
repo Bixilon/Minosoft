@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import java.util.*
 
 class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
-    private val player = context.connection.player
+    private val player = context.session.player
     override var texture: Texture = unsafeNull()
     private var blockState: BlockState? = null
     private var position: Vec3i = Vec3i.EMPTY
@@ -44,8 +44,8 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
             if (blockState.block is FluidBlock || blockState.block !is CollidableBlock) {
                 return false
             }
-            val camera = context.connection.camera.entity
-            val shape = blockState.block.getCollisionShape(context.connection, EntityCollisionContext(camera), position, blockState, null) ?: return false // TODO: block entity
+            val camera = context.session.camera.entity
+            val shape = blockState.block.getCollisionShape(context.session, EntityCollisionContext(camera), position, blockState, null) ?: return false // TODO: block entity
             if (!shape.intersect(player.physics.aabb)) {
                 return false
             }
@@ -58,7 +58,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
 
     override fun update() {
         position = player.renderInfo.eyePosition.blockPosition
-        blockState = context.connection.world[position]
+        blockState = context.session.world[position]
     }
 
     override fun draw() {

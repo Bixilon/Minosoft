@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,11 +55,11 @@ object CollisionMovementPhysics {
                     inChunk.x = position.x and 0x0F
                     inChunk.z = position.z and 0x0F
 
-                    state.block.getCollisionShape(connection, context, position, state, chunk.getBlockEntity(inChunk))
+                    state.block.getCollisionShape(session, context, position, state, chunk.getBlockEntity(inChunk))
                 }
 
                 else -> {
-                    state.block.getCollisionShape(connection, context, position, state, null)
+                    state.block.getCollisionShape(session, context, position, state, null)
                 }
             } ?: continue
             shape += position
@@ -74,7 +74,7 @@ object CollisionMovementPhysics {
     }
 
     fun EntityPhysics<*>.collectCollisions(movement: Vec3d, aabb: AABB, predicate: CollisionPredicate? = null): VoxelShape {
-        return this.entity.connection.world.collectCollisions(EntityCollisionContext(entity, this, aabb), movement, aabb, positionInfo.chunk, predicate)
+        return this.entity.session.world.collectCollisions(EntityCollisionContext(entity, this, aabb), movement, aabb, positionInfo.chunk, predicate)
     }
 
     private fun checkMovement(axis: Axes, originalValue: Double, offsetAABB: Boolean, aabb: AABB, collisions: AbstractVoxelShape): Double {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,10 +37,10 @@ class EntityRendererManagerTest {
         renderer.init()
         val entity = renderer.renderer.createEntity(Pig)
         assertEquals(renderer.size, 0)
-        renderer.renderer.connection.world.entities.add(1, null, entity)
+        renderer.renderer.session.world.entities.add(1, null, entity)
         renderer.renderer.queue.work()
         assertEquals(renderer.size, 1)
-        renderer.renderer.connection.world.entities.remove(1)
+        renderer.renderer.session.world.entities.remove(1)
         renderer.renderer.queue.work()
         assertEquals(renderer.size, 0)
     }
@@ -52,18 +52,18 @@ class EntityRendererManagerTest {
         val e2 = renderer.renderer.createEntity(Pig)
         val e3 = renderer.renderer.createEntity(Pig)
         assertEquals(renderer.size, 0)
-        renderer.renderer.connection.world.entities.add(1, null, e1)
-        renderer.renderer.connection.world.entities.add(2, null, e2)
+        renderer.renderer.session.world.entities.add(1, null, e1)
+        renderer.renderer.session.world.entities.add(2, null, e2)
         renderer.renderer.queue.work()
         assertEquals(renderer.size, 2)
-        renderer.renderer.connection.world.entities.add(3, null, e3)
+        renderer.renderer.session.world.entities.add(3, null, e3)
         renderer.renderer.queue.work()
         assertEquals(renderer.size, 3)
-        renderer.renderer.connection.world.entities.remove(1)
+        renderer.renderer.session.world.entities.remove(1)
         renderer.renderer.queue.work()
         assertEquals(renderer.size, 2)
-        renderer.renderer.connection.world.entities.remove(2)
-        renderer.renderer.connection.world.entities.remove(3)
+        renderer.renderer.session.world.entities.remove(2)
+        renderer.renderer.session.world.entities.remove(3)
         renderer.renderer.queue.work()
         assertEquals(renderer.size, 0)
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,16 +17,16 @@ import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class FurnaceContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : SmeltingContainer(connection, type, title) {
+class FurnaceContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : SmeltingContainer(session, type, title) {
 
     companion object : ContainerFactory<FurnaceContainer> {
         override val identifier: ResourceLocation = "minecraft:furnace".toResourceLocation()
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): FurnaceContainer {
-            return FurnaceContainer(connection, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): FurnaceContainer {
+            return FurnaceContainer(session, type, title)
         }
     }
 }

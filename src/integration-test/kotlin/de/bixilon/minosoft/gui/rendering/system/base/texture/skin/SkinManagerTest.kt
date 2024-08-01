@@ -33,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.vanilla.Defaul
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
@@ -85,8 +85,8 @@ class SkinManagerTest {
         val skins = SkinManager(textures)
         skins::default.forceSet(DefaultSkinProvider(textures.dynamic, MemoryAssetsManager()))
         val player = RemotePlayerEntity::class.java.allocate()
-        player::connection.forceSet(createConnection())
-        player.connection.world.entities.add(null, UUID(1L, 2L), player)
+        player::session.forceSet(createSession())
+        player.session.world.entities.add(null, UUID(1L, 2L), player)
         player::additional.forceSet(PlayerAdditional("name_him"))
 
         val data = SkinManager::class.java.getResourceAsStream("/skins/5065405b55a729be5a442832b895d4352b3fdcc61c8c57f4b8abad64344194d3.png")!!.readAll()

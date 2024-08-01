@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ class AtlasLoader(val context: RenderContext) {
     fun loadElement(data: JsonObject): RawAtlasElement? {
         val textureName = data["texture"]?.toResourceLocation()?.texture() ?: throw IllegalArgumentException("Missing texture!")
 
-        val assets = context.connection.assetsManager.getAssetsManager(textureName) ?: return null
+        val assets = context.session.assetsManager.getAssetsManager(textureName) ?: return null
 
         return RawAtlasElement.deserialize(textureName, assets, data)
     }
@@ -61,7 +61,7 @@ class AtlasLoader(val context: RenderContext) {
     }
 
     fun load(name: ResourceLocation) {
-        val all = context.connection.assetsManager.getAll(name.atlas())
+        val all = context.session.assetsManager.getAll(name.atlas())
         val data: MutableJsonObject = mutableMapOf()
 
         for (file in all) {

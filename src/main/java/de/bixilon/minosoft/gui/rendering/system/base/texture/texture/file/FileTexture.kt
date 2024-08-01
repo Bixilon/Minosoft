@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,9 +55,9 @@ abstract class FileTexture(
     override fun load(context: RenderContext) {
         if (state == TextureStates.LOADED) return
 
-        updateImageProperties(context.connection.assetsManager)
+        updateImageProperties(context.session.assetsManager)
         val properties = this.properties
-        val buffer = tryRead(context.connection.assetsManager)
+        val buffer = tryRead(context.session.assetsManager)
 
 
         if (properties.animation != null) {

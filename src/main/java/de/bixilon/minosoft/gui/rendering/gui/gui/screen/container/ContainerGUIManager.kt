@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -73,7 +73,7 @@ object ContainerGUIManager {
         registerLocalContainerEvent(guiRenderer)
 
         val queue = guiRenderer.context.queue
-        guiRenderer.connection.events.listen<ContainerOpenEvent> { queue += { open(guiRenderer, it.container) } }
-        guiRenderer.connection.events.listen<ContainerCloseEvent> { queue += { close(guiRenderer, it.container) } }
+        guiRenderer.session.events.listen<ContainerOpenEvent> { queue += { open(guiRenderer, it.container) } }
+        guiRenderer.session.events.listen<ContainerCloseEvent> { queue += { close(guiRenderer, it.container) } }
     }
 }

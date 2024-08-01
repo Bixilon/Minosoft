@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,14 +30,14 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collectCollisions
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 import kotlin.math.abs
 import kotlin.reflect.full.companionObjectInstance
 
 abstract class Particle(
-    protected val connection: PlayConnection,
+    protected val session: PlaySession,
     final override val position: Vec3d,
     velocity: Vec3d = Vec3d.EMPTY,
     data: ParticleData? = null,
@@ -45,7 +45,7 @@ abstract class Particle(
     protected val data: ParticleData by lazy {
         data ?: let {
             val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
-            connection.registries.particleType[resourceLocation]!!.default()
+            session.registries.particleType[resourceLocation]!!.default()
         }
     }
     var chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
@@ -94,7 +94,7 @@ abstract class Particle(
         }
 
     protected fun getChunk(): Chunk? {
-        val revision = connection.world.chunks.revision
+        val revision = session.world.chunks.revision
         var chunk = this.chunk
 
         if (chunk != null) {
@@ -102,7 +102,7 @@ abstract class Particle(
             chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition)
         }
         if (chunk == null && revision != this.chunkRevision) {
-            chunk = connection.world.chunks[chunkPosition]
+            chunk = session.world.chunks[chunkPosition]
             this.chunk = chunk
             this.chunkRevision = revision
         }
@@ -138,7 +138,7 @@ abstract class Particle(
     private fun collide(movement: Vec3d): Vec3d {
         val aabb = aabb + movement
         val context = ParticleCollisionContext(this)
-        val collisions = connection.world.collectCollisions(context, movement, aabb, getChunk())
+        val collisions = session.world.collectCollisions(context, movement, aabb, getChunk())
         val adjusted = collide(movement, aabb, collisions)
         if (adjusted.y != movement.y) {
             onGround = true

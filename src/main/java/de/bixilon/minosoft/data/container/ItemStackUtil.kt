@@ -18,15 +18,15 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.stack.property.HolderProperty
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object ItemStackUtil {
 
-    fun of(item: Item, connection: PlayConnection, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
-        if (connection.version.flattened) {
-            return of(item, count, connection, nbt = nbt)
+    fun of(item: Item, session: PlaySession, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
+        if (session.version.flattened) {
+            return of(item, count, session, nbt = nbt)
         }
-        val stack = of(item, count, connection, nbt = nbt)
+        val stack = of(item, count, session, nbt = nbt)
 
         if (item is ItemWithMeta) {
             item.setMeta(stack, meta)
@@ -39,7 +39,7 @@ object ItemStackUtil {
         item: Item,
         count: Int = 1,
 
-        connection: PlayConnection? = null,
+        session: PlaySession? = null,
         container: Container? = null,
 
         durability: Int? = null,
@@ -47,8 +47,8 @@ object ItemStackUtil {
         nbt: MutableJsonObject? = null,
     ): ItemStack {
         val stack = ItemStack(item, count)
-        if (connection != null || container != null) {
-            stack.holder = HolderProperty(connection, container)
+        if (session != null || container != null) {
+            stack.holder = HolderProperty(session, container)
         }
         if (durability != null) {
             stack.durability._durability = durability

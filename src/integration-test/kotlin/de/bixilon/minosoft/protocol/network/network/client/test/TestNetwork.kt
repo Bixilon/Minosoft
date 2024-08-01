@@ -14,22 +14,22 @@
 package de.bixilon.minosoft.protocol.network.network.client.test
 
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender.PacketSender
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.crypto.Cipher
 
 class TestNetwork(
-    connection: Connection = createConnection(),
+    session: Session = createSession(),
 ) : ClientNetwork {
     override val sender = PacketSender(this)
-    override val receiver = PacketReceiver(this, connection)
+    override val receiver = PacketReceiver(this, session)
     override var connected: Boolean = true
     override var state: ProtocolStates = ProtocolStates.PLAY
     override var compressionThreshold: Int = -1

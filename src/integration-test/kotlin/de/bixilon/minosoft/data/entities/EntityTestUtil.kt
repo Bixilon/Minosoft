@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object EntityTestUtil {
 
-    fun <T : Entity> createEntity(connection: PlayConnection, factory: EntityFactory<T>): T? {
-        return factory.build(connection, connection.registries.entityType[factory.identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
+    fun <T : Entity> createEntity(session: PlaySession, factory: EntityFactory<T>): T? {
+        return factory.build(session, session.registries.entityType[factory.identifier]!!, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
     }
 }

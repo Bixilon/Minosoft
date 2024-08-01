@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.channel.vanila.BrandHandler.sendBrand
 import de.bixilon.minosoft.protocol.packets.c2s.login.ConfigureC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -32,21 +32,21 @@ class SuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val name: String = buffer.readString()
     val properties: PlayerProperties? = if (buffer.versionId >= ProtocolVersions.V_22W17A) buffer.readPlayerProperties() else null
 
-    override fun handle(connection: PlayConnection) {
-        if (connection.version.hasConfigurationState) {
-            connection.network.send(ConfigureC2SP())
-            connection.network.state = ProtocolStates.CONFIGURATION
-            connection.sendBrand()
-            connection.settingsManager.sendClientSettings()
+    override fun handle(session: PlaySession) {
+        if (session.version.hasConfigurationState) {
+            session.network.send(ConfigureC2SP())
+            session.network.state = ProtocolStates.CONFIGURATION
+            session.sendBrand()
+            session.settingsManager.sendClientSettings()
         } else {
-            connection.network.state = ProtocolStates.PLAY
+            session.network.state = ProtocolStates.PLAY
         }
 
-        val playerEntity = connection.player
+        val playerEntity = session.player
         playerEntity.additional.name = name
         playerEntity.additional.displayName = ChatComponent.of(name)
 
-        connection.world.entities.add(null, uuid, playerEntity)
+        session.world.entities.add(null, uuid, playerEntity)
     }
 
     override fun log(reducedLog: Boolean) {

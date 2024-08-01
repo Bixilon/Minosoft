@@ -51,17 +51,17 @@ class WorldBiomes(val world: World) : BiomeAccessor {
     }
 
     fun updateNoise(seed: Long) {
-        val connection = world.connection
-        val fast = connection.profiles.rendering.performance.fastBiomeNoise
+        val session = world.session
+        val fast = session.profiles.rendering.performance.fastBiomeNoise
         noise = when {
-            connection.version < V_19W36A -> null
+            session.version < V_19W36A -> null
             fast -> FastNoiseAccessor(world)
             else -> VoronoiBiomeAccessor(world, seed)
         }
     }
 
     fun init() {
-        world.connection.profiles.rendering.performance::fastBiomeNoise.observe(this) { updateNoise(noise?.seed ?: 0L) }
+        world.session.profiles.rendering.performance::fastBiomeNoise.observe(this) { updateNoise(noise?.seed ?: 0L) }
     }
 
     fun resetCache() {

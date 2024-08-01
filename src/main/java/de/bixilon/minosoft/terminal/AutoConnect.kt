@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,9 +19,9 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.DNSUtil
@@ -34,22 +34,22 @@ object AutoConnect {
 
 
     private fun autoConnect(address: ServerAddress, version: Version, account: Account) {
-        val connection = PlayConnection(
+        val session = PlaySession(
             address = address,
             account = account,
             version = version,
         )
         if (RunConfiguration.DISABLE_EROS) {
-            connection::state.observe(this) {
+            session::state.observe(this) {
                 if (it.disconnected) {
                     Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
                     ShutdownManager.shutdown()
                 }
             }
         }
-        connection::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
+        session::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
-        connection.connect()
+        session.connect()
     }
 
     fun autoConnect(connectString: String) {
@@ -66,7 +66,7 @@ object AutoConnect {
 
         if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
-            val ping = StatusConnection(address)
+            val ping = StatusSession(address)
             ping::status.observe(this) { autoConnect(ping.realAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account) }
             ping::error.observe(this) { exitProcess(1) }
             ping.ping()

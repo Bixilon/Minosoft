@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -28,7 +28,7 @@ class ChunksS2CP : PlayS2CPacket {
     val chunks: MutableMap<Vec2i, ChunkPrototype?> = mutableMapOf()
 
     constructor(buffer: PlayInByteBuffer) {
-        val dimension = buffer.connection.world.dimension
+        val dimension = buffer.session.world.dimension
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
             val size = buffer.readUnsignedShort()
             val dataLength = buffer.readInt()
@@ -36,7 +36,7 @@ class ChunksS2CP : PlayS2CPacket {
 
             // decompress chunk data
             val decompressed: PlayInByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
-                PlayInByteBuffer(buffer.readByteArray(dataLength).decompress(), buffer.connection)
+                PlayInByteBuffer(buffer.readByteArray(dataLength).decompress(), buffer.session)
             } else {
                 buffer
             }
@@ -62,16 +62,16 @@ class ChunksS2CP : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         for ((position, prototype) in chunks) {
-            connection.util.chunkReceiver.onChunk()
+            session.util.chunkReceiver.onChunk()
             if (prototype == null) {
                 // unload chunk
-                connection.world.chunks -= position
+                session.world.chunks -= position
                 continue
             }
-            if (!connection.world.isValidPosition(position)) continue
-            connection.world.chunks[position] = prototype // action is always CREATE, force replace existing prototypes
+            if (!session.world.isValidPosition(position)) continue
+            session.world.chunks[position] = prototype // action is always CREATE, force replace existing prototypes
         }
     }
 

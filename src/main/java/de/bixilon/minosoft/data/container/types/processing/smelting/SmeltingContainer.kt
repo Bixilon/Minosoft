@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.container.types.processing.ProcessingContainer
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : ProcessingContainer(connection, type, title, RangeSection(SMELTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
+abstract class SmeltingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : ProcessingContainer(session, type, title, RangeSection(SMELTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
     var processTime: Int = 0
         private set
         get() = minOf(field, maxProcessTime)

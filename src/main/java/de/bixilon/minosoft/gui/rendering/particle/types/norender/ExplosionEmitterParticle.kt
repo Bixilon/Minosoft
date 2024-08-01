@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,11 +20,11 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : NoRenderParticle(connection, position, Vec3d.EMPTY, data) {
-    private val explosionParticleType = connection.registries.particleType[ExplosionParticle]
+class ExplosionEmitterParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : NoRenderParticle(session, position, Vec3d.EMPTY, data) {
+    private val explosionParticleType = session.registries.particleType[ExplosionParticle]
 
     init {
         maxAge = MAX_AGE
@@ -33,7 +33,7 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data
 
     override fun tick() {
         super.tick()
-        val particle = connection.world.particle ?: return
+        val particle = session.world.particle ?: return
         if (explosionParticleType == null) {
             dead = true
             return
@@ -41,7 +41,7 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data
         for (i in 0 until 6) {
             val position = position + { (random.nextDouble() - random.nextDouble()) * 4.0 }
 
-            particle += ExplosionParticle(connection, position, explosionParticleType.default(), floatAge / MAX_AGE)
+            particle += ExplosionParticle(session, position, explosionParticleType.default(), floatAge / MAX_AGE)
         }
     }
 
@@ -49,8 +49,8 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data
         override val identifier: ResourceLocation = "minecraft:explosion_emitter".toResourceLocation()
         private const val MAX_AGE = 9
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ExplosionEmitterParticle {
-            return ExplosionEmitterParticle(connection, position, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): ExplosionEmitterParticle {
+            return ExplosionEmitterParticle(session, position, data)
         }
     }
 }

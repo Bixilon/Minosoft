@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,8 +26,8 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil.tick
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
 import de.bixilon.minosoft.physics.ItemUsing
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.HotbarSlotC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
@@ -41,307 +41,307 @@ import org.testng.annotations.Test
 class LongUseIT {
 
     fun pullBowWithArrows() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
+        val use = session.camera.interactions.use
 
-        assertNull(connection.player.using)
+        assertNull(session.player.using)
 
         use.unsafePress()
         use.tick(10)
 
-        assertEquals(connection.player.using, ItemUsing(Hands.MAIN, 10))
-        assertTrue(connection.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is BowItem)
+        assertEquals(session.player.using, ItemUsing(Hands.MAIN, 10))
+        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is BowItem)
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
     }
 
     fun pullBowOffhand() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(BowItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(BowItem())
+        val use = session.camera.interactions.use
 
-        assertNull(connection.player.using)
+        assertNull(session.player.using)
 
         use.unsafePress()
         use.tick(10)
 
-        assertEquals(connection.player.using, ItemUsing(Hands.OFF, 10))
-        assertTrue(connection.player.items.inventory[EquipmentSlots.OFF_HAND]?.item?.item is BowItem)
+        assertEquals(session.player.using, ItemUsing(Hands.OFF, 10))
+        assertTrue(session.player.items.inventory[EquipmentSlots.OFF_HAND]?.item?.item is BowItem)
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.OFF)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.OFF)
+        session.assertNoPacket()
     }
 
     fun pullBowWithoutArrows() {
         todo()
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
+        val use = session.camera.interactions.use
 
-        assertNull(connection.player.using)
+        assertNull(session.player.using)
 
         use.unsafePress()
         use.tick(10)
 
-        assertNull(connection.player.using)
+        assertNull(session.player.using)
 
         // those 2 packets spam
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
     }
 
     fun shootBow() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(100)
         use.unsafeRelease()
 
-        assertNull(connection.player.using)
-        assertTrue(connection.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is BowItem)
+        assertNull(session.player.using)
+        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is BowItem)
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
+        session.assertNoPacket()
     }
 
     fun testSlotChangeBow() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(100)
-        connection.camera.interactions.hotbar.selectSlot(2)
+        session.camera.interactions.hotbar.selectSlot(2)
         use.tick()
 
-        assertNull(connection.player.using)
+        assertNull(session.player.using)
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(HotbarSlotC2SP(2))
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(HotbarSlotC2SP(2))
+        session.assertNoPacket()
     }
 
     fun testOffhandSlotChange() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(BowItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(BowItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(100)
-        connection.camera.interactions.hotbar.selectSlot(2)
+        session.camera.interactions.hotbar.selectSlot(2)
         use.tick(10)
 
-        assertEquals(connection.player.using, ItemUsing(Hands.OFF, 110))
-        assertTrue(connection.player.items.inventory[EquipmentSlots.OFF_HAND]?.item?.item is BowItem)
+        assertEquals(session.player.using, ItemUsing(Hands.OFF, 110))
+        assertTrue(session.player.items.inventory[EquipmentSlots.OFF_HAND]?.item?.item is BowItem)
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.OFF)
-        connection.assertPacket(HotbarSlotC2SP(2))
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.OFF)
+        session.assertPacket(HotbarSlotC2SP(2))
+        session.assertNoPacket()
     }
 
 
     fun eatSingleGoldenApple() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(32)
 
-        assertNull(connection.player.using)
-        assertNull(connection.player.items.inventory[EquipmentSlots.MAIN_HAND])
+        assertNull(session.player.using)
+        assertNull(session.player.items.inventory[EquipmentSlots.MAIN_HAND])
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
     }
 
     fun eatingSlotChange() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(25)
-        connection.camera.interactions.hotbar.selectSlot(2)
+        session.camera.interactions.hotbar.selectSlot(2)
         use.tick(7)
 
 
-        assertNull(connection.player.using)
-        assertNull(connection.player.items.inventory[EquipmentSlots.MAIN_HAND])
+        assertNull(session.player.using)
+        assertNull(session.player.items.inventory[EquipmentSlots.MAIN_HAND])
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(HotbarSlotC2SP(2))
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(HotbarSlotC2SP(2))
+        session.assertNoPacket()
     }
 
     fun abortEating() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(31)
         use.unsafeRelease()
 
-        assertNull(connection.player.using)
-        assertTrue(connection.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is AppleItem.GoldenAppleItem)
+        assertNull(session.player.using)
+        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is AppleItem.GoldenAppleItem)
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
+        session.assertNoPacket()
     }
 
     fun eatMultipleGoldenApple() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 19)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 19)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(64)
 
-        assertEquals(connection.player.using, ItemUsing(Hands.MAIN, 0))
-        assertEquals(connection.player.items.inventory[EquipmentSlots.MAIN_HAND], ItemStack(AppleItem.GoldenAppleItem(), count = 17))
+        assertEquals(session.player.using, ItemUsing(Hands.MAIN, 0))
+        assertEquals(session.player.items.inventory[EquipmentSlots.MAIN_HAND], ItemStack(AppleItem.GoldenAppleItem(), count = 17))
 
 
         for (i in 0 until 3) {
-            connection.assertPacket(PositionRotationC2SP::class.java)
-            connection.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
+            session.assertPacket(PositionRotationC2SP::class.java)
+            session.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
         }
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun eat5GoldenApples() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 5)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 5)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(160)
 
-        assertNull(connection.player.using)
-        assertNull(connection.player.items.inventory[EquipmentSlots.MAIN_HAND])
+        assertNull(session.player.using)
+        assertNull(session.player.items.inventory[EquipmentSlots.MAIN_HAND])
 
 
         for (i in 0 until 5) {
-            connection.assertPacket(PositionRotationC2SP::class.java)
-            connection.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
+            session.assertPacket(PositionRotationC2SP::class.java)
+            session.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
         }
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun eatAndStopMultipleGoldenApple() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 19)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 19)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(64)
         use.unsafeRelease()
 
-        assertNull(connection.player.using)
-        assertEquals(connection.player.items.inventory[EquipmentSlots.MAIN_HAND], ItemStack(AppleItem.GoldenAppleItem(), count = 17))
+        assertNull(session.player.using)
+        assertEquals(session.player.items.inventory[EquipmentSlots.MAIN_HAND], ItemStack(AppleItem.GoldenAppleItem(), count = 17))
 
 
         for (i in 0 until 3) {
-            connection.assertPacket(PositionRotationC2SP::class.java)
-            connection.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
+            session.assertPacket(PositionRotationC2SP::class.java)
+            session.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
         }
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
+        session.assertNoPacket()
     }
 
     fun shortUseInOffHand() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggItem(), count = 3)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggItem(), count = 3)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(10)
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
 
         use.unsafeRelease()
 
-        connection.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
-        connection.assertNoPacket()
+        session.assertPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
+        session.assertNoPacket()
     }
 
     fun shortUseInMainHand() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggItem(), count = 3)
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggItem(), count = 3)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(8)
 
 
         for (i in 0 until 3) {
-            connection.assertPacket(PositionRotationC2SP::class.java)
-            connection.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
-            connection.assertPacket(SwingArmC2SP(Hands.MAIN))
+            session.assertPacket(PositionRotationC2SP::class.java)
+            session.assertPacket(UseItemC2SP(Hands.MAIN, 1 + i))
+            session.assertPacket(SwingArmC2SP(Hands.MAIN))
         }
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun bothHands() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 3)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 3)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(10)
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun useAndRemoveItem() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 5)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(AppleItem.GoldenAppleItem(), count = 5)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.tick(10)
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = null
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = null
         use.tick()
 
-        assertNull(connection.player.using)
-        assertNull(connection.player.items.inventory[EquipmentSlots.MAIN_HAND])
+        assertNull(session.player.using)
+        assertNull(session.player.items.inventory[EquipmentSlots.MAIN_HAND])
 
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
     }
 
 

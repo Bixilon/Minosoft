@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, AxeRequirement, DoubleChestBlock<T> {
     override val hardness: Float get() = 2.5f
@@ -33,7 +33,7 @@ abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocati
 
     open class Chest(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoodenChestBlock<ChestBlockEntity>(identifier, settings) {
 
-        override fun createBlockEntity(connection: PlayConnection) = ChestBlockEntity(connection)
+        override fun createBlockEntity(session: PlaySession) = ChestBlockEntity(session)
 
         companion object : BlockFactory<Chest> {
             override val identifier = minecraft("chest")
@@ -44,7 +44,7 @@ abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocati
 
     open class TrappedChest(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoodenChestBlock<TrappedChestBlockEntity>(identifier, settings) {
 
-        override fun createBlockEntity(connection: PlayConnection) = TrappedChestBlockEntity(connection)
+        override fun createBlockEntity(session: PlaySession) = TrappedChestBlockEntity(session)
 
         companion object : BlockFactory<TrappedChest> {
             override val identifier = minecraft("trapped_chest")

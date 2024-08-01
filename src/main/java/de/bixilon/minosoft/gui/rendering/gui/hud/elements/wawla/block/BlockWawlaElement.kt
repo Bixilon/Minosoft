@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -56,11 +56,11 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
         val component = BaseComponent()
 
         if (target.state.block is BlockWawlaProvider) {
-            component += target.state.block.getWawlaInformation(context.connection, target)
+            component += target.state.block.getWawlaInformation(context.session, target)
             component += "\n"
         }
         if (target.entity is BlockWawlaProvider) {
-            component += target.entity.getWawlaInformation(context.connection, target)
+            component += target.entity.getWawlaInformation(context.session, target)
             component += "\n"
         }
 

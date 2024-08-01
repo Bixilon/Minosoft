@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 import org.testng.annotations.Test
@@ -76,9 +76,9 @@ class HoneyBounceIT : BounceIT() {
     }
 
     fun honeySliding1() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.connection.world.fill(Vec3i(5, 1, 6), Vec3i(5, 10, 6), block)
+        player.session.world.fill(Vec3i(5, 1, 6), Vec3i(5, 10, 6), block)
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(30)
 

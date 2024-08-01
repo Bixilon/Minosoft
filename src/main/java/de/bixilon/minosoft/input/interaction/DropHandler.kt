@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,18 +19,18 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC
 class DropHandler(
     private val interactions: InteractionManager,
 ) {
-    private val connection = interactions.connection
+    private val session = interactions.session
     private val rateLimiter = RateLimiter()
 
     fun dropItem(stack: Boolean) {
         val type = if (stack) {
-            connection.player.items.inventory.getHotbarSlot()?.item?.count = 0
+            session.player.items.inventory.getHotbarSlot()?.item?.count = 0
             PlayerActionC2SP.Actions.DROP_ITEM_STACK
         } else {
-            connection.player.items.inventory.getHotbarSlot()?.item?.decreaseCount()
+            session.player.items.inventory.getHotbarSlot()?.item?.decreaseCount()
             PlayerActionC2SP.Actions.DROP_ITEM
         }
-        rateLimiter += { connection.sendPacket(PlayerActionC2SP(type)) }
+        rateLimiter += { session.network.send(PlayerActionC2SP(type)) }
     }
 
     fun draw() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ class StartC2SP(
     val profileUUID: UUID? = null,
 ) : PlayC2SPacket {
 
-    constructor(player: LocalPlayerEntity, sessionId: UUID) : this(player.connection.account.username, sessionId, player.keyManagement.key?.playerKey, player.uuid)
+    constructor(player: LocalPlayerEntity, sessionId: UUID) : this(player.session.account.username, sessionId, player.keyManagement.key?.playerKey, player.uuid)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(username)

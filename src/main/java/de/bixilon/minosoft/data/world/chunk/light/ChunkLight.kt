@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 class ChunkLight(val chunk: Chunk) {
-    private val connection = chunk.connection
+    private val session = chunk.session
     val heightmap = if (chunk.world.dimension.hasSkyLight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
 
     val bottom = BorderSectionLight(false, chunk)
@@ -90,7 +90,7 @@ class ChunkLight(val chunk: Chunk) {
                 }
             }
         }
-        for (event in events) event.fire(connection)
+        for (event in events) event.fire(session)
     }
 
     private fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {

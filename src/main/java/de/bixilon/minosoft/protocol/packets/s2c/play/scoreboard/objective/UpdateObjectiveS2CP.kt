@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveUpdateEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormat
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormats.readNumberFormat
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -65,12 +65,12 @@ class UpdateObjectiveS2CP(
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Update scoreboard objective (objective=$objective, displayName=$displayName, unit=$unit)" }
     }
 
-    override fun handle(connection: PlayConnection) {
-        val objective = connection.scoreboard.objectives[objective] ?: return
+    override fun handle(session: PlaySession) {
+        val objective = session.scoreboard.objectives[objective] ?: return
 
         objective.displayName = displayName
         objective.unit = unit
 
-        connection.events.fire(ScoreboardObjectiveUpdateEvent(connection, objective))
+        session.events.fire(ScoreboardObjectiveUpdateEvent(session, objective))
     }
 }

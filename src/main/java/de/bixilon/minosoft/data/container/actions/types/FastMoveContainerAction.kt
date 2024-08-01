@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntArrayList
@@ -28,7 +28,7 @@ class FastMoveContainerAction(
 ) : ContainerAction {
     // ToDo: Action reverting
 
-    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
         // ToDo: minecraft always sends a packet
         val source = container.slots[slot] ?: return
         container.lock()
@@ -96,7 +96,7 @@ class FastMoveContainerAction(
                 }
             }
 
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.actions.createId(this), changes, null))
+            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.actions.createId(this), changes, null))
         } finally {
             container.commit()
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ object ChunkRendererUtil {
 
 
     // If the player is still, then we can load more chunks (to not cause lags)
-    val ChunkRenderer.maxBusyTime: Long get() = if (connection.player.physics.velocity.isEmpty()) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
+    val ChunkRenderer.maxBusyTime: Long get() = if (session.player.physics.velocity.isEmpty()) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
 
 
     val ChunkSection.smallMesh: Boolean get() = blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z

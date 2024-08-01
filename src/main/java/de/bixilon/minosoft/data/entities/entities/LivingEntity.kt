@@ -37,11 +37,11 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBCo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation), DamageListener {
-    private val entityEffectParticle = connection.registries.particleType[EntityEffectParticle]
-    private val ambientEntityEffectParticle = connection.registries.particleType[AmbientEntityEffectParticle]
+abstract class LivingEntity(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation), DamageListener {
+    private val entityEffectParticle = session.registries.particleType[EntityEffectParticle]
+    private val ambientEntityEffectParticle = session.registries.particleType[AmbientEntityEffectParticle]
 
     open val equipment = EntityEquipment(this)
     val effects = StatusEffectProperty()

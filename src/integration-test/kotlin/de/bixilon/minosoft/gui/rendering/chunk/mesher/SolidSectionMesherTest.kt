@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,8 +45,8 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.StaticTintProvider
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -55,27 +55,27 @@ import java.util.*
 @Test(groups = ["mesher"], dependsOnGroups = ["rendering", "block"])
 class SolidSectionMesherTest {
 
-    private fun createContext(connection: PlayConnection): RenderContext {
+    private fun createContext(session: PlaySession): RenderContext {
         val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
-        context::connection.forceSet(connection)
+        context::session.forceSet(session)
         context::system.forceSet(DummyRenderSystem(context))
         context::camera.forceSet(Camera(context))
-        context::tints.forceSet(TintManager(connection))
+        context::tints.forceSet(TintManager(session))
 
 
         return context
     }
 
-    private fun createConnection(blocks: Map<Vec3i, BlockState?>): PlayConnection {
-        val connection = ConnectionTestUtil.createConnection(worldSize = 2)
+    private fun createSession(blocks: Map<Vec3i, BlockState?>): PlaySession {
+        val session = SessionTestUtil.createSession(worldSize = 2)
         for ((position, block) in blocks) {
-            connection.world[position] = block!!
+            session.world[position] = block!!
         }
 
-        return connection
+        return session
     }
 
-    private fun PlayConnection.mesh(): ChunkMeshes {
+    private fun PlaySession.mesh(): ChunkMeshes {
         val context = createContext(this)
         val mesher = SolidSectionMesher(context)
 
@@ -89,9 +89,9 @@ class SolidSectionMesherTest {
 
 
     private fun mesh(blocks: Map<Vec3i, BlockState?>): ChunkMeshes {
-        val connection = createConnection(blocks)
+        val session = createSession(blocks)
 
-        return connection.mesh()
+        return session.mesh()
     }
 
     fun `test simple stone block`() {
@@ -281,10 +281,10 @@ class SolidSectionMesherTest {
     fun `simple light`() {
         val queue = TestQueue()
         val stone = queue.lighted()
-        val connection = createConnection(emptyMap())
-        connection.world.dimension = DimensionProperties()
-        connection.world[Vec3i(6, 7, 9)] = stone
-        val chunk = connection.world.chunks[0, 0]!!
+        val session = createSession(emptyMap())
+        session.world.dimension = DimensionProperties()
+        session.world[Vec3i(6, 7, 9)] = stone
+        val chunk = session.world.chunks[0, 0]!!
         val section = chunk.sections[0]!!
         section.light.light[6, 6, 9] = 0x01
         section.light.light[6, 8, 9] = 0x02
@@ -295,7 +295,7 @@ class SolidSectionMesherTest {
 
         section.light.light[6, 7, 9] = 0x07
 
-        connection.mesh()
+        session.mesh()
     }
 
     fun `neighbours are correctly set`() {
@@ -411,7 +411,7 @@ class SolidSectionMesherTest {
     fun TestQueue.blockEntity(): BlockState {
         val block = object : Block(minosoft("test2"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(connection: PlayConnection) = object : BlockEntity(connection), RenderedBlockEntity<BlockEntityRenderer<*>> {
+            override fun createBlockEntity(session: PlaySession) = object : BlockEntity(session), RenderedBlockEntity<BlockEntityRenderer<*>> {
                 override var renderer: BlockEntityRenderer<*>? = null
 
                 override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int) = object : BlockEntityRenderer<BlockEntity> {
@@ -432,7 +432,7 @@ class SolidSectionMesherTest {
     fun TestQueue.meshedOnlyEntity(): BlockState {
         val block = object : Block(minosoft("test4"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(connection: PlayConnection) = object : BlockEntity(connection) {
+            override fun createBlockEntity(session: PlaySession) = object : BlockEntity(session) {
             }
 
             init {

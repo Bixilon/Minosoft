@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.registries.item.items.armor.extra.ElytraItem
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.SkipException
@@ -43,7 +43,7 @@ import org.testng.annotations.Test
 class ElytraFlyIT {
 
     private fun LocalPlayerEntity.equip() {
-        val stack = ItemStack(connection.registries.item[ElytraItem] ?: throw SkipException("Can not get elytra!"))
+        val stack = ItemStack(session.registries.item[ElytraItem] ?: throw SkipException("Can not get elytra!"))
         equipment[EquipmentSlots.CHEST] = stack
     }
 
@@ -53,7 +53,7 @@ class ElytraFlyIT {
     }
 
     fun startFly() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
         player.equip()
 
@@ -68,7 +68,7 @@ class ElytraFlyIT {
     }
 
     fun notFly() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
         player.equip()
 
@@ -78,7 +78,7 @@ class ElytraFlyIT {
     }
 
     fun flyStraight() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(0.0, 30.5, 0.0))
         player.forceRotate(EntityRotation(0.0f, 10.0f))
         player.equip()
@@ -94,7 +94,7 @@ class ElytraFlyIT {
     }
 
     fun flyUp() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(0.0, 30.5, 0.0))
         player.equip()
 
@@ -111,7 +111,7 @@ class ElytraFlyIT {
     }
 
     fun flyRotated() {
-        val player = createPlayer(createConnection(5))
+        val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 30.5, 0.0))
         player.equip()
 
@@ -130,9 +130,9 @@ class ElytraFlyIT {
     }
 
     fun startFlyingInWater() {
-        val player = createPlayer(createConnection(5))
+        val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 31.8, 0.0))
-        player.connection.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.connection.registries.block[WaterFluid]!!.states.default)
+        player.session.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.session.registries.block[WaterFluid]!!.states.default)
 
         player.equip()
 
@@ -147,9 +147,9 @@ class ElytraFlyIT {
     }
 
     fun startFlyingInLava() {
-        val player = createPlayer(createConnection(5))
+        val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 31.8, 0.0))
-        player.connection.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.connection.registries.block[LavaFluid]!!.states.default)
+        player.session.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.session.registries.block[LavaFluid]!!.states.default)
         player.equip()
 
         player.runTicks(3)
@@ -163,7 +163,7 @@ class ElytraFlyIT {
     }
 
     fun levitation() {
-        val player = createPlayer(createConnection(5))
+        val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 30.8, 0.0))
         player.applyLevitation(1)
         player.equip()
@@ -179,7 +179,7 @@ class ElytraFlyIT {
     }
 
     fun slowFalling() {
-        val player = createPlayer(createConnection(5))
+        val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 30.8, 0.0))
         player.applySlowFalling()
         player.equip()

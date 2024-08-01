@@ -34,7 +34,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierC
 import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
 import de.bixilon.minosoft.datafixer.rls.EntityTypeFixer.fixEntityType
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -61,8 +61,8 @@ data class EntityType(
         return identifier.toString()
     }
 
-    fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, uuid: UUID?, versionId: Int): Entity? {
-        return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityData, uuid, versionId)
+    fun build(session: PlaySession, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, uuid: UUID?, versionId: Int): Entity? {
+        return DefaultEntityFactories.buildEntity(factory, session, position, rotation, entityData, uuid, versionId)
     }
 
     companion object : IdentifierCodec<EntityType> {

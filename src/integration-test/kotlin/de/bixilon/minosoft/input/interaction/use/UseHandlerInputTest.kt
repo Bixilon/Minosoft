@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil
 import de.bixilon.minosoft.data.registries.item.items.weapon.defend.ShieldItem
 import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.input.interaction.KeyHandlerUtil.awaitTicks
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
@@ -32,50 +32,50 @@ import org.testng.annotations.Test
 class UseHandlerInputTest {
 
     fun singlePress() {
-        val connection = ConnectionTestUtil.createConnection(1)
-        val player = PhysicsTestUtil.createPlayer(connection)
-        val handler = UseHandler(connection.camera.interactions)
+        val session = SessionTestUtil.createSession(1)
+        val player = PhysicsTestUtil.createPlayer(session)
+        val handler = UseHandler(session.camera.interactions)
         player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, 16)
 
         handler.press()
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertPacket(UseItemC2SP::class.java)
-        connection.assertPacket(SwingArmC2SP::class.java)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertPacket(UseItemC2SP::class.java)
+        session.assertPacket(SwingArmC2SP::class.java)
         handler.release()
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun continuesPress() {
-        val connection = ConnectionTestUtil.createConnection(1)
-        val player = PhysicsTestUtil.createPlayer(connection)
-        val handler = UseHandler(connection.camera.interactions)
+        val session = SessionTestUtil.createSession(1)
+        val player = PhysicsTestUtil.createPlayer(session)
+        val handler = UseHandler(session.camera.interactions)
         player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, 16)
 
         handler.press()
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertPacket(UseItemC2SP::class.java)
-        connection.assertPacket(SwingArmC2SP::class.java)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertPacket(UseItemC2SP::class.java)
+        session.assertPacket(SwingArmC2SP::class.java)
+        session.assertNoPacket()
         handler.awaitTicks(4)
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertPacket(UseItemC2SP::class.java)
-        connection.assertPacket(SwingArmC2SP::class.java)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertPacket(UseItemC2SP::class.java)
+        session.assertPacket(SwingArmC2SP::class.java)
         handler.release()
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun longUse() {
-        val connection = ConnectionTestUtil.createConnection(1)
-        val player = PhysicsTestUtil.createPlayer(connection)
-        val handler = UseHandler(connection.camera.interactions)
+        val session = SessionTestUtil.createSession(1)
+        val player = PhysicsTestUtil.createPlayer(session)
+        val handler = UseHandler(session.camera.interactions)
         player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
 
         handler.press()
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertPacket(UseItemC2SP::class.java)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertPacket(UseItemC2SP::class.java)
         handler.awaitTicks(1)
-        connection.assertNoPacket()
+        session.assertNoPacket()
         handler.release()
-        connection.assertPacket(PlayerActionC2SP::class.java)
+        session.assertPacket(PlayerActionC2SP::class.java)
     }
 }

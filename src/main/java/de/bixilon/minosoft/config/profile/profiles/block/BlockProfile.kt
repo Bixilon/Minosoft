@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,7 +47,7 @@ class BlockProfile(
     /**
      * Ticking (entity, block, particle) is just applied in this distance.
      *
-     * Starting from 1.18 the server can set this value per connection.
+     * Starting from 1.18 the server can set this value per session.
      * The lower value will be used in that case
      * For calculation see viewDistance
      * @see viewDistance

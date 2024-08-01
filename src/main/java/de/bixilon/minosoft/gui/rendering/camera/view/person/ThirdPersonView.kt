@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -50,7 +50,7 @@ class ThirdPersonView(
     }
 
     private fun update() {
-        val entity = camera.context.connection.camera.entity
+        val entity = camera.context.session.camera.entity
         rotation = entity.physics.rotation.update()
         update(entity.renderInfo.eyePosition, rotation.front)
     }
@@ -62,7 +62,7 @@ class ThirdPersonView(
 
     private fun update(position: Vec3d, front: Vec3) {
         val direction = -front
-        val target = camera.context.connection.camera.target.raycastBlock(position, Vec3d(direction)).first
+        val target = camera.context.session.camera.target.raycastBlock(position, Vec3d(direction)).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
         this.eyePosition = if (distance <= 0.0) position else position + (direction * (distance - MIN_MARGIN))

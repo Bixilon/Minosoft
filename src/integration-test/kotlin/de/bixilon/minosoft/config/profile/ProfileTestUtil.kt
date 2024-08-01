@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,6 @@ import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
-import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfile
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfile
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.minosoft.config.profile.profiles.session.SessionProfile
 
 object ProfileTestUtil {
 
@@ -36,8 +36,8 @@ object ProfileTestUtil {
         return profile
     }
 
-    fun createProfiles(): ConnectionProfiles {
-        return ConnectionProfiles(
+    fun createProfiles(): SelectedProfiles {
+        return SelectedProfiles(
             eros = ErosProfile(),
             account = AccountProfile(),
             particle = ParticleProfile(),
@@ -46,7 +46,7 @@ object ProfileTestUtil {
             resources = createResources(),
             rendering = RenderingProfile(),
             block = BlockProfile(),
-            connection = ConnectionProfile(),
+            session = SessionProfile(),
             gui = GUIProfile(),
             controls = ControlsProfile(),
             other = OtherProfile(),

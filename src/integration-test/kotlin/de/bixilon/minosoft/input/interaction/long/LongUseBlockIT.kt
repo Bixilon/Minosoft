@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,8 +32,8 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil.assertUseItem
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.tick
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
 import de.bixilon.minosoft.physics.ItemUsing
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
@@ -47,64 +47,64 @@ class LongUseBlockIT {
 
 
     fun shieldOnDirt() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, DirtTest0.state, null, Vec3i.EMPTY)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, DirtTest0.state, null, Vec3i.EMPTY)))
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()
         use.tick(10)
 
-        assertEquals(connection.player.using, ItemUsing(Hands.MAIN, 10))
+        assertEquals(session.player.using, ItemUsing(Hands.MAIN, 10))
 
 
-        connection.assertPacket(BlockInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(BlockInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
     }
 
     fun offHandShieldOnDirt() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
-        connection.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, DirtTest0.state, null, Vec3i.EMPTY)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, DirtTest0.state, null, Vec3i.EMPTY)))
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()
         use.tick(10)
 
-        assertEquals(connection.player.using, ItemUsing(Hands.OFF, 10))
+        assertEquals(session.player.using, ItemUsing(Hands.OFF, 10))
 
 
-        connection.assertPacket(BlockInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
-        connection.assertPacket(BlockInteractC2SP::class.java).let { assertEquals(it.hand, Hands.OFF) }
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.OFF)
-        connection.assertNoPacket()
+        session.assertPacket(BlockInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
+        session.assertPacket(BlockInteractC2SP::class.java).let { assertEquals(it.hand, Hands.OFF) }
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.OFF)
+        session.assertNoPacket()
     }
 
     fun shieldOnRepeater() {
         todo()
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, Vec3i.EMPTY)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, Vec3i.EMPTY)))
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()
         use.tick(10)
 
 
-        assertNull(connection.player.using)
+        assertNull(session.player.using)
 
 
         // every 5 ticks
-        connection.assertPacket(BlockInteractC2SP::class.java)
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertPacket(BlockInteractC2SP::class.java)
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(BlockInteractC2SP::class.java)
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertPacket(BlockInteractC2SP::class.java)
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 }

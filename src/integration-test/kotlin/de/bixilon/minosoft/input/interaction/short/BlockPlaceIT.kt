@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,8 +32,8 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.assertUseItem
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
@@ -44,27 +44,27 @@ import org.testng.annotations.Test
 class BlockPlaceIT {
 
     fun fireChargePlace() { // bedwars
-        val connection = InteractionTestUtil.createConnection()
-        val item = connection.registries.item[FireChargeItem] ?: throw SkipException("fire charge")
-        connection.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.UP, StoneTest0.state, null, Vec3i.EMPTY)))
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(item, 2)
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        val item = session.registries.item[FireChargeItem] ?: throw SkipException("fire charge")
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.UP, StoneTest0.state, null, Vec3i.EMPTY)))
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(item, 2)
+        val use = session.camera.interactions.use
 
         use.unsafePress()
         use.unsafeRelease()
 
-        connection.assertPacket(BlockInteractC2SP(Vec3i.EMPTY, Directions.UP, Vec3.EMPTY, ItemStack(item, 2), Hands.MAIN, false, 1))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertPacket(BlockInteractC2SP(Vec3i.EMPTY, Directions.UP, Vec3.EMPTY, ItemStack(item, 2), Hands.MAIN, false, 1))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
         // TODO: check placed fire?
-        connection.assertNoPacket()
+        session.assertNoPacket()
 
-        connection.camera.target::target.forceSet(DataObserver(null))
+        session.camera.target::target.forceSet(DataObserver(null))
 
         use.unsafePress()
         use.unsafeRelease()
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertNoPacket()
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertNoPacket()
     }
 }

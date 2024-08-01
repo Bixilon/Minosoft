@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,14 +25,14 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.SlabTest0
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class SlowFallingIT {
 
     fun slowFallingFalling10() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.runTicks(10)
@@ -41,7 +41,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingFalling20() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.runTicks(20)
@@ -50,7 +50,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingFalling30() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.runTicks(30)
@@ -59,7 +59,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingFalling819() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 1731.0, 4.0))
         player.applySlowFalling()
         player.runTicks(819)
@@ -68,7 +68,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingMovement1() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.input = PlayerMovementInput(forward = true)
@@ -78,7 +78,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingMovement2() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.input = PlayerMovementInput(forward = true, left = true)
@@ -88,7 +88,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingMovement3() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.input = PlayerMovementInput(forward = true, left = true)
@@ -99,7 +99,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingMovement4() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applySlowFalling()
         player.input = PlayerMovementInput(backward = true, left = true)
@@ -110,7 +110,7 @@ class SlowFallingIT {
     }
 
     fun slowFallingMovement5() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(7.0, 9.0, 4.0))
         player.applySlowFalling()
         player.input = PlayerMovementInput(backward = true, right = true)
@@ -121,9 +121,9 @@ class SlowFallingIT {
     }
 
     fun slowFallingCollisionMovement1() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
-        player.connection.world[Vec3i(12, 7, 4)] = SlabTest0.top
+        player.session.world[Vec3i(12, 7, 4)] = SlabTest0.top
         player.applySlowFalling()
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(67)

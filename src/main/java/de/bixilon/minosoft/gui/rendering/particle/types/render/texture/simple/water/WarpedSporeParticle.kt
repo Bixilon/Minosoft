@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class WarpedSporeParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(connection, position, Vec3d(0.0, (random.nextDouble() * -1.9 * random.nextDouble() * 0.1), 0.0), data) {
+class WarpedSporeParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(session, position, Vec3d(0.0, (random.nextDouble() * -1.9 * random.nextDouble() * 0.1), 0.0), data) {
 
     init {
         color = RGBColor(0.1f, 0.1f, 0.3f)
@@ -35,8 +35,8 @@ class WarpedSporeParticle(connection: PlayConnection, position: Vec3d, data: Par
         override val identifier: ResourceLocation = "minecraft:warped_spore".toResourceLocation()
         private val random = Random()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): WarpedSporeParticle {
-            return WarpedSporeParticle(connection, position, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): WarpedSporeParticle {
+            return WarpedSporeParticle(session, position, data)
         }
     }
 }

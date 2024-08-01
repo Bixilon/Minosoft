@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -46,7 +46,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                             y = (combined ushr 24 and 0x0F),
                             z = (combined ushr 28 and 0x0F),
                         ),
-                        buffer.connection.registries.blockState.getOrNull(combined and 0xFFFF),
+                        buffer.session.registries.blockState.getOrNull(combined and 0xFFFF),
                     )
                 }
             }
@@ -61,7 +61,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val blockId = buffer.readVarInt()
                     update[i] = ChunkLocalBlockUpdate.LocalUpdate(
                         Vec3i(position ushr 4 and 0x0F, y, position and 0x0F),
-                        buffer.connection.registries.blockState.getOrNull(blockId),
+                        buffer.session.registries.blockState.getOrNull(blockId),
                     )
                 }
             }
@@ -81,7 +81,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         (entry and 0x0F).toInt() + yOffset,
                         (entry shr 4 and 0xF).toInt()
                     )
-                    val state = buffer.connection.registries.blockState.getOrNull((entry ushr 12).toInt())
+                    val state = buffer.session.registries.blockState.getOrNull((entry ushr 12).toInt())
 
                     update[index] = ChunkLocalBlockUpdate.LocalUpdate(
                         position,
@@ -92,8 +92,8 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        val chunk = connection.world.chunks[chunkPosition] ?: return
+    override fun handle(session: PlaySession) {
+        val chunk = session.world.chunks[chunkPosition] ?: return
         chunk.apply(this.update.cast().toSet())
     }
 

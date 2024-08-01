@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class ComposterParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(connection, position, velocity, data) {
+class ComposterParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(session, position, velocity, data) {
 
     init {
         color = ChatColors.WHITE
@@ -31,8 +31,8 @@ class ComposterParticle(connection: PlayConnection, position: Vec3d, velocity: V
     companion object : ParticleFactory<ComposterParticle> {
         override val identifier: ResourceLocation = "minecraft:composter".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ComposterParticle {
-            return ComposterParticle(connection, position, velocity, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): ComposterParticle {
+            return ComposterParticle(session, position, velocity, data)
         }
     }
 }

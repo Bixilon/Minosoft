@@ -38,7 +38,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -65,17 +65,17 @@ import java.util.*
 
 
 class PlayInByteBuffer : InByteBuffer {
-    val connection: PlayConnection
+    val session: PlaySession
     val versionId: Int
 
-    constructor(bytes: ByteArray, connection: PlayConnection) : super(bytes) {
-        this.connection = connection
-        versionId = connection.version.versionId
+    constructor(bytes: ByteArray, session: PlaySession) : super(bytes) {
+        this.session = session
+        versionId = session.version.versionId
     }
 
     constructor(buffer: PlayInByteBuffer) : super(buffer) {
-        connection = buffer.connection
-        versionId = connection.version.versionId
+        session = buffer.session
+        versionId = session.version.versionId
     }
 
     fun readByteArray(): ByteArray {
@@ -109,7 +109,7 @@ class PlayInByteBuffer : InByteBuffer {
         if (DebugOptions.LOG_RAW_CHAT) {
             Log.log(LogMessageType.CHAT_IN, LogLevels.VERBOSE) { TextComponent(string) }
         }
-        return ChatComponent.of(string, connection.language, null, restricted = true)
+        return ChatComponent.of(string, session.language, null, restricted = true)
     }
 
     fun readNbtChatComponent(): ChatComponent {
@@ -120,11 +120,11 @@ class PlayInByteBuffer : InByteBuffer {
         if (DebugOptions.LOG_RAW_CHAT) {
             Log.log(LogMessageType.CHAT_IN, LogLevels.VERBOSE) { TextComponent(Jackson.MAPPER.writeValueAsString(nbt)) }
         }
-        return ChatComponent.of(nbt, connection.language, null, restricted = true)
+        return ChatComponent.of(nbt, session.language, null, restricted = true)
     }
 
     fun readParticleData(): ParticleData {
-        val type = connection.registries.particleType[readVarInt()]
+        val type = session.registries.particleType[readVarInt()]
         return readParticleData(type)
     }
 
@@ -161,14 +161,14 @@ class PlayInByteBuffer : InByteBuffer {
         }
         val count = readUnsignedByte()
         var meta = 0
-        if (!connection.version.flattened) {
+        if (!session.version.flattened) {
             meta = readUnsignedShort()
         }
         val nbt = readNBT()?.toMutableJsonObject()
-        val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
+        val item = session.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
         return ItemStackUtil.of(
             item = item,
-            connection = connection,
+            session = session,
             count = count,
             meta = meta,
             nbt = nbt ?: mutableMapOf(),
@@ -182,8 +182,8 @@ class PlayInByteBuffer : InByteBuffer {
 
         return readOptional {
             ItemStackUtil.of(
-                item = connection.registries.item[readVarInt()],
-                connection = connection,
+                item = session.registries.item[readVarInt()],
+                session = session,
                 count = readUnsignedByte(),
                 nbt = readNBT()?.toMutableJsonObject() ?: mutableMapOf(),
             )
@@ -196,7 +196,7 @@ class PlayInByteBuffer : InByteBuffer {
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.registries.entityDataTypes[item and 0xFF shr 5]!!
+                val type = session.registries.entityDataTypes[item and 0xFF shr 5]!!
                 data[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
@@ -205,7 +205,7 @@ class PlayInByteBuffer : InByteBuffer {
         var index = readUnsignedByte()
         while (index != 0xFF) {
             val id: Int = if (versionId < V_1_9_1_PRE1) readUnsignedByte() else readVarInt()
-            val type = connection.registries.entityDataTypes[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
+            val type = session.registries.entityDataTypes[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
             data[index] = type.type.read(this)
             index = readUnsignedByte()
         }
@@ -395,11 +395,11 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readSound(): PlayedSound {
         if (versionId < ProtocolVersions.V_1_19_3_RC1) {
-            return PlayedSound(readRegistryItem(connection.registries.soundEvent))
+            return PlayedSound(readRegistryItem(session.registries.soundEvent))
         }
         val id = readVarInt()
         if (id != 0) {
-            return PlayedSound(connection.registries.soundEvent[id - 1])
+            return PlayedSound(session.registries.soundEvent[id - 1])
         }
         return readNamedSound()
     }

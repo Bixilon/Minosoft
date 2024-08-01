@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundType
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -26,14 +26,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class SoundManager(
-    private val connection: PlayConnection,
+    private val session: PlaySession,
 ) {
     private val random = Random()
     private val sounds: MutableMap<ResourceLocation, SoundType> = mutableMapOf()
 
 
     fun load() {
-        val soundsIndex = connection.assetsManager.getOrNull(SOUNDS_INDEX_FILE)?.readJsonObject()
+        val soundsIndex = session.assetsManager.getOrNull(SOUNDS_INDEX_FILE)?.readJsonObject()
         if (soundsIndex == null) {
             Log.log(LogMessageType.AUDIO, LogLevels.WARN) { "Can not find $SOUNDS_INDEX_FILE. Can not load audio files!" }
             return
@@ -61,7 +61,7 @@ class SoundManager(
                 if (!sound.preload) {
                     continue
                 }
-                sound.load(connection.assetsManager)
+                sound.load(session.assetsManager)
             }
         }
     }

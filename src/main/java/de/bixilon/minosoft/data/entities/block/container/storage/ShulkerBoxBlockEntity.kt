@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker.ShulkerBoxRenderer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ShulkerBoxRenderer> {
+class ShulkerBoxBlockEntity(session: PlaySession) : StorageBlockEntity(session), RenderedBlockEntity<ShulkerBoxRenderer> {
     override var renderer: ShulkerBoxRenderer? = null
 
     override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ShulkerBoxRenderer? {
@@ -51,8 +51,8 @@ class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
         override val identifier: ResourceLocation = minecraft("shulker_box")
 
-        override fun build(connection: PlayConnection): ShulkerBoxBlockEntity {
-            return ShulkerBoxBlockEntity(connection)
+        override fun build(session: PlaySession): ShulkerBoxBlockEntity {
+            return ShulkerBoxBlockEntity(session)
         }
     }
 }

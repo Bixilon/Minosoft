@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -64,7 +64,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
-    private val connection = context.connection
+    private val session = context.session
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
     override val layoutOffset: Vec2 = Vec2.EMPTY
 
@@ -96,23 +96,23 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r; t=§d${context.renderStats.avgDrawTime.avg.formatNanos().replace('µ', 'u')}" } // rendering of µ eventually broken
         context.renderer[ChunkRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.chunks.size.format()}" }
+            layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${session.world.chunks.chunks.size.format()}" }
         }
 
         layout += context.renderer[EntitiesRenderer]?.let {
-            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibility.size, ",ov=", it.visibility.opaqueSize, ",tv=", it.visibility.translucentSize, ", t=", it.renderers.size, ", w=", connection.world.entities.size) }
-        } ?: AutoTextElement(guiRenderer, 1) { "E w=${connection.world.entities.size.format()}" }
+            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibility.size, ",ov=", it.visibility.opaqueSize, ",tv=", it.visibility.translucentSize, ", t=", it.renderers.size, ", w=", session.world.entities.size) }
+        } ?: AutoTextElement(guiRenderer, 1) { "E w=${session.world.entities.size.format()}" }
 
         context.renderer[ParticleRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "P t=${size.format()}" }
         }
 
-        val audioProfile = connection.profiles.audio
+        val audioProfile = session.profiles.audio
 
         layout += AutoTextElement(guiRenderer, 1) {
             BaseComponent().apply {
                 this += "S "
-                if (connection.profiles.audio.skipLoading || !audioProfile.enabled) {
+                if (session.profiles.audio.skipLoading || !audioProfile.enabled) {
                     this += "§cdisabled"
                 } else {
                     val audioPlayer = context.rendering.audioPlayer
@@ -128,15 +128,15 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, BaseComponent("Account ", connection.account.username))
-        layout += TextElement(guiRenderer, BaseComponent("Address ", connection.address))
-        layout += TextElement(guiRenderer, BaseComponent("Network version ", connection.version))
-        layout += TextElement(guiRenderer, BaseComponent("Server brand ", connection.serverInfo.brand)).apply { connection.serverInfo::brand.observe(this@DebugHUDElement) { this.text = BaseComponent("Server brand ", it.truncate(50)) } }
+        layout += TextElement(guiRenderer, BaseComponent("Account ", session.account.username))
+        layout += TextElement(guiRenderer, BaseComponent("Address ", session.address))
+        layout += TextElement(guiRenderer, BaseComponent("Network version ", session.version))
+        layout += TextElement(guiRenderer, BaseComponent("Server brand ", session.serverInfo.brand)).apply { session.serverInfo::brand.observe(this@DebugHUDElement) { this.text = BaseComponent("Server brand ", it.truncate(50)) } }
 
         layout += LineSpacerElement(guiRenderer)
 
 
-        connection.camera.entity.physics.apply {
+        session.camera.entity.physics.apply {
             // ToDo: Only update when the position changes
             layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
@@ -160,7 +160,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        val chunk = connection.player.physics.positionInfo.chunk
+        val chunk = session.player.physics.positionInfo.chunk
 
         if (chunk == null) {
             layout += DebugWorldInfo(guiRenderer)
@@ -168,16 +168,16 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
-            connection.player.additional::gamemode.observe(this) { text = BaseComponent("Gamemode ", it) }
+        layout += TextElement(guiRenderer, BaseComponent("Gamemode ", session.player.gamemode)).apply {
+            session.player.additional::gamemode.observe(this) { text = BaseComponent("Gamemode ", it) }
         }
 
-        layout += TextElement(guiRenderer, BaseComponent("Difficulty ", connection.world.difficulty?.difficulty, ", locked=", connection.world.difficulty?.locked)).apply {
-            connection.world::difficulty.observe(this) { text = BaseComponent("Difficulty ", it?.difficulty, ", locked=", it?.locked) }
+        layout += TextElement(guiRenderer, BaseComponent("Difficulty ", session.world.difficulty?.difficulty, ", locked=", session.world.difficulty?.locked)).apply {
+            session.world::difficulty.observe(this) { text = BaseComponent("Difficulty ", it?.difficulty, ", locked=", it?.locked) }
         }
 
         layout += TextElement(guiRenderer, "Time TBA").apply {
-            connection.world::time.observe(this, instant = true) {
+            session.world::time.observe(this, instant = true) {
                 text = BaseComponent(
                     "Time ", it.time, " (", it.phase, ")", ", cycling=", it.cycling, "\n",
                     "Date ", "day=", it.day, " (", it.moonPhase, ")"
@@ -185,7 +185,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
         layout += TextElement(guiRenderer, "Weather TBA").apply {
-            connection.world::weather.observe(this, instant = true) {
+            session.world::weather.observe(this, instant = true) {
                 text = BaseComponent("Weather r=", it.rain, ", t=", it.thunder)
             }
         }
@@ -227,7 +227,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, "Display <?>", properties = RIGHT).apply {
-            guiRenderer.context.connection.events.listen<ResizeWindowEvent> {
+            guiRenderer.context.session.events.listen<ResizeWindowEvent> {
                 text = "Display ${it.size.x.format()}x${it.size.y.format()}"
             }
         }
@@ -247,7 +247,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", properties = RIGHT)
+        layout += TextElement(guiRenderer, "${session.events.size.format()}x listeners", properties = RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
@@ -255,7 +255,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        context.connection.camera.target.apply {
+        context.session.camera.target.apply {
             layout += AutoTextElement(guiRenderer, 1, properties = RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
@@ -267,8 +267,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
         private val chunk = Reference<Chunk?>(null)
         private var lastChunk = Reference<Chunk?>(null)
-        private val world = guiRenderer.context.connection.world
-        private val entity = guiRenderer.context.connection.player
+        private val world = guiRenderer.context.session.world
+        private val entity = guiRenderer.context.session.player
 
         // TODO: Cleanup this class
 
@@ -297,9 +297,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 }
                 clear()
 
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", entity.connection.world.dimension.effects) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", entity.session.world.dimension.effects) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.connection.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.session.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", chunk.neighbours.complete) }
 
                 lastChunk.value = chunk

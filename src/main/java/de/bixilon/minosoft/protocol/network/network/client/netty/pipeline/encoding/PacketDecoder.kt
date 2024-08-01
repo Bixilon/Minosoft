@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException
 class PacketDecoder(
     private val client: NettyClient,
 ) : MessageToMessageDecoder<ByteArray>() {
-    private val version: Version? = client.connection.version
+    private val version: Version? = client.session.version
 
     override fun decode(context: ChannelHandlerContext, array: ByteArray, out: MutableList<Any>) {
         val buffer = InByteBuffer(array)
@@ -43,24 +43,24 @@ class PacketDecoder(
 
         val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
 
-        if (type.extra != null && type.extra.skip(client.connection)) {
+        if (type.extra != null && type.extra.skip(client.session)) {
             return
         }
 
         val packet = try {
-            type.create(data, client.connection).unsafeCast<S2CPacket>()
+            type.create(data, client.session).unsafeCast<S2CPacket>()
         } catch (error: PacketNotImplementedException) {
             error.printStackTrace()
             return
         } catch (exception: NetworkException) {
-            type.extra?.onError(exception, client.connection)
+            type.extra?.onError(exception, client.session)
             throw exception
         } catch (error: Throwable) {
             var realError = error
             if (error is InvocationTargetException) {
                 error.cause?.let { realError = it }
             }
-            type.extra?.onError(realError, client.connection)
+            type.extra?.onError(realError, client.session)
             throw PacketReadException(realError)
         }
 

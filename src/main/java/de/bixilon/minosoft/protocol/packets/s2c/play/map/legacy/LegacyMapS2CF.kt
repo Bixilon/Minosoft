@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ object LegacyMapS2CF : PlayPacketFactory {
         val id = buffer.readVarInt()
         val length = buffer.readUnsignedShort()
         val action = Actions[buffer.readUnsignedByte()]
-        val data = PlayInByteBuffer(buffer.readByteArray(length - 1), buffer.connection) // 1 byte for the action
+        val data = PlayInByteBuffer(buffer.readByteArray(length - 1), buffer.session) // 1 byte for the action
         return when (action) {
             Actions.DATA -> DataLegacyMapS2CP(id, data)
             Actions.PINS -> PinsLegacyMapS2CP(id, data)

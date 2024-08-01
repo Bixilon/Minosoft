@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -35,12 +35,12 @@ class WorldBiomesTest {
     private val b2 = Biome(minosoft("b2"), 0.0f, 0.0f)
     private val b3 = Biome(minosoft("b3"), 0.0f, 0.0f)
 
-    private fun create(noise: ((PlayConnection) -> NoiseBiomeAccessor)?, source: (ChunkPosition) -> BiomeSource): World {
-        val connection = createConnection(0)
-        connection.world.biomes.noise = noise?.invoke(connection)
-        connection.world.initialize(1, source)
+    private fun create(noise: ((PlaySession) -> NoiseBiomeAccessor)?, source: (ChunkPosition) -> BiomeSource): World {
+        val session = createSession(0)
+        session.world.biomes.noise = noise?.invoke(session)
+        session.world.initialize(1, source)
 
-        return connection.world
+        return session.world
     }
 
     fun `simple biome getting at origin chunk`() {

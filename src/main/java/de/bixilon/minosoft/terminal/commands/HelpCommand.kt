@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,10 +27,10 @@ object HelpCommand : Command {
         print("Filters: Most commands takes filters. That can either be an identifier of something or a selector (like @). Selectors can even have properties like @[type=offline]")
         print("Here are some useful commands:")
         print("  account [add|remove|list|select]      - Manages your accounts")
-        print("  connection [list|disconnect|select]   - Manages the connection to a server")
+        print("  session [list|disconnect|select]   - Manages the session to a server")
         print("  connect [address] <version>           - Connects to a server")
         print("  ping [address] <version>              - Shows the motd of a server")
-        print("  *say* [message]                       - Lets you write something in the chat. Requires a selected connection.")
+        print("  *say* [message]                       - Lets you write something in the chat. Requires a selected session.")
         print("  about                                 - Shows some useful information")
     }
 

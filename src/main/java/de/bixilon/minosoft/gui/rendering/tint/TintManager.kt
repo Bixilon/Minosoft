@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,9 +26,9 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBCo
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
 import de.bixilon.minosoft.gui.rendering.tint.tints.plants.FoliageTintCalculator
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class TintManager(val connection: PlayConnection) {
+class TintManager(val session: PlaySession) {
     val grass = GrassTintCalculator()
     val foliage = FoliageTintCalculator()
 
@@ -36,11 +36,11 @@ class TintManager(val connection: PlayConnection) {
         grass.init(assetsManager)
         foliage.init(assetsManager)
 
-        for (block in connection.registries.block) {
+        for (block in session.registries.block) {
             if (block !is TintedBlock) continue
             block.initTint(this)
         }
-        for (item in connection.registries.item) {
+        for (item in session.registries.item) {
             if (item !is TintedBlock) continue
             item.initTint(this)
         }
@@ -65,7 +65,7 @@ class TintManager(val connection: PlayConnection) {
         val tintProvider = state.block.tintProvider ?: return null
 
         // TODO: cache chunk of particle
-        val biome = connection.world.biomes.getBiome(x, y, z)
+        val biome = session.world.biomes.getBiome(x, y, z)
         return tintProvider.getParticleColor(state, biome, x, y, z)
     }
 
@@ -83,7 +83,7 @@ class TintManager(val connection: PlayConnection) {
         if (this is TintedBlock && tintProvider != null) return tintProvider
         if (this::class.java == Item::class.java && this !is PixLyzerItem) return null
         // TODO: dirty hack: get block
-        val block = connection.registries.block[identifier] ?: return null
+        val block = session.registries.block[identifier] ?: return null
         if (block !is TintedBlock) return null
         return block.tintProvider
     }

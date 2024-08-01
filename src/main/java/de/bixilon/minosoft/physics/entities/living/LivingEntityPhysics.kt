@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -88,11 +88,11 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
 
     fun doesNotCollide(offset: Vec3d): Boolean {
         val aabb = aabb.offset(offset)
-        return entity.connection.world.isSpaceEmpty(entity, aabb, positionInfo.chunk, fluids = true)
+        return entity.session.world.isSpaceEmpty(entity, aabb, positionInfo.chunk, fluids = true)
     }
 
     override fun getVelocityMultiplier(): Float {
-        if (entity.equipment[MovementEnchantment.SoulSpeed] > 0 && positionInfo.velocityBlock.isIn(entity.connection.tags, SOUL_SPEED_BLOCKS)) { // TODO: move that to the block itself?
+        if (entity.equipment[MovementEnchantment.SoulSpeed] > 0 && positionInfo.velocityBlock.isIn(entity.session.tags, SOUL_SPEED_BLOCKS)) { // TODO: move that to the block itself?
             return 1.0f
         }
         return super.getVelocityMultiplier()

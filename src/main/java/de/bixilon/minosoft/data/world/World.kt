@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -46,14 +46,14 @@ import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 /**
  * Collection of chunks and more
  */
 class World(
-    val connection: PlayConnection,
+    val session: PlaySession,
 ) : WorldAudioPlayer {
     val lock = SimpleLock()
     val random = Random()
@@ -65,7 +65,7 @@ class World(
     var difficulty: WorldDifficulty? by observed(null)
     var time by observed(WorldTime())
     var weather by observed(WorldWeather.SUNNY)
-    val view = WorldView(connection)
+    val view = WorldView(session)
     val border = WorldBorder()
 
     var name: ResourceLocation? by observed(null)
@@ -119,7 +119,7 @@ class World(
 
     fun isValidPosition(x: Int, y: Int, z: Int): Boolean {
         if (x > MAX_SIZE || z > MAX_SIZE) return false
-        val dimension = connection.world.dimension
+        val dimension = session.world.dimension
         if (y < dimension.minY || y > dimension.maxY) return false
         return true
     }
@@ -148,7 +148,7 @@ class World(
 
     fun tick() {
         val simulationDistance = view.simulationDistance
-        val cameraPosition = connection.player.physics.positionInfo.chunkPosition
+        val cameraPosition = session.player.physics.positionInfo.chunkPosition
         lock.acquire()
         chunks.tick(simulationDistance, cameraPosition)
         lock.release()
@@ -156,7 +156,7 @@ class World(
     }
 
     fun randomDisplayTick() {
-        val origin = connection.player.physics.positionInfo.blockPosition
+        val origin = session.player.physics.positionInfo.blockPosition
         val chunk = this.chunks[origin.chunkPosition] ?: return
 
         val position = Vec3i.EMPTY
@@ -178,9 +178,9 @@ class World(
 
         val state = chunk.neighbours.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
         if (state.block !is RandomDisplayTickable) return
-        if (!state.block.hasRandomTicks(connection, state, position)) return
+        if (!state.block.hasRandomTicks(session, state, position)) return
 
-        state.block.randomDisplayTick(connection, state, position, random)
+        state.block.randomDisplayTick(session, state, position, random)
     }
 
     operator fun get(aabb: AABB): WorldIterator {

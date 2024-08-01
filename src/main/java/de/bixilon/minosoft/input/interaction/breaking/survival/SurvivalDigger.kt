@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC
 class SurvivalDigger(
     private val breaking: BreakHandler,
 ) {
-    private val connection = breaking.interactions.connection
+    private val session = breaking.interactions.session
 
     var status: BlockDigStatus? = null
         private set
@@ -42,7 +42,7 @@ class SurvivalDigger(
 
     private fun cancel(status: BlockDigStatus) {
         breaking.executor.cancel()
-        connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, status.position, sequence = 0))
+        session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, status.position, sequence = 0))
         this.status = null
     }
 
@@ -50,7 +50,7 @@ class SurvivalDigger(
         val sequence = breaking.executor.finish()
         this.status = null
         if (!instant) {
-            connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, status.position, status.direction, sequence))
+            session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, status.position, status.direction, sequence))
             breaking.addCooldown()
         }
         breaking.interactions.swingHand(Hands.MAIN)
@@ -58,7 +58,7 @@ class SurvivalDigger(
 
     // thanks to https://minecraft.wiki/w/Breaking#Calculation
     private fun tick(status: BlockDigStatus?, target: BlockTarget, slot: Int) {
-        val stack = connection.player.items.inventory.getHotbarSlot()
+        val stack = session.player.items.inventory.getHotbarSlot()
 
         var speed = 1.0f
         var toolSpeed = 1.0f
@@ -67,8 +67,8 @@ class SurvivalDigger(
         var isBestTool = !toolRequired
 
         if (stack != null && stack.item.item is MiningTool) {
-            isBestTool = isBestTool || stack.item.item.isSuitableFor(connection, target.state, stack)
-            toolSpeed = stack.item.item.getMiningSpeed(connection, target.state, stack)
+            isBestTool = isBestTool || stack.item.item.isSuitableFor(session, target.state, stack)
+            toolSpeed = stack.item.item.getMiningSpeed(session, target.state, stack)
             speed *= toolSpeed
         }
 
@@ -79,17 +79,17 @@ class SurvivalDigger(
             }
         }
 
-        connection.player.effects[MiningEffect.Haste]?.let {
+        session.player.effects[MiningEffect.Haste]?.let {
             speed *= (0.2f * (it.amplifier + 1)) + 1.0f
         }
 
-        connection.player.effects[MiningEffect.MiningFatigue]?.let { speed *= MiningEffect.MiningFatigue.calculateSpeed(it.amplifier) }
+        session.player.effects[MiningEffect.MiningFatigue]?.let { speed *= MiningEffect.MiningFatigue.calculateSpeed(it.amplifier) }
 
-        if (connection.player.physics.submersion.eye is WaterFluid && connection.player.equipment[ArmorEnchantment.AquaAffinity] == 0) {
+        if (session.player.physics.submersion.eye is WaterFluid && session.player.equipment[ArmorEnchantment.AquaAffinity] == 0) {
             speed /= 5.0f
         }
 
-        if (!connection.player.physics.onGround) {
+        if (!session.player.physics.onGround) {
             speed /= 5.0f
         }
 
@@ -118,7 +118,7 @@ class SurvivalDigger(
         } else {
             nextStatus = BlockDigStatus(target.blockPosition, target.state, slot, productivity, target.direction)
             val sequence = breaking.executor.start(target.blockPosition, target.state)
-            connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
+            session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
         }
 
         if (instant || nextStatus.progress >= 1.0f) {
@@ -134,7 +134,7 @@ class SurvivalDigger(
             status?.let { cancel(it) }
             return false
         }
-        val slot = connection.player.items.hotbar
+        val slot = session.player.items.hotbar
 
         if (status != null && (target.blockPosition != status.position || target.state != status.state || slot != status.slot)) {
             cancel(status)

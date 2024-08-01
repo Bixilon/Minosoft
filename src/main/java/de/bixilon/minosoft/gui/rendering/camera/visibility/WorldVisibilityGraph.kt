@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,12 +53,12 @@ class WorldVisibilityGraph(
     private val context: RenderContext,
     camera: Camera,
 ) {
-    private val connection = context.connection
+    private val session = context.session
     private val frustum = camera.matrixHandler.frustum
     private var cameraChunkPosition = Vec2i.EMPTY
     private var cameraSectionHeight = 0
-    private var viewDistance = connection.world.view.viewDistance
-    private val chunks = connection.world.chunks.chunks.unsafe
+    private var viewDistance = session.world.view.viewDistance
+    private val chunks = session.world.chunks.chunks.unsafe
     private var lastFrustumRevision = -1
 
 
@@ -88,9 +88,9 @@ class WorldVisibilityGraph(
     // always show current section
 
     init {
-        connection.world::occlusion.observe(this) { invalid = true }
+        session.world::occlusion.observe(this) { invalid = true }
 
-        connection.events.listen<WorldUpdateEvent> {
+        session.events.listen<WorldUpdateEvent> {
             if (it.update !is ChunkCreateUpdate && it.update !is NeighbourChangeUpdate && it.update !is ChunkUnloadUpdate) {
                 return@listen
             }
@@ -99,7 +99,7 @@ class WorldVisibilityGraph(
     }
 
     fun isInViewDistance(chunkPosition: Vec2i): Boolean {
-        return chunkPosition.isInViewDistance(connection.world.view.viewDistance, cameraChunkPosition)
+        return chunkPosition.isInViewDistance(session.world.view.viewDistance, cameraChunkPosition)
     }
 
     fun isChunkVisible(chunkPosition: Vec2i): Boolean {
@@ -179,8 +179,8 @@ class WorldVisibilityGraph(
         }
         this.cameraChunkPosition = chunkPosition
         this.cameraSectionHeight = sectionHeight
-        this.minSection = connection.world.dimension.minSection
-        this.maxSection = connection.world.dimension.maxSection
+        this.minSection = session.world.dimension.minSection
+        this.maxSection = session.world.dimension.maxSection
         this.sections = maxSection - minSection
         this.maxIndex = sections - 1
         calculateGraph()
@@ -318,7 +318,7 @@ class WorldVisibilityGraph(
 
     private fun VisibilityGraph.startCheck(direction: Directions, chunkPosition: Vec2i, cameraSectionIndex: Int) {
         val nextPosition = chunkPosition + direction
-        val nextChunk = connection.world.chunks[nextPosition] ?: return
+        val nextChunk = session.world.chunks[nextPosition] ?: return
         val nextVisibility = getVisibility(nextPosition)
         val vector = direction.vector
         checkSection(nextPosition, cameraSectionIndex + vector.y, nextChunk, nextVisibility ?: return, direction, vector.x, vector.y, vector.z, true)
@@ -327,24 +327,24 @@ class WorldVisibilityGraph(
     @Synchronized
     private fun calculateGraph() {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-            connection.events.fire(VisibilityGraphChangeEvent(context))
+            session.events.fire(VisibilityGraphChangeEvent(context))
             return
         }
-        connection.world.lock.acquire()
+        session.world.lock.acquire()
         invalid = false
         this.lastFrustumRevision = frustum.revision
 
         val chunkPosition = cameraChunkPosition
         val sectionHeight = cameraSectionHeight
         val cameraSectionIndex = (sectionHeight - minSection).clamp(-1, maxIndex + 1)  // clamp 1 section below or above
-        this.viewDistance = connection.world.view.viewDistance
+        this.viewDistance = session.world.view.viewDistance
 
         val chunk = chunks[chunkPosition]
         if (chunk == null) {
-            connection.world.lock.release()
+            session.world.lock.release()
             return
         }
-        val worldSize = Vec2i(connection.world.chunks.size.size.size)
+        val worldSize = Vec2i(session.world.chunks.size.size.size)
         worldSize += 3 // add 3 for forced neighbours and the camera chunk
         val chunkMin = chunkPosition - (worldSize / 2)
         chunkMin.x -= 1 // remove 1 for proper index calculation
@@ -367,9 +367,9 @@ class WorldVisibilityGraph(
         this.graph = graph
 
 
-        connection.world.lock.release()
+        session.world.lock.release()
 
-        connection.events.fire(VisibilityGraphChangeEvent(context))
+        session.events.fire(VisibilityGraphChangeEvent(context))
     }
 
     fun draw() {

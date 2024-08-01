@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.ReconfigureC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -24,10 +24,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ReconfigureS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
-    override fun handle(connection: PlayConnection) {
-        connection.util.resetWorld()
-        connection.network.send(ReconfigureC2SP())
-        connection.network.state = ProtocolStates.CONFIGURATION
+    override fun handle(session: PlaySession) {
+        session.util.resetWorld()
+        session.network.send(ReconfigureC2SP())
+        session.network.state = ProtocolStates.CONFIGURATION
     }
 
     override fun log(reducedLog: Boolean) {

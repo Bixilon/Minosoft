@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,9 +25,9 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class SignBlockEntity(session: PlaySession) : BlockEntity(session) {
     val front = SignTextProperties()
     val back = SignTextProperties()
     var waxed = false
@@ -36,8 +36,8 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     override fun updateNBT(nbt: Map<String, Any>) {
         nbt["is_waxed"]?.toBoolean()?.let { this.waxed = it }
         val front = nbt["front_text"]?.toJsonObject() ?: return updateLegacy(nbt)
-        this.front.update(front, connection)
-        nbt["back_text"]?.toJsonObject()?.let { this.back.update(it, connection) }
+        this.front.update(front, session)
+        nbt["back_text"]?.toJsonObject()?.let { this.back.update(it, session) }
     }
 
     private fun updateLegacy(nbt: JsonObject) {
@@ -45,7 +45,7 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         for (i in 1..LINES) {
             val line = nbt["Text$i"]?.toString() ?: continue
 
-            front.text[i - 1] = ChatComponent.of(line, translator = connection.language)
+            front.text[i - 1] = ChatComponent.of(line, translator = session.language)
         }
     }
 
@@ -60,19 +60,19 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         val text: Array<ChatComponent> = Array(LINES) { EmptyComponent },
     ) {
 
-        private fun parseText(line: Any?, connection: PlayConnection): ChatComponent {
+        private fun parseText(line: Any?, session: PlaySession): ChatComponent {
             if (line is String && line.startsWith("\"")) {
                 // TODO: minecraft 1.20.4 wraps it in "???
                 return ChatComponent.of(line.removeSurrounding("\""))
             }
-            return ChatComponent.of(line, translator = connection.language)
+            return ChatComponent.of(line, translator = session.language)
         }
 
-        fun update(data: JsonObject, connection: PlayConnection) {
+        fun update(data: JsonObject, session: PlaySession) {
             update(data["color"], data["has_glowing_text"])
             data["messages"]?.asJsonList()?.let {
                 for ((index, line) in it.withIndex()) {
-                    this.text[index] = parseText(line, connection)
+                    this.text[index] = parseText(line, session)
                 }
             }
         }
@@ -87,8 +87,8 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         override val identifier: ResourceLocation = minecraft("sign")
         const val LINES = 4
 
-        override fun build(connection: PlayConnection): SignBlockEntity {
-            return SignBlockEntity(connection)
+        override fun build(session: PlaySession): SignBlockEntity {
+            return SignBlockEntity(session)
         }
     }
 }

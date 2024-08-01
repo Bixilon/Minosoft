@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,15 +20,15 @@ import de.bixilon.minosoft.gui.rendering.RenderLoader.awaitPlaying
 import de.bixilon.minosoft.gui.rendering.RenderLoader.load
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.Version
 
-class Rendering(private val connection: PlayConnection) {
-    val context: RenderContext = RenderContext(connection, this)
-    val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
+class Rendering(private val session: PlaySession) {
+    val context: RenderContext = RenderContext(session, this)
+    val audioPlayer: AudioPlayer = AudioPlayer(session, this)
 
     fun start(latch: AbstractLatch, render: Boolean = true, audio: Boolean = true) {
         Log.log(LogMessageType.RENDERING, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
@@ -39,7 +39,7 @@ class Rendering(private val connection: PlayConnection) {
     }
 
     private fun startAudioPlayerThread(latch: AbstractLatch) {
-        if (connection.profiles.audio.skipLoading) {
+        if (session.profiles.audio.skipLoading) {
             latch.dec()
             return
         }
@@ -57,15 +57,15 @@ class Rendering(private val connection: PlayConnection) {
                     audioPlayer.exit()
                 } catch (ignored: Throwable) {
                 }
-                connection.network.disconnect()
-                connection.error = exception
+                session.network.disconnect()
+                session.error = exception
                 latch.minus(audioLatch.count)
             }
-        }, "Audio#${connection.connectionId}").start()
+        }, "Audio#${session.id}").start()
     }
 
     private fun startRenderWindowThread(latch: AbstractLatch) {
-        Thread({ startRenderWindow(latch) }, "Rendering#${connection.connectionId}").start()
+        Thread({ startRenderWindow(latch) }, "Rendering#${session.id}").start()
     }
 
     private fun startRenderWindow(latch: AbstractLatch) {
@@ -82,11 +82,11 @@ class Rendering(private val connection: PlayConnection) {
             exception.printStackTrace()
             try {
                 context.window.destroy()
-                connection.events.fire(WindowCloseEvent(context, window = context.window))
+                session.events.fire(WindowCloseEvent(context, window = context.window))
             } catch (ignored: Throwable) {
             }
-            connection.network.disconnect()
-            connection.error = exception
+            session.network.disconnect()
+            session.error = exception
         }
     }
 

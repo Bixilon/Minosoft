@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.ConfirmTeleportC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -50,8 +50,8 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        val entity = connection.player
+    override fun handle(session: PlaySession) {
+        val entity = session.player
         // correct position with flags (relative position possible)
         val position = Vec3d(this.position)
         val velocity = Vec3d(entity.physics.velocity)
@@ -85,13 +85,13 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         entity.forceTeleport(position)
         entity.forceRotate(EntityRotation(yaw, pitch))
 
-        if (connection.version.versionId >= ProtocolVersions.V_15W42A) {
-            connection.sendPacket(ConfirmTeleportC2SP(teleportId))
+        if (session.version.versionId >= ProtocolVersions.V_15W42A) {
+            session.network.send(ConfirmTeleportC2SP(teleportId))
         }
-        connection.sendPacket(PositionRotationC2SP(position, position.y + entity.physics.eyeHeight, rotation, onGround))
+        session.network.send(PositionRotationC2SP(position, position.y + entity.physics.eyeHeight, rotation, onGround))
 
-        if (connection.state == PlayConnectionStates.SPAWNING) {
-            connection.state = PlayConnectionStates.PLAYING
+        if (session.state == PlaySessionStates.SPAWNING) {
+            session.state = PlaySessionStates.PLAYING
         }
     }
 

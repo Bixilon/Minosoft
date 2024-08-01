@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.title
 import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -29,9 +29,9 @@ class HotbarTextS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Hotbar text (text=$text)" }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         Log.log(LogMessageType.CHAT_IN) { "[HOTBAR] $text" }
-        val message = SimpleChatMessage(text, connection.registries.messageType[DefaultMessageTypes.GAME]!!)
-        connection.events.fire(ChatMessageEvent(connection, message))
+        val message = SimpleChatMessage(text, session.registries.messageType[DefaultMessageTypes.GAME]!!)
+        session.events.fire(ChatMessageEvent(session, message))
     }
 }

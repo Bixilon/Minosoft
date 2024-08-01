@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class TrappedChestBlockEntity(connection: PlayConnection) : ChestBlockEntity(connection) {
+class TrappedChestBlockEntity(session: PlaySession) : ChestBlockEntity(session) {
 
     override fun getSingleModel(): ResourceLocation {
         return SingleChestRenderer.TrappedChest.NAME
@@ -33,8 +33,8 @@ class TrappedChestBlockEntity(connection: PlayConnection) : ChestBlockEntity(con
     companion object : BlockEntityFactory<TrappedChestBlockEntity> {
         override val identifier: ResourceLocation = minecraft("trapped_chest")
 
-        override fun build(connection: PlayConnection): TrappedChestBlockEntity {
-            return TrappedChestBlockEntity(connection)
+        override fun build(session: PlaySession): TrappedChestBlockEntity {
+            return TrappedChestBlockEntity(session)
         }
     }
 }

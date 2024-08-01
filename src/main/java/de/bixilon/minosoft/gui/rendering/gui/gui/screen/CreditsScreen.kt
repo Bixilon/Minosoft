@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,13 +47,13 @@ class CreditsScreen(
 
     override fun onClose() {
         super.onClose()
-        guiRenderer.connection.sendPacket(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+        guiRenderer.session.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
     }
 
     companion object {
 
         fun register(guiRenderer: GUIRenderer) {
-            guiRenderer.connection.events.listen<WinGameEvent> {
+            guiRenderer.session.events.listen<WinGameEvent> {
                 if (!it.showCredits) {
                     return@listen
                 }

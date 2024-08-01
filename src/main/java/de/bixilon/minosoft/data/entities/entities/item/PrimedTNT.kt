@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,9 +25,9 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.item.PrimedTNTPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+class PrimedTNT(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val fuseTime: Int by data(FUSE_TIME_DATA, 80)
@@ -38,7 +38,7 @@ class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: Entity
         super.tick()
 
         val position = physics.position
-        connection.world.particle?.let { it += SmokeParticle(connection, position + SMOKE_OFFSET, Vec3d.EMPTY) }
+        session.world.particle?.let { it += SmokeParticle(session, position + SMOKE_OFFSET, Vec3d.EMPTY) }
     }
 
     override fun createPhysics() = PrimedTNTPhysics(this)
@@ -48,8 +48,8 @@ class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: Entity
         override val identifier: ResourceLocation = minecraft("tnt")
         private val FUSE_TIME_DATA = EntityDataField("PRIMED_TNT_FUSE_TIME")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PrimedTNT {
-            return PrimedTNT(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PrimedTNT {
+            return PrimedTNT(session, entityType, data, position, rotation)
         }
     }
 }

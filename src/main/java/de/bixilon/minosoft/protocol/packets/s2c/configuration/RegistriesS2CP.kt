@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.configuration
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -25,8 +25,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class RegistriesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val registries = buffer.readNBT().nullCast<JsonObject>()
 
-    override fun handle(connection: PlayConnection) {
-        registries?.let { connection.registries.update(connection.version, it) }
+    override fun handle(session: PlaySession) {
+        registries?.let { session.registries.update(session.version, it) }
     }
 
     override fun log(reducedLog: Boolean) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,14 +21,14 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class SpectatorTest {
 
     fun spectatorTest1() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(0.0, 5.0, 0.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(1)
@@ -37,7 +37,7 @@ class SpectatorTest {
     }
 
     fun spectatorTest2() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(12.0, 5.0, 12.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
@@ -46,7 +46,7 @@ class SpectatorTest {
     }
 
     fun spectatorTest3() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(12.0, 5.0, 12.0))
         player.input = PlayerMovementInput(forward = true, left = true)
         player.forceRotate(EntityRotation(12.0f, 60.0f))
@@ -56,7 +56,7 @@ class SpectatorTest {
     }
 
     fun spectatorTest4() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(12.0, 5.0, -19.0))
         player.input = PlayerMovementInput(forward = true, right = true)
         player.forceRotate(EntityRotation(12.0f, 60.0f))
@@ -66,7 +66,7 @@ class SpectatorTest {
     }
 
     fun spectatorTest5() {
-        val player = createPlayer(createConnection(2))
+        val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(12.0, 5.0, -19.0))
         player.input = PlayerMovementInput(forward = true, right = true)
         player.abilities = Abilities(flying = true)

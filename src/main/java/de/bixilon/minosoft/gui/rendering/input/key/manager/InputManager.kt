@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,18 +31,18 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import it.unimi.dsi.fastutil.objects.Object2LongMap
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 
 class InputManager(
     val context: RenderContext,
 ) {
-    val connection: PlayConnection = context.connection
+    val session: PlaySession = context.session
     val cameraInput = CameraInput(context, context.camera.matrixHandler)
     val bindings = BindingsManager(this)
     val handler = InputHandlerManager(this)
-    val interaction = InteractionManagerKeys(this, connection.camera.interactions)
+    val interaction = InteractionManagerKeys(this, session.camera.interactions)
 
 
     private val pressed: BitEnumSet<KeyCodes> = KeyCodes.set()
@@ -55,10 +55,10 @@ class InputManager(
     fun init() {
         interaction.register()
 
-        connection.events.listen<CharInputEvent> { onChar(it.char) }
-        connection.events.listen<KeyInputEvent> { onKey(it.code, it.change) }
-        connection.events.listen<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) }
-        connection.events.listen<MouseMoveEvent> { onMouse(it.delta, it.position) }
+        session.events.listen<CharInputEvent> { onChar(it.char) }
+        session.events.listen<KeyInputEvent> { onKey(it.code, it.change) }
+        session.events.listen<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) }
+        session.events.listen<MouseMoveEvent> { onMouse(it.delta, it.position) }
 
         cameraInput.init()
     }

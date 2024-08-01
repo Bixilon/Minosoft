@@ -40,14 +40,14 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.physics.entities.EntityPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
 
 abstract class Entity(
-    val connection: PlayConnection,
+    val session: PlaySession,
     val type: EntityType,
     val data: EntityData,
     private var initialPosition: Vec3d,
@@ -56,12 +56,12 @@ abstract class Entity(
     private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
     protected val random = Random()
     val id: Int?
-        get() = connection.world.entities.getId(this)
+        get() = session.world.entities.getId(this)
     open val uuid: UUID?
-        get() = connection.world.entities.getUUID(this)
+        get() = session.world.entities.getUUID(this)
 
-    @Deprecated(message = "Use connection.version", replaceWith = ReplaceWith("connection.version.versionId"))
-    protected val versionId: Int get() = connection.version.versionId
+    @Deprecated(message = "Use session.version", replaceWith = ReplaceWith("session.version.versionId"))
+    protected val versionId: Int get() = session.version.versionId
 
     override val attachment = EntityAttachment(this)
     open val primaryPassenger: Entity? = null

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.chat.sender.MessageSender
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.time.Instant
 
 class SignedChatMessage(
-    private val connection: PlayConnection,
+    private val session: PlaySession,
     val message: String,
     type: ChatMessageType,
     override val sender: MessageSender,
@@ -31,4 +31,4 @@ class SignedChatMessage(
     val error: Exception?,
     val sent: Instant,
     val received: Instant,
-) : FormattedChatMessage(connection, type, parameters), ChatMessage, PlayerSentMessage
+) : FormattedChatMessage(session, type, parameters), ChatMessage, PlayerSentMessage

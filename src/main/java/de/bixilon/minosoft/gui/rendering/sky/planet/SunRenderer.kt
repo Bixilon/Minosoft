@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ class SunRenderer(
     override val texture = sky.context.textures.static.create(SUN)
 
     public override fun calculateAngle(): Float {
-        val time = sky.context.connection.world.time
+        val time = sky.context.session.world.time
 
         // 270: sunrise (23k-0k)
         // 0: day (0-12k)
@@ -42,7 +42,7 @@ class SunRenderer(
     }
 
     override fun calculateIntensity(): Float {
-        val time = sky.context.connection.world.time
+        val time = sky.context.session.world.time
         return when (time.phase) {
             DayPhases.NIGHT -> 0.0f
             DayPhases.DAY -> 1.0f

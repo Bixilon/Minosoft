@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,11 +32,11 @@ import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerButtonC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
+class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val costs = IntArray(ENCHANTING_OPTIONS) { -1 }
     val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
@@ -66,7 +66,7 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
         when (property) {
             0, 1, 2 -> costs[property] = value
             3 -> seed = value
-            4, 5, 6 -> enchantments[property - 4] = connection.registries.enchantment.getOrNull(value)
+            4, 5, 6 -> enchantments[property - 4] = session.registries.enchantment.getOrNull(value)
             7, 8, 9 -> enchantmentLevels[property - 7] = value
         }
     }
@@ -76,10 +76,10 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
         if (cost < 0) {
             return false
         }
-        if (connection.player.gamemode == Gamemodes.CREATIVE) {
+        if (session.player.gamemode == Gamemodes.CREATIVE) {
             return true
         }
-        if (connection.player.experienceCondition.level < cost) {
+        if (session.player.experienceCondition.level < cost) {
             return false
         }
         val lapislazuli = this.lapislazuli
@@ -99,7 +99,7 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
             throw IllegalStateException("Can not enchant $index!")
         }
         val id = this.id ?: return
-        connection.network.send(ContainerButtonC2SP(id, index))
+        session.network.send(ContainerButtonC2SP(id, index))
     }
 
     private object LapislazuliSlot : SlotType {
@@ -123,8 +123,8 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
             PassiveInventorySection(ENCHANTING_SLOTS),
         )
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): EnchantingContainer {
-            return EnchantingContainer(connection, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): EnchantingContainer {
+            return EnchantingContainer(session, type, title)
         }
     }
 }

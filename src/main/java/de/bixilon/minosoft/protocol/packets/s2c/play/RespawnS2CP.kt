@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
@@ -57,11 +57,11 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 } else {
                     buffer.readInt()
                 }
-                buffer.connection.registries.dimension[id].properties
+                buffer.session.registries.dimension[id].properties
             }
 
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A -> {
-                buffer.readLegacyRegistryItem(buffer.connection.registries.dimension)!!.properties
+                buffer.readLegacyRegistryItem(buffer.session.registries.dimension)!!.properties
             }
 
             else -> DimensionProperties.deserialize(null, buffer.readNBT().asJsonObject())
@@ -104,21 +104,21 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.util.prepareSpawn()
-        connection.player.additional.gamemode = gamemode
-        connection.player.abilities = gamemode.abilities
-        val dimensionChange = this.dimension != connection.world.dimension || this.world != connection.world.name
+    override fun handle(session: PlaySession) {
+        session.util.prepareSpawn()
+        session.player.additional.gamemode = gamemode
+        session.player.abilities = gamemode.abilities
+        val dimensionChange = this.dimension != session.world.dimension || this.world != session.world.name
         if (dimensionChange) {
-            connection.util.resetWorld()
+            session.util.resetWorld()
         }
-        connection.world.dimension = dimension
-        connection.world.name = world
-        connection.world.biomes.updateNoise(hashedSeed)
+        session.world.dimension = dimension
+        session.world.name = world
+        session.world.biomes.updateNoise(hashedSeed)
 
-        connection.state = PlayConnectionStates.SPAWNING
+        session.state = PlaySessionStates.SPAWNING
         if (dimensionChange) {
-            connection.events.fire(DimensionChangeEvent(connection))
+            session.events.fire(DimensionChangeEvent(session))
         }
     }
 

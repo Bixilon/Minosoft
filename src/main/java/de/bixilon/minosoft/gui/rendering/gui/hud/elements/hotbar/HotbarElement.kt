@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -111,7 +111,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
         val size = Vec2(core.size)
 
-        renderOffhand = guiRenderer.context.connection.player.items.inventory[EquipmentSlots.OFF_HAND] != null
+        renderOffhand = guiRenderer.context.session.player.items.inventory[EquipmentSlots.OFF_HAND] != null
 
         if (renderOffhand) {
             size.x += offhand.size.x
@@ -120,7 +120,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
 
         val itemTextSize = itemText.size
-        if (context.connection.player.gamemode != Gamemodes.SPECTATOR && itemTextSize.length2() > 0.0f) {
+        if (context.session.player.gamemode != Gamemodes.SPECTATOR && itemTextSize.length2() > 0.0f) {
             size.y += itemTextSize.y + ITEM_NAME_OFFSET
             size.x = maxOf(size.x, itemTextSize.x)
             this.itemTextSize = itemTextSize
@@ -142,7 +142,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     }
 
     override fun silentApply(): Boolean {
-        val items = guiRenderer.context.connection.player.items
+        val items = guiRenderer.context.session.player.items
         val itemSlot = items.hotbar
         val currentItem = items.inventory.getHotbarSlot(itemSlot)
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
@@ -177,8 +177,8 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     override fun postInit() {
         prefMaxSize = Vec2(-1, -1)
 
-        val connection = context.connection
-        val player = connection.player
+        val session = context.session
+        val player = session.player
 
         player::experienceCondition.observeRendering(this) { core.experience.apply() }
 
@@ -186,7 +186,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
         player.items::hotbar.observeRendering(this) { core.base.apply() }
 
-        connection.events.listen<ChatMessageEvent> {
+        session.events.listen<ChatMessageEvent> {
             if (it.message.type.position != ChatTextPositions.HOTBAR) {
                 return@listen
             }

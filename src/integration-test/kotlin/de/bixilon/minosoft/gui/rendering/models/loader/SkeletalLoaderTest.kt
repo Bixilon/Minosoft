@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -41,13 +41,13 @@ class SkeletalLoaderTest {
 
     private fun createContext(): RenderContext {
         val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
-        context::connection.forceSet(ConnectionTestUtil.createConnection())
+        context::session.forceSet(SessionTestUtil.createSession())
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(DummyTextureManager(context))
 
         val manager = MemoryAssetsManager()
         manager.push(dummyModel, SkeletalLoaderTest::class.java.getResourceAsStream("/model/skeletal/dummy.smodel")!!.readAll())
-        context.connection.assetsManager.add(manager)
+        context.session.assetsManager.add(manager)
 
 
         return context

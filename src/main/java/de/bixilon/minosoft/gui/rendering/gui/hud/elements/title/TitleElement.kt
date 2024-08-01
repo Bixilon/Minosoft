@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -107,23 +107,23 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     override fun postInit() {
-        val connection = context.connection
+        val session = context.session
 
-        connection.events.listen<TitleResetEvent> {
+        session.events.listen<TitleResetEvent> {
             this.reset()
         }
-        connection.events.listen<TitleHideEvent> {
+        session.events.listen<TitleHideEvent> {
             this.hide()
         }
-        connection.events.listen<TitleSetEvent> {
+        session.events.listen<TitleSetEvent> {
             this.title.text = it.title
             this.show()
         }
-        connection.events.listen<TitleSubtitleSetEvent> {
+        session.events.listen<TitleSubtitleSetEvent> {
             this.subtitle.text = it.subtitle
             this.show()
         }
-        connection.events.listen<TitleTimesSetEvent> {
+        session.events.listen<TitleTimesSetEvent> {
             this.times = FadingTimes(it.fadeInTime * ProtocolDefinition.TICK_TIME, it.stayTime * ProtocolDefinition.TICK_TIME, it.fadeOutTime * ProtocolDefinition.TICK_TIME)
         }
     }

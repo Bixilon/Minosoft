@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,9 +31,9 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
@@ -45,29 +45,29 @@ object InteractionTestUtil {
 
     private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, mapOf(), Pig, null)
 
-    fun createConnection(): PlayConnection {
-        val connection = ConnectionTestUtil.createConnection(0)
-        val player = createPlayer(connection)
+    fun createSession(): PlaySession {
+        val session = SessionTestUtil.createSession(0)
+        val player = createPlayer(session)
 
-        return connection
+        return session
     }
 
-    fun PlayConnection.lookAtPig(distance: Double = 1.0): Entity {
+    fun PlaySession.lookAtPig(distance: Double = 1.0): Entity {
         return this.lookAt(pig, distance)
     }
 
-    fun PlayConnection.lookAt(type: EntityType, distance: Double = 1.0): Entity {
+    fun PlaySession.lookAt(type: EntityType, distance: Double = 1.0): Entity {
         return this.lookAt(type.factory.build(this, this@InteractionTestUtil.pig, EntityData(this, Int2ObjectOpenHashMap()), Vec3d.EMPTY, EntityRotation.EMPTY)!!, distance)
     }
 
-    fun PlayConnection.lookAt(entity: Entity, distance: Double = 1.0): Entity {
+    fun PlaySession.lookAt(entity: Entity, distance: Double = 1.0): Entity {
         world.entities.add(10, null, entity)
         camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, distance, Directions.DOWN, entity)))
 
         return entity
     }
 
-    fun PlayConnection.lookAtPlayer(distance: Double = 1.0): RemotePlayerEntity {
+    fun PlaySession.lookAtPlayer(distance: Double = 1.0): RemotePlayerEntity {
         val player = RemotePlayerEntity(this, registries.entityType["player"]!!, EntityData(this, Int2ObjectOpenHashMap()), additional = PlayerAdditional("dummy"))
 
         return this.lookAt(player).unsafeCast()
@@ -90,7 +90,7 @@ object InteractionTestUtil {
         RELEASE.invoke(this)
     }
 
-    fun PlayConnection.assertUseItem(hand: Hands) {
+    fun PlaySession.assertUseItem(hand: Hands) {
         assertEquals(assertPacket(UseItemC2SP::class.java).hand, hand)
     }
 }

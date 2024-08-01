@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
@@ -39,13 +39,13 @@ class ParticleRendererTest {
 
     private fun create(): ParticleRenderer {
         val context = RenderContext::class.java.allocate()
-        context::connection.forceSet(createConnection(1))
+        context::session.forceSet(createSession(1))
         context::state.forceSet(DataObserver(RenderingStates.RUNNING))
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(DummyTextureManager(context))
         context::light.forceSet(RenderLight(context))
         context::camera.forceSet(Camera(context))
-        val renderer = ParticleRenderer(context.connection, context)
+        val renderer = ParticleRenderer(context.session, context)
 
 
         return renderer
@@ -65,7 +65,7 @@ class ParticleRendererTest {
     fun `draw once`() {
         val renderer = create()
         assertEquals(renderer.size, 0)
-        val particle = TestParticle(renderer.context.connection)
+        val particle = TestParticle(renderer.context.session)
         renderer += particle
         renderer.draw()
         assertEquals(particle.vertices, 1)
@@ -76,7 +76,7 @@ class ParticleRendererTest {
 
     fun `draw twice`() {
         val renderer = create()
-        val particle = TestParticle(renderer.context.connection)
+        val particle = TestParticle(renderer.context.session)
         renderer += particle
         renderer.draw(); renderer.draw()
         assertEquals(particle.vertices, 2)
@@ -86,7 +86,7 @@ class ParticleRendererTest {
 
     fun kill() {
         val renderer = create()
-        val particle = TestParticle(renderer.context.connection)
+        val particle = TestParticle(renderer.context.session)
         renderer += particle
         renderer.draw(); renderer.draw()
         particle.dead = true
@@ -99,8 +99,8 @@ class ParticleRendererTest {
     fun `add 2 particles`() {
         val renderer = create()
         assertEquals(renderer.size, 0)
-        val a = TestParticle(renderer.context.connection)
-        val b = TestParticle(renderer.context.connection)
+        val a = TestParticle(renderer.context.session)
+        val b = TestParticle(renderer.context.session)
         renderer += a; renderer += b
         assertEquals(renderer.size, 0) // queue not updated yet
         renderer.draw()
@@ -113,8 +113,8 @@ class ParticleRendererTest {
         val renderer = create()
         assertEquals(renderer.size, 0)
         renderer.maxAmount = 1
-        val a = TestParticle(renderer.context.connection)
-        val b = TestParticle(renderer.context.connection)
+        val a = TestParticle(renderer.context.session)
+        val b = TestParticle(renderer.context.session)
         renderer += a; renderer += b
         assertEquals(renderer.size, 0) // queue not updated yet
         renderer.draw()
@@ -126,7 +126,7 @@ class ParticleRendererTest {
 
     // TODO: auto ticking (task registering)
 
-    private class TestParticle(connection: PlayConnection) : Particle(connection, Vec3d.EMPTY, Vec3d.EMPTY, DATA) {
+    private class TestParticle(session: PlaySession) : Particle(session, Vec3d.EMPTY, Vec3d.EMPTY, DATA) {
         var vertices = 0
         var tryTicks = 0
 

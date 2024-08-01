@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -73,7 +73,7 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
 
     override fun tick() {
         // This is not 100% vanilla, but performance optimized
-        if (position.y < entity.connection.world.dimension.minY - 20.0) return // ignore out of world entities
+        if (position.y < entity.session.world.dimension.minY - 20.0) return // ignore out of world entities
 
         updateVelocity()
         if (onGround && this.velocity.xz.length2() <= 9.999999747378752E-6 && entity.age % 4 != 0) return

@@ -42,7 +42,7 @@ class SkyboxColor(
         private set
 
     private fun calculateBiomeAvg(average: (Biome) -> RGBColor?): RGBColor? {
-        val entity = sky.connection.camera.entity
+        val entity = sky.session.camera.entity
         val eyePosition = entity.renderInfo.eyePosition
         val chunk = entity.physics.positionInfo.chunk ?: return null
 
@@ -56,7 +56,7 @@ class SkyboxColor(
 
         val offset = Vec3i(eyePosition.x - (chunk.chunkPosition.x shl 4), eyePosition.y, eyePosition.z - (chunk.chunkPosition.y shl 4))
 
-        val dimension = sky.connection.world.dimension
+        val dimension = sky.session.world.dimension
         val yRange: IntRange
 
         if (dimension.supports3DBiomes) {
@@ -215,7 +215,7 @@ class SkyboxColor(
         }
         // TODO: Check if wither is present
 
-        var weather = sky.context.connection.world.weather
+        var weather = sky.context.session.world.weather
         if (!properties.weather) {
             weather = WorldWeather.SUNNY
         }

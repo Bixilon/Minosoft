@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.physics.parkour.ParkourUtil.run
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 import org.testng.annotations.Test
@@ -146,9 +146,9 @@ class IceWalkIT : WalkIT() {
 
     @Test(enabled = false)
     fun iceParkour1() {
-        val player = createPlayer(createConnection())
-        player.connection.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
-        player.connection.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
+        val player = createPlayer(createSession())
+        player.session.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
 
         val ticks = ParkourUtil.read("ice_parkour_1")
         player.run(ticks)
@@ -156,9 +156,9 @@ class IceWalkIT : WalkIT() {
 
     @Test(enabled = false)
     fun iceParkourWalk1() {
-        val player = createPlayer(createConnection())
-        player.connection.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
-        player.connection.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
+        val player = createPlayer(createSession())
+        player.session.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
 
         val ticks = ParkourUtil.read("ice_walk_1")
         player.run(ticks)

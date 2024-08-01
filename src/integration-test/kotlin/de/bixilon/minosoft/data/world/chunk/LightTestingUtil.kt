@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,8 +28,8 @@ import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.EventMaster
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import org.objenesis.ObjenesisStd
 
 const val SECTIONS = 16
@@ -37,18 +37,18 @@ const val SECTIONS = 16
 object LightTestingUtil {
     private val world = createWorld()
 
-    fun createConnection(): PlayConnection {
-        val connection = ObjenesisStd().newInstance(PlayConnection::class.java)
+    fun createSession(): PlaySession {
+        val session = ObjenesisStd().newInstance(PlaySession::class.java)
 
-        Connection::events.jvmField.forceSet(connection, EventMaster())
-        return connection
+        Session::events.jvmField.forceSet(session, EventMaster())
+        return session
     }
 
     fun createWorld(): World {
         val objenesis = ObjenesisStd()
         val world = objenesis.newInstance(World::class.java)
         world::dimension.forceSet(DataObserver(DimensionProperties(skyLight = true)))
-        world::connection.forceSet(createConnection())
+        world::session.forceSet(createSession())
         world::biomes.forceSet(WorldBiomes(world))
 
         return world
@@ -61,7 +61,7 @@ object LightTestingUtil {
         chunk::chunkPosition.forceSet(position)
         chunk::world.forceSet(world)
         chunk::maxSection.forceSet(chunk.world.dimension.maxSection)
-        chunk::connection.forceSet(chunk.world.connection)
+        chunk::session.forceSet(chunk.world.session)
         chunk::light.forceSet(ChunkLight(chunk))
         chunk::neighbours.forceSet(ChunkNeighbours(chunk))
         chunk.sections = arrayOfNulls(SECTIONS)

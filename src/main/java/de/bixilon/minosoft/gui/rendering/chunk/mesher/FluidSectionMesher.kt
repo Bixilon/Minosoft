@@ -49,7 +49,7 @@ import kotlin.math.atan2
 class FluidSectionMesher(
     val context: RenderContext,
 ) {
-    private val water = context.connection.registries.fluid[WaterFluid]
+    private val water = context.session.registries.fluid[WaterFluid]
     private val tints = context.tints
 
     private fun BlockState.getFluid(): Fluid? {
@@ -269,7 +269,7 @@ class FluidSectionMesher(
 
             if (!fluid.matches(state)) {
                 // TODO: this was !blockState.material.solid
-                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.connection, EmptyCollisionContext, blockPosition, state, null) == AbstractVoxelShape.EMPTY) {
+                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.session, EmptyCollisionContext, blockPosition, state, null) == AbstractVoxelShape.EMPTY) {
                     count++
                 }
                 continue

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -96,7 +96,7 @@ class ScreenshotTaker(
             TextureUtil.dump(file, buffer, false, true)
 
             val message = createMessage(file)
-            context.connection.util.sendInternal(message)
+            context.session.util.sendInternal(message)
         } catch (exception: Exception) {
             exception.fail()
         }
@@ -107,7 +107,7 @@ class ScreenshotTaker(
             val size = Vec2i(context.window.size)
             val buffer = context.system.readPixels(Vec2i.EMPTY_INSTANCE, size)
 
-            val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.connection.address.hostname)
+            val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.session.address.hostname)
             val time = millis()
             DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.HIGHER) { store(buffer, path, time) }
         } catch (exception: Exception) {
@@ -117,7 +117,7 @@ class ScreenshotTaker(
 
     private fun Throwable?.fail() {
         this?.printStackTrace()
-        context.connection.util.sendInternal("§cFailed to make a screenshot: ${this?.message}")
+        context.session.util.sendInternal("§cFailed to make a screenshot: ${this?.message}")
     }
 
     companion object {

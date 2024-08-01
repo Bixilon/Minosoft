@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -33,7 +33,7 @@ import java.util.*
 
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val text: ChatComponent = buffer.readNbtChatComponent()
-    var type: ChatMessageType = buffer.connection.registries.messageType[DefaultMessageTypes.CHAT]!!
+    var type: ChatMessageType = buffer.session.registries.messageType[DefaultMessageTypes.CHAT]!!
         private set
     var sender: UUID? = null
         private set
@@ -45,7 +45,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
                 overlay = buffer.readBoolean()
             } else {
-                type = buffer.readRegistryItem(buffer.connection.registries.messageType)
+                type = buffer.readRegistryItem(buffer.session.registries.messageType)
                 if (buffer.versionId >= ProtocolVersions.V_20W21A && buffer.versionId < ProtocolVersions.V_22W17A) {
                     sender = buffer.readUUID()
                 }
@@ -54,15 +54,15 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         text.setFallbackColor(ProtocolDefinition.DEFAULT_COLOR)
     }
 
-    override fun handle(connection: PlayConnection) {
-        val type = if (overlay) connection.registries.messageType[DefaultMessageTypes.GAME]!! else type
+    override fun handle(session: PlaySession) {
+        val type = if (overlay) session.registries.messageType[DefaultMessageTypes.GAME]!! else type
         val sender = sender
         val message: ChatMessage = if (sender == null || sender == KUtil.NULL_UUID) {
             SimpleChatMessage(text, type)
         } else {
-            PlayerChatMessage(text, type, connection.getMessageSender(sender))
+            PlayerChatMessage(text, type, session.getMessageSender(sender))
         }
-        connection.events.fire(ChatMessageEvent(connection, message))
+        session.events.fire(ChatMessageEvent(session, message))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.container.actions.types.DropContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTest0
 import de.bixilon.minosoft.data.registries.items.EggTest0
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
@@ -31,54 +31,54 @@ import org.testng.annotations.Test
 class DropContainerActionTest {
 
     fun dropEmptySingle() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container.actions.invoke(DropContainerAction(7, false))
         assertNull(container.floatingItem)
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun dropEmptyStack() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container.actions.invoke(DropContainerAction(9, true))
         assertNull(container.floatingItem)
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun testDropSingle() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container[9] = ItemStack(AppleTest0.item, count = 8)
         container.actions.invoke(DropContainerAction(9, false))
         assertNull(container.floatingItem)
         assertEquals(container[9], ItemStack(AppleTest0.item, count = 7))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTest0.item, count = 7)), null))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTest0.item, count = 7)), null))
     }
 
     fun testDropSingleEmpty() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container[9] = ItemStack(AppleTest0.item, count = 1)
         container.actions.invoke(DropContainerAction(9, false))
         assertNull(container.floatingItem)
         assertEquals(container[9], null)
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
     }
 
     fun testDropStack() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container[9] = ItemStack(AppleTest0.item, count = 12)
         container.actions.invoke(DropContainerAction(9, true))
         assertNull(container.floatingItem)
         assertEquals(container[9], null)
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
     }
 
     fun testSingleRevert() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container[8] = ItemStack(EggTest0.item, count = 9)
         val action = DropContainerAction(8, false)
         container.actions.invoke(action)
@@ -87,8 +87,8 @@ class DropContainerActionTest {
     }
 
     fun testStackRevert() {
-        val connection = createConnection()
-        val container = createContainer(connection)
+        val session = createSession()
+        val container = createContainer(session)
         container[8] = ItemStack(EggTest0.item, count = 9)
         val action = DropContainerAction(8, true)
         container.actions.invoke(action)

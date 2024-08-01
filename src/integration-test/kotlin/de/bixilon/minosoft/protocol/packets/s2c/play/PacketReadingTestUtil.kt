@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import java.io.FileNotFoundException
 
 object PacketReadingTestUtil {
 
-    fun <T : S2CPacket> read(name: String, version: String, connection: PlayConnection = ConnectionTestUtil.createConnection(version = version), constructor: (PlayInByteBuffer) -> T): T {
-        if (connection.version.name != version) throw IllegalStateException("Version mismatch: $version vs ${connection.version}")
+    fun <T : S2CPacket> read(name: String, version: String, session: PlaySession = SessionTestUtil.createSession(version = version), constructor: (PlayInByteBuffer) -> T): T {
+        if (session.version.name != version) throw IllegalStateException("Version mismatch: $version vs ${session.version}")
         val data = PacketReadingTestUtil::class.java.getResourceAsStream("/packets/$name.bin")?.readAll() ?: throw FileNotFoundException("Can not find packet blob $name")
 
-        val buffer = PlayInByteBuffer(data, connection)
+        val buffer = PlayInByteBuffer(data, session)
 
         val packet = constructor.invoke(buffer)
         if (buffer.pointer != buffer.size) throw IllegalArgumentException("buffer underflow!")

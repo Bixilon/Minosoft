@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,14 +24,14 @@ import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class GenericContainer(
     val rows: Int,
-    connection: PlayConnection,
+    session: PlaySession,
     type: ContainerType,
     title: ChatComponent?,
-) : InventorySynchronizedContainer(connection, type, title, RangeSection(rows * SLOTS_PER_ROW, PlayerInventory.MAIN_SLOTS)) {
+) : InventorySynchronizedContainer(session, type, title, RangeSection(rows * SLOTS_PER_ROW, PlayerInventory.MAIN_SLOTS)) {
     override val sections: Array<ContainerSection> = arrayOf(
         RangeSection(0, rows * SLOTS_PER_ROW),
         HotbarSection(rows * SLOTS_PER_ROW + PlayerInventory.PASSIVE_SLOTS),

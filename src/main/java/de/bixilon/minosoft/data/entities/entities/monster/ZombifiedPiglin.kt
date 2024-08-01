@@ -18,15 +18,15 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class ZombifiedPiglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, data, position, rotation) {
+open class ZombifiedPiglin(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Zombie(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ZombifiedPiglin> {
         override val identifier = minecraft("zombified_piglin")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin {
-            return ZombifiedPiglin(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin {
+            return ZombifiedPiglin(session, entityType, data, position, rotation)
         }
     }
 }

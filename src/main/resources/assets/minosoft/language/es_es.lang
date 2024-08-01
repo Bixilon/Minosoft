@@ -15,21 +15,21 @@ minosoft:server_info.real_server_address=Dirección real
 minosoft:server_info.forced_version=Forzar versión
 minosoft:server_info.remote_version=Versión remota
 minosoft:server_info.remote_brand=Marca remota
-minosoft:server_info.active_connections=Conexiones activas
+minosoft:server_info.active_session=Conexiones activas
 minosoft:server_info.players_online=Jugadores conectados
 minosoft:server_info.ping=Latencia
 
 minosoft:server_info.delete.dialog.description=Estas seguro de que quieres eliminar el servidor: %1$s (%2$s)?
 
 
-minosoft:connection.status.state.waiting=Esperando...
-minosoft:connection.status.state.resolving=Resolviendo direccion...
-minosoft:connection.status.state.establishing=Estableciendo conexión...
-minosoft:connection.status.state.handshaking=Negociando con el servidor...
-minosoft:connection.status.state.querying_status=Descargando motd...
-minosoft:connection.status.state.querying_ping=Calculando ping...
-minosoft:connection.status.state.ping_done=Estado recibido!
-minosoft:connection.status.state.error=¡Error en la conexion!
+minosoft:session.status.state.waiting=Esperando...
+minosoft:session.status.state.resolving=Resolviendo direccion...
+minosoft:session.status.state.establishing=Estableciendo conexión...
+minosoft:session.status.state.handshaking=Negociando con el servidor...
+minosoft:session.status.state.querying_status=Descargando motd...
+minosoft:session.status.state.querying_ping=Calculando ping...
+minosoft:session.status.state.ping_done=Estado recibido!
+minosoft:session.status.state.error=¡Error en la conexion!
 
 
 minosoft:general.dialog.are_you_sure=Estas seguro?
@@ -67,7 +67,7 @@ minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
 
 
-minosoft:main.account.card.connection_count=%1$s conexiones
+minosoft:main.account.card.session_count=%1$s conexiones
 
 minosoft:main.account.account_info.id=Id
 minosoft:main.account.account_info.email=E-Mail
@@ -84,15 +84,15 @@ minosoft:main.account.add.offline.cancel_button=Cancelar
 minosoft:main.account.add.microsoft.title=Añadir cuenta de Microsoft
 
 
-minosoft:connection.kick.title=Expulsado del servidor
-minosoft:connection.kick.header=Te han expulsado
-minosoft:connection.kick.description=Te han expulsado de %1$s (conectado con: %2$s)
-minosoft:connection.kick.reconnect_button=Reconectarse
-minosoft:connection.kick.close_button=Cerrar
+minosoft:session.kick.title=Expulsado del servidor
+minosoft:session.kick.header=Te han expulsado
+minosoft:session.kick.description=Te han expulsado de %1$s (conectado con: %2$s)
+minosoft:session.kick.reconnect_button=Reconectarse
+minosoft:session.kick.close_button=Cerrar
 
-minosoft:connection.login_kick.title=Expulsado del servidor
-minosoft:connection.login_kick.header=Te han expulsado
-minosoft:connection.login_kick.description=Te han expulsado mientras iniciabas sesion de %1$s (conectado con: %2$s)
+minosoft:session.login_kick.title=Expulsado del servidor
+minosoft:session.login_kick.header=Te han expulsado
+minosoft:session.login_kick.description=Te han expulsado mientras iniciabas sesion de %1$s (conectado con: %2$s)
 
 minosoft:error.title=%1$s - Minosoft
 minosoft:error.header=¡Ha ocurrido un error!

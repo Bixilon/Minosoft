@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,24 +34,24 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ShortUseHandler(
     private val interactionHandler: UseHandler,
 ) {
-    private val connection = interactionHandler.connection
+    private val session = interactionHandler.session
 
 
     fun interactBlock(target: BlockTarget, stack: ItemStack?, hand: Hands): InteractionResults {
-        if (target.distance >= connection.player.reachDistance) {
+        if (target.distance >= session.player.reachDistance) {
             return InteractionResults.IGNORED
         }
-        if (connection.world.border.isOutside(target.blockPosition)) {
+        if (session.world.border.isOutside(target.blockPosition)) {
             return InteractionResults.FAILED
         }
         // if out of world: return FAILED
 
-        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+        if (session.player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.SUCCESS
         }
 
         if (target.state.block is InteractBlockHandler) {
-            val result = target.state.block.interact(connection, target, hand, stack)
+            val result = target.state.block.interact(session, target, hand, stack)
             if (result != InteractionResults.IGNORED) return result
         }
 
@@ -63,14 +63,14 @@ class ShortUseHandler(
         }
         val item = stack.item.item
         if (item is ItemInteractBlockHandler) {
-            return item.interactBlock(connection.player, target, hand, stack)
+            return item.interactBlock(session.player, target, hand, stack)
         }
 
         return InteractionResults.IGNORED
     }
 
     private fun tryUse(hand: Hands, target: BlockTarget, stack: ItemStack?): Boolean {
-        if (!connection.world.isValidPosition(target.blockPosition)) {
+        if (!session.world.isValidPosition(target.blockPosition)) {
             return true
         }
 
@@ -81,14 +81,14 @@ class ShortUseHandler(
         if (result == InteractionResults.INVALID) {
             return true
         }
-        connection.sendPacket(BlockInteractC2SP(
+        session.network.send(BlockInteractC2SP(
             position = target.blockPosition,
             direction = target.direction,
             cursorPosition = Vec3(target.cursor),
             item = copy,
             hand = hand,
             insideBlock = target.inside,
-            sequence = connection.sequence.getAndIncrement()
+            sequence = session.sequence.getAndIncrement()
         ))
 
         if (result == InteractionResults.SUCCESS) {
@@ -102,10 +102,10 @@ class ShortUseHandler(
     }
 
     fun interactEntityAt(target: EntityTarget, hand: Hands, stack: ItemStack?): InteractionResults {
-        val entityId = connection.world.entities.getId(target.entity) ?: return InteractionResults.IGNORED
+        val entityId = session.world.entities.getId(target.entity) ?: return InteractionResults.IGNORED
         // used in armor stands
-        val player = connection.player
-        connection.sendPacket(EntityInteractPositionC2SP(entityId, Vec3(target.position), hand, player.isSneaking))
+        val player = session.player
+        session.network.send(EntityInteractPositionC2SP(entityId, Vec3(target.position), hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.IGNORED
@@ -115,7 +115,7 @@ class ShortUseHandler(
     }
 
     fun interactEntity(target: EntityTarget, hand: Hands, stack: ItemStack?): InteractionResults {
-        val player = connection.player
+        val player = session.player
         try {
 
             if (player.gamemode == Gamemodes.SPECTATOR) {
@@ -125,7 +125,7 @@ class ShortUseHandler(
             // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
             return InteractionResults.IGNORED
         } finally {
-            connection.world.entities.getId(target.entity)?.let { connection.sendPacket(EntityEmptyInteractC2SP(it, hand, player.isSneaking)) }
+            session.world.entities.getId(target.entity)?.let { session.network.send(EntityEmptyInteractC2SP(it, hand, player.isSneaking)) }
         }
     }
 
@@ -163,7 +163,7 @@ class ShortUseHandler(
             return false
         }
 
-        val result = item.useItem(connection.player, hand, stack)
+        val result = item.useItem(session.player, hand, stack)
         if (result == InteractionResults.INVALID) {
             return true
         }

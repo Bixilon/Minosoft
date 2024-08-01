@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,6 @@ import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
+abstract class ProcessingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(session, type, title, synchronizedSlots)

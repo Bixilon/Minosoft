@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_RC1
@@ -35,14 +35,14 @@ class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         for (entityId in entityIds) {
-            val entity = connection.world.entities[entityId] ?: continue
+            val entity = session.world.entities[entityId] ?: continue
             for (passenger in entity.attachment.passengers) { // TODO: potential ConcurrentModificationException
                 passenger.attachment.vehicle = null
             }
 
-            connection.world.entities.remove(entityId)
+            session.world.entities.remove(entityId)
         }
     }
 

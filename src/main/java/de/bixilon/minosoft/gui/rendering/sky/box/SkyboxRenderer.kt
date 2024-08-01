@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,7 +45,7 @@ class SkyboxRenderer(
     private var updateTexture = true
     private var updateMatrix = true
 
-    private var time: WorldTime = sky.context.connection.world.time
+    private var time: WorldTime = sky.context.session.world.time
 
 
     private var day = -1L
@@ -58,18 +58,18 @@ class SkyboxRenderer(
         sky::matrix.observe(this) { updateMatrix = true }
 
         // ToDo: Sync with lightmap, lightnings, etc
-        sky.context.connection.world.entities::entities.observeSet(this) {
+        sky.context.session.world.entities::entities.observeSet(this) {
             val lightnings = it.adds.filterIsInstance<LightningBolt>()
             if (lightnings.isEmpty()) return@observeSet
             color.onStrike(lightnings.maxOf(LightningBolt::duration))
         }
 
-        sky.context.connection.events.listen<WorldUpdateEvent> {
+        sky.context.session.events.listen<WorldUpdateEvent> {
             if (it.update !is NeighbourChangeUpdate && it.update !is ChunkCreateUpdate) return@listen
             if (!it.update.chunk.neighbours.complete) return@listen
             color.updateBase()
         }
-        sky.context.connection.events.listen<CameraPositionChangeEvent> {
+        sky.context.session.events.listen<CameraPositionChangeEvent> {
             color.updateBase()
         }
     }

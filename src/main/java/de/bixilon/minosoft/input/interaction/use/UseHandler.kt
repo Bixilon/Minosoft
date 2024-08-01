@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 class UseHandler(
     val interactions: InteractionManager,
 ) : KeyHandler() {
-    val connection = interactions.connection
+    val session = interactions.session
     private val short = ShortUseHandler(this)
     val long = LongUseHandler(this)
 
@@ -56,7 +56,7 @@ class UseHandler(
             return long.reset()
         }
 
-        val slot = connection.player.items.hotbar
+        val slot = session.player.items.hotbar
 
         if (long.isUsing) {
             // we do use an item (e.g. shield), continue use it
@@ -84,18 +84,18 @@ class UseHandler(
 
 
         var target = interactions.camera.target.target
-        if (target != null && target.distance >= connection.player.reachDistance) {
+        if (target != null && target.distance >= session.player.reachDistance) {
             target = null
         }
 
         // check both hands if we can interact
         // if we can, stop further interactions
         for (hand in Hands.VALUES) {
-            if (hand == Hands.OFF && !connection.version.hasOffhand) {
+            if (hand == Hands.OFF && !session.version.hasOffhand) {
                 // only one hand available
                 return
             }
-            val stack = connection.player.items.inventory[hand]
+            val stack = session.player.items.inventory[hand]
 
             if (target != null && short.tryUse(hand, target, stack)) {
                 // try with target
@@ -111,7 +111,7 @@ class UseHandler(
 
             // TODO: send both packets if item is cooling down
 
-            val player = connection.player
+            val player = session.player
             player.physics().sender.sendPositionRotation()
             if (long.tryUse(hand, slot, stack)) {
                 return
@@ -125,7 +125,7 @@ class UseHandler(
     }
 
     private fun canInteractItem(stack: ItemStack): Boolean {
-        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+        if (session.player.gamemode == Gamemodes.SPECTATOR) {
             return false
         }
         if (interactions.isCoolingDown(stack.item.item)) {
@@ -136,10 +136,10 @@ class UseHandler(
 
 
     fun sendItemUse(hand: Hands, stack: ItemStack) {
-        if (connection.version < V_15W31A) {
-            connection.network.send(BlockInteractC2SP(null, null, null, stack, hand, false, 1))
+        if (session.version < V_15W31A) {
+            session.network.send(BlockInteractC2SP(null, null, null, stack, hand, false, 1))
         }
-        connection.network.send(UseItemC2SP(hand, interactions.connection.sequence.getAndIncrement()))
+        session.network.send(UseItemC2SP(hand, interactions.session.sequence.getAndIncrement()))
     }
 
     private companion object {

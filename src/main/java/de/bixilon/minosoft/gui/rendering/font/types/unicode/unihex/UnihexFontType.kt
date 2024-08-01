@@ -50,7 +50,7 @@ class UnihexFontType(
         }
 
         fun load(context: RenderContext, hexFile: ResourceLocation, sizes: List<SizeOverride>): UnihexFontType? {
-            val stream = ZipInputStream(context.connection.assetsManager[hexFile])
+            val stream = ZipInputStream(context.session.assetsManager[hexFile])
             val buffered = BufferedInputStream(stream)
 
             val chars = Int2ObjectOpenHashMap<ByteArray>()

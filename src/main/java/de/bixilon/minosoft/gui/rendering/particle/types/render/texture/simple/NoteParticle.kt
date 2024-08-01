@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,10 +21,10 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
+class NoteParticle(session: PlaySession, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
 
     init {
         this.friction = 0.66f
@@ -52,8 +52,8 @@ class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: F
         private const val ONE_THIRD = 1.0f / 3
         private const val TWO_THIRD = ONE_THIRD * 2
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): NoteParticle {
-            return NoteParticle(connection, position, velocity.x.toFloat(), data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): NoteParticle {
+            return NoteParticle(session, position, velocity.x.toFloat(), data)
         }
     }
 }

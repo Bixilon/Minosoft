@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -61,19 +61,19 @@ abstract class BreakingExecutor(protected val breaking: BreakHandler) {
 
     protected fun execute(position: BlockPosition, state: BlockState) {
         DefaultThreadPool += {
-            val connection = breaking.interactions.connection
-            connection.world[position] = null
+            val session = breaking.interactions.session
+            session.world[position] = null
             if (state.block is BlockBreakHandler) {
-                state.block.onBreak(connection, position, state, null)  // TODO: block entity
+                state.block.onBreak(session, position, state, null)  // TODO: block entity
             }
-            BlockDestroyedHandler.handleDestroy(connection, position, state)
+            BlockDestroyedHandler.handleDestroy(session, position, state)
         }
     }
 
     companion object {
 
         fun create(breaking: BreakHandler): BreakingExecutor {
-            val version = breaking.interactions.connection.version
+            val version = breaking.interactions.session.version
             return when {
                 version < V_19W34A -> DirectExecutor(breaking)
                 version < V_22W11A -> LegacyExecutor(breaking)

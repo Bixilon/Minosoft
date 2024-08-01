@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
@@ -50,8 +50,8 @@ class MixedFluidIT {
     }
 
     fun stillLavaAndWater1() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world.fill()
+        val player = createPlayer(createSession(3))
+        player.session.world.fill()
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
 
         player.runTicks(10)
@@ -62,8 +62,8 @@ class MixedFluidIT {
     }
 
     fun stillLavaAndWater2() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world.fill()
+        val player = createPlayer(createSession(3))
+        player.session.world.fill()
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.input = PlayerMovementInput(forward = true)
 
@@ -75,9 +75,9 @@ class MixedFluidIT {
     }
 
     fun stillLavaAndLava2() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world.fill()
-        player.connection.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 0)
+        val player = createPlayer(createSession(3))
+        player.session.world.fill()
+        player.session.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 0)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.input = PlayerMovementInput(forward = true)
 
@@ -89,10 +89,10 @@ class MixedFluidIT {
     }
 
     fun mixedHeight1() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
+        val player = createPlayer(createSession(3))
+        player.session.world[Vec3i(10, 1, 4)] = StoneTest0.state
+        player.session.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
+        player.session.world[Vec3i(10, 3, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)
@@ -103,10 +103,10 @@ class MixedFluidIT {
     }
 
     fun mixedHeight2() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
+        val player = createPlayer(createSession(3))
+        player.session.world[Vec3i(10, 1, 4)] = StoneTest0.state
+        player.session.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
+        player.session.world[Vec3i(10, 3, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)
@@ -117,10 +117,10 @@ class MixedFluidIT {
     }
 
     fun mixedHeight3() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
+        val player = createPlayer(createSession(3))
+        player.session.world[Vec3i(10, 1, 4)] = StoneTest0.state
+        player.session.world[Vec3i(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
+        player.session.world[Vec3i(10, 3, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)
@@ -131,10 +131,10 @@ class MixedFluidIT {
     }
 
     fun mixedHeight4() {
-        val player = createPlayer(createConnection(3))
-        player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
+        val player = createPlayer(createSession(3))
+        player.session.world[Vec3i(10, 1, 4)] = StoneTest0.state
+        player.session.world[Vec3i(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
+        player.session.world[Vec3i(10, 3, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)

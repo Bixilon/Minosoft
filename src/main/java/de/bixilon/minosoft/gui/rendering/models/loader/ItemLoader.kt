@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,9 +33,9 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ItemLoader(private val loader: ModelLoader) {
-    private val cache: MutableMap<ResourceLocation, ItemModel> = HashMap(loader.context.connection.registries.item.size)
-    val assets = loader.context.connection.assetsManager
-    val version = loader.context.connection.version
+    private val cache: MutableMap<ResourceLocation, ItemModel> = HashMap(loader.context.session.registries.item.size)
+    val assets = loader.context.session.assetsManager
+    val version = loader.context.session.version
 
     fun loadItem(name: ResourceLocation): ItemModel? {
         val file = name.model()
@@ -60,7 +60,7 @@ class ItemLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: AbstractLatch?) {
-        for (item in loader.context.connection.registries.item) {
+        for (item in loader.context.session.registries.item) {
             if (item is BlockItem<*> || item is PixLyzerBlockItem) continue // block models are loaded in a different step
             if (item.model != null) continue // already has a model set
             val model = loadItem(item) ?: continue
@@ -71,7 +71,7 @@ class ItemLoader(private val loader: ModelLoader) {
     }
 
     fun bake(latch: AbstractLatch?) {
-        for (item in loader.context.connection.registries.item) { // TODO: ConcurrentIterator
+        for (item in loader.context.session.registries.item) { // TODO: ConcurrentIterator
             val prototype = item.model.nullCast<ItemModelPrototype>() ?: continue
 
             item.model = prototype.bake()

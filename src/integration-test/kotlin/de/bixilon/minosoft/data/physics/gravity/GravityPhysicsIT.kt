@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,15 +20,15 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"])
 class GravityPhysicsIT {
-    private val connection by lazy { createConnection(5) }
+    private val session by lazy { createSession(5) }
 
     fun blankFalling1() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.00, 178.0, 13.0))
         player.runTicks(1)
         player.assertPosition(45.0, 178.0, 13.0, 1)
@@ -36,7 +36,7 @@ class GravityPhysicsIT {
     }
 
     fun blankFalling2() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.runTicks(2)
         player.assertPosition(45.0, 177.9215999984741, 13.0, 2)
@@ -44,7 +44,7 @@ class GravityPhysicsIT {
     }
 
     fun blankFalling3() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.runTicks(3)
         player.assertPosition(45.0, 177.76636799395752, 13.0, 3)
@@ -52,7 +52,7 @@ class GravityPhysicsIT {
     }
 
     fun blankFalling90() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.runTicks(90)
         player.assertPosition(45.0, -10.612955100288408, 13.0, 90)
@@ -60,7 +60,7 @@ class GravityPhysicsIT {
     }
 
     fun forwardFalling1() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(1)
@@ -69,7 +69,7 @@ class GravityPhysicsIT {
     }
 
     fun forwardFalling2() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(2)
@@ -78,7 +78,7 @@ class GravityPhysicsIT {
     }
 
     fun forwardFalling3() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(3)
@@ -87,7 +87,7 @@ class GravityPhysicsIT {
     }
 
     fun forwardFalling90() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(90)
@@ -96,7 +96,7 @@ class GravityPhysicsIT {
     }
 
     fun backwardsFalling1() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(backward = true)
         player.runTicks(1)
@@ -105,7 +105,7 @@ class GravityPhysicsIT {
     }
 
     fun backwardsFalling2() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(backward = true)
         player.runTicks(2)
@@ -114,7 +114,7 @@ class GravityPhysicsIT {
     }
 
     fun backwardsFalling3() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(backward = true)
         player.runTicks(3)
@@ -123,7 +123,7 @@ class GravityPhysicsIT {
     }
 
     fun backwardsFalling90() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(backward = true)
         player.runTicks(90)
@@ -132,7 +132,7 @@ class GravityPhysicsIT {
     }
 
     fun positiveFalling37() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(forward = true, right = true)
         player.runTicks(37)
@@ -141,7 +141,7 @@ class GravityPhysicsIT {
     }
 
     fun negativeFalling124() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.input = PlayerMovementInput(backward = true, left = true)
         player.runTicks(124)
@@ -150,7 +150,7 @@ class GravityPhysicsIT {
     }
 
     fun rotatedFalling5() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.forceRotate(EntityRotation(23.0f, 86.0f))
         player.input = PlayerMovementInput(forward = true)
@@ -160,7 +160,7 @@ class GravityPhysicsIT {
     }
 
     fun rotatedFalling12() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(45.0, 178.0, 13.0))
         player.forceRotate(EntityRotation(123.0f, 23.0f))
         player.input = PlayerMovementInput(backward = true, left = true)

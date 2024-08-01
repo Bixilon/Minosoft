@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ class RendererManager(
     private val list: MutableList<Renderer> = mutableListOf()
     private val renderers: MutableMap<RendererBuilder<*>, Renderer> = linkedMapOf()
     private val pipeline = RendererPipeline(this)
-    private val connection = context.connection
+    private val session = context.session
 
 
     fun <T : Renderer> register(renderer: T): T {
@@ -44,7 +44,7 @@ class RendererManager(
     }
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
-        val renderer = builder.build(connection, context) ?: return null
+        val renderer = builder.build(session, context) ?: return null
         val previous = renderers.put(builder, renderer)
         if (previous != null) {
             Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous ($builder) got replaced by $renderer!" }

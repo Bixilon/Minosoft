@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,7 +41,7 @@ import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
     private val chatProfile = profile.chat
-    private val input = NodeTextInputElement(guiRenderer, ChatNode("", allowCLI = true), maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
+    private val input = NodeTextInputElement(guiRenderer, ChatNode("", allowCLI = true), maxLength = session.version.maxChatMessageSize).apply { parent = this@ChatElement }
     private val internal = InternalChatElement(guiRenderer).apply { parent = this@ChatElement }
     private val history: MutableList<String> = mutableListOf()
     private var historyIndex = -1
@@ -82,7 +82,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
 
     override fun postInit() {
-        connection.events.listen<ChatMessageEvent> {
+        session.events.listen<ChatMessageEvent> {
             if (it.message.type.position == ChatTextPositions.HOTBAR) {
                 return@listen
             }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,12 +23,12 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface StorageBlock<T : StorageBlockEntity> : BlockWithEntity<T>, InteractBlockHandler {
 
-    override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
-        if (!DebugOptions.FORCE_CHEST_ANIMATION) return super.interact(connection, target, hand, stack)
+    override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
+        if (!DebugOptions.FORCE_CHEST_ANIMATION) return super.interact(session, target, hand, stack)
 
         val entity = target.entity.unsafeCast<ChestBlockEntity>()
         entity.setBlockActionData(0, if (entity.viewing > 0) 0 else 1)

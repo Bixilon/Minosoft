@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+class BeaconBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
 
     override fun setBlockActionData(type: Int, data: Int) {
         // no data used, just recalculates the beam
@@ -30,8 +30,8 @@ class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), B
     companion object : BlockEntityFactory<BeaconBlockEntity> {
         override val identifier: ResourceLocation = minecraft("beacon")
 
-        override fun build(connection: PlayConnection): BeaconBlockEntity {
-            return BeaconBlockEntity(connection)
+        override fun build(session: PlaySession): BeaconBlockEntity {
+            return BeaconBlockEntity(session)
         }
     }
 }

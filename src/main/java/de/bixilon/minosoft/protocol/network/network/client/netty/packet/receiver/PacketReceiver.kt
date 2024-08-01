@@ -18,17 +18,17 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.registry.PacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 
 class PacketReceiver(
     val network: ClientNetwork,
-    val connection: Connection,
+    val session: Session,
 ) {
     private val listener: MutableList<C2SPacketListener> = ArrayList()
     private val queue: MutableList<QueuedS2CP<*>> = ArrayList(0)
@@ -42,15 +42,15 @@ class PacketReceiver(
 
 
     private fun handle(packet: S2CPacket) {
-        val profile = if (connection is PlayConnection) connection.profiles.other else OtherProfileManager.selected
+        val profile = if (session is PlaySession) session.profiles.other else OtherProfileManager.selected
         val reduced = profile.log.reducedProtocolLog
         packet.log(reduced)
-        packet.handle(connection)
+        packet.handle(session)
     }
 
     private fun handleError(type: PacketType, error: Throwable) {
         if (type.extra != null) {
-            type.extra.onError(error, connection)
+            type.extra.onError(error, session)
         }
         network.handleError(error)
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.physics.entities.EntityPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), VelocityBlock, EntityCollisionHandler, FluidFilled, LightedBlock, RandomDisplayTickable {
@@ -50,7 +50,7 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
     }
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
-        val up = entity.connection.world[position + Directions.UP]
+        val up = entity.session.world[position + Directions.UP]
         val drag = state.hasDrag()
         if (up == null) {
             surfaceCollision(physics, drag)
@@ -75,8 +75,8 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
 
     override fun getLightProperties(blockState: BlockState) = FluidBlock.LIGHT_PROPERTIES
 
-    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
-        fluid.randomTick(connection, state, position, random)
+    override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
+        fluid.randomTick(session, state, position, random)
     }
 
     companion object : BlockFactory<BubbleColumnBlock> {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 
 class RenderLight(val context: RenderContext) {
-    private val connection = context.connection
+    private val session = context.session
     val map = Lightmap(this)
     private val debugWindow = if (DebugOptions.LIGHTMAP_DEBUG_WINDOW) LightmapDebugWindow(map) else null
 
@@ -40,8 +40,8 @@ class RenderLight(val context: RenderContext) {
         )
         ) {
             DefaultThreadPool += {
-                connection.world.recalculateLight()
-                connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
+                session.world.recalculateLight()
+                session.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
             }
         }
         context.input.bindings.register(
@@ -50,10 +50,10 @@ class RenderLight(val context: RenderContext) {
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
                 KeyActions.STICKY to setOf(KeyCodes.KEY_C),
             ),
-            pressed = connection.profiles.rendering.light.fullbright,
+            pressed = session.profiles.rendering.light.fullbright,
         ) {
-            connection.profiles.rendering.light.fullbright = it
-            connection.util.sendDebugMessage("Fullbright: ${it.format()}")
+            session.profiles.rendering.light.fullbright = it
+            session.util.sendDebugMessage("Fullbright: ${it.format()}")
         }
         if (DebugOptions.LIGHTMAP_DEBUG_WINDOW) {
             context::state.observeFX(this) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ChatMessageSender
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -62,7 +62,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         parameters[ChatParameter.CONTENT] = TextComponent(message)
 
         val unsigned = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readString() } else null
-        val type = readRegistryItem(connection.registries.messageType)
+        val type = readRegistryItem(session.registries.messageType)
         val sender = readSender()
 
         parameters[ChatParameter.SENDER] = sender.name
@@ -74,10 +74,10 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val received = Instant.now()
 
-        val error = MessageVerifyUtil.verifyMessage(connection.version, sent, received, versionId, salt, message, sender.uuid)
+        val error = MessageVerifyUtil.verifyMessage(session.version, sent, received, versionId, salt, message, sender.uuid)
 
 
-        return SignedChatMessage(connection, message, type, connection.getMessageSender(sender.uuid), parameters, null, error, sent, received)
+        return SignedChatMessage(session, message, type, session.getMessageSender(sender.uuid), parameters, null, error, sent, received)
     }
 
     fun PlayInByteBuffer.readSignedMessage(): SignedChatMessage {
@@ -111,17 +111,17 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (versionId >= ProtocolVersions.V_1_19_1_RC3) {
             filter = ChatFilter[readVarInt()].reader.invoke(this)
         }
-        val type = readRegistryItem(connection.registries.messageType)
+        val type = readRegistryItem(session.registries.messageType)
 
         readChatMessageParameters(parameters)
 
-        val sender = connection.getMessageSender(senderUUID)
+        val sender = session.getMessageSender(senderUUID)
         val received = Instant.now()
 
-        val error = MessageVerifyUtil.verifyMessage(connection.version, sent, received, versionId, salt, message, senderUUID)
+        val error = MessageVerifyUtil.verifyMessage(session.version, sent, received, versionId, salt, message, senderUUID)
 
         return SignedChatMessage(
-            connection = connection,
+            session = session,
             message = message,
             type = type,
             sender = sender,
@@ -133,16 +133,16 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         )
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         if (message.error != null) {
             // failed
             Log.log(LogMessageType.CHAT_IN, LogLevels.WARN) { "Signature error: ${message.error}: ${message.text}" }
 
-            if (connection.profiles.connection.signature.ignoreBadSignedMessages) {
+            if (session.profiles.session.signature.ignoreBadSignedMessages) {
                 return
             }
         }
-        connection.events.fire(ChatMessageEvent(connection, message))
+        session.events.fire(ChatMessageEvent(session, message))
     }
 
     override fun log(reducedLog: Boolean) {

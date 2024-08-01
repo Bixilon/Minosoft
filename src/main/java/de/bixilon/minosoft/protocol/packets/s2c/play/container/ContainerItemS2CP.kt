@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
 import de.bixilon.minosoft.data.container.IncompleteContainer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -31,11 +31,11 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val slot = buffer.readShort().toInt()
     val stack = buffer.readItemStack()
 
-    override fun handle(connection: PlayConnection) {
-        val container = connection.player.items.containers[containerId]
+    override fun handle(session: PlaySession) {
+        val container = session.player.items.containers[containerId]
 
         if (container == null) {
-            val incomplete = connection.player.items.incomplete.synchronizedGetOrPut(containerId) { IncompleteContainer() }
+            val incomplete = session.player.items.incomplete.synchronizedGetOrPut(containerId) { IncompleteContainer() }
             if (slot < 0) {
                 incomplete.floating = stack
             } else if (stack == null) {

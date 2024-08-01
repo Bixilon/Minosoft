@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,12 +21,12 @@ import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 @Deprecated("null")
 class EmptyFluid(identifier: ResourceLocation = this.identifier) : Fluid(identifier) {
 
-    override fun getVelocityMultiplier(connection: PlayConnection): Double = Broken("empty")
+    override fun getVelocityMultiplier(session: PlaySession): Double = Broken("empty")
 
     override fun matches(other: Fluid): Boolean {
         return other is EmptyFluid

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,17 +13,17 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.common.resourcepack.ResourcepackS2CP
 
 class ResourcePackRequestEvent(
-    connection: PlayConnection,
+    session: PlaySession,
     val url: String,
     val hash: String,
     val promptText: ChatComponent?,
-) : PlayConnectionEvent(connection), CancelableEvent {
+) : PlaySessionEvent(session), CancelableEvent {
 
 
-    constructor(connection: PlayConnection, packet: ResourcepackS2CP) : this(connection, packet.url, packet.hash, packet.promptText)
+    constructor(session: PlaySession, packet: ResourcepackS2CP) : this(session, packet.url, packet.hash, packet.promptText)
 }

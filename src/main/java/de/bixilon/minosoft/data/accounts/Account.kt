@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractS
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import java.util.*
 
@@ -44,7 +44,7 @@ abstract class Account(
 
     @Transient
     @get:JsonIgnore
-    val connections: MutableMap<AbstractServer, PlayConnection> = synchronizedMapOf()
+    val sessions: MutableMap<AbstractServer, PlaySession> = synchronizedMapOf()
 
     abstract fun join(serverId: String)
 

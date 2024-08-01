@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,8 +28,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumn
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -40,12 +40,12 @@ class BubbleColumnIT {
     private val drag by lazy { bubbleColumn(5, true) }
     private val noDrag by lazy { bubbleColumn(5, false) }
 
-    private fun bubbleColumn(height: Int, drag: Boolean): PlayConnection {
-        val connection = ConnectionTestUtil.createConnection(4)
-        connection.world.fill(Vec3i(-10, 16, -10), Vec3i(10, 15 + height, 10), block.states.withProperties(BlockProperties.BUBBLE_COLUMN_DRAG to drag))
-        connection.world.fill(Vec3i(-10, 15, -10), Vec3i(10, 15, 10), StoneTest0.state)
+    private fun bubbleColumn(height: Int, drag: Boolean): PlaySession {
+        val session = SessionTestUtil.createSession(4)
+        session.world.fill(Vec3i(-10, 16, -10), Vec3i(10, 15 + height, 10), block.states.withProperties(BlockProperties.BUBBLE_COLUMN_DRAG to drag))
+        session.world.fill(Vec3i(-10, 15, -10), Vec3i(10, 15, 10), StoneTest0.state)
 
-        return connection
+        return session
     }
 
     @Test(priority = -1)

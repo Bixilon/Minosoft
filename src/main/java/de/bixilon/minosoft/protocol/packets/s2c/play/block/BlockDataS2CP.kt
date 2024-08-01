@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockDataUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
@@ -34,19 +34,19 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         buffer.readBlockPosition()
     }
     val type = if (buffer.versionId >= V_21W37A) {
-        buffer.readRegistryItem(buffer.connection.registries.blockEntityType).identifier
+        buffer.readRegistryItem(buffer.session.registries.blockEntityType).identifier
     } else {
-        buffer.connection.registries.blockDataType.getOrNull(buffer.readUnsignedByte())?.identifier
+        buffer.session.registries.blockDataType.getOrNull(buffer.readUnsignedByte())?.identifier
     }
     val nbt = buffer.readNBT().toJsonObject()
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         if (nbt == null) return
 
-        val chunk = connection.world.chunks[position.chunkPosition] ?: return
+        val chunk = session.world.chunks[position.chunkPosition] ?: return
         val entity = chunk.getOrPutBlockEntity(position.inChunkPosition) ?: return
         entity.updateNBT(nbt)
-        connection.events.fire(WorldUpdateEvent(connection, SingleBlockDataUpdate(position, chunk, entity)))
+        session.events.fire(WorldUpdateEvent(session, SingleBlockDataUpdate(position, chunk, entity)))
     }
 
     override fun log(reducedLog: Boolean) {

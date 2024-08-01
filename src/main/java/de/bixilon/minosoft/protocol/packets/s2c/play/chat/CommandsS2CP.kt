@@ -17,14 +17,14 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.commands.nodes.CommandNode
-import de.bixilon.minosoft.commands.nodes.ConnectionNode
 import de.bixilon.minosoft.commands.nodes.NamedNode
+import de.bixilon.minosoft.commands.nodes.SessionNode
 import de.bixilon.minosoft.commands.nodes.builder.ArgumentNodes
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
 import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -34,11 +34,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nodes = buffer.readArray { buffer.readCommandNode() }.build()
-    val rootNode = buffer.readVarInt().let { if (nodes.isEmpty()) null else nodes[it] }.nullCast<ConnectionNode?>()
+    val rootNode = buffer.readVarInt().let { if (nodes.isEmpty()) null else nodes[it] }.nullCast<SessionNode?>()
 
 
-    override fun handle(connection: PlayConnection) {
-        connection.commands = rootNode
+    override fun handle(session: PlaySession) {
+        session.commands = rootNode
     }
 
     private fun Array<CommandNodeBuilder>.build(): Array<CommandNode> {
@@ -75,7 +75,7 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             builder.name = readString()
         }
         if (type == ArgumentNodes.ARGUMENT) {
-            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentType[readVarInt()] else readResourceLocation()
+            val parserName = if (versionId >= ProtocolVersions.V_22W12A) session.registries.argumentType[readVarInt()] else readResourceLocation()
             val parser = ArgumentParserFactories[parserName]
             if (parser == null) {
                 Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
@@ -90,7 +90,7 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 if (suggestionType == null) {
                     Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
                 } else {
-                    builder.suggestionType = suggestionType.build(this.connection, this)
+                    builder.suggestionType = suggestionType.build(this.session, this)
                 }
             }
         }

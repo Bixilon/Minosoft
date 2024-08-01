@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,8 +25,8 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.SkipException
 
 abstract class WalkIT {
@@ -36,20 +36,20 @@ abstract class WalkIT {
             return field ?: throw SkipException("block == null")
         }
 
-    protected open fun createPlayer(connection: PlayConnection): LocalPlayerEntity = PhysicsTestUtil.createPlayer(connection)
+    protected open fun createPlayer(session: PlaySession): LocalPlayerEntity = PhysicsTestUtil.createPlayer(session)
 
 
-    private fun createConnection(): PlayConnection {
-        val connection = createConnection(5)
-        connection.world.fill(Vec3i(-20, 0, -20), Vec3i(20, 0, 20), block)
+    private fun createSession(): PlaySession {
+        val session = createSession(5)
+        session.world.fill(Vec3i(-20, 0, -20), Vec3i(20, 0, 20), block)
 
-        return connection
+        return session
     }
 
-    private val connection by lazy { createConnection() }
+    private val session by lazy { createSession() }
 
     protected fun landing(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(6.0, 5.0, 6.0))
         player.runTicks(15)
 
@@ -57,7 +57,7 @@ abstract class WalkIT {
     }
 
     protected fun walking1(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(6.0, 1.0, 6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(2)
@@ -66,7 +66,7 @@ abstract class WalkIT {
     }
 
     protected fun walking2(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(6.0, 1.0, 6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
@@ -75,7 +75,7 @@ abstract class WalkIT {
     }
 
     protected fun walking3(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(6.0, 1.0, 6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(50)
@@ -84,7 +84,7 @@ abstract class WalkIT {
     }
 
     protected fun walking4(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
@@ -93,7 +93,7 @@ abstract class WalkIT {
     }
 
     protected fun walking5(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(50)
@@ -102,7 +102,7 @@ abstract class WalkIT {
     }
 
     protected fun walking6(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.forceRotate(EntityRotation(180.0f, 0.0f))
         player.input = PlayerMovementInput(forward = true)
@@ -112,7 +112,7 @@ abstract class WalkIT {
     }
 
     protected fun walking7(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.forceRotate(EntityRotation(180.0f, 0.0f))
         player.input = PlayerMovementInput(forward = true)
@@ -122,7 +122,7 @@ abstract class WalkIT {
     }
 
     protected fun walking8(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.input = PlayerMovementInput(forward = true)
 
@@ -139,7 +139,7 @@ abstract class WalkIT {
     }
 
     protected fun walking9(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.input = PlayerMovementInput(forward = true)
 
@@ -152,7 +152,7 @@ abstract class WalkIT {
     }
 
     protected fun sprintJump1(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.input = PlayerMovementInput(sprint = true, jump = true, forward = true)
         player.runTicks(2)
@@ -161,7 +161,7 @@ abstract class WalkIT {
     }
 
     protected fun sprintJump2(): LocalPlayerEntity {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(-6.0, 1.0, -6.0))
         player.input = PlayerMovementInput(sprint = true, jump = true, forward = true)
         player.runTicks(5)
@@ -170,8 +170,8 @@ abstract class WalkIT {
     }
 
     protected fun slabWalk(): LocalPlayerEntity {
-        val player = createPlayer(createConnection())
-        player.connection.world.fill(Vec3i(-20, 1, -20), Vec3i(20, 1, 20), SlabTest0.state)
+        val player = createPlayer(createSession())
+        player.session.world.fill(Vec3i(-20, 1, -20), Vec3i(20, 1, 20), SlabTest0.state)
         player.forceTeleport(Vec3d(-6.0, 1.5, -6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(5)
@@ -182,9 +182,9 @@ abstract class WalkIT {
     }
 
     protected fun stoneBlockWalk1(): LocalPlayerEntity {
-        val player = createPlayer(createConnection())
-        player.connection.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
-        player.connection.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
+        val player = createPlayer(createSession())
+        player.session.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
 
         player.forceTeleport(Vec3d(-15.653410032035934, 4.0, 8.580128352737571))
         player.forceRotate(EntityRotation(180.29749f, 22.493956f))
@@ -198,9 +198,9 @@ abstract class WalkIT {
     }
 
     protected fun stoneBlockWalk2(): LocalPlayerEntity {
-        val player = createPlayer(createConnection())
-        player.connection.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
-        player.connection.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
+        val player = createPlayer(createSession())
+        player.session.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
 
         player.forceTeleport(Vec3d(-15.653410032035934, 4.0, 8.580128352737571))
         player.forceRotate(EntityRotation(180.29749f, 22.493956f))

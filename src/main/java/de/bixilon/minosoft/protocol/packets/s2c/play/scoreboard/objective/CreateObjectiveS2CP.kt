@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveCreateEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormat
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormats.readNumberFormat
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -65,12 +65,12 @@ class CreateObjectiveS2CP(
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Create scoreboard objective (name=$name, displayName=$displayName, unit=$unit)" }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         val objective = ScoreboardObjective(name, displayName, unit)
 
-        connection.scoreboard.objectives[name] = objective
+        session.scoreboard.objectives[name] = objective
 
-        connection.events.fire(ScoreboardObjectiveCreateEvent(connection, objective))
+        session.events.fire(ScoreboardObjectiveCreateEvent(session, objective))
     }
 
     enum class ObjectiveUnits {

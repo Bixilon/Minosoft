@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -54,7 +54,7 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
     }
 
     protected fun createNameElement(text: ChatComponent?, translationKey: ResourceLocation?, fallback: ChatComponent): TextElement {
-        val name = text ?: wawla.context.connection.language.translate(translationKey) ?: fallback
+        val name = text ?: wawla.context.session.language.translate(translationKey) ?: fallback
         name.setFallbackColor(ChatColors.WHITE)
         return TextElement(guiRenderer, name, background = null, properties = TextRenderProperties(scale = 1.25f))
     }

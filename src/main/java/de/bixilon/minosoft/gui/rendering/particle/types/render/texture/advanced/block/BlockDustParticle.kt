@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,11 +25,11 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBCo
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: BlockParticleData) : AdvancedTextureParticle(connection, position, velocity, data) {
+class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: BlockParticleData) : AdvancedTextureParticle(session, position, velocity, data) {
 
     init {
         val blockPosition = position.blockPosition
@@ -40,7 +40,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         gravityStrength = 1.0f
         color = 0.6f.asGray()
 
-        connection.rendering?.context?.tints?.getParticleTint(data.blockState, blockPosition)?.asRGBColor()?.let {
+        session.rendering?.context?.tints?.getParticleTint(data.blockState, blockPosition)?.asRGBColor()?.let {
             color = RGBColor(color.floatRed * it.floatRed, color.floatGreen * it.floatGreen, color.floatBlue * it.floatBlue)
         }
         scale /= 2.0f
@@ -57,12 +57,12 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         private const val GRAY = 153 shl 16 or (153 shl 8) or 153
         override val identifier: ResourceLocation = "minecraft:block".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
             check(data is BlockParticleData)
             if (data.blockState == null || data.blockState.block.identifier == MinecraftBlocks.MOVING_PISTON) {
                 return null
             }
-            return BlockDustParticle(connection, position, velocity, data)
+            return BlockDustParticle(session, position, velocity, data)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -47,9 +47,9 @@ import org.testng.annotations.Test
 class ChunkManagerTest {
 
     private fun create(): ChunkManager {
-        val connection = createConnection(0)
+        val session = createSession(0)
 
-        return connection.world.chunks
+        return session.world.chunks
     }
 
     private fun ChunkManager.createMatrix(biomeSource: BiomeSource = DummyBiomeSource(null)): Array<Array<Chunk>> {
@@ -251,7 +251,7 @@ class ChunkManagerTest {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
         var fired = 0
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is SingleBlockUpdate)
             val update = it.update as SingleBlockUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -270,7 +270,7 @@ class ChunkManagerTest {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
         var fired = 0
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is SingleBlockUpdate)
             val update = it.update as SingleBlockUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -290,7 +290,7 @@ class ChunkManagerTest {
         val chunk = manager.create(ChunkPosition(1, 1))
         var fired = 0
         val updates = setOf(ChunkLocalBlockUpdate.LocalUpdate(InChunkPosition(4, 2, 1), StoneTest0.state), ChunkLocalBlockUpdate.LocalUpdate(InChunkPosition(3, 123, 9), StoneTest0.state))
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkLocalBlockUpdate)
             val update = it.update as ChunkLocalBlockUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -308,7 +308,7 @@ class ChunkManagerTest {
     fun chunkCreateUpdate() {
         val manager = create()
         var fired = 0
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkCreateUpdate)
             val update = it.update as ChunkCreateUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -323,7 +323,7 @@ class ChunkManagerTest {
     fun chunkPrototypeUpdate() {
         val manager = create()
         var fired = 0
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkCreateUpdate)
             val update = it.update as ChunkCreateUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -340,7 +340,7 @@ class ChunkManagerTest {
         manager.create(ChunkPosition(1, 1))
         var fired = 0
 
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkUnloadUpdate)
             val update = it.update as ChunkUnloadUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -357,7 +357,7 @@ class ChunkManagerTest {
         val manager = create()
         var fired = 0
 
-        manager.world.connection.events.listen<WorldUpdateEvent> { fired++ }
+        manager.world.session.events.listen<WorldUpdateEvent> { fired++ }
 
         manager -= ChunkPosition(1, 1)
 
@@ -371,7 +371,7 @@ class ChunkManagerTest {
         chunk[4, 3, 5] = StoneTest0.state
         var fired = 0
 
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is PrototypeChangeUpdate)
             val update = it.update as PrototypeChangeUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -393,7 +393,7 @@ class ChunkManagerTest {
         chunk[4, 3, 5] = StoneTest0.state
         var fired = 0
 
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is PrototypeChangeUpdate)
             val update = it.update as PrototypeChangeUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
@@ -413,7 +413,7 @@ class ChunkManagerTest {
         manager.create(ChunkPosition(1, 1))
         var fired = 0
 
-        manager.world.connection.events.listen<WorldUpdateEvent> {
+        manager.world.session.events.listen<WorldUpdateEvent> {
             if (it.update is ChunkCreateUpdate) return@listen
             assertTrue(it.update is NeighbourChangeUpdate)
             val update = it.update as NeighbourChangeUpdate

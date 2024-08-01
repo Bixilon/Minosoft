@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
@@ -60,8 +60,8 @@ object RenderLoader {
         val stopwatch = Stopwatch()
         registerRenderer()
 
-        window.init(connection.profiles.rendering)
-        ignoreAll { window.setDefaultIcon(connection.assetsManager) }
+        window.init(session.profiles.rendering)
+        ignoreAll { window.setDefaultIcon(session.assetsManager) }
 
         camera.init()
 
@@ -76,9 +76,9 @@ object RenderLoader {
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }
-        initLatch.inc(); runAsync { tints.init(connection.assetsManager); initLatch.dec() }
+        initLatch.inc(); runAsync { tints.init(session.assetsManager); initLatch.dec() }
         textures.dynamic.load(initLatch); textures.dynamic.upload(initLatch)
-        textures.initializeSkins(connection)
+        textures.initializeSkins(session)
         textures.loadDefaultTextures()
 
         initLatch.inc(); runAsync { font = FontManager.create(this, initLatch); initLatch.dec() }
@@ -132,7 +132,7 @@ object RenderLoader {
         input.init()
         DefaultKeyBindings.register(this)
         DebugKeyBindings.register(this)
-        connection.events.listen<ResizeWindowEvent> { system.viewport = it.size }
+        session.events.listen<ResizeWindowEvent> { system.viewport = it.size }
 
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
@@ -157,8 +157,8 @@ object RenderLoader {
 
         val latch = SimpleLatch(1)
 
-        connection::state.observe(this) {
-            if (it == PlayConnectionStates.PLAYING && latch.count > 0) {
+        session::state.observe(this) {
+            if (it == PlaySessionStates.PLAYING && latch.count > 0) {
                 latch.dec()
             }
         }

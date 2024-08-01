@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -198,7 +198,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     }
 
     fun update(uuid: UUID) {
-        val item = guiRenderer.context.connection.tabList.uuid[uuid] ?: return
+        val item = guiRenderer.context.session.tabList.uuid[uuid] ?: return
         val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0.0f) }
         lock.lock()
         entry.silentApply()
@@ -217,10 +217,10 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
 
     override fun postInit() {
-        val connection = context.connection
-        connection.tabList::header.observe(this) { header.text = it }
-        connection.tabList::footer.observe(this) { footer.text = it }
-        connection.events.listen<TabListEntryChangeEvent> {
+        val session = context.session
+        session.tabList::header.observe(this) { header.text = it }
+        session.tabList::footer.observe(this) { footer.text = it }
+        session.events.listen<TabListEntryChangeEvent> {
             for ((uuid, entry) in it.entries) {
                 if (entry == null) {
                     remove(uuid)

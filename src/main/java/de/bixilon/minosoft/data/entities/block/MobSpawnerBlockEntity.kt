@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,27 +26,27 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
-    private val smokeParticleType = connection.registries.particleType[SmokeParticle]
-    private val flameParticleType = connection.registries.particleType[FlameParticle]
+class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
+    private val smokeParticleType = session.registries.particleType[SmokeParticle]
+    private val flameParticleType = session.registries.particleType[FlameParticle]
     private var requiredPlayerRange = 16
 
 
     private fun isPlayerInRange(blockPosition: Vec3i): Boolean {
-        return connection.world.entities.getInRadius(blockPosition.center, requiredPlayerRange.toDouble(), WorldEntities.CHECK_CLOSEST_PLAYER).isNotEmpty()
+        return session.world.entities.getInRadius(blockPosition.center, requiredPlayerRange.toDouble(), WorldEntities.CHECK_CLOSEST_PLAYER).isNotEmpty()
     }
 
     private fun spawnParticles(blockPosition: Vec3i, random: Random) {
-        val particle = connection.world.particle ?: return
+        val particle = session.world.particle ?: return
         if (!isPlayerInRange(blockPosition)) {
             return
         }
         val particlePosition = blockPosition.toVec3d + { random.nextDouble() }
-        smokeParticleType?.let { particle += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
-        flameParticleType?.let { particle += FlameParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
+        smokeParticleType?.let { particle += SmokeParticle(session, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
+        flameParticleType?.let { particle += FlameParticle(session, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
     }
 
     override fun setBlockActionData(type: Int, data: Int) {
@@ -60,15 +60,15 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
 
-    override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
+    override fun tick(session: PlaySession, state: BlockState, position: Vec3i, random: Random) {
         spawnParticles(position, random)
     }
 
     companion object : BlockEntityFactory<MobSpawnerBlockEntity> {
         override val identifier: ResourceLocation = minecraft("mob_spawner")
 
-        override fun build(connection: PlayConnection): MobSpawnerBlockEntity {
-            return MobSpawnerBlockEntity(connection)
+        override fun build(session: PlaySession): MobSpawnerBlockEntity {
+            return MobSpawnerBlockEntity(session)
         }
     }
 }

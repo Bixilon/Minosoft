@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -46,7 +46,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.TallGrassTintCalculator
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock, ReplaceableBlock {
@@ -58,23 +58,23 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         list += HALF
     }
 
-    override fun isTop(state: BlockState, connection: PlayConnection): Boolean {
-        if (connection.version.flattened) return super.isTop(state, connection)
+    override fun isTop(state: BlockState, session: PlaySession): Boolean {
+        if (session.version.flattened) return super.isTop(state, session)
         return state.block is UpperBlock
     }
 
-    override fun getTop(state: BlockState, connection: PlayConnection): BlockState {
-        if (connection.version.flattened) return super.getTop(state, connection)
-        return connection.registries.block[UpperBlock]!!.states.default
+    override fun getTop(state: BlockState, session: PlaySession): BlockState {
+        if (session.version.flattened) return super.getTop(state, session)
+        return session.registries.block[UpperBlock]!!.states.default
     }
 
-    override fun getBottom(state: BlockState, connection: PlayConnection): BlockState {
-        if (connection.version.flattened) return super.getTop(state, connection)
+    override fun getBottom(state: BlockState, session: PlaySession): BlockState {
+        if (session.version.flattened) return super.getTop(state, session)
         Broken("Not enough information to get bottom!")
     }
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
-        if (context.connection.version.flattened) return super.bakeModel(context, model)
+        if (context.session.version.flattened) return super.bakeModel(context, model)
 
         val top = model.choose(mapOf(HALF to Halves.UPPER))?.bake()
         val bottom = model.choose(mapOf(HALF to Halves.LOWER))?.bake()

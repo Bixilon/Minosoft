@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,15 +14,15 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.sign.SignSides
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.sign.SignEditorS2CP
 
 class OpenSignEditorEvent(
-    connection: PlayConnection,
+    session: PlaySession,
     val position: Vec3i,
     val side: SignSides,
-) : PlayConnectionEvent(connection), CancelableEvent {
+) : PlaySessionEvent(session), CancelableEvent {
 
-    constructor(connection: PlayConnection, packet: SignEditorS2CP) : this(connection, packet.position, packet.side)
+    constructor(session: PlaySession, packet: SignEditorS2CP) : this(session, packet.position, packet.side)
 }

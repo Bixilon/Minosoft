@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,7 +35,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable {
     private var element: WawlaElement? = null
 
-    val profile = guiRenderer.connection.profiles.gui.hud.wawla
+    val profile = guiRenderer.session.profiles.gui.hud.wawla
 
     override val layoutOffset: Vec2
         get() = Vec2((guiRenderer.scaledSize.x - ((element?.size?.x ?: 0.0f) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
@@ -44,7 +44,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
 
     override fun drawAsync() {
-        val target = context.connection.camera.target.target
+        val target = context.session.camera.target.target
 
         if (target == null) {
             this.element = null
@@ -55,7 +55,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
 
         val element: WawlaElement? = when {
-            target is BlockTarget && profile.block.enabled && (!profile.limitReach || distance <= context.connection.player.reachDistance) -> BlockWawlaElement(this, target)
+            target is BlockTarget && profile.block.enabled && (!profile.limitReach || distance <= context.session.player.reachDistance) -> BlockWawlaElement(this, target)
             target is EntityTarget && profile.entity.enabled && (!profile.limitReach || distance <= 3.0) -> EntityWawlaElement(this, target) // TODO: use constant for distance
             else -> null
         }

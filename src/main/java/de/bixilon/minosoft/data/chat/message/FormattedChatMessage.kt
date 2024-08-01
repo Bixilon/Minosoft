@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,12 +17,12 @@ import de.bixilon.minosoft.data.chat.ChatUtil
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class
 FormattedChatMessage(
-    private val connection: PlayConnection,
+    private val session: PlaySession,
     final override val type: ChatMessageType,
     val parameters: Map<ChatParameter, ChatComponent>,
 ) : ChatMessage {
@@ -31,7 +31,7 @@ FormattedChatMessage(
     init {
         // ToDo: parent (formatting)
         val data = type.chat.formatParameters(parameters)
-        text = connection.language.forceTranslate(type.chat.translationKey.toResourceLocation(), restricted = true, fallback = type.chat.translationKey, data = data)
+        text = session.language.forceTranslate(type.chat.translationKey.toResourceLocation(), restricted = true, fallback = type.chat.translationKey, data = data)
         text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }
 }

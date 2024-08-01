@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,11 +25,11 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
-    private val noteParticleType = connection.registries.particleType[NoteParticle]
+class NoteBlockBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
+    private val noteParticleType = session.registries.particleType[NoteParticle]
     var instrument: Instruments? = null
         private set
     var pitch: Int? = null
@@ -57,16 +57,16 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         // ToDo: Play sound?
     }
 
-    override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
+    override fun tick(session: PlaySession, state: BlockState, position: Vec3i, random: Random) {
         if (!showParticleNextTick) {
             return
         }
-        val particle = connection.world.particle ?: return
+        val particle = session.world.particle ?: return
         showParticleNextTick = false
 
 
         noteParticleType?.let {
-            particle += NoteParticle(connection, position.toVec3d + Vec3d(0.5, 1.2, 0.5), state.getNote() / 24.0f, it.default())
+            particle += NoteParticle(session, position.toVec3d + Vec3d(0.5, 1.2, 0.5), state.getNote() / 24.0f, it.default())
         }
     }
 
@@ -75,8 +75,8 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
 
         override val identifiers: Set<ResourceLocation> = setOf(minecraft("noteblock"))
 
-        override fun build(connection: PlayConnection): NoteBlockBlockEntity {
-            return NoteBlockBlockEntity(connection)
+        override fun build(session: PlaySession): NoteBlockBlockEntity {
+            return NoteBlockBlockEntity(session)
         }
     }
 

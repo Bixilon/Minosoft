@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.player
 
 import de.bixilon.minosoft.data.entities.entities.player.local.ExperienceCondition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -36,14 +36,14 @@ class ExperienceS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun check(connection: PlayConnection) {
+    override fun check(session: PlaySession) {
         check(bar in 0.0f..1.0f) { "Bar is invalid!" }
         check(level >= 0) { "Level is negative!" }
         check(total >= 0) { "Total experience is negative!" }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.player.experienceCondition = ExperienceCondition(
+    override fun handle(session: PlaySession) {
+        session.player.experienceCondition = ExperienceCondition(
             level = level,
             total = total,
             bar = bar,

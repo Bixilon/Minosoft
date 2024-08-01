@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 open class TrapdoorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), Climbable {
 
     override fun canClimb(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState): Boolean {
-        val below = entity.connection.world[position + Directions.DOWN] ?: return false
+        val below = entity.session.world[position + Directions.DOWN] ?: return false
         if (below.block !is LadderBlock) {
             return false
         }

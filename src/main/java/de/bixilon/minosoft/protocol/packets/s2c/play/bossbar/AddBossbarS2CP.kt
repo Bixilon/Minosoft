@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarFlags
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarAddEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -36,11 +36,11 @@ class AddBossbarS2CP(
     val flags = BossbarFlags(buffer.readUnsignedByte())
 
 
-    override fun check(connection: PlayConnection) {
+    override fun check(session: PlaySession) {
         check(value in 0.0f..1.0f) { "Value of of bounds!" }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         val bossbar = Bossbar(
             title = title,
             progress = value,
@@ -50,9 +50,9 @@ class AddBossbarS2CP(
         )
 
         // ToDo: Check if bossbar is already present
-        connection.bossbarManager.bossbars[uuid] = bossbar
+        session.bossbarManager.bossbars[uuid] = bossbar
 
-        connection.events.fire(BossbarAddEvent(connection, uuid, bossbar))
+        session.events.fire(BossbarAddEvent(session, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

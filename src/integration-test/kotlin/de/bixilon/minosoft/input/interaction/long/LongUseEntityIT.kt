@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,8 +22,8 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil.assertUseItem
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.lookAtPig
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.tick
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityEmptyInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractPositionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
@@ -35,49 +35,49 @@ class LongUseEntityIT {
 
 
     fun shieldOnPig() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.lookAtPig()
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.lookAtPig()
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()
         use.tick(10)
-        connection.assertPacket(EntityInteractPositionC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
-        connection.assertPacket(EntityEmptyInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
+        session.assertPacket(EntityInteractPositionC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
+        session.assertPacket(EntityEmptyInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun shieldOffhandOnPig() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
-        connection.lookAtPig()
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
+        session.lookAtPig()
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()
         use.tick(10)
 
-        connection.assertPacket(EntityInteractPositionC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
-        connection.assertPacket(EntityEmptyInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
-        connection.assertPacket(EntityInteractPositionC2SP::class.java).let { assertEquals(it.hand, Hands.OFF) }
-        connection.assertPacket(EntityEmptyInteractC2SP::class.java).let { assertEquals(it.hand, Hands.OFF) }
+        session.assertPacket(EntityInteractPositionC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
+        session.assertPacket(EntityEmptyInteractC2SP::class.java).let { assertEquals(it.hand, Hands.MAIN) }
+        session.assertPacket(EntityInteractPositionC2SP::class.java).let { assertEquals(it.hand, Hands.OFF) }
+        session.assertPacket(EntityEmptyInteractC2SP::class.java).let { assertEquals(it.hand, Hands.OFF) }
 
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.OFF)
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.OFF)
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun carrotsOnPigWithHunger() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.lookAtPig()
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.lookAtPig()
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()
@@ -91,10 +91,10 @@ class LongUseEntityIT {
     }
 
     fun goldenAppleOnPig() {
-        val connection = InteractionTestUtil.createConnection()
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        connection.lookAtPig()
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
+        session.lookAtPig()
+        val use = session.camera.interactions.use
 
 
         use.unsafePress()

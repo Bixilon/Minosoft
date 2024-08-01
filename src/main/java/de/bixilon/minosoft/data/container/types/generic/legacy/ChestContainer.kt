@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 
 object ChestContainer : ContainerFactory<GenericContainer> {
     override val identifier = minecraft("chest")
 
-    override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): GenericContainer {
+    override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): GenericContainer {
         val factory = when (slots) {
             9 -> Generic9x1Container
             18 -> Generic9x2Container
@@ -34,6 +34,6 @@ object ChestContainer : ContainerFactory<GenericContainer> {
             54 -> Generic9x6Container
             else -> throw IllegalArgumentException("Invalid slot count for chest $slots")
         }
-        return factory.build(connection, type, title, slots)
+        return factory.build(session, type, title, slots)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,15 +39,15 @@ object AccountManageCommand : Command {
             })
                 .addChild(ArgumentNode("filter", AccountParser, executable = true)),
             LiteralNode("remove").apply {
-                addFilter { stack, connections ->
+                addFilter { stack, sessions ->
                     var count = 0
-                    connections.forEach { AccountProfileManager.selected.entries.remove(it.id); count++ }
-                    stack.print.print("Disconnected from $count connections.")
+                    sessions.forEach { AccountProfileManager.selected.entries.remove(it.id); count++ }
+                    stack.print.print("Terminated $count sessions.")
                 }
             },
             LiteralNode("select").apply {
-                addFilter(false) { stack, connections ->
-                    val account = connections.first()
+                addFilter(false) { stack, sessions ->
+                    val account = sessions.first()
                     AccountProfileManager.selected.selected = account
                     stack.print.print("Selected $account")
                 }
@@ -84,7 +84,7 @@ object AccountManageCommand : Command {
         )
 
 
-    private fun CommandNode.addFilter(multi: Boolean = true, executor: (stack: CommandStack, connections: Collection<Account>) -> Unit): CommandNode {
+    private fun CommandNode.addFilter(multi: Boolean = true, executor: (stack: CommandStack, sessions: Collection<Account>) -> Unit): CommandNode {
         val node = ArgumentNode("filter", AccountParser, executor = {
             val filtered = it.collect()
             if (filtered.isEmpty()) throw CommandException("No accounts matched your filter!")

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
@@ -46,14 +46,14 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     private val lavaParticle = registries.particleType[LavaParticle]!!
     private val smokeParticle = registries.particleType[SmokeParticle]!!
 
-    private fun extinguish(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+    private fun extinguish(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         for (i in 0 until 20) {
-            spawnSmokeParticles(connection, blockState, blockPosition, true, random)
+            spawnSmokeParticles(session, blockState, blockPosition, true, random)
         }
     }
 
-    fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean, random: Random) {
-        val particle = connection.world.particle ?: return
+    fun spawnSmokeParticles(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean, random: Random) {
+        val particle = session.world.particle ?: return
         val position = Vec3d(blockPosition).horizontalPlus(
             { 0.5 + 3.0.noised(random) },
             random.nextDouble() + random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
@@ -63,44 +63,44 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
         val particleType = if (isSignal) signalSmokeParticle else cosySmokeParticle
 
-        particle += CampfireSmokeParticle(connection, position, SMOKE_VELOCITY, particleType.default(), isSignal)
+        particle += CampfireSmokeParticle(session, position, SMOKE_VELOCITY, particleType.default(), isSignal)
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(
                 { 0.5 + 4.0.noised(random) },
                 0.5
             )
-            particle += SmokeParticle(connection, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
+            particle += SmokeParticle(session, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
         }
     }
 
-    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
-        val particle = connection.world.particle ?: return
+    override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
+        val particle = session.world.particle ?: return
         if (!state.isLit()) {
             return
         }
         if (random.chance(10)) {
-            connection.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, position + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+            session.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, position + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
         if (lavaParticles && random.chance(20)) {
             val position = Vec3d(position) + 0.5
             for (i in 0 until random.nextInt(1) + 1) {
-                particle += LavaParticle(connection, position, lavaParticle.default())
+                particle += LavaParticle(session, position, lavaParticle.default())
             }
         }
     }
 
-    override fun extinguish(connection: PlayConnection, position: BlockPosition, state: BlockState): Boolean {
+    override fun extinguish(session: PlaySession, position: BlockPosition, state: BlockState): Boolean {
         if (!state.isLit()) return false
-        connection.world[position] = state.withProperties(BlockProperties.LIT to false)
-        extinguish(connection, state, position, Random())
+        session.world[position] = state.withProperties(BlockProperties.LIT to false)
+        extinguish(session, state, position, Random())
         return true
     }
 
-    override fun light(connection: PlayConnection, position: BlockPosition, state: BlockState): Boolean {
+    override fun light(session: PlaySession, position: BlockPosition, state: BlockState): Boolean {
         if (state.isLit()) return false
-        connection.world[position] = state.withProperties(BlockProperties.LIT to true)
+        session.world[position] = state.withProperties(BlockProperties.LIT to true)
         return true
     }
 

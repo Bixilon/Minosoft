@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -39,20 +39,20 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     private fun PlayInByteBuffer.readParticleType() = when {
-        versionId >= ProtocolVersions.V_22W17A -> readRegistryItem(connection.registries.particleType) // ToDo: maybe this was even earlier, should only differ some snapshots
-        versionId >= ProtocolVersions.V_14W19A -> connection.registries.particleType[readInt()]
-        else -> readLegacyRegistryItem(connection.registries.particleType)!!
+        versionId >= ProtocolVersions.V_22W17A -> readRegistryItem(session.registries.particleType) // ToDo: maybe this was even earlier, should only differ some snapshots
+        versionId >= ProtocolVersions.V_14W19A -> session.registries.particleType[readInt()]
+        else -> readLegacyRegistryItem(session.registries.particleType)!!
     }
 
-    override fun handle(connection: PlayConnection) {
-        if (!connection.profiles.particle.types.packet) {
+    override fun handle(session: PlaySession) {
+        if (!session.profiles.particle.types.packet) {
             return
         }
-        val renderer = connection.world.particle ?: return
+        val renderer = session.world.particle ?: return
 
         fun spawn(position: Vec3d, velocity: Vec3d) {
             val factory = data.type.factory ?: return
-            renderer += factory.build(connection, position, velocity, data) ?: return
+            renderer += factory.build(session, position, velocity, data) ?: return
         }
 
         if (count <= 1) {

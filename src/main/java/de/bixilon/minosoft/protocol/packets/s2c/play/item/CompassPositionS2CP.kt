@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.item
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -32,8 +32,8 @@ class CompassPositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         buffer.readFloat()
     } else null
 
-    override fun handle(connection: PlayConnection) {
-        connection.player.compass = CompassPosition(position, angle)
+    override fun handle(session: PlaySession) {
+        session.player.compass = CompassPosition(position, angle)
     }
 
     override fun log(reducedLog: Boolean) {

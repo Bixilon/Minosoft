@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -28,9 +28,9 @@ import org.testng.annotations.Test
 class SignBlockEntityTest {
 
     private fun create(): SignBlockEntity {
-        val connection = IT.OBJENESIS.newInstance(PlayConnection::class.java)
-        connection::language.forceSet(LanguageFile("", Namespaces.MINECRAFT, mutableMapOf()))
-        return SignBlockEntity(connection)
+        val session = IT.OBJENESIS.newInstance(PlaySession::class.java)
+        session::language.forceSet(LanguageFile("", Namespaces.MINECRAFT, mutableMapOf()))
+        return SignBlockEntity(session)
     }
 
     fun `nbt 1_20_2`() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,6 @@ import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
-import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -31,6 +30,7 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
+import de.bixilon.minosoft.config.profile.profiles.session.SessionProfileManager
 import de.bixilon.minosoft.config.profile.storage.ProfileIOManager
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
@@ -47,7 +47,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
     AccountProfileManager,
     RenderingProfileManager,
     BlockProfileManager,
-    ConnectionProfileManager,
+    SessionProfileManager,
     GUIProfileManager,
     ControlsProfileManager,
     OtherProfileManager,

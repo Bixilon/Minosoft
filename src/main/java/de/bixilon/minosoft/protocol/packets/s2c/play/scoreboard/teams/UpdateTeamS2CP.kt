@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -93,8 +93,8 @@ class UpdateTeamS2CP(
     }
 
 
-    override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboard.teams[name] ?: return
+    override fun handle(session: PlaySession) {
+        val team = session.scoreboard.teams[name] ?: return
 
         val formatting = team.formatting
         formatting.name = displayName; formatting.prefix = prefix; formatting.suffix = suffix; formatting.color = color
@@ -105,7 +105,7 @@ class UpdateTeamS2CP(
         team.friendlyFire = friendlyFire
         team.collisions = collisionRule
 
-        connection.events.fire(TeamUpdateEvent(connection, team))
+        session.events.fire(TeamUpdateEvent(session, team))
     }
 
     override fun log(reducedLog: Boolean) {

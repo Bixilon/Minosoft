@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,15 +28,15 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class EntitiesRenderer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer {
     override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
-    val profile = connection.profiles.entity
+    val profile = session.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph
     val features = EntityRenderFeatures(this)
     val renderers = EntityRendererManager(this)
@@ -69,7 +69,7 @@ class EntitiesRenderer(
                 visibility.collect(it)
             } catch (error: Throwable) {
                 error.printStackTrace()
-                Exception("Exception while rendering entities: ${connection.connectionId}", error).crash()
+                Exception("Exception while rendering entities: ${session.id}", error).crash()
             }
         }
         this.reset = false
@@ -99,9 +99,9 @@ class EntitiesRenderer(
 
     companion object : RendererBuilder<EntitiesRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): EntitiesRenderer? {
-            if (!connection.profiles.entity.general.enabled) return null
-            return EntitiesRenderer(connection, context)
+        override fun build(session: PlaySession, context: RenderContext): EntitiesRenderer? {
+            if (!session.profiles.entity.general.enabled) return null
+            return EntitiesRenderer(session, context)
         }
     }
 }

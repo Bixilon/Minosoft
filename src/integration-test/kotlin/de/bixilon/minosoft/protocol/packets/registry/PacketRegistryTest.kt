@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.registry
 
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
@@ -72,7 +72,7 @@ class PacketRegistryTest {
 
     private class DummyS2CPacket(buffer: InByteBuffer) : S2CPacket {
 
-        override fun handle(connection: Connection) = Broken()
+        override fun handle(session: Session) = Broken()
         override fun log(reducedLog: Boolean) = Broken()
     }
 

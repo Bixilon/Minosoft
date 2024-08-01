@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,17 +17,17 @@ import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class RootNode : CommandNode {
 
     constructor() : super(false, null)
     constructor(builder: CommandNodeBuilder) : super(builder.executable, null)
 
-    fun execute(command: String, connection: PlayConnection? = null) {
+    fun execute(command: String, session: PlaySession? = null) {
         val stack = CommandStack()
-        if (connection != null) {
-            stack.connection = connection
+        if (session != null) {
+            stack.session = session
         }
         execute(CommandReader(command), stack)
     }

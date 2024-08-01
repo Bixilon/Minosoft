@@ -38,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.Face
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
@@ -64,7 +64,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
         return item is SwordItem || item is ShearsItem
     }
 
-    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack, speed: Float): Float {
+    override fun getMiningSpeed(session: PlaySession, state: BlockState, stack: ItemStack, speed: Float): Float {
         if (stack.item.item is ShearsItem) {
             return 15.0f
         }

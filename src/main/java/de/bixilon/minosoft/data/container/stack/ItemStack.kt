@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.container.stack.property.DisplayProperty.Compani
 import de.bixilon.minosoft.data.container.stack.property.EnchantingProperty.Companion.updateEnchantingNbt
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 class ItemStack {
@@ -126,7 +126,7 @@ class ItemStack {
         get() {
             _display?.customDisplayName?.let { return it }
             item.item.translationKey.let {
-                val language = holder?.connection?.language ?: return@let
+                val language = holder?.session?.language ?: return@let
                 val translated = language.forceTranslate(it)
                 rarity.color.let { color -> translated.setFallbackColor(color) }
                 return translated
@@ -138,15 +138,15 @@ class ItemStack {
         item: Item = this.item.item,
         count: Int = this.item.count,
 
-        connection: PlayConnection? = holder?.connection,
+        session: PlaySession? = holder?.session,
 
         durability: Int? = _durability?.durability,
 
         nbt: MutableJsonObject? = _nbt?.nbt,
     ): ItemStack {
         val stack = ItemStack(item, count)
-        if (connection != null) {
-            stack.holder = HolderProperty(connection = connection)
+        if (session != null) {
+            stack.holder = HolderProperty(session = session)
         }
         stack._display = _display?.copy(stack)
         stack._durability = _durability?.copy(stack)

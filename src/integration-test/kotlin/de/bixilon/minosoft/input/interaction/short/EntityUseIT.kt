@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,8 +33,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.assertUseItem
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityEmptyInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractPositionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
@@ -47,75 +47,75 @@ class EntityUseIT {
 
 
     fun testAirOnPig() {
-        val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
-        connection.world.entities.add(10, null, entity)
-        connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
+        session.world.entities.add(10, null, entity)
+        session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
+        val use = session.camera.interactions.use
 
         use.unsafePress()
 
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.MAIN, false))
-        connection.assertPacket(EntityEmptyInteractC2SP(connection, entity, Hands.MAIN, false))
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.OFF, false))
-        connection.assertOnlyPacket(EntityEmptyInteractC2SP(connection, entity, Hands.OFF, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertOnlyPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
     }
 
     fun testCoalOnPig() {
-        val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
-        connection.world.entities.add(10, null, entity)
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
-        connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
+        session.world.entities.add(10, null, entity)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
+        session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
+        val use = session.camera.interactions.use
 
         use.unsafePress()
 
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.MAIN, false))
-        connection.assertPacket(EntityEmptyInteractC2SP(connection, entity, Hands.MAIN, false))
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.OFF, false))
-        connection.assertOnlyPacket(EntityEmptyInteractC2SP(connection, entity, Hands.OFF, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertOnlyPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
     }
 
     fun testCoalOnPig2() {
-        val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
-        connection.world.entities.add(10, null, entity)
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
-        connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
+        session.world.entities.add(10, null, entity)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
+        session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
+        val use = session.camera.interactions.use
 
         use.unsafePress()
 
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.MAIN, false))
-        connection.assertPacket(EntityEmptyInteractC2SP(connection, entity, Hands.MAIN, false))
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.OFF, false))
-        connection.assertPacket(EntityEmptyInteractC2SP(connection, entity, Hands.OFF, false))
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertOnlyPacket(UseItemC2SP(Hands.OFF))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertOnlyPacket(UseItemC2SP(Hands.OFF))
     }
 
     fun testCoalOnPig3() {
-        val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
-        connection.world.entities.add(10, null, entity)
-        connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
-        connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
-        connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
-        val use = connection.camera.interactions.use
+        val session = InteractionTestUtil.createSession()
+        val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
+        session.world.entities.add(10, null, entity)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
+        session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
+        val use = session.camera.interactions.use
 
         use.unsafePress()
 
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.MAIN, false))
-        connection.assertPacket(EntityEmptyInteractC2SP(connection, entity, Hands.MAIN, false))
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertUseItem(Hands.MAIN)
-        connection.assertPacket(EntityInteractPositionC2SP(connection, entity, Vec3.EMPTY, Hands.OFF, false))
-        connection.assertPacket(EntityEmptyInteractC2SP(connection, entity, Hands.OFF, false))
-        connection.assertPacket(PositionRotationC2SP::class.java)
-        connection.assertOnlyPacket(UseItemC2SP(Hands.OFF, 2))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertUseItem(Hands.MAIN)
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
+        session.assertPacket(PositionRotationC2SP::class.java)
+        session.assertOnlyPacket(UseItemC2SP(Hands.OFF, 2))
     }
 
     // TODO: egg on pig

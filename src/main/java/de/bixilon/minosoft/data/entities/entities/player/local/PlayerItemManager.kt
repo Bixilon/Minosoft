@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.items.Item
 
 class PlayerItemManager(private val player: LocalPlayerEntity) {
-    val inventory = PlayerInventory(this, player.connection)
+    val inventory = PlayerInventory(this, player.session)
 
     @Deprecated("this is probably not needed anymore, container network packets are not async anymore")
     val incomplete: SynchronizedMap<Int, IncompleteContainer> = synchronizedMapOf()

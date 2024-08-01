@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object EndEffects : DimensionEffects {
     override val identifier = minecraft("the_end")
@@ -35,7 +35,7 @@ object EndEffects : DimensionEffects {
     override val stars: Boolean get() = false
 
     override val clouds: Boolean get() = false
-    override fun getCloudHeight(connection: PlayConnection): IntRange = Broken()
+    override fun getCloudHeight(session: PlaySession): IntRange = Broken()
 
     override val brighten = Vec3(0.99f, 1.12f, 1.0f) // bit more green
 

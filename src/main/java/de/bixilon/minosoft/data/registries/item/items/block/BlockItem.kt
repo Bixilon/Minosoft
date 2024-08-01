@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identifier), StackableItem, PlaceableItem {
     val block: T = unsafeNull()
@@ -40,7 +40,7 @@ abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identif
         BLOCK_FIELD.inject<RegistryItem>(_block)
     }
 
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.states.default
+    override fun getPlacementState(session: PlaySession, target: BlockTarget, stack: ItemStack) = block.states.default
 
 
     private companion object {

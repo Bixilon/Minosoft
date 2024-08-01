@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketNotAvailableException
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongConnectionException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongSessionTypeException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.unknown.UnknownPacketException
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
@@ -34,11 +34,11 @@ import io.netty.handler.codec.MessageToMessageEncoder
 class PacketEncoder(
     private val client: NettyClient,
 ) : MessageToMessageEncoder<C2SPacket>() {
-    private val version: Version? = client.connection.version
+    private val version: Version? = client.session.version
 
     private fun PlayC2SPacket.write(): OutByteBuffer {
-        if (client.connection !is PlayConnection) throw WrongConnectionException(PlayConnection::class.java, client.connection::class.java)
-        val buffer = PlayOutByteBuffer(client.connection)
+        if (client.session !is PlaySession) throw WrongSessionTypeException(PlaySession::class.java, client.session::class.java)
+        val buffer = PlayOutByteBuffer(client.session)
         write(buffer)
 
         return buffer

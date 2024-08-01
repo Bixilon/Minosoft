@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,13 +45,13 @@ class MoonRenderer(
     }
 
     override fun calculateAngle(): Float {
-        val time = sky.context.connection.world.time
+        val time = sky.context.session.world.time
 
         return ((time.time / WorldTime.TICKS_PER_DAYf) - 0.75f) * 360.0f
     }
 
     override fun calculateIntensity(): Float {
-        val time = sky.context.connection.world.time
+        val time = sky.context.session.world.time
         return when (time.phase) {
             DayPhases.NIGHT -> 1.0f
             DayPhases.DAY -> 0.0f

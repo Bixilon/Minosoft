@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -43,11 +43,11 @@ import java.nio.IntBuffer
 
 
 class AudioPlayer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     val rendering: Rendering,
 ) : AbstractAudioPlayer {
-    private val profile = connection.profiles.audio
-    private val soundManager = SoundManager(connection)
+    private val profile = session.profiles.audio
+    private val soundManager = SoundManager(session)
     var initialized = false
         private set
 
@@ -90,19 +90,19 @@ class AudioPlayer(
 
         listener = SoundListener()
 
-        val volumeConfig = connection.profiles.audio.volume
+        val volumeConfig = session.profiles.audio.volume
 
         listener.masterVolume = volumeConfig.master
         volumeConfig::master.observe(this) { queue += { listener.masterVolume = it } }
 
-        connection.events.listen<CameraPositionChangeEvent> {
+        session.events.listen<CameraPositionChangeEvent> {
             queue += {
                 listener.position = Vec3(it.newPosition)
                 listener.setOrientation(it.context.camera.view.view.front, CAMERA_UP_VEC3)
             }
         }
 
-        DefaultAudioBehavior.register(connection)
+        DefaultAudioBehavior.register(session)
 
         Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "OpenAL loaded!" }
 
@@ -119,7 +119,7 @@ class AudioPlayer(
             }
         }
         initialized = true
-        connection.world.audio = this
+        session.world.audio = this
         latch.dec()
     }
 
@@ -131,7 +131,7 @@ class AudioPlayer(
     }
 
     override fun play2DSound(sound: ResourceLocation, volume: Float, pitch: Float) {
-        if (!connection.profiles.audio.gui.enabled) {
+        if (!session.profiles.audio.gui.enabled) {
             return
         }
         super.play2DSound(sound, volume, pitch)
@@ -198,7 +198,7 @@ class AudioPlayer(
         }
         position?.let { if (!shouldPlay(sound, position)) return }
         queue += add@{
-            sound.load(connection.assetsManager)
+            sound.load(session.assetsManager)
             position?.let { if (!shouldPlay(sound, position)) return@add }
             val source = getAvailableSource()
             if (source == null) {
@@ -231,14 +231,14 @@ class AudioPlayer(
 
     fun startLoop() {
         while (true) {
-            if (connection.wasConnected || connection.error != null) {
+            if (session.established || session.error != null) {
                 break
             }
             queue.work()
             calculateAvailableSources()
             while (!enabled) {
                 Thread.sleep(1L)
-                if (connection.wasConnected || connection.error != null) {
+                if (session.established || session.error != null) {
                     break
                 }
             }

@@ -45,13 +45,13 @@ import java.util.*
 class SolidSectionMesher(
     val context: RenderContext,
 ) {
-    private val profile = context.connection.profiles.block.rendering
-    private val bedrock = context.connection.registries.block[Bedrock]?.states?.default
+    private val profile = context.session.profiles.block.rendering
+    private val bedrock = context.session.registries.block[Bedrock]?.states?.default
     private val tints = context.tints
     private var fastBedrock = false
 
     init {
-        val profile = context.connection.profiles.rendering
+        val profile = context.session.profiles.rendering
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
     }
 

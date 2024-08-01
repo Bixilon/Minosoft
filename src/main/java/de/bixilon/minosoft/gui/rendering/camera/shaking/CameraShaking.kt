@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ class CameraShaking(
         this.strength += 1.0f
         val strength = this.strength.avg * profile.amplifier // strength affects how far it goes
 
-        val physics = camera.context.connection.camera.entity.physics
+        val physics = camera.context.session.camera.entity.physics
         val velocity = physics.velocity.xz.length2().toFloat() // velocity affects how quick it goes
         if (velocity > 0.003 && physics.onGround) {
             this.speed += velocity

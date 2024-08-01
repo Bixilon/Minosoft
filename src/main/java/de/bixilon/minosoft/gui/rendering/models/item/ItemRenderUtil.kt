@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.models.item
 
 import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object ItemRenderUtil {
 
     @Deprecated("please let this be the last fucking hack in this game") // TODO
-    fun Item.getModel(connection: PlayConnection): ItemRender? {
-        val block = connection.registries.block[identifier]
+    fun Item.getModel(session: PlaySession): ItemRender? {
+        val block = session.registries.block[identifier]
         return block?.model ?: block?.states?.default?.model ?: model
     }
 }

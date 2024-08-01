@@ -17,7 +17,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object NetherEffects : DimensionEffects {
     override val identifier = minecraft("the_nether")
@@ -31,7 +31,7 @@ object NetherEffects : DimensionEffects {
     override val stars: Boolean get() = false
 
     override val clouds: Boolean get() = false
-    override fun getCloudHeight(connection: PlayConnection): IntRange = Broken()
+    override fun getCloudHeight(session: PlaySession): IntRange = Broken()
 
 
     override val fog = FogEffects(0.5f)

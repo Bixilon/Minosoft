@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.item.handler.ItemInteractBlockHandler
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface FireItem : ItemInteractBlockHandler {
 
@@ -32,14 +32,14 @@ interface FireItem : ItemInteractBlockHandler {
             if (this is DurableItem && player.gamemode != Gamemodes.CREATIVE) {
                 stack.item.decreaseCount()
             }
-            return if (target.state.block.light(player.connection, target.blockPosition, target.state)) InteractionResults.SUCCESS else InteractionResults.FAILED
+            return if (target.state.block.light(player.session, target.blockPosition, target.state)) InteractionResults.SUCCESS else InteractionResults.FAILED
         }
-        val placed = placeFireAt(player.connection, target.blockPosition)
+        val placed = placeFireAt(player.session, target.blockPosition)
 
         return if (placed) InteractionResults.SUCCESS else InteractionResults.FAILED
     }
 
-    fun placeFireAt(connection: PlayConnection, position: BlockPosition): Boolean {
+    fun placeFireAt(session: PlaySession, position: BlockPosition): Boolean {
         return true // TODO
     }
 }

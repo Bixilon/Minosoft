@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -77,11 +77,11 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             readVarInt()
         }
-        return StatusEffectInstance(connection.registries.statusEffect[effectId], amplifier, duration)
+        return StatusEffectInstance(session.registries.statusEffect[effectId], amplifier, duration)
     }
 
-    override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId]?.nullCast<LivingEntity>() ?: return // thanks mojang
+    override fun handle(session: PlaySession) {
+        val entity = session.world.entities[entityId]?.nullCast<LivingEntity>() ?: return // thanks mojang
         entity.effects += effect
     }
 

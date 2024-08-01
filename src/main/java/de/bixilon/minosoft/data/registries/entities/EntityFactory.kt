@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 interface EntityFactory<T : Entity> : Identified {
@@ -27,12 +27,12 @@ interface EntityFactory<T : Entity> : Identified {
     /**
      * Tweaks the entity resource location. Used for pre flattening versions.
      */
-    fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
+    fun tweak(session: PlaySession, data: EntityData?, versionId: Int): ResourceLocation {
         return identifier
     }
 
-    fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): T?
-    fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation, uuid: UUID?): T? {
-        return build(connection, entityType, data, position, rotation)
+    fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): T?
+    fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation, uuid: UUID?): T? {
+        return build(session, entityType, data, position, rotation)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.common
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.common.PongC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -24,8 +24,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class PingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val payload = buffer.readInt()
 
-    override fun handle(connection: PlayConnection) {
-        connection.sendPacket(PongC2SP(payload))
+    override fun handle(session: PlaySession) {
+        session.network.send(PongC2SP(payload))
     }
 
     override fun log(reducedLog: Boolean) {

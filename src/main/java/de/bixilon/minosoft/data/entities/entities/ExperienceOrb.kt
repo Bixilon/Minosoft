@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,19 +19,18 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ExperienceOrb : Entity {
 
     @get:SynchronizedEntityData
     val count: Int
 
-    constructor(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : super(connection, entityType, data, position, rotation) {
+    constructor(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : super(session, entityType, data, position, rotation) {
         count = 0
     }
 
-    constructor(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, count: Int) : super(connection, entityType, data, position, EntityRotation(0.0f, 0.0f)) {
+    constructor(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, count: Int) : super(session, entityType, data, position, EntityRotation(0.0f, 0.0f)) {
         this.count = count
     }
 
@@ -40,8 +39,8 @@ class ExperienceOrb : Entity {
     companion object : EntityFactory<ExperienceOrb> {
         override val identifier: ResourceLocation = minecraft("experience_orb")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ExperienceOrb {
-            return ExperienceOrb(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ExperienceOrb {
+            return ExperienceOrb(session, entityType, data, position, rotation)
         }
     }
 }

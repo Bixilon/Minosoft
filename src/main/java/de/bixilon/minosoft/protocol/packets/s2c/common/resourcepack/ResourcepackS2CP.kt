@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.ResourcePackRequestEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.common.ResourcepackC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -45,12 +45,12 @@ class ResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        val event = ResourcePackRequestEvent(connection, this)
-        if (connection.events.fire(event)) {
+    override fun handle(session: PlaySession) {
+        val event = ResourcePackRequestEvent(session, this)
+        if (session.events.fire(event)) {
             return
         }
-        connection.network.send(ResourcepackC2SP(uuid, hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
+        session.network.send(ResourcepackC2SP(uuid, hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
     }
 
     override fun log(reducedLog: Boolean) {

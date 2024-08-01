@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,18 +22,18 @@ import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttribute
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
 object RegistriesFixer {
 
 
-    fun register(connection: PlayConnection) {
-        connection.events.listen<RegistriesLoadEvent> {
+    fun register(session: PlaySession) {
+        session.events.listen<RegistriesLoadEvent> {
             if (it.state != RegistriesLoadEvent.States.POST) {
                 return@listen
             }
-            it.registries.fixBlockEntities(it.connection.version)
+            it.registries.fixBlockEntities(it.session.version)
             it.registries.fixPlayerSpeed()
         }
     }

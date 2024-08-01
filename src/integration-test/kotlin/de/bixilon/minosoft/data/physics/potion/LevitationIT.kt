@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,14 +26,14 @@ import de.bixilon.minosoft.data.registries.blocks.DirtTest0
 import de.bixilon.minosoft.data.registries.blocks.SlabTest0
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class LevitationIT {
 
     fun levitationFalling1() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applyLevitation(1)
         player.runTicks(10)
@@ -42,7 +42,7 @@ class LevitationIT {
     }
 
     fun levitationFalling2() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applyLevitation(2)
         player.runTicks(20)
@@ -51,7 +51,7 @@ class LevitationIT {
     }
 
     fun levitationFalling3() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applyLevitation(3)
         player.runTicks(20)
@@ -60,7 +60,7 @@ class LevitationIT {
     }
 
     fun levitationFalling12() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applyLevitation(12)
         player.runTicks(18)
@@ -69,7 +69,7 @@ class LevitationIT {
     }
 
     fun levitationFalling90() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applyLevitation(90)
         player.runTicks(27)
@@ -78,7 +78,7 @@ class LevitationIT {
     }
 
     fun levitationFalling412() {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.applyLevitation(3)
         player.runTicks(412)
@@ -87,10 +87,10 @@ class LevitationIT {
     }
 
     fun levitationCollision1() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
-        connection.world[Vec3i(12, 11, 4)] = DirtTest0.state
+        session.world[Vec3i(12, 11, 4)] = DirtTest0.state
         player.applyLevitation(2)
         player.runTicks(16)
         player.assertPosition(12.0, 9.200000047683716, 4.0)
@@ -98,10 +98,10 @@ class LevitationIT {
     }
 
     fun levitationCollision2() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
-        connection.world[Vec3i(12, 12, 4)] = DirtTest0.state
+        session.world[Vec3i(12, 12, 4)] = DirtTest0.state
         player.applyLevitation(34)
         player.runTicks(47)
         player.assertPosition(12.0, 10.200000047683716, 4.0)
@@ -109,10 +109,10 @@ class LevitationIT {
     }
 
     fun levitationCollision3() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
-        connection.world[Vec3i(12, 12, 4)] = SlabTest0.top
+        session.world[Vec3i(12, 12, 4)] = SlabTest0.top
         player.applyLevitation(1)
         player.runTicks(27)
         player.assertPosition(12.0, 10.700000047683716, 4.0)
@@ -120,10 +120,10 @@ class LevitationIT {
     }
 
     fun levitationCollision4() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
-        connection.world[Vec3i(12, 12, 4)] = SlabTest0.top
+        session.world[Vec3i(12, 12, 4)] = SlabTest0.top
         player.applyLevitation(3)
         player.runTicks(27)
         player.assertPosition(12.0, 10.700000047683716, 4.0)
@@ -131,8 +131,8 @@ class LevitationIT {
     }
 
     fun levitationMovement1() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.input = PlayerMovementInput(forward = true)
         player.applyLevitation(3)
@@ -142,8 +142,8 @@ class LevitationIT {
     }
 
     fun levitationMovement2() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.input = PlayerMovementInput(forward = true, left = true)
         player.applyLevitation(3)
@@ -153,8 +153,8 @@ class LevitationIT {
     }
 
     fun levitationMovement3() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.forceRotate(EntityRotation(140.0f, 29.0f))
         player.input = PlayerMovementInput(forward = true, left = true)
@@ -165,8 +165,8 @@ class LevitationIT {
     }
 
     fun levitationMovement4() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.forceRotate(EntityRotation(76.0f, 29.0f))
         player.input = PlayerMovementInput(backward = true, left = true)
@@ -177,8 +177,8 @@ class LevitationIT {
     }
 
     fun levitationMovement5() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
+        val session = createSession(3)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(7.0, 9.0, 4.0))
         player.forceRotate(EntityRotation(1.0f, 38.0f))
         player.input = PlayerMovementInput(backward = true, right = true)
@@ -189,9 +189,9 @@ class LevitationIT {
     }
 
     fun levitationCollisionMovement1() {
-        val connection = createConnection(3)
-        val player = createPlayer(connection)
-        connection.world[Vec3i(12, 12, 4)] = SlabTest0.top
+        val session = createSession(3)
+        val player = createPlayer(session)
+        session.world[Vec3i(12, 12, 4)] = SlabTest0.top
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
         player.input = PlayerMovementInput(forward = true)
         player.applyLevitation(3)

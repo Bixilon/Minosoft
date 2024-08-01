@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -54,15 +54,15 @@ class SignEditorScreen(
     guiRenderer: GUIRenderer,
     val blockPosition: Vec3i,
     val side: SignSides,
-    val blockState: BlockState? = guiRenderer.connection.world[blockPosition],
-    val blockEntity: SignBlockEntity? = guiRenderer.connection.world.getBlockEntity(blockPosition).nullCast(),
+    val blockState: BlockState? = guiRenderer.session.world[blockPosition],
+    val blockEntity: SignBlockEntity? = guiRenderer.session.world.getBlockEntity(blockPosition).nullCast(),
 ) : Screen(guiRenderer), AbstractLayout<Element> {
     private val headerElement = TextElement(guiRenderer, "Edit sign message", background = null, properties = TextRenderProperties(scale = 3.0f), parent = this)
     private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = null, parent = this)
     private val backgroundElement = getFront()
     private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.get(side)?.text?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TEXT_PROPERTIES, background = null, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
-    private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
+    private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.session.profiles.gui.sign.limitLength, parent = this) { guiRenderer.session.profiles.gui.sign.limitLength = it; forceSilentApply() }
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
     private var activeLine = 0
@@ -126,7 +126,7 @@ class SignEditorScreen(
     override fun onClose() {
         super.onClose()
         val text = getText()
-        guiRenderer.connection.sendPacket(SignTextC2SP(blockPosition, this.side, text))
+        guiRenderer.session.network.send(SignTextC2SP(blockPosition, this.side, text))
     }
 
     override fun forceSilentApply() {
@@ -230,7 +230,7 @@ class SignEditorScreen(
 
         fun register(guiRenderer: GUIRenderer) {
             guiRenderer.atlas.load(ATLAS)
-            guiRenderer.connection.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.position, it.side)) }
+            guiRenderer.session.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.position, it.side)) }
         }
     }
 }

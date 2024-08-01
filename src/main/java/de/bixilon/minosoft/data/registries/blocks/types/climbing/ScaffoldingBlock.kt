@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.identifier, settings: BlockSettings) : Block(identifier, settings), ClimbingBlock, TransparentBlock, InstantBreakableBlock, OutlinedBlock, CollidableBlock, BlockWithItem<ClimbingItems.ScaffoldingItem> {
     override val item: ClimbingItems.ScaffoldingItem = this::item.inject(ClimbingItems.ScaffoldingItem)
@@ -45,14 +45,14 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
     override fun canPushOut(entity: Entity) = false
 
 
-    override fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
-        if (connection.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is ClimbingItems.ScaffoldingItem) {
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
+        if (session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is ClimbingItems.ScaffoldingItem) {
             return AbstractVoxelShape.FULL
         }
         return if (state.isBottom()) BOTTOM_OUTLINE else OUTLINE
     }
 
-    override fun getCollisionShape(connection: PlayConnection, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         if (context.isAbove(1.0, position) && (context !is EntityCollisionContext || !context.descending)) {
             return OUTLINE
         }

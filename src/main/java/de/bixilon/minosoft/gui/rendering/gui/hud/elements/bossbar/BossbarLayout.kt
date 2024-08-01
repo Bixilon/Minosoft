@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2.0f), LayoutedElement, Initializable {
-    private val connection = context.connection
+    private val session = context.session
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2
@@ -40,25 +40,25 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
     val atlas = guiRenderer.atlas[ATLAS]?.let { BossbarAtlas(it) }
 
     override fun postInit() {
-        connection.events.listen<BossbarAddEvent> {
+        session.events.listen<BossbarAddEvent> {
             val element = BossbarElement(guiRenderer, it.bossbar, atlas)
             this += element
             val previous = bossbars.put(it.bossbar, element) ?: return@listen
             this -= previous
         }
 
-        connection.events.listen<BossbarRemoveEvent> {
+        session.events.listen<BossbarRemoveEvent> {
             val element = bossbars.remove(it.bossbar) ?: return@listen
             this -= element
         }
 
-        connection.events.listen<BossbarValueSetEvent> {
+        session.events.listen<BossbarValueSetEvent> {
             bossbars[it.bossbar]?.apply()
         }
-        connection.events.listen<BossbarTitleSetEvent> {
+        session.events.listen<BossbarTitleSetEvent> {
             bossbars[it.bossbar]?.apply()
         }
-        connection.events.listen<BossbarStyleSetEvent> {
+        session.events.listen<BossbarStyleSetEvent> {
             bossbars[it.bossbar]?.apply()
         }
     }

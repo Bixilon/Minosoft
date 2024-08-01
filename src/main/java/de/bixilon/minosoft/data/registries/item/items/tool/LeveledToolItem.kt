@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.item.items.tool
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.LeveledTool
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.tags.MinecraftTagTypes
 import de.bixilon.minosoft.tags.TagManager
 
@@ -39,7 +39,7 @@ abstract class LeveledToolItem(identifier: ResourceLocation) : ToolItem(identifi
         return true
     }
 
-    override fun isLevelSuitable(connection: PlayConnection, blockState: BlockState): Boolean? {
-        return isLevelSuitable(connection.tags, blockState) ?: isLevelSuitable(connection.legacyTags, blockState)
+    override fun isLevelSuitable(session: PlaySession, blockState: BlockState): Boolean? {
+        return isLevelSuitable(session.tags, blockState) ?: isLevelSuitable(session.legacyTags, blockState)
     }
 }

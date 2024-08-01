@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.entity
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
@@ -28,11 +28,11 @@ class EntityActionC2SP(
     val action: EntityActions,
     val parameter: Int = 0, // currently used as jump boost for horse jumping
 ) : PlayC2SPacket {
-    constructor(entity: Entity, connection: PlayConnection, action: EntityActions, parameter: Int = 0) : this(connection.world.entities.getId(entity)!!, action, parameter)
+    constructor(entity: Entity, session: PlaySession, action: EntityActions, parameter: Int = 0) : this(session.world.entities.getId(entity)!!, action, parameter)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeEntityId(entityId)
-        buffer.writeVarInt(buffer.connection.registries.entityActions.getId(action))
+        buffer.writeVarInt(buffer.session.registries.entityActions.getId(action))
 
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.writeInt(parameter)

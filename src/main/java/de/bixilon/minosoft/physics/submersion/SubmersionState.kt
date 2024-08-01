@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -43,7 +43,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap
 import kotlin.math.abs
 
 class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
-    private val world = physics.entity.connection.world
+    private val world = physics.entity.session.world
     var eye: Fluid? = null
         private set
     val heights: Object2DoubleOpenHashMap<Fluid> = Object2DoubleOpenHashMap(0, 0.1f)
@@ -92,7 +92,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
 
     private fun updateVelocity(fluid: Fluid, update: FluidUpdate, normalize: Boolean) {
         if (update.velocity.length2() <= 0.0) return
-        val speed = fluid.getVelocityMultiplier(physics.entity.connection)
+        val speed = fluid.getVelocityMultiplier(physics.entity.session)
         update.velocity *= 1.0 / update.count
         if (normalize) {
             update.velocity.vanillaNormalizeAssign()
@@ -132,7 +132,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
 
     @Deprecated("performance")
     private fun update(type: ResourceLocation, aabb: AABB, pushable: Boolean, previousHeight: Double) {
-        val fluid = physics.entity.connection.registries.fluid[type] // TODO: remove this and stream fluids: waterlogged makes problems
+        val fluid = physics.entity.session.registries.fluid[type] // TODO: remove this and stream fluids: waterlogged makes problems
         update(fluid, aabb, pushable, previousHeight)
     }
 
@@ -168,7 +168,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         if (vehicle is SwimmingVehicle && !vehicle.canUpdatePassengerFluidMovement(WaterFluid)) {
             return
         }
-        update(physics.entity.connection.registries.fluid.water, aabb, pushable, previous)
+        update(physics.entity.session.registries.fluid.water, aabb, pushable, previous)
     }
 
     private fun clear() {
@@ -186,7 +186,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         val pushable = physics.fluidPushable
 
         updateWater(aabb, pushable, previousWater)
-        update(physics.entity.connection.registries.fluid.lava, aabb, pushable, previousLava)
+        update(physics.entity.session.registries.fluid.lava, aabb, pushable, previousLava)
     }
 
     override fun tick() {

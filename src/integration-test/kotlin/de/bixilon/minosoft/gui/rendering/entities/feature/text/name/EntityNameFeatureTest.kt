@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -68,7 +68,7 @@ class EntityNameFeatureTest {
 
     private fun EntityNameFeature.cameraTeam(same: Boolean) {
         val team = if (same) renderer.entity.unsafeCast<PlayerEntity>().additional.team ?: throw IllegalArgumentException("Not in a team") else Team("other")
-        renderer.renderer.connection.camera.entity.unsafeCast<PlayerEntity>().additional.team = team
+        renderer.renderer.session.camera.entity.unsafeCast<PlayerEntity>().additional.team = team
     }
 
     private fun EntityNameFeature.team(invisibles: Boolean = true, name: NameTagVisibilities = NameTagVisibilities.ALWAYS) {
@@ -78,7 +78,7 @@ class EntityNameFeatureTest {
 
     private fun EntityNameFeature.setTargeted(target: Boolean = true, distance: Double = 1.0) {
         val target = if (target) EntityTarget(Vec3d(0, 0, 0), distance, Directions.DOWN, renderer.entity) else null
-        renderer.renderer.connection.camera.target::target.forceSet(DataObserver(target))
+        renderer.renderer.session.camera.target::target.forceSet(DataObserver(target))
     }
 
     private fun EntityNameFeature.updateName() {
@@ -250,7 +250,7 @@ class EntityNameFeatureTest {
     fun `zombie with visible name`() {
         val name = create(Zombie)
         name.isNameVisible(true)
-        name.renderer.renderer.connection.language = LanguageFile("abc", Namespaces.MINOSOFT, mutableMapOf("key" to "Zombie"))
+        name.renderer.renderer.session.language = LanguageFile("abc", Namespaces.MINOSOFT, mutableMapOf("key" to "Zombie"))
         name.updateName()
         name.assertText()
     }

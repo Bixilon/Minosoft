@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.data.bossbar.BossbarFlags
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarFlagsSetEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -28,12 +28,12 @@ class FlagsBossbarS2CP(
 ) : BossbarS2CP {
     val flags = BossbarFlags(buffer.readUnsignedByte())
 
-    override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+    override fun handle(session: PlaySession) {
+        val bossbar = session.bossbarManager.bossbars[uuid] ?: return
 
         bossbar.flags = flags
 
-        connection.events.fire(BossbarFlagsSetEvent(connection, uuid, bossbar))
+        session.events.fire(BossbarFlagsSetEvent(session, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,14 +26,14 @@ interface PersonView : CameraView {
 
     override val fovMultiplier: Float
         get() {
-            val base = if (camera.context.connection.camera.entity.isSprinting) 1.3f else 1.0f
+            val base = if (camera.context.session.camera.entity.isSprinting) 1.3f else 1.0f
             // TODO: item using, movement speed, ...
             return base
         }
 
     override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
-        val isCamera = camera.context.connection.camera.entity is LocalPlayerEntity
-        val player = camera.context.connection.player
+        val isCamera = camera.context.session.camera.entity is LocalPlayerEntity
+        val player = camera.context.session.player
 
         player.input = if (isCamera) input else PlayerMovementInput()
 
@@ -47,7 +47,7 @@ interface PersonView : CameraView {
     }
 
     fun handleMouse(delta: Vec2d): EntityRotation? {
-        val entity = camera.context.connection.camera.entity
+        val entity = camera.context.session.camera.entity
         if (entity !is LocalPlayerEntity) {
             return null
         }

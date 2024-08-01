@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,10 +21,9 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class GlowSquid(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Squid(connection, entityType, data, position, rotation) {
+class GlowSquid(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Squid(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val darkTicksRemaining: Int
@@ -35,8 +34,8 @@ class GlowSquid(connection: PlayConnection, entityType: EntityType, data: Entity
         override val identifier: ResourceLocation = minecraft("glow_squid")
         private val DARK_TICKS_REMAINING_DATA = EntityDataField("GLOW_SQUID_DARK_TICKS_REMAINING")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): GlowSquid {
-            return GlowSquid(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): GlowSquid {
+            return GlowSquid(session, entityType, data, position, rotation)
         }
     }
 }

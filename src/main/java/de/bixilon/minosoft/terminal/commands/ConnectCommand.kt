@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,8 +22,8 @@ import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.DNSUtil
@@ -37,7 +37,7 @@ object ConnectCommand : Command {
             DefaultThreadPool += add@{
                 if (version == null) {
                     stack.print.print("Pinging server to get version...")
-                    val ping = StatusConnection(address)
+                    val ping = StatusSession(address)
                     ping::status.observe(this) { connect(stack.print, ping.realAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account) }
                     ping::error.observe(this) { stack.print.print("Could not ping $address: $it") }
                     ping.ping()
@@ -52,7 +52,7 @@ object ConnectCommand : Command {
     private fun connect(print: PrintTarget, address: ServerAddress, version: Version, account: Account) {
         print.print("Connecting to $address")
 
-        val connection = PlayConnection(address, account, version)
-        connection.connect()
+        val session = PlaySession(address, account, version)
+        session.connect()
     }
 }

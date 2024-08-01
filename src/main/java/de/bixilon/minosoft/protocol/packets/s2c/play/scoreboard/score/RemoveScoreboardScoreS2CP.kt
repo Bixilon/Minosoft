@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardScoreRemoveEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -29,18 +29,18 @@ class RemoveScoreboardScoreS2CP(
 
     constructor(buffer: PlayInByteBuffer) : this(buffer.readString(), buffer.readOptional { buffer.readString() }, buffer)
 
-    override fun handle(connection: PlayConnection) {
-        val objective = connection.scoreboard.objectives[objective] ?: let {
-            for ((_, objective) in connection.scoreboard.objectives.toSynchronizedMap()) {
+    override fun handle(session: PlaySession) {
+        val objective = session.scoreboard.objectives[objective] ?: let {
+            for ((_, objective) in session.scoreboard.objectives.toSynchronizedMap()) {
                 val score = objective.scores.remove(entity) ?: continue
 
-                connection.events.fire(ScoreboardScoreRemoveEvent(connection, objective, entity))
+                session.events.fire(ScoreboardScoreRemoveEvent(session, objective, entity))
             }
             return
         }
         val score = objective.scores.remove(entity) ?: return
 
-        connection.events.fire(ScoreboardScoreRemoveEvent(connection, objective, entity))
+        session.events.fire(ScoreboardScoreRemoveEvent(session, objective, entity))
     }
 
 

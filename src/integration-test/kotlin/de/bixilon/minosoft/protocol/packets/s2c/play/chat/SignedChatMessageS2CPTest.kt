@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,8 +22,8 @@ import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.TypeProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.s2c.play.PacketReadingTestUtil
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -31,23 +31,23 @@ import org.testng.annotations.Test
 @Test(groups = ["packet"])
 class SignedChatMessageS2CPTest {
 
-    private fun connection(version: String): PlayConnection {
-        val connection = createConnection(version = version)
-        connection::language.forceSet(LanguageManager())
-        connection::tabList.forceSet(TabList())
-        connection.registries.messageType[0] = ChatMessageType(minecraft("dummy"), TypeProperties("test", emptyList(), emptyMap()), null, ChatTextPositions.CHAT)
+    private fun session(version: String): PlaySession {
+        val session = createSession(version = version)
+        session::language.forceSet(LanguageManager())
+        session::tabList.forceSet(TabList())
+        session.registries.messageType[0] = ChatMessageType(minecraft("dummy"), TypeProperties("test", emptyList(), emptyMap()), null, ChatTextPositions.CHAT)
 
-        return connection
+        return session
     }
 
     fun vanilla_23w40a() {
-        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_23w40a", "23w40a", connection("23w40a"), constructor = ::SignedChatMessageS2CP)
+        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_23w40a", "23w40a", session("23w40a"), constructor = ::SignedChatMessageS2CP)
         assertEquals(packet.message.message, "abc")
         assertEquals(packet.message.sender, UnknownMessageSender("a21a6c65-bbd4-48ca-9d79-e07139e1780d".toUUID()))
     }
 
     fun `vanilla 1_20_4`() {
-        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_1_20_4", "1.20.4", connection("1.20.4"), constructor = ::SignedChatMessageS2CP)
+        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_1_20_4", "1.20.4", session("1.20.4"), constructor = ::SignedChatMessageS2CP)
         assertEquals(packet.message.message, "very signed message")
         assertEquals(packet.message.sender, UnknownMessageSender("24f0d4a2-1787-4761-aeef-39c90824e746".toUUID()))
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,27 +22,27 @@ import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface DoubleSizeBlock : MultiSizeBlock {
 
 
-    fun isTop(state: BlockState, connection: PlayConnection) = state.unsafeCast<PropertyBlockState>().properties[BlockProperties.STAIR_HALF] == Halves.UPPER
-    fun getTop(state: BlockState, connection: PlayConnection): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER)
-    fun getBottom(state: BlockState, connection: PlayConnection): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER)
+    fun isTop(state: BlockState, session: PlaySession) = state.unsafeCast<PropertyBlockState>().properties[BlockProperties.STAIR_HALF] == Halves.UPPER
+    fun getTop(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER)
+    fun getBottom(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER)
 
-    override fun onBreak(connection: PlayConnection, position: Vec3i, state: BlockState, entity: BlockEntity?) {
-        val offset = if (isTop(state, connection)) Directions.DOWN else Directions.UP
-        connection.world[position + offset] = null
+    override fun onBreak(session: PlaySession, position: Vec3i, state: BlockState, entity: BlockEntity?) {
+        val offset = if (isTop(state, session)) Directions.DOWN else Directions.UP
+        session.world[position + offset] = null
     }
 
-    override fun onPlace(connection: PlayConnection, position: Vec3i, state: BlockState, entity: BlockEntity?) {
+    override fun onPlace(session: PlaySession, position: Vec3i, state: BlockState, entity: BlockEntity?) {
 
-        val top = isTop(state, connection)
+        val top = isTop(state, session)
 
         val offset = if (top) Directions.DOWN else Directions.UP
-        val otherState = if (top) getTop(state, connection) else getBottom(state, connection)
+        val otherState = if (top) getTop(state, session) else getBottom(state, session)
 
-        connection.world[position + offset] = otherState
+        session.world[position + offset] = otherState
     }
 }

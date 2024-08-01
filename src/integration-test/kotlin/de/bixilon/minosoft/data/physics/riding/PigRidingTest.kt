@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,8 +30,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -39,9 +39,9 @@ import org.testng.annotations.Test
 class PigRidingTest : AbstractRidingTest<Pig>() {
 
 
-    override fun constructVehicle(connection: PlayConnection): Entity {
-        val type = connection.registries.entityType[Pig]!!
-        return Pig.build(connection, type, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
+    override fun constructVehicle(session: PlaySession): Entity {
+        val type = session.registries.entityType[Pig]!!
+        return Pig.build(session, type, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
     }
 
     override fun saddle(entity: Pig) {
@@ -149,9 +149,9 @@ class PigRidingTest : AbstractRidingTest<Pig>() {
     }
 
     fun pigCarrotOnStick1() {
-        val player = createPlayer(createConnection(5))
+        val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        val vehicle = player.connection.createVehicle(true)
+        val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
         player.attachment.vehicle = vehicle
@@ -170,10 +170,10 @@ class PigRidingTest : AbstractRidingTest<Pig>() {
     }
 
     fun pigCarrotOnStick2() {
-        val player = createPlayer(createConnection(5))
-        player.connection.world.fill(Vec3i(-10, 4, -10), Vec3i(10, 4, 10), StoneTest0.state)
+        val player = createPlayer(createSession(5))
+        player.session.world.fill(Vec3i(-10, 4, -10), Vec3i(10, 4, 10), StoneTest0.state)
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        val vehicle = player.connection.createVehicle(true)
+        val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
         player.attachment.vehicle = vehicle

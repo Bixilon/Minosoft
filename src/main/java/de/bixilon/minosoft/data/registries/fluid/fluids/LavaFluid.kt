@@ -41,7 +41,7 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
 import de.bixilon.minosoft.physics.parts.input.InputPhysics.applyMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Fluid(identifier), FluidCollisionHandler, FoggedFluid {
@@ -52,8 +52,8 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         this::lavaParticleType.inject(LavaParticle)
     }
 
-    override fun getVelocityMultiplier(connection: PlayConnection): Double {
-        return if (connection.world.dimension.ultraWarm) 0.007 else 0.0023333333333333335
+    override fun getVelocityMultiplier(session: PlaySession): Double {
+        return if (session.world.dimension.ultraWarm) 0.007 else 0.0023333333333333335
     }
 
     override fun travel(physics: LivingEntityPhysics<*>, input: MovementInput, gravity: Double, falling: Boolean) {
@@ -80,10 +80,10 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         return other is LavaFluid
     }
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        super.randomTick(connection, blockState, blockPosition, random)
-        val particle = connection.world.particle ?: return
-        val above = connection.world[blockPosition + Directions.UP]
+    override fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        super.randomTick(session, blockState, blockPosition, random)
+        val particle = session.world.particle ?: return
+        val above = session.world[blockPosition + Directions.UP]
 
         if (above != null) { // ToDo: Or is not a full block
             return
@@ -94,7 +94,7 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
                 1.0
             )
 
-            particle += LavaParticle(connection, position, lavaParticleType.default())
+            particle += LavaParticle(session, position, lavaParticleType.default())
         }
     }
 

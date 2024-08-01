@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -98,7 +98,7 @@ class CloudLayer(
 
     private fun calculateCloudPosition(): Vec2i {
         val offset = this.offset.toInt()
-        return clouds.connection.player.physics.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
+        return clouds.session.player.physics.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
     }
 
     private fun updatePosition() {

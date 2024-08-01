@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,23 +23,23 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC
 class HotbarHandler(
     val interactions: InteractionManager,
 ) {
-    private val connection = interactions.connection
+    private val session = interactions.session
     val slotLimiter = RateLimiter()
     val swapLimiter = RateLimiter(dependencies = synchronizedSetOf(slotLimiter)) // we don't want to swap wrong items
 
     fun selectSlot(slot: Int) {
-        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+        if (session.player.gamemode == Gamemodes.SPECTATOR) {
             return
         }
-        if (connection.player.items.hotbar == slot) {
+        if (session.player.items.hotbar == slot) {
             return
         }
-        connection.player.items.hotbar = slot
-        slotLimiter += { connection.sendPacket(HotbarSlotC2SP(slot)) }
+        session.player.items.hotbar = slot
+        slotLimiter += { session.network.send(HotbarSlotC2SP(slot)) }
     }
 
     private fun canSwap(): Boolean {
-        return connection.version.hasOffhand && connection.player.gamemode != Gamemodes.SPECTATOR
+        return session.version.hasOffhand && session.player.gamemode != Gamemodes.SPECTATOR
     }
 
     fun trySwap() {
@@ -49,11 +49,11 @@ class HotbarHandler(
 
     fun swapItems() {
         if (!canSwap()) return
-        val inventory = connection.player.items.inventory
+        val inventory = session.player.items.inventory
         val main = inventory[EquipmentSlots.MAIN_HAND]
         val off = inventory[EquipmentSlots.OFF_HAND]
 
-        connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND))
+        session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND))
 
         if (main == null && off == null) {
             // both are air, we can't swap

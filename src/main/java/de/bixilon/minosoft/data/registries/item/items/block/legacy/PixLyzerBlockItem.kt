@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class PixLyzerBlockItem(
     resourceLocation: ResourceLocation,
@@ -46,7 +46,7 @@ open class PixLyzerBlockItem(
         BLOCK_FIELD.inject<RegistryItem>(data["block"])
     }
 
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack): BlockState {
+    override fun getPlacementState(session: PlaySession, target: BlockTarget, stack: ItemStack): BlockState {
         return block.states.default
     }
 

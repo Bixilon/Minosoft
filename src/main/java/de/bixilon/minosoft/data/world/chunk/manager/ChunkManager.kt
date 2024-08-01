@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -70,7 +70,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         world.lock.unlock()
 
         for (update in updates) {
-            world.connection.events.fire(WorldUpdateEvent(world.connection, update))
+            world.session.events.fire(WorldUpdateEvent(world.session, update))
         }
         revision++
     }
@@ -101,7 +101,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         world.lock.lock()
         updateExisting(position, prototype, replaceExisting)?.let {
             world.lock.unlock()
-            PrototypeChangeUpdate(position, it.chunk, it.affected).fire(world.connection)
+            PrototypeChangeUpdate(position, it.chunk, it.affected).fire(world.session)
             it.chunk.light.recalculate(fireEvent = true, fireSameChunkEvent = false)
             revision++
             return
@@ -109,7 +109,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         val existingPrototype = this.prototypes.unsafe[position]
         existingPrototype?.update(prototype)
 
-        val chunk = (existingPrototype ?: prototype).createChunk(world.connection, position)
+        val chunk = (existingPrototype ?: prototype).createChunk(world.session, position)
         if (chunk == null) {
             // chunk not complete
             if (existingPrototype == null) {
@@ -126,7 +126,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         this.chunks.unsafe[position] = chunk
         val updates = onChunkCreate(chunk)
         world.lock.unlock()
-        for (update in updates) update.fire(world.connection)
+        for (update in updates) update.fire(world.session)
         revision++
     }
 
@@ -161,11 +161,11 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
     fun create(position: ChunkPosition, biome: BiomeSource = DummyBiomeSource(null)): Chunk {
         if (!world.isValidPosition(position)) throw IllegalArgumentException("Chunk position $position is not valid!")
         chunks.lock.lock()
-        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.connection, position, biome) }
+        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.session, position, biome) }
         val updates = onChunkCreate(chunk)
         chunks.lock.unlock()
 
-        for (update in updates) update.fire(world.connection)
+        for (update in updates) update.fire(world.session)
         revision++
 
 

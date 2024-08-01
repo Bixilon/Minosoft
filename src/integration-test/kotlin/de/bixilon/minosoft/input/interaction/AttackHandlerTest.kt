@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,9 +25,9 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.lookAt
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.lookAtPig
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.lookAtPlayer
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityAttackC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import org.testng.annotations.Test
@@ -37,185 +37,185 @@ class AttackHandlerTest {
     // TODO: arm swing
 
     fun noTarget() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
 
-        connection.camera.interactions.tryAttack(true)
+        session.camera.interactions.tryAttack(true)
 
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
-        connection.camera.interactions.tryAttack(false)
-        connection.assertNoPacket()
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
+        session.camera.interactions.tryAttack(false)
+        session.assertNoPacket()
     }
 
     fun pig() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
-        connection.lookAtPig(1.0)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
+        session.lookAtPig(1.0)
 
         attack.tryAttack()
 
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun maxReachDistance() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
-        connection.lookAtPig(2.9999999)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
+        session.lookAtPig(2.9999999)
 
         attack.tryAttack()
 
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun outOfReachDistance() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
-        connection.lookAtPig(3.0)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
+        session.lookAtPig(3.0)
 
         attack.tryAttack()
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun attackMultipleTimes() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
-        connection.lookAtPig()
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
+        session.lookAtPig()
 
         attack.tryAttack()
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
         attack.tryAttack()
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun attackMiss() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
 
-        connection.camera.interactions.tryAttack(true)
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
-        connection.camera.interactions.tryAttack(false)
-        connection.assertNoPacket()
-        connection.camera.interactions.tryAttack(true)
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket() // on cooldown
-        connection.camera.interactions.tryAttack(false)
+        session.camera.interactions.tryAttack(true)
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
+        session.camera.interactions.tryAttack(false)
+        session.assertNoPacket()
+        session.camera.interactions.tryAttack(true)
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket() // on cooldown
+        session.camera.interactions.tryAttack(false)
     }
 
     fun attackMiss2() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
 
 
-        connection.camera.interactions.tryAttack(true)
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
-        connection.camera.interactions.tryAttack(false)
-        connection.assertNoPacket()
+        session.camera.interactions.tryAttack(true)
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
+        session.camera.interactions.tryAttack(false)
+        session.assertNoPacket()
 
-        connection.lookAtPig()
-        connection.camera.interactions.attack.tick(5)
-        connection.camera.interactions.attack.tryAttack()
+        session.lookAtPig()
+        session.camera.interactions.attack.tick(5)
+        session.camera.interactions.attack.tryAttack()
 
-        connection.assertPacket(EntityAttackC2SP(10, false))  // TODO
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(EntityAttackC2SP(10, false))  // TODO
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun attackItem() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
 
-        connection.lookAt(connection.registries.entityType[ItemEntity.identifier]!!)
+        session.lookAt(session.registries.entityType[ItemEntity.identifier]!!)
 
         attack.tryAttack()
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun attackTnt() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
 
-        connection.lookAt(connection.registries.entityType[PrimedTNT.identifier]!!)
+        session.lookAt(session.registries.entityType[PrimedTNT.identifier]!!)
 
         attack.tryAttack()
-        connection.assertPacket(EntityAttackC2SP(10, false))  // TODO
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket() // TODO
+        session.assertPacket(EntityAttackC2SP(10, false))  // TODO
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket() // TODO
     }
 
     fun attackArmorStand() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
 
-        connection.lookAt(connection.registries.entityType[ArmorStand.identifier]!!)
+        session.lookAt(session.registries.entityType[ArmorStand.identifier]!!)
 
         attack.tryAttack()
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
     }
 
     fun attackArmorStandMarker() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
+        val session = createSession(1)
+        val player = createPlayer(session)
 
-        val armorStand = connection.lookAt(connection.registries.entityType[ArmorStand.identifier]!!).unsafeCast<ArmorStand>()
+        val armorStand = session.lookAt(session.registries.entityType[ArmorStand.identifier]!!).unsafeCast<ArmorStand>()
         armorStand.data[ArmorStand.FLAGS_DATA] = 0x10
         if (!armorStand.canRaycast) {
-            connection.camera.target::target.forceSet(DataObserver(null))
+            session.camera.target::target.forceSet(DataObserver(null))
         }
 
-        connection.camera.interactions.tryAttack(true)
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
-        connection.assertNoPacket()
-        connection.camera.interactions.tryAttack(false)
+        session.camera.interactions.tryAttack(true)
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertNoPacket()
+        session.camera.interactions.tryAttack(false)
     }
 
     fun attackPlayer() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
 
-        connection.lookAtPlayer()
+        session.lookAtPlayer()
 
         attack.tryAttack()
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 
     fun attackInvisiblePlayer() {
-        val connection = createConnection(1)
-        val player = createPlayer(connection)
-        val attack = AttackHandler(connection.camera.interactions)
+        val session = createSession(1)
+        val player = createPlayer(session)
+        val attack = AttackHandler(session.camera.interactions)
 
-        val remote = connection.lookAtPlayer()
+        val remote = session.lookAtPlayer()
         remote.data[Entity.Companion.FLAGS_DATA] = 0x20
 
         attack.tryAttack()
-        connection.assertPacket(EntityAttackC2SP(10, false))
-        connection.assertPacket(SwingArmC2SP(Hands.MAIN))
+        session.assertPacket(EntityAttackC2SP(10, false))
+        session.assertPacket(SwingArmC2SP(Hands.MAIN))
 
-        connection.assertNoPacket()
+        session.assertNoPacket()
     }
 }

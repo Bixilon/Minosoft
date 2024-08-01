@@ -27,7 +27,7 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
 
 class NetworkPipeline(private val client: NettyClient) : ChannelInitializer<SocketChannel>() {
-    private val maxLength = client.connection.version?.maxPacketLength ?: ProtocolDefinition.STATUS_PROTOCOL_PACKET_MAX_SIZE
+    private val maxLength = client.session.version?.maxPacketLength ?: ProtocolDefinition.STATUS_PROTOCOL_PACKET_MAX_SIZE
 
     override fun initChannel(channel: SocketChannel) {
         val pipeline = channel.pipeline()

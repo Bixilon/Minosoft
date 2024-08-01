@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -56,7 +56,7 @@ class EntityScoreFeatureTest {
     private fun EntityScoreFeature.setScore() {
         val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
         val objective = ScoreboardObjective("name", TextComponent("Score").color(ChatColors.LIGHT_PURPLE))
-        renderer.renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME] = objective
+        renderer.renderer.session.scoreboard.positions[ScoreboardPositions.BELOW_NAME] = objective
         objective.scores[renderer.entity.additional.name] = ScoreboardScore(null, 1)
         renderer.renderer.features.score.update()
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,11 +31,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 class WeatherOverlay(private val context: RenderContext) : Overlay {
-    private val world = context.connection.world
-    private val config = context.connection.profiles.rendering.overlay.weather
+    private val world = context.session.world
+    private val config = context.session.profiles.rendering.overlay.weather
     private val rain = context.textures.static.create(RAIN)
     private val snow = context.textures.static.create(SNOW)
-    private val precipitation get() = context.connection.player.physics.positionInfo.biome?.precipitation
+    private val precipitation get() = context.session.player.physics.positionInfo.biome?.precipitation
     override val render: Boolean
         get() = world.dimension.effects.weather && world.weather.raining && when (precipitation) { // ToDo: Check if exposed to the sky
             null -> false

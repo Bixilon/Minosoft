@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
@@ -44,11 +44,11 @@ class WorldBorderRenderer(
     override val renderSystem: RenderSystem = context.system
     private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private var borderMesh: WorldBorderMesh? = null
-    private val border = context.connection.world.border
+    private val border = context.session.world.border
     private lateinit var texture: Texture
     private var offsetReset = millis()
     override val skipAll: Boolean
-        get() = border.getDistanceTo(context.connection.player.physics.position) > MAX_DISTANCE
+        get() = border.getDistanceTo(context.session.player.physics.position) > MAX_DISTANCE
     private var reload = false
 
     override fun registerLayers() {
@@ -69,7 +69,7 @@ class WorldBorderRenderer(
     }
 
     private fun calculateColor(): RGBColor {
-        val distance = border.getDistanceTo(context.connection.player.physics.position).toFloat() - 1.0f // 1 block padding
+        val distance = border.getDistanceTo(context.session.player.physics.position).toFloat() - 1.0f // 1 block padding
         val strength = 1.0f - distance.clamp(0.0f, MAX_DISTANCE) / MAX_DISTANCE // slowly fade in
         val color = when (border.area.state) {
             WorldBorderState.GROWING -> GROWING_COLOR
@@ -147,7 +147,7 @@ class WorldBorderRenderer(
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
 
-        override fun build(connection: PlayConnection, context: RenderContext): WorldBorderRenderer {
+        override fun build(session: PlaySession, context: RenderContext): WorldBorderRenderer {
             return WorldBorderRenderer(context)
         }
     }

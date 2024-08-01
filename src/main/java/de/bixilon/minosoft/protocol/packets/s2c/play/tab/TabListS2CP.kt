@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions.AbstractAction
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions.Actions
@@ -58,26 +58,26 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         return array.unsafeCast()
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         for ((uuid, data) in entries) {
             if (data == null) {
-                 connection.tabList.remove(uuid)
+                session.tabList.remove(uuid)
                 continue
             }
 
-            val entity = connection.world.entities[uuid]
+            val entity = session.world.entities[uuid]
 
-            var item = connection.tabList.uuid[uuid]
+            var item = session.tabList.uuid[uuid]
 
             if (item == null) {
                 val name = data.name ?: continue // player not added, only contains data. ignore it
 
-                item = if (entity === connection.player) connection.player.additional else PlayerAdditional(name)
+                item = if (entity === session.player) session.player.additional else PlayerAdditional(name)
 
-                connection.tabList.uuid[uuid] = item
-                connection.tabList.name[name] = item
+                session.tabList.uuid[uuid] = item
+                session.tabList.name[name] = item
 
-                for (team in connection.scoreboard.teams.toSynchronizedMap().values) {
+                for (team in session.scoreboard.teams.toSynchronizedMap().values) {
                     if (team.members.contains(data.name)) {
                         item.team = team
                         break
@@ -85,7 +85,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
             }
 
-            if (entity === connection.player) {
+            if (entity === session.player) {
                 // we can not change specific values (e.g. gamemode) for the local player with this packet
                 entity.additional.spareMerge(data)
             } else {
@@ -98,7 +98,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
         }
 
-        connection.events.fire(TabListEntryChangeEvent(connection, this))
+        session.events.fire(TabListEntryChangeEvent(session, this))
     }
 
     override fun log(reducedLog: Boolean) {

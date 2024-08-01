@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ object VibrationSources : DefaultFactory<VibrationFactory<*>>(
 ) {
 
     fun read(buffer: PlayInByteBuffer): VibrationSource {
-        val type = if (buffer.versionId <= V_1_20_2) buffer.readResourceLocation() else buffer.readRegistryItem(buffer.connection.registries.vibrationSource) // TODO: fix out version
+        val type = if (buffer.versionId <= V_1_20_2) buffer.readResourceLocation() else buffer.readRegistryItem(buffer.session.registries.vibrationSource) // TODO: fix out version
         val factory = this[type] ?: throw IllegalArgumentException("Can not find vibration source: $type")
 
         return factory.read(buffer)

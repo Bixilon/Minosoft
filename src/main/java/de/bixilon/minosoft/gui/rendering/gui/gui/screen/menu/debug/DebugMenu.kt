@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,22 +29,22 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 
 class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
-    private val connection = guiRenderer.connection
+    private val session = guiRenderer.session
 
     init {
         this += TextElement(guiRenderer, "Debug options", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER))
         this += SpacerElement(guiRenderer, Vec2(0, 10))
 
-        this += ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") }
-        this += ButtonElement(guiRenderer, "Hack to next gamemode") { connection.player.additional.apply { gamemode = gamemode.next() } }
+        this += ButtonElement(guiRenderer, "Switch to next gamemode") { session.util.typeChat("/gamemode ${session.player.gamemode.next().name.lowercase()}") }
+        this += ButtonElement(guiRenderer, "Hack to next gamemode") { session.player.additional.apply { gamemode = gamemode.next() } }
         this += ButtonElement(guiRenderer, "Fake y=100") {
-            val entity = connection.player
+            val entity = session.player
             val position = entity.physics.position
 
             entity.forceTeleport(Vec3d(position.x, 100.0, position.z))
         }
-        this += ButtonElement(guiRenderer, "Toggle allow flight") { connection.player.apply { abilities = abilities.copy(allowFly = !abilities.allowFly) } }
-        this += ButtonElement(guiRenderer, TextComponent("☀").color(ChatColors.YELLOW)) { connection.world.weather = WorldWeather.SUNNY }
+        this += ButtonElement(guiRenderer, "Toggle allow flight") { session.player.apply { abilities = abilities.copy(allowFly = !abilities.allowFly) } }
+        this += ButtonElement(guiRenderer, TextComponent("☀").color(ChatColors.YELLOW)) { session.world.weather = WorldWeather.SUNNY }
 
         this += ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() }
     }

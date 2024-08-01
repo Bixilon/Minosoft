@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,10 +20,10 @@ import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.chat.signature.signer.DummyMessageSigner
 import de.bixilon.minosoft.modding.event.master.EventMaster
-import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.util.ConnectionUtil
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
+import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.util.SessionUtil
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.terminal.cli.CLI
@@ -37,7 +37,7 @@ import java.security.SecureRandom
 class ChatNodeTest {
     private var cmd = 0
     private var cmi = 0
-    private val root = ConnectionNode().apply { addChild(LiteralNode("cmd", executor = { cmd++ })) }
+    private val root = SessionNode().apply { addChild(LiteralNode("cmd", executor = { cmd++ })) }
 
     init {
         CLI.commands.addChild(LiteralNode("cmi", executor = { cmi++ }))
@@ -48,32 +48,32 @@ class ChatNodeTest {
     }
 
     private fun ChatNode.execute(command: String): CommandStack {
-        val connection = PlayConnection::class.java.allocate()
-        connection::version.forceSet(Versions.AUTOMATIC)
-        connection::events.forceSet(EventMaster())
-        val util = ConnectionUtil::class.java.allocate()
+        val session = PlaySession::class.java.allocate()
+        session::version.forceSet(Versions.AUTOMATIC)
+        session::events.forceSet(EventMaster())
+        val util = SessionUtil::class.java.allocate()
         util::signer.forceSet(DummyMessageSigner)
-        util::class.java.getFieldOrNull("connection")!!.forceSet(util, connection)
+        util::class.java.getFieldOrNull("session")!!.forceSet(util, session)
         util::class.java.getFieldOrNull("random")!!.forceSet(util, SecureRandom())
-        connection::util.forceSet(util)
-        connection::network.forceSet(TestNetwork())
-        connection.commands = root
-        val stack = CommandStack(connection)
+        session::util.forceSet(util)
+        session::network.forceSet(TestNetwork())
+        session.commands = root
+        val stack = CommandStack(session)
         execute(CommandReader(command), stack)
         return stack
     }
 
     private fun ChatNode.suggest(command: String): Collection<Suggestion> {
-        val connection = PlayConnection::class.java.allocate()
-        connection.commands = root
-        val stack = CommandStack(connection)
+        val session = PlaySession::class.java.allocate()
+        session.commands = root
+        val stack = CommandStack(session)
         return getSuggestions(CommandReader(command), stack)
     }
 
     fun `normal chat sending`() {
         val node = create(true)
         val stack = node.execute("chat message")
-        val packet: ChatMessageC2SP = stack.connection.assertPacket(ChatMessageC2SP::class.java)
+        val packet: ChatMessageC2SP = stack.session.assertPacket(ChatMessageC2SP::class.java)
         assertEquals(packet.message, "chat message")
     }
 
@@ -82,7 +82,7 @@ class ChatNodeTest {
         val previous = cmd
         val stack = node.execute("/cmd")
         assertTrue(cmd == previous + 1)
-        val packet: ChatMessageC2SP = stack.connection.assertPacket(ChatMessageC2SP::class.java) // old version
+        val packet: ChatMessageC2SP = stack.session.assertPacket(ChatMessageC2SP::class.java) // old version
         assertEquals(packet.message, "/cmd")
     }
 

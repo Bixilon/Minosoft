@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,24 +26,24 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class ItemEntityIT {
 
-    private fun createItem(connection: PlayConnection): ItemEntity {
-        connection.world.dimension::skyLight.forceSet(false)
-        val entity = ItemEntity(connection, connection.registries.entityType[ItemEntity]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
+    private fun createItem(session: PlaySession): ItemEntity {
+        session.world.dimension::skyLight.forceSet(false)
+        val entity = ItemEntity(session, session.registries.entityType[ItemEntity]!!, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
         entity.startInit()
 
         return entity
     }
 
     fun itemFalling1() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 5.0, 0.0))
         entity.runTicks(10)
         entity.assertPosition(0.0, 2.9268649250204053, 0.0)
@@ -53,7 +53,7 @@ class ItemEntityIT {
     }
 
     fun itemFalling2() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 5.0, 0.0))
         entity.runTicks(19)
         entity.assertPosition(0.0, -1.7607971755094471, 0.0)
@@ -63,9 +63,9 @@ class ItemEntityIT {
     }
 
     fun itemLanding1() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.connection.world[Vec3i(0, 4, 0)] = GlassTest0.state
+        entity.session.world[Vec3i(0, 4, 0)] = GlassTest0.state
         entity.runTicks(16)
         entity.assertPosition(0.0, 5.0, 0.0)
         // TODO entity.assertVelocity(0.0, -0.12, 0.0)
@@ -73,9 +73,9 @@ class ItemEntityIT {
     }
 
     fun itemLanding2() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.connection.world[Vec3i(0, 4, 0)] = GlassTest0.state
+        entity.session.world[Vec3i(0, 4, 0)] = GlassTest0.state
         entity.runTicks(20)
         entity.assertPosition(0.0, 5.0, 0.0)
         entity.assertVelocity(0.0, -0.0, 0.0)
@@ -83,9 +83,9 @@ class ItemEntityIT {
     }
 
     fun itemLanding3() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.connection.world[Vec3i(0, 4, 0)] = GlassTest0.state
+        entity.session.world[Vec3i(0, 4, 0)] = GlassTest0.state
         entity.runTicks(25)
         entity.assertPosition(0.0, 5.0, 0.0)
         // TODO entity.assertVelocity(0.0, -0.08, 0.0)
@@ -93,7 +93,7 @@ class ItemEntityIT {
     }
 
     fun itemVelocityY() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
         entity.physics.velocity = Vec3d(0.0, 0.2, 0.0)
         entity.runTicks(10)
@@ -103,7 +103,7 @@ class ItemEntityIT {
     }
 
     fun itemVelocity2() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
         entity.physics.velocity = Vec3d(0.1, 0.3, 0.1)
         entity.runTicks(10)
@@ -113,10 +113,10 @@ class ItemEntityIT {
     }
 
     fun itemVelocity3() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
         entity.physics.velocity = Vec3d(0.1, 0.3, -0.1)
-        entity.connection.world.fill(Vec3i(-5, 4, -5), Vec3i(5, 4, 5), GlassTest0.state)
+        entity.session.world.fill(Vec3i(-5, 4, -5), Vec3i(5, 4, 5), GlassTest0.state)
         entity.runTicks(30)
         entity.assertPosition(1.55521462290592, 5.0, -1.55521462290592)
         entity.assertVelocity(6.081541491145816E-4, -0.04, -6.081541491145816E-4)
@@ -124,10 +124,10 @@ class ItemEntityIT {
     }
 
     fun itemVelocity4() {
-        val entity = createItem(createConnection(2))
+        val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
         entity.physics.velocity = Vec3d(-0.5, -0.1, 0.8)
-        entity.connection.world.fill(Vec3i(-5, 4, -5), Vec3i(5, 4, 5), GlassTest0.state)
+        entity.session.world.fill(Vec3i(-5, 4, -5), Vec3i(5, 4, 5), GlassTest0.state)
         entity.runTicks(30)
         entity.assertPosition(-3.0597864176904332, 5.0, 4.895658268304694)
         entity.assertVelocity(-1.6015292949696051E-4, -0.04, 2.56244687195137E-4)

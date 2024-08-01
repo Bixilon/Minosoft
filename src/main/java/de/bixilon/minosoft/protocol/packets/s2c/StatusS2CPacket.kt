@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,22 +12,22 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c
 
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongConnectionException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongSessionTypeException
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.types.HandleablePacket
 
 interface StatusS2CPacket : S2CPacket, HandleablePacket {
 
-    fun handle(connection: StatusConnection) = Unit
+    fun handle(session: StatusSession) = Unit
 
-    fun check(connection: StatusConnection) = Unit
+    fun check(session: StatusSession) = Unit
 
 
-    override fun handle(connection: Connection) {
-        if (connection !is StatusConnection) throw WrongConnectionException(PlayConnection::class.java, connection::class.java)
-        check(connection)
-        handle(connection)
+    override fun handle(session: Session) {
+        if (session !is StatusSession) throw WrongSessionTypeException(PlaySession::class.java, session::class.java)
+        check(session)
+        handle(session)
     }
 }

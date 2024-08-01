@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fixBlockEntity
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -60,7 +60,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private lateinit var readingData: ChunkReadingData
 
     init {
-        val dimension = buffer.connection.world.dimension
+        val dimension = buffer.session.world.dimension
         position = buffer.readChunkPosition()
         if (buffer.versionId < V_20W45A) {
             action = if (buffer.readBoolean()) ChunkAction.CREATE else ChunkAction.UPDATE
@@ -71,7 +71,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             // decompress chunk data
             val decompressed: PlayInByteBuffer = if (buffer.versionId < V_14W28A) {
-                PlayInByteBuffer(buffer.readByteArray(buffer.readInt()).decompress(), buffer.connection)
+                PlayInByteBuffer(buffer.readByteArray(buffer.readInt()).decompress(), buffer.session)
             } else {
                 buffer
             }
@@ -98,7 +98,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (action == ChunkAction.CREATE && buffer.versionId >= V_19W36A && buffer.versionId < V_21W37A) {
                 this.prototype.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
-            readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.connection), dimension, sectionBitMask)
+            readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.session), dimension, sectionBitMask)
 
             // set position to expected read positions; the server sometimes sends a bunch of useless zeros (~ 190k), thanks @pokechu22
 
@@ -127,7 +127,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val nbt = readNBT()?.asJsonObject() ?: continue
                     val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                     val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
-                    val type = connection.registries.blockEntityType[id] ?: continue
+                    val type = session.registries.blockEntityType[id] ?: continue
 
                     entities[position] = nbt
                 }
@@ -137,7 +137,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 for (i in 0 until count) {
                     val xz = readUnsignedByte()
                     val y = readShort()
-                    val type = connection.registries.blockEntityType.getOrNull(readVarInt())
+                    val type = session.registries.blockEntityType.getOrNull(readVarInt())
                     val nbt = readNBT()?.asJsonObject() ?: continue
                     if (type == null) continue
 
@@ -163,7 +163,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val biomes: Array<Biome?> = arrayOfNulls(length)
         for (index in biomes.indices) {
             val id: Int = if (versionId >= ProtocolVersions.V_20W28A) readVarInt() else readInt()
-            biomes[index] = connection.registries.biome[id]
+            biomes[index] = session.registries.biome[id]
         }
         return biomes.cast()
     }
@@ -181,18 +181,18 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         this.readingData.readChunkData()
     }
 
-    override fun handle(connection: PlayConnection) {
-        handleChunk(connection)
-        connection.util.chunkReceiver.onChunk()
+    override fun handle(session: PlaySession) {
+        handleChunk(session)
+        session.util.chunkReceiver.onChunk()
     }
 
-    private fun handleChunk(connection: PlayConnection) {
+    private fun handleChunk(session: PlaySession) {
         if (action == ChunkAction.UNLOAD) {
-            connection.world.chunks -= position
+            session.world.chunks -= position
             return
         }
         parse()
-        connection.world.chunks.set(position, prototype, action == ChunkAction.CREATE)
+        session.world.chunks.set(position, prototype, action == ChunkAction.CREATE)
     }
 
     override fun log(reducedLog: Boolean) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PoofParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null, velocity: Vec3d) : SimpleTextureParticle(connection, position, velocity + { (Math.random() * 2.0 - 1.0) * 0.05 }, data) {
+class PoofParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null, velocity: Vec3d) : SimpleTextureParticle(session, position, velocity + { (Math.random() * 2.0 - 1.0) * 0.05 }, data) {
 
     init {
         this.gravityStrength = -0.1f
@@ -36,8 +36,8 @@ class PoofParticle(connection: PlayConnection, position: Vec3d, data: ParticleDa
     companion object : ParticleFactory<PoofParticle> {
         override val identifier: ResourceLocation = "minecraft:poof".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): PoofParticle {
-            return PoofParticle(connection, position, data, velocity)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): PoofParticle {
+            return PoofParticle(session, position, data, velocity)
         }
     }
 }

@@ -19,8 +19,8 @@ import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.config.profile.ProfileType
+import de.bixilon.minosoft.config.profile.SelectedProfiles
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
@@ -31,10 +31,10 @@ import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
-import de.bixilon.minosoft.gui.eros.dialog.connection.ConnectingDialog
-import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
-import de.bixilon.minosoft.gui.eros.dialog.connection.LoadingDialog
-import de.bixilon.minosoft.gui.eros.dialog.connection.VerifyAssetsDialog
+import de.bixilon.minosoft.gui.eros.dialog.session.ConnectingDialog
+import de.bixilon.minosoft.gui.eros.dialog.session.KickDialog
+import de.bixilon.minosoft.gui.eros.dialog.session.LoadingDialog
+import de.bixilon.minosoft.gui.eros.dialog.session.VerifyAssetsDialog
 import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
@@ -45,10 +45,10 @@ import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.KickEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -136,28 +136,28 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             for ((type, name) in server.profiles) {
                 override[ProfileManagers[type]?.type ?: continue] = name
             }
-            val connection = PlayConnection(
+            val session = PlaySession(
                 address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
                 account = account,
                 version = version,
-                profiles = ConnectionProfiles(override)
+                profiles = SelectedProfiles(override)
             )
-            account.connections[server] = connection
-            serverCard.connections += connection
+            account.sessions[server] = session
+            serverCard.sessions += session
 
-            connection::state.observeFX(serverCard) {
+            session::state.observeFX(serverCard) {
                 if (it.disconnected) {
-                    account.connections -= server
-                    serverCard.connections -= connection
+                    account.sessions -= server
+                    serverCard.sessions -= session
                 }
                 if (ErosProfileManager.selected.general.hideErosOnceConnected) {
-                    if (connection.network.connected) {
-                        if (connection.state == PlayConnectionStates.PLAYING) {
+                    if (session.network.connected) {
+                        if (session.state == PlaySessionStates.PLAYING) {
                             Eros.setVisibility(false)
                         }
                     } else {
                         var connected = false
-                        for (entry in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                        for (entry in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
                             if (entry.network.connected) {
                                 connected = true
                                 break
@@ -171,35 +171,35 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 JavaFXUtil.runLater { updateServer(server, true) }
             }
 
-            connection.events.register(JavaFXEventListener.of<KickEvent> { event ->
-                (if (connection.network.state == ProtocolStates.LOGIN) KickDialog(
-                    title = "minosoft:connection.login_kick.title".toResourceLocation(),
-                    header = "minosoft:connection.login_kick.header".toResourceLocation(),
+            session.events.register(JavaFXEventListener.of<KickEvent> { event ->
+                (if (session.network.state == ProtocolStates.LOGIN) KickDialog(
+                    title = "minosoft:session.login_kick.title".toResourceLocation(),
+                    header = "minosoft:session.login_kick.header".toResourceLocation(),
                     description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
                     reason = event.reason,
                 ) else KickDialog(
-                    title = "minosoft:connection.kick.title".toResourceLocation(),
-                    header = "minosoft:connection.kick.header".toResourceLocation(),
+                    title = "minosoft:session.kick.title".toResourceLocation(),
+                    header = "minosoft:session.kick.header".toResourceLocation(),
                     description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
                     reason = event.reason,
                 )).show()
             })
             val latch = CallbackLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
-            connection::state.observeFX(serverCard) {
-                if (it == PlayConnectionStates.LOADING || it.disconnected) {
+            session::state.observeFX(serverCard) {
+                if (it == PlaySessionStates.LOADING || it.disconnected) {
                     assetsDialog.close()
                 }
-                if (it == PlayConnectionStates.LOADING) {
-                    LoadingDialog(latch, connection).show()
+                if (it == PlaySessionStates.LOADING) {
+                    LoadingDialog(latch, session).show()
                 }
-                if (it == PlayConnectionStates.ESTABLISHING) {
-                    ConnectingDialog(connection).show()
+                if (it == PlaySessionStates.ESTABLISHING) {
+                    ConnectingDialog(session).show()
                 }
             }
 
 
-            connection.connect(latch)
+            session.connect(latch)
         }
     }
 
@@ -312,7 +312,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             // disconnect all ping connections, re ping
                             // ToDo: server.connections.clear()
 
-                            ping.disconnect()
+                            ping.terminate()
                             ping.address = server.address
                             ping.ping()
                         }
@@ -324,7 +324,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             Button("Refresh").apply {
                 setOnAction {
                     async {
-                        serverCard.ping.disconnect()
+                        serverCard.ping.terminate()
                         serverCard.ping.ping()
                     }
                 }
@@ -353,7 +353,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         serverInfoFX.update(serverCard, SERVER_INFO_PROPERTIES, actions)
     }
 
-    val StatusConnection.hide: Boolean
+    val StatusSession.hide: Boolean
         get() {
             if (hideOfflineFX.isSelected && error != null) {
                 return true
@@ -438,7 +438,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
-            "minosoft:server_info.active_connections".toResourceLocation() to { if (it.connections.isEmpty()) null else it.connections.size },
+            "minosoft:server_info.active_sessions".toResourceLocation() to { if (it.sessions.isEmpty()) null else it.sessions.size },
         )
     }
 }

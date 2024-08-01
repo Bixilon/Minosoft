@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,14 +25,14 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), RandomDisplayTickable {
     private val portalParticleType = registries.particleType[PortalParticle]
 
-    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
-        val particle = connection.world.particle ?: return
+    override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
+        val particle = session.world.particle ?: return
         if (portalParticleType == null) return
         for (i in 0 until 4) {
             val particlePosition = Vec3d(position) + { random.nextDouble() }
@@ -40,7 +40,7 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
 
             val factor = (random.nextInt(2) * 2 + 1).toDouble()
 
-            if (connection.world[position + Directions.WEST]?.block != this && connection.world[position + Directions.EAST]?.block != this) {
+            if (session.world[position + Directions.WEST]?.block != this && session.world[position + Directions.EAST]?.block != this) {
                 particlePosition.x = position.x + 0.5 + 0.25 * factor
                 velocity.x = random.nextDouble() * 2.0 * factor
             } else {
@@ -48,7 +48,7 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
                 velocity.z = random.nextDouble() * 2.0 * factor
             }
             particle += PortalParticle(
-                connection,
+                session,
                 particlePosition,
                 velocity,
                 portalParticleType.default(),

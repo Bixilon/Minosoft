@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -50,21 +50,21 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ChunkRenderer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : WorldRenderer {
     override val layers = LayerSettings()
-    private val profile = connection.profiles.block
+    private val profile = session.profiles.block
     override val renderSystem: RenderSystem = context.system
     val visibilityGraph = context.camera.visibilityGraph
     private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
     private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
     val lock = SimpleLock()
-    val world: World = connection.world
+    val world: World = session.world
 
     val loaded = LoadedMeshes(this)
 
@@ -83,7 +83,7 @@ class ChunkRenderer(
     private var clearVisibleNextFrame = false
     var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
 
-    private var previousViewDistance = connection.world.view.viewDistance
+    private var previousViewDistance = session.world.view.viewDistance
 
     private var cameraPosition = Vec3.EMPTY
     var cameraChunkPosition = Vec2i.EMPTY
@@ -102,7 +102,7 @@ class ChunkRenderer(
         textShader.load()
 
 
-        connection.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
+        session.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
 
         ChunkRendererChangeListener.register(this)
 
@@ -124,7 +124,7 @@ class ChunkRenderer(
         )) { clearChunkCache() }
 
         profile.rendering::antiMoirePattern.observe(this) { clearChunkCache() }
-        val rendering = connection.profiles.rendering
+        val rendering = session.profiles.rendering
         rendering.performance::fastBedrock.observe(this) { clearChunkCache() }
 
         profile::viewDistance.observe(this) { viewDistance ->
@@ -157,7 +157,7 @@ class ChunkRenderer(
 
     fun clearChunkCache() {
         silentlyClearChunkCache()
-        connection.util.sendDebugMessage("Chunk cache cleared!")
+        session.util.sendDebugMessage("Chunk cache cleared!")
     }
 
     fun unloadWorld() {
@@ -247,7 +247,7 @@ class ChunkRenderer(
 
     private fun onFrustumChange() {
         var sortQueue = false
-        val cameraPosition = Vec3(connection.player.renderInfo.eyePosition - context.camera.offset.offset)
+        val cameraPosition = Vec3(session.player.renderInfo.eyePosition - context.camera.offset.offset)
         val cameraChunkPosition = cameraPosition.blockPosition.chunkPosition
         val cameraSectionHeight = this.cameraSectionHeight
         if (this.cameraPosition != cameraPosition) {
@@ -300,9 +300,9 @@ class ChunkRenderer(
 
     companion object : RendererBuilder<ChunkRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): ChunkRenderer {
+        override fun build(session: PlaySession, context: RenderContext): ChunkRenderer {
             //        return null
-            return ChunkRenderer(connection, context)
+            return ChunkRenderer(session, context)
         }
     }
 }

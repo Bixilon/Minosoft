@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.camera.ConnectionCamera
+import de.bixilon.minosoft.camera.SessionCamera
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.Tickable
@@ -27,8 +27,8 @@ import de.bixilon.minosoft.input.interaction.use.UseHandler
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class InteractionManager(val camera: ConnectionCamera) : Tickable {
-    val connection = camera.connection
+class InteractionManager(val camera: SessionCamera) : Tickable {
+    val session = camera.session
     val hotbar = HotbarHandler(this)
     val pick = ItemPickHandler(this)
     val attack = AttackHandler(this)
@@ -73,22 +73,22 @@ class InteractionManager(val camera: ConnectionCamera) : Tickable {
 
     fun swingHand(hand: Hands) {
         swingArmRateLimiter += {
-            connection.network.send(SwingArmC2SP(hand))
-            connection.player.swingHand(hand)
+            session.network.send(SwingArmC2SP(hand))
+            session.player.swingHand(hand)
         }
     }
 
     fun isCoolingDown(item: Item): Boolean {
-        val cooldown = connection.player.items.cooldown[item] ?: return false
+        val cooldown = session.player.items.cooldown[item] ?: return false
         if (cooldown.ended) {
-            connection.player.items.cooldown -= item
+            session.player.items.cooldown -= item
             return false
         }
         return true
     }
 
     fun tryAttack(pressed: Boolean) {
-        if (!pressed || use.long.isUsing || !connection.player.canInteract()) {
+        if (!pressed || use.long.isUsing || !session.player.canInteract()) {
             return breaking.change(false)
         }
         when (val target = camera.target.target) {

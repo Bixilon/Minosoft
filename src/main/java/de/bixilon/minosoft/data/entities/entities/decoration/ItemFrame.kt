@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,9 +27,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation), EntityWawlaProvider {
+open class ItemFrame(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(session, entityType, data, position, rotation), EntityWawlaProvider {
 
     @get:SynchronizedEntityData
     val item: ItemStack?
@@ -47,7 +47,7 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: E
         facing = Directions[data]
     }
 
-    override fun getWawlaInformation(connection: PlayConnection, target: EntityTarget): ChatComponent {
+    override fun getWawlaInformation(session: PlaySession, target: EntityTarget): ChatComponent {
         return TextComponent("Item: $item")
     }
 
@@ -57,8 +57,8 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: E
         private val ROTATION_DATA = EntityDataField("ITEM_FRAME_ROTATION")
 
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemFrame {
-            return ItemFrame(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemFrame {
+            return ItemFrame(session, entityType, data, position, rotation)
         }
     }
 }

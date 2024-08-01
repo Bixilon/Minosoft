@@ -18,9 +18,6 @@ import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
@@ -36,6 +33,9 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encryp
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encryption.PacketEncryptor
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecoder
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthEncoder
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -51,10 +51,10 @@ import javax.crypto.Cipher
 
 @ChannelHandler.Sharable
 class NettyClient(
-    val connection: Connection,
+    val session: Session,
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
     override val sender = PacketSender(this)
-    override val receiver = PacketReceiver(this, connection)
+    override val receiver = PacketReceiver(this, session)
     private var address: ServerAddress? = null
     override var connected by observed(false)
         private set
@@ -102,7 +102,7 @@ class NettyClient(
             // enable or update
             val inflater = pipeline[PacketInflater.NAME]?.nullCast<PacketInflater>()
             if (inflater == null) {
-                pipeline.addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(connection.version!!.maxPacketLength))
+                pipeline.addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(session.version!!.maxPacketLength))
             }
             val deflater = pipeline[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
             if (deflater == null) {
@@ -129,7 +129,7 @@ class NettyClient(
     override fun forceSend(packet: C2SPacket) {
         val channel = getChannel() ?: return
 
-        val profile = connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected
+        val profile = session.nullCast<PlaySession>()?.profiles?.other ?: OtherProfileManager.selected
         val reduced = profile.log.reducedProtocolLog
         packet.log(reduced)
         channel.writeAndFlush(packet)
@@ -146,7 +146,7 @@ class NettyClient(
     }
 
     override fun channelInactive(context: ChannelHandlerContext) {
-        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Connection closed ($address)" }
+        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Session closed ($address)" }
         if (detached) return
         connected = false
     }
@@ -158,12 +158,12 @@ class NettyClient(
         } else if (cause is EncoderException) {
             cause = error.cause ?: cause
         }
-        if (RunConfiguration.DISABLE_EROS || connection !is StatusConnection) {
+        if (RunConfiguration.DISABLE_EROS || session !is StatusSession) {
             val log = if (cause is PacketHandleException || cause is PacketReadException) cause.cause else cause
             Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { log }
         }
         if (cause !is NetworkException || cause is CriticalNetworkException || state == ProtocolStates.LOGIN) {
-            connection.error = cause
+            session.error = cause
             disconnect()
             return
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -155,11 +155,11 @@ object ChunkRendererChangeListener {
     }
 
     fun register(renderer: ChunkRenderer) {
-        val events = renderer.connection.events
+        val events = renderer.session.events
 
         events.listen<DimensionChangeEvent> { renderer.unloadWorld() }
         events.listen<WorldUpdateEvent> { renderer.handle(it.update) }
 
-        renderer.connection::state.observe(this) { if (it == PlayConnectionStates.DISCONNECTED) renderer.unloadWorld() }
+        renderer.session::state.observe(this) { if (it == PlaySessionStates.DISCONNECTED) renderer.unloadWorld() }
     }
 }

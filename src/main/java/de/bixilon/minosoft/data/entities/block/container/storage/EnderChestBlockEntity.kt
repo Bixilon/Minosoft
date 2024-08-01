@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,9 +21,9 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<SingleChestRenderer> {
+class EnderChestBlockEntity(session: PlaySession) : StorageBlockEntity(session), RenderedBlockEntity<SingleChestRenderer> {
     override var renderer: SingleChestRenderer? = null
 
     override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): SingleChestRenderer? {
@@ -44,8 +44,8 @@ class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     companion object : BlockEntityFactory<EnderChestBlockEntity> {
         override val identifier: ResourceLocation = minecraft("ender_chest")
 
-        override fun build(connection: PlayConnection): EnderChestBlockEntity {
-            return EnderChestBlockEntity(connection)
+        override fun build(session: PlaySession): EnderChestBlockEntity {
+            return EnderChestBlockEntity(session)
         }
     }
 }

@@ -37,11 +37,11 @@ class Camera(
     fun init() {
         matrixHandler.init()
         view.init()
-        context.connection.camera::entity.observe(this) { context.connection.camera.entity = it }
+        context.session.camera::entity.observe(this) { context.session.camera.entity = it }
     }
 
     fun draw() {
-        val entity = context.connection.camera.entity
+        val entity = context.session.camera.entity
         (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
         if (entity is LocalPlayerEntity) {
             entity._draw(millis())
@@ -50,7 +50,7 @@ class Camera(
         matrixHandler.draw()
         val latch = SimpleLatch(2)
         context.runAsync { visibilityGraph.draw(); latch.dec() }
-        context.runAsync { context.connection.camera.target.update(); latch.dec() }
+        context.runAsync { context.session.camera.target.update(); latch.dec() }
         fogManager.draw()
         latch.await()
     }

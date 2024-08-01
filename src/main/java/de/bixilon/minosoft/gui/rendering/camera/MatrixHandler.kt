@@ -41,10 +41,10 @@ class MatrixHandler(
     private val context: RenderContext,
     private val camera: Camera,
 ) {
-    private val connection = context.connection
-    private val profile = context.connection.profiles.rendering.camera
+    private val session = context.session
+    private val profile = context.session.profiles.rendering.camera
     val shaking = CameraShaking(camera, profile.shaking)
-    val frustum = Frustum(camera, this, connection.world)
+    val frustum = Frustum(camera, this, session.world)
 
     private var matrixPosition = Vec3.EMPTY
     private var previousFOV = 0.0f
@@ -95,7 +95,7 @@ class MatrixHandler(
 
     private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2 = context.window.sizef) {
         val fog = camera.fogManager.state
-        var far = (connection.world.view.viewDistance + 1) * ProtocolDefinition.SECTION_LENGTH.toFloat()
+        var far = (session.world.view.viewDistance + 1) * ProtocolDefinition.SECTION_LENGTH.toFloat()
         if (fog.enabled) {
             far = fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
         }
@@ -103,7 +103,7 @@ class MatrixHandler(
     }
 
     fun init() {
-        connection.events.listen<ResizeWindowEvent> {
+        session.events.listen<ResizeWindowEvent> {
             calculateProjectionMatrix(calculateFOV(), Vec2(it.size))
             invalidate()
         }
@@ -133,17 +133,17 @@ class MatrixHandler(
         updateViewMatrix(matrixPosition, front)
         updateViewProjectionMatrix()
 
-        val useMatrixPosition = if (view.updateFrustum) matrixPosition else Vec3(connection.camera.entity.renderInfo.eyePosition - camera.offset.offset)
-        val useEyePosition = if (view.updateFrustum) eyePosition else connection.camera.entity.renderInfo.eyePosition
+        val useMatrixPosition = if (view.updateFrustum) matrixPosition else Vec3(session.camera.entity.renderInfo.eyePosition - camera.offset.offset)
+        val useEyePosition = if (view.updateFrustum) eyePosition else session.camera.entity.renderInfo.eyePosition
 
         if (view.updateFrustum) {
             frustum.recalculate()
             camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         }
 
-        connection.events.fire(CameraPositionChangeEvent(context, useEyePosition))
+        session.events.fire(CameraPositionChangeEvent(context, useEyePosition))
 
-        connection.events.fire(
+        session.events.fire(
             CameraMatrixChangeEvent(
                 context = context,
                 viewMatrix = viewMatrix,

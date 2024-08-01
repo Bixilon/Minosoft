@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.SkipException
 
 abstract class SlowMovementIT {
@@ -32,35 +32,35 @@ abstract class SlowMovementIT {
         }
 
 
-    protected fun landing(player: LocalPlayerEntity = createPlayer(createConnection(3))): LocalPlayerEntity {
+    protected fun landing(player: LocalPlayerEntity = createPlayer(createSession(3))): LocalPlayerEntity {
         player.forceTeleport(Vec3d(5.0, 12.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.runTicks(10)
 
         return player
     }
 
-    protected fun falling(player: LocalPlayerEntity = createPlayer(createConnection(3))): LocalPlayerEntity {
+    protected fun falling(player: LocalPlayerEntity = createPlayer(createSession(3))): LocalPlayerEntity {
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.runTicks(10)
 
         return player
     }
 
-    protected fun forwardsMovement(player: LocalPlayerEntity = createPlayer(createConnection(3))): LocalPlayerEntity {
+    protected fun forwardsMovement(player: LocalPlayerEntity = createPlayer(createSession(3))): LocalPlayerEntity {
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
-        player.connection.world[Vec3i(5, 9, 5)] = StoneTest0.state
+        player.session.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 9, 5)] = StoneTest0.state
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
 
         return player
     }
 
-    protected fun fallingForwardsMovement(player: LocalPlayerEntity = createPlayer(createConnection(3))): LocalPlayerEntity {
+    protected fun fallingForwardsMovement(player: LocalPlayerEntity = createPlayer(createSession(3))): LocalPlayerEntity {
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
 
@@ -68,9 +68,9 @@ abstract class SlowMovementIT {
     }
 
     protected fun sidewaysMovement1(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.input = PlayerMovementInput(left = true)
         player.runTicks(10)
 
@@ -78,9 +78,9 @@ abstract class SlowMovementIT {
     }
 
     protected fun sidewaysMovement2(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.input = PlayerMovementInput(right = true)
         player.runTicks(10)
 
@@ -88,9 +88,9 @@ abstract class SlowMovementIT {
     }
 
     protected fun combinedMovement(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 10, 5)] = block
         player.input = PlayerMovementInput(forward = true, right = true)
         player.runTicks(10)
 
@@ -98,20 +98,20 @@ abstract class SlowMovementIT {
     }
 
     protected fun standing(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
-        player.connection.world[Vec3i(5, 9, 5)] = StoneTest0.state
+        player.session.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 9, 5)] = StoneTest0.state
         player.runTicks(10)
 
         return player
     }
 
     protected fun standingJump1(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
-        player.connection.world[Vec3i(5, 9, 5)] = StoneTest0.state
+        player.session.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 9, 5)] = StoneTest0.state
 
         player.runTicks(10)
         player.input = PlayerMovementInput(jump = true)
@@ -121,10 +121,10 @@ abstract class SlowMovementIT {
     }
 
     protected fun standingJump2(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
+        val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
-        player.connection.world[Vec3i(5, 10, 5)] = block
-        player.connection.world[Vec3i(5, 9, 5)] = StoneTest0.state
+        player.session.world[Vec3i(5, 10, 5)] = block
+        player.session.world[Vec3i(5, 9, 5)] = StoneTest0.state
 
         player.runTicks(10)
         player.input = PlayerMovementInput(jump = true)

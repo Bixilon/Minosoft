@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -172,8 +172,8 @@ abstract class AbstractButtonElement(
     abstract fun submit()
 
     private fun _submit() {
-        if (guiRenderer.connection.profiles.audio.gui.button) {
-            guiRenderer.connection.world.play2DSound(CLICK_SOUND)
+        if (guiRenderer.session.profiles.audio.gui.button) {
+            guiRenderer.session.world.play2DSound(CLICK_SOUND)
         }
         submit()
     }

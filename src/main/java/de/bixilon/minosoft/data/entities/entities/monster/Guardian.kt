@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,11 +22,10 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
 
-open class Guardian(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
+open class Guardian(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val isMoving: Boolean
@@ -37,7 +36,7 @@ open class Guardian(connection: PlayConnection, entityType: EntityType, data: En
         get() = data.get(TARGET_DATA, null)
 
     val target: Entity?
-        get() = connection.world.entities[_target]
+        get() = session.world.entities[_target]
 
 
     companion object : EntityFactory<Guardian> {
@@ -47,11 +46,11 @@ open class Guardian(connection: PlayConnection, entityType: EntityType, data: En
         private val LEGACY_FLAGS_DATA = EntityDataField("LEGACY_GUARDIAN_FLAGS")
 
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Guardian {
-            return Guardian(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Guardian {
+            return Guardian(session, entityType, data, position, rotation)
         }
 
-        override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
+        override fun tweak(session: PlaySession, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
                 return identifier
             }

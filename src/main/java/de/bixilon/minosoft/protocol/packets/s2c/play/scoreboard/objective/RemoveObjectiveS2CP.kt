@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.modding.event.events.scoreboard.ObjectivePositionSetEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -30,15 +30,15 @@ class RemoveObjectiveS2CP(
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Remove scoreboard objective (objective=$objective)" }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.scoreboard.objectives.remove(objective)
+    override fun handle(session: PlaySession) {
+        session.scoreboard.objectives.remove(objective)
 
-        for ((position, objective) in connection.scoreboard.positions.toSynchronizedMap()) {
+        for ((position, objective) in session.scoreboard.positions.toSynchronizedMap()) {
             if (objective.name != this.objective) {
                 continue
             }
-            connection.scoreboard.positions -= position
-            connection.events.fire(ObjectivePositionSetEvent(connection, position, null))
+            session.scoreboard.positions -= position
+            session.events.fire(ObjectivePositionSetEvent(session, position, null))
         }
     }
 }

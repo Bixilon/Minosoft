@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.tags.TagManager
 import org.objenesis.ObjenesisStd
@@ -26,7 +26,7 @@ object IT {
     var VERSION: Version = unsafeNull()
     var REGISTRIES: Registries = unsafeNull()
     var FALLBACK_TAGS: TagManager = unsafeNull()
-    val NULL_CONNECTION = OBJENESIS.newInstance(PlayConnection::class.java)
+    val NULL_CONNECTION = OBJENESIS.newInstance(PlaySession::class.java)
 
     val references: MutableList<Any> = mutableListOf()
 

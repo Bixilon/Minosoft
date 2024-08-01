@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,12 +28,12 @@ import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 abstract class Container(
-    val connection: PlayConnection,
+    val session: PlaySession,
     val type: ContainerType,
     val title: ChatComponent? = null,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
@@ -47,7 +47,7 @@ abstract class Container(
     val actions = ContainerActions(this)
 
     val id: Int?
-        get() = connection.player.items.containers.getKey(this)
+        get() = session.player.items.containers.getKey(this)
 
     open val sections: Array<ContainerSection> get() = emptyArray()
 
@@ -151,7 +151,7 @@ abstract class Container(
         slots[slotId] = stack // ToDo: Check for changes
         var holder = stack.holder
         if (holder == null) {
-            holder = HolderProperty(connection, this)
+            holder = HolderProperty(session, this)
             stack.holder = holder
         } else {
             holder.container = this
@@ -196,16 +196,16 @@ abstract class Container(
         val id = id ?: return
 
         if (id != PlayerInventory.CONTAINER_ID && this !is ClientContainer) {
-            connection.player.items.containers -= id
+            session.player.items.containers -= id
         }
 
 
-        if (!force && connection.player.items.opened == this) {
-            connection.player.items.opened = null
-            connection.sendPacket(CloseContainerC2SP(id))
+        if (!force && session.player.items.opened == this) {
+            session.player.items.opened = null
+            session.network.send(CloseContainerC2SP(id))
         }
 
-        connection.events.fire(ContainerCloseEvent(connection, this))
+        session.events.fire(ContainerCloseEvent(session, this))
     }
 
     protected open fun onClose() {

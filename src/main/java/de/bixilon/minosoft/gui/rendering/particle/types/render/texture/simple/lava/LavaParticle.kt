@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,10 +21,10 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Si
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
+class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
 
     override var scale: Float
         get() = super.scale * (1.0f - (floatAge / maxAge).sqr)
@@ -44,18 +44,18 @@ class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleDa
 
     override fun tick() {
         super.tick()
-        val particle = connection.world.particle ?: return
+        val particle = session.world.particle ?: return
 
         if (random.nextFloat() > (floatAge / maxAge)) {
-            particle += SmokeParticle(connection, Vec3d(position), Vec3d(velocity))
+            particle += SmokeParticle(session, Vec3d(position), Vec3d(velocity))
         }
     }
 
     companion object : ParticleFactory<LavaParticle> {
         override val identifier: ResourceLocation = "minecraft:lava".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): LavaParticle {
-            return LavaParticle(connection, position, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): LavaParticle {
+            return LavaParticle(session, position, data)
         }
     }
 }

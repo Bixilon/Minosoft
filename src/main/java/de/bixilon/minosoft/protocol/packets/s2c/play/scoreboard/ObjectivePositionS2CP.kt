@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.modding.event.events.scoreboard.ObjectivePositionSetEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -25,17 +25,17 @@ class ObjectivePositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val position: ScoreboardPositions = ScoreboardPositions[buffer.readUnsignedByte()]
     private val name: String? = buffer.readNullString()
 
-    override fun handle(connection: PlayConnection) {
-        val scoreboardManager = connection.scoreboard
+    override fun handle(session: PlaySession) {
+        val scoreboardManager = session.scoreboard
         if (name == null) {
             scoreboardManager.positions -= position
-            connection.events.fire(ObjectivePositionSetEvent(connection, position, null))
+            session.events.fire(ObjectivePositionSetEvent(session, position, null))
             return
         }
         val objective = scoreboardManager.objectives[name] ?: return
         scoreboardManager.positions[position] = objective
 
-        connection.events.fire(ObjectivePositionSetEvent(connection, position, objective))
+        session.events.fire(ObjectivePositionSetEvent(session, position, objective))
     }
 
     override fun log(reducedLog: Boolean) {

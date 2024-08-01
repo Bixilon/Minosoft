@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,16 +14,16 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityCollectS2CP
 
 class CollectItemAnimationEvent(
-    connection: PlayConnection,
+    session: PlaySession,
     val collectedEntity: Entity,
     val collector: Entity,
     val count: Int,
-) : PlayConnectionEvent(connection), CancelableEvent {
+) : PlaySessionEvent(session), CancelableEvent {
 
-    constructor(connection: PlayConnection, packet: EntityCollectS2CP) : this(connection, connection.world.entities[packet.itemEntityId].unsafeCast<Entity>(), connection.world.entities[packet.collectorEntityId].unsafeCast<Entity>(), packet.count)
+    constructor(session: PlaySession, packet: EntityCollectS2CP) : this(session, session.world.entities[packet.itemEntityId].unsafeCast<Entity>(), session.world.entities[packet.collectorEntityId].unsafeCast<Entity>(), packet.count)
 }

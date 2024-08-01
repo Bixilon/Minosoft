@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,11 +28,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class FireOverlay(
     private val context: RenderContext,
 ) : Overlay {
-    private val config = context.connection.profiles.rendering.overlay.fire
-    private val player = context.connection.player
+    private val config = context.session.profiles.rendering.overlay.fire
+    private val player = context.session.player
     private val shader = context.shaders.genericTexture2dShader
     private var texture: Texture = context.textures.static.create("block/fire_1".toResourceLocation().texture())
-    private val lava = context.connection.registries.fluid[LavaFluid]
+    private val lava = context.session.registries.fluid[LavaFluid]
     override val render: Boolean
         get() {
             if (!config.enabled) {

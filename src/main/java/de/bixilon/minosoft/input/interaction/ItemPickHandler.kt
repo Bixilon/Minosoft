@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,16 +29,16 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 class ItemPickHandler(
     private val interactions: InteractionManager,
 ) {
-    private val connection = interactions.connection
+    private val session = interactions.session
     val rateLimiter = RateLimiter()
 
     fun pickItem(copyNBT: Boolean) {
-        if (connection.player.gamemode != Gamemodes.CREATIVE) {
+        if (session.player.gamemode != Gamemodes.CREATIVE) {
             return
         }
-        val target = connection.camera.target.target ?: return
+        val target = session.camera.target.target ?: return
 
-        if (target.distance >= connection.player.reachDistance) {
+        if (target.distance >= session.player.reachDistance) {
             return
         }
 
@@ -48,17 +48,17 @@ class ItemPickHandler(
             is BlockTarget -> {
                 val block = target.state.block
 
-                stack = if (block is BlockWithItem<*>) ItemStackUtil.of(block.item, count = 1, connection = connection) else null
+                stack = if (block is BlockWithItem<*>) ItemStackUtil.of(block.item, count = 1, session = session) else null
 
                 if (copyNBT && stack != null) {
-                    val blockEntity = connection.world.getBlockEntity(target.blockPosition)
+                    val blockEntity = session.world.getBlockEntity(target.blockPosition)
                     blockEntity?.nbt?.toMutableMap()?.let { stack.updateNbt(it) }
                 }
             }
 
             is EntityTarget -> {
                 val entity = target.entity
-                stack = entity.type.spawnEgg?.let { ItemStackUtil.of(it, connection = connection) } ?: entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)?.copy()
+                stack = entity.type.spawnEgg?.let { ItemStackUtil.of(it, session = session) } ?: entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)?.copy()
             }
 
             else -> stack = null
@@ -68,17 +68,17 @@ class ItemPickHandler(
             return
         }
         for (i in 0 until PlayerInventory.HOTBAR_SLOTS) {
-            val slot = connection.player.items.inventory.getHotbarSlot(i) ?: continue
+            val slot = session.player.items.inventory.getHotbarSlot(i) ?: continue
             if (!slot.matches(stack)) {
                 continue
             }
             interactions.hotbar.selectSlot(i)
             return
         }
-        var slot = connection.player.items.hotbar
-        if (connection.player.items.inventory.getHotbarSlot(slot) != null) {
+        var slot = session.player.items.hotbar
+        if (session.player.items.inventory.getHotbarSlot(slot) != null) {
             for (i in 0 until PlayerInventory.HOTBAR_SLOTS) {
-                val item = connection.player.items.inventory.getHotbarSlot(i)
+                val item = session.player.items.inventory.getHotbarSlot(i)
                 if (item == null) {
                     slot = i
                     break
@@ -86,10 +86,10 @@ class ItemPickHandler(
             }
         }
         interactions.hotbar.selectSlot(slot)
-        val selectedSlot = connection.player.items.hotbar + PlayerInventory.HOTBAR_OFFSET
+        val selectedSlot = session.player.items.hotbar + PlayerInventory.HOTBAR_OFFSET
 
-        rateLimiter += { connection.sendPacket(ItemStackCreateC2SP(selectedSlot, stack)) }
-        connection.player.items.inventory[selectedSlot] = stack
+        rateLimiter += { session.network.send(ItemStackCreateC2SP(selectedSlot, stack)) }
+        session.player.items.inventory[selectedSlot] = stack
 
         // ToDo: Use ItemPickC2SP
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -103,7 +103,7 @@ object ChunkUtil {
 
                 blockId = blockId or meta
 
-                blocks[yzx] = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
+                blocks[yzx] = buffer.session.registries.blockState.getOrNull(blockId) ?: continue
             }
             sections[sectionHeight] = blocks
         }
@@ -146,7 +146,7 @@ object ChunkUtil {
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
             for (yzx in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 val blockId = blockData[index++]
-                val block = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
+                val block = buffer.session.registries.blockState.getOrNull(blockId) ?: continue
                 blocks[yzx] = block
             }
             sections[sectionHeight] = blocks
@@ -172,7 +172,7 @@ object ChunkUtil {
             }
 
 
-            val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockState, paletteFactory = BlockStatePaletteFactory)
+            val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.session.registries.blockState, paletteFactory = BlockStatePaletteFactory)
 
             if (!blockContainer.isEmpty) {
                 val unpacked = blockContainer.unpack<BlockState?>()
@@ -183,7 +183,7 @@ object ChunkUtil {
 
 
             if (buffer.versionId >= V_21W37A) {
-                val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.connection.registries.biome.unsafeCast(), paletteFactory = BiomePaletteFactory)
+                val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.session.registries.biome.unsafeCast(), paletteFactory = BiomePaletteFactory)
 
                 if (!biomeContainer.isEmpty) {
                     biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
@@ -221,7 +221,7 @@ object ChunkUtil {
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
         val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
         for (i in biomes.indices) {
-            biomes[i] = buffer.connection.registries.biome.getOrNull(if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
+            biomes[i] = buffer.session.registries.biome.getOrNull(if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
                 buffer.readUnsignedByte()
             } else {
                 buffer.readInt()

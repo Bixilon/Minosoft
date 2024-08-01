@@ -52,7 +52,7 @@ class OpenGLNativeShader(
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
     private fun load(file: ResourceLocation, type: ShaderType, code: String?): Int {
-        val code = GLSLShaderCode(context, code ?: context.connection.assetsManager[file].readAsString())
+        val code = GLSLShaderCode(context, code ?: context.session.assetsManager[file].readAsString())
         system.log { "Compiling shader $file" }
 
         code.defines += defines
@@ -79,7 +79,7 @@ class OpenGLNativeShader(
     }
 
     override fun load() {
-        val geometryCode = geometry?.let { catchAll { context.connection.assetsManager[it].readAsString() } }
+        val geometryCode = geometry?.let { catchAll { context.session.assetsManager[it].readAsString() } }
         if (geometryCode != null) {
             defines["HAS_GEOMETRY_SHADER"] = " "
         }

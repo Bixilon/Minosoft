@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,12 +42,12 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     private var renderDistance = 0
 
     fun init() {
-        renderer.connection.events.listen<VisibilityGraphChangeEvent> { update = true }
-        renderer.connection.events.listen<ViewDistanceChangeEvent> { updateViewDistance(server = it.viewDistance) }
+        renderer.session.events.listen<VisibilityGraphChangeEvent> { update = true }
+        renderer.session.events.listen<ViewDistanceChangeEvent> { updateViewDistance(server = it.viewDistance) }
         renderer.profile.general::renderDistance.observe(this, true) { updateViewDistance(entity = it) }
     }
 
-    private fun updateViewDistance(entity: Int = renderer.profile.general.renderDistance, server: Int = renderer.connection.world.view.serverViewDistance) {
+    private fun updateViewDistance(entity: Int = renderer.profile.general.renderDistance, server: Int = renderer.session.world.view.serverViewDistance) {
         var distance = if (entity < 0) (server - 1) else entity
         distance *= ProtocolDefinition.SECTION_LENGTH
         this.renderDistance = distance * distance // length^2

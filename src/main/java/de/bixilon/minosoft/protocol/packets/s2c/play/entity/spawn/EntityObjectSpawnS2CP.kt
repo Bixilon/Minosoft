@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -55,17 +55,17 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             velocity = buffer.readVelocity()
         }
         entity = if (buffer.versionId < ProtocolVersions.V_19W05A) {
-            val entityResourceLocation = buffer.connection.registries.entityObjectType[type].identifier
-            buffer.connection.registries.entityType[entityResourceLocation]!!.build(buffer.connection, position, rotation, null, entityUUID, buffer.versionId)!! // ToDo: Entity data tweaking
+            val entityResourceLocation = buffer.session.registries.entityObjectType[type].identifier
+            buffer.session.registries.entityType[entityResourceLocation]!!.build(buffer.session, position, rotation, null, entityUUID, buffer.versionId)!! // ToDo: Entity data tweaking
         } else {
-            buffer.connection.registries.entityType[type].build(buffer.connection, position, rotation, null, entityUUID, buffer.versionId)!!
+            buffer.session.registries.entityType[type].build(buffer.session, position, rotation, null, entityUUID, buffer.versionId)!!
         }
         entity.startInit()
         entity.setObjectData(data)
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.entities.add(entityId, entityUUID, entity)
+    override fun handle(session: PlaySession) {
+        session.world.entities.add(entityId, entityUUID, entity)
         velocity?.let { entity.physics.velocity = it }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class RenderParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : Particle(connection, position, velocity, data) {
+abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : Particle(session, position, velocity, data) {
     protected open var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBColor = ChatColors.WHITE
 

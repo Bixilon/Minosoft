@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -80,7 +80,7 @@ class SunScatterRenderer(
         if (!sky.profile.sunScatter || sky.time.phase == DayPhases.DAY || sky.time.phase == DayPhases.NIGHT || !sky.effects.sun) {
             return
         }
-        val weather = sky.connection.world.weather
+        val weather = sky.session.world.weather
         val weatherLevel = maxOf(weather.rain, weather.thunder)
         if (weatherLevel >= 1.0f) {
             // maximum rain or thunder, don't render

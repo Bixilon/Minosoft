@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight.Companion.BLOCK_LIGHT_MASK
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight.Companion.SKY_LIGHT_MASK
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class CropBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data), BlockWawlaProvider {
 
@@ -32,8 +32,8 @@ open class CropBlock(resourceLocation: ResourceLocation, registries: Registries,
         return blockState.block.identifier == MinecraftBlocks.FARMLAND
     }
 
-    override fun getWawlaInformation(connection: PlayConnection, target: BlockTarget): ChatComponent {
-        val light = connection.world.getLight(target.blockPosition)
+    override fun getWawlaInformation(session: PlaySession, target: BlockTarget): ChatComponent {
+        val light = session.world.getLight(target.blockPosition)
 
         val blockLight = light and BLOCK_LIGHT_MASK
         val skyLight = (light and SKY_LIGHT_MASK) shr 4

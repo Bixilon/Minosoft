@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.physics.entities.EntityPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, FullOutlinedBlock, ToolRequirement, CustomDiggingBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
@@ -44,7 +44,7 @@ open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, sett
         return item is SwordItem || item is ShearsItem
     }
 
-    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack, speed: Float): Float {
+    override fun getMiningSpeed(session: PlaySession, state: BlockState, stack: ItemStack, speed: Float): Float {
         if (stack.item.item is SwordItem || stack.item.item is ShearsItem) {
             return 15.0f
         }

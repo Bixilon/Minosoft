@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 
 class CloneContainerAction(
@@ -26,19 +26,19 @@ class CloneContainerAction(
 ) : ContainerAction {
     private var copied: ItemStack? = null
 
-    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
         container.floatingItem?.let { return }
         val clicked = container[slot] ?: return
         val stack = clicked.copy(count = if (clicked.item.item is StackableItem) clicked.item.item.maxStackSize else 1)
         this.copied = stack
 
         // TODO (1.18.2): use creative inventory packet
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
+        session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
 
         container.floatingItem = stack
     }
 
-    override fun revert(connection: PlayConnection, containerId: Int, container: Container) {
+    override fun revert(session: PlaySession, containerId: Int, container: Container) {
         if (container.floatingItem == copied) {
             container.floatingItem = null
         }

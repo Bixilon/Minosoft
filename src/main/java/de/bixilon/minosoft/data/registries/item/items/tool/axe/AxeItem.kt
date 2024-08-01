@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,13 +35,13 @@ abstract class AxeItem(identifier: ResourceLocation, registries: Registries, dat
 
 
     override fun interactBlock(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        if (!player.connection.profiles.controls.interaction.stripping) {
+        if (!player.session.profiles.controls.interaction.stripping) {
             return InteractionResults.INVALID
         }
 
         val properties = target.state.nullCast<PropertyBlockState>()?.properties ?: emptyMap()
 
-        return super.interact(player.connection, target.blockPosition, strippable?.get(target.state.block)?.states?.withProperties(properties))
+        return super.interact(player.session, target.blockPosition, strippable?.get(target.state.block)?.states?.withProperties(properties))
     }
 
     companion object {

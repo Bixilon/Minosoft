@@ -55,7 +55,7 @@ class GLSLShaderCode(
 
                         val include = ResourceLocation.of(reader.readString()!!)
 
-                        val includeCode = GLSLShaderCode(context, context.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
+                        val includeCode = GLSLShaderCode(context, context.session.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
 
                         code.appendLine()
                         code.append("// ").append(STAR).appendLine()

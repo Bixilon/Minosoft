@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.vehicle.MoveVehicleC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -28,14 +28,14 @@ class MoveVehicleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val pitch: Float = buffer.readFloat()
 
 
-    override fun handle(connection: PlayConnection) {
-        val vehicle = connection.player.attachment.getRootVehicle() ?: return
+    override fun handle(session: PlaySession) {
+        val vehicle = session.player.attachment.getRootVehicle() ?: return
         if (!vehicle.clientControlled) {
             return
         }
         vehicle.forceTeleport(position)
         vehicle.forceRotate(EntityRotation(yaw, pitch))
-        connection.sendPacket(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
+        session.network.send(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
     }
 
     override fun log(reducedLog: Boolean) {

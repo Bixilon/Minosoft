@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -51,9 +51,9 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             null
         }
-        val data = EntityData(buffer.connection, rawData)
-        val entityType = buffer.connection.registries.entityType[typeId]
-        entity = entityType.build(buffer.connection, position, rotation, data, entityUUID, buffer.versionId)!!
+        val data = EntityData(buffer.session, rawData)
+        val entityType = buffer.session.registries.entityType[typeId]
+        entity = entityType.build(buffer.session, position, rotation, data, entityUUID, buffer.versionId)!!
         entity.startInit()
         entity.setHeadRotation(headYaw)
         entity.physics.velocity = velocity
@@ -62,8 +62,8 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.entities.add(entityId, entityUUID, entity)
+    override fun handle(session: PlaySession) {
+        session.world.entities.add(entityId, entityUUID, entity)
     }
 
     override fun log(reducedLog: Boolean) {

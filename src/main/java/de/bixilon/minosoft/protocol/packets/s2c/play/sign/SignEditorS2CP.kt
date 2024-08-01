@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.sign
 
 import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -26,8 +26,8 @@ class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = if (buffer.versionId < ProtocolVersions.V_14W03B) buffer.readIntBlockPosition() else buffer.readBlockPosition()
     val side = if (buffer.versionId >= ProtocolVersions.V_23W12A) if (buffer.readBoolean()) SignSides.FRONT else SignSides.BACK else SignSides.FRONT
 
-    override fun handle(connection: PlayConnection) {
-        if (connection.events.fire(OpenSignEditorEvent(connection, this))) {
+    override fun handle(session: PlaySession) {
+        if (session.events.fire(OpenSignEditorEvent(session, this))) {
             return
         }
     }

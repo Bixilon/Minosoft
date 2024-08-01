@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.datafixer.rls.ContainerTypeFixer
 import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W02A
@@ -32,9 +32,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = if (buffer.versionId <= V_1_14) buffer.readUnsignedByte() else buffer.readVarInt()  // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
     val containerType: ContainerType = when {
-        buffer.versionId < V_14W03B -> buffer.connection.registries.containerType[buffer.readUnsignedByte()]
-        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.connection.registries.containerType, ContainerTypeFixer)!! // TODO: version completely guessed
-        else -> buffer.readRegistryItem(buffer.connection.registries.containerType)
+        buffer.versionId < V_14W03B -> buffer.session.registries.containerType[buffer.readUnsignedByte()]
+        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.session.registries.containerType, ContainerTypeFixer)!! // TODO: version completely guessed
+        else -> buffer.readRegistryItem(buffer.session.registries.containerType)
     }
     val title: ChatComponent = buffer.readNbtChatComponent()
     val slotCount: Int = if (buffer.versionId <= V_19W02A) buffer.readUnsignedByte() else 0 // ToDo: This is completely guessed, it is not present in 1.16.5 (unchecked)
@@ -46,23 +46,23 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
     // TODO: the buffer should be supplied to the container for reading custom properties (e.g. entityId)
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         if (containerId == PlayerInventory.CONTAINER_ID) {
             return
         }
         val title = if (hasTitle) title else null
-        val container = containerType.factory.build(connection, containerType, title, slotCount)
+        val container = containerType.factory.build(session, containerType, title, slotCount)
 
-        connection.player.items.incomplete.remove(containerId)?.let {
+        session.player.items.incomplete.remove(containerId)?.let {
             for ((slot, stack) in it.slots) {
                 container[slot] = stack
             }
             container.floatingItem = it.floating
         }
-        connection.player.items.containers[containerId] = container
-        connection.player.items.opened = container
+        session.player.items.containers[containerId] = container
+        session.player.items.opened = container
 
-        connection.events.fire(ContainerOpenEvent(connection, container))
+        session.events.fire(ContainerOpenEvent(session, container))
     }
 
     override fun log(reducedLog: Boolean) {

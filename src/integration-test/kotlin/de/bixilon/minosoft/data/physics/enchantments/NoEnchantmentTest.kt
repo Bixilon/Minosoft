@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,20 +24,20 @@ import de.bixilon.minosoft.data.physics.enchantments.EnchantmentTestUtil.applySo
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class NoEnchantmentTest {
-    private val connection by lazy {
-        val connection = createConnection(5)
-        connection.world.fill(Vec3i(-20, 0, -20), Vec3i(20, 0, 20), StoneTest0.state)
+    private val session by lazy {
+        val session = createSession(5)
+        session.world.fill(Vec3i(-20, 0, -20), Vec3i(20, 0, 20), StoneTest0.state)
 
-        return@lazy connection
+        return@lazy session
     }
 
     fun stoneSoulSpeed() {
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(6.0, 1.0, 6.0))
         player.input = PlayerMovementInput(forward = true)
         player.applySoulSpeed(1)

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.format
 
 object DebugKeyBindings {
@@ -36,18 +36,18 @@ object DebugKeyBindings {
     fun register(context: RenderContext) {
         val bindings = context.input.bindings
 
-        bindings.registerNetwork(context.connection)
+        bindings.registerNetwork(context.session)
         bindings.registerRendering(context)
     }
 
-    private fun BindingsManager.registerNetwork(connection: PlayConnection) {
+    private fun BindingsManager.registerNetwork(session: PlaySession) {
         register(PAUSE_INCOMING, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
             KeyActions.STICKY to setOf(KeyCodes.KEY_I),
             ignoreConsumer = true,
         )) {
-            connection.util.sendDebugMessage("Pausing incoming packets: ${it.format()}")
-            connection.network.receiver.paused = it
+            session.util.sendDebugMessage("Pausing incoming packets: ${it.format()}")
+            session.network.receiver.paused = it
         }
 
         register(PAUSE_OUTGOING, KeyBinding(
@@ -55,13 +55,13 @@ object DebugKeyBindings {
             KeyActions.STICKY to setOf(KeyCodes.KEY_O),
             ignoreConsumer = true,
         )) {
-            connection.util.sendDebugMessage("Pausing outgoing packets: ${it.format()}")
-            connection.network.sender.paused = it
+            session.util.sendDebugMessage("Pausing outgoing packets: ${it.format()}")
+            session.network.sender.paused = it
         }
     }
 
     private fun BindingsManager.registerRendering(context: RenderContext) {
-        val connection = context.connection
+        val session = context.session
 
         register(DEBUG_POLYGON, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
@@ -69,7 +69,7 @@ object DebugKeyBindings {
         )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             context.framebuffer.world.polygonMode = nextMode
-            connection.util.sendDebugMessage("Polygon mode: ${nextMode.format()}")
+            session.util.sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
 
 
@@ -84,7 +84,7 @@ object DebugKeyBindings {
                 CursorModes.HIDDEN -> CursorModes.NORMAL
             }
             context.window.cursorMode = next
-            connection.util.sendDebugMessage("Cursor mode: ${next.format()}")
+            session.util.sendDebugMessage("Cursor mode: ${next.format()}")
         }
     }
 }

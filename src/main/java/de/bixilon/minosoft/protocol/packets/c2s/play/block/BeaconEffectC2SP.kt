@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play.block
 
 import de.bixilon.minosoft.data.registries.effects.StatusEffectType
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
@@ -26,7 +26,7 @@ class BeaconEffectC2SP(
     val secondaryEffect: Int?,
 ) : PlayC2SPacket {
 
-    constructor(connection: PlayConnection, primaryEffect: StatusEffectType, secondaryEffect: StatusEffectType) : this(connection.registries.statusEffect.getId(primaryEffect), connection.registries.statusEffect.getId(secondaryEffect))
+    constructor(session: PlaySession, primaryEffect: StatusEffectType, secondaryEffect: StatusEffectType) : this(session.registries.statusEffect.getId(primaryEffect), session.registries.statusEffect.getId(secondaryEffect))
 
     override fun write(buffer: PlayOutByteBuffer) {
         if (buffer.versionId < ProtocolVersions.V_22W15A) {

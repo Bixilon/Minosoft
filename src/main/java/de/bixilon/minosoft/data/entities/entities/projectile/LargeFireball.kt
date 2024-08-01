@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class LargeFireball(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Fireball(connection, entityType, data, position, rotation) {
+class LargeFireball(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Fireball(session, entityType, data, position, rotation) {
     override val defaultItemType: ResourceLocation
         get() = DEFAULT_ITEM
 
@@ -34,8 +34,8 @@ class LargeFireball(connection: PlayConnection, entityType: EntityType, data: En
         private val DEFAULT_ITEM = minecraft("fire_charge")
         override val identifier: ResourceLocation = minecraft("fireball")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LargeFireball {
-            return LargeFireball(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LargeFireball {
+            return LargeFireball(session, entityType, data, position, rotation)
         }
     }
 }

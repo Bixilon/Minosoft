@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,16 +20,16 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.NoRenderParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class EntityEmitterParticle(
-    connection: PlayConnection,
+    session: PlaySession,
     val entity: Entity,
     val particleFactory: ParticleFactory<*>,
     velocity: Vec3d = Vec3d.EMPTY,
     maxAge: Int = 3,
-) : NoRenderParticle(connection, entity.physics.velocity, velocity, null) {
-    private val particleData = connection.registries.particleType[particleFactory.identifier]!!.default()
+) : NoRenderParticle(session, entity.physics.velocity, velocity, null) {
+    private val particleData = session.registries.particleType[particleFactory.identifier]!!.default()
 
 
     init {
@@ -42,7 +42,7 @@ class EntityEmitterParticle(
 
 
     fun emitParticles() {
-        val particle = connection.world.particle ?: return
+        val particle = session.world.particle ?: return
         val position = entity.physics.position
         for (i in 0 until 16) {
             val scale = Vec3(random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f))
@@ -56,7 +56,7 @@ class EntityEmitterParticle(
                 position.y + (entity.type.height * (0.5f + scale.y / 4.0f)),
                 position.z + (entity.type.width * (scale.z / 4.0f)),
             )
-            particle += particleFactory.build(connection, particlePosition, Vec3d(scale.x, scale.y, scale.z), particleData) ?: continue// ToDo: Velocity.y is getting added with 0.2
+            particle += particleFactory.build(session, particlePosition, Vec3d(scale.x, scale.y, scale.z), particleData) ?: continue// ToDo: Velocity.y is getting added with 0.2
         }
     }
 

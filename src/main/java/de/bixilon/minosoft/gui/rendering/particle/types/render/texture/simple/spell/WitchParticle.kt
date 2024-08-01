@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WitchParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SpellParticle(connection, position, velocity, data) {
+class WitchParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SpellParticle(session, position, velocity, data) {
 
     init {
         val randomColor = random.nextFloat() * 0.5f + 0.35f
@@ -31,8 +31,8 @@ class WitchParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d
     companion object : ParticleFactory<WitchParticle> {
         override val identifier: ResourceLocation = "minecraft:witch".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): WitchParticle {
-            return WitchParticle(connection, position, velocity, data)
+        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): WitchParticle {
+            return WitchParticle(session, position, velocity, data)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,15 +21,15 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.SlabTest0
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class CollisionIT {
 
     fun collisionGlass1() {
-        val player = createPlayer(createConnection(2))
-        player.connection.world[Vec3i(0, 4, 0)] = GlassTest0.state
+        val player = createPlayer(createSession(2))
+        player.session.world[Vec3i(0, 4, 0)] = GlassTest0.state
         player.forceTeleport(Vec3d(0.0, 5.0, 0.0))
         player.runTicks(10)
         player.assertPosition(0.0, 5.0, 0.0)
@@ -37,8 +37,8 @@ class CollisionIT {
     }
 
     fun collisionGlass2() {
-        val player = createPlayer(createConnection(2))
-        player.connection.world[Vec3i(0, 2, 0)] = GlassTest0.state
+        val player = createPlayer(createSession(2))
+        player.session.world[Vec3i(0, 2, 0)] = GlassTest0.state
         player.forceTeleport(Vec3d(0.0, 5.0, 0.0))
         player.runTicks(10)
         player.assertPosition(0.0, 3.0, 0.0)
@@ -46,8 +46,8 @@ class CollisionIT {
     }
 
     fun collisionGlass3() {
-        val player = createPlayer(createConnection(2))
-        player.connection.world[Vec3i(0, 0, 0)] = GlassTest0.state
+        val player = createPlayer(createSession(2))
+        player.session.world[Vec3i(0, 0, 0)] = GlassTest0.state
         player.forceTeleport(Vec3d(0.0, 300.0, 0.0))
         player.runTicks(1000)
         player.assertPosition(0.0, 1.0, 0.0)
@@ -55,8 +55,8 @@ class CollisionIT {
     }
 
     fun collisionSlab() {
-        val player = createPlayer(createConnection(2))
-        player.connection.world[Vec3i(0, 0, 0)] = SlabTest0.state
+        val player = createPlayer(createSession(2))
+        player.session.world[Vec3i(0, 0, 0)] = SlabTest0.state
         player.forceTeleport(Vec3d(0.0, 2.0, 0.0))
         player.runTicks(10)
         player.assertPosition(0.0, 0.5, 0.0)
@@ -64,8 +64,8 @@ class CollisionIT {
     }
 
     fun collisionWithHighVelocity() {
-        val player = createPlayer(createConnection(2))
-        player.connection.world[Vec3i(0, 1, 0)] = SlabTest0.state
+        val player = createPlayer(createSession(2))
+        player.session.world[Vec3i(0, 1, 0)] = SlabTest0.state
         player.forceTeleport(Vec3d(0.0, 3.0, 0.0))
         player.physics.velocity = Vec3d(0.0, -15.0, 0.0)
         player.runTicks(10)
@@ -74,8 +74,8 @@ class CollisionIT {
     }
 
     fun collisionWithReallyHighVelocity() {
-        val player = createPlayer(createConnection(2))
-        player.connection.world[Vec3i(0, 1, 0)] = SlabTest0.state
+        val player = createPlayer(createSession(2))
+        player.session.world[Vec3i(0, 1, 0)] = SlabTest0.state
         player.forceTeleport(Vec3d(0.0, 3.0, 0.0))
         player.physics.velocity = Vec3d(0.0, -150.0, 0.0)
         player.runTicks(10)

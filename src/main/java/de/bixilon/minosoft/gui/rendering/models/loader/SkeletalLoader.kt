@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,7 +41,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
         for ((name, registered) in this.registered) {
             var template = templates[registered.template]
             if (template == null) {
-                template = loader.context.connection.assetsManager.getOrNull(registered.template)?.readJson()
+                template = loader.context.session.assetsManager.getOrNull(registered.template)?.readJson()
                 if (template == null) {
                     Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find skeletal model ${registered.template}" }
                     continue

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,16 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockBreakAnimationS2CP
 
 class BlockBreakAnimationEvent(
-    connection: PlayConnection,
+    session: PlaySession,
     val entityId: Int,
     val blockPosition: Vec3i,
     val stage: Int,
-) : PlayConnectionEvent(connection), CancelableEvent {
+) : PlaySessionEvent(session), CancelableEvent {
 
-    constructor(connection: PlayConnection, packet: BlockBreakAnimationS2CP) : this(connection, packet.entityId, packet.blockPosition, packet.stage)
+    constructor(session: PlaySession, packet: BlockBreakAnimationS2CP) : this(session, packet.entityId, packet.blockPosition, packet.stage)
 }

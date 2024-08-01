@@ -47,7 +47,7 @@ class WorldFramebuffer(
         mesh.load()
 
         overlay.init()
-        context.connection.profiles.rendering.quality.resolution::worldScale.observe(this, instant = true) { this.scale = it }
+        context.session.profiles.rendering.quality.resolution::worldScale.observe(this, instant = true) { this.scale = it }
     }
 
     override fun postInit() {

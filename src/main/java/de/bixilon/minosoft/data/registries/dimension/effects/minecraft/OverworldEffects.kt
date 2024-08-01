@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object OverworldEffects : DimensionEffects {
     override val identifier = minecraft("overworld")
@@ -31,8 +31,8 @@ object OverworldEffects : DimensionEffects {
     override val stars: Boolean get() = true
 
     override val clouds: Boolean get() = true
-    override fun getCloudHeight(connection: PlayConnection): IntRange {
-        val height = connection.world.dimension.height
+    override fun getCloudHeight(session: PlaySession): IntRange {
+        val height = session.world.dimension.height
         if (height > DimensionProperties.DEFAULT_HEIGHT) {
             return 192..196
         }

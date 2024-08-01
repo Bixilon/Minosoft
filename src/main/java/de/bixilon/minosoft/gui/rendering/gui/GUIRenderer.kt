@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,14 +36,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class GUIRenderer(
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : AsyncRenderer, InputHandler, Drawable {
-    private val profile = connection.profiles.gui
+    private val profile = session.profiles.gui
     override val renderSystem = context.system
     var scaledSize: Vec2 by observed(Vec2(context.window.size))
     val gui = GUIManager(this)
@@ -69,7 +69,7 @@ class GUIRenderer(
     override fun postInit(latch: AbstractLatch) {
         shader.load()
 
-        connection.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
+        session.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
         context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
         profile::scale.observeRendering(this) { updateResolution(scale = it) }
 
@@ -151,8 +151,8 @@ class GUIRenderer(
 
     companion object : RendererBuilder<GUIRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): GUIRenderer {
-            return GUIRenderer(connection, context)
+        override fun build(session: PlaySession, context: RenderContext): GUIRenderer {
+            return GUIRenderer(session, context)
         }
     }
 }

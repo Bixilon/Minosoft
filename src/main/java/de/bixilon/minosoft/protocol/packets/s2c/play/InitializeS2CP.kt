@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
+import de.bixilon.minosoft.protocol.network.session.play.channel.vanila.BrandHandler.sendBrand
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_2_PRE1
@@ -82,7 +82,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimension = buffer.connection.registries.dimension[buffer.readByte().toInt()].properties
+            dimension = buffer.session.registries.dimension[buffer.readByte().toInt()].properties
             difficulty = Difficulties[buffer.readUnsignedByte()]
             buffer.readUnsignedByte() // max players
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -99,7 +99,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readArray { buffer.readResourceLocation() } // list of worlds
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
-                dimension = buffer.connection.registries.dimension[buffer.readInt()].properties
+                dimension = buffer.session.registries.dimension[buffer.readInt()].properties
             } else if (buffer.versionId < V_23W31A) {
                 registries = buffer.readNBT().asJsonObject()
                 if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
@@ -159,10 +159,10 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.util.resetWorld()
-        connection.util.prepareSpawn()
-        val playerEntity = connection.player
+    override fun handle(session: PlaySession) {
+        session.util.resetWorld()
+        session.util.prepareSpawn()
+        val playerEntity = session.player
         val previousGamemode = playerEntity.additional.gamemode
 
         if (previousGamemode != gamemode) {
@@ -170,32 +170,32 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             playerEntity.abilities = gamemode.abilities
         }
 
-        connection.world.hardcore = isHardcore
+        session.world.hardcore = isHardcore
 
-        registries?.let { connection.registries.update(connection.version, it) }
-        connection.world.dimension = dimension ?: connection.registries.dimension[dimensionName]?.properties ?: throw NullPointerException("Can not find dimension: $dimensionName")
-        connection.world.name = world
+        registries?.let { session.registries.update(session.version, it) }
+        session.world.dimension = dimension ?: session.registries.dimension[dimensionName]?.properties ?: throw NullPointerException("Can not find dimension: $dimensionName")
+        session.world.name = world
 
 
-        connection.world.entities.clear(connection, local = true)
-        connection.world.entities.add(entityId, null, playerEntity)
-        connection.world.biomes.updateNoise(hashedSeed)
-        connection.world.border.reset()
+        session.world.entities.clear(session, local = true)
+        session.world.entities.add(entityId, null, playerEntity)
+        session.world.biomes.updateNoise(hashedSeed)
+        session.world.border.reset()
 
-        if (connection.version < V_1_20_2_PRE1) {
-            connection.settingsManager.sendClientSettings()
+        if (session.version < V_1_20_2_PRE1) {
+            session.settingsManager.sendClientSettings()
         }
-        if (!connection.version.hasConfigurationState) {
-            connection.sendBrand()
+        if (!session.version.hasConfigurationState) {
+            session.sendBrand()
         }
 
-        if (connection.version >= ProtocolVersions.V_1_19_4) { // TODO: find out version
-            connection.util.signer.reset()
+        if (session.version >= ProtocolVersions.V_1_19_4) { // TODO: find out version
+            session.util.signer.reset()
         }
-        connection.player.keyManagement.sendSession()
+        session.player.keyManagement.sendSession()
 
-        connection.events.fire(DimensionChangeEvent(connection))
-        connection.state = PlayConnectionStates.SPAWNING
+        session.events.fire(DimensionChangeEvent(session))
+        session.state = PlaySessionStates.SPAWNING
     }
 
     override fun log(reducedLog: Boolean) {

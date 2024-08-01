@@ -18,14 +18,14 @@ import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class EntityData(
-    val connection: PlayConnection,
+    val session: PlaySession,
     data: Int2ObjectOpenHashMap<Any?>? = null,
 ) {
     private val lock = SimpleLock()
@@ -46,7 +46,7 @@ class EntityData(
     }
 
     operator fun set(field: EntityDataField, value: Any?) {
-        val index = connection.registries.getEntityDataIndex(field) ?: return
+        val index = session.registries.getEntityDataIndex(field) ?: return
         lock.lock()
         set(index, value)
         lock.unlock()
@@ -73,7 +73,7 @@ class EntityData(
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     inline fun <reified K> get(field: EntityDataField, default: K): K {
-        val index = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
+        val index = session.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
         lock.acquire()
         try {
             val data = this.data[index] ?: return default
@@ -115,7 +115,7 @@ class EntityData(
     }
 
     fun <K> observe(field: EntityDataField, watcher: (value: K?) -> Unit) {
-        val index = connection.registries.getEntityDataIndex(field) ?: return // field not available
+        val index = session.registries.getEntityDataIndex(field) ?: return // field not available
         observersLock.lock()
         this.observers.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast()) // TODO: use weakref?
         observersLock.unlock()

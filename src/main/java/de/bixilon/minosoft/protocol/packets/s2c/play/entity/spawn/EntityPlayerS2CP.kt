@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -51,7 +51,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val rotation = buffer.readEntityRotation()
         if (buffer.versionId < ProtocolVersions.V_15W31A) {
-            buffer.connection.registries.item.getOrNull(buffer.readUnsignedShort()) // current item
+            buffer.session.registries.item.getOrNull(buffer.readUnsignedShort()) // current item
         }
 
         var data: Int2ObjectOpenHashMap<Any?>? = null
@@ -59,18 +59,18 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             data = buffer.readEntityData()
         }
         entity = RemotePlayerEntity(
-            connection = buffer.connection,
-            entityType = buffer.connection.registries.entityType[RemotePlayerEntity.identifier]!!,
-            data = EntityData(buffer.connection, data),
+            session = buffer.session,
+            entityType = buffer.session.registries.entityType[RemotePlayerEntity.identifier]!!,
+            data = EntityData(buffer.session, data),
             position = position,
             rotation = rotation,
-            additional = buffer.connection.tabList.uuid[entityUUID] ?: PlayerAdditional(name = name, properties = properties),
+            additional = buffer.session.tabList.uuid[entityUUID] ?: PlayerAdditional(name = name, properties = properties),
         )
         entity.startInit()
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.entities.add(entityId, entityUUID, entity)
+    override fun handle(session: PlaySession) {
+        session.world.entities.add(entityId, entityUUID, entity)
     }
 
     override fun log(reducedLog: Boolean) {

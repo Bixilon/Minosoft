@@ -48,7 +48,7 @@ class RenderLoop(
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING) { "Starting loop" }
-        context.connection.events.listen<WindowCloseEvent> { context.state = RenderingStates.QUITTING }
+        context.session.events.listen<WindowCloseEvent> { context.state = RenderingStates.QUITTING }
         while (true) {
             if (context.state == RenderingStates.PAUSED) {
                 context.window.title = "Minosoft | Paused"
@@ -59,7 +59,7 @@ class RenderLoop(
                 context.window.pollEvents()
             }
 
-            if (context.connection.wasConnected || !context.state.active) {
+            if (context.session.established || !context.state.active) {
                 break
             }
 
@@ -111,7 +111,7 @@ class RenderLoop(
             }
 
             for (error in context.system.getErrors()) {
-                context.connection.util.sendDebugMessage(error.printMessage)
+                context.session.util.sendDebugMessage(error.printMessage)
             }
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
@@ -126,6 +126,6 @@ class RenderLoop(
         context.window.destroy()
         Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
         // disconnect
-        context.connection.network.disconnect()
+        context.session.network.disconnect()
     }
 }

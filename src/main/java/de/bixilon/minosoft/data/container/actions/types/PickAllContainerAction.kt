@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -30,7 +30,7 @@ class PickAllContainerAction(
 ) : ContainerAction {
     // ToDo: Action reverting
 
-    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
         // TODO (1.18.2) minecraft always sends a packet
         container.lock()
         try {
@@ -67,7 +67,7 @@ class PickAllContainerAction(
                 return
             }
             container.floatingItem = floating
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.actions.createId(this), changes, floating))
+            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.actions.createId(this), changes, floating))
         } finally {
             container.commit()
         }

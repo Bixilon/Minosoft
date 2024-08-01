@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,14 +35,14 @@ import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.physics.ItemUsing
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 class LocalPlayerEntity(
     account: Account,
-    connection: PlayConnection,
+    session: PlaySession,
     val keyManagement: SignatureKeyManagement,
-) : PlayerEntity(connection, connection.registries.entityType[identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)), EntityModelFactory<LocalPlayerEntity> {
+) : PlayerEntity(session, session.registries.entityType[identifier]!!, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)), EntityModelFactory<LocalPlayerEntity> {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
@@ -66,7 +66,7 @@ class LocalPlayerEntity(
         get() = !abilities.flying
 
     override val uuid: UUID
-        get() = super.uuid ?: connection.account.uuid
+        get() = super.uuid ?: session.account.uuid
 
     override var isSprinting: Boolean = false
         set(value) {
@@ -88,7 +88,7 @@ class LocalPlayerEntity(
         get() = if (gamemode == Gamemodes.CREATIVE) 5.0 else 4.5
 
     override fun tick() {
-        if (connection.world.chunks[physics.positionInfo.chunkPosition] == null) { // TODO: Optimize
+        if (session.world.chunks[physics.positionInfo.chunkPosition] == null) { // TODO: Optimize
             // chunk not loaded, so we don't tick?
             return
         }
@@ -105,7 +105,7 @@ class LocalPlayerEntity(
         get() = healthCondition.hp.toDouble()
 
     override val mainArm: Arms
-        get() = connection.profiles.connection.mainArm
+        get() = session.profiles.session.mainArm
 
     override val usingHand: Hands?
         get() = using?.hand

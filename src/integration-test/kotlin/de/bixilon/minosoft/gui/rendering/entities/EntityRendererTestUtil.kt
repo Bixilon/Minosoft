@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,7 +42,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
 import java.util.*
 
@@ -50,15 +50,15 @@ object EntityRendererTestUtil {
     val PIG = EntityType(Pig.identifier, minosoft("key"), 1.0f, 1.0f, mapOf(), Pig, null)
 
     fun createContext(): RenderContext {
-        val connection = ConnectionTestUtil.createConnection()
-        connection::scoreboard.forceSet(ScoreboardManager(connection))
-        connection::tabList.forceSet(TabList())
+        val session = SessionTestUtil.createSession()
+        session::scoreboard.forceSet(ScoreboardManager(session))
+        session::tabList.forceSet(TabList())
         val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(context.system.createTextureManager())
         context::shaders.forceSet(ShaderManager(context))
-        context::connection.forceSet(connection)
-        context.connection::player.forceSet(LocalPlayerEntity(TestAccount, connection, SignatureKeyManagement(connection, connection.account)))
+        context::session.forceSet(session)
+        context.session::player.forceSet(LocalPlayerEntity(TestAccount, session, SignatureKeyManagement(session, session.account)))
         context::camera.forceSet(Camera(context))
         context::light.forceSet(RenderLight(context))
         context::skeletal.forceSet(SkeletalManager(context))
@@ -73,7 +73,7 @@ object EntityRendererTestUtil {
         val renderer = IT.OBJENESIS.newInstance(EntitiesRenderer::class.java)
         renderer::context.forceSet(context)
         renderer::queue.forceSet(Queue())
-        renderer::connection.forceSet(context.connection)
+        renderer::session.forceSet(context.session)
         renderer::profile.forceSet(EntityProfile())
         renderer::features.forceSet(EntityRenderFeatures(renderer))
         renderer::renderers.forceSet(EntityRendererManager(renderer))
@@ -83,11 +83,11 @@ object EntityRendererTestUtil {
     fun <E : Entity> EntitiesRenderer.createEntity(factory: EntityFactory<E>): E {
         val uuid = UUID(1L, 1L)
         if (factory == RemotePlayerEntity) {
-            connection.tabList.uuid[uuid] = PlayerAdditional("John")
+            session.tabList.uuid[uuid] = PlayerAdditional("John")
         }
         val renderer = DefaultEntityModels[factory.identifier]
         val type = PIG.copy(identifier = factory.identifier, modelFactory = renderer)
-        return factory.build(connection, type, EntityData(connection), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
+        return factory.build(session, type, EntityData(session), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
     }
 
     fun <E : Entity> EntitiesRenderer.create(factory: EntityFactory<E>): EntityRenderer<E> {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,20 +32,20 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 import java.util.*
 
 
 class ParticleRenderer(
-    private val connection: PlayConnection,
+    private val session: PlaySession,
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer, SkipAll, AbstractParticleRenderer {
     override val random = Random()
     override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
-    private val profile = connection.profiles.particle
+    private val profile = session.profiles.particle
     private val shader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
@@ -88,7 +88,7 @@ class ParticleRenderer(
     }
 
     private fun loadTextures() {
-        for (particle in connection.registries.particleType) {
+        for (particle in session.registries.particleType) {
             val loaded: Array<Texture> = arrayOfNulls<Texture?>(particle.textures.size).cast()
             for ((index, texture) in particle.textures.withIndex()) {
                 loaded[index] = context.textures.static.create(texture)
@@ -101,27 +101,27 @@ class ParticleRenderer(
         profile::maxAmount.observe(this, true) { maxAmount = minOf(it, MAXIMUM_AMOUNT) }
         profile::enabled.observe(this, true) { enabled = it }
 
-        connection.events.listen<CameraMatrixChangeEvent> { matrixUpdate = true }
+        session.events.listen<CameraMatrixChangeEvent> { matrixUpdate = true }
 
         mesh.load()
         translucentMesh.load()
 
         loadTextures()
-        DefaultParticleBehavior.register(connection, this)
+        DefaultParticleBehavior.register(session, this)
     }
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         ticker.init()
 
-        connection.world.particle = this
+        session.world.particle = this
     }
 
     override fun addParticle(particle: Particle) {
         if (!context.state.running || !enabled) {
             return
         }
-        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.physics.positionInfo.chunkPosition)) {
+        if (!particle.chunkPosition.isInViewDistance(session.world.view.particleViewDistance, session.player.physics.positionInfo.chunkPosition)) {
             particle.dead = true
             return
         }
@@ -172,11 +172,11 @@ class ParticleRenderer(
     companion object : RendererBuilder<ParticleRenderer> {
         const val MAXIMUM_AMOUNT = 50000
 
-        override fun build(connection: PlayConnection, context: RenderContext): ParticleRenderer? {
-            if (connection.profiles.particle.skipLoading) {
+        override fun build(session: PlaySession, context: RenderContext): ParticleRenderer? {
+            if (session.profiles.particle.skipLoading) {
                 return null
             }
-            return ParticleRenderer(connection, context)
+            return ParticleRenderer(session, context)
         }
     }
 }

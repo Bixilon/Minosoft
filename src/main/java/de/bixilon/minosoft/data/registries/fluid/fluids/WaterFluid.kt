@@ -48,14 +48,14 @@ import de.bixilon.minosoft.physics.input.MovementInput
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics.isClimbing
 import de.bixilon.minosoft.physics.parts.input.InputPhysics.applyMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resourceLocation), FluidEnterHandler, FluidCollisionHandler, TintedBlock, FoggedFluid {
     override val priority: Int get() = 0
     override val tintProvider get() = WaterTintProvider
 
-    override fun getVelocityMultiplier(connection: PlayConnection) = 0.014
+    override fun getVelocityMultiplier(session: PlaySession) = 0.014
 
     override fun matches(other: Fluid): Boolean {
         return other is WaterFluid
@@ -80,14 +80,14 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
         return 0.0f
     }
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        super.randomTick(connection, blockState, blockPosition, random)
+    override fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        super.randomTick(session, blockState, blockPosition, random)
 
-        val particle = connection.world.particle ?: return
+        val particle = session.world.particle ?: return
 
         // ToDo: if not sill and not falling
         if (random.chance(10)) {
-            particle += UnderwaterParticle(connection, blockPosition.toVec3d + { random.nextDouble() })
+            particle += UnderwaterParticle(session, blockPosition.toVec3d + { random.nextDouble() })
         }
     }
 

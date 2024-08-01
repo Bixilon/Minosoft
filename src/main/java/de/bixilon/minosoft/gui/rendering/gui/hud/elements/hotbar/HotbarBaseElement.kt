@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
     private val frame = AtlasImageElement(guiRenderer, atlas["frame"], size = Vec2i(FRAME_SIZE))
 
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, baseAtlasElement?.slots ?: Int2ObjectOpenHashMap())
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.session.player.items.inventory, baseAtlasElement?.slots ?: Int2ObjectOpenHashMap())
 
     private var selectedSlot = 0
 
@@ -57,7 +57,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     }
 
     override fun poll(): Boolean {
-        val selectedSlot = guiRenderer.context.connection.player.items.hotbar
+        val selectedSlot = guiRenderer.context.session.player.items.hotbar
 
         if (this.selectedSlot != selectedSlot || containerElement.silentApply()) {
             this.selectedSlot = selectedSlot

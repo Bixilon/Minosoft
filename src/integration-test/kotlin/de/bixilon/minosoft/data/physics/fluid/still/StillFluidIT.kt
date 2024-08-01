@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,31 +22,31 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.SkipException
 
 abstract class StillFluidIT {
-    private val walkingConnection by lazy {
-        val connection = createConnection(4)
-        connection.world.fill(
+    private val walking by lazy {
+        val session = createSession(4)
+        session.world.fill(
             Vec3i(-10, 16, -10),
             Vec3i(20, 16, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        connection.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
+        session.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
 
-        return@lazy connection
+        return@lazy session
     }
-    private val poolConnection by lazy {
-        val connection = createConnection(4)
-        connection.world.fill(
+    private val pool by lazy {
+        val session = createSession(4)
+        session.world.fill(
             Vec3i(-10, 16, -10),
             Vec3i(20, 20, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        connection.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
+        session.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
 
-        return@lazy connection
+        return@lazy session
     }
 
     protected var block: FluidBlock? = null
@@ -55,8 +55,8 @@ abstract class StillFluidIT {
         }
 
     protected fun landing1(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
-        player.connection.world.fill(
+        val player = createPlayer(createSession(3))
+        player.session.world.fill(
             Vec3i(4, 5, 7),
             Vec3i(4, 16, 7),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
@@ -67,8 +67,8 @@ abstract class StillFluidIT {
     }
 
     protected fun landing2(): LocalPlayerEntity {
-        val player = createPlayer(createConnection(3))
-        player.connection.world.fill(
+        val player = createPlayer(createSession(3))
+        player.session.world.fill(
             Vec3i(4, 5, 7),
             Vec3i(4, 16, 7),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
@@ -79,7 +79,7 @@ abstract class StillFluidIT {
     }
 
     protected fun walking1(): LocalPlayerEntity {
-        val player = createPlayer(this.walkingConnection)
+        val player = createPlayer(this.walking)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
@@ -87,7 +87,7 @@ abstract class StillFluidIT {
     }
 
     protected fun walking2(): LocalPlayerEntity {
-        val player = createPlayer(this.walkingConnection)
+        val player = createPlayer(this.walking)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(backward = true)
         player.runTicks(48)
@@ -95,15 +95,15 @@ abstract class StillFluidIT {
     }
 
     protected fun walking3(): LocalPlayerEntity {
-        val connection = createConnection(4)
-        connection.world.fill(
+        val session = createSession(4)
+        session.world.fill(
             Vec3i(-10, 16, -10),
             Vec3i(20, 17, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        connection.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
+        session.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
 
-        val player = createPlayer(connection)
+        val player = createPlayer(session)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(backward = true)
         player.runTicks(48)
@@ -111,7 +111,7 @@ abstract class StillFluidIT {
     }
 
     protected fun sprinting1(): LocalPlayerEntity {
-        val player = createPlayer(this.walkingConnection)
+        val player = createPlayer(this.walking)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(forward = true, left = true, sprint = true)
         player.runTicks(15)
@@ -119,7 +119,7 @@ abstract class StillFluidIT {
     }
 
     protected fun jumping1(): LocalPlayerEntity {
-        val player = createPlayer(this.walkingConnection)
+        val player = createPlayer(this.walking)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(5)
@@ -127,21 +127,21 @@ abstract class StillFluidIT {
     }
 
     protected fun sinking1(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 20.0, 7.0))
         player.runTicks(15)
         return player
     }
 
     protected fun sinking2(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 19.0, 7.0))
         player.runTicks(28)
         return player
     }
 
     protected fun swimUpwards1(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(28)
@@ -149,7 +149,7 @@ abstract class StillFluidIT {
     }
 
     protected fun swimUpwards2(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))
         player.input = PlayerMovementInput(forward = true, jump = true)
         player.runTicks(28)
@@ -157,7 +157,7 @@ abstract class StillFluidIT {
     }
 
     protected fun swimUpwards3(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 20.0, 7.0))
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(28)
@@ -165,7 +165,7 @@ abstract class StillFluidIT {
     }
 
     protected fun swimUpwards4(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 19.0, 7.0))
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -173,7 +173,7 @@ abstract class StillFluidIT {
     }
 
     protected fun knockDownwards(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 19.0, 7.0))
         player.input = PlayerMovementInput(sneak = true)
         player.runTicks(3)
@@ -181,7 +181,7 @@ abstract class StillFluidIT {
     }
 
     protected fun knockDownwards2(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 19.0, 7.0))
         player.input = PlayerMovementInput(sneak = true)
         player.runTicks(9)
@@ -189,7 +189,7 @@ abstract class StillFluidIT {
     }
 
     protected fun knockDownwards3(): LocalPlayerEntity {
-        val player = createPlayer(this.poolConnection)
+        val player = createPlayer(this.pool)
         player.forceTeleport(Vec3d(4.0, 19.0, 7.0))
         player.input = PlayerMovementInput(sneak = true)
         player.runTicks(19)

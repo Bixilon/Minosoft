@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,10 +25,10 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.physics.entities.vehicle.horse.HorsePhysics
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
+class Horse(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(session, entityType, data, position, rotation) {
 
     private val variant: Int
         get() = data.get(VARIANT_DATA, 0)
@@ -45,8 +45,8 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
     @get:SynchronizedEntityData
     val armor: Item?
         get() {
-            if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
-                return connection.registries.item[when (this.data.get(LEGACY_ARMOR_DATA, 0)) {
+            if (session.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
+                return session.registries.item[when (this.data.get(LEGACY_ARMOR_DATA, 0)) {
                     1 -> LEGACY_IRON_ARMOR
                     2 -> LEGACY_GOLD_ARMOR
                     3 -> LEGACY_DIAMOND_ARMOR
@@ -100,11 +100,11 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
         private val LEGACY_SPECIAL_TYPE_DATA = EntityDataField("LEGACY_HORSE_SPECIAL_TYPE")
 
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Horse {
-            return Horse(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Horse {
+            return Horse(session, entityType, data, position, rotation)
         }
 
-        override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
+        override fun tweak(session: PlaySession, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
                 return identifier
             }

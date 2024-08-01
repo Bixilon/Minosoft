@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,12 +22,12 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface DoubleChestBlock<T : StorageBlockEntity> : ChestBlock<T> {
 
-    override fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState): VoxelShape {
-        if (state !is PropertyBlockState) return super.getOutlineShape(connection, position, state)
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): VoxelShape {
+        if (state !is PropertyBlockState) return super.getOutlineShape(session, position, state)
         val type = state.properties[BlockProperties.CHEST_TYPE] ?: return ChestBlock.SINGLE
         if (type == ChestTypes.SINGLE) return ChestBlock.SINGLE
         var facing = state[BlockProperties.FACING] // TODO: HORIZONTAL_FACING

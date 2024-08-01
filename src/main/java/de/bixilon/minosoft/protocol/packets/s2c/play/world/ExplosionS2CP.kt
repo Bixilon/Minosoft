@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPositio
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17
@@ -46,7 +46,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val emitter = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
     val sound = if (buffer.versionId >= V_23W45A) buffer.readNamedSound() else null
 
-    override fun check(connection: PlayConnection) {
+    override fun check(session: PlaySession) {
         require(power <= 100.0f) {
             // maybe somebody tries to make bullshit?
             // Sorry, Maximilian Rosenmüller
@@ -93,13 +93,13 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         if (destruct == DestructionTypes.DESTROY) { // TODO: handle DECAY, TRIGGER
-            connection.world.clearBlocks(position.floor, this.explodedBlocks)
+            session.world.clearBlocks(position.floor, this.explodedBlocks)
         }
-        connection.player.physics.velocity = connection.player.physics.velocity + velocity
+        session.player.physics.velocity = session.player.physics.velocity + velocity
 
-        connection.events.fire(ExplosionEvent(connection, this))
+        session.events.fire(ExplosionEvent(session, this))
     }
 
     enum class DestructionTypes {

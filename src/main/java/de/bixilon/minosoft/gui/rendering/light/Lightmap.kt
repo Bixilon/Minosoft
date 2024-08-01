@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class Lightmap(private val light: RenderLight) {
-    private val profile = light.context.connection.profiles.rendering
+    private val profile = light.context.session.profiles.rendering
     val buffer = LightmapBuffer(light.context.system)
     private var updater: LightmapUpdater = FullbrightLightUpdater
         set(value) {
@@ -35,8 +35,8 @@ class Lightmap(private val light: RenderLight) {
     private lateinit var defaultUpdater: LightmapUpdater
 
     fun init() {
-        defaultUpdater = NormalLightmapUpdater(light.context.connection, light.context.renderer[SkyRenderer])
-        // defaultUpdater = LegacyLightmapUpdater(light.context.connection)
+        defaultUpdater = NormalLightmapUpdater(light.context.session, light.context.renderer[SkyRenderer])
+        // defaultUpdater = LegacyLightmapUpdater(light.context.session)
         buffer.init()
         profile.light::fullbright.observe(this) { setLightmapUpdater() }
         setLightmapUpdater()

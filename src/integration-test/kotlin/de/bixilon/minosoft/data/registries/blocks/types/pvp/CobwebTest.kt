@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
@@ -42,7 +42,7 @@ class CobwebTest : BlockTest<Block>() {
 
     fun testOutlineShape() {
         if (block !is OutlinedBlock) throw AssertionError("Not shaped!")
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createConnection(), Vec3i.EMPTY, state))
+        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), Vec3i.EMPTY, state))
     }
 
     fun testCollisionShape() {

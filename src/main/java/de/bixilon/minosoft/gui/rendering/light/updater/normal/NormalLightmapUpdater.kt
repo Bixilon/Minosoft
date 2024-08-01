@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 import kotlin.math.pow
@@ -39,19 +39,19 @@ import kotlin.math.pow
  * This class is heavily influenced by vanilla, thus it does not aim to match vanilla and has some tweaks/improvements
  */
 class NormalLightmapUpdater(
-    private val connection: PlayConnection,
+    private val session: PlaySession,
     private val skyRenderer: SkyRenderer?,
 ) : LightmapUpdater {
-    private val profile = connection.profiles.rendering.light
+    private val profile = session.profiles.rendering.light
     private var force = true
 
 
     init {
-        connection.world::dimension.observe(this) { force = true }
+        session.world::dimension.observe(this) { force = true }
     }
 
     override fun update(force: Boolean, buffer: LightmapBuffer) {
-        val dimension = connection.world.dimension
+        val dimension = session.world.dimension
         val skylight = dimension.skyLight && dimension.effects.daylightCycle
         val millis = millis()
 
@@ -82,8 +82,8 @@ class NormalLightmapUpdater(
     }
 
     private fun updateBlockSky(dimension: DimensionProperties, buffer: LightmapBuffer, millis: Long) {
-        val time = connection.world.time
-        val weather = connection.world.weather
+        val time = session.world.time
+        val weather = session.world.weather
 
         val skyColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateSky(dimension.ambientLight[it], weather, time) }
         val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.ambientLight[it]) }
@@ -208,7 +208,7 @@ class NormalLightmapUpdater(
     }
 
     private fun getNightVisionStrength(millis: Long): Float {
-        val nightVision = connection.player.effects[VisionEffect.NightVision] ?: return 0.0f
+        val nightVision = session.player.effects[VisionEffect.NightVision] ?: return 0.0f
         val end = nightVision.end
         if (millis > end) {
             return 0.0f

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,9 +21,9 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+open class PistonBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
     var state: PistonStates = PistonStates.PULL
         private set
     var direction: Directions = Directions.NORTH
@@ -37,8 +37,8 @@ open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connectio
     companion object : BlockEntityFactory<PistonBlockEntity> {
         override val identifier: ResourceLocation = minecraft("piston")
 
-        override fun build(connection: PlayConnection): PistonBlockEntity {
-            return PistonBlockEntity(connection)
+        override fun build(session: PlaySession): PistonBlockEntity {
+            return PistonBlockEntity(session)
         }
     }
 

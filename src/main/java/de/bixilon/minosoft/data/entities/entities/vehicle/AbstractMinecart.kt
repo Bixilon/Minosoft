@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class AbstractMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+abstract class AbstractMinecart(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
     override val canRaycast: Boolean get() = true
 
@@ -40,7 +40,7 @@ abstract class AbstractMinecart(connection: PlayConnection, entityType: EntityTy
 
     @get:SynchronizedEntityData
     val blockId: BlockState?
-        get() = connection.registries.blockState.getOrNull(data.get(BLOCK_DATA, 0))
+        get() = session.registries.blockState.getOrNull(data.get(BLOCK_DATA, 0))
 
     @get:SynchronizedEntityData
     val blockYOffset: Int

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,11 +24,10 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
 
-class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, data, position, rotation) {
+class Wolf(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
     val isBegging: Boolean
@@ -41,7 +40,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData,
     // ToDo
     @get:SynchronizedEntityData
     val angerTime: Int
-        get() = if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
+        get() = if (session.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
             // ToDo if (data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
             0
         } else {
@@ -50,7 +49,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData,
 
     @get:SynchronizedEntityData
     override val health: Double
-        get() = if (connection.version.versionId > ProtocolVersions.V_19W45B) {
+        get() = if (session.version.versionId > ProtocolVersions.V_19W45B) {
             super.health
         } else {
             data.get<Number>(HEALTH_DATA, 0.0f).toDouble()
@@ -63,8 +62,8 @@ class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData,
         private val ANGER_TIME_DATA = EntityDataField("WOLF_ANGER_TIME")
         private val HEALTH_DATA = EntityDataField("WOLF_HEALTH")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Wolf {
-            return Wolf(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Wolf {
+            return Wolf(session, entityType, data, position, rotation)
         }
     }
 }

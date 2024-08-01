@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.assets
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
+import de.bixilon.minosoft.assets.session.SessionAssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -41,8 +41,8 @@ object TestAssetsManager : AssetsManager {
     override fun getAssetsManager(path: ResourceLocation) = null
 
 
-    fun AssetsManager.box(packFormat: Int = 0): ConnectionAssetsManager {
-        val manager = ConnectionAssetsManager(AssetsManagerProperties(PackProperties(packFormat)))
+    fun AssetsManager.box(packFormat: Int = 0): SessionAssetsManager {
+        val manager = SessionAssetsManager(AssetsManagerProperties(PackProperties(packFormat)))
         manager += this
 
         return manager

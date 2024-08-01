@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,11 +30,11 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.Campfire
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
 
-class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
     val items: Array<ItemStack?> = arrayOfNulls(CampfireBlock.MAX_ITEMS)
 
 
@@ -53,8 +53,8 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
                 continue
             }
             val stack = ItemStackUtil.of(
-                item = connection.registries.item[slot["id"].unsafeCast<String>()]!!,
-                connection = connection,
+                item = session.registries.item[slot["id"].unsafeCast<String>()]!!,
+                session = session,
                 count = slot["Count"]?.toInt() ?: 1,
             )
 
@@ -63,15 +63,15 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
     }
 
 
-    override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
-        val particle = connection.world.particle ?: return
+    override fun tick(session: PlaySession, state: BlockState, position: Vec3i, random: Random) {
+        val particle = session.world.particle ?: return
         if (state.block !is CampfireBlock || !state.isLit()) {
             return
         }
 
         if (random.nextFloat() < 0.11f) {
             for (i in 0 until random.nextInt(2) + 2) {
-                state.block.spawnSmokeParticles(connection, state, position, false, random)
+                state.block.spawnSmokeParticles(session, state, position, false, random)
             }
         }
 
@@ -91,7 +91,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             )
 
             for (i in 0 until 4) {
-                particle += SmokeParticle(connection, position, Vec3d(0.0, 5.0E-4, 0.0))
+                particle += SmokeParticle(session, position, Vec3d(0.0, 5.0E-4, 0.0))
             }
         }
     }
@@ -111,8 +111,8 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
         }
 
 
-        override fun build(connection: PlayConnection): CampfireBlockEntity {
-            return CampfireBlockEntity(connection)
+        override fun build(session: PlaySession): CampfireBlockEntity {
+            return CampfireBlockEntity(session)
         }
     }
 }

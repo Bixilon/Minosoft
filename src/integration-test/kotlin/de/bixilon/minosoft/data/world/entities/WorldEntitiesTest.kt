@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -87,7 +87,7 @@ class WorldEntitiesTest {
         entities::entities.observeSet(this) { if (player in it.removes) Broken() }
         entities.add(1, UUID(1, 1), entity)
         entities.add(2, UUID(1, 2), player)
-        entities.clear(PlayConnection::class.java.allocate().apply { this::player.forceSet(player) }, true)
+        entities.clear(PlaySession::class.java.allocate().apply { this::player.forceSet(player) }, true)
 
         assertNull(entities.getId(player))
         assertNull(entities.getId(entity))
@@ -105,7 +105,7 @@ class WorldEntitiesTest {
         entities::entities.observeSet(this) { if (player in it.removes) Broken() }
         entities.add(1, UUID(1, 1), entity)
         entities.add(2, UUID(1, 2), player)
-        entities.clear(PlayConnection::class.java.allocate().apply { this::player.forceSet(player) }, false)
+        entities.clear(PlaySession::class.java.allocate().apply { this::player.forceSet(player) }, false)
 
         assertEquals(entities.getId(player), 2)
         assertNull(entities.getId(entity))

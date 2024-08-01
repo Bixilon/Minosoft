@@ -27,13 +27,13 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import kotlin.math.pow
 
 class CloudRenderer(
     private val sky: SkyRenderer,
-    val connection: PlayConnection,
+    val session: PlaySession,
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer {
     private val color = CloudColor(sky)
@@ -62,7 +62,7 @@ class CloudRenderer(
     }
 
     override fun asyncInit(latch: AbstractLatch) {
-        matrix.load(connection.assetsManager)
+        matrix.load(session.assetsManager)
 
         context.camera.offset::offset.observe(this) { reset() }
     }
@@ -71,14 +71,14 @@ class CloudRenderer(
         if (!sky.effects.clouds) return true
         if (!sky.profile.clouds.enabled) return true
         if (cloudLayers.isEmpty()) return true
-        if (connection.profiles.block.viewDistance < 3) return true
-        if ((connection.camera.entity.physics.position.y + 10) < connection.world.dimension.minY) return true
+        if (session.profiles.block.viewDistance < 3) return true
+        if ((session.camera.entity.physics.position.y + 10) < session.world.dimension.minY) return true
 
         return false
     }
 
     private fun getCloudHeight(index: Int): IntRange {
-        val base = sky.effects.getCloudHeight(connection)
+        val base = sky.effects.getCloudHeight(session)
         this.baseHeight = base.first
         val cloudHeight = base.last - base.first
 
@@ -93,8 +93,8 @@ class CloudRenderer(
             }
         }
         sky.profile.clouds::maxDistance.observe(this, instant = true) { this.maxDistance = it }
-        connection::state.observe(this) {
-            if (it == PlayConnectionStates.SPAWNING) {
+        session::state.observe(this) {
+            if (it == PlaySessionStates.SPAWNING) {
                 if (!sky.effects.clouds) {
                     return@observe
                 }
@@ -160,7 +160,7 @@ class CloudRenderer(
 
 
     private fun setYOffset() {
-        val y = (context.connection.camera.entity.renderInfo.eyePosition.y - context.camera.offset.offset.y).toFloat()
+        val y = (context.session.camera.entity.renderInfo.eyePosition.y - context.camera.offset.offset.y).toFloat()
         var yOffset = 0.0f
         val over = (baseHeight - y)
         if (over > 0.0f) {
@@ -189,9 +189,9 @@ class CloudRenderer(
 
     companion object : RendererBuilder<CloudRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): CloudRenderer? {
+        override fun build(session: PlaySession, context: RenderContext): CloudRenderer? {
             val sky = context.renderer[SkyRenderer] ?: return null
-            return CloudRenderer(sky, connection, context)
+            return CloudRenderer(sky, session, context)
         }
     }
 }

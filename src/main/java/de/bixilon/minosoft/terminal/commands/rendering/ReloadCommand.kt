@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,17 +18,17 @@ import de.bixilon.minosoft.commands.nodes.LiteralNode
 object ReloadCommand : RenderingCommand {
     override var node = LiteralNode("reload", setOf("rl"))
         .addChild(LiteralNode("shaders", executor = {
-            val context = it.connection.rendering?.context ?: throw IllegalStateException("Rendering is not loaded!")
+            val context = it.session.rendering?.context ?: throw IllegalStateException("Rendering is not loaded!")
             context.queue += {
                 context.system.reloadShaders()
-                it.connection.util.sendDebugMessage("Shaders reloaded!")
+                it.session.util.sendDebugMessage("Shaders reloaded!")
             }
         }))
         .addChild(LiteralNode("textures", executor = {
-            val context = it.connection.rendering?.context ?: throw IllegalStateException("Rendering is not loaded!")
+            val context = it.session.rendering?.context ?: throw IllegalStateException("Rendering is not loaded!")
             context.queue += {
                 context.textures.reload()
-                it.connection.util.sendDebugMessage("Textures reloaded!")
+                it.session.util.sendDebugMessage("Textures reloaded!")
             }
         }))
 }

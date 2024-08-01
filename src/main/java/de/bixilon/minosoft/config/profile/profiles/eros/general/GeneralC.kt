@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -54,7 +54,7 @@ class GeneralC(profile: ErosProfile) {
     var renderSkinOverlay by BooleanDelegate(profile, true)
 
     /**
-     * Hides eros (all eros windows) once a connection with a server is successfully established.
+     * Hides eros (all eros windows) once a session with a server is successfully established.
      * Will also show it again, once it got disconnected
      */
     var hideErosOnceConnected by BooleanDelegate(profile, false)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.commands.stack.print
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class PlayerPrintTarget(val connection: PlayConnection) : PrintTarget {
+class PlayerPrintTarget(val session: PlaySession) : PrintTarget {
 
     override fun print(message: Any) {
-        connection.util.sendInternal(message)
+        session.util.sendInternal(message)
     }
 }

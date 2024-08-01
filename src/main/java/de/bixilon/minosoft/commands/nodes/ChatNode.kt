@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes
 
-import de.bixilon.minosoft.commands.nodes.ConnectionNode.Companion.COMMAND_PREFIX
+import de.bixilon.minosoft.commands.nodes.SessionNode.Companion.COMMAND_PREFIX
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
@@ -31,7 +31,7 @@ class ChatNode(
         reader.skipWhitespaces()
         val node = reader.readNode(stack)
         if (node == null) {
-            stack.connection.util.sendChatMessage(reader.readRest() ?: return) // send normal chat message
+            stack.session.util.sendChatMessage(reader.readRest() ?: return) // send normal chat message
         } else {
             node.execute(reader, stack)
         }
@@ -40,7 +40,7 @@ class ChatNode(
     private fun CommandReader.readNode(stack: CommandStack): RootNode? {
         val peek = peek()
         val node = when (peek) {
-            COMMAND_PREFIX.code -> stack.connection.commands
+            COMMAND_PREFIX.code -> stack.session.commands
             CLI_PREFIX.code -> if (allowCLI) CLI.commands else null
             else -> null
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -69,19 +69,19 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun PlayInByteBuffer.readBlockTags(): TagList<Block> {
-        return readTagList(connection.registries.block)
+        return readTagList(session.registries.block)
     }
 
     private fun PlayInByteBuffer.readItemTags(): TagList<Item> {
-        return readTagList(connection.registries.item)
+        return readTagList(session.registries.item)
     }
 
     private fun PlayInByteBuffer.readFluidTags(): TagList<Fluid> {
-        return readTagList(connection.registries.fluid)
+        return readTagList(session.registries.fluid)
     }
 
     private fun PlayInByteBuffer.readEntityTypeTags(): TagList<EntityType> {
-        return readTagList(connection.registries.entityType)
+        return readTagList(session.registries.entityType)
     }
 
     @Deprecated("TODO: Game events")
@@ -108,8 +108,8 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         return TagList(entries)
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.tags = tags
+    override fun handle(session: PlaySession) {
+        session.tags = tags
     }
 
     override fun log(reducedLog: Boolean) {

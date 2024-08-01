@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,10 +17,10 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface ParticleFactory<T : Particle> : Identified {
 
-    fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData = connection.registries.particleType[identifier]!!.default()): T?
+    fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData = session.registries.particleType[identifier]!!.default()): T?
 
 }

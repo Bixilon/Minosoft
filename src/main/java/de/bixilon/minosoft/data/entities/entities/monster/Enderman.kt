@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,16 +22,16 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, data, position, rotation) {
+class Enderman(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(session, entityType, data, position, rotation) {
 
     // ToDo: No clue here
     @get:SynchronizedEntityData
     val carriedBlock: BlockState?
-        get() = if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            connection.registries.blockState.getOrNull(data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0))
+        get() = if (session.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
+            session.registries.blockState.getOrNull(data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0))
         } else {
             data.get<BlockState?>(CARRIED_BLOCK_DATA, null)
         }
@@ -53,8 +53,8 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
         private val LEGACY_BLOCK_DATA = EntityDataField("LEGACY_ENDERMAN_CARRIED_BLOCK")
         private val LEGACY_BLOCK_DATA_DATA = EntityDataField("LEGACY_ENDERMAN_CARRIED_BLOCK_DATA")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Enderman {
-            return Enderman(connection, entityType, data, position, rotation)
+        override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Enderman {
+            return Enderman(session, entityType, data, position, rotation)
         }
     }
 }

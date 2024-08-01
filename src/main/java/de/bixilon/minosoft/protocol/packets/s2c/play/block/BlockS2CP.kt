@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.input.interaction.breaking.executor.SequencedExecutor
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -31,17 +31,17 @@ class BlockS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             position = buffer.readByteBlockPosition()
-            state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta "compacted"? (between 1.7.10 - 1.8)
+            state = buffer.session.registries.blockState.getOrNull(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta "compacted"? (between 1.7.10 - 1.8)
         } else {
             position = buffer.readBlockPosition()
-            state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())
+            state = buffer.session.registries.blockState.getOrNull(buffer.readVarInt())
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.world[position] = state
+    override fun handle(session: PlaySession) {
+        session.world[position] = state
         if (state != null) {
-            connection.camera.interactions.breaking.executor.nullCast<SequencedExecutor>()?.abort(position, state)
+            session.camera.interactions.breaking.executor.nullCast<SequencedExecutor>()?.abort(position, state)
         }
     }
 

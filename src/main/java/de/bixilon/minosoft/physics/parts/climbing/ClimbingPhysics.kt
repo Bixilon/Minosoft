@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -64,7 +64,7 @@ object ClimbingPhysics {
         val info = this.positionInfo
         val state = info.block ?: return false
 
-        if (state.isIn(entity.connection.tags, TAG)) {
+        if (state.isIn(entity.session.tags, TAG)) {
             return true
         }
         return state.block is Climbable && state.block.canClimb(entity, this, info.blockPosition, state)

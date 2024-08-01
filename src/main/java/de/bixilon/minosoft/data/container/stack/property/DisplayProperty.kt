@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -80,11 +80,11 @@ class DisplayProperty(
 
         fun ItemStack.updateDisplayNbt(nbt: MutableJsonObject): Boolean {
             val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return false
-            display[DISPLAY_MAME_TAG]?.let { this.display._customDisplayName = ChatComponent.of(it, translator = this.holder?.connection?.language) }
+            display[DISPLAY_MAME_TAG]?.let { this.display._customDisplayName = ChatComponent.of(it, translator = this.holder?.session?.language) }
 
             display[DISPLAY_LORE_TAG]?.listCast<String>()?.let {
                 for (line in it) {
-                    this.display.lore += ChatComponent.of(line, translator = this.holder?.connection?.language)
+                    this.display.lore += ChatComponent.of(line, translator = this.holder?.session?.language)
                 }
             }
 

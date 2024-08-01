@@ -19,7 +19,7 @@ import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.FloatUtil
 import de.bixilon.kutil.primitive.FloatUtil.matches
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.minosoft.camera.ConnectionCamera
+import de.bixilon.minosoft.camera.SessionCamera
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
@@ -30,8 +30,8 @@ import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeModifier
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.util.KUtil.matches
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert
@@ -42,19 +42,19 @@ object PhysicsTestUtil {
     val VALUE_MARGIN = if (MATCH_EXACTLY) 0.0 else DoubleUtil.DEFAULT_MARGIN
 
     private val PLAYER_ATTRIBUTES = LocalPlayerEntity::attributes.field
-    private val CONNECTION_PLAYER = PlayConnection::player.field
-    private val CONNECTION_CAMERA = PlayConnection::camera.field
+    private val CONNECTION_PLAYER = PlaySession::player.field
+    private val CONNECTION_CAMERA = PlaySession::camera.field
 
 
-    fun createPlayer(connection: PlayConnection = createConnection(light = false)): LocalPlayerEntity {
-        val player = LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, connection.account))
+    fun createPlayer(session: PlaySession = createSession(light = false)): LocalPlayerEntity {
+        val player = LocalPlayerEntity(session.account, session, SignatureKeyManagement(session, session.account))
         PLAYER_ATTRIBUTES.set(player, EntityAttributes(player.type.attributes))
         player.startInit()
-        CONNECTION_PLAYER.set(connection, player)
-        CONNECTION_CAMERA.set(connection, ConnectionCamera(connection))
-        connection.camera.init()
-        connection.world.entities.remove(0)
-        connection.world.entities.add(0, null, player)
+        CONNECTION_PLAYER.set(session, player)
+        CONNECTION_CAMERA.set(session, SessionCamera(session))
+        session.camera.init()
+        session.world.entities.remove(0)
+        session.world.entities.add(0, null, player)
         return player
     }
 

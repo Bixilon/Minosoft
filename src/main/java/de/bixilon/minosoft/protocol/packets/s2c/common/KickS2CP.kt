@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.common
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.KickEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W42A
@@ -25,21 +25,21 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val reason: ChatComponent = if (buffer.connection.network.state == ProtocolStates.LOGIN && buffer.versionId >= V_23W42A) buffer.readChatComponent() else buffer.readNbtChatComponent()
+    val reason: ChatComponent = if (buffer.session.network.state == ProtocolStates.LOGIN && buffer.versionId >= V_23W42A) buffer.readChatComponent() else buffer.readNbtChatComponent()
 
-    override fun handle(connection: PlayConnection) {
-        if (!connection.network.connected) {
+    override fun handle(session: PlaySession) {
+        if (!session.network.connected) {
             return // already disconnected, maybe timed out?
         }
-        connection.events.fire(KickEvent(connection, reason))
+        session.events.fire(KickEvent(session, reason))
         // got kicked
-        connection.network.disconnect()
-        if (connection.network.state == ProtocolStates.LOGIN) {
-            connection.state = PlayConnectionStates.ERROR
+        session.network.disconnect()
+        if (session.network.state == ProtocolStates.LOGIN) {
+            session.state = PlaySessionStates.ERROR
         } else {
-            connection.state = PlayConnectionStates.KICKED
+            session.state = PlaySessionStates.KICKED
         }
-        Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
+        Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Kicked from ${session.address}: $reason" }
     }
 
     override fun log(reducedLog: Boolean) {

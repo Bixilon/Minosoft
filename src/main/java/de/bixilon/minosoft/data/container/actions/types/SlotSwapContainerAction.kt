@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.container.actions.types
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 
 class SlotSwapContainerAction(
@@ -24,7 +24,7 @@ class SlotSwapContainerAction(
     val target: SwapTargets,
 ) : ContainerAction {
 
-    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
         val targetId = container.getSlotSwap(target) ?: return
         container.lock()
         try {
@@ -37,14 +37,14 @@ class SlotSwapContainerAction(
             container[this.sourceId] = target
             container[targetId] = source
 
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.actions.createId(this), slotsOf(sourceId to target, targetId to source), source))
+            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.actions.createId(this), slotsOf(sourceId to target, targetId to source), source))
 
         } finally {
             container.commit()
         }
     }
 
-    override fun revert(connection: PlayConnection, containerId: Int, container: Container) {
+    override fun revert(session: PlaySession, containerId: Int, container: Container) {
         val targetId = container.getSlotSwap(target) ?: return
         container.lock()
         val target = container[targetId]

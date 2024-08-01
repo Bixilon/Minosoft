@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,16 +20,16 @@ import de.bixilon.minosoft.data.registries.item.handler.ItemInteractBlockHandler
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class InteractingToolItem(identifier: ResourceLocation) : LeveledToolItem(identifier), ItemInteractBlockHandler {
 
-    protected fun interact(connection: PlayConnection, blockPosition: BlockPosition, replace: BlockState?): InteractionResults {
-        if (replace == null || !connection.player.gamemode.useTools) {
+    protected fun interact(session: PlaySession, blockPosition: BlockPosition, replace: BlockState?): InteractionResults {
+        if (replace == null || !session.player.gamemode.useTools) {
             return InteractionResults.IGNORED
         }
 
-        connection.world[blockPosition] = replace
+        session.world[blockPosition] = replace
         return InteractionResults.SUCCESS
     }
 

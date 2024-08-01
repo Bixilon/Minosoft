@@ -54,9 +54,9 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -152,10 +152,10 @@ object KUtil {
     val Number.millis: Int
         get() = this.toInt() * ProtocolDefinition.TICK_TIME
 
-    fun Collection<Int>.entities(connection: PlayConnection): Set<Entity> {
+    fun Collection<Int>.entities(session: PlaySession): Set<Entity> {
         val entities: MutableList<Entity> = mutableListOf()
         for (id in this) {
-            entities += connection.world.entities[id] ?: continue
+            entities += session.world.entities[id] ?: continue
         }
         return entities.toSet()
     }
@@ -264,7 +264,7 @@ object KUtil {
         DefaultThreadPool += ForcePooledRunnable { MicrosoftOAuthUtils::class.java.forceInit() }
         DefaultThreadPool += ForcePooledRunnable { TaskScheduler::class.java.forceInit() }
         DefaultThreadPool += ForcePooledRunnable { SystemInformation::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { StatusConnection::class.java.forceInit() }
+        DefaultThreadPool += ForcePooledRunnable { StatusSession::class.java.forceInit() }
         DefaultThreadPool += ForcePooledRunnable { NettyClient::class.java.forceInit() }
         DefaultThreadPool += ForcePooledRunnable { SimpleChannelInboundHandler::class.java.forceInit() }
         DefaultThreadPool += ForcePooledRunnable { SSLContext.getDefault() }
@@ -275,7 +275,7 @@ object KUtil {
 
 
     fun initPlayClasses() {
-        DefaultThreadPool += { PlayConnection::class.java.forceInit() }
+        DefaultThreadPool += { PlaySession::class.java.forceInit() }
         DefaultThreadPool += { GLM::class.java.forceInit() } // whole glm
         DefaultThreadPool += { ItemFactories::class.java.forceInit() }
         DefaultThreadPool += { BlockFactories::class.java.forceInit() }
@@ -293,8 +293,8 @@ object KUtil {
         Table.DEFAULT_STYLE = TableStyles.FANCY
         URLProtocolStreamHandlers.register("resource", ResourceURLHandler)
         ShutdownManager += {
-            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                connection.network.disconnect()
+            for (session in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                session.network.disconnect()
             }
         }
         ShutdownManager += {

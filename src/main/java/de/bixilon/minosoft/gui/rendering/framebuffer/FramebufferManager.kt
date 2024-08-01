@@ -32,7 +32,7 @@ class FramebufferManager(
         world.init()
         gui.init()
 
-        context.connection.events.listen<ResizeWindowEvent> {
+        context.session.events.listen<ResizeWindowEvent> {
             world.resize(it.size)
             gui.resize(it.size)
         }

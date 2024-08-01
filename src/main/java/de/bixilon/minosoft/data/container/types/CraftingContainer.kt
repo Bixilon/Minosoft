@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,10 +27,10 @@ import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class CraftingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, RangeSection(CRAFTING_SLOTS + 1, PlayerInventory.MAIN_SLOTS)) {
+class CraftingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(session, type, title, RangeSection(CRAFTING_SLOTS + 1, PlayerInventory.MAIN_SLOTS)) {
     override val sections: Array<ContainerSection> get() = SECTIONS
 
     override fun getSlotType(slotId: Int): SlotType? {
@@ -62,8 +62,8 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
         )
 
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): CraftingContainer {
-            return CraftingContainer(connection, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): CraftingContainer {
+            return CraftingContainer(session, type, title)
         }
     }
 }

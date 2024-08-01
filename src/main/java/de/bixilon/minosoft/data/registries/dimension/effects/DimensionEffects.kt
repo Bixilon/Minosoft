@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.dimension.effects
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface DimensionEffects : Identified {
     val daylightCycle: Boolean
@@ -29,7 +29,7 @@ interface DimensionEffects : Identified {
     val stars: Boolean
 
     val clouds: Boolean
-    fun getCloudHeight(connection: PlayConnection): IntRange
+    fun getCloudHeight(session: PlaySession): IntRange
 
     val brighten: Vec3? get() = null
 

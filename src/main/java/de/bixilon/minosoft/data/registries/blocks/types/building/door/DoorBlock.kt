@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -63,7 +63,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.PickedBlockRe
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, BlockStateBuilder, LightedBlock {
@@ -91,20 +91,20 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         chunk.apply(ChunkLocalBlockUpdate.LocalUpdate(inChunk, state.withProperties(OPEN to !state[OPEN])))
     }
 
-    fun cycleOpen(connection: PlayConnection, position: BlockPosition, state: BlockState) {
+    fun cycleOpen(session: PlaySession, position: BlockPosition, state: BlockState) {
         // TODO: move that to DoubleSizeBlock?
 
-        val chunk = connection.world.chunks[position.chunkPosition] ?: return
+        val chunk = session.world.chunks[position.chunkPosition] ?: return
 
         val inChunk = position.inChunkPosition
-        val top = isTop(state, connection)
+        val top = isTop(state, session)
 
         val otherPosition = inChunk + if (top) Directions.DOWN else Directions.UP
         val otherState = chunk[otherPosition] ?: return
         if (otherState.block !is DoorBlock) return
 
 
-        if (!connection.version.flattened) return legacyCycleOpen(chunk, if (top) otherPosition else inChunk, if (top) otherState else state)
+        if (!session.version.flattened) return legacyCycleOpen(chunk, if (top) otherPosition else inChunk, if (top) otherState else state)
 
         val nextOpen = !state[OPEN]
         chunk.apply(listOf(
@@ -123,11 +123,11 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return SHAPES[direction.ordinal - Directions.SIDE_OFFSET]
     }
 
-    private fun getLegacyShape(connection: PlayConnection, position: BlockPosition, state: BlockState): VoxelShape? {
-        val isTop = isTop(state, connection)
-        val other = connection.world[position + if (isTop) Directions.DOWN else Directions.UP]
+    private fun getLegacyShape(session: PlaySession, position: BlockPosition, state: BlockState): VoxelShape? {
+        val isTop = isTop(state, session)
+        val other = session.world[position + if (isTop) Directions.DOWN else Directions.UP]
         if (other !is PropertyBlockState || other.block !is DoorBlock) return null
-        if (isTop(other, connection) == isTop) return null  // impossible
+        if (isTop(other, session) == isTop) return null  // impossible
 
 
         val top = if (isTop) state else other
@@ -141,20 +141,20 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return getShape(hinge, open, facing)
     }
 
-    override fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
-        if (connection.version.flattened) return super.getOutlineShape(connection, position, state)
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
+        if (session.version.flattened) return super.getOutlineShape(session, position, state)
 
-        return getLegacyShape(connection, position, state)
+        return getLegacyShape(session, position, state)
     }
 
-    override fun getCollisionShape(connection: PlayConnection, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
-        if (connection.version.flattened) return super.getCollisionShape(connection, context, position, state, blockEntity)
-        return getLegacyShape(connection, position, state)
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+        if (session.version.flattened) return super.getCollisionShape(session, context, position, state, blockEntity)
+        return getLegacyShape(session, position, state)
     }
 
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
-        if (context.connection.version.flattened) return super.bakeModel(context, model)
+        if (context.session.version.flattened) return super.bakeModel(context, model)
 
         val models: MutableMap<Map<BlockProperty<*>, Any>, BlockRender?> = hashMapOf()
         for (properties in this.properties.unpack()) {
@@ -215,8 +215,8 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     abstract class WoodenDoor(identifier: ResourceLocation, settings: BlockSettings) : DoorBlock(identifier, settings), AxeRequirement {
         override val hardness get() = 3.0f
 
-        override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
-            cycleOpen(connection, target.blockPosition, target.state)
+        override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
+            cycleOpen(session, target.blockPosition, target.state)
             return InteractionResults.SUCCESS
         }
     }
@@ -224,7 +224,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     open class IronDoor(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoorBlock(identifier, settings), PickaxeRequirement {
         override val hardness get() = 5.0f
 
-        override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
+        override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
             return InteractionResults.FAILED
         }
 

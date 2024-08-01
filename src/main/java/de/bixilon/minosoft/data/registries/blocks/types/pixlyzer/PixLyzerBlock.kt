@@ -55,7 +55,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 
@@ -98,7 +98,7 @@ open class PixLyzerBlock(
         return AdvancedBlockState(this, settings)
     }
 
-    override fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean {
+    override fun canReplace(session: PlaySession, state: BlockState, position: BlockPosition): Boolean {
         return replaceable
     }
 

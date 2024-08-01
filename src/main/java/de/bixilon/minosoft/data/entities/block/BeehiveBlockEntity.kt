@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,16 +15,15 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class BeehiveBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class BeehiveBlockEntity(session: PlaySession) : BlockEntity(session) {
 
     companion object : BlockEntityFactory<BeehiveBlockEntity> {
         override val identifier: ResourceLocation = minecraft("beehive")
 
-        override fun build(connection: PlayConnection): BeehiveBlockEntity {
-            return BeehiveBlockEntity(connection)
+        override fun build(session: PlaySession): BeehiveBlockEntity {
+            return BeehiveBlockEntity(session)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
-import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.session.Session
 
 interface PacketExtraHandler {
-    fun skip(connection: Connection): Boolean = false
-    fun onError(error: Throwable, connection: Connection) = Unit
+    fun skip(session: Session): Boolean = false
+    fun onError(error: Throwable, session: Session) = Unit
 
 
     object Disconnect : PacketExtraHandler {
 
-        override fun onError(error: Throwable, connection: Connection) {
-            connection.error = error
-            connection.disconnect()
+        override fun onError(error: Throwable, session: Session) {
+            session.error = error
+            session.terminate()
         }
     }
 }

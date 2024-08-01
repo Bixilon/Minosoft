@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDa
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -42,25 +42,25 @@ class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         for ((name, ping) in items) {
             val uuid = UUID.nameUUIDFromBytes(name.encodeNetwork()) // TODO: map with players (if possible)
 
             if (ping == null) {
-                connection.tabList.remove(uuid)
+                session.tabList.remove(uuid)
                 continue
             }
 
-            var item = connection.tabList.uuid[uuid]
+            var item = session.tabList.uuid[uuid]
 
             if (item == null) {
                 item = PlayerAdditional(name)
 
-                connection.tabList.uuid[uuid] = item
-                connection.tabList.name[name] = item
+                session.tabList.uuid[uuid] = item
+                session.tabList.name[name] = item
             }
             item.ping = ping
-            connection.events.fire(TabListEntryChangeEvent(connection, mapOf(uuid to AdditionalDataUpdate(ping = ping))))
+            session.events.fire(TabListEntryChangeEvent(session, mapOf(uuid to AdditionalDataUpdate(ping = ping))))
         }
     }
 

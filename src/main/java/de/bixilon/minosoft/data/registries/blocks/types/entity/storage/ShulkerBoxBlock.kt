@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.property.FullBlockPropertyRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
 open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item>, LightedBlock, BlockStateBuilder, CustomModel {
@@ -45,7 +45,7 @@ open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings
         this.model = FullBlockPropertyRenderer
     }
 
-    override fun createBlockEntity(connection: PlayConnection) = ShulkerBoxBlockEntity(connection)
+    override fun createBlockEntity(session: PlaySession) = ShulkerBoxBlockEntity(session)
     override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {

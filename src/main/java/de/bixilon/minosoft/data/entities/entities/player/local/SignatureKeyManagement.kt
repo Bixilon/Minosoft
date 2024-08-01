@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.errors.KeyExpiredError
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.SessionDataC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import java.time.Instant
 
 class SignatureKeyManagement(
-    val connection: PlayConnection,
+    val session: PlaySession,
     val account: Account,
 ) {
     private val lock = SimpleLock()
@@ -46,14 +46,14 @@ class SignatureKeyManagement(
 
     private fun registerRefresh(millis: Int) {
         runLater(millis) {
-            if (connection.error != null || (connection.wasConnected && !connection.network.connected) || (connection.network.connected && !connection.network.encrypted)) {
-                // connection is dead
+            if (session.error != null || (session.established && !session.network.connected) || (session.network.connected && !session.network.encrypted)) {
+                // session is dead
                 return@runLater
             }
             try {
                 fetchKey(null)
             } catch (error: Throwable) {
-                connection.events.fire(ChatMessageEvent(connection, InternalChatMessage(TextComponent("Failed to refresh private key. Trying again in 60s: $error"))))
+                session.events.fire(ChatMessageEvent(session, InternalChatMessage(TextComponent("Failed to refresh private key. Trying again in 60s: $error"))))
                 registerRefresh(60 * 1000)
             }
         }
@@ -63,7 +63,7 @@ class SignatureKeyManagement(
         key.requireSignature(account.uuid)
         this.key = PlayerPrivateKey(
             expiresAt = key.expiresAt,
-            signature = key.getSignature(connection.version.versionId),
+            signature = key.getSignature(session.version.versionId),
             private = key.pair.private,
             public = key.pair.public,
         )
@@ -86,16 +86,16 @@ class SignatureKeyManagement(
 
     fun sendSession() {
         val key = key?.playerKey ?: return
-        if (connection.version.versionId < ProtocolVersions.V_22W43A) {
+        if (session.version.versionId < ProtocolVersions.V_22W43A) {
             return
         }
-        if (connection.network.state != ProtocolStates.PLAY || !connection.network.connected) {
+        if (session.network.state != ProtocolStates.PLAY || !session.network.connected) {
             return
         }
-        if (!connection.network.encrypted) {
+        if (!session.network.encrypted) {
             return
         }
-        connection.sendPacket(SessionDataC2SP(connection.sessionId, key))
+        session.network.send(SessionDataC2SP(session.sessionId, key))
     }
 
     companion object {

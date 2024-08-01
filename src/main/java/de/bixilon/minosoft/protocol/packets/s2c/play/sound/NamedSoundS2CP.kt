@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W02A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W15A
@@ -63,12 +63,12 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
+    override fun handle(session: PlaySession) {
         soundEvent ?: return
-        if (!connection.profiles.audio.types.packet) {
+        if (!session.profiles.audio.types.packet) {
             return
         }
-        connection.events.fire(PlaySoundEvent(connection, this))
+        session.events.fire(PlaySoundEvent(session, this))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.ClientActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W13B
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -47,8 +47,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(
     private val items: PlayerItemManager,
-    connection: PlayConnection,
-) : Container(connection = connection, type = TYPE), ClientContainer {
+    session: PlaySession,
+) : Container(session = session, type = TYPE), ClientContainer {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 
@@ -104,8 +104,8 @@ class PlayerInventory(
     }
 
     override fun onOpen() {
-        if (connection.version < V_17W13B) {
-            connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.OPEN_INVENTORY))
+        if (session.version < V_17W13B) {
+            session.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.OPEN_INVENTORY))
         }
     }
 
@@ -177,7 +177,7 @@ class PlayerInventory(
             HotbarSection(HOTBAR_OFFSET, false),
         )
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): PlayerInventory {
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): PlayerInventory {
             Broken("Can not create player inventory!")
         }
     }

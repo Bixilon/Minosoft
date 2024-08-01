@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,11 +33,11 @@ abstract class HoeItem(identifier: ResourceLocation, registries: Registries, dat
 
 
     override fun interactBlock(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        if (!player.connection.profiles.controls.interaction.tilling) {
+        if (!player.session.profiles.controls.interaction.tilling) {
             return InteractionResults.INVALID
         }
 
-        return super.interact(player.connection, target.blockPosition, tillable?.get(target.state.block))
+        return super.interact(player.session, target.blockPosition, tillable?.get(target.state.block))
     }
 
     companion object {

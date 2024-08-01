@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,13 +15,13 @@ package de.bixilon.minosoft.data.world.chunk.update
 
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface AbstractWorldUpdate {
     val chunkPosition: ChunkPosition
     val chunk: Chunk
 
-    fun fire(connection: PlayConnection) {
-        connection.events.fire(WorldUpdateEvent(connection, this))
+    fun fire(session: PlaySession) {
+        session.events.fire(WorldUpdateEvent(session, this))
     }
 }

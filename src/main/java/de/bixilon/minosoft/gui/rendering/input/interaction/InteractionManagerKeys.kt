@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -74,13 +74,13 @@ class InteractionManagerKeys(
             )) { interactions.hotbar.selectSlot(i - 1) }
         }
 
-        val connection = interactions.connection
+        val session = interactions.session
         var currentScrollOffset = 0.0
-        connection.events.listen<MouseScrollEvent> {
+        session.events.listen<MouseScrollEvent> {
             currentScrollOffset += it.offset.y
 
-            val limit = connection.profiles.controls.mouse.scrollSensitivity
-            var nextSlot = connection.player.items.hotbar
+            val limit = session.profiles.controls.mouse.scrollSensitivity
+            var nextSlot = session.player.items.hotbar
             if (currentScrollOffset >= limit && currentScrollOffset > 0) {
                 nextSlot--
             } else if (currentScrollOffset <= -limit && currentScrollOffset < 0) {
