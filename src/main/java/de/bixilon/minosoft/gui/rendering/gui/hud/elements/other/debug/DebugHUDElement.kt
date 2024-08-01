@@ -129,7 +129,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, BaseComponent("Account ", session.account.username))
-        layout += TextElement(guiRenderer, BaseComponent("Address ", session.address))
+        layout += TextElement(guiRenderer, BaseComponent("Address ", session.connection.identifier))
         layout += TextElement(guiRenderer, BaseComponent("Network version ", session.version))
         layout += TextElement(guiRenderer, BaseComponent("Server brand ", session.serverInfo.brand)).apply { session.serverInfo::brand.observe(this@DebugHUDElement) { this.text = BaseComponent("Server brand ", it.truncate(50)) } }
 

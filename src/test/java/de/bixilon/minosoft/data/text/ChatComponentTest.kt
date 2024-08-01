@@ -318,6 +318,15 @@ internal class ChatComponentTest {
         assertEquals(text, expected)
     }
 
+    @Test
+    fun something() { // tree.ac
+        val string = """"§2Join the Other Server? Find it at §6Port 25566§2!""""
+        val chat = ChatComponent.of(string)
+
+        TODO()
+
+    }
+
     private fun assertEquals(expected: ChatComponent, actual: ChatComponent) {
         when (expected) {
             is BaseComponent -> {

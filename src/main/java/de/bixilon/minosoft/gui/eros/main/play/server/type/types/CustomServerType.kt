@@ -62,7 +62,7 @@ object CustomServerType : ServerType {
                 continue
             }
             DefaultThreadPool += ForcePooledRunnable {
-                ping.network.disconnect()
+                ping.terminate()
                 ping.ping()
             }
         }

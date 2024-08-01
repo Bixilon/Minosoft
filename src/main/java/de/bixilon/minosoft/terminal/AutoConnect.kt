@@ -19,6 +19,7 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.protocol.address.ServerAddress
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
@@ -35,7 +36,7 @@ object AutoConnect {
 
     private fun autoConnect(address: ServerAddress, version: Version, account: Account) {
         val session = PlaySession(
-            address = address,
+            connection = NetworkConnection(address, true), // TODO: native network
             account = account,
             version = version,
         )
@@ -67,7 +68,7 @@ object AutoConnect {
         if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
             val ping = StatusSession(address)
-            ping::status.observe(this) { autoConnect(ping.realAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account) }
+            ping::status.observe(this) { autoConnect(ping.connection!!.address, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account) }
             ping::error.observe(this) { exitProcess(1) }
             ping.ping()
             return

@@ -38,7 +38,7 @@ class PacketDecoder(
         val packetId = buffer.readVarInt()
         val data = buffer.readRest()
 
-        val state = client.state
+        val state = client.connection.state ?: throw IllegalStateException("Not connected!")
 
 
         val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)

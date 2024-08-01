@@ -41,7 +41,7 @@ class PacketSender(
 
     fun send(packet: C2SPacket) {
         if (network.detached) return
-        if (!network.connected) return
+        if (!network.connection.active) return
         val discard = notify(packet)
         if (discard) return
 

@@ -31,20 +31,20 @@ object SessionManageCommand : Command {
                 val filtered = it.collect()
                 if (filtered.isEmpty()) throw CommandException("No session matched your filter!")
 
-                it.print.print(table(filtered, "Id", "State", "Address") { c -> arrayOf(c.id, c.state, c.address) })
+                it.print.print(table(filtered, "Id", "State", "Address") { c -> arrayOf(c.id, c.state, c.connection.identifier) })
             })
                 .addChild(ArgumentNode("filter", SessionParser, executable = true)),
             LiteralNode("terminate", aliases = setOf("disconnect")).apply {
                 addFilter { stack, sessions ->
                     var count = 0
-                    sessions.filter { it.network.connected }.forEach { it.terminate(); count++ }
+                    sessions.forEach { it.terminate(); count++ }
                     stack.print.print("Terminated $count sessions.")
                 }
             },
             LiteralNode("select").apply {
                 addFilter(false) { stack, sessions ->
                     val session = sessions.first()
-                    if (!session.network.connected) {
+                    if (session.network.connection.state == null) {
                         throw CommandException("Session $session not established anymore!")
                     }
                     CLI.session = session

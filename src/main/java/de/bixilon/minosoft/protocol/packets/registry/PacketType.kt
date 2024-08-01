@@ -13,10 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation.PacketNotImplementedException
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.registry.factory.PacketFactory
 import de.bixilon.minosoft.protocol.packets.types.Packet
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
@@ -31,7 +34,8 @@ class PacketType(
 ) {
 
     fun create(data: ByteArray, session: Session): Packet {
-        val factory = this.factory ?: throw PacketNotImplementedException(name, session.network.state, session.version)
+        val connection = session.nullCast<StatusSession>()?.connection ?: session.nullCast<PlaySession>()?.connection?.nullCast<NetworkConnection>()
+        val factory = this.factory ?: throw PacketNotImplementedException(name, connection!!.state!!, session.version)
 
         val buffer = if (session is PlaySession) PlayInByteBuffer(data, session) else InByteBuffer(data)
         val packet = factory.create(buffer)

@@ -28,18 +28,18 @@ class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val reason: ChatComponent = if (buffer.session.network.state == ProtocolStates.LOGIN && buffer.versionId >= V_23W42A) buffer.readChatComponent() else buffer.readNbtChatComponent()
 
     override fun handle(session: PlaySession) {
-        if (!session.network.connected) {
+        if (!session.connection.active) {
             return // already disconnected, maybe timed out?
         }
         session.events.fire(KickEvent(session, reason))
         // got kicked
-        session.network.disconnect()
+        session.terminate()
         if (session.network.state == ProtocolStates.LOGIN) {
             session.state = PlaySessionStates.ERROR
         } else {
             session.state = PlaySessionStates.KICKED
         }
-        Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Kicked from ${session.address}: $reason" }
+        Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Kicked from ${session.connection.identifier}: $reason" }
     }
 
     override fun log(reducedLog: Boolean) {

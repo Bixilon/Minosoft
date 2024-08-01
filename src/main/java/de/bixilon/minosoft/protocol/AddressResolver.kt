@@ -11,33 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client
+package de.bixilon.minosoft.protocol
 
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.connection.NetworkConnection
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender.PacketSender
-import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
-import javax.crypto.Cipher
+import de.bixilon.minosoft.util.DNSUtil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-interface ClientNetwork {
-    val connection: NetworkConnection
-    val encrypted: Boolean
-    val detached: Boolean
+class AddressResolver(
+    val address: String,
+) {
+    private var candidates: MutableList<ServerAddress> = DNSUtil.resolveServerAddress(address).toMutableList()
 
-    val compressionThreshold: Int
 
-    val receiver: PacketReceiver
-    val sender: PacketSender
+    fun tryNext(): NetworkConnection? {
+        if (candidates.isEmpty()) return null
+        val address = candidates.removeAt(0)
 
-    fun connect()
-    fun disconnect()
-    fun detach()
-
-    fun setupEncryption(encrypt: Cipher, decrypt: Cipher)
-    fun setupCompression(threshold: Int)
-
-    fun send(packet: C2SPacket) = sender.send(packet)
-    fun forceSend(packet: C2SPacket)
-
-    fun handleError(error: Throwable)
+        Log.log(LogMessageType.NETWORK) { "Trying address: $address" }
+        return NetworkConnection(address, false)
+    }
 }

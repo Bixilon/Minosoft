@@ -11,14 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.session.selector.properties
+package de.bixilon.minosoft.protocol.connection
 
-import de.bixilon.minosoft.commands.parser.selector.TargetProperties
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.Session
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
-object SessionTargetProperties : TargetProperties<PlaySession>() {
+interface ServerConnection {
+    val identifier: String
 
-    init {
-        register(StateProperty)
-    }
+    val active: Boolean
+
+    fun connect(session: Session)
+    fun disconnect()
+
+    fun send(packet: C2SPacket)
 }

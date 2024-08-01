@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.network.network.client.netty
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
-import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
-import de.bixilon.minosoft.protocol.address.ServerAddress
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
@@ -51,14 +51,13 @@ import javax.crypto.Cipher
 
 @ChannelHandler.Sharable
 class NettyClient(
+    override val connection: NetworkConnection,
     val session: Session,
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
+    @Deprecated("unused")
+    var state = ProtocolStates.HANDSHAKE // TODO
     override val sender = PacketSender(this)
     override val receiver = PacketReceiver(this, session)
-    private var address: ServerAddress? = null
-    override var connected by observed(false)
-        private set
-    override var state by observed(ProtocolStates.HANDSHAKE)
     override var compressionThreshold = -1
     override var encrypted: Boolean = false
         private set
@@ -66,20 +65,22 @@ class NettyClient(
     override var detached = false
         private set
 
-    override fun connect(address: ServerAddress, native: Boolean) {
-        this.address = address
-        state = ProtocolStates.HANDSHAKE
-        val natives = if (native) TransportNatives.get() else NioNatives
+    init {
+        connection::state.observe(this) { this.state = it ?: ProtocolStates.HANDSHAKE }
+    }
+
+    override fun connect() {
+        val natives = if (connection.native) TransportNatives.get() else NioNatives
         val bootstrap = Bootstrap()
             .group(natives.pool)
             .channel(natives.channel)
             .handler(NetworkPipeline(this))
 
+        val address = connection.address
         val future = bootstrap.connect(address.hostname, address.port)
         future.addListener {
-            if (!it.isSuccess) {
-                handleError(it.cause())
-            }
+            if (it.isSuccess) return@addListener
+            handleError(it.cause())
         }
     }
 
@@ -118,7 +119,7 @@ class NettyClient(
         encrypted = false
         channel = null
         compressionThreshold = -1
-        connected = false
+        connection.state = null
     }
 
     override fun detach() {
@@ -140,15 +141,17 @@ class NettyClient(
 
     override fun channelActive(context: ChannelHandlerContext) {
         catchAll { context.channel().config().setOption(ChannelOption.TCP_NODELAY, true) }
-        context.channel().config().isAutoRead = true
-        this.channel = context.channel()
-        connected = true
+        val channel = context.channel()
+        this.channel = channel
+        connection.state = ProtocolStates.HANDSHAKE
+        channel.config().isAutoRead = true
     }
 
     override fun channelInactive(context: ChannelHandlerContext) {
-        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Session closed ($address)" }
+        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Session closed (${connection.address})" }
         if (detached) return
-        connected = false
+        this.channel = null
+        connection.state = null
     }
 
     override fun handleError(error: Throwable) {
@@ -158,11 +161,11 @@ class NettyClient(
         } else if (cause is EncoderException) {
             cause = error.cause ?: cause
         }
-        if (RunConfiguration.DISABLE_EROS || session !is StatusSession) {
+        if (RunConfiguration.DISABLE_EROS || session is StatusSession) {
             val log = if (cause is PacketHandleException || cause is PacketReadException) cause.cause else cause
             Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { log }
         }
-        if (cause !is NetworkException || cause is CriticalNetworkException || state == ProtocolStates.LOGIN) {
+        if (cause !is NetworkException || cause is CriticalNetworkException || connection.state == ProtocolStates.LOGIN) {
             session.error = cause
             disconnect()
             return
@@ -175,7 +178,7 @@ class NettyClient(
 
     private fun getChannel(): Channel? {
         val channel = this.channel
-        if (!connected || channel == null) {
+        if (channel == null || connection.state == null) {
             return null
         }
         return channel

@@ -74,8 +74,8 @@ class PacketEncoder(
         throw PacketNotAvailableException(type, state, version)
     }
 
-    override fun encode(context: ChannelHandlerContext, packet: C2SPacket, out: MutableList<Any>) {
-        val state = client.state
+    private fun encode(packet: C2SPacket): ByteArray {
+        val state = client.connection.state!!
 
         val type = DefaultPackets.C2S[state]?.get(packet::class) ?: throw UnknownPacketException(packet::class.java)
         val id = getPacketId(version, state, type)
@@ -86,7 +86,11 @@ class PacketEncoder(
         data.writeVarInt(id)
         data.writeBareByteArray(packetData.toArray())
 
-        out += data.toArray()
+        return data.toArray()
+    }
+
+    override fun encode(context: ChannelHandlerContext, packet: C2SPacket, out: MutableList<Any>) {
+        out += encode(packet)
     }
 
     companion object {

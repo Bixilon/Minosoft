@@ -17,7 +17,8 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.events.session.status.StatusSessionCreateEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.address.ServerAddress
+import de.bixilon.minosoft.protocol.AddressResolver
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
@@ -27,22 +28,19 @@ import de.bixilon.minosoft.protocol.status.StatusPing
 import de.bixilon.minosoft.protocol.status.StatusPong
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class StatusSession(
-    var address: String,
+    var hostname: String,
     var forcedVersion: Version? = null,
 ) : Session() {
+    var connection: NetworkConnection? = null
+    private var resolver: AddressResolver? = null
+
     var status: ServerStatus? by observed(null)
     var ping: StatusPing? by observed(null)
     var pong: StatusPong? by observed(null)
-
-    var realAddress: ServerAddress? = null
-        private set
-    private var addresses: List<ServerAddress>? = null
-    private var addressIndex = 0
 
     var serverVersion: Version? = null
 
@@ -50,109 +48,91 @@ class StatusSession(
 
     val timeout = TimeoutHandler(this)
 
-
     init {
         this::error.observe(this) {
             if (it == null) return@observe
-            ping = null
-            status = null
+            terminate()
+            reset()
             state = StatusSessionStates.ERROR
-            timeout.cancel()
-            network.disconnect()
-        }
-        network::connected.observe(this) {
-            if (it) {
-                state = StatusSessionStates.HANDSHAKING
-                network.send(HandshakeC2SP(realAddress!!, HandshakeC2SP.Actions.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
-                network.state = ProtocolStates.STATUS
-                return@observe
-            }
-            if (status != null) {
-                return@observe
-            }
-            tryNextAddress()
-        }
-
-        network::state.observe(this) {
-            when (it) {
-                ProtocolStates.HANDSHAKE -> {}
-                ProtocolStates.PLAY, ProtocolStates.LOGIN, ProtocolStates.CONFIGURATION -> throw IllegalStateException("Invalid state!")
-                ProtocolStates.STATUS -> {
-                    state = StatusSessionStates.QUERYING_STATUS
-                    network.send(StatusRequestC2SP())
-                }
-            }
         }
         GlobalEventMaster.fire(StatusSessionCreateEvent(this))
-    }
 
-    private fun tryNextAddress() {
-        val addresses = this.addresses ?: return
-        val nextIndex = ++addressIndex
-        if (addresses.size > nextIndex) {
-            val nextAddress = addresses[nextIndex]
-            Log.log(LogMessageType.NETWORK) { "Could not connect to $address, trying next hostname: $nextAddress" }
-            realAddress = nextAddress
-            ping(nextAddress)
+        this::error.observe(this) {
+            if (it == null) return@observe
+            tryNext()
         }
     }
 
-    private fun resolve(): List<ServerAddress> {
-        state = StatusSessionStates.RESOLVING
+    private fun NetworkConnection.register() {
+        this::state.observe(this) {
+            if (this@StatusSession.connection != this) return@observe
+            when (it) {
+                ProtocolStates.HANDSHAKE -> {
+                    // send handshake
+                    send(HandshakeC2SP(hostname, this.address.port, HandshakeC2SP.Actions.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
+                    state = ProtocolStates.STATUS
+                }
 
-        var addresses = this.addresses
-        if (addresses == null) {
-            addresses = DNSUtil.resolveServerAddress(address)
-            realAddress = addresses.first()
-            this.addresses = addresses
-            this.addressIndex = 0
+                ProtocolStates.STATUS -> {
+                    this@StatusSession.state = StatusSessionStates.QUERYING_STATUS
+                    send(StatusRequestC2SP())
+                }
+
+                null -> Unit // done
+
+                else -> throw IllegalStateException("Illegal status state: $it")
+            }
         }
-        return addresses
+    }
+
+    override fun terminate() {
+        timeout.cancel()
+        this.connection?.disconnect()
+        this.connection = null
+        state = StatusSessionStates.WAITING
     }
 
     fun reset() {
-        timeout.cancel()
-        realAddress = null
-        this.addresses = null
-        this.addressIndex = 0
         status = null
         ping = null
         pong = null
         serverVersion = null
         error = null
-        state = StatusSessionStates.WAITING
     }
 
-    fun ping(address: ServerAddress) {
-        if (state == StatusSessionStates.ESTABLISHING || network.connected) {
+    private fun tryNext(): Boolean {
+        val network = resolver!!.tryNext() ?: return false
+        this.connection = network
+
+        if (state == StatusSessionStates.ESTABLISHING) {
             error("Already connecting!")
         }
+
         timeout.register()
-        Log.log(LogMessageType.NETWORK) { "Pinging $address (from ${this.address})" }
+        Log.log(LogMessageType.NETWORK) { "Pinging ${network.address} (from ${this.hostname})" }
 
         state = StatusSessionStates.ESTABLISHING
-        network.connect(address, false)
+        network.register()
+        network.connect(this)
+
+        return true
     }
 
     fun ping() {
-        if (state == StatusSessionStates.RESOLVING || state == StatusSessionStates.ESTABLISHING || network.connected) {
+        if (state == StatusSessionStates.RESOLVING || state == StatusSessionStates.ESTABLISHING) {
             error("Already connecting!")
         }
+        terminate()
         reset()
+
         state = StatusSessionStates.RESOLVING
-        val addresses: List<ServerAddress>
         try {
-            // TODO: Don't resolve if address is ip
-            addresses = resolve()
-        } catch (exception: Exception) {
-            Log.log(LogMessageType.NETWORK) { "Can not resolve ${this.address}" }
+            val resolver = AddressResolver(hostname)
+            this.resolver = resolver
+        } catch (error: Exception) {
+            Log.log(LogMessageType.NETWORK) { "Can not resolve ${this.hostname}" }
             return
         }
-        ping(addresses.first())
-    }
-
-    override fun terminate() {
-        super.terminate()
-        state = StatusSessionStates.WAITING
+        tryNext()
     }
 }

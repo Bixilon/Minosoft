@@ -56,7 +56,7 @@ class PacketReceiver(
     }
 
     private fun tryHandle(type: PacketType, packet: S2CPacket) {
-        if (!network.connected) return
+        if (!network.connection.active) return
 
         try {
             handle(packet)
@@ -93,7 +93,7 @@ class PacketReceiver(
 
     fun onReceive(type: PacketType, packet: S2CPacket) {
         if (network.detached) return
-        if (!network.connected) return
+        if (!network.connection.active) return
         val discard = notify(packet)
         if (discard) return
 

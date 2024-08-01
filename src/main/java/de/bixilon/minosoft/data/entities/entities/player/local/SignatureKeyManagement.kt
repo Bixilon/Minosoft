@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.local
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.latch.AbstractLatch
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.errors.KeyExpiredError
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.SessionDataC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -46,7 +48,8 @@ class SignatureKeyManagement(
 
     private fun registerRefresh(millis: Int) {
         runLater(millis) {
-            if (session.error != null || (session.established && !session.network.connected) || (session.network.connected && !session.network.encrypted)) {
+            val connected = session.connection.nullCast<NetworkConnection>()?.state != null
+            if (session.error != null || (session.established && !connected) || (connected && !session.network.encrypted)) {
                 // session is dead
                 return@runLater
             }
@@ -89,7 +92,7 @@ class SignatureKeyManagement(
         if (session.version.versionId < ProtocolVersions.V_22W43A) {
             return
         }
-        if (session.network.state != ProtocolStates.PLAY || !session.network.connected) {
+        if (session.connection !is NetworkConnection || session.connection.state != ProtocolStates.PLAY) {
             return
         }
         if (!session.network.encrypted) {

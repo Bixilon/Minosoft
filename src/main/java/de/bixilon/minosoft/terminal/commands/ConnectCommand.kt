@@ -22,6 +22,7 @@ import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.protocol.address.ServerAddress
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.versions.Version
@@ -38,7 +39,7 @@ object ConnectCommand : Command {
                 if (version == null) {
                     stack.print.print("Pinging server to get version...")
                     val ping = StatusSession(address)
-                    ping::status.observe(this) { connect(stack.print, ping.realAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account) }
+                    ping::status.observe(this) { connect(stack.print, ping.connection!!.address, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account) }
                     ping::error.observe(this) { stack.print.print("Could not ping $address: $it") }
                     ping.ping()
                     return@add
@@ -52,7 +53,7 @@ object ConnectCommand : Command {
     private fun connect(print: PrintTarget, address: ServerAddress, version: Version, account: Account) {
         print.print("Connecting to $address")
 
-        val session = PlaySession(address, account, version)
+        val session = PlaySession(NetworkConnection(address, true), account, version) // TODO: native network
         session.connect()
     }
 }

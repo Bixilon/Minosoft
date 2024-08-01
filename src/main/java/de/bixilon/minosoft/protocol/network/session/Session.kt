@@ -16,13 +16,10 @@ package de.bixilon.minosoft.protocol.network.session
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
-import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.versions.Version
 import java.util.concurrent.atomic.AtomicInteger
 
 abstract class Session {
-    val network: ClientNetwork = NettyClient(this)
     val events = EventMaster(GlobalEventMaster)
     val id = Session.id.getAndIncrement()
     var established = false
@@ -31,9 +28,7 @@ abstract class Session {
     var error: Throwable? by observed(null)
 
 
-    open fun terminate() {
-        network.disconnect()
-    }
+    abstract fun terminate()
 
     companion object {
         private val id = AtomicInteger()

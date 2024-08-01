@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
+import de.bixilon.kutil.exception.FastException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
@@ -76,6 +77,6 @@ class LengthDecoder(
             return varInt
         }
 
-        private class BufferTooShortException : Exception()
+        private class BufferTooShortException : FastException()
     }
 }

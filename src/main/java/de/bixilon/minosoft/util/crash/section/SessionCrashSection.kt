@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.crash.section
 
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class SessionCrashSection(
@@ -20,16 +21,19 @@ class SessionCrashSection(
 ) : ArrayCrashSection<PlaySession>("Sessions", sessions) {
 
     override fun format(entry: PlaySession, builder: StringBuilder, intent: String) {
+        val connection = entry.connection
         builder.appendProperty(intent, "Id", entry.id)
         builder.appendProperty(intent, "Version", entry.version)
         builder.appendProperty(intent, "Account", entry.account.username)
-        builder.appendProperty(intent, "Address", entry.address)
+        builder.appendProperty(intent, "Address", entry.connection.identifier)
         builder.appendProperty(intent, "Brand", entry.serverInfo.brand)
         builder.appendProperty(intent, "Events", entry.events.size)
         builder.appendProperty(intent, "State", entry.state)
-        builder.appendProperty(intent, "DefaultPacketMapping state", entry.network.state)
-        builder.appendProperty(intent, "Compression threshold", entry.network.compressionThreshold)
-        builder.appendProperty(intent, "Encrypted", entry.network.encrypted)
+        if (connection is NetworkConnection) {
+            builder.appendProperty(intent, "Network state", connection.state)
+            builder.appendProperty(intent, "Compression threshold", connection.client?.compressionThreshold)
+            builder.appendProperty(intent, "Encrypted", connection.client?.encrypted)
+        }
         builder.appendProperty(intent, "Was connected", entry.established)
         builder.appendProperty(intent, "Rendering", entry.rendering != null)
         builder.appendProperty(intent, "Error", entry.error)

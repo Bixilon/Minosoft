@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.session.play
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
@@ -49,10 +50,12 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionCreateEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
-import de.bixilon.minosoft.protocol.address.ServerAddress
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.connection.ServerConnection
+import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.channel.DefaultChannelHandlers
 import de.bixilon.minosoft.protocol.network.session.play.channel.SessionChannelHandler
@@ -75,11 +78,13 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 class PlaySession(
-    val address: ServerAddress,
+    val connection: ServerConnection,
     val account: Account,
     override val version: Version,
     val profiles: SelectedProfiles = SelectedProfiles(),
 ) : Session() {
+    @Deprecated("connection")
+    val network = NettyClient(connection.unsafeCast(), this)
     val sessionId = KUtil.secureRandomUUID()
     val settingsManager = ClientSettingsManager(this)
     val registries = Registries().apply { updateFlattened(version.flattened) }
@@ -127,15 +132,16 @@ class PlaySession(
         RegistriesFixer.register(this)
         DefaultChannelHandlers.register(this)
 
-        network::connected.observe(this) {
-            if (it) {
+        connection.unsafeCast<NetworkConnection>()::state.observe(this) {
+            if (it != null) {
                 ACTIVE_CONNECTIONS += this
                 ERRORED_CONNECTIONS -= this
 
                 state = PlaySessionStates.HANDSHAKING
-                network.send(HandshakeC2SP(address, HandshakeC2SP.Actions.PLAY, version.protocolId))
+                val address = connection.unsafeCast<NetworkConnection>().address
+                network.send(HandshakeC2SP(address.hostname, address.port, HandshakeC2SP.Actions.PLAY, version.protocolId))
                 // after sending it, switch to next state
-                network.state = ProtocolStates.LOGIN
+                network.connection.state = ProtocolStates.LOGIN
             } else {
                 established = true
                 assetsManager.unload()
@@ -146,7 +152,7 @@ class PlaySession(
                 }
             }
         }
-        network::state.observe(this) { state ->
+        connection.unsafeCast<NetworkConnection>()::state.observe(this) { state ->
             when (state) {
                 ProtocolStates.HANDSHAKE, ProtocolStates.STATUS -> Broken("Invalid state!")
                 ProtocolStates.LOGIN -> {
@@ -162,17 +168,17 @@ class PlaySession(
                         CLI.session = this
                     }
 
-                    events.register(CallbackEventListener.of<ChatMessageEvent> {
+                    events.listen<ChatMessageEvent> {
                         val additionalPrefix = when (it.message.type.position) {
                             ChatTextPositions.SYSTEM -> "[SYSTEM] "
                             ChatTextPositions.HOTBAR -> "[HOTBAR] "
                             else -> ""
                         }
                         Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, prefix = ChatComponent.of(additionalPrefix)) { it.message.text }
-                    })
+                    }
                 }
 
-                ProtocolStates.CONFIGURATION -> Unit
+                else -> Unit
             }
         }
         ticker.init()
@@ -206,7 +212,7 @@ class PlaySession(
             }
 
             val keyManagement = SignatureKeyManagement(this, account)
-            if (version.requiresSignedChat && !profiles.session.signature.disableKeys) {
+            if (version.requiresSignedChat && !profiles.session.signature.disableKeys && connection is NetworkConnection) {
                 taskWorker += WorkerTask(optional = true) { keyManagement.init(latch) }
             }
 
@@ -242,8 +248,7 @@ class PlaySession(
 
     private fun establish(latch: AbstractLatch?) {
         latch?.dec() // remove initial value
-        Log.log(LogMessageType.NETWORK, level = LogLevels.INFO) { "Connecting to server: $address" }
-        network.connect(address, profiles.other.nativeNetwork)
+        network.connect()
         state = PlaySessionStates.ESTABLISHING
     }
 
@@ -260,7 +265,7 @@ class PlaySession(
     }
 
     override fun terminate() {
-        super.terminate()
+        network.disconnect()
         state = PlaySessionStates.DISCONNECTED
     }
 

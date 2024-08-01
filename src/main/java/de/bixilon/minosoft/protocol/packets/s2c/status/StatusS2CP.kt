@@ -41,7 +41,7 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
         val ping = StatusPing()
         session.ping = ping
         session.state = StatusSessionStates.QUERYING_PING
-        session.network.send(PingC2SP(ThreadLocalRandom.current().nextLong()))
+        session.connection?.send(PingC2SP(ThreadLocalRandom.current().nextLong()))
     }
 
     override fun log(reducedLog: Boolean) {

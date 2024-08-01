@@ -28,7 +28,7 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     override fun handle(session: StatusSession) {
         val ping = session.ping ?: return
         val latency = nanos() - ping.nanos
-        session.network.disconnect()
+        session.terminate()
         session.pong = StatusPong(latency)
         session.state = StatusSessionStates.PING_DONE
     }

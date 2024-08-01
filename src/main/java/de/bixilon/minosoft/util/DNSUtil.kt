@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,21 +22,22 @@ import org.xbill.DNS.Type
 object DNSUtil {
 
     fun resolveServerAddress(hostname: String): List<ServerAddress> {
-        val originalAddress = getServerAddress(hostname)
+        val original = getServerAddress(hostname)
+        // TODO: Don't resolve if address is ip address
         if (":" in hostname) {
             // port provided, skip srv check
-            return listOf(originalAddress)
+            return listOf(original)
         }
 
         val query = "_minecraft._tcp.$hostname"
-        val records = catchAll { Lookup(query, Type.SRV).run() } ?: return listOf(originalAddress)
+        val records = catchAll { Lookup(query, Type.SRV).run() } ?: return listOf(original)
 
         val addresses: MutableList<ServerAddress> = mutableListOf()
         for (record in records) {
             if (record !is SRVRecord) continue
             addresses += ServerAddress(record.target.toString(true), record.port)
         }
-        addresses += originalAddress
+        addresses += original
         return addresses
     }
 

@@ -45,6 +45,7 @@ import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.KickEvent
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
@@ -136,11 +137,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             for ((type, name) in server.profiles) {
                 override[ProfileManagers[type]?.type ?: continue] = name
             }
+            val profiles = SelectedProfiles(override)
             val session = PlaySession(
-                address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
+                connection = NetworkConnection(ping.connection?.address ?: DNSUtil.getServerAddress(server.address), native = profiles.other.nativeNetwork),
                 account = account,
                 version = version,
-                profiles = SelectedProfiles(override)
+                profiles = profiles
             )
             account.sessions[server] = session
             serverCard.sessions += session
@@ -151,14 +153,14 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     serverCard.sessions -= session
                 }
                 if (ErosProfileManager.selected.general.hideErosOnceConnected) {
-                    if (session.network.connected) {
+                    if (session.connection.active) {
                         if (session.state == PlaySessionStates.PLAYING) {
                             Eros.setVisibility(false)
                         }
                     } else {
                         var connected = false
                         for (entry in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                            if (entry.network.connected) {
+                            if (entry.connection.active) {
                                 connected = true
                                 break
                             }
@@ -313,7 +315,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             // ToDo: server.connections.clear()
 
                             ping.terminate()
-                            ping.address = server.address
+                            ping.reset()
+                            ping.hostname = server.address
                             ping.ping()
                         }
                         JavaFXUtil.runLater { refreshList() }
@@ -425,7 +428,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (ServerCard) -> Any?>> = listOf(
             "minosoft:server_info.server_name".toResourceLocation() to { it.server.name },
             "minosoft:server_info.server_address".toResourceLocation() to { it.server.address },
-            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.realAddress },
+            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.connection?.address },
             "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
             TranslatableComponents.GENERAL_EMPTY to { " " },

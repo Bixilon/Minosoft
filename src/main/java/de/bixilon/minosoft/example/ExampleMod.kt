@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.example
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionCreateEv
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.mod.ModMain
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -37,7 +39,8 @@ object ExampleMod : ModMain() {
     }
 
     private fun PlaySession.startListening() {
-        if (this.address.hostname != "localhost" && this.address.hostname != "127.0.0.1") {
+        val address = this.connection.nullCast<NetworkConnection>()?.address ?: return
+        if (address.hostname != "localhost" && address.hostname != "127.0.0.1") {
             return
         }
         events.listen<ChatMessageEvent> {
