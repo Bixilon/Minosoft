@@ -18,8 +18,13 @@ import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
+import de.bixilon.minosoft.local.LocalConnection
+import de.bixilon.minosoft.local.generator.DebugGenerator
+import de.bixilon.minosoft.local.generator.flat.FlatGenerator
+import de.bixilon.minosoft.local.storage.DebugStorage
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.local.DebugConnection
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
@@ -33,6 +38,19 @@ import kotlin.system.exitProcess
 
 object AutoConnect {
 
+    private fun connect(session: PlaySession) {
+        if (RunConfiguration.DISABLE_EROS) {
+            session::state.observe(this) {
+                if (it.disconnected) {
+                    Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
+                    ShutdownManager.shutdown()
+                }
+            }
+        }
+        session::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
+        session.connect()
+    }
+
 
     private fun autoConnect(address: ServerAddress, version: Version, account: Account) {
         val session = PlaySession(
@@ -40,36 +58,30 @@ object AutoConnect {
             account = account,
             version = version,
         )
-        if (RunConfiguration.DISABLE_EROS) {
-            session::state.observe(this) {
-                if (it.disconnected) {
-                    Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
-                    ShutdownManager.shutdown()
-                }
-            }
-        }
-        session::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
+        connect(session)
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
-        session.connect()
     }
 
     private fun debug(version: Version, account: Account) {
+        val flat = let@{ it: PlaySession ->
+            val stone = it.registries.block[StoneBlock.Block]?.states?.default
+
+            return@let FlatGenerator(it.registries.biome["plains"], arrayOf(
+                it.registries.block[Bedrock]?.states?.default,
+                stone,
+                stone,
+                stone,
+                stone,
+                stone,
+            ))
+        }
         val session = PlaySession(
-            connection = DebugConnection(),
+            connection = LocalConnection(::DebugGenerator, ::DebugStorage),
             account = account,
             version = version,
         )
-        if (RunConfiguration.DISABLE_EROS) {
-            session::state.observe(this) {
-                if (it.disconnected) {
-                    Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
-                    ShutdownManager.shutdown()
-                }
-            }
-        }
-        session::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
+        connect(session)
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to debug, with version $version using account $account..." }
-        session.connect()
     }
 
     fun autoConnect(connectString: String) {

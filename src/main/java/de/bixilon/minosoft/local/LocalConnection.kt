@@ -11,67 +11,44 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.local
+package de.bixilon.minosoft.local
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.local.generator.ChunkGenerator
+import de.bixilon.minosoft.local.storage.WorldStorage
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.ServerConnection
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import kotlin.math.sqrt
 
-class DebugConnection : ServerConnection {
-    override val identifier = "dbg"
+class LocalConnection(
+    val generator: (PlaySession) -> ChunkGenerator,
+    val storage: (PlaySession) -> WorldStorage,
+) : ServerConnection {
+    override val identifier = "<local>"
     override var active by observed(false)
     private var detached = false
     private lateinit var session: PlaySession
+    private lateinit var chunks: LocalChunkManager
 
-
-    private fun World.createChunks(position: ChunkPosition, radius: Int) {
-        val biome = session.registries.biome[minecraft("plains")]
-        for (x in position.x - radius until position.x + radius) {
-            for (z in position.y - radius until position.y + radius) {
-                val chunk = chunks.create(ChunkPosition(x, z))
-                chunk.biomeSource = DummyBiomeSource(biome)
-                chunk[0, 0, 0] = null // create lowest section
-            }
-        }
-    }
-
-    private fun fillDebug() {
-        val total = session.registries.blockState.size
-        val width = sqrt(total.toFloat()).toInt() + 1
-        var count = 0
-
-        for (block in session.registries.block) {
-            for (state in block.states) {
-                val x = (count / width - (width / 2)) * 2
-                val z = (count % width - (width / 2)) * 2
-                val chunk = session.world.chunks.create(ChunkPosition(x shr 4, z shr 4))
-                chunk[x and 0x0F, 8, z and 0x0F] = state
-                count++
-            }
-        }
-    }
 
     override fun connect(session: Session) {
         if (session !is PlaySession) throw IllegalStateException("Not a play session?")
         Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Establishing debug connection" }
         active = true
         this.session = session
+        this.chunks = LocalChunkManager(session, storage.invoke(session), generator.invoke(session))
 
 
         session.util.resetWorld()
@@ -85,17 +62,17 @@ class DebugConnection : ServerConnection {
         session.world.entities.clear(session, local = true)
         session.world.entities.add(1, null, session.player)
 
-        session.player.abilities = Abilities(false, true, true)
-        session.world.createChunks(ChunkPosition(0, 0), 5)
+        session.player.abilities = Abilities(flying = true, allowFly = true)
 
         session.events.fire(DimensionChangeEvent(session))
         session.state = PlaySessionStates.SPAWNING
+
         session.player.physics.forceTeleport(Vec3d(0, 20, 0))
         session.state = PlaySessionStates.PLAYING
 
 
-
-        fillDebug()
+        chunks.storage.loadWorld(session.world)
+        chunks.update()
     }
 
     override fun disconnect() {
@@ -108,6 +85,10 @@ class DebugConnection : ServerConnection {
 
     override fun send(packet: C2SPacket) {
         if (detached) return
-        packet.log(false)
+        packet.log(true)
+        when (packet) {
+            is PositionRotationC2SP -> chunks.update()
+            is PositionC2SP -> chunks.update()
+        }
     }
 }
