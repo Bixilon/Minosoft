@@ -16,17 +16,17 @@ package de.bixilon.minosoft.protocol.network.session.play
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
-import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
+import de.bixilon.minosoft.protocol.ServerConnection
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
 object PacketTestUtil {
 
     fun PlaySession.test(): TestNetwork {
-        return network.unsafeCast()
+        return connection.unsafeCast()
     }
 
-    fun ClientNetwork.assertPacket(expected: C2SPacket) {
+    fun ServerConnection.assertPacket(expected: C2SPacket) {
         if (this !is TestNetwork) Broken("Not testing")
         val found = take() ?: throw AssertionError("Expected packet $expected, but found [null]!")
         if (found::class.java != expected::class.java) {
@@ -42,7 +42,7 @@ object PacketTestUtil {
         }
     }
 
-    fun ClientNetwork.assertNoPacket() {
+    fun ServerConnection.assertNoPacket() {
         if (this !is TestNetwork) Broken("Not testing")
         val packet = take()
         if (packet != null) {
@@ -64,7 +64,7 @@ object PacketTestUtil {
         assertNoPacket()
     }
 
-    fun <T : C2SPacket> ClientNetwork.assertPacket(type: Class<T>): T {
+    fun <T : C2SPacket> ServerConnection.assertPacket(type: Class<T>): T {
         if (this !is TestNetwork) Broken("Not testing")
         val packet = take() ?: throw AssertionError("Expected packet of type $type, but found [null]!")
         val clazz = packet::class.java

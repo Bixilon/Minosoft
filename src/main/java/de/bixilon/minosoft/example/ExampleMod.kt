@@ -21,7 +21,7 @@ import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionCreateEv
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.mod.ModMain
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

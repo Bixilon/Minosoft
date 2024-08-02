@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol
 
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType

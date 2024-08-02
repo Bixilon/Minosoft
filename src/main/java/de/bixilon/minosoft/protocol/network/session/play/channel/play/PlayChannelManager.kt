@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.network.session.play.channel.play
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.channel.ChannelManager
 import de.bixilon.minosoft.protocol.packets.c2s.common.ChannelC2SP

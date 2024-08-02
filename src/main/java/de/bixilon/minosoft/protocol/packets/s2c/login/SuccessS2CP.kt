@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.channel.vanila.BrandHandler.sendBrand
 import de.bixilon.minosoft.protocol.packets.c2s.login.ConfigureC2SP

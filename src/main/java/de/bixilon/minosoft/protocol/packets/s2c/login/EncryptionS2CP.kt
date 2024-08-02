@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 import com.google.common.primitives.Longs
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

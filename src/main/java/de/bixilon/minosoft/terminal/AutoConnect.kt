@@ -19,13 +19,13 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.local.DebugConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -53,6 +53,25 @@ object AutoConnect {
         session.connect()
     }
 
+    private fun debug(version: Version, account: Account) {
+        val session = PlaySession(
+            connection = DebugConnection(),
+            account = account,
+            version = version,
+        )
+        if (RunConfiguration.DISABLE_EROS) {
+            session::state.observe(this) {
+                if (it.disconnected) {
+                    Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
+                    ShutdownManager.shutdown()
+                }
+            }
+        }
+        session::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
+        Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to debug, with version $version using account $account..." }
+        session.connect()
+    }
+
     fun autoConnect(connectString: String) {
         // ToDo: Show those connections in eros
         val split = connectString.split(',')
@@ -63,7 +82,7 @@ object AutoConnect {
         val account = accountProfile.entries[split.getOrNull(2)] ?: accountProfile.selected ?: throw RuntimeException("Auto connect: Account not found! Have you started normal before or added an account?")
 
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Checking account..." }
-        account.tryCheck(null)
+//        account.tryCheck(null)
 
         if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
@@ -74,6 +93,8 @@ object AutoConnect {
             return
         }
 
-        autoConnect(DNSUtil.resolveServerAddress(address).first(), version, account)
+        debug(version, account)
+
+        // autoConnect(DNSUtil.resolveServerAddress(address).first(), version, account)
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.registry
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation.PacketNotImplementedException
 import de.bixilon.minosoft.protocol.network.session.Session

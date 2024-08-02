@@ -53,8 +53,8 @@ import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionCreateEv
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
-import de.bixilon.minosoft.protocol.connection.ServerConnection
+import de.bixilon.minosoft.protocol.ServerConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.channel.DefaultChannelHandlers
 import de.bixilon.minosoft.protocol.network.session.play.channel.SessionChannelHandler
@@ -249,8 +249,8 @@ class PlaySession(
 
     private fun establish(latch: AbstractLatch?) {
         latch?.dec() // remove initial value
-        connection.connect(this)
         state = PlaySessionStates.ESTABLISHING
+        connection.connect(this)
     }
 
     private fun establishRendering(latch: AbstractLatch?) {

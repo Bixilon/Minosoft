@@ -13,51 +13,31 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.test
 
-import de.bixilon.minosoft.protocol.address.ServerAddress
-import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender.PacketSender
+import de.bixilon.minosoft.protocol.ServerConnection
 import de.bixilon.minosoft.protocol.network.session.Session
-import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import java.util.concurrent.ConcurrentLinkedQueue
-import javax.crypto.Cipher
 
 class TestNetwork(
-    session: Session = createSession(),
-) : ClientNetwork {
-    override val sender = PacketSender(this)
-    override val receiver = PacketReceiver(this, session)
-    override var connected: Boolean = true
-    override var state: ProtocolStates = ProtocolStates.PLAY
-    override var compressionThreshold: Int = -1
-    override var encrypted: Boolean = false
-    override val detached = false
-
+    session: Session,
+) : ServerConnection {
+    override val identifier: String
+        get() = "test"
+    override var active = false
     private var queue = ConcurrentLinkedQueue<C2SPacket>()
 
-    override fun connect(address: ServerAddress, native: Boolean) {
-        connected = true
+    override fun connect(session: Session) {
+        active = true
     }
 
     override fun disconnect() {
-        connected = false
-    }
-
-    override fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
-        encrypted = true
-    }
-
-    override fun setupCompression(threshold: Int) {
-        this.compressionThreshold = threshold
+        active = false
     }
 
     override fun detach() = Unit
 
 
-    override fun forceSend(packet: C2SPacket) {
+    override fun send(packet: C2SPacket) {
         if (queue.size > 15) {
             // leaking
             return
@@ -70,9 +50,5 @@ class TestNetwork(
             return null
         }
         return queue.remove()
-    }
-
-    override fun handleError(error: Throwable) {
-        throw PacketHandleException(error)
     }
 }

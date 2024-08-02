@@ -56,7 +56,7 @@ class ChatNodeTest {
         util::class.java.getFieldOrNull("session")!!.forceSet(util, session)
         util::class.java.getFieldOrNull("random")!!.forceSet(util, SecureRandom())
         session::util.forceSet(util)
-        session::network.forceSet(TestNetwork())
+        session::connection.forceSet(TestNetwork(session))
         session.commands = root
         val stack = CommandStack(session)
         execute(CommandReader(command), stack)

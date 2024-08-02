@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client
 
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender.PacketSender
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.crash.section
 
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class SessionCrashSection(

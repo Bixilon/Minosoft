@@ -57,7 +57,7 @@ object SessionTestUtil {
     private val REGISTRIES = PlaySession::registries.field
     private val WORLD = PlaySession::world.field
     private val PLAYER = PlaySession::player.field
-    private val NETWORK = PlaySession::network.field
+    private val CONNECTION = PlaySession::connection.field
     private val EVENTS = PlaySession::events.field
     private val PROFILES = PlaySession::profiles.field
     private val ASSETS_MANAGER = PlaySession::assetsManager.field
@@ -83,7 +83,7 @@ object SessionTestUtil {
         WORLD.set(session, createWorld(session, light, (worldSize * 2 + 1).pow(2)))
         PLAYER.set(session, LocalPlayerEntity(session.account, session, signature))
         session.player.startInit()
-        NETWORK.set(session, TestNetwork(session))
+        CONNECTION.set(session, TestNetwork(session))
         EVENTS.set(session, EventMaster())
         PROFILES.set(session, profiles)
         ASSETS_MANAGER.set(session, SessionAssetsManager(AssetsManagerProperties(PackProperties(version.packFormat))))

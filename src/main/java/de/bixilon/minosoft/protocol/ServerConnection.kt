@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.connection
+package de.bixilon.minosoft.protocol
 
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket

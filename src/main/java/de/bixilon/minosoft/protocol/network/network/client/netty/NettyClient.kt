@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
-import de.bixilon.minosoft.protocol.connection.NetworkConnection
+import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException

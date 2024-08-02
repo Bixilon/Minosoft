@@ -157,7 +157,7 @@ object RenderLoader {
 
         val latch = SimpleLatch(1)
 
-        session::state.observe(this) {
+        session::state.observe(this, instant = true) {
             if (it == PlaySessionStates.PLAYING && latch.count > 0) {
                 latch.dec()
             }
