@@ -15,6 +15,7 @@ package de.bixilon.minosoft.assets.util
 
 import com.github.luben.zstd.ZstdInputStream
 import de.bixilon.minosoft.terminal.RunConfiguration
+import javafx.scene.image.Image
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
@@ -59,5 +60,13 @@ object FileUtil {
 
     fun createTempFile(): File {
         return Files.createTempFile(RunConfiguration.TEMPORARY_FOLDER, "", "").toFile()
+    }
+
+    fun InputStream.readImage(close: Boolean = true): Image {
+        val image = Image(this)
+        if (close) {
+            close()
+        }
+        return image
     }
 }

@@ -83,9 +83,11 @@ interface BaseWindow {
 
 
     fun setDefaultIcon(assetsManager: AssetsManager) {
-        val decoder = PNGDecoder(assetsManager[SystemUtil.ICON])
+        val stream = assetsManager[SystemUtil.ICON]
+        val decoder = PNGDecoder(stream)
         val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+        stream.close()
         data.position(0)
         data.limit(data.capacity())
         setIcon(Vec2i(decoder.width, decoder.height), data)

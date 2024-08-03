@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.hash.HashUtil.sha256
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
+import de.bixilon.minosoft.assets.util.FileUtil.readImage
 import de.bixilon.minosoft.assets.util.PathUtil
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import javafx.scene.image.Image
@@ -29,7 +30,7 @@ object FaviconManager {
         get() {
             val hash = this.faviconHash ?: return null
             try {
-                return Image(FileUtil.readFile(PathUtil.getAssetsPath(hash = hash, type = FileAssetsTypes.FAVICON)))
+                return FileUtil.readFile(PathUtil.getAssetsPath(hash = hash, type = FileAssetsTypes.FAVICON)).readImage()
             } catch (exception: Throwable) {
                 this.faviconHash = null
             }

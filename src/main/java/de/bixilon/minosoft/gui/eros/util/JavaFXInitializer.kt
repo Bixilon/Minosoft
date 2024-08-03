@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.assets.IntegratedAssets
+import de.bixilon.minosoft.assets.util.FileUtil.readImage
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.system.SystemUtil
 import javafx.application.Application
 import javafx.application.Platform
-import javafx.scene.image.Image
 import javafx.stage.Stage
 
 
@@ -39,7 +39,7 @@ class JavaFXInitializer internal constructor() : Application() {
         JavaFXUtil.HOST_SERVICES = hostServices
         SystemUtil.api = JavaFXSystemAPI()
 
-        JavaFXUtil.MINOSOFT_LOGO = Image(IntegratedAssets.DEFAULT[SystemUtil.ICON])
+        JavaFXUtil.MINOSOFT_LOGO = IntegratedAssets.DEFAULT[SystemUtil.ICON].readImage()
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()
