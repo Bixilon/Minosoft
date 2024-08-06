@@ -31,6 +31,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Compa
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -94,7 +95,7 @@ object AutoConnect {
         val account = accountProfile.entries[split.getOrNull(2)] ?: accountProfile.selected ?: throw RuntimeException("Auto connect: Account not found! Have you started normal before or added an account?")
 
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Checking account..." }
-//        account.tryCheck(null)
+        account.tryCheck(null)
 
         if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
@@ -105,8 +106,8 @@ object AutoConnect {
             return
         }
 
-        debug(version, account)
+        // debug(version, account)
 
-        // autoConnect(DNSUtil.resolveServerAddress(address).first(), version, account)
+        autoConnect(DNSUtil.resolveServerAddress(address).first(), version, account)
     }
 }

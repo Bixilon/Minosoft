@@ -11,7 +11,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 <h2>Notice: I am *not* responsible for anti cheat banned accounts, this project ~~is heavily in development~~!</h2>
 
 This project is not actively developed anymore. This is due to time reasons and newer minecraft updates are getting larger and larger and I honestly can't keep up.
-I will still bring up fixes from time to time, might do some changes but don't accept too much. I am still happy to receive feedback and contributions are always welcome.
+I will still bring up fixes from time to time, might do some changes but don't expect too much. I am still happy to receive feedback and contributions are always welcome.
 
 ## Feature overview
 
