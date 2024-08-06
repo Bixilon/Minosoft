@@ -121,7 +121,7 @@ interface ChatComponent {
                 }
             }
 
-            return LegacyComponentReader.parse(parent, string, restricted).trim() ?: EmptyComponent
+            return LegacyComponentReader.parse(parent, string.removeSurrounding("\""), restricted).trim() ?: EmptyComponent
         }
 
         fun String.chat(): ChatComponent {

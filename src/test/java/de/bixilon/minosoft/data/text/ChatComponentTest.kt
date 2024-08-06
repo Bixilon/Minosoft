@@ -319,12 +319,16 @@ internal class ChatComponentTest {
     }
 
     @Test
-    fun something() { // tree.ac
+    fun `remove quotes around legacy text`() { // tree.ac
         val string = """"§2Join the Other Server? Find it at §6Port 25566§2!""""
-        val chat = ChatComponent.of(string)
+        val text = ChatComponent.of(string)
 
-        TODO()
-
+        val expected = BaseComponent(
+            TextComponent("Join the Other Server? Find it at ").color(ChatColors.DARK_GREEN),
+            TextComponent("Port 25566").color(ChatColors.GOLD),
+            TextComponent("!").color(ChatColors.DARK_GREEN),
+        )
+        assertEquals(text, expected)
     }
 
     private fun assertEquals(expected: ChatComponent, actual: ChatComponent) {
