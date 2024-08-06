@@ -16,7 +16,6 @@ package de.bixilon.minosoft.local.generator
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.sqrt
@@ -34,27 +33,16 @@ class DebugGenerator(val session: PlaySession) : ChunkGenerator {
         val zOffset = chunk.chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X step 2) {
-            if (xOffset + x > size) continue
+            val actuallyX = (xOffset + x) / 2
+            if (actuallyX > size) continue
+
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z step 2) {
-                if (zOffset + z > size) continue
-                val id = (xOffset + x) / 2 * size + (zOffset + z) / 2
-                chunk[x, 8, z] = session.registries.blockState.getOrNull(id)
-            }
-        }
-    }
+                val actuallyZ = (zOffset + z) / 2
+                if (actuallyZ > size) continue
 
-    private fun fillDebug() {
-        val total = session.registries.blockState.size
-        val width = sqrt(total.toFloat()).toInt() + 1
-        var count = 0
-
-        for (block in session.registries.block) {
-            for (state in block.states) {
-                val x = (count / width - (width / 2)) * 2
-                val z = (count % width - (width / 2)) * 2
-                val chunk = session.world.chunks.create(ChunkPosition(x shr 4, z shr 4), biome = DummyBiomeSource(plains))
-                chunk[x and 0x0F, 8, z and 0x0F] = state
-                count++
+                val id = actuallyX * size + actuallyZ
+                val state = session.registries.blockState.getOrNull(id) ?: continue
+                chunk[x, 8, z] = state
             }
         }
     }
