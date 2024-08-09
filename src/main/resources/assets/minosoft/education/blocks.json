@@ -1,0 +1,71 @@
+{
+  "minecraft:air": {
+    "id": 0,
+    "states": {
+      "0": {}
+    }
+  },
+  "minecraft:stone": {
+    "id": 1,
+    "states": {
+      "1": {}
+    }
+  },
+  "minecraft:grass_block": {
+    "id": 8,
+    "default_state": 9,
+    "states": {
+      "8": {
+        "properties": {
+          "snowy": true
+        }
+      },
+      "9": {
+        "properties": {
+          "snowy": false
+        }
+      }
+    }
+  },
+  "minecraft:dirt": {
+    "id": 9,
+    "states": {
+      "10": {}
+    }
+  },
+  "minecraft:cobblestone": {
+    "id": 12,
+    "states": {
+      "15": {}
+    }
+  },
+  "minecraft:oak_planks": {
+    "id": 13,
+    "states": {
+      "15": {}
+    }
+  },
+  "minecraft:bedrock": {
+    "id": 25,
+    "states": {
+      "33": {}
+    }
+  },
+  "minecraft:oak_leaves": {
+    "id": 59,
+    "states": {
+      "145": {
+        "properties": {
+          "distance": 1,
+          "persistent": true
+        }
+      }
+    }
+  },
+  "minecraft:bricks": {
+    "id": 136,
+    "states": {
+      "1429": {}
+    }
+  }
+}

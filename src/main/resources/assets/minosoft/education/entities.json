@@ -1,0 +1,34 @@
+{
+  "minecraft:cow": {
+    "id": 11,
+    "width": 0.9,
+    "height": 1.4,
+    "attributes": {
+      "minecraft:generic.max_health": 10.0
+    },
+    "class": "CowEntity",
+    "parent": "AnimalEntity"
+  },
+  "minecraft:player": {
+    "id": 106,
+    "width": 0.6,
+    "height": 1.8,
+    "attributes": {
+      "minecraft:generic.max_health": 20.0,
+      "minecraft:generic.movement_speed": 0.10000000149011612
+    },
+    "class": "PlayerEntity",
+    "parent": "LivingEntity"
+  },
+
+  "minecraft:pig": {
+    "id": 59,
+    "width": 0.9,
+    "height": 0.9,
+    "attributes": {
+      "minecraft:generic.max_health": 10.0
+    },
+    "class": "PigEntity",
+    "parent": "AnimalEntity"
+  }
+}

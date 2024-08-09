@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.assets.properties.version.PreFlattening
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.protocol.versions.Version
@@ -22,7 +21,8 @@ import de.bixilon.minosoft.protocol.versions.Version
 object RegistriesLoader {
 
     fun load(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
-        val registries = if (!version.flattened) PreFlattening.loadRegistry(profile, version, latch) else PixLyzerUtil.loadRegistry(version, profile, latch) // TODO: prioritize pixlyzer and if it fails load meta
+        //val registries = if (!version.flattened) PreFlattening.loadRegistry(profile, version, latch) else PixLyzerUtil.loadRegistry(version, profile, latch) // TODO: prioritize pixlyzer and if it fails load meta
+        val registries = EducationRegistries.loadRegistry(version, latch)
 
         registries.setDefaultParents(version)
 
