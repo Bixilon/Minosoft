@@ -16,11 +16,16 @@ package de.bixilon.minosoft.local
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
+import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.local.storage.WorldStorage
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.protocol.ServerConnection
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -41,6 +46,12 @@ class LocalConnection(
     private var detached = false
     private lateinit var session: PlaySession
     private lateinit var chunks: LocalChunkManager
+
+
+    fun sendMessage(message: Any, type: ResourceLocation = DefaultMessageTypes.CHAT) {
+        val type = session.registries.messageType[type]!!
+        session.events.fire(ChatMessageEvent(session, SimpleChatMessage(ChatComponent.of(message), type)))
+    }
 
 
     override fun connect(session: Session) {
@@ -69,6 +80,8 @@ class LocalConnection(
 
         session.player.physics.forceTeleport(Vec3d(0, 20, 0))
         session.state = PlaySessionStates.PLAYING
+
+        sendMessage("§e${session.player.name} §ejoined the game!")
 
 
         chunks.storage.loadWorld(session.world)
