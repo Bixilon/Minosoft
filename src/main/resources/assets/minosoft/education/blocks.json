@@ -36,7 +36,7 @@
   "minecraft:cobblestone": {
     "id": 12,
     "states": {
-      "15": {}
+      "14": {}
     }
   },
   "minecraft:oak_planks": {

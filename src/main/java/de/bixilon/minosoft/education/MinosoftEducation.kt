@@ -17,7 +17,11 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
+import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.education.config.EducationC
@@ -72,12 +76,25 @@ object MinosoftEducation {
         RunConfiguration.APPLICATION_NAME = "Minosoft Education"
         RunConfiguration.IGNORE_YGGDRASIL = true
         RunConfiguration.IGNORE_MODS = true
+        RunConfiguration.PROFILES_HOT_RELOADING = false
+        RunConfiguration.PROFILES_SAVING = false
+    }
+
+    fun postSetup() {
+        AudioProfileManager.selected.enabled = false
+        AudioProfileManager.selected.skipLoading = true
+
+        RenderingProfileManager.selected.performance.fastBedrock = false
+        ResourcesProfileManager.selected.assets.indexAssetsTypes.clear()
+        ResourcesProfileManager.selected.assets.indexAssetsTypes += IndexAssetsType.OTHER
+        ResourcesProfileManager.selected.assets.indexAssetsTypes += IndexAssetsType.LANGUAGE
     }
 
     @JvmStatic
     fun main(args: Array<String>) {
         setup()
-        Minosoft.main(args)
+        Minosoft.main(emptyArray())
+        postSetup()
 
         // TODO: load education.json
 

@@ -46,7 +46,6 @@ import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
-import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.updater.MinosoftUpdater
@@ -118,7 +117,7 @@ object Minosoft {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
         }
 
-        RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
+        // RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
     }
 
     private fun javafx(taskWorker: TaskWorker) {
