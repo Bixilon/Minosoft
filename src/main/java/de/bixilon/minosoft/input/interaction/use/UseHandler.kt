@@ -16,6 +16,7 @@ package de.bixilon.minosoft.input.interaction.use
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.education.MinosoftEducation
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.input.interaction.KeyHandler
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
@@ -50,6 +51,9 @@ class UseHandler(
         val interact = isPressed
         val previous = this.previous
         this.previous = interact
+
+
+        if (!MinosoftEducation.config.features.using) return long.reset()
 
         if (!interact) {
             // not interacting anymore

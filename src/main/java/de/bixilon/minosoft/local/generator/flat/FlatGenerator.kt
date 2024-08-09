@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class FlatGenerator(
+open class FlatGenerator(
     val biome: Biome?,
     val layers: Array<BlockState?>,
 ) : ChunkGenerator {

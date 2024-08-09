@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,9 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
+import de.bixilon.minosoft.education.MinosoftEducation
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 open class PlayerPhysics<E : PlayerEntity>(entity: E) : LivingEntityPhysics<E>(entity) {
     override var onGround: Boolean
@@ -38,9 +40,12 @@ open class PlayerPhysics<E : PlayerEntity>(entity: E) : LivingEntityPhysics<E>(e
 
     override fun tick() {
         super.tick()
-        val x = this.position.x.clamp(-2.9999999E7, 2.9999999E7)
-        val z = this.position.z.clamp(-2.9999999E7, 2.9999999E7)
-        forceTeleport(Vec3d(x, this.position.y, z))
+        val max = MinosoftEducation.config.world.size * ProtocolDefinition.SECTION_LENGTH.toDouble()
+        val height = MinosoftEducation.config.world.height.toDouble()
+        val x = this.position.x.clamp(-max, max)
+        val z = this.position.z.clamp(-max, max)
+        val y = this.position.y.clamp(-5.0, height + 5.0)
+        forceTeleport(Vec3d(x, y, z))
     }
 
     override var movementSpeed: Float

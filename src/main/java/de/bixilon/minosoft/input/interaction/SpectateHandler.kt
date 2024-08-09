@@ -17,6 +17,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.education.MinosoftEducation
 
 class SpectateHandler(
     private val interactions: InteractionManager,
@@ -33,6 +34,7 @@ class SpectateHandler(
 
 
     fun spectate(entity: Entity?) {
+        if (!MinosoftEducation.config.features.spectating) return
         var entity = entity ?: session.player
         if (session.player.gamemode != Gamemodes.SPECTATOR) {
             entity = session.player

@@ -24,7 +24,6 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
-import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.nanos
@@ -36,7 +35,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
@@ -64,13 +62,13 @@ import de.bixilon.minosoft.util.system.SystemUtil
 object Minosoft {
 
 
-    private fun preBoot(args: Array<String>) {
+    fun preBoot(args: Array<String>) {
         val assets = SimpleLatch(1)
         DefaultThreadPool += ForcePooledRunnable { IntegratedAssets.DEFAULT.load(); assets.dec() }
         DefaultThreadPool += ForcePooledRunnable { Jackson.init(); MinosoftPropertiesLoader.init() }
         DefaultThreadPool += ForcePooledRunnable { KUtil.initBootClasses() }
         CommandLineArguments.parse(args)
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft §ceducation§r..." }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "We are running on ${PlatformInfo.OS.name.lowercase()} with an ${PlatformInfo.ARCHITECTURE.name.lowercase()} cpu. Java version is ${Runtime.version()}!" }
 
         val latch = SimpleLatch(1)
@@ -88,7 +86,7 @@ object Minosoft {
         }
     }
 
-    private fun boot() {
+    fun boot() {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() }, forcePool = true)
 
         MinosoftBoot.register(taskWorker)
@@ -108,13 +106,13 @@ object Minosoft {
         MinosoftBoot.LATCH.await()
     }
 
-    private fun postBoot() {
+    fun postBoot() {
         if (ErosCrashReport.alreadyCrashed) return
 
         KUtil.initPlayClasses()
         GlobalEventMaster.fire(FinishBootEvent())
         DefaultThreadPool += { DefaultModPhases.POST.load(); Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO) { "Mod loading completed!" } }
-        checkForUpdates()
+        // checkForUpdates()
 
         if (RunConfiguration.DISABLE_EROS) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
@@ -127,12 +125,12 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
 
         taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(MinosoftBoot.LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
-        taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
+        // taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
 
-        DefaultThreadPool += ForcePooledRunnable { Eros::class.java.forceInit() }
+        // DefaultThreadPool += ForcePooledRunnable { Eros::class.java.forceInit() }
     }
 
-    private fun initLog() {
+    fun initLog() {
         DefaultThreadPool += ForcePooledRunnable { Log.init() }
         DefaultThreadPool += ForcePooledRunnable { RunConfiguration }
         DefaultThreadPool += ForcePooledRunnable { FormattingCodes }

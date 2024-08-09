@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
+import de.bixilon.minosoft.education.MinosoftEducation
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 
 class DropHandler(
@@ -23,6 +24,8 @@ class DropHandler(
     private val rateLimiter = RateLimiter()
 
     fun dropItem(stack: Boolean) {
+
+        if (!MinosoftEducation.config.features.dropping) return
         val type = if (stack) {
             session.player.items.inventory.getHotbarSlot()?.item?.count = 0
             PlayerActionC2SP.Actions.DROP_ITEM_STACK

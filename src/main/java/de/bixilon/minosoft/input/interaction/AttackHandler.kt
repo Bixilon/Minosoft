@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
+import de.bixilon.minosoft.education.MinosoftEducation
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter.EntityEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.CritParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.EnchantedHitParticle
@@ -38,6 +39,7 @@ class AttackHandler(
     private var cooldown = 0
 
     fun tryAttack(target: EntityTarget? = interactions.camera.target.target?.nullCast()) {
+        if (!MinosoftEducation.config.features.attacking) return
         if (target == null) return
         rateLimiter.perform { attack(target) }
     }

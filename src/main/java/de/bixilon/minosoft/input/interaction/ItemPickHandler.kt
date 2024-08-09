@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
+import de.bixilon.minosoft.education.MinosoftEducation
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
 class ItemPickHandler(
@@ -33,6 +34,7 @@ class ItemPickHandler(
     val rateLimiter = RateLimiter()
 
     fun pickItem(copyNBT: Boolean) {
+        if (!MinosoftEducation.config.features.pick) return
         if (session.player.gamemode != Gamemodes.CREATIVE) {
             return
         }

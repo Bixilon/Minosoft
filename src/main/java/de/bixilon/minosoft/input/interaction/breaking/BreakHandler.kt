@@ -16,6 +16,7 @@ package de.bixilon.minosoft.input.interaction.breaking
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.education.MinosoftEducation
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.input.interaction.KeyHandler
 import de.bixilon.minosoft.input.interaction.breaking.creative.CreativeBreaker
@@ -74,6 +75,12 @@ class BreakHandler(
     private fun tickBreaking(): Boolean {
         val gamemode = session.player.gamemode
         val target = validateTarget()
+
+
+        if (!MinosoftEducation.config.features.breaking) {
+            digging.tryCancel()
+            return false
+        }
 
         if (gamemode == Gamemodes.CREATIVE) {
             digging.tryCancel()
