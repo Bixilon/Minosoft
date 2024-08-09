@@ -31,6 +31,7 @@ object RunConfiguration {
     var DISABLE_RENDERING = false // if true, rendering is disabled
     var DISABLE_CURSOR_CATCH = false
     var PROFILES_HOT_RELOADING = true
+    var PROFILES_SAVING = true
 
     var AUTO_CONNECT_TO: String? = null
 
