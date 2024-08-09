@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,6 +47,15 @@ interface Bamboo {
             override val identifier = minecraft("bamboo_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
+        }
+    }
+
+    class Planks(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : PlanksBlock(identifier, settings), Bamboo {
+
+        companion object : BlockFactory<Planks> {
+            override val identifier = minecraft("bamboo_planks") // TODO: do the exist?
+
+            override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
         }
     }
 }

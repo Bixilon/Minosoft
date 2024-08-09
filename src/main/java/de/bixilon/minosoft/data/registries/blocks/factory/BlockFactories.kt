@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.brick.*
 import de.bixilon.minosoft.data.registries.blocks.types.building.copper.*
+import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.Dirt
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
@@ -109,6 +110,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     CutCopper.Block, CutCopper.Slab,
     WaxedCutCopper.Block, WaxedCutCopper.Slab,
 
+    Dirt,
     GrassBlock,
 
     WaterFluidBlock, BubbleColumnBlock, LavaFluidBlock,
@@ -125,20 +127,20 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     DoorBlock.IronDoor,
 
-    Oak.Leaves, Oak.Door, Oak.Slab,
-    Spruce.Leaves, Spruce.Door, Spruce.Slab,
-    Birch.Leaves, Birch.Door, Birch.Slab,
-    Jungle.Leaves, Jungle.Door, Jungle.Slab,
-    Acacia.Leaves, Acacia.Door, Acacia.Slab,
-    DarkOak.Leaves, DarkOak.Door, DarkOak.Slab,
-    Mangrove.Leaves, Mangrove.Door, Mangrove.Slab,
-    Cherry.Leaves, Cherry.Door, Cherry.Slab,
-    Azalea.Leaves, Azalea.Door, Azalea.Slab,
-    FloweringAzalea.Leaves, FloweringAzalea.Door, FloweringAzalea.Slab,
-    Bamboo.Leaves, Bamboo.Door, Bamboo.Slab,
-    BambooMosaic.Leaves, BambooMosaic.Door, BambooMosaic.Slab,
-    Crimson.Leaves, Crimson.Door, Crimson.Slab,
-    Warped.Leaves, Warped.Door, Warped.Slab,
+    Oak.Leaves, Oak.Door, Oak.Slab, Oak.Planks,
+    Spruce.Leaves, Spruce.Door, Spruce.Slab, Spruce.Planks,
+    Birch.Leaves, Birch.Door, Birch.Slab, Birch.Planks,
+    Jungle.Leaves, Jungle.Door, Jungle.Slab, Jungle.Planks,
+    Acacia.Leaves, Acacia.Door, Acacia.Slab, Acacia.Planks,
+    DarkOak.Leaves, DarkOak.Door, DarkOak.Slab, DarkOak.Planks,
+    Mangrove.Leaves, Mangrove.Door, Mangrove.Slab, Mangrove.Planks,
+    Cherry.Leaves, Cherry.Door, Cherry.Slab, Cherry.Planks,
+    Azalea.Leaves, Azalea.Door, Azalea.Slab, Azalea.Planks,
+    FloweringAzalea.Leaves, FloweringAzalea.Door, FloweringAzalea.Slab, FloweringAzalea.Planks,
+    Bamboo.Leaves, Bamboo.Door, Bamboo.Slab, Bamboo.Planks,
+    BambooMosaic.Leaves, BambooMosaic.Door, BambooMosaic.Slab, BambooMosaic.Slab,
+    Crimson.Leaves, Crimson.Door, Crimson.Slab, Crimson.Slab,
+    Warped.Leaves, Warped.Door, Warped.Slab, Warped.Slab,
 
     SnowBlock, SnowLayerBlock,
     FernBlock.DeadBush, FernBlock.Grass, FernBlock.ShortGrass, FernBlock.Fern,

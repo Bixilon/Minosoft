@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,6 +47,15 @@ interface Azalea {
             override val identifier = minecraft("azalea_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
+        }
+    }
+
+    class Planks(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : PlanksBlock(identifier, settings), Azalea {
+
+        companion object : BlockFactory<Planks> {
+            override val identifier = minecraft("azalea_planks")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
         }
     }
 }
