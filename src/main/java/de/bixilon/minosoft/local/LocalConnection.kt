@@ -18,6 +18,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
+import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.local.storage.WorldStorage
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.protocol.ServerConnection
 import de.bixilon.minosoft.protocol.network.session.Session
@@ -77,6 +79,13 @@ class LocalConnection(
 
         session.events.fire(DimensionChangeEvent(session))
         session.state = PlaySessionStates.SPAWNING
+
+        val additional = session.player.additional
+
+        session.tabList.uuid[session.player.uuid] = additional
+        session.tabList.name[session.player.additional.name] = additional
+
+        session.events.fire(TabListEntryChangeEvent(session, mapOf(session.player.uuid to AdditionalDataUpdate())))
 
         session.player.physics.forceTeleport(Vec3d(0, 20, 0))
         session.state = PlaySessionStates.PLAYING
