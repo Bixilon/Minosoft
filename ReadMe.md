@@ -1,140 +1,89 @@
-# Minosoft
+# Minosoft Education
 
-[<img src="https://shields-io.bixilon.de/matrix/minosoft:matrix.org?style=for-the-badge">](https://matrix.to/#/#minosoft:matrix.org)
-<img src="https://shields-io.bixilon.de/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
-<img src="https://shields-io.bixilon.de/badge/license-GPLv3-brightgreen?style=for-the-badge">
+You are currently looking at the **education** edition of minosoft. Please choose `master` in the branch selection to get the normal edition.
+To get a general overview over this project, check out `master` too.
 
-Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(This is not a classical clone of minecraft, it completely re implements it!)  
-(This software is not affiliated with Mojang AB, the original developer of Minecraft)
+## Education
 
-New: There is an minimal education edition available, just check out the `education` branch.
+This edition is a fork of the "normal" edition and is really stripped down. It is meant to be used by teachers or individuals
+to learn object oriented programming with [Kotlin](https://kotlinlang.org/) or [Java](https://www.java.com/en/).
 
-<h2>Notice: I am *not* responsible for anti cheat banned accounts, this project ~~is heavily in development~~!</h2>
+## Licence
 
-This project is not actively developed anymore. This is due to time reasons and newer minecraft updates are getting larger and larger and I honestly can't keep up.
-I will still bring up fixes from time to time, might do some changes but don't expect too much. I am still happy to receive feedback and contributions are always welcome.
+This project is licenced under the GPLv3 licence, that pretty much means:
 
-## Feature overview
+- you can use it for **free** for whatever you want
+- You can not remove this copyright.
 
-- Rendering
-- Connect with any version to any server  (1.7 - 1.20.4)
-- [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
-- Free (as far as we consider original minecraft as free) and open source
-- Easy use of multiple accounts
-- Multiple connections to servers in 1 process
-- Multithreading and asynchronous loading
-- [Original physics](/doc/Physics.md)
-- Debugging on protocol layer
-- LAN servers
-- Multiple profiles (i.e. settings for servers or minosoft in general)
-- Modding
-- Independent, I will probably accept almost all patches
-- [Headless mode](/doc/Headless.md)
-- Way more stuff
+Additionally (not covered by the GPL licence) **only** for the education edition and if you just minosoft for **educational purposes**:
+You **don't** need to publish your changes made to the code.
 
-(some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md)). You can find information about the architecture design [here](/doc/Architecture.md)
+"Educational" purposes means (and only means) that you use this project to learn programming or are a teacher and want to use it in the classroom.
+
+## Differences to the normal edition
+
+Minosoft education is really limited. See all restrictions below (you don't want students to be distracted by video games; the focus is to learn coding).
+
+- No multiplayer; offline playing only
+- Limited world size (you can not leave the area)
+- Less world interactions (attacking entities, breaking/placing blocks, ...)
+- No commands, no chat
+- No items, enchantments, potions, ...
+- Only limited blocks (`stone`, `bedrock`, `cobblestone`, `oak_planks`, `oak_leaves`, `redstone_lamp`, ...)
+- Some limited entities
+
+Keep in mind, that this is just soft locked down, the original edition includes all those features.
+
+Internally it is running minecraft 1.16.5 in the background.
 
 ## System requirements
 
-- CPU: Multiple (4+) cores, high clock speed (2+ GHz)
-- RAM: Minimum 500 MiB, 1 GiB recommended
-- Disk space: 80 MiB + assets (~ 300 MiB per version)
-- GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
-- Java 11+, 16+ recommended (Java 8 is **not** supported).
-- A minecraft server (local or online)
+- OS: Windows/Linux/macOS
+- CPU: x64/x86 processor (arm 64 is supported on macOS and linux)
+- Memory: At least 150 MB free, 300 MB recommended
+- GPU: Pretty much anything will work, it just needs to support OpenGL 3.3+ (gpus form 2010 up)
+- Disk space: The executable (60MB) + 3 MB for assets like textures
+- Java 11+
+- No network is required (only for starting once, but it can also run completely offline, see #Offline)
 
-## Rendering
+Sadly due to not having opengl, the raspberry pi (or similar arm boards) are not supported, see [#77](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/77) for more details.
 
-### Features
+## Offline
 
-- Blocks
-- Entities
-- Block entities (e.g. signs, chests)
-- HUD and GUI (inventory, menus, ...)
-- Particles
-- Basic block and skylight (custom light engine)
-- Block and item interactions (e.g. place, break, mining)
-- A lot more, only listing major things here, see the screenshots:
+Minosoft itself needs network access to download some resources (download ~20MB; on disk ~3MB) which includes language files, block models and textures.
+This is because I don't own the copyright on the textures, they are directly taken from mojang.
+However, you can append those resources to the jar file, for complete offline usage.
+Keep in mind, that those files contain copyright protected files, you should not distribute those files in the internet (but mojang is pretty chill about it, see their [eula](https://www.minecraft.net/en-us/eula): "let other people get access to anything we've made in a way that is unfair or unreasonable.")
 
-![Rendering](doc/img/rendering5.png)  
-A world, with a ton of hud features exposed
+```
+Instructions following...
+```
 
-![Rendering](doc/img/hypixel_skyblock.png)  
-The Hypixel skyblock hub (don't try to make such a screenshot)
+## Customizing
 
-![Rendering](doc/img/afk_pool.png)  
-AFK Pooling, Hit boxes, particles, ...
+You can block/allow certain features, change the world size and more using a config file. This file needs to be added to the jar file and is called `education.json`.
 
-![Hypixel Lobby](doc/img/hypixel_lobby.png)  
-Lobby of hypixel.net with entities.
+```
+Instructions following...
+```
 
-![Rendering](doc/img/sunset.png)  
-A beautiful sunset
+## GUI
 
-![Eros](doc/img/eros.png)  
-[Eros](https://en.wikipedia.org/wiki/Eros) is the main gui. You can select your account/favorite server and then connect to it. Once everything is prepared, the rendering will start.
+There is a small debug gui, where you can reset the world, run custom functions or reload the code.
 
-## Version support
+## Developing (or "using")
 
-I always try to add support for the newest version of minecraft. Mostly it is pretty easy, just declaring it and generate all data. After pushing it, it is supported. Some versions are more complicated and need a bit of coding. I always try it as fast as possible, but sometimes I just need time.
+```
+Instructions following...
+```
 
-### Supported versions
-
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.4 as of writing this) are supported.  
-I plan to maintain Minosoft to at least version 1.20, so stay tuned, and support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.  
-See [Version support](/doc/VersionSupport.md) for more details.
-
-## Modding
-
-Works, still missing some features to make modding super easy (see e.g. [#12](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/12))
-
-### Botting
-
-Will be improved in the future.
-
-## Contribution or helping out
-
-Please do it. I am completely busy with the development. Grab pretty much whatever you want and start developing.
-(But before please take a look at [Contributing.md](/Contributing.md))
-
-## Credits and thanking words
-
-See [Credits](Credits.md).
-
-## Releases and beta
-
-No clue. Don't wait for it :)
-
-I invested many thousands of hours in this project to make it "work". A lot of vanillas features are actually implemented, but soo much is missing.
-A release normally means, that it is stable, has few (known) bugs and won't change that much in the near future.
-All those "requirements" are currently not fulfilled at all. It is just way to alpha atm. The current goal always was to play bedwars with this client and it actually worked on hypixel ([#42](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/42)).
-
-If you want to get notified when cool new features arrive or other interesting stuff happens were, feel free to subscribe to [@MinosoftDevNews](https://t.me/MinosoftDevNews).
-
-## Downloads / Installation
-
-### Linux, Windows, macOS
-
-The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/?ref=gitlab.bixilon.de)
-
-
-#### Arch
-
-Thanks to @jugendhacker you can get minosoft directly from the arch user repository (AUR): https://aur.archlinux.org/packages/minosoft-git/
 
 ## Building
 
 1. Install Java 11+ (e.g. `sudo apt install openjdk-11-jdk`). Windows users [download](https://www.azul.com/downloads/?package=jdk#zulu) and install java.
 2. Clone this repository (`git clone --depth=1 https://gitlab.bixilon.de/bixilon/minosoft.git`) or click on download master and extract the archive.
 3. Change directory (`cd minosoft`)
-4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
+4. Checkout the `education` branch (`git checkout education`)
 5. Build and run Minosoft with `./gradlew run` (or on windows `./gradlew.bat run`). Alternatively just click on `run.cmd`. If any errors occur, feel free to contact me or open an issue
-
-## Code mirrors
-
-- [gitlab.bixilon.de](https://gitlab.bixilon.de/bixilon/minosoft/) (Main repository)
-- [GitLab](https://gitlab.com/Bixilon/minosoft)
-- [GitHub](https://github.com/Bixilon/Minosoft/?ref=gitlab.bixilon.de)
-
-This project/readme is work in progress, things may change over time.
+6. Optional: Build a jar with `./gradlew -Pplatform=linux -Parchitecture=aarch64 fatJar` (change architecture and os where you want to execute the file later)
+   1. Create an offline and customized jar, see #Offline and #Customizing for instructions

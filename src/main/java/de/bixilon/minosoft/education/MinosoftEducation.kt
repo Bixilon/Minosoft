@@ -41,7 +41,9 @@ object MinosoftEducation {
 
     private fun getAccount(): Account {
         val profile = AccountProfileManager.selected
-        var name = System.getenv("USER")
+        var name = System.getProperty("user.name")
+        if (name.isBlank()) name = System.getenv("USER")
+        if (name.isBlank()) name = System.getenv("USERNAME")
         if (name.isBlank()) {
             name = "unknown"
         }

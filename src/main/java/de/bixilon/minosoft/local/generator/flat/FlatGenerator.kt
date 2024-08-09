@@ -34,7 +34,7 @@ open class FlatGenerator(
 
             for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    chunk[x, index + minY, z] = layer
+                    chunk[x, index + minY, z] = layer // TODO: batch updates
                 }
             }
         }
