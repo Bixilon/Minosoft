@@ -523,7 +523,7 @@ tasks.withType<JavaCompile> {
 }
 
 application {
-    mainClass.set("de.bixilon.minosoft.Minosoft")
+    mainClass.set("de.bixilon.minosoft.education.MinosoftEducation")
 }
 
 var destination: File? = null

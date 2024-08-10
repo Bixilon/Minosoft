@@ -41,11 +41,7 @@ import javafx.beans.property.BooleanPropertyBase
 import javafx.css.StyleableProperty
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
-import javafx.scene.control.Alert
-import javafx.scene.control.Labeled
-import javafx.scene.control.TableColumnBase
-import javafx.scene.control.TextField
-import javafx.scene.control.Tooltip
+import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -59,6 +55,7 @@ import java.io.File
 
 object JavaFXUtil {
     private const val DEFAULT_STYLE = "resource:minosoft:eros/style.css"
+    private const val EDUCATION_STYLE = "resource:minosoft:eros/education/education.css"
     private val SHOWING_FIELD = Window::class.java.getFieldOrNull("showing")!!
     private val MARK_INVALID_METHOD = BooleanPropertyBase::class.java.getDeclaredMethod("markInvalid").apply { setUnsafeAccessible() }
     private val stages = StageList()
@@ -81,6 +78,7 @@ object JavaFXUtil {
                 stage ?: break
                 stage.scene.stylesheets.clear()
                 stage.scene.stylesheets.add(DEFAULT_STYLE)
+                stage.scene.stylesheets.add(EDUCATION_STYLE)
                 stage.scene.stylesheets.add(getThemeURL(it))
             }
         }
@@ -95,6 +93,7 @@ object JavaFXUtil {
         stage.icons.setAll(MINOSOFT_LOGO)
 
         stage.scene.stylesheets.add(DEFAULT_STYLE)
+        stage.scene.stylesheets.add(EDUCATION_STYLE)
         val theme = ErosProfileManager.selected.theme.theme
         stage.scene.stylesheets.add(getThemeURL(theme))
 

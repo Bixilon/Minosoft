@@ -17,16 +17,20 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.education.config.EducationC
 import de.bixilon.minosoft.education.world.EducationGenerator
 import de.bixilon.minosoft.education.world.EducationStorage
+import de.bixilon.minosoft.gui.eros.education.EducationUI
 import de.bixilon.minosoft.local.LocalConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
@@ -37,7 +41,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 object MinosoftEducation {
-    val config: EducationC = EducationC()
+    var config: EducationC = EducationC()
 
     private fun getAccount(): Account {
         val profile = AccountProfileManager.selected
@@ -72,6 +76,9 @@ object MinosoftEducation {
         }
         session::error.observe(this) { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
         session.connect()
+
+        val ui = EducationUI(session)
+        ui.show()
     }
 
     fun setup() {
@@ -92,13 +99,18 @@ object MinosoftEducation {
         ResourcesProfileManager.selected.assets.indexAssetsTypes += IndexAssetsType.LANGUAGE
     }
 
+    fun loadSettings() {
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading education.json" }
+        val stream = IntegratedAssets.DEFAULT.getOrNull(minosoft("education.json")) ?: return
+        this.config = stream.readJson()
+    }
+
     @JvmStatic
     fun main(args: Array<String>) {
         setup()
-        Minosoft.main(emptyArray())
+        Minosoft.main(args)
         postSetup()
-
-        // TODO: load education.json
+        loadSettings()
 
         start()
     }

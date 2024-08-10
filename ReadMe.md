@@ -38,13 +38,15 @@ Internally it is running minecraft 1.16.5 in the background.
 
 ## System requirements
 
-- OS: Windows/Linux/macOS
+- OS: Windows/Linux/macOS (FreeBSD, [Android](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/71), Chrome OS, iOS are not supported)
 - CPU: x64/x86 processor (arm 64 is supported on macOS and linux)
-- Memory: At least 150 MB free, 300 MB recommended
+- Memory: At least 150 MB free, 300 MB+ recommended
 - GPU: Pretty much anything will work, it just needs to support OpenGL 3.3+ (gpus form 2010 up)
 - Disk space: The executable (60MB) + 3 MB for assets like textures
 - Java 11+
 - No network is required (only for starting once, but it can also run completely offline, see #Offline)
+
+Minosoft is really optimized and runs on really little hardware, ideal for schools/people with old computers.
 
 Sadly due to not having opengl, the raspberry pi (or similar arm boards) are not supported, see [#77](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/77) for more details.
 

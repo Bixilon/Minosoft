@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<!--
+  ~ Minosoft
+  ~ Copyright (C) 2020-2024 Moritz Zwerger
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+  ~
+  ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
+  -->
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18">
+    <GridPane>
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES"/>
+            <RowConstraints vgrow="SOMETIMES"/>
+            <RowConstraints vgrow="SOMETIMES"/>
+            <RowConstraints vgrow="SOMETIMES"/>
+            <RowConstraints vgrow="SOMETIMES"/>
+            <RowConstraints vgrow="SOMETIMES"/>
+        </rowConstraints>
+
+        <Label text="World"/>
+        <HBox GridPane.columnIndex="1">
+            <Button onAction="#reset" text="Reset"/>
+            <Button onAction="#killAll" text="Remove all"/>
+            <Button onAction="#freeze" text="Freeze"/>
+        </HBox>
+
+
+        <Label text="Blocks" GridPane.rowIndex="1"/>
+        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="50.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES"/>
+                    <RowConstraints vgrow="SOMETIMES"/>
+                    <RowConstraints vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <Label text="X"/>
+                <Label text="Y" GridPane.rowIndex="1"/>
+                <Label text="Z" GridPane.rowIndex="2"/>
+                <TextField fx:id="blockX" text="0" GridPane.columnIndex="1"/>
+                <TextField fx:id="blockY" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <TextField fx:id="blockZ" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            </GridPane>
+            <ComboBox fx:id="blockFX" prefWidth="200.0" GridPane.columnIndex="1"/>
+            <VBox GridPane.columnIndex="2">
+                <Button onAction="#getBlock" text="Get"/>
+                <Button onAction="#setBlock" text="Set"/>
+            </VBox>
+        </GridPane>
+
+        <Label text="Entities" GridPane.rowIndex="2"/>
+        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="200.0" prefWidth="200.0"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <ComboBox fx:id="entityFX" prefWidth="200.0"/>
+            <HBox GridPane.columnIndex="1">
+                <Button onAction="#kill" text="Remove"/>
+                <Button onAction="#highlight" text="Highlight"/>
+                <Button onAction="#teleport" text="Teleport"/>
+            </HBox>
+            <rowConstraints>
+                <RowConstraints/>
+            </rowConstraints>
+        </GridPane>
+
+
+        <Label text="Time" GridPane.rowIndex="3"/>
+        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints hgrow="SOMETIMES"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <TextFlow fx:id="timeStatus" styleClass="status,status-running">
+                <Text text="Running"/>
+            </TextFlow>
+            <Slider fx:id="timeSpeed" GridPane.columnIndex="1"/>
+            <HBox GridPane.columnIndex="2">
+                <Button onAction="#pause" text="Pause"/>
+                <Button onAction="#step" text="Step"/>
+            </HBox>
+        </GridPane>
+
+        <Label text="Code" GridPane.rowIndex="4"/>
+        <HBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <TextFlow fx:id="codeStatus" styleClass="status,status-terminated">
+                <Text text="Terminated"/>
+            </TextFlow>
+            <Button onAction="#stop" text="Terminate"/>
+            <Button onAction="#restart" text="Restart"/>
+            <Button onAction="#reload" text="Reload"/>
+        </HBox>
+
+        <Label text="Functions" GridPane.rowIndex="5"/>
+        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" prefWidth="200.0"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <ComboBox fx:id="functionsFX" prefWidth="200.0"/>
+            <HBox GridPane.columnIndex="1">
+                <Button onAction="#invoke" text="Invoke"/>
+            </HBox>
+            <rowConstraints>
+                <RowConstraints/>
+            </rowConstraints>
+        </GridPane>
+    </GridPane>
+</HBox>
