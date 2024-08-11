@@ -8,6 +8,8 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 (This is not a classical clone of minecraft, it completely re implements it!)  
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
+New: There is an minimal education edition available, just check out the `education` branch.
+
 <h2>Notice: I am *not* responsible for anti cheat banned accounts, this project ~~is heavily in development~~!</h2>
 
 This project is not actively developed anymore. This is due to time reasons and newer minecraft updates are getting larger and larger and I honestly can't keep up.
