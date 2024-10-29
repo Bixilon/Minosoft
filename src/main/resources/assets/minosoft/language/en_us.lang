@@ -230,6 +230,7 @@ minosoft:updater.available.dismiss=Dismiss
 minosoft:updater.available.later=Update later
 minosoft:updater.available.open=Open in browser
 minosoft:updater.available.update=Update now
+updater.available.unavailable=The update is not available for downloading.\nThe update is only built for linux (64bit) at the moment.\nIf you need it for a different platform, feel free to download it from github actions or build it yourself.\nSorry :(
 
 
 minosoft:updater.ask.title=Update checking

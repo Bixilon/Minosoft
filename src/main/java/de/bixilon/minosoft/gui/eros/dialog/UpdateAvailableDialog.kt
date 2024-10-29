@@ -30,6 +30,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.system.SystemUtil
 import javafx.fxml.FXML
 import javafx.scene.control.Button
+import javafx.scene.control.Tooltip
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
@@ -62,6 +63,11 @@ class UpdateAvailableDialog(
 
         openButtonFX.isDisable = update.page === null
         updateButtonFX.isDisable = update.download === null
+
+        if (update.download == null) {
+            val tooltip = Tooltip().apply { ctext = UNAVAILABLE; styleClass += "tooltip-error" }
+            Tooltip.install(updateButtonFX.parent, tooltip) // can not add to the button, because java fx sucks. disabled nodes don't get click/hover events
+        }
     }
 
     override fun postInit() {
@@ -107,5 +113,7 @@ class UpdateAvailableDialog(
         private val LATER = i18n("updater.available.later")
         private val OPEN = i18n("updater.available.open")
         private val UPDATE = i18n("updater.available.update")
+
+        private val UNAVAILABLE = i18n("updater.available.unavailable")
     }
 }
