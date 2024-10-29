@@ -59,7 +59,7 @@ class RenderLoop(
                 context.window.pollEvents()
             }
 
-            if (context.session.established || !context.state.active) {
+            if (context.state == RenderingStates.QUITTING || context.session.established || !context.state.active) {
                 break
             }
 
@@ -102,10 +102,6 @@ class RenderLoop(
             // handle opengl context tasks, but limit it per frame
             context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
-            if (context.state == RenderingStates.STOPPED) {
-                context.window.close()
-                break
-            }
             if (context.state == RenderingStates.SLOW && slowRendering) {
                 Thread.sleep(100L)
             }
@@ -122,6 +118,7 @@ class RenderLoop(
 
         Log.log(LogMessageType.RENDERING) { "Destroying render window..." }
         context.state = RenderingStates.STOPPED
+        context.window.forceClose()
         context.system.destroy()
         context.window.destroy()
         Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
