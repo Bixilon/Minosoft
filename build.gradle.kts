@@ -47,10 +47,10 @@ import java.util.stream.Collectors
 
 
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.21"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.2.2"
+    id("org.ajoberstar.grgit.service") version "5.3.0"
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
@@ -220,7 +220,7 @@ testing {
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:$glmVersion")
-                implementation("it.unimi.dsi:fastutil-core:8.5.13")
+                implementation("it.unimi.dsi:fastutil-core:8.5.15")
 
                 implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
 
@@ -274,7 +274,7 @@ testing {
             dependencies {
                 implementation(project())
 
-                implementation("org.objenesis:objenesis:3.3")
+                implementation("org.objenesis:objenesis:3.4")
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
@@ -357,17 +357,17 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.9")
-    implementation("com.google.guava", "guava", "33.0.0-jre")
-    implementation("dnsjava", "dnsjava", "3.5.3")
+    implementation("com.google.guava", "guava", "33.3.1-jre")
+    implementation("dnsjava", "dnsjava", "3.6.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.26.1")
+    implementation("org.jline", "jline", "3.27.1")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.6.1")
-    implementation("com.github.luben", "zstd-jni", "1.5.6-3", classifier = zstdNatives)
-    implementation("org.apache.commons", "commons-lang3", "3.14.0")
+    implementation("com.github.oshi", "oshi-core", "6.6.5")
+    implementation("com.github.luben", "zstd-jni", "1.5.6-7", classifier = zstdNatives)
+    implementation("org.apache.commons", "commons-lang3", "3.17.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
-    implementation("it.unimi.dsi", "fastutil-core", "8.5.13")
+    implementation("it.unimi.dsi", "fastutil-core", "8.5.15")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
 
 
@@ -403,7 +403,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "2.0.0"))
+    implementation(kotlin("reflect", "2.0.21"))
 
 
     // platform specific
