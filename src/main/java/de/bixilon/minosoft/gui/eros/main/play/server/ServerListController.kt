@@ -140,7 +140,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             }
             val profiles = SelectedProfiles(override)
             val session = PlaySession(
-                connection = NetworkConnection(ping.connection?.address ?: DNSUtil.getServerAddress(server.address), native = profiles.other.nativeNetwork),
+                connection = NetworkConnection(ping.address ?: DNSUtil.getServerAddress(server.address), native = profiles.other.nativeNetwork),
                 account = account,
                 version = version,
                 profiles = profiles

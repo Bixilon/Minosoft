@@ -21,6 +21,7 @@ minosoft:server_info.active_session=Connected
 minosoft:server_info.players_online=Players online
 minosoft:server_info.ping=Latency
 minosoft:server_info.delete.dialog.description=Do you really want to delete the server %1$s (%2$s)?
+minosoft:server_info.active_sessions=Sessions
 
 
 minosoft:session.dialog.verify_assets.title=Verifying assets... - Minosoft

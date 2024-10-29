@@ -18,6 +18,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.events.session.status.StatusSessionCreateEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.AddressResolver
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
@@ -36,6 +37,7 @@ class StatusSession(
     var forcedVersion: Version? = null,
 ) : Session() {
     var connection: NetworkConnection? = null
+    var address: ServerAddress? = null
     private var resolver: AddressResolver? = null
 
     var status: ServerStatus? by observed(null)
@@ -101,6 +103,7 @@ class StatusSession(
         pong = null
         serverVersion = null
         error = null
+        address = null
     }
 
     private fun tryNext(): Boolean {
