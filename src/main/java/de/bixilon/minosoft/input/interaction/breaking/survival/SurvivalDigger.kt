@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.item.items.tool.MiningTool
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
@@ -63,7 +64,7 @@ class SurvivalDigger(
         var speed = 1.0f
         var toolSpeed = 1.0f
         val block = target.state.block
-        val toolRequired = if (block is PixLyzerBlock) block.requiresTool else block is ToolRequirement
+        val toolRequired = if (block is PixLyzerBlock) block.requiresTool else (block is ToolRequirement && block !is HandBreakable)
         var isBestTool = !toolRequired
 
         if (stack != null && stack.item.item is MiningTool) {

@@ -23,9 +23,10 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.protocol.versions.Version
 
-abstract class PlanksBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, BlockStateBuilder, AxeRequirement, BlockWithItem<Item> {
+abstract class PlanksBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, BlockStateBuilder, AxeRequirement, HandBreakable, BlockWithItem<Item> {
     override val hardness get() = 2.0f
     override val item: Item = this::item.inject(identifier)
 

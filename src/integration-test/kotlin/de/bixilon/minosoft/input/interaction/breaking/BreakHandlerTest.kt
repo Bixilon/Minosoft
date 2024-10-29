@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
+import de.bixilon.minosoft.data.registries.blocks.types.wood.Oak
 import de.bixilon.minosoft.data.registries.effects.mining.MiningEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
@@ -164,35 +165,35 @@ class BreakHandlerTest {
 
 
     fun nothingPlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, ticks = 62)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
+        breakBlock(Oak.Planks.identifier, ticks = 62)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
     }
 
     fun pickaxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, WoodenTool.WoodenPickaxe, ticks = 62)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
+        breakBlock(Oak.Planks.identifier, WoodenTool.WoodenPickaxe, ticks = 62)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
     }
 
     fun woodenAxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, WoodenTool.WoodenAxe, ticks = 31)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(Oak.Planks.identifier, WoodenTool.WoodenAxe, ticks = 31)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun stoneAxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, StoneTool.StoneAxe, ticks = 16)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(Oak.Planks.identifier, StoneTool.StoneAxe, ticks = 16)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun ironAxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, IronTool.IronAxe, ticks = 11)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(Oak.Planks.identifier, IronTool.IronAxe, ticks = 11)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun diamondAxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, DiamondTool.DiamondAxe, ticks = 9)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(Oak.Planks.identifier, DiamondTool.DiamondAxe, ticks = 9)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun netheriteAxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, NetheriteTool.NetheriteAxe, ticks = 8)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(Oak.Planks.identifier, NetheriteTool.NetheriteAxe, ticks = 8)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun goldenAxePlanks() {
-        breakBlock(MinecraftBlocks.OAK_PLANKS, GoldenTool.GoldenAxe, ticks = 6)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(Oak.Planks.identifier, GoldenTool.GoldenAxe, ticks = 6)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun nothingEndStone() {
