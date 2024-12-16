@@ -47,7 +47,7 @@ import java.util.stream.Collectors
 
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.3.0"
@@ -85,7 +85,7 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath("de.bixilon", "kutil", "1.26.4")
+        classpath("de.bixilon", "kutil", "1.26.5")
     }
 }
 
@@ -176,7 +176,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.9.20")
+                implementation("org.jetbrains.kotlin:kotlin-test:2.1.0")
             }
 
             targets {
@@ -356,14 +356,14 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 }
 
 dependencies {
-    implementation("org.slf4j", "slf4j-api", "2.0.9")
+    implementation("org.slf4j", "slf4j-api", "2.0.16")
     implementation("com.google.guava", "guava", "33.3.1-jre")
     implementation("dnsjava", "dnsjava", "3.6.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.27.1")
+    implementation("org.jline", "jline", "3.28.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
     implementation("com.github.oshi", "oshi-core", "6.6.5")
-    implementation("com.github.luben", "zstd-jni", "1.5.6-7", classifier = zstdNatives)
+    implementation("com.github.luben", "zstd-jni", "1.5.6-8", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.17.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
@@ -403,7 +403,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "2.0.21"))
+    implementation(kotlin("reflect", "2.1.0"))
 
 
     // platform specific
