@@ -538,6 +538,8 @@ val fatJar = task("fatJar", type = Jar::class) {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     exclude("META-INF/maven/**")
+    // TODO: This is bad! dnsjava is a multi release jar, and that a class is only present with java>18. See https://github.com/dnsjava/dnsjava/issues/329 and https://github.com/Bixilon/Minosoft/issues/33
+    exclude("META-INF/services/java.net.spi.InetAddressResolverProvider")
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     with(tasks["jar"] as CopySpec)
 
@@ -545,7 +547,6 @@ val fatJar = task("fatJar", type = Jar::class) {
 
     // remote other platforms from com.sun.jna
     // remove most of it.unimi.fastutil classes
-    // remove META-INF/maven
 }
 
 
