@@ -18,8 +18,8 @@ import de.bixilon.kutil.time.TimeUtil.millis
 import kotlin.time.Duration.Companion.seconds
 
 class RenderStats : AbstractRenderStats {
-    override val avgDrawTime = LongAverage(3.seconds, Long.MAX_VALUE)
-    override val avgFrameTime = LongAverage(3.seconds, Long.MAX_VALUE)
+    override val avgDrawTime = LongAverage(1.seconds, Long.MAX_VALUE)
+    override val avgFrameTime = LongAverage(1.seconds, Long.MAX_VALUE)
     override var totalFrames: Long = 0L
         private set
 

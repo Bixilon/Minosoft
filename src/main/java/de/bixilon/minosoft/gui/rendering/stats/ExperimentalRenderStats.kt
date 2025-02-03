@@ -26,8 +26,8 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private val baseMultiplier = random.nextFloat(1.0f, 1.5f)
     private val baseJitter = random.nextInt(0, 20)
 
-    override val avgFrameTime = LongAverage(3.seconds)
-    override val avgDrawTime = LongAverage(3.seconds)
+    override val avgFrameTime = LongAverage(1.seconds)
+    override val avgDrawTime = LongAverage(1.seconds)
 
     private var lastSmoothFPSCalculationTime = 0L
     override var smoothAvgFPS: Double = 0.0
