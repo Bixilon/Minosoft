@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
@@ -63,7 +63,7 @@ class ChunkRenderer(
     val visibilityGraph = context.camera.visibilityGraph
     private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
     private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
-    val lock = SimpleLock()
+    val lock = RWLock.rwlock()
     val world: World = session.world
 
     val loaded = LoadedMeshes(this)

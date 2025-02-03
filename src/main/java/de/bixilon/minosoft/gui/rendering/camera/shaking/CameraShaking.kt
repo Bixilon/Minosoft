@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.shaking
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.swizzle.xz
-import de.bixilon.kutil.avg.FloatAverage
+import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
@@ -24,14 +24,15 @@ import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.Duration.Companion.milliseconds
 
 class CameraShaking(
     private val camera: Camera,
     private val profile: ShakingC,
 ) : Drawable {
     private var rotation = 0.0f
-    private var strength = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 1.0f)
-    private val speed = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
+    private var strength = FloatAverage((5 * ProtocolDefinition.TICK_TIME).milliseconds, 1.0f)
+    private val speed = FloatAverage((5 * ProtocolDefinition.TICK_TIME).milliseconds, 0.0f)
 
     val isEmpty: Boolean get() = rotation == 0.0f
 

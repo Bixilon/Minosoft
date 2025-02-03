@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.stats
 
 import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kutil.avg.Average
-import de.bixilon.kutil.avg.LongAverage
-import de.bixilon.kutil.random.RandomUtil.nextFloat
-import de.bixilon.kutil.random.RandomUtil.nextInt
+import de.bixilon.kutil.avg._long.LongAverage
 import de.bixilon.kutil.time.TimeUtil.millis
 import java.util.*
+import kotlin.time.Duration.Companion.seconds
 
 class ExperimentalRenderStats : AbstractRenderStats {
     private val renderStats = RenderStats()
@@ -28,8 +26,8 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private val baseMultiplier = random.nextFloat(1.0f, 1.5f)
     private val baseJitter = random.nextInt(0, 20)
 
-    override val avgFrameTime: Average<Long> = LongAverage(Long.MAX_VALUE)
-    override val avgDrawTime: Average<Long> = LongAverage(Long.MAX_VALUE)
+    override val avgFrameTime = LongAverage(3.seconds)
+    override val avgDrawTime = LongAverage(3.seconds)
 
     private var lastSmoothFPSCalculationTime = 0L
     override var smoothAvgFPS: Double = 0.0

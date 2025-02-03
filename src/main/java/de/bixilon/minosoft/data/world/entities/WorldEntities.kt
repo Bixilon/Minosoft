@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -34,7 +34,7 @@ class WorldEntities : Iterable<Entity> {
     val entities: MutableSet<Entity> by observedSet(mutableSetOf())
     private val ticker = EntityTicker(this)
 
-    val lock = SimpleLock()
+    val lock = RWLock.rwlock()
 
     val size: Int
         get() = entities.size

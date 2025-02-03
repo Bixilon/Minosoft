@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
@@ -24,7 +24,7 @@ class LoadedMeshes(
     private val renderer: ChunkRenderer,
 ) {
     val meshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<ChunkMeshes>> = hashMapOf() // all prepared (and up to date) meshes
-    private val lock = SimpleLock()
+    private val lock = RWLock.rwlock()
 
 
     val size: Int get() = meshes.size

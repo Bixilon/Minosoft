@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,6 +40,7 @@ import org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
+import kotlin.time.Duration.Companion.milliseconds
 
 
 class AudioPlayer(
@@ -234,7 +235,7 @@ class AudioPlayer(
             if (session.established || session.error != null) {
                 break
             }
-            queue.workBlocking(500L)
+            queue.workBlocking(500.milliseconds)
             calculateAvailableSources()
             while (!enabled) {
                 Thread.sleep(1L)

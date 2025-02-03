@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.AbstractLatch
@@ -37,7 +37,7 @@ abstract class DynamicTextureArray(
 ) : TextureArray {
     protected var textures: Array<WeakReference<DynamicTexture>?> = arrayOfNulls(initialSize)
     protected val shaders: MutableSet<NativeShader> = mutableSetOf()
-    private val lock = ThreadLock()
+    private val lock = ReentrantRWLock()
     private var reload = false
 
     val capacity get() = textures.size

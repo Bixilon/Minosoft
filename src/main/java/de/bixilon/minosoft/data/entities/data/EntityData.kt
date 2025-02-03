@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.data
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.logging.Log
@@ -28,10 +28,10 @@ class EntityData(
     val session: PlaySession,
     data: Int2ObjectOpenHashMap<Any?>? = null,
 ) {
-    private val lock = SimpleLock()
+    private val lock = RWLock.rwlock()
     private val data: Int2ObjectOpenHashMap<Any> = Int2ObjectOpenHashMap()
     private val observers: Int2ObjectOpenHashMap<MutableSet<(Any?) -> Unit>> = Int2ObjectOpenHashMap()
-    private val observersLock = SimpleLock()
+    private val observersLock = RWLock.rwlock()
 
     init {
         data?.let { merge(it) }

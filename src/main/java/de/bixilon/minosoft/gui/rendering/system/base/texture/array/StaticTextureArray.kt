@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
@@ -35,7 +35,7 @@ abstract class StaticTextureArray(
 ) : TextureArray {
     protected val named: MutableMap<ResourceLocation, Texture> = mutableMapOf()
     protected val other: MutableSet<Texture> = mutableSetOf()
-    private val lock = SimpleLock()
+    private val lock = RWLock.rwlock()
 
     val animator = SpriteAnimator(context)
     var state: TextureArrayStates = TextureArrayStates.DECLARED

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network
 
-import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -37,7 +37,7 @@ class NetworkConnection(
     override val identifier = address.toString()
     override var active by observed(false)
         private set
-    var state: ProtocolStates? by DataObserver(null, ThreadLock())
+    var state: ProtocolStates? by DataObserver(null, RWLock.rwlock())
 
     init {
         this::state.observe(this) { active = it != null }

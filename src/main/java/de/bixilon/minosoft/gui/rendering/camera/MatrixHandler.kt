@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.avg.FloatAverage
+import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
@@ -36,6 +36,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.Duration.Companion.milliseconds
 
 class MatrixHandler(
     private val context: RenderContext,
@@ -68,7 +69,7 @@ class MatrixHandler(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
-    private var dynamicFOV = FloatAverage(3 * ProtocolDefinition.TICK_TIME * 1_000_000L, 1.0f)
+    private var dynamicFOV = FloatAverage((3 * ProtocolDefinition.TICK_TIME).milliseconds, 1.0f)
 
     private fun calculateFOV(): Float {
         var fov = profile.fov

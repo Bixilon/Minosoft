@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ChannelS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val messageId = buffer.readVarInt()
     val channel = buffer.readResourceLocation()
-    val data: ByteArray = buffer.readRest()
+    val data: ByteArray = buffer.readRemaining()
 
     override fun handle(session: PlaySession) {
         session.channels.login.handle(messageId, channel, data)

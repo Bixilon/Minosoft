@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.file.FileUtil.mkdirParent
 import de.bixilon.kutil.file.watcher.FileWatcherService
@@ -57,7 +57,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     abstract val type: ProfileType<P>
 
 
-    private val lock = SimpleLock()
+    private val lock = RWLock.rwlock()
     val profiles: AbstractMutableBiMap<String, P> by observedBiMap(mutableBiMapOf())
     var selected: P by observed(unsafeNull())
 

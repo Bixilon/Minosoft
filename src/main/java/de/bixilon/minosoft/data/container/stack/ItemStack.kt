@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.container.stack
 
-import de.bixilon.kutil.concurrent.lock.simple.ParentLock
-import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
+import de.bixilon.kutil.concurrent.lock.locks.ParentLock
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
 class ItemStack {
-    val lock = ParentLock(lock = ThreadLock())
+    val lock = ParentLock(lock = ReentrantRWLock())
     val item: ItemProperty
     var holder: HolderProperty? = null
 

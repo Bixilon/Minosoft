@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.collections.spliterator.async.ConcurrentSpliterator
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderer<*>> {
-    val lock = SimpleLock()
+    val lock = RWLock.rwlock()
     private val renderers: LockMap<Entity, EntityRenderer<*>> = LockMap(HashMap(), lock)
 
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
@@ -57,7 +57,7 @@ object LightTestingUtil {
     fun createEmptyChunk(position: ChunkPosition): Chunk {
         val objenesis = ObjenesisStd()
         val chunk = objenesis.newInstance(Chunk::class.java)
-        chunk::lock.forceSet(ThreadLock())
+        chunk::lock.forceSet(RWLock.rwlock())
         chunk::chunkPosition.forceSet(position)
         chunk::world.forceSet(world)
         chunk::maxSection.forceSet(chunk.world.dimension.maxSection)

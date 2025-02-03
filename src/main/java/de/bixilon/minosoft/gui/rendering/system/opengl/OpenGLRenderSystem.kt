@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.lock.thread.ThreadMissmatchException
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -307,7 +306,7 @@ class OpenGLRenderSystem(
         val thread = thread ?: throw IllegalStateException("Not yet initialized!")
         val current = Thread.currentThread()
         if (thread !== current) {
-            throw ThreadMissmatchException(thread, current)
+            throw Exception("Thread mismatch: thread=$thread, current=$current")
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.config.profile.storage
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.FileInputStream
 
 object ProfileIOManager {
-    private val lock = SimpleLock()
+    private val lock = Lock.lock()
     private val notify = SimpleLatch(0)
     private val save: MutableSet<FileStorage> = mutableSetOf()
     private val delete: MutableSet<FileStorage> = mutableSetOf()

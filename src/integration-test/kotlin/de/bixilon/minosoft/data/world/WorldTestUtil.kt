@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
@@ -44,7 +44,7 @@ object WorldTestUtil {
     fun createWorld(session: PlaySession?, light: Boolean = false, capacity: Int = 0): World {
         val world = IT.OBJENESIS.newInstance(World::class.java)
         world::occlusion.forceSet(DataObserver(0))
-        world::lock.forceSet(SimpleLock())
+        world::lock.forceSet(RWLock.rwlock())
         world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity), 0))
         world::border.forceSet(WorldBorder())
         world::dimension.forceSet(DataObserver(DimensionProperties(light = light, skyLight = light)))

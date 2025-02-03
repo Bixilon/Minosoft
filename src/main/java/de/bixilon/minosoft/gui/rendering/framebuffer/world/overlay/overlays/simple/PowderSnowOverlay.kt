@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,18 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.kutil.avg.FloatAverage
+import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import kotlin.time.Duration.Companion.seconds
 
 class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.session.profiles.rendering.overlay
     override val texture: Texture = context.textures.static.create(OVERLAY_TEXTURE)
-    private val strength = FloatAverage(1L * 1000000000L, 0.0f)
+    private val strength = FloatAverage(1.seconds, 0.0f)
     override var render: Boolean = false
         get() = config.powderSnow && field
 
