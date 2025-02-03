@@ -51,7 +51,7 @@ plugins {
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.3.0"
-    id("com.github.ben-manes.versions") version "0.51.0"
+    id("com.github.ben-manes.versions") version "0.52.0"
 }
 
 fun getProperty(name: String): String {
@@ -357,13 +357,13 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.16")
-    implementation("com.google.guava", "guava", "33.3.1-jre")
-    implementation("dnsjava", "dnsjava", "3.6.2")
+    implementation("com.google.guava", "guava", "33.4.0-jre")
+    implementation("dnsjava", "dnsjava", "3.6.3")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.28.0")
+    implementation("org.jline", "jline", "3.29.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.6.5")
-    implementation("com.github.luben", "zstd-jni", "1.5.6-8", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.6.6")
+    implementation("com.github.luben", "zstd-jni", "1.5.6-9", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.17.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
