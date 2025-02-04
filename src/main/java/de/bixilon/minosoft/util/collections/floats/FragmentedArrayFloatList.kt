@@ -154,11 +154,11 @@ class FragmentedArrayFloatList(
                 first.put(value1); first.put(value2); first.put(value3); first.put(value4); first.put(value5); first.put(value6); first.put(value7)
                 size += 7
                 invalidateOutput()
-                if (left >= 8) {
+                if (left == 7) {
                     tryPush(first)
                 }
+                return
             }
-            return
         }
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 6)
