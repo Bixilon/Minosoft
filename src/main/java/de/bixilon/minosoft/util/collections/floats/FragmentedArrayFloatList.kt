@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -147,6 +147,19 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float, value7: Float) {
+        val first = this.incomplete.firstOrNull()
+        if (first != null) {
+            val left = first.limit() - first.position()
+            if (left >= 7) {
+                first.put(value1); first.put(value2); first.put(value3); first.put(value4); first.put(value5); first.put(value6); first.put(value7)
+                size += 7
+                invalidateOutput()
+                if (left >= 8) {
+                    tryPush(first)
+                }
+            }
+            return
+        }
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 6)
         buffer = batchAdd(value2, buffer, 5)
