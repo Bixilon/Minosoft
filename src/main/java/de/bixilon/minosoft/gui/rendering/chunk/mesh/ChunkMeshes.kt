@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,9 +32,9 @@ class ChunkMeshes(
     smallMesh: Boolean = false,
 ) : BlockVertexConsumer {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
-    var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 100000)
-    var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 10000)
-    var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 5000 else 50000)
+    var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 8192 else 65536)
+    var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 4096 else 16384)
+    var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 1024 else 4096)
     var blockEntities: ArrayList<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling

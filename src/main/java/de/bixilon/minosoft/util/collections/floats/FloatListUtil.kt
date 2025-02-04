@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ object FloatListUtil {
     const val PREFER_FRAGMENTED = true
 
     val FLOAT_PUT_METHOD = catchAll { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
-    const val DEFAULT_INITIAL_SIZE = 1000
+    const val DEFAULT_INITIAL_SIZE = 1024
 
     fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE): AbstractFloatList {
         return if (PREFER_FRAGMENTED) FragmentedArrayFloatList(initialSize) else BufferedArrayFloatList(initialSize)
