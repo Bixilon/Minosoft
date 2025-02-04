@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -314,6 +314,41 @@ class SolidSectionMesherTest {
 
         assertEquals(queue.blocks.size, 7)
     }
+    /*
+    @Test
+    fun benchmark() {
+        MinosoftSIT.setup()
+        RenderTestLoader().init()
+        val session =SessionTestUtil.createSession(worldSize = 2)
+        val context = createContext(session)
+        val mesher = SolidSectionMesher(context)
+        
+        val chunk = session.world.chunks[0,0]!!
+        val section = chunk.getOrPut(2,false)!!
+        
+        val random = Random(12L.murmur64())
+        val block = session.registries.block[StoneBlock.Block]!!.states.default
+        for(index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            if(!random.nextBoolean()) continue
+            section.blocks[index] = block
+        }
+        
+        println("Starting")
+
+       val time =  measureTime {
+            for (i in 0 until 30_000) {
+                val meshes = ChunkMeshes(context, chunk.chunkPosition, 2, true)
+
+                mesher.mesh(chunk.chunkPosition, 2, chunk, section, chunk.neighbours.get()!!, section.neighbours!!, meshes)
+                
+                meshes.unload()
+            }
+        }
+        println("Took: ${time.inWholeNanoseconds.formatNanos()}")
+    }
+    
+     */
+
     // TODO: test sign block entity rendering
     // TODO: test skylight (w/ heightmap), fast bedrock, camera offset, block random offset
 
