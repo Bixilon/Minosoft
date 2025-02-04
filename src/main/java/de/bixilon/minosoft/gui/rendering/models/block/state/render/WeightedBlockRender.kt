@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
@@ -39,6 +40,7 @@ class WeightedBlockRender(
     val totalWeight: Int,
 ) : BlockRender {
     private val properties = models.getProperties()
+    private val unpacked = unpack(totalWeight, models)
 
     override fun getProperties(direction: Directions): SideProperties? {
         return properties[direction.ordinal] // TODO: get random block model
@@ -49,6 +51,10 @@ class WeightedBlockRender(
         random.setSeed(position.positionHash)
 
         var weightLeft = abs(random.nextLong().toInt() % totalWeight)
+
+        if (unpacked != null) {
+            return unpacked[weightLeft]
+        }
 
         for ((weight, model) in models) {
             weightLeft -= weight
@@ -117,5 +123,25 @@ class WeightedBlockRender(
         }
 
         return sizes
+    }
+
+    companion object {
+        const val UNPACK_LIMIT = 20
+
+        private fun unpack(total: Int, models: Array<WeightedEntry>): Array<BakedModel>? {
+            if (total >= UNPACK_LIMIT) return null
+
+            val unpacked = arrayOfNulls<BakedModel>(total)
+
+            var index = 0
+            for ((weight, model) in models) {
+                for (i in 0 until weight) {
+                    unpacked[index] = model
+                    index++
+                }
+            }
+
+            return unpacked.cast()
+        }
     }
 }
