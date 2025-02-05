@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,15 +24,23 @@ class LocalChunkManager(
     val storage: WorldStorage,
     val generator: ChunkGenerator,
 ) {
+    private var previous = ChunkPosition(Int.MAX_VALUE)
 
     fun update() {
         val position = session.player.physics.positionInfo.chunkPosition
+        if (position == previous) return
+        previous = position
+        forceUpdate(position)
+    }
+
+    fun forceUpdate(position: ChunkPosition = session.player.physics.positionInfo.chunkPosition) {
         val distance = session.profiles.block.viewDistance
 
         // TODO: This is rather slow and only catches the player, but works
         unloadAll(position, distance)
         load(position, distance)
     }
+
 
     private fun unloadAll(center: ChunkPosition, distance: Int) {
         session.world.lock.lock()
