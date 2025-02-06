@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -118,7 +118,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (versionId < V_1_9_4) return null
         val count = readVarInt()
         if (count <= 0) return null
-        val entities: MutableMap<Vec3i, JsonObject> = hashMapOf()
+        val entities: MutableMap<Vec3i, JsonObject> = HashMap(count)
 
         when {
             versionId < V_21W37A -> {
@@ -127,6 +127,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val nbt = readNBT()?.asJsonObject() ?: continue
                     val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                     val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
+                    if (nbt.size <= 4) continue // no additional data
                     val type = session.registries.blockEntityType[id] ?: continue
 
                     entities[position] = nbt
@@ -139,6 +140,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val y = readShort()
                     val type = session.registries.blockEntityType.getOrNull(readVarInt())
                     val nbt = readNBT()?.asJsonObject() ?: continue
+                    if (nbt.isEmpty()) continue
                     if (type == null) continue
 
                     entities[Vec3i(xz shr 4, y, xz and 0x0F)] = nbt

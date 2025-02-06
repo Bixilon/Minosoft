@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -101,6 +101,7 @@ class ChunkPrototype(
     }
 
     private fun Map<Vec3i, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, session: PlaySession) {
+        val empty = isNullOrEmpty()
         val position = Vec3i()
         for ((index, section) in chunk.sections.withIndex()) {
             if (section == null || section.blocks.isEmpty) continue
@@ -123,7 +124,9 @@ class ChunkPrototype(
                             entity = block.createBlockEntity(session) ?: continue
                             section.blockEntities[index] = entity
                         }
-                        this?.get(position)?.let { entity.updateNBT(it) }
+                        if (!empty) {
+                            this!![position]?.let { entity.updateNBT(it) }
+                        }
                         affected?.add(sectionHeight)
                     }
                 }
