@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,7 +42,7 @@ class ChunkMesher(
         try {
             solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
 
-            if (item.section.blocks.fluidCount > 0) {
+            if (item.section.blocks.hasFluid) {
                 fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
             }
         } catch (exception: Exception) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ class BlockSectionDataProvider(
     val section: ChunkSection,
 ) : SectionDataProvider<BlockState?>(lock, true) {
     val occlusion = SectionOcclusion(this)
-    var fluidCount = 0
+    var hasFluid = false
         private set
 
     init {
@@ -37,22 +37,33 @@ class BlockSectionDataProvider(
         recalculate(true)
     }
 
-    fun recalculate(notify: Boolean) {
-        super.recalculate()
+    private fun recalculateFluid() {
         val data: Array<Any?> = data ?: return
         if (isEmpty) {
-            fluidCount = 0
-            occlusion.clear(notify)
+            this.hasFluid = false
             return
         }
 
-        fluidCount = 0
-        for (blockState in data) {
-            blockState as BlockState?
-            if (blockState.isFluid()) {
-                fluidCount++
+        var hasFluid = false
+        for (state in data) {
+            if (state !is BlockState?) continue
+            if (state.isFluid()) {
+                hasFluid = true
+                break
             }
         }
+        this.hasFluid = hasFluid
+    }
+
+    fun recalculate(notify: Boolean) {
+        super.recalculate()
+        if (isEmpty) {
+            hasFluid = false
+            occlusion.clear(notify)
+            return
+        }
+        recalculateFluid()
+
         occlusion.recalculate(notify)
     }
 
@@ -63,9 +74,9 @@ class BlockSectionDataProvider(
         val valueFluid = value.isFluid()
 
         if (!previousFluid && valueFluid) {
-            fluidCount++
+            hasFluid = true
         } else if (previousFluid && !valueFluid) {
-            fluidCount--
+            recalculateFluid()
         }
 
         return previous

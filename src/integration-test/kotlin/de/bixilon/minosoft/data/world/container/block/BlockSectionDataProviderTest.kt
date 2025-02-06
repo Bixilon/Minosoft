@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.container.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.registries.blocks.WaterTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.test.ITUtil.allocate
@@ -31,7 +32,7 @@ class BlockSectionDataProviderTest {
     fun `initial empty`() {
         val blocks = create()
         assertTrue(blocks.isEmpty)
-        assertEquals(blocks.fluidCount, 0)
+        assertFalse(blocks.hasFluid)
         assertEquals(blocks.count, 0)
     }
 
@@ -40,7 +41,7 @@ class BlockSectionDataProviderTest {
         blocks[0] = StoneTest0.state
         blocks[0] = null
         assertTrue(blocks.isEmpty)
-        assertEquals(blocks.fluidCount, 0)
+        assertFalse(blocks.hasFluid)
         assertEquals(blocks.count, 0)
     }
 
@@ -48,7 +49,15 @@ class BlockSectionDataProviderTest {
         val blocks = create()
         blocks[0] = StoneTest0.state
         assertFalse(blocks.isEmpty)
-        assertEquals(blocks.fluidCount, 0)
+        assertFalse(blocks.hasFluid)
+        assertEquals(blocks.count, 1)
+    }
+
+    fun `single water set`() {
+        val blocks = create()
+        blocks[0] = WaterTest0.state
+        assertFalse(blocks.isEmpty)
+        assertTrue(blocks.hasFluid)
         assertEquals(blocks.count, 1)
     }
 
@@ -90,6 +99,31 @@ class BlockSectionDataProviderTest {
         blocks[15, 14, 13] = null
         assertEquals(blocks.maxPosition, Vec3i(3, 5, 12))
     }
+
+
+    /*
+    fun benchmark() {
+        val water = WaterTest0.state
+        val stone = StoneTest0.state
+        val random = Random(12)
+
+        val data = create()
+        for (i in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            if (random.nextBoolean()) {
+                data[i] = water
+            } else if (random.nextBoolean()) {
+                data[i] = stone
+            }
+        }
+
+        val time = measureTime {
+            for (i in 0 until 1999_999) {
+                data.recalculate(false)
+            }
+        }
+        println("Took: ${time.inWholeNanoseconds.formatNanos()}")
+    }
+     */
 
     // TODO: test initial block set
 }
