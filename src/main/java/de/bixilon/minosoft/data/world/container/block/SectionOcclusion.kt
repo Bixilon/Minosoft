@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,12 +21,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
+import java.util.*
 
 class SectionOcclusion(
     val provider: BlockSectionDataProvider,
 ) {
     private var occlusion = EMPTY
     private var calculate = false
+    private val regions by lazy { ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION) }
 
     fun clear(notify: Boolean) {
         update(EMPTY, notify)
@@ -84,8 +86,7 @@ class SectionOcclusion(
 
     private fun floodFill(): ShortArray {
         // mark regions and check direct neighbours
-        val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
-
+        Arrays.fill(regions, 0.toShort())
 
         var next: Short = 0
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
