@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.effects.attributes.container
 
+import de.bixilon.minosoft.data.registries.effects.attributes.AttributeOperations
 import java.util.*
 
 class AttributeContainer(
@@ -40,6 +41,19 @@ class AttributeContainer(
         for ((uuid, modifier) in update.modifier) {
             this.modifier[uuid] = modifier
         }
+    }
+
+
+    fun process(): Map<AttributeOperations, Set<AttributeModifier>> {
+        // ToDo: Deduplicate uuids?
+        if (modifier.isEmpty()) return emptyMap()
+        val result: MutableMap<AttributeOperations, MutableSet<AttributeModifier>> = EnumMap(AttributeOperations::class.java)
+
+        for (modifier in this) {
+            result.getOrPut(modifier.operation) { mutableSetOf() } += modifier
+        }
+
+        return result
     }
 
     operator fun contains(uuid: UUID) = uuid in modifier

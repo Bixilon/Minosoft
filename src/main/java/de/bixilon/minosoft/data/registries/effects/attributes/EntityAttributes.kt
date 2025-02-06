@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -64,9 +64,9 @@ class EntityAttributes(
     }
 
     operator fun get(type: AttributeType, fallback: Double = this.fallback[type] ?: type.fallback): Double {
-        val attributes = this.attributes[type]
-        val base = attributes?.base ?: fallback
-        val modifiers = process(attributes)
+        val attributes = this.attributes[type] ?: return fallback
+        val modifiers = attributes.process()
+        val base = attributes.base
 
         var added = base
         for (modifier in modifiers[AttributeOperations.ADD] ?: emptySet()) {
