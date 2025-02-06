@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.RendererPipeline
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.concurrent.LinkedBlockingQueue
 
 class RendererManager(
     val context: RenderContext,
@@ -96,20 +96,25 @@ class RendererManager(
     }
 
     private fun prepare() {
-        val latch = SimpleLatch(0)
-        val worker = UnconditionalWorker(autoWork = true)
-        
+        val queue = LinkedBlockingQueue<Renderer>()
+        var total = 0
+
         for (renderer in list) {
+            total++
             renderer.prePrepareDraw()
             if (renderer is AsyncRenderer) {
-                worker += UnconditionalTask(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
+                context.runAsync { renderer.prepareDrawAsync(); queue += renderer }
+            } else {
+                queue += renderer
             }
         }
 
-        worker.work(latch)
-
-        for (renderer in list) {
-            renderer.postPrepareDraw()
+        var done = 0
+        while (true) {
+            if (done >= total) break
+            val element = queue.take()
+            element.postPrepareDraw()
+            done++
         }
     }
 
