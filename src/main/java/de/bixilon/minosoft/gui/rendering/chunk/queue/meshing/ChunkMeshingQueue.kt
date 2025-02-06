@@ -30,7 +30,7 @@ class ChunkMeshingQueue(
 ) {
     private val comparator = ChunkQueueComparator()
     val tasks = MeshPrepareTaskManager(renderer)
-    val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 150 else 80
+    val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 100 else 60
 
     @Volatile
     private var working = false

@@ -47,7 +47,6 @@ class ChunkMeshes(
         this.textMesh?.preload()
     }
 
-    @Synchronized
     fun load() {
         this.opaqueMesh?.load()
         this.translucentMesh?.load()
@@ -60,7 +59,6 @@ class ChunkMeshes(
         }
     }
 
-    @Synchronized
     fun clearEmpty(): Int {
         var meshes = 0
 
