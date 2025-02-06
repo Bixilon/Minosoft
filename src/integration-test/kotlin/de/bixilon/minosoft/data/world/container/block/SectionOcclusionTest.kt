@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,11 +32,13 @@ class SectionOcclusionTest {
 
     private fun create(): SectionOcclusion {
         val blocks = BlockSectionDataProvider::class.java.allocate()
-        blocks::occlusion.forceSet(SectionOcclusion(blocks))
-        return blocks.occlusion
+        val occlusion = SectionOcclusion(blocks)
+        blocks::occlusion.forceSet(occlusion)
+        return occlusion
     }
 
     private operator fun SectionOcclusion.set(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, state: BlockState?) {
+        CALCULATE.setBoolean(this, false)
         for (y in minY..maxY) {
             for (z in minZ..maxZ) {
                 for (x in minX..maxX) {
@@ -44,11 +46,11 @@ class SectionOcclusionTest {
                 }
             }
         }
+        CALCULATE.setBoolean(this, true)
     }
 
     private val SectionOcclusion.occlusion: BooleanArray
         get() {
-            CALCULATE.setBoolean(this, true)
             recalculate(false)
             return OCCLUSION[this].unsafeCast()
         }
@@ -88,6 +90,26 @@ class SectionOcclusionTest {
         occlusion[4, 0, 4, 4, 0, 4] = transparent
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
+
+    /*
+    fun benchmark() {
+        val occlusion = create()
+        val stone = StoneTest0.state
+        val random = Random(12)
+        for (i in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            if (random.nextBoolean()) {
+                occlusion.provider[i] = stone
+            }
+        }
+        CALCULATE.setBoolean(occlusion, true)
+        val time = measureTime {
+            for (i in 0 until 1999_99) {
+                occlusion.recalculate(false)
+            }
+        }
+        println("Took: ${time.inWholeNanoseconds.formatNanos()}")
+    }
+     */
 
     // TODO: Test more possible cases
 }
