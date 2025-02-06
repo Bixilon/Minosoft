@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.util.crash.freeze
 
+import de.bixilon.kutil.concurrent.lock.RWLock
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.file.FileUtil.slashPath
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
@@ -49,6 +53,9 @@ object FreezeDumpUtil {
         builder.append("-- Pool --")
         builder.appendLine()
         builder.append(createThreadPoolDump())
+        builder.append("-- Locks --")
+        builder.appendLine()
+        builder.append(createLockDump())
 
 
         val dump = builder.toString()
@@ -77,7 +84,7 @@ object FreezeDumpUtil {
         val dump = StringBuffer(System.lineSeparator())
         val threadMXBean = ManagementFactory.getThreadMXBean()
         for (threadInfo in threadMXBean.dumpAllThreads(true, true)) {
-            dump.append(threadInfo.toString())
+            dump.append(threadInfo.toString()) // TODO: threadInfo.toString() is limited to 8 frames!
         }
 
         return dump
@@ -89,5 +96,24 @@ object FreezeDumpUtil {
         val queue = tasks.get(DefaultThreadPool) as PriorityBlockingQueue<ThreadPoolRunnable>
 
         return queue.toString()
+    }
+
+    private fun RWLock.owner() = when (this) {
+        is ReentrantRWLock -> owner()
+        else -> "unknown"
+    }
+
+    private fun ReentrantRWLock.owner() = this::class.java.getFieldOrNull("lock")?.field?.get<Any>(this).toString()
+
+    private fun createLockDump(): String {
+        val dump = StringBuffer()
+
+        for (session in PlaySession.collectSessions()) {
+            dump.appendLine()
+            dump.append("#${session.id}\n")
+            dump.append("    world: ${session.world.lock.owner()}\n")
+            dump.append("    entities: ${session.world.entities.lock.owner()}\n")
+        }
+        return dump.toString()
     }
 }
