@@ -36,6 +36,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.queue.queue.ChunkQueueMaster
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
@@ -56,7 +57,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkRenderer(
     val session: PlaySession,
     override val context: RenderContext,
-) : WorldRenderer {
+) : WorldRenderer, AsyncRenderer {
     override val layers = LayerSettings()
     private val profile = session.profiles.block
     override val renderSystem: RenderSystem = context.system
@@ -207,7 +208,7 @@ class ChunkRenderer(
         lock.unlock()
     }
 
-    override fun prePrepareDraw() {
+    override fun prepareDrawAsync() {
         meshingQueue.work()
     }
 
