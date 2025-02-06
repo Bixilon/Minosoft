@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -96,16 +96,16 @@ class RendererManager(
     }
 
     private fun prepare() {
+        val latch = SimpleLatch(0)
+        val worker = UnconditionalWorker(autoWork = true)
+        
         for (renderer in list) {
             renderer.prePrepareDraw()
+            if (renderer is AsyncRenderer) {
+                worker += UnconditionalTask(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
+            }
         }
 
-        val latch = SimpleLatch(0)
-        val worker = UnconditionalWorker()
-        for (renderer in list) {
-            if (renderer !is AsyncRenderer) continue
-            worker += UnconditionalTask(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
-        }
         worker.work(latch)
 
         for (renderer in list) {
