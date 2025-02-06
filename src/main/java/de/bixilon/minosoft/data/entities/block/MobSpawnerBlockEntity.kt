@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 
 class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
     private val smokeParticleType = session.registries.particleType[SmokeParticle]
@@ -36,7 +37,15 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
 
 
     private fun isPlayerInRange(blockPosition: Vec3i): Boolean {
-        return session.world.entities.getInRadius(blockPosition.center, requiredPlayerRange.toDouble(), WorldEntities.CHECK_CLOSEST_PLAYER).isNotEmpty()
+        val lock = session.world.entities.lock
+        if (!lock.acquire(10.milliseconds)) {  // Deadlock workaround
+            return false
+        }
+
+        val inRadius = session.world.entities.getInRadius(blockPosition.center, requiredPlayerRange.toDouble(), WorldEntities.CHECK_CLOSEST_PLAYER).isNotEmpty()
+        lock.release()
+
+        return inRadius
     }
 
     private fun spawnParticles(blockPosition: Vec3i, random: Random) {
