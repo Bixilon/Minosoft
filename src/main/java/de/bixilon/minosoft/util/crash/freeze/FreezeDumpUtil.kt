@@ -17,7 +17,8 @@ import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
@@ -28,7 +29,6 @@ import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
-import java.util.concurrent.PriorityBlockingQueue
 
 
 object FreezeDumpUtil {
@@ -46,16 +46,35 @@ object FreezeDumpUtil {
         builder.append("--- Freeze dump ----")
         builder.appendLine()
         builder.appendLine()
-        builder.append("-- Thread dump --")
         builder.appendLine()
-        builder.append(createThreadDump())
-        builder.appendLine()
-        builder.append("-- Pool --")
-        builder.appendLine()
-        builder.append(createThreadPoolDump())
-        builder.append("-- Locks --")
-        builder.appendLine()
-        builder.append(createLockDump())
+        ignoreAll {
+            builder.append("-- Thread dump --")
+            builder.appendLine()
+            builder.append(createThreadDump())
+            builder.appendLine()
+            builder.appendLine()
+        }
+        ignoreAll {
+            builder.append("-- Pool --")
+            builder.appendLine()
+            builder.append(createThreadPoolDump())
+            builder.appendLine()
+            builder.appendLine()
+        }
+        ignoreAll {
+            builder.append("-- Scheduler --")
+            builder.appendLine()
+            builder.append(createSchedulerDump())
+            builder.appendLine()
+            builder.appendLine()
+        }
+        ignoreAll {
+            builder.append("-- Locks --")
+            builder.appendLine()
+            builder.append(createLockDump())
+            builder.appendLine()
+            builder.appendLine()
+        }
 
 
         val dump = builder.toString()
@@ -91,11 +110,14 @@ object FreezeDumpUtil {
     }
 
     private fun createThreadPoolDump(): String {
-        val tasks = ThreadPool::class.java.getFieldOrNull("queue")!!
+        val queue = ThreadPool::class.java.getFieldOrNull("queue")!!
+        return queue.get(DefaultThreadPool).toString()
+    }
 
-        val queue = tasks.get(DefaultThreadPool) as PriorityBlockingQueue<ThreadPoolRunnable>
+    private fun createSchedulerDump(): String {
+        val tasks = TaskScheduler::class.java.getFieldOrNull("tasks")!!
 
-        return queue.toString()
+        return tasks.get(TaskScheduler).toString()
     }
 
     private fun RWLock.owner() = when (this) {
