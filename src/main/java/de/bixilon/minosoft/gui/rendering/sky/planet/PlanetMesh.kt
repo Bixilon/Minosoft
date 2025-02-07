@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class PlanetMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SunMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SunMeshStruct.FLOATS_PER_VERTEX) {
 
@@ -33,7 +34,7 @@ open class PlanetMesh(context: RenderContext, primitiveType: PrimitiveTypes = co
 
     data class SunMeshStruct(
         val position: Vec3,
-        val uv: Vec2,
+        val uv: UnpackedUV,
         val indexLayerAnimation: Int,
     ) {
         companion object : MeshStruct(SunMeshStruct::class)

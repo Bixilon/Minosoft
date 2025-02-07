@@ -22,20 +22,22 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.Face
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BakedFace(
     val positions: FaceVertexData,
-    val uv: FaceVertexData,
+    val uv: UnpackedUV,
     val shade: Shades,
     val tintIndex: Int,
     cull: Directions?,
     val texture: Texture,
     val properties: FaceProperties? = null,
 ) {
+    val packedUV = uv.pack()
     private val lightIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 
 
-    constructor(positions: FaceVertexData, uv: FaceVertexData, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
+    constructor(positions: FaceVertexData, uv: UnpackedUV, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
 
     private fun color(tint: Int): Int {
         if (tint <= 0) return shade.color
@@ -49,7 +51,7 @@ class BakedFace(
 
 
         val mesh = mesh[texture.transparency]
-        mesh.addQuad(offset, this.positions, this.uv, textureId, lightTint)
+        mesh.addQuad(offset, this.positions, packedUV, textureId, lightTint)
     }
 
     fun render(mesh: BlockVertexConsumer, tints: IntArray?) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.Face
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 data class SingleBlockStateApply(
@@ -162,7 +163,7 @@ data class SingleBlockStateApply(
             this@SingleBlockStateApply.rotation?.applyRotation(Axes.Y, positions)
 
 
-            var uv = face.getUV(uvLock, from, to, direction, rotatedXY, positions, x, y).toArray(rotatedXY, face.rotation)
+            var uv = face.getUV(uvLock, from, to, direction, rotatedXY, positions, x, y).toArray(rotatedXY, face.rotation).raw
 
             if (!uvLock) {
                 uv = uv.pushRight(2, getTextureRotation(direction, rotatedX))
@@ -176,8 +177,9 @@ data class SingleBlockStateApply(
                 uv[ofs * 2 + 1] = transformed.y
             }
 
+
             val faceProperties = if (rotation == null && this@SingleBlockStateApply.rotation == null) positions.properties(rotatedXY, texture) else null
-            val bakedFace = BakedFace(positions, uv, this.shade, face.tintIndex, texture, rotatedXY, faceProperties)
+            val bakedFace = BakedFace(positions, UnpackedUV(uv), this.shade, face.tintIndex, texture, rotatedXY, faceProperties)
 
             faces[rotatedXY.ordinal] += bakedFace
             properties[rotatedXY.ordinal] += faceProperties ?: continue

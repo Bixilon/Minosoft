@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,8 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
@@ -61,14 +63,21 @@ abstract class MeshStruct(struct: KClass<*>) {
             get() {
                 return when (this) {
                     Mat4::class -> 4 * 4 * Float.SIZE_BYTES
+
                     Vec3d::class -> 3 * Double.SIZE_BYTES
                     Vec3::class -> 3 * Float.SIZE_BYTES
                     Vec3i::class -> 2 * Int.SIZE_BYTES
+
                     Vec2d::class -> 2 * Double.SIZE_BYTES
                     Vec2::class -> 2 * Float.SIZE_BYTES
                     Vec2i::class -> 2 * Int.SIZE_BYTES
+
                     Float::class -> Float.SIZE_BYTES
                     Int::class -> Int.SIZE_BYTES
+
+                    UnpackedUV::class -> 2 * Float.SIZE_BYTES
+                    PackedUV::class -> Float.SIZE_BYTES
+
                     RGBColor::class -> Int.SIZE_BYTES
                     else -> TODO("Can not find $this")
                 }

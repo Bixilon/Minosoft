@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,7 +69,7 @@ object BakedModelTestUtil {
         val face = faces.first()
 
         vertices?.let { assertMatches(face.positions, it, "Vertices mismatch") }
-        uv?.let { if (!face.uv.contentEquals(it)) throw AssertionError("UV mismatch, expected [${uv[0]}|${uv[1]}], but got [${face.uv[0]}|${face.uv[1]}]") } // printing the first element is fine, it is always clockwise
+        uv?.let { if (!face.uv.raw.contentEquals(it)) throw AssertionError("UV mismatch, expected [${uv[0]}|${uv[1]}], but got [${face.uv.raw[0]}|${face.uv.raw[1]}]") } // printing the first element is fine, it is always clockwise
         shade?.let { Assert.assertEquals(face.shade.shade, it, "Shade mismatch") }
         texture?.toResourceLocation()?.texture()?.let { Assert.assertEquals(face.texture, it, "Texture mismatch") }
     }

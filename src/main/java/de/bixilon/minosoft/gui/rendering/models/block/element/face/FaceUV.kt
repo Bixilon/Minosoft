@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 data class FaceUV(
     val start: Vec2,
@@ -27,8 +28,8 @@ data class FaceUV(
     constructor(array: FloatArray) : this(array[0], array[1], array[2], array[3])
 
 
-    fun toArray(direction: Directions, rotation: Int): FloatArray {
-        val floats = when (direction) {
+    fun toArray(direction: Directions, rotation: Int): UnpackedUV {
+        var floats = when (direction) {
             // @formatter:off
             Directions.DOWN,
             Directions.SOUTH,
@@ -38,7 +39,9 @@ data class FaceUV(
             Directions.EAST ->  floatArrayOf(end.x,   start.y,   start.x, start.y,   start.x, end.y,     end.x,   end.y   )
             // @formatter:on
         }
-        if (rotation == 0) return floats
-        return floats.pushRight(2, rotation)
+        if (rotation != 0) {
+            floats = floats.pushRight(2, rotation)
+        }
+        return UnpackedUV(floats)
     }
 }

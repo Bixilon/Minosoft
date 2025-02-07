@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.annotations.Test
 
@@ -57,7 +58,7 @@ class BlockGUIConsumerTest {
     fun `south quad with offset and specific size`() {
         val consumer = create()
         val position = CuboidUtil.positions(Directions.SOUTH, Vec3(0, 0, 0), Vec3(1, 1, 1))
-        val uv = floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)
+        val uv = UnpackedUV(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f))
         consumer.addQuad(position, uv, 0f, 0f)
 
         consumer.assertVertices(Vec2()) // TODO

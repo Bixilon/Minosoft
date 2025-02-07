@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import de.bixilon.minosoft.test.IT.OBJENESIS
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert.assertEquals
@@ -59,7 +60,7 @@ class BakedFaceTest {
     }
 
     fun mixed() {
-        val face = BakedFace(floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f), floatArrayOf(-1f, -2f, -3f, -4f, -5f, -6f, -7f, -8f), Shades.UP, -1, null, texture())
+        val face = BakedFace(floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f), UnpackedUV(floatArrayOf(-1f, -2f, -3f, -4f, -5f, -6f, -7f, -8f)), Shades.UP, -1, null, texture())
 
         val mesh = mesh()
 
@@ -81,7 +82,7 @@ class BakedFaceTest {
     }
 
     fun blockSouth() {
-        val face = BakedFace(floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), Shades.UP, -1, null, texture())
+        val face = BakedFace(floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), UnpackedUV(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)), Shades.UP, -1, null, texture())
 
         val mesh = mesh()
 

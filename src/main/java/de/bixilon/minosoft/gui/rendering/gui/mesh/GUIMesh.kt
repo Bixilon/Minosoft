@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdenti
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class GUIMesh(
     context: RenderContext,
@@ -48,7 +49,7 @@ class GUIMesh(
 
     data class GUIMeshStruct(
         val position: Vec2,
-        val uv: Vec2,
+        val uv: UnpackedUV,
         val indexLayerAnimation: Int,
         val tintColor: RGBColor,
     ) {

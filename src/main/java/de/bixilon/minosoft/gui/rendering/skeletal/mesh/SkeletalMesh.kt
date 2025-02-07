@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,19 +20,20 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize) {
 
-    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUV, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
         data.add(
             position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
-            uv[uvOffset + 0], uv[uvOffset + 1],
+            uv.raw[uvOffset + 0], uv.raw[uvOffset + 1],
             transformNormal,
             textureShaderId,
         )
     }
 
-    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
         val transformNormal = ((transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
         val textureShaderId = texture.shaderId.buffer()
 
@@ -44,7 +45,7 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : Abstr
 
     data class SkeletalMeshStruct(
         val position: Vec3,
-        val uv: Vec2,
+        val uv: UnpackedUV,
         val transformNormal: Int,
         val indexLayerAnimation: Int,
     ) {

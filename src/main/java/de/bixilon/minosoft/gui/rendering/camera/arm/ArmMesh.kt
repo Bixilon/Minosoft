@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerModelMesh
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class ArmMesh(
     context: RenderContext,
@@ -26,7 +27,7 @@ class ArmMesh(
 ) : PlayerModelMesh(context) {
 
 
-    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
         val arm = path.getArm() ?: return
         if (arm != this.arm) return
         super.addQuad(positions, uv, 0, normal, texture, path)

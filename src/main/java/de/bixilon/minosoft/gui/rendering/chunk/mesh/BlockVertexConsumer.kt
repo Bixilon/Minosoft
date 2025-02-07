@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,30 +19,31 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.AbstractVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 interface BlockVertexConsumer : AbstractVertexConsumer {
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int)
     fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float)
+    fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float)
 
 
-    fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
+    fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float) {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
             val vertexOffset = position * Vec3.length
-            val uvOffset = uv * Vec2.length
             addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
-                u = uvData[uvOffset],
-                v = uvData[uvOffset + 1],
+                uv = uvData.raw[uv],
                 textureId = textureId,
                 lightTint = lightTint,
             )
         }
     }
 
-    fun addQuad(positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
+    fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
@@ -50,8 +51,8 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
             val uvOffset = uv * Vec2.length
             addVertex(
                 x = positions[vertexOffset], y = positions[vertexOffset + 1], z = positions[vertexOffset + 2],
-                u = uvData[uvOffset],
-                v = uvData[uvOffset + 1],
+                u = uvData.raw[uvOffset],
+                v = uvData.raw[uvOffset + 1],
                 textureId = textureId,
                 lightTint = lightTint,
             )

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockVertexConsumer {
     override val order = context.system.quadOrder
@@ -49,11 +50,18 @@ class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockV
             textureId, lightTint,
         )
     }
+    override inline fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) {
+        data.add(
+            x + offset.x, y + offset.y, z + offset.z,
+            UnpackedUV.unpackU(uv), UnpackedUV.unpackV(uv),
+            textureId, lightTint,
+        )
+    }
 
 
     data class BlockMeshStruct(
         val position: Vec3,
-        val uv: Vec2,
+        val uv: UnpackedUV,
         val indexLayerAnimation: Int,
         val tint: RGBColor,
     ) {
