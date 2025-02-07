@@ -137,6 +137,11 @@ class SolidSectionMesher(
 
                     AmbientOcclusionUtil.setBottom(section, x, y, z, ao[O_DOWN])
                     AmbientOcclusionUtil.setTop(section, x, y, z, ao[O_UP])
+                    AmbientOcclusionUtil.setNorth(section, x, y, z, ao[O_NORTH])
+                    AmbientOcclusionUtil.setSouth(section, x, y, z, ao[O_SOUTH])
+
+                    AmbientOcclusionUtil.setWest(section, x, y, z, ao[O_WEST])
+                    AmbientOcclusionUtil.setEast(section, x, y, z, ao[O_EAST])
 
 
                     val tints = tints.getBlockTint(state, chunk, x, position.y, z)

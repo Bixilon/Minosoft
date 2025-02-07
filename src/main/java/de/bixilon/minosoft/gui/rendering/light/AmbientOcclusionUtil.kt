@@ -96,6 +96,17 @@ object AmbientOcclusionUtil {
         ao[if (flip) 1 else 3] = calculateLevel(south, west, section.trace(x - 1, y, z + 1))
     }
 
+    fun setBottom(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+        var section: ChunkSection? = section
+        var y = y - 1
+        if (y < 0) {
+            section = section?.neighbours?.get(O_DOWN)
+            y = ProtocolDefinition.SECTION_MAX_Y
+        }
+
+        setY(section, x, y, z, true, ao)
+    }
+
     fun setTop(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var y = y + 1
@@ -107,14 +118,78 @@ object AmbientOcclusionUtil {
         setY(section, x, y, z, false, ao)
     }
 
-    fun setBottom(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun setZ(section: ChunkSection?, x: Int, y: Int, z: Int, flip: Boolean, ao: IntArray) {
+        ao.clear()
+        if (section == null || section.blocks.isEmpty) return
+
+        val down = section.trace(x + 0, y - 1, z)
+        val west = section.trace(x - 1, y + 0, z)
+        val up = section.trace(x + 0, y + 1, z)
+        val east = section.trace(x + 1, y + 0, z)
+
+        ao[0] = calculateLevel(down, west, section.trace(x - 1, y - 1, z))
+        ao[if (flip) 3 else 1] = calculateLevel(west, up, section.trace(x - 1, y + 1, z))
+        ao[2] = calculateLevel(up, east, section.trace(x + 1, y + 1, z))
+        ao[if (flip) 1 else 3] = calculateLevel(east, down, section.trace(x + 1, y - 1, z))
+    }
+
+
+    fun setNorth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
-        var y = y - 1
-        if (y < 0) {
-            section = section?.neighbours?.get(O_DOWN)
-            y = ProtocolDefinition.SECTION_MAX_Y
+        var z = z - 1
+        if (z < 0) {
+            section = section?.neighbours?.get(O_NORTH)
+            z = ProtocolDefinition.SECTION_MAX_Z
         }
 
-        setY(section, x, y, z, true, ao)
+        setZ(section, x, y, z, true, ao)
+    }
+
+    fun setSouth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+        var section: ChunkSection? = section
+        var z = z + 1
+        if (z > ProtocolDefinition.SECTION_MAX_Z) {
+            section = section?.neighbours?.get(O_SOUTH)
+            z = 0
+        }
+
+        setZ(section, x, y, z, false, ao)
+    }
+
+    fun setX(section: ChunkSection?, x: Int, y: Int, z: Int, flip: Boolean, ao: IntArray) {
+        ao.clear()
+        if (section == null || section.blocks.isEmpty) return
+
+        val down = section.trace(x + 0, y - 1, z)
+        val north = section.trace(x, y + 0, z - 1)
+        val up = section.trace(x, y + 1, z)
+        val south = section.trace(x, y + 0, z + 1)
+
+        ao[0] = calculateLevel(down, north, section.trace(x, y - 1, z - 1))
+        ao[if (flip) 3 else 1] = calculateLevel(north, up, section.trace(x, y + 1, z - 1))
+        ao[2] = calculateLevel(up, south, section.trace(x, y + 1, z + 1))
+        ao[if (flip) 1 else 3] = calculateLevel(south, down, section.trace(x, y - 1, z + 1))
+    }
+
+    fun setWest(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+        var section: ChunkSection? = section
+        var x = x - 1
+        if (x < 0) {
+            section = section?.neighbours?.get(O_WEST)
+            x = ProtocolDefinition.SECTION_MAX_X
+        }
+
+        setX(section, x, y, z, false, ao)
+    }
+
+    fun setEast(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+        var section: ChunkSection? = section
+        var x = x + 1
+        if (x > ProtocolDefinition.SECTION_MAX_X) {
+            section = section?.neighbours?.get(O_EAST)
+            x = 0
+        }
+
+        setX(section, x, y, z, true, ao)
     }
 }
