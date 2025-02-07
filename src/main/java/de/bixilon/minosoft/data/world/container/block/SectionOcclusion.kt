@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -199,15 +200,21 @@ class SectionOcclusion(
         private val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
 
 
-        fun BlockState?.isFullyOpaque(): Boolean {
+        fun BlockState?._isFullyOpaque(): Boolean {
             if (this == null) {
                 return false
             }
+            if (BlockStateFlags.FULLY_OPAQUE in flags) return true
             val block = this.block
             if (block is FullOpaqueBlock) return true
             if (block !is PotentialFullOpaqueBlock) return false
 
             return block.isFullOpaque(this)
+        }
+
+        fun BlockState?.isFullyOpaque(): Boolean {
+            if (this == null) return false
+            return BlockStateFlags.FULLY_OPAQUE in flags
         }
     }
 }

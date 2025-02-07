@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettin
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion._isFullyOpaque
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 
 open class BlockState(
@@ -24,6 +25,13 @@ open class BlockState(
     val luminance: Int,
 ) {
     @JvmField var model: BlockRender? = null
+    val flags = BlockStateFlags.set()
+
+    init {
+        if (_isFullyOpaque()) {
+            flags += BlockStateFlags.FULLY_OPAQUE
+        }
+    }
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.luminance)
 
