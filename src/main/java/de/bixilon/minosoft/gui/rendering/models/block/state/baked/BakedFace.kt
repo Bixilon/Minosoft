@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -43,7 +43,7 @@ class BakedFace(
     }
 
     fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?) {
-        val tint = color(tints?.getOrNull(tintIndex) ?: 0)
+        val tint = color(tints.getOr0(tintIndex))
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
@@ -53,7 +53,7 @@ class BakedFace(
     }
 
     fun render(mesh: BlockVertexConsumer, tints: IntArray?) {
-        val tint = color(tints?.getOrNull(tintIndex) ?: 0)
+        val tint = color(tints.getOr0(tintIndex))
         val lightTint = tint.buffer()
         val textureId = this.texture.shaderId.buffer()
 
@@ -62,7 +62,8 @@ class BakedFace(
     }
 
 
-    fun IntArray.getOrNull(index: Int): Int? {
-        return if (index >= 0 && index < size) get(index) else null
+    fun IntArray?.getOr0(index: Int): Int {
+        if (this == null) return 0
+        return if (index >= 0 && index < size) get(index) else 0
     }
 }
