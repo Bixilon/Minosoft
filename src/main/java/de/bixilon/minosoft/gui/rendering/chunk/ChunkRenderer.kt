@@ -127,6 +127,7 @@ class ChunkRenderer(
         profile.rendering::antiMoirePattern.observe(this) { clearChunkCache() }
         val rendering = session.profiles.rendering
         rendering.performance::fastBedrock.observe(this) { clearChunkCache() }
+        rendering.light::ambientOcclusion.observe(this) { clearChunkCache() }
 
         profile::viewDistance.observe(this) { viewDistance ->
             val distance = maxOf(viewDistance, profile.simulationDistance)

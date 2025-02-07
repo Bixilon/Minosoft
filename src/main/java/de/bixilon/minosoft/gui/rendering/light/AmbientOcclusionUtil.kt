@@ -96,7 +96,7 @@ object AmbientOcclusionUtil {
         ao[if (flip) 1 else 3] = calculateLevel(south, west, section.trace(x - 1, y, z + 1))
     }
 
-    fun setBottom(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun applyBottom(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var y = y - 1
         if (y < 0) {
@@ -107,7 +107,7 @@ object AmbientOcclusionUtil {
         setY(section, x, y, z, true, ao)
     }
 
-    fun setTop(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun applyTop(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var y = y + 1
         if (y > ProtocolDefinition.SECTION_MAX_Y) {
@@ -134,7 +134,7 @@ object AmbientOcclusionUtil {
     }
 
 
-    fun setNorth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun applyNorth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var z = z - 1
         if (z < 0) {
@@ -145,7 +145,7 @@ object AmbientOcclusionUtil {
         setZ(section, x, y, z, true, ao)
     }
 
-    fun setSouth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun applySouth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var z = z + 1
         if (z > ProtocolDefinition.SECTION_MAX_Z) {
@@ -171,7 +171,7 @@ object AmbientOcclusionUtil {
         ao[if (flip) 1 else 3] = calculateLevel(south, down, section.trace(x, y - 1, z + 1))
     }
 
-    fun setWest(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun applyWest(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var x = x - 1
         if (x < 0) {
@@ -182,7 +182,7 @@ object AmbientOcclusionUtil {
         setX(section, x, y, z, false, ao)
     }
 
-    fun setEast(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
+    fun applyEast(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray) {
         var section: ChunkSection? = section
         var x = x + 1
         if (x > ProtocolDefinition.SECTION_MAX_X) {
@@ -191,5 +191,16 @@ object AmbientOcclusionUtil {
         }
 
         setX(section, x, y, z, true, ao)
+    }
+
+    fun apply(section: ChunkSection, x: Int, y: Int, z: Int, ao: Array<IntArray>) {
+        applyBottom(section, x, y, z, ao[O_DOWN])
+        applyTop(section, x, y, z, ao[O_UP])
+
+        applyNorth(section, x, y, z, ao[O_NORTH])
+        applySouth(section, x, y, z, ao[O_SOUTH])
+
+        applyWest(section, x, y, z, ao[O_WEST])
+        applyEast(section, x, y, z, ao[O_EAST])
     }
 }

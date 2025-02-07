@@ -50,10 +50,12 @@ class SolidSectionMesher(
     private val bedrock = context.session.registries.block[Bedrock]?.states?.default
     private val tints = context.tints
     private var fastBedrock = false
+    private var ambientOcclusion = false
 
     init {
         val profile = context.session.profiles.rendering
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
+        profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
     fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
@@ -109,7 +111,6 @@ class SolidSectionMesher(
                         light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
                     }
 
-
                     checkDown(state, fastBedrock, baseIndex, isLowestSection, neighbourBlocks, neighbours, x, y, z, light, section, chunk)
                     checkUp(isHighestSection, baseIndex, neighbourBlocks, neighbours, x, y, z, light, section, chunk)
 
@@ -135,13 +136,9 @@ class SolidSectionMesher(
                         floatOffset[2] += offset.z
                     }
 
-                    AmbientOcclusionUtil.setBottom(section, x, y, z, ao[O_DOWN])
-                    AmbientOcclusionUtil.setTop(section, x, y, z, ao[O_UP])
-                    AmbientOcclusionUtil.setNorth(section, x, y, z, ao[O_NORTH])
-                    AmbientOcclusionUtil.setSouth(section, x, y, z, ao[O_SOUTH])
-
-                    AmbientOcclusionUtil.setWest(section, x, y, z, ao[O_WEST])
-                    AmbientOcclusionUtil.setEast(section, x, y, z, ao[O_EAST])
+                    if (ambientOcclusion) {
+                        AmbientOcclusionUtil.apply(section, x, y, z, ao)
+                    }
 
 
                     val tints = tints.getBlockTint(state, chunk, x, position.y, z)
