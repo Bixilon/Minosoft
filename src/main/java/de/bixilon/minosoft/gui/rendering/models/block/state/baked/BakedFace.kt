@@ -44,14 +44,14 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?) {
+    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?, ao: IntArray) {
         val tint = color(tints.getOr0(tintIndex))
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 
         val mesh = mesh[texture.transparency]
-        mesh.addQuad(offset, this.positions, packedUV, textureId, lightTint)
+        mesh.addQuad(offset, this.positions, packedUV, textureId, lightTint, ao)
     }
 
     fun render(mesh: BlockVertexConsumer, tints: IntArray?) {

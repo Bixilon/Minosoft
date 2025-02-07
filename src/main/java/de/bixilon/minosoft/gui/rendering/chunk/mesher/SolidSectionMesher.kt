@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
@@ -39,6 +38,8 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.light.AmbientOcclusionUtil
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
@@ -75,6 +76,10 @@ class SolidSectionMesher(
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
         val floatOffset = FloatArray(3)
+
+        val ao = Array(Directions.SIZE) { IntArray(4) }
+
+        val props = WorldRenderProps(position, floatOffset, mesh, random, neighbourBlocks, light, ao)
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             position.y = offsetY + y
@@ -130,10 +135,13 @@ class SolidSectionMesher(
                         floatOffset[2] += offset.z
                     }
 
+                    AmbientOcclusionUtil.setBottom(section, x, y, z, ao[O_DOWN])
+                    AmbientOcclusionUtil.setTop(section, x, y, z, ao[O_UP])
+
 
                     val tints = tints.getBlockTint(state, chunk, x, position.y, z)
                     var rendered = false
-                    model?.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints, blockEntity.unsafeCast())?.let { if (it) rendered = true }
+                    model?.render(props, state, blockEntity, tints)?.let { if (it) rendered = true }
 
                     renderedBlockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
 

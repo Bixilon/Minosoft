@@ -29,14 +29,17 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
     fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float)
 
 
-    fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float) {
+    fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
             val vertexOffset = position * Vec3.length
+
+
+            val aUV = Float.fromBits(uvData.raw[uv].toBits() or (ao[position] shl 24))
             addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
-                uv = uvData.raw[uv],
+                uv = aUV,
                 textureId = textureId,
                 lightTint = lightTint,
             )

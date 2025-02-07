@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2025 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
- 
-#ifndef VSH
-#define VSH
 
+package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-#define UV_UNPACK_BITS 12u
-#define UV_UNPACK_MASK ((1u << UV_UNPACK_BITS) - 1u)
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
+import java.util.*
 
-vec2 uv_unpack(uint raw) {
-    float x = float((raw >> (1u * UV_UNPACK_BITS)) & UV_UNPACK_MASK) / float(UV_UNPACK_MASK);
-    float y = float((raw >> (0u * UV_UNPACK_BITS)) & UV_UNPACK_MASK) / float(UV_UNPACK_MASK);
-    
-    return vec2(x, y);
-}
-
-
-#endif
+class WorldRenderProps(
+    @JvmField
+    val position: BlockPosition,
+    @JvmField
+    val offset: FloatArray,
+    @JvmField
+    val mesh: BlockVertexConsumer,
+    @JvmField
+    val random: Random?,
+    @JvmField
+    val neighbours: Array<BlockState?>,
+    @JvmField
+    val light: ByteArray,
+    @JvmField
+    var ao: Array<IntArray>,
+)
