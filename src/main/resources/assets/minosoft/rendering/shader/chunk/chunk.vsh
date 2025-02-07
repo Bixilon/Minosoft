@@ -28,7 +28,7 @@ uniform mat4 uViewProjectionMatrix;
 #include "minosoft:light"
 #include "minosoft:animation"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 const vec3 AMBIENT_OCCLUSION[4] = vec3[4](
@@ -38,7 +38,12 @@ vec3(0.0f, 2.0f, 0.0f),
 vec3(0.0f, 0.0f, 2.0f)
 );
 #else
-const float AMBIENT_OCCLUSION[4] = float[4](1.0f, 0.7f, 0.5f, 0.3f);
+const vec3 AMBIENT_OCCLUSION[4] = vec3[4](
+vec3(1.0f),
+vec3(0.85f),
+vec3(0.75f),
+vec3(0.60f)
+);
 #endif
 
 
