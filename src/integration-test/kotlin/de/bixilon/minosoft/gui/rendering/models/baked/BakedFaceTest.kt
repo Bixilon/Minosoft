@@ -18,12 +18,14 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import de.bixilon.minosoft.test.IT.OBJENESIS
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -60,21 +62,22 @@ class BakedFaceTest {
     }
 
     fun mixed() {
+        // TODO: negative uv is not supported anymore
         val face = BakedFace(floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f), UnpackedUV(floatArrayOf(-1f, -2f, -3f, -4f, -5f, -6f, -7f, -8f)), Shades.UP, -1, null, texture())
 
         val mesh = mesh()
 
-        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null)
+        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, AmbientOcclusionUtil.EMPTY)
 
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
 
         val data = mesh.opaqueMesh!!.data.toArray()
         val expected = floatArrayOf(
-            0f, 1f, 2f, -1f, -2f, texture, lightTint,
-            9f, 10f, 11f, -7f, -8f, texture, lightTint,
-            6f, 7f, 8f, -5f, -6f, texture, lightTint,
-            3f, 4f, 5f, -3f, -4f, texture, lightTint,
+            0f, 1f, 2f, PackedUV.pack(-1f, -2f), texture, lightTint,
+            9f, 10f, 11f, PackedUV.pack(-7f, -8f), texture, lightTint,
+            6f, 7f, 8f, PackedUV.pack(-5f, -6f), texture, lightTint,
+            3f, 4f, 5f, PackedUV.pack(-3f, -4f), texture, lightTint,
         )
 
 
@@ -86,17 +89,17 @@ class BakedFaceTest {
 
         val mesh = mesh()
 
-        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null)
+        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, AmbientOcclusionUtil.EMPTY)
 
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
 
         val data = mesh.opaqueMesh!!.data.toArray()
         val expected = floatArrayOf(
-            0f, 0f, 0f, 0f, 0f, texture, lightTint,
-            0f, 0f, 1f, 1f, 0f, texture, lightTint,
-            0f, 1f, 1f, 1f, 1f, texture, lightTint,
-            0f, 1f, 0f, 0f, 1f, texture, lightTint,
+            0f, 0f, 0f, PackedUV.pack(0f, 0f), texture, lightTint,
+            0f, 0f, 1f, PackedUV.pack(1f, 0f), texture, lightTint,
+            0f, 1f, 1f, PackedUV.pack(1f, 1f), texture, lightTint,
+            0f, 1f, 0f, PackedUV.pack(0f, 1f), texture, lightTint,
         )
 
 

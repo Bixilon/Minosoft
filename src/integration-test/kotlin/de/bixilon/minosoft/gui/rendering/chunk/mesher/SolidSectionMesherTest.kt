@@ -50,7 +50,6 @@ import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
-import java.util.*
 
 @Test(groups = ["mesher"], dependsOnGroups = ["rendering", "block"])
 class SolidSectionMesherTest {
@@ -414,11 +413,11 @@ class SolidSectionMesherTest {
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
             override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-                assertEquals(light.size, 7)
-                for ((index, entry) in light.withIndex()) {
+                assertEquals(props.light.size, 7)
+                for ((index, entry) in props.light.withIndex()) {
                     assertEquals(required[index], entry.toInt() and 0xFF)
                 }
-                return super.render(position, offset, mesh, random, state, neighbours, light, tints, entity)
+                return super.render(props, state, entity, tints)
             }
         }
 
@@ -432,11 +431,11 @@ class SolidSectionMesherTest {
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
             override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-                assertEquals(neighbours.size, 6)
-                for ((index, entry) in neighbours.withIndex()) {
+                assertEquals(props.neighbours.size, 6)
+                for ((index, entry) in props.neighbours.withIndex()) {
                     assertEquals(required[index], entry)
                 }
-                return super.render(position, offset, mesh, random, state, neighbours, light, tints, entity)
+                return super.render(props, state, entity, tints)
             }
         }
 
@@ -474,7 +473,7 @@ class SolidSectionMesherTest {
                 this.model = object : BlockRender {
 
                     override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-                        entities.add(TestQueue.RenderedEntity(Vec3i(position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
+                        entities.add(TestQueue.RenderedEntity(Vec3i(props.position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
                     }
@@ -501,7 +500,7 @@ class SolidSectionMesherTest {
         }
 
         override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-            queue.blocks.add(TestQueue.RenderedBlock(Vec3i(position), state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
+            queue.blocks.add(TestQueue.RenderedBlock(Vec3i(props.position), state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }
     }
