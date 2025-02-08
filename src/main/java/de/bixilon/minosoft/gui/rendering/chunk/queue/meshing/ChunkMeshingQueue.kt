@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTaskManager
 import de.bixilon.minosoft.util.SystemInformation
+import kotlin.math.abs
 
 class ChunkMeshingQueue(
     private val renderer: ChunkRenderer,
@@ -71,8 +72,10 @@ class ChunkMeshingQueue(
             items += item
         }
         unlock()
+        val camera = renderer.cameraChunkPosition
         for (item in items) {
-            val runnable = HeavyPoolRunnable(if (item.chunkPosition == renderer.cameraChunkPosition) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true) // ToDo: Also make neighbour chunks important
+            val distance = abs(item.chunkPosition.x - camera.x) + abs(item.chunkPosition.y - camera.y)
+            val runnable = HeavyPoolRunnable(if (distance < 1) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)
             val task = MeshPrepareTask(item.chunkPosition, item.sectionHeight, runnable)
             task.runnable.runnable = Runnable { renderer.mesher.tryMesh(item, task, task.runnable) }
             tasks += task
