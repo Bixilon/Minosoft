@@ -27,25 +27,40 @@ class ArrayPaletteData(
     private val valuesPerLong = Long.SIZE_BITS / elementBits
     private lateinit var data: LongArray
 
+    override var isEmpty = true
+
     init {
         check(elementBits in 0..32)
     }
 
-    override fun read(buffer: PlayInByteBuffer) {
-        val packetSize = buffer.readVarInt()
-        val size: Int = if (versionId < LONG_BIT_SPLITTING_VERSION) {
+    private fun calculateLongs(): Int {
+        if (versionId < LONG_BIT_SPLITTING_VERSION) {
             val bits = this.size * elementBits
 
-            (bits + (Long.SIZE_BITS - 1)) / Long.SIZE_BITS // divide up
-        } else {
-            (this.size + valuesPerLong - 1) / valuesPerLong
+            return (bits + (Long.SIZE_BITS - 1)) / Long.SIZE_BITS // divide up
         }
-        this.data = ALLOCATOR.allocate(this.size)
-        if (packetSize != size) {
+        return (this.size + valuesPerLong - 1) / valuesPerLong
+    }
+
+    private fun checkEmpty(size: Int): Boolean {
+        for (i in 0 until size) {
+            if (this.data[i] != 0L) {
+                return false
+            }
+        }
+        return true
+    }
+
+    override fun read(buffer: PlayInByteBuffer) {
+        val packetSize = buffer.readVarInt()
+        val longs = calculateLongs()
+        this.data = ALLOCATOR.allocate(longs)
+        if (packetSize != longs) {
             buffer.pointer += packetSize * Long.SIZE_BYTES // data is ignored
             return
         }
-        buffer.readLongArray(this.data, size)
+        buffer.readLongArray(this.data, longs)
+        this.isEmpty = checkEmpty(longs)
     }
 
     override operator fun get(index: Int): Int {

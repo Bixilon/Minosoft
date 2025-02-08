@@ -305,12 +305,4 @@ object ChunkUtil {
     fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
         return abs(this.x - cameraPosition.x) <= viewDistance && abs(this.y - cameraPosition.y) <= viewDistance
     }
-
-    private fun Array<BlockState?>.isEmpty(): Boolean {
-        for (entry in this) {
-            if (entry == null) continue
-            return false
-        }
-        return true
-    }
 }

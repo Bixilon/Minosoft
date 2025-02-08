@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.container.palette.data.array.ArrayPaletteD
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 interface PaletteData {
+    val isEmpty: Boolean
     val size: Int
 
     fun get(index: Int): Int

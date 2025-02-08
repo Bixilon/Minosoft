@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.container.palette
 
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.data.world.container.palette.data.PaletteData
+import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.PaletteFactory
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
@@ -41,16 +42,27 @@ object PalettedContainerReader {
         val data = PaletteData.create(buffer.versionId, palette.bits, factory.containerSize)
         try {
             data.read(buffer)
+            if (factory == BlockStatePaletteFactory && data.isEmpty) { // id 0 is air
+                return null
+            }
             val container = PalettedContainer(factory.edgeBits, palette, data)
 
             if (container.isEmpty) return null
             val unpacked = container.unpack<T>()
 
-            if (unpacked.isEmpty()) return null
+            if (unpacked.isAllNull()) return null
 
             return unpacked
         } finally {
             data.free()
         }
+    }
+
+    fun <T> Array<T>.isAllNull(): Boolean {
+        for (entry in this) {
+            if (entry == null) continue
+            return false
+        }
+        return true
     }
 }

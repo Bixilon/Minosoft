@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.container.palette.data
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 class EmptyPaletteData(override val size: Int) : PaletteData {
+    override val isEmpty: Boolean get() = true
 
     override fun free() = Unit
 
