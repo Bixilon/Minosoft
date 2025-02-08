@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,4 +36,11 @@ class PerformanceC(profile: RenderingProfile) {
      * Sleeps 100 ms if the rendering window is not in focus anymore
      */
     var slowRendering by BooleanDelegate(profile, true)
+
+    /**
+     * Limits the time of chunk transfers to the gpu.
+     * Increases time until far chunks are loaded.
+     * If disabled, lag spikes can occur when crossing chunk borders
+     */
+    var limitChunkTransferTime by BooleanDelegate(profile, true)
 }

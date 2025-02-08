@@ -15,13 +15,13 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.Lock
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import kotlin.time.TimeSource
 
 class MeshLoadingQueue(
     private val renderer: ChunkRenderer,
@@ -41,14 +41,18 @@ class MeshLoadingQueue(
         }
 
         var count = 0
-        val start = TimeUtil.millis()
-        val maxTime = renderer.maxBusyTime // If the player is still, then we can load more chunks (to not cause lags)
+        val start = TimeSource.Monotonic.markNow()
+        val maxTime = renderer.maxBusyTime
 
         var meshes: Int2ObjectOpenHashMap<ChunkMeshes> = unsafeNull()
         var position: ChunkPosition? = null
 
         renderer.loaded.lock()
-        while (this.meshes.isNotEmpty() && (TimeUtil.millis() - start < maxTime)) {
+        var index = 0
+        while (true) {
+            if (this.meshes.isEmpty()) break
+            if (index++ % BATCH_SIZE == 0 && TimeSource.Monotonic.markNow() - start >= maxTime) break
+
             val mesh = this.meshes.removeAt(0)
             this.positions -= QueuePosition(mesh)
 
@@ -151,5 +155,9 @@ class MeshLoadingQueue(
     fun unlock() {
         this.lock.unlock()
         renderer.lock.release()
+    }
+
+    companion object {
+        const val BATCH_SIZE = 5
     }
 }

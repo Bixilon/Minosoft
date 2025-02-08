@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,14 +17,23 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.isEmpty
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 object ChunkRendererUtil {
-    const val STILL_LOADING_TIME = 50L
-    const val MOVING_LOADING_TIME = 20L
+    val STILL_LOADING_TIME = 30.milliseconds
+    val MOVING_LOADING_TIME = 3.milliseconds
 
 
     // If the player is still, then we can load more chunks (to not cause lags)
-    val ChunkRenderer.maxBusyTime: Long get() = if (session.player.physics.velocity.isEmpty()) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
+    val ChunkRenderer.maxBusyTime: Duration
+        get() {
+            if (!limitChunkTransferTime) return Duration.INFINITE
+            if (session.camera.entity.physics.velocity.isEmpty()) {
+                return STILL_LOADING_TIME
+            }
+            return MOVING_LOADING_TIME
+        }
 
 
     val ChunkSection.smallMesh: Boolean get() = blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z

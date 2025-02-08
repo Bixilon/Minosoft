@@ -90,6 +90,8 @@ class ChunkRenderer(
     var cameraChunkPosition = Vec2i.EMPTY
     var cameraSectionHeight = 0
 
+    var limitChunkTransferTime = true
+
     override fun registerLayers() {
         layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visible.opaque.isEmpty() }
         layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
@@ -128,6 +130,7 @@ class ChunkRenderer(
         val rendering = session.profiles.rendering
         rendering.performance::fastBedrock.observe(this) { clearChunkCache() }
         rendering.light::ambientOcclusion.observe(this) { clearChunkCache() }
+        rendering.performance::limitChunkTransferTime.observe(this) { this.limitChunkTransferTime = it }
 
         profile::viewDistance.observe(this) { viewDistance ->
             val distance = maxOf(viewDistance, profile.simulationDistance)

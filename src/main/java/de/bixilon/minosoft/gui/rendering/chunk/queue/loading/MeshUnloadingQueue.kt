@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.kutil.concurrent.lock.Lock
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
+import kotlin.time.TimeSource
 
 class MeshUnloadingQueue(
     private val renderer: ChunkRenderer,
@@ -33,10 +33,14 @@ class MeshUnloadingQueue(
             return
         }
 
-        val time = TimeUtil.millis()
+        val start = TimeSource.Monotonic.markNow()
         val maxTime = renderer.maxBusyTime
 
-        while (meshes.isNotEmpty() && (TimeUtil.millis() - time < maxTime)) {
+        var index = 0
+        while (true) {
+            if (meshes.isEmpty()) break
+            if (index++ % MeshLoadingQueue.BATCH_SIZE == 0 && TimeSource.Monotonic.markNow() - start >= maxTime) break
+
             val mesh = meshes.removeAt(0)
             this.positions -= QueuePosition(mesh)
             renderer.visible.removeMesh(mesh)
