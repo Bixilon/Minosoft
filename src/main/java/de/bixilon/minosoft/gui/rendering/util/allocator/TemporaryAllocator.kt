@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.container.palette.data.array
+package de.bixilon.minosoft.gui.rendering.util.allocator
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import java.lang.ref.WeakReference
 
 
-object LongArrayAllocator {
+@Deprecated("kutil 1.27.1")
+abstract class TemporaryAllocator<T> {
     private val lock = ReentrantLock()
-    private val list: ArrayList<WeakReference<LongArray>> = ArrayList()
+    private val list: ArrayList<WeakReference<T>> = ArrayList()
 
     private fun cleanup() {
         lock.lock()
@@ -33,36 +34,41 @@ object LongArrayAllocator {
         lock.unlock()
     }
 
-    fun free(array: LongArray) {
+    fun free(array: T) {
         lock.lock()
         cleanup()
         list.add(0, WeakReference(array))
         lock.unlock()
     }
 
-    fun claim(size: Int): LongArray {
+    fun allocate(size: Int): T {
         lock.lock()
 
-        var array: LongArray? = null
+        var array: T? = null
         val iterator = list.iterator()
         while (iterator.hasNext()) {
             val reference = iterator.next()
-            array = reference.get()
-            if (array == null) {
+            val entry = reference.get()
+            if (entry == null) {
                 iterator.remove()
                 continue
             }
-            if (array.size >= size) {
+            if (getSize(entry) >= size) {
+                array = entry
                 iterator.remove()
                 break
             }
         }
         lock.unlock()
 
-        if (array != null && array.size >= size) return array
+        if (array != null) return array
 
-        // println("Allocating long array of size $size")
+        // println("Allocating array of size $size")
 
-        return LongArray(size)
+        return create(size)
     }
+
+    protected abstract fun getSize(value: T): Int
+
+    abstract fun create(size: Int): T
 }

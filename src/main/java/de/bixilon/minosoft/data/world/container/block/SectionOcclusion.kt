@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
+import de.bixilon.minosoft.gui.rendering.util.allocator.ShortAllocator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.*
@@ -29,7 +30,6 @@ class SectionOcclusion(
 ) {
     private var occlusion = EMPTY
     private var calculate = false
-    private val regions by lazy { ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION) }
 
     fun clear(notify: Boolean) {
         update(EMPTY, notify)
@@ -49,7 +49,13 @@ class SectionOcclusion(
             clear(notify)
             return
         }
-        update(calculateOcclusion(floodFill()), notify)
+        val array = ALLOCATOR.allocate(ProtocolDefinition.BLOCKS_PER_SECTION)
+        try {
+            val regions = floodFill(array)
+            update(calculateOcclusion(regions), notify)
+        } finally {
+            ALLOCATOR.free(array)
+        }
     }
 
     private inline fun ShortArray.updateRegion(x: Int, y: Int, z: Int, id: Short): Boolean {
@@ -85,20 +91,20 @@ class SectionOcclusion(
         if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
     }
 
-    private fun floodFill(): ShortArray {
+    private fun floodFill(array: ShortArray): ShortArray {
         // mark regions and check direct neighbours
-        Arrays.fill(regions, 0.toShort())
+        Arrays.fill(array, 0.toShort())
 
         var next: Short = 0
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    startTrace(regions, x, y, z, ++next)
+                    startTrace(array, x, y, z, ++next)
                 }
             }
         }
 
-        return regions
+        return array
     }
 
     private fun calculateOcclusion(regions: ShortArray): BooleanArray {
@@ -198,6 +204,7 @@ class SectionOcclusion(
 
     companion object {
         private val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
+        private val ALLOCATOR = ShortAllocator()
 
 
         fun BlockState?._isFullyOpaque(): Boolean {
