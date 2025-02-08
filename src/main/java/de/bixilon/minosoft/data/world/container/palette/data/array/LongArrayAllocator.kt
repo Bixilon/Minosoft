@@ -53,12 +53,13 @@ object LongArrayAllocator {
                 continue
             }
             if (array.size >= size) {
+                iterator.remove()
                 break
             }
         }
         lock.unlock()
 
-        if (array != null) return array
+        if (array != null && array.size >= size) return array
 
         // println("Allocating long array of size $size")
 
