@@ -34,11 +34,12 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.light.AmbientOcclusionUtil
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusion
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
@@ -68,6 +69,7 @@ class SolidSectionMesher(
         val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
         val position = BlockPosition()
+        val inSectionPosition = InChunkSectionPosition()
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
@@ -79,15 +81,17 @@ class SolidSectionMesher(
 
         val floatOffset = FloatArray(3)
 
-        val ao = Array(Directions.SIZE) { IntArray(4) }
+        val ao = if (ambientOcclusion) AmbientOcclusion(section) else null
 
-        val props = WorldRenderProps(position, floatOffset, mesh, random, neighbourBlocks, light, ao)
+        val props = WorldRenderProps(position, inSectionPosition, floatOffset, mesh, random, neighbourBlocks, light, ao)
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
+            inSectionPosition.y = y
             position.y = offsetY + y
             floatOffset[1] = (position.y - cameraOffset.y).toFloat()
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in blocks.minPosition.x..blocks.maxPosition.x) {
+                inSectionPosition.x = x
                 position.x = offsetX + x
                 floatOffset[0] = (position.x - cameraOffset.x).toFloat()
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
@@ -104,6 +108,7 @@ class SolidSectionMesher(
 
                     light[SELF_LIGHT_INDEX] = section.light[index]
                     position.z = offsetZ + z
+                    inSectionPosition.z = z
                     floatOffset[2] = (position.z - cameraOffset.z).toFloat()
 
                     val maxHeight = chunk.light.heightmap[baseIndex]
@@ -136,9 +141,7 @@ class SolidSectionMesher(
                         floatOffset[2] += offset.z
                     }
 
-                    if (ambientOcclusion) {
-                        AmbientOcclusionUtil.apply(section, x, y, z, ao)
-                    }
+                    ao?.clear()
 
 
                     val tints = tints.getBlockTint(state, chunk, x, position.y, z)

@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
@@ -56,16 +57,22 @@ class BakedModel(
 
         for ((directionIndex, faces) in faces.withIndex()) {
             val neighbour = neighbours[directionIndex]
-            val direction = Directions.VALUES[directionIndex].inverted
+            val direction = Directions.VALUES[directionIndex]
+            val inverted = direction.inverted
 
-            val ao = ao[directionIndex]
 
             for (face in faces) {
-                if (FaceCulling.canCull(state, face.properties, direction, neighbour)) {
+                if (FaceCulling.canCull(state, face.properties, inverted, neighbour)) {
                     continue
                 }
 
-                face.render(offset, mesh, light, tints, ao)
+                var aoRaw = AmbientOcclusionUtil.EMPTY
+
+                if (ao != null && face.properties != null) {
+                    aoRaw = ao.apply(direction, props.inSectionPosition)
+                }
+
+                face.render(offset, mesh, light, tints, aoRaw)
 
                 rendered = true
             }
