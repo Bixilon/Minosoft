@@ -43,7 +43,7 @@ class ChunkMesher(
             solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
 
             if (item.section.blocks.hasFluid) {
-                fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+                fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, mesh)
             }
         } catch (exception: Exception) {
             mesh.unload()

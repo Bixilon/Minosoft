@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,6 +31,8 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -40,8 +42,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.isTrue
 import kotlin.math.atan2
@@ -63,10 +63,10 @@ class FluidSectionMesher(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
+    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
-        var position = Vec3i.EMPTY
+        val position = Vec3i.EMPTY
         var tint: Int
 
         val cameraOffset = context.camera.offset.offset
@@ -250,13 +250,18 @@ class FluidSectionMesher(
         var count = 0
 
         val neighbours = providedChunk.neighbours
+        val offset = ChunkPosition()
 
+        val blockPosition = Vec3i()
+        val inChunkPosition = InChunkPosition()
         for (side in 0 until 4) {
-            val blockPosition = position + Vec3i(-(side and 0x01), 0, -(side shr 1 and 0x01))
-            val offset = blockPosition.chunkPosition - providedChunkPosition
+            blockPosition.x = position.x - (side and 0x01); blockPosition.y = position.y; blockPosition.z = position.z - (side shr 1 and 0x01)
+            offset.x = (blockPosition.x shr 4) - providedChunkPosition.x
+            offset.y = (blockPosition.z shr 4) - providedChunkPosition.y
             val chunk = neighbours[offset] ?: continue
 
-            val inChunkPosition = blockPosition.inChunkPosition
+            inChunkPosition.x = blockPosition.x and 0x0F; inChunkPosition.y = blockPosition.y; inChunkPosition.z = blockPosition.z and 0x0F
+
             if (fluid.matches(chunk[inChunkPosition + Directions.UP])) {
                 return 1.0f
             }
