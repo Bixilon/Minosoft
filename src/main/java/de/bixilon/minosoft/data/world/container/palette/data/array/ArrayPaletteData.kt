@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,8 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.container.palette.data
+package de.bixilon.minosoft.data.world.container.palette.data.array
 
+import de.bixilon.minosoft.data.world.container.palette.data.PaletteData
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
@@ -38,7 +39,7 @@ class ArrayPaletteData(
         } else {
             (this.size + valuesPerLong - 1) / valuesPerLong
         }
-        this.data = LongArray(this.size)
+        this.data = LongArrayAllocator.claim(this.size)
         if (packetSize != size) {
             buffer.pointer += packetSize * Long.SIZE_BYTES // data is ignored
             return
@@ -65,6 +66,10 @@ class ArrayPaletteData(
         }
 
         return blockId.toInt() and singleValueMask
+    }
+
+    override fun free() {
+        LongArrayAllocator.free(data)
     }
 
     companion object {

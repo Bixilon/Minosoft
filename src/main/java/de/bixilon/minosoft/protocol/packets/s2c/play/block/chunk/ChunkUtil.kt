@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,12 +24,12 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
-import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP.Companion.LIGHT_SIZE
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -66,7 +66,7 @@ object ChunkUtil {
         if (containsSkyLight) {
             skyLight = buffer.readByteArray(halfBytes)
         }
-        val addData = buffer.readByteArray(addBitMask.cardinality() * (ProtocolDefinition.BLOCKS_PER_SECTION / 2))
+        val addData = buffer.readByteArray(addBitMask.cardinality() * (LIGHT_SIZE))
         if (complete) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
@@ -172,32 +172,27 @@ object ChunkUtil {
             }
 
 
-            val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.session.registries.blockState, paletteFactory = BlockStatePaletteFactory)
-
-            if (!blockContainer.isEmpty) {
-                val unpacked = blockContainer.unpack<BlockState?>()
-                if (!unpacked.isEmpty()) {
-                    sectionBlocks[sectionHeight - dimension.minSection] = unpacked
-                }
-            }
+            sectionBlocks[sectionHeight - dimension.minSection] = PalettedContainerReader.unpack(buffer, buffer.session.registries.blockState, factory = BlockStatePaletteFactory)
 
 
             if (buffer.versionId >= V_21W37A) {
-                val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.session.registries.biome.unsafeCast(), paletteFactory = BiomePaletteFactory)
-
-                if (!biomeContainer.isEmpty) {
-                    biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
-                }
+                biomes[sectionHeight - dimension.minSection] = PalettedContainerReader.unpack(buffer, buffer.session.registries.biome.unsafeCast(), factory = BiomePaletteFactory)
             }
 
 
             if (buffer.versionId < V_18W43A) {
-                val blockLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
-                var skyLight: ByteArray? = null
-                if (skylight) {
-                    skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
-                }
-                if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
+                if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
+                    var size = LIGHT_SIZE
+                    if (skylight) {
+                        size += LIGHT_SIZE
+                    }
+                    buffer.pointer += size
+                } else {
+                    val blockLight = buffer.readByteArray(LIGHT_SIZE)
+                    var skyLight: ByteArray? = null
+                    if (skylight) {
+                        skyLight = buffer.readByteArray(LIGHT_SIZE)
+                    }
                     light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
                     lightReceived++
                 }
