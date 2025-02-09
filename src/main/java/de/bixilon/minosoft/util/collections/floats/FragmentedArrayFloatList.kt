@@ -51,7 +51,6 @@ class FragmentedArrayFloatList(
     }
 
     private fun tryGrow(size: Int): FloatBuffer {
-        if (finished) throw IllegalStateException()
         if (limit - this.size >= size) {
             return this.incomplete[0]
         }
@@ -75,6 +74,7 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value: Float) {
+        checkFinished()
         val buffer = tryGrow(1)
         buffer.put(value)
         size += 1
@@ -92,6 +92,7 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value1: Float, value2: Float) {
+        checkFinished()
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 1)
         batchAdd(value2, buffer, 0)
@@ -101,6 +102,7 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value1: Float, value2: Float, value3: Float) {
+        checkFinished()
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 2)
         buffer = batchAdd(value2, buffer, 1)
@@ -111,6 +113,7 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float) {
+        checkFinished()
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 3)
         buffer = batchAdd(value2, buffer, 2)
@@ -122,6 +125,7 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float) {
+        checkFinished()
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 4)
         buffer = batchAdd(value2, buffer, 3)
@@ -134,46 +138,52 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float) {
-        var buffer = tryGrow(1)
-        buffer = batchAdd(value1, buffer, 5)
-        buffer = batchAdd(value2, buffer, 4)
-        buffer = batchAdd(value3, buffer, 3)
-        buffer = batchAdd(value4, buffer, 2)
-        buffer = batchAdd(value5, buffer, 1)
-        batchAdd(value6, buffer, 0)
-
+        checkFinished()
         size += 6
         invalidateOutput()
+
+        var buffer = this.incomplete.firstOrNull() ?: tryGrow(1)
+        val left = buffer.limit() - buffer.position()
+        if (left >= 6) {
+            buffer.put(value1); buffer.put(value2); buffer.put(value3); buffer.put(value4); buffer.put(value5); buffer.put(value6)
+            if (left == 6) {
+                tryPush(buffer)
+            }
+        } else {
+            buffer = batchAdd(value1, buffer, 5)
+            buffer = batchAdd(value2, buffer, 4)
+            buffer = batchAdd(value3, buffer, 3)
+            buffer = batchAdd(value4, buffer, 2)
+            buffer = batchAdd(value5, buffer, 1)
+            batchAdd(value6, buffer, 0)
+        }
     }
+
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float, value7: Float) {
-        val first = this.incomplete.firstOrNull()
-        if (first != null) {
-            val left = first.limit() - first.position()
-            if (left >= 7) {
-                first.put(value1); first.put(value2); first.put(value3); first.put(value4); first.put(value5); first.put(value6); first.put(value7)
-                size += 7
-                invalidateOutput()
-                if (left == 7) {
-                    tryPush(first)
-                }
-                return
-            }
-        }
-        var buffer = tryGrow(1)
-        buffer = batchAdd(value1, buffer, 6)
-        buffer = batchAdd(value2, buffer, 5)
-        buffer = batchAdd(value3, buffer, 4)
-        buffer = batchAdd(value4, buffer, 3)
-        buffer = batchAdd(value5, buffer, 2)
-        buffer = batchAdd(value6, buffer, 1)
-        batchAdd(value7, buffer, 0)
-
+        checkFinished()
         size += 7
         invalidateOutput()
+
+        var buffer = this.incomplete.firstOrNull() ?: tryGrow(1)
+        val left = buffer.limit() - buffer.position()
+        if (left >= 7) {
+            buffer.put(value1); buffer.put(value2); buffer.put(value3); buffer.put(value4); buffer.put(value5); buffer.put(value6); buffer.put(value7)
+            if (left == 7) {
+                tryPush(buffer)
+            }
+        } else {
+            buffer = batchAdd(value1, buffer, 6)
+            buffer = batchAdd(value2, buffer, 5)
+            buffer = batchAdd(value3, buffer, 4)
+            buffer = batchAdd(value4, buffer, 3)
+            buffer = batchAdd(value5, buffer, 2)
+            buffer = batchAdd(value6, buffer, 1)
+            batchAdd(value7, buffer, 0)
+        }
     }
 
-    private fun tryPush(fragment: FloatBuffer): Boolean {
+    private inline fun tryPush(fragment: FloatBuffer): Boolean {
         if (fragment.position() != fragment.limit()) {
             return false
         }
@@ -184,6 +194,7 @@ class FragmentedArrayFloatList(
 
     override fun add(array: FloatArray) {
         if (array.isEmpty()) return
+        checkFinished()
         invalidateOutput()
 
         var offset = 0
@@ -216,6 +227,7 @@ class FragmentedArrayFloatList(
 
     override fun add(buffer: FloatBuffer) {
         if (buffer.position() == 0) return
+        checkFinished()
         invalidateOutput()
 
         var offset = 0
