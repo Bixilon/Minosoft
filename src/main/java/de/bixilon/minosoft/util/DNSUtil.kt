@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util
 
+import com.google.common.net.InetAddresses
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -23,9 +24,11 @@ object DNSUtil {
 
     fun resolveServerAddress(hostname: String): List<ServerAddress> {
         val original = getServerAddress(hostname)
-        // TODO: Don't resolve if address is ip address
         if (":" in hostname) {
             // port provided, skip srv check
+            return listOf(original)
+        }
+        if (InetAddresses.isInetAddress(hostname)) {
             return listOf(original)
         }
 
