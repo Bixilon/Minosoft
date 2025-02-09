@@ -58,13 +58,14 @@ class SectionOcclusion(
         }
     }
 
-    private inline fun ShortArray.updateRegion(x: Int, y: Int, z: Int, id: Short): Boolean {
+    private inline fun ShortArray.setIfUnset(x: Int, y: Int, z: Int, id: Short): Boolean {
         val index = y shl 8 or (z shl 4) or x
-        if (this[index] > 0) {
+        if (this[index] != EMPTY_REGION) {
             return true
         }
         val state = provider[index]
         if (state.isFullyOpaque()) {
+            this[index] = INVALID_REGION
             return true
         }
         this[index] = id
@@ -72,7 +73,7 @@ class SectionOcclusion(
     }
 
     private fun startTrace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
-        if (regions.updateRegion(x, y, z, nextId)) return
+        if (regions.setIfUnset(x, y, z, nextId)) return
 
         // no need to trace negative coordinates initially
         if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
@@ -81,7 +82,7 @@ class SectionOcclusion(
     }
 
     private fun trace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
-        if (regions.updateRegion(x, y, z, nextId)) return
+        if (regions.setIfUnset(x, y, z, nextId)) return
 
         if (x > 0) trace(regions, x - 1, y, z, nextId)
         if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
@@ -93,9 +94,9 @@ class SectionOcclusion(
 
     private fun floodFill(array: ShortArray): ShortArray {
         // mark regions and check direct neighbours
-        Arrays.fill(array, 0.toShort())
+        Arrays.fill(array, EMPTY_REGION)
 
-        var next: Short = 0
+        var next = EMPTY_REGION
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
@@ -124,7 +125,7 @@ class SectionOcclusion(
                         Axes.Z -> Directions.NORTH
                     }
                     val nRegion = regions[indexPrefix].toInt()
-                    if (nRegion > 0) {
+                    if (nRegion > EMPTY_REGION) {
                         sideRegions[nDirection.ordinal].add(nRegion) // primitive
                     }
 
@@ -203,6 +204,8 @@ class SectionOcclusion(
     }
 
     companion object {
+        private const val EMPTY_REGION = 0.toShort()
+        private const val INVALID_REGION = (-1).toShort()
         private val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
         private val ALLOCATOR = ShortAllocator()
 
