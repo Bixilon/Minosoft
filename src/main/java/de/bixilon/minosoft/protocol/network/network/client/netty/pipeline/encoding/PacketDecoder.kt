@@ -24,6 +24,9 @@ import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 import java.lang.reflect.InvocationTargetException
@@ -38,7 +41,11 @@ class PacketDecoder(
         val packetId = buffer.readVarInt()
         val data = buffer.readRemaining()
 
-        val state = client.connection.state ?: throw IllegalStateException("Not connected!")
+        val state = client.connection.state
+        if (state == null) {
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Tried decoding a packet while being not connected. Skipping." }
+            return
+        }
 
 
         val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
