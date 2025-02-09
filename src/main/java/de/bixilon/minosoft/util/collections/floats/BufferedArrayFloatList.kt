@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,7 +35,7 @@ class BufferedArrayFloatList(
 
     private val nextGrowStep = when {
         initialSize <= 0 -> FloatListUtil.DEFAULT_INITIAL_SIZE
-        initialSize <= 100 -> 100
+        initialSize <= 128 -> 128
         else -> initialSize
     }
 

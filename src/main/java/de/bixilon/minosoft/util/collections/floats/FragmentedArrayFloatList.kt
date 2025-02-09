@@ -35,7 +35,7 @@ class FragmentedArrayFloatList(
 
     private val nextGrowStep = when {
         growStep <= 0 -> FloatListUtil.DEFAULT_INITIAL_SIZE
-        growStep <= 100 -> 100
+        growStep <= 128 -> 128
         else -> growStep
     }
 
