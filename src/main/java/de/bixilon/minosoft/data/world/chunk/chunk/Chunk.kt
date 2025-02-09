@@ -161,7 +161,7 @@ class Chunk(
             return lock.unlock()
         }
         light.heightmap.recalculate()
-        light.recalculate()
+        light.recalculate(fireEvent = false)
 
         for (section in sections) {
             section.blocks.occlusion.recalculate(true)
@@ -170,6 +170,7 @@ class Chunk(
         lock.unlock()
 
         ChunkLocalBlockUpdate(chunkPosition, this, executed).fire(session)
+        light.fireLightChange(this.sections, true)
     }
 
     fun getOrPut(sectionHeight: Int, calculateLight: Boolean = true, lock: Boolean = true): ChunkSection? {
