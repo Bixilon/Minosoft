@@ -68,6 +68,7 @@ class SolidSectionMesher(
         val blocks = section.blocks
         val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
+        val tint = IntArray(1)
         val position = BlockPosition()
         val inSectionPosition = InChunkSectionPosition()
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
@@ -84,6 +85,7 @@ class SolidSectionMesher(
         val ao = if (ambientOcclusion) AmbientOcclusion(section) else null
 
         val props = WorldRenderProps(position, inSectionPosition, floatOffset, mesh, random, neighbourBlocks, light, ao)
+
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             inSectionPosition.y = y
@@ -144,7 +146,7 @@ class SolidSectionMesher(
                     ao?.clear()
 
 
-                    val tints = tints.getBlockTint(state, chunk, x, position.y, z)
+                    val tints = tints.getBlockTint(state, chunk, x, position.y, z, tint)
                     var rendered = false
                     model?.render(props, state, blockEntity, tints)?.let { if (it) rendered = true }
 

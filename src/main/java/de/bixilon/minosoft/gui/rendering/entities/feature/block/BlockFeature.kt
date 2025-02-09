@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -52,7 +52,7 @@ open class BlockFeature(
         val model = (state.block.model ?: state.model) ?: return
         // TODO: block entity support?
 
-        val tint = renderer.renderer.context.tints.getBlockTint(state, null, 0, 0, 0)
+        val tint = renderer.renderer.context.tints.getBlockTint(state, null, 0, 0, 0, null)
 
         model.render(mesh, state, tint)
 

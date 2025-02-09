@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,13 +48,14 @@ class TintManager(val session: PlaySession) {
         DefaultTints.init(this)
     }
 
-    fun getBlockTint(state: BlockState, chunk: Chunk?, x: Int, y: Int, z: Int): IntArray? {
+    fun getBlockTint(state: BlockState, chunk: Chunk?, x: Int, y: Int, z: Int, cache: IntArray?): IntArray? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
-        val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
+        val size = if (tintProvider is MultiTintProvider) tintProvider.tints else 1
+        val tints = if (cache != null && cache.size >= size) cache else IntArray(size)
         val biome = chunk?.getBiome(x, y, z)
 
-        for (tintIndex in tints.indices) {
+        for (tintIndex in 0 until size) {
             tints[tintIndex] = tintProvider.getBlockColor(state, biome, x, y, z, tintIndex)
         }
         return tints
