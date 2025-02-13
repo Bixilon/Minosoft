@@ -16,12 +16,16 @@ package de.bixilon.minosoft.data.world.container.block
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
+import kotlin.random.Random
+import kotlin.time.measureTime
 
 @Test(groups = ["occlusion"], dependsOnGroups = ["block"])
 class SectionOcclusionTest {
@@ -91,7 +95,7 @@ class SectionOcclusionTest {
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 
-    /*
+    @Test(enabled = false)
     fun benchmark() {
         val occlusion = create()
         val stone = StoneTest0.state
@@ -109,7 +113,6 @@ class SectionOcclusionTest {
         }
         println("Took: ${time.inWholeNanoseconds.formatNanos()}")
     }
-     */
 
     // TODO: Test more possible cases
 }

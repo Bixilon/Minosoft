@@ -58,8 +58,7 @@ class SectionOcclusion(
         }
     }
 
-    private inline fun ShortArray.setIfUnset(x: Int, y: Int, z: Int, id: Short): Boolean {
-        val index = y shl 8 or (z shl 4) or x
+    private inline fun ShortArray.setIfUnset(index: Int, region: Int): Boolean {
         if (this[index] != EMPTY_REGION) {
             return true
         }
@@ -68,41 +67,36 @@ class SectionOcclusion(
             this[index] = INVALID_REGION
             return true
         }
-        this[index] = id
+        this[index] = region.toShort()
         return false
     }
 
-    private fun startTrace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
-        if (regions.setIfUnset(x, y, z, nextId)) return
+    private fun startTrace(regions: ShortArray, index: Int) {
+        if (regions.setIfUnset(index, index)) return
 
         // no need to trace negative coordinates initially
-        if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
-        if (z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, x, y, z + 1, nextId)
-        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
+        if (index and 0x00F < (ProtocolDefinition.SECTION_MAX_X shl 0)) trace(regions, index + X, index)
+        if (index and 0x0F0 < (ProtocolDefinition.SECTION_MAX_Z shl 4)) trace(regions, index + Z, index)
+        if (index and 0xF00 < (ProtocolDefinition.SECTION_MAX_Y shl 8)) trace(regions, index + Y, index)
     }
 
-    private fun trace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
-        if (regions.setIfUnset(x, y, z, nextId)) return
+    private fun trace(regions: ShortArray, index: Int, region: Int) {
+        if (regions.setIfUnset(index, region)) return
 
-        if (x > 0) trace(regions, x - 1, y, z, nextId)
-        if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
-        if (z > 0) trace(regions, x, y, z - 1, nextId)
-        if (z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, x, y, z + 1, nextId)
-        if (y > 0) trace(regions, x, y - 1, z, nextId)
-        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
+        if (index and 0x00F > 0) trace(regions, index - X, region)
+        if (index and 0x00F < (ProtocolDefinition.SECTION_MAX_X shl 0)) trace(regions, index + X, region)
+        if (index and 0x0F0 > 0) trace(regions, index - Z, region)
+        if (index and 0x0F0 < (ProtocolDefinition.SECTION_MAX_Z shl 4)) trace(regions, index + Z, region)
+        if (index and 0xF00 > 0) trace(regions, index - Y, region)
+        if (index and 0xF00 < (ProtocolDefinition.SECTION_MAX_Y shl 8)) trace(regions, index + Y, region)
     }
 
     private fun floodFill(array: ShortArray): ShortArray {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
-        var next = EMPTY_REGION
-        for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    startTrace(array, x, y, z, ++next)
-                }
-            }
+        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            startTrace(array, index)
         }
 
         return array
@@ -140,7 +134,7 @@ class SectionOcclusion(
                         Axes.Z -> ProtocolDefinition.SECTION_MAX_Z shl 4
                     }
                     val pRegion = regions[index2].toInt()
-                    if (pRegion > 0) {
+                    if (pRegion > EMPTY_REGION) {
                         sideRegions[pDirection.ordinal].add(pRegion) // primitive
                     }
                 }
@@ -204,10 +198,14 @@ class SectionOcclusion(
     }
 
     companion object {
-        private const val EMPTY_REGION = 0.toShort()
-        private const val INVALID_REGION = (-1).toShort()
+        private const val EMPTY_REGION = (-1).toShort()
+        private const val INVALID_REGION = (-2).toShort()
         private val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
         private val ALLOCATOR = ShortAllocator()
+
+        private const val X = 0x001
+        private const val Y = 0x100
+        private const val Z = 0x010
 
 
         fun BlockState?._isFullyOpaque(): Boolean {
