@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -24,7 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 class CulledQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val queue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
+    private val queue: MutableMap<ChunkPosition, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val lock = RWLock.rwlock()
 
     val size: Int get() = queue.size

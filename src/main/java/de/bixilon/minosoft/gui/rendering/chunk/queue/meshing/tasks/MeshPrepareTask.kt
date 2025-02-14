@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.runnable.HeavyPoolRunnable
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 
 class MeshPrepareTask(
-    val chunkPosition: Vec2i,
+    val chunkPosition: ChunkPosition,
     val sectionHeight: Int,
     val runnable: HeavyPoolRunnable,
 )

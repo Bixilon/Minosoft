@@ -26,6 +26,7 @@ value class BlockPosition(
     inline val index: Long,
 ) : TextFormattable {
 
+    constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this((y and 0xFFF shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
         assert(x >= 0)
         assert(x <= ProtocolDefinition.SECTION_MAX_X)

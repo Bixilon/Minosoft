@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 
 interface BiomeAccessor {
 
-    fun getBiome(position: InChunkPosition): Biome?
+    fun getBiome(position: BlockPosition): Biome?
 }

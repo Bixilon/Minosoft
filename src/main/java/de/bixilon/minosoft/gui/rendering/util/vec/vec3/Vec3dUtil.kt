@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import kotlin.math.abs
 
 object Vec3dUtil {
@@ -41,8 +42,8 @@ object Vec3dUtil {
     val Vec3d.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
 
-    val Vec3d.blockPosition: Vec3i
-        get() = this.floor
+    val Vec3d.blockPosition: BlockPosition
+        get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)
 
     fun Vec3d.toVec3(): Vec3 {
         val array = array

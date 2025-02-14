@@ -35,7 +35,6 @@ import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 /**
@@ -63,41 +62,42 @@ class Chunk(
 
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections.getOrNull(sectionHeight - minSection)
 
-    operator fun get(x: Int, y: Int, z: Int): BlockState? {
-        return this[y.sectionHeight]?.blocks?.get(x, y.inSectionHeight, z)
+    operator fun get(x: Int, y: Int, z: Int) = this[InChunkPosition(x, y, z)]
+
+    operator fun get(position: InChunkPosition): BlockState? {
+        return this[position.y.sectionHeight]?.blocks?.get(position.inSectionPosition)
     }
 
-    operator fun get(position: InChunkPosition): BlockState? = get(position.x, position.y, position.z)
-
-    operator fun set(x: Int, y: Int, z: Int, state: BlockState?) {
-        val section = getOrPut(y.sectionHeight) ?: return
-        val previous = section.blocks.set(x, y and 0x0F, z, state)
+    operator fun set(x: Int, y: Int, z: Int, state: BlockState?) = set(InChunkPosition(x, y, z), state)
+    operator fun set(position: InChunkPosition, state: BlockState?) {
+        val section = getOrPut(position.y.sectionHeight) ?: return
+        val previous = section.blocks.set(position.inSectionPosition, state)
         if (previous == state) return
         if (previous?.block != state?.block) {
-            this[y.sectionHeight]?.blockEntities?.set(x, y and 0x0F, z, null)
+            this[position.y.sectionHeight]?.blockEntities?.set(position.inSectionPosition, null)
         }
         val entity = getOrPutBlockEntity(x, y, z)
 
         if (world.dimension.light) {
-            light.onBlockChange(x, y, z, section, previous, state)
+            light.onBlockChange(position, section, previous, state)
         }
 
-        SingleBlockUpdate(Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + z), this, state, entity).fire(session)
+        SingleBlockUpdate(chunkPosition.blockPosition(position), this, state, entity).fire(session)
     }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 
-    fun getBlockEntity(x: Int, y: Int, z: Int): BlockEntity? {
-        return this[y.sectionHeight]?.blockEntities?.get(x, y.inSectionHeight, z)
+    fun getBlockEntity(position: InChunkPosition): BlockEntity? {
+        return this[position.y.sectionHeight]?.blockEntities?.get(position.inSectionPosition)
     }
 
-    fun getOrPutBlockEntity(x: Int, y: Int, z: Int): BlockEntity? {
-        val sectionHeight = y.sectionHeight
-        val inSectionHeight = y.inSectionHeight
-        var blockEntity = this[sectionHeight]?.blockEntities?.get(x, inSectionHeight, z)
-        val state = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
+    fun getOrPutBlockEntity(position: InChunkPosition): BlockEntity? {
+        val sectionHeight = position.y.sectionHeight
+        val inSectionHeight = position.y.inSectionHeight
+        var blockEntity = this[sectionHeight]?.blockEntities?.get(position.inSectionPosition)
+        val state = this[sectionHeight]?.blocks?.get(position.inSectionPosition) ?: return null
         if (blockEntity != null && state.block !is BlockWithEntity<*>) {
-            this[sectionHeight]?.blockEntities?.set(x, inSectionHeight, z, null)
+            this[sectionHeight]?.blockEntities?.set(position.inSectionPosition, null)
             return null
         }
         if (blockEntity != null) {
@@ -107,28 +107,15 @@ class Chunk(
             return null
         }
         blockEntity = state.block.createBlockEntity(session) ?: return null
-        (this.getOrPut(sectionHeight) ?: return null).blockEntities[x, inSectionHeight, z] = blockEntity
+        (this.getOrPut(sectionHeight) ?: return null).blockEntities[position.inSectionPosition] = blockEntity
 
         return blockEntity
     }
 
-    fun getBlockEntity(position: Vec3i): BlockEntity? = getBlockEntity(position.x, position.y, position.z)
-    fun getOrPutBlockEntity(position: Vec3i): BlockEntity? = getOrPutBlockEntity(position.x, position.y, position.z)
-
-    operator fun set(x: Int, y: Int, z: Int, blockEntity: BlockEntity) {
-        this.set(x, y, z, blockEntity as BlockEntity?)
+    fun set(position: InChunkPosition, blockEntity: BlockEntity?) {
+        val section = getOrPut(position.y.sectionHeight) ?: return
+        section.blockEntities[position.inSectionPosition] = blockEntity
     }
-
-    @JvmName("set2")
-    fun set(x: Int, y: Int, z: Int, blockEntity: BlockEntity?) {
-        (getOrPut(y.sectionHeight) ?: return).blockEntities[x, y.inSectionHeight, z] = blockEntity
-    }
-
-    operator fun set(position: Vec3i, blockEntity: BlockEntity) = set(position.x, position.y, position.z, blockEntity)
-
-    @JvmName("set2")
-    fun set(position: Vec3i, blockEntity: BlockEntity?) = set(position.x, position.y, position.z, blockEntity)
-
 
     fun apply(update: ChunkLocalBlockUpdate.LocalUpdate) {
         this[update.position] = update.state

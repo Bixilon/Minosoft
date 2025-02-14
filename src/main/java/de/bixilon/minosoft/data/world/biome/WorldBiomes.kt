@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
@@ -33,20 +34,18 @@ class WorldBiomes(val world: World) : BiomeAccessor {
             resetCache()
         }
 
-
-    operator fun get(position: BlockPosition) = getBiome(position)
-    override fun getBiome(position: BlockPosition) = getBiome(position.x, position.y, position.z)
-
-    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        val chunk = world.chunks[x shr 4, z shr 4] ?: return null
-        return getBiome(x and 0x0F, y.clamp(world.dimension.minY, world.dimension.maxY), z and 0x0F, chunk)
+    override fun getBiome(position: BlockPosition) = this[position]
+    operator fun get(position: BlockPosition): Biome? {
+        val chunk = world.chunks[position.chunkPosition] ?: return null
+        val inChunk = position.inChunkPosition
+        return getBiome(inChunk.with(y = inChunk.y.clamp(world.dimension.minY, world.dimension.maxY)), chunk)
     }
 
-    fun getBiome(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
-        val noise = this.noise ?: return chunk.biomeSource.get(x, y, z)
-        chunk[y.sectionHeight]?.let { return it.biomes[x, y, z] } // access cache
+    fun getBiome(position: InChunkPosition, chunk: Chunk): Biome? {
+        val noise = this.noise ?: return chunk.biomeSource.get(position)
+        chunk[position.y.sectionHeight]?.let { return it.biomes[position.inSectionPosition] } // access cache
 
-        return noise.get(x, y, z, chunk)
+        return noise.get(position, chunk)
     }
 
     fun updateNoise(seed: Long) {

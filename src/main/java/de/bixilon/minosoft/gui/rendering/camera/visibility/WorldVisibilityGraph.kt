@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.camera.visibility
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.array.BooleanArrayUtil.trySet
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -27,14 +26,14 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
-import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -55,7 +54,7 @@ class WorldVisibilityGraph(
 ) {
     private val session = context.session
     private val frustum = camera.matrixHandler.frustum
-    private var cameraChunkPosition = Vec2i.EMPTY
+    private var cameraChunkPosition = ChunkPosition.EMPTY
     private var cameraSectionHeight = 0
     private var viewDistance = session.world.view.viewDistance
     private val chunks = session.world.chunks.chunks.unsafe
@@ -98,11 +97,11 @@ class WorldVisibilityGraph(
         }
     }
 
-    fun isInViewDistance(chunkPosition: Vec2i): Boolean {
+    fun isInViewDistance(chunkPosition: ChunkPosition): Boolean {
         return chunkPosition.isInViewDistance(session.world.view.viewDistance, cameraChunkPosition)
     }
 
-    fun isChunkVisible(chunkPosition: Vec2i): Boolean {
+    fun isChunkVisible(chunkPosition: ChunkPosition): Boolean {
         if (!isInViewDistance(chunkPosition)) {
             return false
         }
@@ -154,7 +153,7 @@ class WorldVisibilityGraph(
         return frustum.containsAABB(aabb)
     }
 
-    fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: InChunkSectionPosition = DEFAULT_MIN_POSITION, maxPosition: InChunkSectionPosition = ProtocolDefinition.CHUNK_SECTION_SIZE, checkChunk: Boolean = true): Boolean {
+    fun isSectionVisible(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = DEFAULT_MIN_POSITION, maxPosition: InSectionPosition = ProtocolDefinition.CHUNK_SECTION_SIZE, checkChunk: Boolean = true): Boolean {
         if (checkChunk && !isChunkVisible(chunkPosition)) {
             return false
         }
@@ -382,6 +381,6 @@ class WorldVisibilityGraph(
     }
 
     companion object {
-        private val DEFAULT_MIN_POSITION = Vec3i.EMPTY
+        private val DEFAULT_MIN_POSITION = InSectionPosition.EMPTY
     }
 }

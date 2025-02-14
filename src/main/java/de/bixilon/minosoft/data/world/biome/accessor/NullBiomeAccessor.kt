@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 
 object NullBiomeAccessor : BiomeAccessor {
 
-    override fun getBiome(position: InChunkPosition) = null
+    override fun getBiome(position: BlockPosition) = null
 }

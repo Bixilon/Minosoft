@@ -107,7 +107,7 @@ class SectionOcclusionTest {
         }
         CALCULATE.setBoolean(occlusion, true)
         val time = measureTime {
-            for (i in 0 until 1999_99) {
+            for (i in 0 until 500_000) {
                 occlusion.recalculate(false)
             }
         }

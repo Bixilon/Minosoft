@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
@@ -91,7 +90,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         return neighbours[index]
     }
 
-    operator fun get(offset: Vec2i): Chunk? {
+    operator fun get(offset: Vec2i): Chunk {
         if (offset.x == 0 && offset.y == 0) {
             return chunk
         }
@@ -187,19 +186,5 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
             ChunkPosition(+1, +0), // 6
             ChunkPosition(+1, +1), // 7
         )
-
-        fun getIndex(offset: ChunkPosition): Int {
-            return when {
-                offset.x == -1 && offset.z == -1 -> 0
-                offset.x == -1 && offset.z == 0 -> 1
-                offset.x == -1 && offset.z == 1 -> 2
-                offset.x == 0 && offset.z == -1 -> 3
-                offset.x == 0 && offset.z == 1 -> 4
-                offset.x == 1 && offset.z == -1 -> 5
-                offset.x == 1 && offset.z == 0 -> 6
-                offset.x == 1 && offset.z == 1 -> 7
-                else -> Broken("Can not get neighbour chunk from offset $offset")
-            }
-        }
     }
 }

@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
     val section: ChunkSection,
-    @JvmField var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
+    var light: LightArray = LightArray(), // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) : AbstractSectionLight() {
 
     fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, state: BlockState?) {
@@ -135,13 +135,13 @@ class SectionLight(
         }
 
         // get block or next luminance level
-        val blockSkyLight = this.light[index.index].toInt()
+        val blockSkyLight = this.light[index].toInt()
         val currentLight = blockSkyLight and BLOCK_LIGHT_MASK // we just care about block light
         if (currentLight >= nextLuminance) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index.index] = ((blockSkyLight and SKY_LIGHT_MASK) or nextLuminance).toByte() // keep the sky light set
+        this.light[index] = ((blockSkyLight and SKY_LIGHT_MASK) or nextLuminance) // keep the sky light set
         if (!update) {
             update = true
         }

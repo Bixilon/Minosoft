@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 
@@ -90,6 +92,9 @@ value class InChunkPosition(
     inline operator fun plus(position: InChunkPosition) = InChunkPosition(this.x + position.x, this.y + position.y, this.z + position.z)
 
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+
+    inline val inSectionPosition get() = InSectionPosition(x, y.inSectionHeight, z)
+    inline val sectionHeight get() = y.sectionHeight
 
     companion object {
         const val MASK_X = 0x00F

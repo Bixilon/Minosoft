@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
@@ -181,7 +182,7 @@ class ChunkRenderer(
         lock.unlock()
     }
 
-    fun unloadChunk(chunkPosition: Vec2i) {
+    fun unloadChunk(chunkPosition: ChunkPosition) {
         lock.lock()
 
         meshingQueue.tasks.interrupt(chunkPosition)
