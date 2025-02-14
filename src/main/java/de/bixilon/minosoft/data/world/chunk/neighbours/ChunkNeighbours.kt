@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
@@ -52,7 +53,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         this.chunk.lock.unlock()
     }
 
-    operator fun set(offset: Vec2i, chunk: Chunk) {
+    operator fun set(offset: ChunkPosition, chunk: Chunk) {
         set(getIndex(offset), chunk)
     }
 
@@ -66,7 +67,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         chunk.lock.unlock()
     }
 
-    fun remove(offset: Vec2i) {
+    fun remove(offset: ChunkPosition) {
         remove(getIndex(offset))
     }
 
@@ -114,8 +115,8 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         }
     }
 
-    fun trace(offset: Vec2i): Chunk? {
-        return trace(offset.x, offset.y)
+    fun trace(offset: ChunkPosition): Chunk? {
+        return trace(offset.x, offset.z)
     }
 
     fun trace(offsetX: Int, offsetZ: Int): Chunk? = when {
@@ -177,26 +178,26 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
          */
 
         val OFFSETS = arrayOf(
-            Vec2i(-1, -1), // 0
-            Vec2i(-1, +0), // 1
-            Vec2i(-1, +1), // 2
-            Vec2i(+0, -1), // 3
-            Vec2i(+0, +1), // 4
-            Vec2i(+1, -1), // 5
-            Vec2i(+1, +0), // 6
-            Vec2i(+1, +1), // 7
+            ChunkPosition(-1, -1), // 0
+            ChunkPosition(-1, +0), // 1
+            ChunkPosition(-1, +1), // 2
+            ChunkPosition(+0, -1), // 3
+            ChunkPosition(+0, +1), // 4
+            ChunkPosition(+1, -1), // 5
+            ChunkPosition(+1, +0), // 6
+            ChunkPosition(+1, +1), // 7
         )
 
-        fun getIndex(offset: Vec2i): Int {
+        fun getIndex(offset: ChunkPosition): Int {
             return when {
-                offset.x == -1 && offset.y == -1 -> 0
-                offset.x == -1 && offset.y == 0 -> 1
-                offset.x == -1 && offset.y == 1 -> 2
-                offset.x == 0 && offset.y == -1 -> 3
-                offset.x == 0 && offset.y == 1 -> 4
-                offset.x == 1 && offset.y == -1 -> 5
-                offset.x == 1 && offset.y == 0 -> 6
-                offset.x == 1 && offset.y == 1 -> 7
+                offset.x == -1 && offset.z == -1 -> 0
+                offset.x == -1 && offset.z == 0 -> 1
+                offset.x == -1 && offset.z == 1 -> 2
+                offset.x == 0 && offset.z == -1 -> 3
+                offset.x == 0 && offset.z == 1 -> 4
+                offset.x == 1 && offset.z == -1 -> 5
+                offset.x == 1 && offset.z == 0 -> 6
+                offset.x == 1 && offset.z == 1 -> 7
                 else -> Broken("Can not get neighbour chunk from offset $offset")
             }
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,6 @@ class WorldBiomes(val world: World) : BiomeAccessor {
     operator fun get(position: BlockPosition) = getBiome(position)
     override fun getBiome(position: BlockPosition) = getBiome(position.x, position.y, position.z)
 
-    operator fun get(x: Int, y: Int, z: Int) = getBiome(x, y, z)
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
         val chunk = world.chunks[x shr 4, z shr 4] ?: return null
         return getBiome(x and 0x0F, y.clamp(world.dimension.minY, world.dimension.maxY), z and 0x0F, chunk)

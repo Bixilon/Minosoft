@@ -35,6 +35,8 @@ value class InSectionPosition(
     inline val y: Int get() = (index and MASK_Y) shr SHIFT_Y
     inline val z: Int get() = (index and MASK_Z) shr SHIFT_Z
 
+    inline val xz: Int get() = index and (MASK_X or MASK_Z)
+
 
     inline fun plusX(): InSectionPosition {
         assert(this.x < ProtocolDefinition.SECTION_MAX_X)

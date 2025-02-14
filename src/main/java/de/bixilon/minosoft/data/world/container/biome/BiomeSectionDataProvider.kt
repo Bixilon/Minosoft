@@ -39,7 +39,7 @@ class BiomeSectionDataProvider(
         var biome = super.get(x, inSectionY, z)
         if (biome != null) return biome
         biome = section.chunk.world.biomes.noise?.get(x, y, z, section.chunk)
-        unsafeSet(x, inSectionY, z, biome)
+        unsafeSet(InSectionPosition(x, inSectionY, z), biome)
         return biome
     }
 }

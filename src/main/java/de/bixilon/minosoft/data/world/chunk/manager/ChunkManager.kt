@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,8 +33,8 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChan
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 
 class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: Int = 0) {
-    val chunks: LockMap<Vec2i, Chunk> = LockMap(HashMap(chunkCapacity), world.lock)
-    val prototypes: LockMap<Vec2i, ChunkPrototype> = LockMap(HashMap(prototypeCapacity), world.lock)
+    val chunks: LockMap<ChunkPosition, Chunk> = LockMap(HashMap(chunkCapacity), world.lock)
+    val prototypes: LockMap<ChunkPosition, ChunkPrototype> = LockMap(HashMap(prototypeCapacity), world.lock)
     val size = WorldSizeManager(world)
     val ticker = ChunkTicker(this)
     var revision by observed(0)
@@ -45,7 +45,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
     }
 
     operator fun get(x: Int, z: Int): Chunk? {
-        return this[Vec2i(x, z)]
+        return this[ChunkPosition(x, z)]
     }
 
     fun unload(position: ChunkPosition) {
