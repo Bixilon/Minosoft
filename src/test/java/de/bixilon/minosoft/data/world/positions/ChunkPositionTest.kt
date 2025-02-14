@@ -93,4 +93,18 @@ class ChunkPositionTest {
         val position = ChunkPosition(0xF, 2)
         assertEquals(position.minusZ().z, 1)
     }
+
+    @Test
+    fun `unary minus`() {
+        val position = -ChunkPosition(2, 2)
+        assertEquals(position.x, -2)
+        assertEquals(position.z, -2)
+    }
+
+    @Test
+    fun `unary plus`() {
+        val position = ChunkPosition(2, 2)
+        assertEquals(position.x, 2)
+        assertEquals(position.z, 2)
+    }
 }

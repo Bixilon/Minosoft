@@ -89,6 +89,8 @@ value class InChunkPosition(
 
     inline operator fun plus(position: InChunkPosition) = InChunkPosition(this.x + position.x, this.y + position.y, this.z + position.z)
 
+    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+
     companion object {
         const val MASK_X = 0x00F
         const val SHIFT_X = 0
@@ -106,6 +108,4 @@ value class InChunkPosition(
 
         val EMPTY = InChunkPosition(0, 0, 0)
     }
-
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
 }

@@ -73,6 +73,8 @@ value class ChunkPosition(
     inline operator fun unaryMinus() = ChunkPosition(-this.x, -this.z)
     inline operator fun unaryPlus() = this
 
+    override fun toText() = "(${this.x.format()} ${this.z.format()})"
+
     companion object {
         const val MASK_X = 0x00F
         const val SHIFT_X = 0
@@ -86,6 +88,4 @@ value class ChunkPosition(
 
         val EMPTY = ChunkPosition(0, 0)
     }
-
-    override fun toText() = "(${this.x.format()} ${this.z.format()})"
 }

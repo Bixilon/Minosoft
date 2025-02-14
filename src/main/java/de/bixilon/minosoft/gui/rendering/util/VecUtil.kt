@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -119,21 +119,6 @@ object VecUtil {
     val Vec3i.center: Vec3d
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
 
-    fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int): Vec3i {
-        return Vec3i(
-            chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X,
-            sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y,
-            chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
-        ) // ToDo: Confirm
-    }
-
-    fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
-        return Vec3i(
-            chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x,
-            sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y,
-            chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z
-        ) // ToDo: Confirm
-    }
 
     inline infix operator fun Vec3i.plus(vec3: Vec3i?): Vec3i {
         if (vec3 == null) {

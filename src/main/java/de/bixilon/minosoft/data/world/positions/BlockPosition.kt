@@ -13,7 +13,11 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.generatePositionHash
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 
@@ -92,6 +96,18 @@ value class BlockPosition(
     inline operator fun unaryMinus() = BlockPosition(-this.x, -this.y, -this.z)
     inline operator fun unaryPlus() = this
 
+    inline operator fun plus(direction: Directions) = BlockPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
+    inline operator fun minus(direction: Directions) = BlockPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+
+
+    inline val hash get() = generatePositionHash(x, y, z)
+    inline val sectionHeight get() = y.sectionHeight
+    inline val chunkPosition get() = ChunkPosition(x shr 4, z shr 4)
+    inline val inChunkPosition get() = InChunkPosition(x and 0x0F, y, this.z and 0x0F)
+    inline val inSectionPosition get() = InSectionPosition(x and 0x0F, y.inSectionHeight, z and 0x0F)
+
+    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+
     companion object {
         const val MASK_X = 0x00F
         const val SHIFT_X = 0
@@ -108,7 +124,22 @@ value class BlockPosition(
 
 
         val EMPTY = BlockPosition(0, 0, 0)
-    }
 
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+
+        fun of(chunk: ChunkPosition, sectionHeight: Int): BlockPosition {
+            return BlockPosition(
+                chunk.x * ProtocolDefinition.SECTION_WIDTH_X,
+                sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y,
+                chunk.z * ProtocolDefinition.SECTION_WIDTH_Z
+            ) // ToDo: Confirm
+        }
+
+        fun of(chunk: ChunkPosition, sectionHeight: Int, inSection: InSectionPosition): BlockPosition {
+            return BlockPosition(
+                chunk.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
+                sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
+                chunk.z * ProtocolDefinition.SECTION_WIDTH_Z + inSection.z
+            ) // ToDo: Confirm
+        }
+    }
 }

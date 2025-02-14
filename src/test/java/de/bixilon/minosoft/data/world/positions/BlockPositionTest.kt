@@ -123,4 +123,20 @@ class BlockPositionTest {
         val position = BlockPosition(0xF, 0xF, 2)
         assertEquals(position.minusZ().z, 1)
     }
+
+    @Test
+    fun `unary minus`() {
+        val position = -BlockPosition(2, 2, 2)
+        assertEquals(position.x, -2)
+        assertEquals(position.y, -2)
+        assertEquals(position.z, -2)
+    }
+
+    @Test
+    fun `unary plus`() {
+        val position = +BlockPosition(2, 2, 2)
+        assertEquals(position.x, 2)
+        assertEquals(position.y, 2)
+        assertEquals(position.z, 2)
+    }
 }

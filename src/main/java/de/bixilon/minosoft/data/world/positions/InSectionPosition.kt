@@ -90,6 +90,8 @@ value class InSectionPosition(
 
     inline operator fun plus(position: InSectionPosition) = InSectionPosition(this.x + position.x, this.y + position.y, this.z + position.z)
 
+    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+
     companion object {
         const val MASK_X = 0x00F
         const val SHIFT_X = 0
@@ -107,6 +109,4 @@ value class InSectionPosition(
 
         val EMPTY = InSectionPosition(0, 0, 0)
     }
-
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
 }
