@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusion
 import java.util.*
@@ -23,8 +22,6 @@ import java.util.*
 class WorldRenderProps(
     @JvmField
     val position: BlockPosition,
-    @JvmField
-    val inSectionPosition: InChunkSectionPosition,
     @JvmField
     val offset: FloatArray,
     @JvmField

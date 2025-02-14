@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -147,7 +148,7 @@ class Chunk(
             if (update.state == null && section == null) continue
 
             section = getOrPut(sectionHeight, lock = false) ?: continue
-            val previous = section.blocks.noOcclusionSet(update.position.x, update.position.y.inSectionHeight, update.position.z, update.state)
+            val previous = section.blocks.noOcclusionSet(InSectionPosition(update.position.x, update.position.y.inSectionHeight, update.position.z), update.state)
             if (previous == update.state) continue
             if (previous?.block != update.state?.block) {
                 this[update.position.y.sectionHeight]?.blockEntities?.set(update.position.x, update.position.y and 0x0F, update.position.z, null)

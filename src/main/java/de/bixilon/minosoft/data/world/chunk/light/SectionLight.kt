@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkSkyLight.Companion.NEIGHBOUR_TRACE_LEVEL
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
@@ -120,7 +121,7 @@ class SectionLight(
     }
 
     fun traceBlockIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, target: Directions?) {
-        val index = getIndex(x, y, z)
+        val index = InSectionPosition(x, y, z)
         val block = section.blocks[index]
         val lightProperties = block?.block?.getLightProperties(block) ?: TransparentProperty
         val blockLuminance = block?.luminance ?: 0
@@ -134,13 +135,13 @@ class SectionLight(
         }
 
         // get block or next luminance level
-        val blockSkyLight = this.light[index].toInt()
+        val blockSkyLight = this.light[index.index].toInt()
         val currentLight = blockSkyLight and BLOCK_LIGHT_MASK // we just care about block light
         if (currentLight >= nextLuminance) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((blockSkyLight and SKY_LIGHT_MASK) or nextLuminance).toByte() // keep the sky light set
+        this.light[index.index] = ((blockSkyLight and SKY_LIGHT_MASK) or nextLuminance).toByte() // keep the sky light set
         if (!update) {
             update = true
         }
@@ -233,8 +234,8 @@ class SectionLight(
         for (x in min.x..max.x) {
             for (z in min.z..max.z) {
                 for (y in min.y..max.y) {
-                    val index = getIndex(x, y, z)
-                    val luminance = blocks[index]?.luminance ?: continue
+                    val position = InSectionPosition(x, y, z)
+                    val luminance = blocks[position]?.luminance ?: continue
                     if (luminance == 0) {
                         // block is not emitting light, ignore it
                         continue
@@ -323,8 +324,8 @@ class SectionLight(
             return
         }
         val chunkNeighbours = chunk.neighbours.get() ?: return
-        val index = heightmapIndex or (y shl 8)
-        val currentLight = this[index].toInt()
+        val index = InSectionPosition(heightmapIndex or (y shl 8))
+        val currentLight = this[index.index].toInt()
         if (((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
         }
@@ -340,7 +341,7 @@ class SectionLight(
 
         val neighbours = this.section.neighbours ?: return
 
-        this.light[index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
+        this.light[index.index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
 
         if (!update) {
             update = true
@@ -406,7 +407,7 @@ class SectionLight(
 
     fun traceSkyLightDown(x: Int, y: Int, z: Int, target: Directions?, totalY: Int) { // TODO: remove code duplicates
         val chunk = section.chunk
-        val index = (y shl 8) or (z shl 4) or x
+        val index = InSectionPosition(x, y, z)
 
         val state = section.blocks[index]
         var lightProperties = state?.block?.getLightProperties(state)
@@ -419,7 +420,7 @@ class SectionLight(
 
         val neighbours = this.section.neighbours ?: return
 
-        this.light[index] = ((this[index].toInt() and BLOCK_LIGHT_MASK) or (ProtocolDefinition.MAX_LIGHT_LEVEL_I shl 4)).toByte()
+        this.light[index.index] = ((this[index.index].toInt() and BLOCK_LIGHT_MASK) or (ProtocolDefinition.MAX_LIGHT_LEVEL_I shl 4)).toByte()
 
         if (!update) {
             update = true

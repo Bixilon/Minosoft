@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 
 class BiomeSectionDataProvider(
@@ -25,11 +26,11 @@ class BiomeSectionDataProvider(
 ) : SectionDataProvider<Biome?>(lock, false) {
 
     @Deprecated("Wrong y coordinate for biomes")
-    override fun get(index: Int): Biome? {
-        var biome = super.get(index)
+    override fun get(position: InSectionPosition): Biome? {
+        var biome = super.get(position)
         if (biome != null) return biome
-        biome = section.chunk.world.biomes.noise?.get(index and 0x0F, (index shr 8) and 0x0F, (index shr 4) and 0x0F, section.chunk)
-        unsafeSet(index, biome)
+        biome = section.chunk.world.biomes.noise?.get(position.x, position.y, position.z, section.chunk)
+        unsafeSet(position, biome)
         return biome
     }
 

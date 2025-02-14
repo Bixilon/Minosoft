@@ -34,7 +34,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
@@ -70,7 +70,7 @@ class SolidSectionMesher(
 
         val tint = IntArray(1)
         val position = BlockPosition()
-        val inSectionPosition = InChunkSectionPosition()
+        var inSectionPosition = InSectionPosition(0, 0, 0)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
@@ -84,33 +84,32 @@ class SolidSectionMesher(
 
         val ao = if (ambientOcclusion) AmbientOcclusion(section) else null
 
-        val props = WorldRenderProps(position, inSectionPosition, floatOffset, mesh, random, neighbourBlocks, light, ao)
+        val props = WorldRenderProps(position, floatOffset, mesh, random, neighbourBlocks, light, ao)
 
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
-            inSectionPosition.y = y
+            inSectionPosition = inSectionPosition.with(y = y)
             position.y = offsetY + y
             floatOffset[1] = (position.y - cameraOffset.y).toFloat()
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                inSectionPosition.x = x
+                inSectionPosition = inSectionPosition.with(x = x)
                 position.x = offsetX + x
                 floatOffset[0] = (position.x - cameraOffset.x).toFloat()
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     val baseIndex = (z shl 4) or x
-                    val index = (y shl 8) or baseIndex
-                    val state = blocks[index] ?: continue
+                    inSectionPosition = inSectionPosition.with(z = z)
+                    val state = blocks[inSectionPosition] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
                     val model = state.block.model ?: state.model
-                    val blockEntity = section.blockEntities[index]
+                    val blockEntity = section.blockEntities[inSectionPosition]
                     val renderedBlockEntity = blockEntity?.nullCast<RenderedBlockEntity<*>>()
                     if (model == null && renderedBlockEntity == null) continue
 
 
-                    light[SELF_LIGHT_INDEX] = section.light[index]
+                    light[SELF_LIGHT_INDEX] = section.light[inSectionPosition.index]
                     position.z = offsetZ + z
-                    inSectionPosition.z = z
                     floatOffset[2] = (position.z - cameraOffset.z).toFloat()
 
                     val maxHeight = chunk.light.heightmap[baseIndex]

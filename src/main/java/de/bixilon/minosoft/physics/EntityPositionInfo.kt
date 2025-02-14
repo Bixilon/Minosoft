@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,10 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkSectionPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inSectionPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.sectionHeight
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -38,7 +38,7 @@ class EntityPositionInfo(
     val blockPosition: BlockPosition,
     val eyePosition: BlockPosition,
     val inChunkPosition: BlockPosition,
-    val inSectionPosition: InChunkSectionPosition,
+    val inSectionPosition: InSectionPosition,
 
     val chunk: Chunk?,
     val block: BlockState?,
@@ -47,7 +47,7 @@ class EntityPositionInfo(
     val biome: Biome? get() = chunk?.getBiome(inChunkPosition)
 
     companion object {
-        val EMPTY = EntityPositionInfo(0, ChunkPosition.EMPTY, 0, BlockPosition.EMPTY, BlockPosition.EMPTY, InChunkSectionPosition.EMPTY, InChunkPosition.EMPTY, null, null, null)
+        val EMPTY = EntityPositionInfo(0, ChunkPosition.EMPTY, 0, BlockPosition.EMPTY, BlockPosition.EMPTY, InChunkSectionPosition.EMPTY, InSectionPosition.EMPTY, null, null, null)
 
 
         fun of(physics: EntityPhysics<*>, previous: EntityPositionInfo = EMPTY): EntityPositionInfo {
@@ -57,7 +57,7 @@ class EntityPositionInfo(
             val sectionHeight = blockPosition.sectionHeight
             val eyePosition = Vec3i(position.x.floor, (position.y + physics.entity.eyeHeight).floor, position.z.floor)
             val inChunkPosition = blockPosition.inChunkPosition
-            val inSectionPosition = blockPosition.inChunkSectionPosition
+            val inSectionPosition = blockPosition.inSectionPosition
 
             val velocityPosition = Vec3i(blockPosition.x, (position.y - 0.5000001).toInt(), blockPosition.z)
 

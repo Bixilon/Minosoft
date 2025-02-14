@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -62,7 +63,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
 
             for (sectionY in max.y downTo min.y) {
-                val state = section.blocks[(sectionY shl 8) or index] ?: continue
+                val state = section.blocks[InSectionPosition((sectionY shl 8) or index)] ?: continue
                 val pass = passes(state)
                 if (pass == HeightmapPass.PASSES) continue
 

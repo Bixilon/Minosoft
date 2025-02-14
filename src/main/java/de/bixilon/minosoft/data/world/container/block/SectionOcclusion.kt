@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.allocator.ShortAllocator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -58,37 +59,37 @@ class SectionOcclusion(
         }
     }
 
-    private inline fun ShortArray.setIfUnset(index: Int, region: Int): Boolean {
-        if (this[index] != EMPTY_REGION) {
+    private inline fun ShortArray.setIfUnset(position: InSectionPosition, region: Int): Boolean {
+        if (this[position.index] != EMPTY_REGION) {
             return true
         }
-        val state = provider[index]
+        val state = provider[position]
         if (state.isFullyOpaque()) {
-            this[index] = INVALID_REGION
+            this[position.index] = INVALID_REGION
             return true
         }
-        this[index] = region.toShort()
+        this[position.index] = region.toShort()
         return false
     }
 
-    private fun startTrace(regions: ShortArray, index: Int) {
-        if (regions.setIfUnset(index, index)) return
+    private fun startTrace(regions: ShortArray, position: InSectionPosition) {
+        if (regions.setIfUnset(position, position.index)) return
 
         // no need to trace negative coordinates initially
-        if (index and 0x00F < (ProtocolDefinition.SECTION_MAX_X shl 0)) trace(regions, index + X, index)
-        if (index and 0x0F0 < (ProtocolDefinition.SECTION_MAX_Z shl 4)) trace(regions, index + Z, index)
-        if (index and 0xF00 < (ProtocolDefinition.SECTION_MAX_Y shl 8)) trace(regions, index + Y, index)
+        if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(regions, position.plusX(), position.index)
+        if (position.z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, position.plusZ(), position.index)
+        if (position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), position.index)
     }
 
-    private fun trace(regions: ShortArray, index: Int, region: Int) {
-        if (regions.setIfUnset(index, region)) return
+    private fun trace(regions: ShortArray, position: InSectionPosition, region: Int) {
+        if (regions.setIfUnset(position, region)) return
 
-        if (index and 0x00F > 0) trace(regions, index - X, region)
-        if (index and 0x00F < (ProtocolDefinition.SECTION_MAX_X shl 0)) trace(regions, index + X, region)
-        if (index and 0x0F0 > 0) trace(regions, index - Z, region)
-        if (index and 0x0F0 < (ProtocolDefinition.SECTION_MAX_Z shl 4)) trace(regions, index + Z, region)
-        if (index and 0xF00 > 0) trace(regions, index - Y, region)
-        if (index and 0xF00 < (ProtocolDefinition.SECTION_MAX_Y shl 8)) trace(regions, index + Y, region)
+        if (position.x > 0) trace(regions, position.minusX(), region)
+        if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(regions, position.plusX(), region)
+        if (position.z > 0) trace(regions, position.minusZ(), region)
+        if (position.z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, position.plusZ(), region)
+        if (position.y > 0) trace(regions, position.minusY(), region)
+        if (position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), region)
     }
 
     private fun floodFill(array: ShortArray): ShortArray {
@@ -96,7 +97,7 @@ class SectionOcclusion(
         Arrays.fill(array, EMPTY_REGION)
 
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            startTrace(array, index)
+            startTrace(array, InSectionPosition(index))
         }
 
         return array

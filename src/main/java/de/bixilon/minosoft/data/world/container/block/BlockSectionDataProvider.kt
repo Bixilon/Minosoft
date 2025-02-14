@@ -18,8 +18,8 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 class BlockSectionDataProvider(
     lock: Lock? = null,
@@ -67,9 +67,8 @@ class BlockSectionDataProvider(
         occlusion.recalculate(notify)
     }
 
-    fun noOcclusionSet(x: Int, y: Int, z: Int, value: BlockState?) = noOcclusionSet(getIndex(x, y, z), value)
-    fun noOcclusionSet(index: Int, value: BlockState?): BlockState? {
-        val previous = super.unsafeSet(index, value)
+    fun noOcclusionSet(position: InSectionPosition, value: BlockState?): BlockState? {
+        val previous = super.unsafeSet(position, value)
         val previousFluid = previous.isFluid()
         val valueFluid = value.isFluid()
 
@@ -82,8 +81,8 @@ class BlockSectionDataProvider(
         return previous
     }
 
-    override fun unsafeSet(index: Int, value: BlockState?): BlockState? {
-        val previous = noOcclusionSet(index, value)
+    override fun unsafeSet(position: InSectionPosition, value: BlockState?): BlockState? {
+        val previous = noOcclusionSet(position, value)
 
         occlusion.onSet(previous, value)
 

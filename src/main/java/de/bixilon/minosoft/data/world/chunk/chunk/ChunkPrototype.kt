@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -112,17 +113,17 @@ class ChunkPrototype(
             for (y in blocks.minPosition.y..blocks.maxPosition.y) {
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                        val index = ChunkSection.getIndex(x, y, z)
-                        val block = blocks[index]?.block ?: continue
+                        val inSection = InSectionPosition(x, y, z)
+                        val block = blocks[inSection]?.block ?: continue
                         if (block !is BlockWithEntity<*>) continue
 
                         if (this != null) {
                             position.x = x; position.y = yOffset + y; position.z = z
                         }
-                        var entity = section.blockEntities[index]
+                        var entity = section.blockEntities[inSection]
                         if (entity == null) {
                             entity = block.createBlockEntity(session) ?: continue
-                            section.blockEntities[index] = entity
+                            section.blockEntities[inSection] = entity
                         }
                         if (!empty) {
                             this!![position]?.let { entity.updateNBT(it) }

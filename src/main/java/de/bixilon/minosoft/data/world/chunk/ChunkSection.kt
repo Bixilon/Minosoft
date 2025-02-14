@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -53,9 +54,9 @@ class ChunkSection(
             for (z in min.z..max.z) {
                 position.z = offset.z + z
                 for (x in min.x..max.x) {
-                    val index = getIndex(x, y, z)
-                    val entity = blockEntities[index] ?: continue
-                    val state = blocks[index] ?: continue
+                    val inSection = InSectionPosition(x, y, z)
+                    val entity = blockEntities[inSection] ?: continue
+                    val state = blocks[inSection] ?: continue
                     position.x = offset.x + x
                     entity.tick(session, state, position, random)
                 }
@@ -122,12 +123,15 @@ class ChunkSection(
     }
 
     companion object {
+        @Deprecated("InSectionPosition")
         inline val Vec3i.index: Int
             get() = getIndex(x, y, z)
 
+        @Deprecated("InSectionPosition")
         inline val Int.indexPosition: Vec3i
             get() = Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
 
+        @Deprecated("InSectionPosition")
         inline fun getIndex(x: Int, y: Int, z: Int): Int {
             return y shl 8 or (z shl 4) or x
         }
