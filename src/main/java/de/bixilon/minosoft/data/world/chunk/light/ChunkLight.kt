@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.world.chunk.heightmap.LightHeightmap
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
@@ -37,14 +38,14 @@ class ChunkLight(val chunk: Chunk) {
     val sky = ChunkSkyLight(this)
 
 
-    fun onBlockChange(x: Int, y: Int, z: Int, section: ChunkSection, previous: BlockState?, next: BlockState?) {
-        heightmap.onBlockChange(x, y, z, next)
+    fun onBlockChange(position: InChunkPosition, section: ChunkSection, previous: BlockState?, next: BlockState?) {
+        heightmap.onBlockChange(position, next)
 
-        section.light.onBlockChange(x, y and 0x0F, z, previous, next)
+        section.light.onBlockChange(position.inSectionPosition, previous, next)
 
         val neighbours = chunk.neighbours.get() ?: return
 
-        fireLightChange(section, y.sectionHeight, neighbours)
+        fireLightChange(section, position.y.sectionHeight, neighbours)
     }
 
 

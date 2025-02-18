@@ -33,9 +33,6 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -68,9 +65,9 @@ class WorldVisibilityGraph(
     private var maxIndex = 15
     private var sections = 16
 
-    private var chunkMin = Vec2i.EMPTY
-    private var chunkMax = Vec2i.EMPTY
-    private var worldSize = Vec2i.EMPTY
+    private var chunkMin = ChunkPosition.EMPTY
+    private var chunkMax = ChunkPosition.EMPTY
+    private var worldSize = ChunkPosition.EMPTY
 
     private var graph: VisibilityGraph = arrayOfNulls(0)
 
@@ -113,9 +110,9 @@ class WorldVisibilityGraph(
         return getChunkVisibility(chunkPosition) != null // ToDo: check if all values are false
     }
 
-    private fun getChunkVisibility(chunkPosition: Vec2i): BooleanArray? {
+    private fun getChunkVisibility(chunkPosition: ChunkPosition): BooleanArray? {
         val x = chunkPosition.x - chunkMin.x
-        val y = chunkPosition.y - chunkMin.y
+        val y = chunkPosition.z - chunkMin.z
 
         return this.graph.getOrNull(x)?.getOrNull(y)
     }
@@ -124,7 +121,7 @@ class WorldVisibilityGraph(
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
             return frustum.containsAABB(aabb)
         }
-        val chunkPositions: MutableSet<Vec2i> = HashSet(4, 1.0f)
+        val chunkPositions: MutableSet<ChunkPosition> = HashSet(4, 1.0f)
         val sectionIndices = IntOpenHashSet()
         for (position in aabb.positions()) { // TODO: use ChunkPosition iterator
             chunkPositions += position.chunkPosition

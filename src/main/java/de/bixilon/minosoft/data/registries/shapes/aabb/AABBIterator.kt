@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,15 +17,14 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 
-class AABBIterator(val range: Array<IntRange>) : Iterator<Vec3i> {
+class AABBIterator(val range: Array<IntRange>) : Iterator<BlockPosition> {
     private var count = 0
     private var x = range[0].first
     private var y = range[1].first
     private var z = range[2].first
 
-    private val position = Vec3i.EMPTY
 
     val size: Int = maxOf(0, range[0].last - range[0].first + 1) * maxOf(0, range[1].last - range[1].first + 1) * maxOf(0, range[2].last - range[2].first + 1)
 
@@ -39,17 +38,11 @@ class AABBIterator(val range: Array<IntRange>) : Iterator<Vec3i> {
         return count < size
     }
 
-    private fun updatePosition() {
-        position.x = x
-        position.y = y
-        position.z = z
-    }
-
-    override fun next(): Vec3i {
+    override fun next(): BlockPosition {
         if (count >= size) throw IllegalStateException("No positions available anymore!")
 
 
-        updatePosition()
+        val position = BlockPosition(x, y, z)
         if (z < range[2].last) z++ else {
             z = range[2].first
             if (y < range[1].last) y++ else {

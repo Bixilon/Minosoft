@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 interface Heightmap {
 
@@ -22,5 +23,5 @@ interface Heightmap {
     operator fun get(x: Int, z: Int): Int
     operator fun get(index: Int): Int
 
-    fun onBlockChange(x: Int, y: Int, z: Int, state: BlockState?)
+    fun onBlockChange(position: InChunkPosition, state: BlockState?)
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,6 +48,7 @@ public final class ProtocolDefinition {
     public static final int SECTION_HEIGHT_Y = SECTION_LENGTH;
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
+    @Deprecated
     public static final Vec3i CHUNK_SECTION_SIZE = new Vec3i(SECTION_WIDTH_X, SECTION_HEIGHT_Y, SECTION_WIDTH_Z);
 
     public static final int CHUNK_MIN_Y = -2048;

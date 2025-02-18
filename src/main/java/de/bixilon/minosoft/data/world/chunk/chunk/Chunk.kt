@@ -93,11 +93,11 @@ class Chunk(
 
     fun getOrPutBlockEntity(position: InChunkPosition): BlockEntity? {
         val sectionHeight = position.y.sectionHeight
-        val inSectionHeight = position.y.inSectionHeight
-        var blockEntity = this[sectionHeight]?.blockEntities?.get(position.inSectionPosition)
-        val state = this[sectionHeight]?.blocks?.get(position.inSectionPosition) ?: return null
+        val inSection = position.inSectionPosition
+        var blockEntity = this[sectionHeight]?.blockEntities?.get(inSection)
+        val state = this[sectionHeight]?.blocks?.get(inSection) ?: return null
         if (blockEntity != null && state.block !is BlockWithEntity<*>) {
-            this[sectionHeight]?.blockEntities?.set(position.inSectionPosition, null)
+            this[sectionHeight]?.blockEntities?.set(inSection, null)
             return null
         }
         if (blockEntity != null) {
@@ -107,7 +107,8 @@ class Chunk(
             return null
         }
         blockEntity = state.block.createBlockEntity(session) ?: return null
-        (this.getOrPut(sectionHeight) ?: return null).blockEntities[position.inSectionPosition] = blockEntity
+        val section = this.getOrPut(sectionHeight) ?: return null
+        section.blockEntities[inSection] = blockEntity
 
         return blockEntity
     }

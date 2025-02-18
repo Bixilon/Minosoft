@@ -29,7 +29,7 @@ class SectionLight(
     var light: LightArray = LightArray(), // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) : AbstractSectionLight() {
 
-    fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, state: BlockState?) {
+    fun onBlockChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
         val previousLuminance = previous?.luminance ?: 0
         val luminance = state?.luminance ?: 0
 
@@ -41,7 +41,7 @@ class SectionLight(
             }
             if (nowProperties == null || nowProperties.propagatesLight) {
                 // block got destroyed/is propagating light now
-                propagateFromNeighbours(x, y, z)
+                propagateFromNeighbours(position)
                 return
             }
             // ToDo: else decrease light around placed block
@@ -109,15 +109,15 @@ class SectionLight(
         }
     }
 
-    private fun Array<ChunkSection?>.invalidateLight(x: Int, y: Int, z: Int) {
+    private fun Array<ChunkSection?>.invalidateLight(position: InSectionPosition) {
         // we can not further increase the light
         // set neighbour update, cullface might change lighting properties
-        if (y == 0) this[Directions.O_DOWN]?.light?.update = true
-        if (y == ProtocolDefinition.SECTION_MAX_Y) this[Directions.O_UP]?.light?.update = true
-        if (z == 0) this[Directions.O_NORTH]?.light?.update = true
-        if (z == ProtocolDefinition.SECTION_MAX_Z) this[Directions.O_SOUTH]?.light?.update = true
-        if (x == 0) this[Directions.O_WEST]?.light?.update = true
-        if (x == ProtocolDefinition.SECTION_MAX_X) this[Directions.O_EAST]?.light?.update = true
+        if (position.y == 0) this[Directions.O_DOWN]?.light?.update = true
+        if (position.y == ProtocolDefinition.SECTION_MAX_Y) this[Directions.O_UP]?.light?.update = true
+        if (position.z == 0) this[Directions.O_NORTH]?.light?.update = true
+        if (position.z == ProtocolDefinition.SECTION_MAX_Z) this[Directions.O_SOUTH]?.light?.update = true
+        if (position.x == 0) this[Directions.O_WEST]?.light?.update = true
+        if (position.x == ProtocolDefinition.SECTION_MAX_X) this[Directions.O_EAST]?.light?.update = true
     }
 
     fun traceBlockIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, target: Directions?) {
@@ -316,21 +316,20 @@ class SectionLight(
         }
     }
 
-    fun traceSkyLightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int) {
+    fun traceSkyLightIncrease(position: InSectionPosition, nextLevel: Int, target: Directions?, totalY: Int) {
         val chunk = section.chunk
-        val heightmapIndex = (z shl 4) or x
+        val heightmapIndex = position.xz
         if (totalY >= chunk.light.heightmap[heightmapIndex]) {
             // this light level will be 15, don't care
             return
         }
         val chunkNeighbours = chunk.neighbours.get() ?: return
-        val index = InSectionPosition(heightmapIndex or (y shl 8))
-        val currentLight = this[index.index].toInt()
+        val currentLight = this[position].toInt()
         if (((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
         }
 
-        val state = section.blocks[index]
+        val state = section.blocks[position]
         var lightProperties = state?.block?.getLightProperties(state)
 
         if (lightProperties == null) {
@@ -341,7 +340,7 @@ class SectionLight(
 
         val neighbours = this.section.neighbours ?: return
 
-        this.light[index.index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
+        this.light[position] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
 
         if (!update) {
             update = true
@@ -349,7 +348,7 @@ class SectionLight(
 
 
         if (nextLevel == 1) {
-            neighbours.invalidateLight(x, y, z)
+            neighbours.invalidateLight(position)
             return
         }
 
@@ -440,7 +439,7 @@ class SectionLight(
         return this[direction] ?: neighbours[neighbour].getOrPut(section.sectionHeight, false)
     }
 
-    fun propagateFromNeighbours(x: Int, y: Int, z: Int) {
+    fun propagateFromNeighbours(position: InSectionPosition) {
         val neighbours = section.neighbours ?: return
 
         // TODO: those 2 values are boxed in wrapper classes (slow!)
@@ -461,41 +460,41 @@ class SectionLight(
 
         // ToDo: check if light can exit block at side or can enter block at neighbour
 
-        if (x > 0) {
-            pushLight(this[x - 1, y, z])
+        if (position.x > 0) {
+            pushLight(this[position.minusX()])
         } else {
-            neighbours[Directions.O_WEST]?.light?.get(ProtocolDefinition.SECTION_MAX_X, y, z)?.let { pushLight(it) }
+            neighbours[Directions.O_WEST]?.light?.get(position.with(x = ProtocolDefinition.SECTION_MAX_X))?.let { pushLight(it) }
         }
-        if (x < ProtocolDefinition.SECTION_MAX_X) {
-            pushLight(this[x + 1, y, z])
+        if (position.x < ProtocolDefinition.SECTION_MAX_X) {
+            pushLight(this[position.plusX()])
         } else {
-            neighbours[Directions.O_EAST]?.light?.get(0, y, z)?.let { pushLight(it) }
-        }
-
-        if (y > 0) {
-            pushLight(this[x, y - 1, z])
-        } else {
-            neighbours[Directions.O_DOWN]?.light?.get(x, ProtocolDefinition.SECTION_MAX_Y, z)?.let { pushLight(it) }
+            neighbours[Directions.O_EAST]?.light?.get(position.with(x = 0))?.let { pushLight(it) }
         }
 
-        if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            pushLight(this[x, y + 1, z])
+        if (position.y > 0) {
+            pushLight(this[position.minusY()])
         } else {
-            neighbours[Directions.O_UP]?.light?.get(x, 0, z)?.let { pushLight(it) }
+            neighbours[Directions.O_DOWN]?.light?.get(position.with(y = ProtocolDefinition.SECTION_MAX_Y))?.let { pushLight(it) }
         }
 
-        if (z > 0) {
-            pushLight(this[x, y, z - 1])
+        if (position.y < ProtocolDefinition.SECTION_MAX_Y) {
+            pushLight(this[position.plusY()])
         } else {
-            neighbours[Directions.O_NORTH]?.light?.get(x, y, ProtocolDefinition.SECTION_MAX_Z)?.let { pushLight(it) }
-        }
-        if (z < ProtocolDefinition.SECTION_MAX_Z) {
-            pushLight(this[x, y, z + 1])
-        } else {
-            neighbours[Directions.O_SOUTH]?.light?.get(x, y, 0)?.let { pushLight(it) }
+            neighbours[Directions.O_UP]?.light?.get(position.with(y = 0))?.let { pushLight(it) }
         }
 
-        traceBlockIncrease(x, y, z, blockLight - 1, null)
+        if (position.z > 0) {
+            pushLight(this[position.minusZ()])
+        } else {
+            neighbours[Directions.O_NORTH]?.light?.get(position.with(z = ProtocolDefinition.SECTION_MAX_Z))?.let { pushLight(it) }
+        }
+        if (position.z < ProtocolDefinition.SECTION_MAX_Z) {
+            pushLight(this[position.minusZ()])
+        } else {
+            neighbours[Directions.O_SOUTH]?.light?.get(position.with(z = 0))?.let { pushLight(it) }
+        }
+
+        traceBlockIncrease(position, blockLight - 1, null)
 
         val totalY = section.sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + y
         section.chunk.let {
@@ -506,7 +505,7 @@ class SectionLight(
                 skyLight = ProtocolDefinition.MAX_LIGHT_LEVEL_I
             }
         }
-        traceSkyLightIncrease(x, y, z, skyLight - 1, null, totalY)
+        traceSkyLightIncrease(position, skyLight - 1, null, totalY)
     }
 
     companion object {
