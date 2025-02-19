@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -29,7 +28,9 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.CampfireBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
@@ -63,7 +64,7 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
     }
 
 
-    override fun tick(session: PlaySession, state: BlockState, position: Vec3i, random: Random) {
+    override fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         val particle = session.world.particle ?: return
         if (state.block !is CampfireBlock || !state.isLit()) {
             return

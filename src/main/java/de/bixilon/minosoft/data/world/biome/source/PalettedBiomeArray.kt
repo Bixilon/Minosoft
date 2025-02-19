@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,7 @@
 package de.bixilon.minosoft.data.world.biome.source
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class PalettedBiomeArray(
     private val containers: Array<Array<Biome?>?>,
@@ -24,10 +23,10 @@ class PalettedBiomeArray(
 ) : BiomeSource {
     private val mask = (1 shl edgeBits) - 1
 
-    override fun get(x: Int, y: Int, z: Int): Biome? {
-        val container = containers.getOrNull(y.sectionHeight - lowestSection) ?: return null
+    override fun get(position: InChunkPosition): Biome? {
+        val container = containers.getOrNull(position.sectionHeight - lowestSection) ?: return null
 
-        val index = ((((y.inSectionHeight and mask) shl edgeBits) or (z and mask)) shl edgeBits) or (x and mask)
+        val index = ((((position.inSectionPosition.y and mask) shl edgeBits) or (position.z and mask)) shl edgeBits) or (position.x and mask)
         return container[index]
     }
 }

@@ -22,6 +22,7 @@ interface Heightmap {
 
     operator fun get(x: Int, z: Int): Int
     operator fun get(index: Int): Int
+    operator fun get(position: InChunkPosition): Int
 
     fun onBlockChange(position: InChunkPosition, state: BlockState?)
 }

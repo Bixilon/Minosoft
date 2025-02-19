@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.StepHandler
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.versions.Version
 import kotlin.math.abs
@@ -44,7 +44,7 @@ open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, sett
 
     override fun buildState(version: Version, settings: BlockStateSettings) = BlockState(this, settings)
 
-    override fun onEntityStep(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
+    override fun onEntityStep(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         val velocity = entity.physics.velocity
         if (abs(velocity.y) >= 0.1) return
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,10 +27,10 @@ class DebugGenerator(val session: PlaySession) : ChunkGenerator {
 
     override fun generate(chunk: Chunk) {
         chunk.biomeSource = DummyBiomeSource(plains)
-        if (chunk.chunkPosition.x < 0 || chunk.chunkPosition.y < 0) return
+        if (chunk.position.x < 0 || chunk.position.y < 0) return
 
-        val xOffset = chunk.chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
-        val zOffset = chunk.chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
+        val xOffset = chunk.position.x * ProtocolDefinition.SECTION_WIDTH_X
+        val zOffset = chunk.position.y * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X step 2) {
             val actuallyX = (xOffset + x) / 2

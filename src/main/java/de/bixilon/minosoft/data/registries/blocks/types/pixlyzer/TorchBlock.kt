@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -31,7 +31,7 @@ open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries
     protected val flameParticle = registries.particleType[data["flame_particle"]]
 
 
-    private fun spawnSmokeParticles(session: PlaySession, blockPosition: Vec3i) {
+    private fun spawnSmokeParticles(session: PlaySession, blockPosition: BlockPosition) {
         val particle = session.world.particle ?: return
         val particlePosition = Vec3d(0.5, 0.7, 0.5) + blockPosition
         smokeParticle?.let { particle += SmokeParticle(session, Vec3d(particlePosition), Vec3d.EMPTY) }

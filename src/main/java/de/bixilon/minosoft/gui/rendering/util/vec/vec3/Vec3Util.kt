@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,9 @@ import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 object Vec3Util {
     private val EMPTY_INSTANCE = Vec3.EMPTY
@@ -55,7 +58,7 @@ object Vec3Util {
     val Vec3.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
 
-    val Vec3.blockPosition: Vec3i
+    val Vec3.blockPosition: BlockPosition
         get() = this.floor
 
     val Vec3.Companion.X: Vec3 get() = Vec3Util.X
@@ -171,4 +174,31 @@ object Vec3Util {
     fun FloatArray.toVec3(): Vec3 {
         return Vec3(this[0], this[1], this[2])
     }
+
+    @JvmName("constructorBlockPosition")
+    operator fun Vec3.Companion.invoke(position: BlockPosition) = Vec3(position.x, position.y, position.z)
+
+    @JvmName("constructorInChunkPosition")
+    operator fun Vec3.Companion.invoke(position: InChunkPosition) = Vec3(position.x, position.y, position.z)
+
+    @JvmName("constructorInSectionPosition")
+    operator fun Vec3.Companion.invoke(position: InSectionPosition) = Vec3(position.x, position.y, position.z)
+
+    @JvmName("plusBlockPosition")
+    operator fun Vec3.plus(position: BlockPosition) = Vec3(x + position.x, y + position.y, z + position.z)
+
+    @JvmName("plusInChunkPosition")
+    operator fun Vec3.plus(position: InChunkPosition) = Vec3(x + position.x, y + position.y, z + position.z)
+
+    @JvmName("plusInSectionPosition")
+    operator fun Vec3.plus(position: InSectionPosition) = Vec3(x + position.x, y + position.y, z + position.z)
+
+    @JvmName("minusBlockPosition")
+    operator fun Vec3.minus(position: BlockPosition) = Vec3(x - position.x, y - position.y, z - position.z)
+
+    @JvmName("minusInChunkPosition")
+    operator fun Vec3.minus(position: InChunkPosition) = Vec3(x - position.x, y - position.y, z - position.z)
+
+    @JvmName("minusInSectionPosition")
+    operator fun Vec3.minus(position: InSectionPosition) = Vec3(x - position.x, y - position.y, z - position.z)
 }

@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
@@ -115,19 +114,19 @@ open class PixLyzerBlock(
         return identifier.toString()
     }
 
-    override fun offsetShape(position: Vec3i): Vec3 {
+    override fun offsetShape(position: BlockPosition): Vec3 {
         val offset = randomOffset ?: return Vec3.EMPTY
         return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
     }
 
-    override fun offsetModel(position: Vec3i): Vec3 {
+    override fun offsetModel(position: BlockPosition): Vec3 {
         return super.offsetShape(position)
     }
 
 
     companion object : IdentifierCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
-        private val NULL_OFFSET_XYZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)
-        private val NULL_OFFSET_XZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XZ)
+        private val NULL_OFFSET_XYZ = BlockPosition(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)
+        private val NULL_OFFSET_XZ = BlockPosition(0, 0, 0).getWorldOffset(RandomOffsetTypes.XZ)
         private val ITEM_FIELD = PixLyzerBlock::item.field
         override val ALIASES: Set<String> = setOf("Block")
 

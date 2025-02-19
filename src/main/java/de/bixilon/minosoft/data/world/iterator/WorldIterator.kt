@@ -57,9 +57,9 @@ class WorldIterator(
                 if (revision == world.chunks.revision) continue // previously found no chunk, can not find it now
                 this.revision = world.chunks.revision
                 chunk = world.chunks[chunkPosition] ?: continue
-            } else if (chunk.chunkPosition != chunkPosition) {
-                offset.x = chunkPosition.x - chunk.chunkPosition.x
-                offset.y = chunkPosition.y - chunk.chunkPosition.y
+            } else if (chunk.position != chunkPosition) {
+                offset.x = chunkPosition.x - chunk.position.x
+                offset.y = chunkPosition.y - chunk.position.y
                 chunk = chunk.neighbours.trace(offset) ?: continue
             }
             if (this.chunk !== chunk) {

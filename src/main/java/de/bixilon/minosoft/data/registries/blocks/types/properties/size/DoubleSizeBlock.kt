@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.size
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -21,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface DoubleSizeBlock : MultiSizeBlock {
@@ -31,12 +30,12 @@ interface DoubleSizeBlock : MultiSizeBlock {
     fun getTop(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER)
     fun getBottom(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER)
 
-    override fun onBreak(session: PlaySession, position: Vec3i, state: BlockState, entity: BlockEntity?) {
+    override fun onBreak(session: PlaySession, position: BlockPosition, state: BlockState, entity: BlockEntity?) {
         val offset = if (isTop(state, session)) Directions.DOWN else Directions.UP
         session.world[position + offset] = null
     }
 
-    override fun onPlace(session: PlaySession, position: Vec3i, state: BlockState, entity: BlockEntity?) {
+    override fun onPlace(session: PlaySession, position: BlockPosition, state: BlockState, entity: BlockEntity?) {
 
         val top = isTop(state, session)
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -74,9 +74,9 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             if (chunk == null) {
                 chunk = this.chunks[chunkPosition] ?: continue // TODO: Don't query same chunk multiple times
-            } else if (chunk.chunkPosition != chunkPosition) {
-                chunkOffset.x = chunkPosition.x - chunk.chunkPosition.x
-                chunkOffset.y = chunkPosition.y - chunk.chunkPosition.y
+            } else if (chunk.position != chunkPosition) {
+                chunkOffset.x = chunkPosition.x - chunk.position.x
+                chunkOffset.y = chunkPosition.y - chunk.position.y
                 chunk = chunk.neighbours.trace(chunkOffset) ?: continue
             }
 

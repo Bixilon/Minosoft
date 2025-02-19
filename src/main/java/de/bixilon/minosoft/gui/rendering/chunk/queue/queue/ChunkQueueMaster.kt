@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,19 +33,19 @@ class ChunkQueueMaster(
 
     private fun queue(section: ChunkSection, chunk: Chunk, force: Boolean): Boolean {
         if (section.blocks.isEmpty) {
-            renderer.unload(QueuePosition(chunk.chunkPosition, section.sectionHeight))
+            renderer.unload(QueuePosition(chunk.position, section.sectionHeight))
             return false
         }
 
-        val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.chunkPosition, section.sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
+        val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.position, section.sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
-            val center = Vec3i.of(chunk.chunkPosition, section.sectionHeight).toVec3() + CHUNK_CENTER
-            val item = WorldQueueItem(chunk.chunkPosition, section.sectionHeight, chunk, section, center)
+            val center = Vec3i.of(chunk.position, section.sectionHeight).toVec3() + CHUNK_CENTER
+            val item = WorldQueueItem(chunk.position, section.sectionHeight, chunk, section, center)
             renderer.meshingQueue.queue(item)
             return true
         }
 
-        renderer.culledQueue.queue(chunk.chunkPosition, section.sectionHeight)
+        renderer.culledQueue.queue(chunk.position, section.sectionHeight)
 
         return false
     }
@@ -72,7 +72,7 @@ class ChunkQueueMaster(
         if (!canQueue() || !chunk.neighbours.complete) return
         chunk.neighbours.get() ?: return
 
-        if (!ignoreLoaded && chunk.chunkPosition in renderer.loaded) {
+        if (!ignoreLoaded && chunk.position in renderer.loaded) {
             // chunks only get queued when the server sends them, we normally do not want to queue them again.
             // that happens when e.g. light data arrives
             return

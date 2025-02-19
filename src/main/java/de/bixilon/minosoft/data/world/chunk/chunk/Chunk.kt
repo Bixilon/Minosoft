@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.world.chunk.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.math.simple.IntMath.clamp
@@ -42,7 +41,7 @@ import java.util.*
  */
 class Chunk(
     val session: PlaySession,
-    val chunkPosition: ChunkPosition,
+    val position: ChunkPosition,
     var biomeSource: BiomeSource,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     val lock = RWLock.rwlock()
@@ -50,6 +49,8 @@ class Chunk(
     val light = ChunkLight(this)
     val minSection = world.dimension.minSection
     val maxSection = world.dimension.maxSection
+
+    @Deprecated("move to biome source?")
     val cacheBiomes = world.biomes.noise != null
     var sections: Array<ChunkSection?> = arrayOfNulls(world.dimension.sections)
 
@@ -82,7 +83,7 @@ class Chunk(
             light.onBlockChange(position, section, previous, state)
         }
 
-        SingleBlockUpdate(chunkPosition.blockPosition(position), this, state, entity).fire(session)
+        SingleBlockUpdate(this.position.blockPosition(position), this, state, entity).fire(session)
     }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
@@ -158,7 +159,7 @@ class Chunk(
 
         lock.unlock()
 
-        ChunkLocalBlockUpdate(chunkPosition, this, executed).fire(session)
+        ChunkLocalBlockUpdate(position, this, executed).fire(session)
         light.fireLightChange(this.sections, true)
     }
 
@@ -203,11 +204,11 @@ class Chunk(
         return section
     }
 
-    fun tick(session: PlaySession, chunkPosition: Vec2i, random: Random) {
+    fun tick(session: PlaySession, random: Random) {
         if (!neighbours.complete) return
         lock.acquire()
         for ((index, section) in sections.withIndex()) {
-            section?.tick(session, chunkPosition, index + minSection, random)
+            section?.tick(session, random)
         }
         lock.release()
     }
@@ -216,12 +217,12 @@ class Chunk(
         return sections.iterator()
     }
 
-    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        val y = y.clamp(world.dimension.minY, world.dimension.maxY)
+    override fun getBiome(position: InChunkPosition): Biome? {
+        val position = position.with(y = position.y.clamp(world.dimension.minY, world.dimension.maxY))
         if (!cacheBiomes) {
-            return biomeSource.get(x, y, z)
+            return biomeSource.get(position)
         }
-        return session.world.biomes.getBiome(x, y, z, this)
+        return session.world.biomes.getBiome(position, this)
     }
 }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,9 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
@@ -41,7 +44,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     }
 
     private inline fun modify(modify: (AABB) -> AABB): AbstractVoxelShape {
-        val result: MutableList<AABB> = ArrayList()
+        val result: MutableList<AABB> = ArrayList(aabbs)
         for (aabb in this) {
             result += modify(aabb)
         }
@@ -52,6 +55,15 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     operator fun plus(offset: Vec3d) = modify { it + offset }
     operator fun plus(offset: Vec3) = modify { it + offset }
     operator fun plus(offset: Vec3i) = modify { it + offset }
+
+    @JvmName("plusBlockPosition")
+    operator fun plus(offset: BlockPosition) = modify { it + offset }
+
+    @JvmName("plusInChunkPosition")
+    operator fun plus(offset: InChunkPosition) = modify { it + offset }
+
+    @JvmName("plusInSectionPosition")
+    operator fun plus(offset: InSectionPosition) = modify { it + offset }
 
     fun add(other: AbstractVoxelShape): AbstractVoxelShape {
         val aabbs: MutableSet<AABB> = ObjectOpenHashSet()

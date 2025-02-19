@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
@@ -45,7 +46,7 @@ class BakedModel(
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
-    override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
         var rendered = false
 
         val offset = props.offset

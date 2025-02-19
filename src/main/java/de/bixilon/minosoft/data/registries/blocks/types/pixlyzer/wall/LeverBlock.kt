@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.wall
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -33,6 +32,7 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
@@ -40,7 +40,7 @@ import java.util.*
 open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : WallMountedBlock(resourceLocation, registries, data), InteractBlockHandler, RandomDisplayTickable {
     private val dustParticleType = registries.particleType[DustParticle]
 
-    private fun spawnParticles(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, scale: Float) {
+    private fun spawnParticles(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, scale: Float) {
         val particle = session.world.particle ?: return
         if (dustParticleType == null) return
         val direction = blockState.getFacing().inverted

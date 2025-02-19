@@ -22,6 +22,8 @@ import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import kotlin.math.abs
 
 object Vec3dUtil {
@@ -163,4 +165,31 @@ object Vec3dUtil {
         this.y = other.y
         this.z = other.z
     }
+
+    @JvmName("constructorBlockPosition")
+    operator fun Vec3d.Companion.invoke(position: BlockPosition) = Vec3d(position.x, position.y, position.z)
+
+    @JvmName("constructorInChunkPosition")
+    operator fun Vec3d.Companion.invoke(position: InChunkPosition) = Vec3d(position.x, position.y, position.z)
+
+    @JvmName("constructorInSectionPosition")
+    operator fun Vec3d.Companion.invoke(position: InSectionPosition) = Vec3d(position.x, position.y, position.z)
+
+    @JvmName("plusBlockPosition")
+    operator fun Vec3d.plus(position: BlockPosition) = Vec3d(x + position.x, y + position.y, z + position.z)
+
+    @JvmName("plusInChunkPosition")
+    operator fun Vec3d.plus(position: InChunkPosition) = Vec3d(x + position.x, y + position.y, z + position.z)
+
+    @JvmName("plusInSectionPosition")
+    operator fun Vec3d.plus(position: InSectionPosition) = Vec3d(x + position.x, y + position.y, z + position.z)
+
+    @JvmName("minusBlockPosition")
+    operator fun Vec3d.minus(position: BlockPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
+
+    @JvmName("minusInChunkPosition")
+    operator fun Vec3d.minus(position: InChunkPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
+
+    @JvmName("minusInSectionPosition")
+    operator fun Vec3d.minus(position: InSectionPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
 }

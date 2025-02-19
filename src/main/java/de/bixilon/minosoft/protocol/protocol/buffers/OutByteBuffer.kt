@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.protocol.buffers
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -142,7 +141,7 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
         }
     }
 
-    fun writeByteBlockPosition(blockPosition: Vec3i?) {
+    fun writeByteBlockPosition(blockPosition: BlockPosition?) {
         writeInt(blockPosition?.x ?: 0)
         writeByte(blockPosition?.y ?: 0)
         writeInt(blockPosition?.z ?: 0)

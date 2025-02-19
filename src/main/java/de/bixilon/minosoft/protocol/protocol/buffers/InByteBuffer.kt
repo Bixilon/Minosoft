@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,8 @@ package de.bixilon.minosoft.protocol.protocol.buffers
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.enums.ValuesEnum
@@ -28,6 +26,8 @@ import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
@@ -106,24 +106,24 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
     }
 
 
-    fun readByteBlockPosition(): Vec3i {
-        return Vec3i(readInt(), readByte(), readInt())
+    fun readByteBlockPosition(): BlockPosition {
+        return BlockPosition(readInt(), readUnsignedByte(), readInt())
     }
 
-    fun readShortBlockPosition(): Vec3i {
-        return Vec3i(readInt(), readShort(), readInt())
+    fun readShortBlockPosition(): BlockPosition {
+        return BlockPosition(readInt(), readShort().toInt(), readInt())
     }
 
-    fun readIntBlockPosition(): Vec3i {
-        return Vec3i(readInt(), readInt(), readInt())
+    fun readIntBlockPosition(): BlockPosition {
+        return BlockPosition(readInt(), readInt(), readInt())
     }
 
     fun readResourceLocation(): ResourceLocation {
         return ResourceLocation.of(readString())
     }
 
-    fun readChunkPosition(): Vec2i {
-        return Vec2i(readInt(), readInt())
+    fun readChunkPosition(): ChunkPosition {
+        return ChunkPosition(readInt(), readInt())
     }
 
     fun readUnsignedShortsLE(length: Int): IntArray {

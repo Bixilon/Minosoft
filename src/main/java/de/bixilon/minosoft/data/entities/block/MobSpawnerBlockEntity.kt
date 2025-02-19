@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.entities.WorldEntities
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
@@ -36,7 +36,7 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
     private var requiredPlayerRange = 16
 
 
-    private fun isPlayerInRange(blockPosition: Vec3i): Boolean {
+    private fun isPlayerInRange(blockPosition: BlockPosition): Boolean {
         val lock = session.world.entities.lock
         if (!lock.acquire(10.milliseconds)) {  // Deadlock workaround
             return false
@@ -48,12 +48,12 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
         return inRadius
     }
 
-    private fun spawnParticles(blockPosition: Vec3i, random: Random) {
+    private fun spawnParticles(blockPosition: BlockPosition, random: Random) {
         val particle = session.world.particle ?: return
         if (!isPlayerInRange(blockPosition)) {
             return
         }
-        val particlePosition = blockPosition.toVec3d + { random.nextDouble() }
+        val particlePosition = Vec3d(blockPosition) + { random.nextDouble() }
         smokeParticleType?.let { particle += SmokeParticle(session, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
         flameParticleType?.let { particle += FlameParticle(session, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
     }
@@ -69,7 +69,7 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
 
-    override fun tick(session: PlaySession, state: BlockState, position: Vec3i, random: Random) {
+    override fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         spawnParticles(position, random)
     }
 

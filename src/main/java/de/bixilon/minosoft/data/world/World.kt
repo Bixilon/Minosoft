@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -39,13 +37,9 @@ import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -76,10 +70,6 @@ class World(
 
     var occlusion by observed(0)
 
-
-    operator fun get(x: Int, y: Int, z: Int): BlockState? {
-        return chunks[Vec2i(x shr 4, z shr 4)]?.get(x and 0x0F, y, z and 0x0F)
-    }
 
     operator fun get(position: BlockPosition): BlockState? {
         return chunks[position.chunkPosition]?.get(position.inChunkPosition)
@@ -159,24 +149,20 @@ class World(
         val origin = session.player.physics.positionInfo.blockPosition
         val chunk = this.chunks[origin.chunkPosition] ?: return
 
-        val position = Vec3i.EMPTY
-        val chunkDelta = Vec2i.EMPTY
-
         for (i in 0 until 667) {
-            randomDisplayTick(16, origin, position, chunkDelta, chunk)
-            randomDisplayTick(32, origin, position, chunkDelta, chunk)
+            randomDisplayTick(16, origin, chunk)
+            randomDisplayTick(32, origin, chunk)
         }
     }
 
-    private fun randomDisplayTick(radius: Int, origin: BlockPosition, position: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
-        position.x = origin.x + random.nextInt(-radius, radius)
-        position.y = origin.x + random.nextInt(-radius, radius)
-        position.z = origin.x + random.nextInt(-radius, radius)
+    private fun randomDisplayTick(radius: Int, origin: BlockPosition, chunk: Chunk) {
+        val position = BlockPosition(
+            x = origin.x + random.nextInt(-radius, radius),
+            y = origin.y + random.nextInt(-radius, radius),
+            z = origin.z + random.nextInt(-radius, radius),
+        )
 
-        chunkDelta.x = (origin.x - position.x) shr 4
-        chunkDelta.y = (origin.z - position.z) shr 4
-
-        val state = chunk.neighbours.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+        val state = chunk.neighbours.traceBlock(position) ?: return
         if (state.block !is RandomDisplayTickable) return
         if (!state.block.hasRandomTicks(session, state, position)) return
 

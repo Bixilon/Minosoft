@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.config.DebugOptions
+
 object BlockPositionUtil {
 
     fun generatePositionHash(x: Int, y: Int, z: Int): Long {
@@ -20,4 +23,19 @@ object BlockPositionUtil {
         hash = hash * hash * 42317861L + hash * 11L
         return hash shr 16
     }
+
+    inline fun assertPosition(condition: Boolean) {
+        if (!DebugOptions.VERIFY_COORDINATES) return
+        if (!condition) throw AssertionError("Position assert failed!")
+    }
+
+    inline fun assertPosition(value: Int, min: Int, max: Int) {
+        if (!DebugOptions.VERIFY_COORDINATES) return
+        if (value < min) throw AssertionError("coordinate out of range: $value < $min")
+        if (value > min) throw AssertionError("coordinate out of range: $value > $max")
+    }
+
+
+    val BlockPosition.center: Vec3d
+        get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
 }

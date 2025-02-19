@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -39,6 +38,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
@@ -49,14 +49,14 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
 
     override fun buildState(version: Version, settings: BlockStateSettings) = BlockState(this, settings)
 
-    override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
+    override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         if (entity is LivingEntity && physics.positionInfo.block?.block !is PowderSnowBlock) {
             return
         }
         physics.slowMovement(state, SLOW)
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         if (context !is EntityCollisionContext) {
             return null
         }

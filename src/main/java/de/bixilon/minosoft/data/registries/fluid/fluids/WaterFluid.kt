@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogOptions
 import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.WaterFluidModel
@@ -41,7 +41,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.wa
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
@@ -81,14 +81,14 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
         return 0.0f
     }
 
-    override fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+    override fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, random: Random) {
         super.randomTick(session, blockState, blockPosition, random)
 
         val particle = session.world.particle ?: return
 
         // ToDo: if not sill and not falling
         if (random.chance(10)) {
-            particle += UnderwaterParticle(session, blockPosition.toVec3d + { random.nextDouble() })
+            particle += UnderwaterParticle(session, Vec3d(blockPosition) + { random.nextDouble() })
         }
     }
 

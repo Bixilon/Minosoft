@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.building.door
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -53,15 +52,12 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.PickedBlockRender
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
@@ -147,7 +143,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return getLegacyShape(session, position, state)
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         if (session.version.flattened) return super.getCollisionShape(session, context, position, state, blockEntity)
         return getLegacyShape(session, position, state)
     }

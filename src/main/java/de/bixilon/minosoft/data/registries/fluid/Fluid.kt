@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.registries.fluid
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
@@ -22,10 +21,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
@@ -39,12 +36,12 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
     abstract fun getVelocityMultiplier(session: PlaySession): Double
 
-    fun getVelocity(session: PlaySession, blockState: BlockState, blockPosition: Vec3i): Vec3d {
+    fun getVelocity(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition): Vec3d {
         val chunk = session.world.chunks[blockPosition.chunkPosition] ?: return Vec3d.EMPTY
         return getVelocity(blockState, blockPosition, chunk)
     }
 
-    open fun getVelocity(blockState: BlockState, blockPosition: Vec3i, chunk: Chunk): Vec3d {
+    open fun getVelocity(blockState: BlockState, blockPosition: BlockPosition, chunk: Chunk): Vec3d {
         if (!this.matches(blockState)) {
             return Vec3d.EMPTY
         }
@@ -137,7 +134,7 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
         return (LEVELS - level) / DIVIDER
     }
 
-    open fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
+    open fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, random: Random) = Unit
 
     open fun createModel(): FluidModel? {
         return null

@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -31,9 +31,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
 interface BlockRender : ItemRender {
-    fun getParticleTexture(random: Random?, position: Vec3i): Texture? = null
+    fun getParticleTexture(random: Random?, position: BlockPosition): Texture? = null
 
-    fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean
+    fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean
     fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?)
 
 

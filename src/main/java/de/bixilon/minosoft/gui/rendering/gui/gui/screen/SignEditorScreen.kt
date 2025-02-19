@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -52,7 +51,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.block.SignTextC2SP
 
 class SignEditorScreen(
     guiRenderer: GUIRenderer,
-    val blockPosition: Vec3i,
+    val blockPosition: BlockPosition,
     val side: SignSides,
     val blockState: BlockState? = guiRenderer.session.world[blockPosition],
     val blockEntity: SignBlockEntity? = guiRenderer.session.world.getBlockEntity(blockPosition).nullCast(),

@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -79,9 +80,9 @@ class SolidSectionMesherTest {
         val mesher = SolidSectionMesher(context)
 
         val chunk = world.chunks[0, 0]!!
-        val meshes = ChunkMeshes(context, chunk.chunkPosition, 0, true)
+        val meshes = ChunkMeshes(context, chunk.position, 0, true)
 
-        mesher.mesh(chunk.chunkPosition, 0, chunk, chunk.sections[0]!!, chunk.neighbours.get()!!, chunk.sections[0]!!.neighbours!!, meshes)
+        mesher.mesh(chunk.position, 0, chunk, chunk.sections[0]!!, chunk.neighbours.get()!!, chunk.sections[0]!!.neighbours!!, meshes)
 
         return meshes
     }
@@ -412,12 +413,12 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+            override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
                 assertEquals(props.light.size, 7)
                 for ((index, entry) in props.light.withIndex()) {
                     assertEquals(required[index], entry.toInt() and 0xFF)
                 }
-                return super.render(props, state, entity, tints)
+                return super.render(props, position, state, entity, tints)
             }
         }
 
@@ -430,12 +431,12 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+            override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
                 assertEquals(props.neighbours.size, 6)
                 for ((index, entry) in props.neighbours.withIndex()) {
                     assertEquals(required[index], entry)
                 }
-                return super.render(props, state, entity, tints)
+                return super.render(props, position, state, entity, tints)
             }
         }
 
@@ -448,7 +449,7 @@ class SolidSectionMesherTest {
             override fun createBlockEntity(session: PlaySession) = object : BlockEntity(session), RenderedBlockEntity<BlockEntityRenderer<*>> {
                 override var renderer: BlockEntityRenderer<*>? = null
 
-                override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int) = object : BlockEntityRenderer<BlockEntity> {
+                override fun createRenderer(context: RenderContext, state: BlockState, position: BlockPosition, light: Int) = object : BlockEntityRenderer<BlockEntity> {
                     override var light = 0
                     override var state = state
 
@@ -472,7 +473,7 @@ class SolidSectionMesherTest {
             init {
                 this.model = object : BlockRender {
 
-                    override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+                    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
                         entities.add(TestQueue.RenderedEntity(Vec3i(props.position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
@@ -499,7 +500,7 @@ class SolidSectionMesherTest {
             return this.properties
         }
 
-        override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+        override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
             queue.blocks.add(TestQueue.RenderedBlock(Vec3i(props.position), state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }

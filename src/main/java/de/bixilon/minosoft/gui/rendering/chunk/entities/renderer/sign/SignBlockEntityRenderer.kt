@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -56,8 +57,8 @@ class SignBlockEntityRenderer(
         return STANDING_ROTATIONS[rotation]
     }
 
-    override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-        state.model?.render(props, state, entity, tints) // render wood part
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+        state.model?.render(props, position, state, entity, tints) // render wood part
         if (entity !is SignBlockEntity) return true
 
         if (props.mesh !is ChunkMeshes) return true // TODO

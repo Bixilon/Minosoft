@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.light.LightArray
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -30,9 +31,9 @@ class ChunkPrototype(
     var blocks: Array<Array<BlockState?>?>? = null,
     var blockEntities: Map<Vec3i, JsonObject>? = null,
     var biomeSource: BiomeSource? = null,
-    var light: Array<ByteArray?>? = null,
-    var bottomLight: ByteArray? = null,
-    var topLight: ByteArray? = null,
+    var light: Array<LightArray?>? = null,
+    var bottomLight: LightArray? = null,
+    var topLight: LightArray? = null,
 ) {
 
     @Synchronized

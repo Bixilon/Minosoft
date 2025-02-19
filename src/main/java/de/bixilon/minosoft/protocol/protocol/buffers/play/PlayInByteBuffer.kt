@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.protocol.buffers.play
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
@@ -36,6 +35,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -88,20 +88,20 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
 
-    fun readBlockPosition(): Vec3i {
+    fun readBlockPosition(): BlockPosition {
         // ToDo: protocol id 7
         val raw = readLong()
-        val x = raw shr 38
-        val y: Long
-        val z: Long
+        val x = (raw shr 38).toInt()
+        val y: Int
+        val z: Int
         if (versionId < V_18W43A) {
-            y = raw shr 26 and 0xFFF
-            z = raw shl 38 shr 38
+            y = (raw shr 26 and 0xFFF).toInt()
+            z = (raw shl 38 shr 38).toInt()
         } else {
-            y = raw shl 52 shr 52
-            z = raw shl 26 shr 38
+            y = (raw shl 52 shr 52).toInt()
+            z = (raw shl 26 shr 38).toInt()
         }
-        return Vec3i(x, y, z)
+        return BlockPosition(x, y, z)
     }
 
     override fun readChatComponent(): ChatComponent {

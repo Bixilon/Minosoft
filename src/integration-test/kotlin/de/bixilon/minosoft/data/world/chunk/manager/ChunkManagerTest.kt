@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -72,7 +72,7 @@ class ChunkManagerTest {
         assertEquals(1, manager.chunks.size)
 
         assertSame(manager[ChunkPosition(0, 1)], chunk)
-        assertEquals(chunk.chunkPosition, ChunkPosition(0, 1))
+        assertEquals(chunk.position, ChunkPosition(0, 1))
         assertNull(chunk.neighbours.get())
         assertEquals(manager.size.size.size, Vec2i(1, 1))
     }
@@ -106,7 +106,7 @@ class ChunkManagerTest {
 
         val chunk = manager[ChunkPosition(3, 0)]
         assertNotNull(chunk)
-        assertEquals(chunk!!.chunkPosition, ChunkPosition(3, 0))
+        assertEquals(chunk!!.position, ChunkPosition(3, 0))
         assertEquals(manager.size.size.size, Vec2i(1, 1))
     }
 

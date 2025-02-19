@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.generatePositionHash
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -26,14 +27,15 @@ value class BlockPosition(
     inline val index: Long,
 ) : TextFormattable {
 
+    init {
+        TODO()
+    }
+    
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this((y and 0xFFF shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
-        assert(x >= 0)
-        assert(x <= ProtocolDefinition.SECTION_MAX_X)
-        assert(y >= ProtocolDefinition.CHUNK_MIN_Y)
-        assert(y <= ProtocolDefinition.CHUNK_MAX_Y)
-        assert(z >= 0)
-        assert(z <= ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
     }
 
     inline val x: Int get() = (index and MASK_X) shr SHIFT_X
@@ -43,56 +45,56 @@ value class BlockPosition(
 
 
     inline fun plusX(): BlockPosition {
-        assert(this.x < ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
         return BlockPosition(index + X * 1)
     }
 
     inline fun plusX(x: Int): BlockPosition {
-        assert(this.x + x < ProtocolDefinition.SECTION_MAX_X)
-        assert(this.x + x > 0)
+        assertPosition(this.x + x, 0, ProtocolDefinition.SECTION_MAX_X)
         return BlockPosition(index + X * x)
     }
 
     inline fun minusX(): BlockPosition {
-        assert(this.x > 0)
+        assertPosition(this.x > 0)
         return BlockPosition(index - X * 1)
     }
 
     inline fun plusY(): BlockPosition {
-        assert(this.y < ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(this.y < ProtocolDefinition.CHUNK_MAX_Y)
         return BlockPosition(index + Y * 1)
     }
 
     inline fun plusY(y: Int): BlockPosition {
-        assert(this.y + y < ProtocolDefinition.CHUNK_MAX_Y)
-        assert(this.y + y > ProtocolDefinition.CHUNK_MIN_Y)
+        assertPosition(this.y + y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
         return BlockPosition(index + Y * y)
     }
 
     inline fun minusY(): BlockPosition {
-        assert(this.y > ProtocolDefinition.CHUNK_MIN_Y)
+        assertPosition(this.y > ProtocolDefinition.CHUNK_MIN_Y)
         return BlockPosition(index - Y * 1)
     }
 
     inline fun plusZ(): BlockPosition {
-        assert(this.z < ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
         return BlockPosition(index + Z * 1)
     }
 
     inline fun plusZ(z: Int): BlockPosition {
-        assert(this.z + z < ProtocolDefinition.SECTION_MAX_Z)
-        assert(this.z + z > 0)
+        assertPosition(this.z + z, 0, ProtocolDefinition.SECTION_MAX_Z)
         return BlockPosition(index + Z * z)
     }
 
     inline fun minusZ(): BlockPosition {
-        assert(this.z > 0)
+        assertPosition(this.z > 0)
         return BlockPosition(index - Z * 1)
     }
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = BlockPosition(x, y, z)
 
     inline operator fun plus(position: BlockPosition) = BlockPosition(this.x + position.x, this.y + position.y, this.z + position.z)
+    inline operator fun minus(position: BlockPosition) = BlockPosition(this.x - position.x, this.y - position.y, this.z - position.z)
+    inline operator fun minus(position: InChunkPosition) = BlockPosition(this.x - position.x, this.y - position.y, this.z - position.z)
+    inline operator fun minus(position: InSectionPosition) = BlockPosition(this.x - position.x, this.y - position.y, this.z - position.z)
 
     inline operator fun unaryMinus() = BlockPosition(-this.x, -this.y, -this.z)
     inline operator fun unaryPlus() = this

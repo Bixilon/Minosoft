@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.block.CampfireBlockEntity
@@ -34,6 +33,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
@@ -46,13 +47,13 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     private val lavaParticle = registries.particleType[LavaParticle]!!
     private val smokeParticle = registries.particleType[SmokeParticle]!!
 
-    private fun extinguish(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+    private fun extinguish(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, random: Random) {
         for (i in 0 until 20) {
             spawnSmokeParticles(session, blockState, blockPosition, true, random)
         }
     }
 
-    fun spawnSmokeParticles(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean, random: Random) {
+    fun spawnSmokeParticles(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, extinguished: Boolean, random: Random) {
         val particle = session.world.particle ?: return
         val position = Vec3d(blockPosition).horizontalPlus(
             { 0.5 + 3.0.noised(random) },
@@ -80,7 +81,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             return
         }
         if (random.chance(10)) {
-            session.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, position + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+            session.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, Vec3(0.5f) + position, 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
         if (lavaParticles && random.chance(20)) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -98,8 +98,8 @@ abstract class Particle(
         var chunk = this.chunk
 
         if (chunk != null) {
-            if (chunk.chunkPosition == this.chunkPosition) return chunk
-            chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition)
+            if (chunk.position == this.chunkPosition) return chunk
+            chunk = chunk.neighbours.trace(chunkPosition - chunk.position)
         }
         if (chunk == null && revision != this.chunkRevision) {
             chunk = session.world.chunks[chunkPosition]

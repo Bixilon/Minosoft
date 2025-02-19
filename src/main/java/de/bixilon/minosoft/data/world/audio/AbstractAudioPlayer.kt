@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,20 @@
 
 package de.bixilon.minosoft.data.world.audio
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 
 interface AbstractAudioPlayer {
 
-    fun playSoundEvent(sound: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        playSound(sound, position?.center, volume, pitch)
-    }
+    fun playSoundEvent(sound: ResourceLocation, position: BlockPosition? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.center, volume, pitch)
+    fun playSoundEvent(sound: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.center, volume, pitch)
+    fun playSoundEvent(sound: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.toVec3d, volume, pitch)
 
     fun playSound(sound: ResourceLocation, position: Vec3d? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
 

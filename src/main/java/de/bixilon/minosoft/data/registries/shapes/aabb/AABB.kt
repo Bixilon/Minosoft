@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,12 +23,16 @@ import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.voxel.AABBRaycastHit
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
 import kotlin.math.abs
 
 
@@ -70,6 +74,24 @@ class AABB {
 
     operator fun plus(other: Vec3i): AABB = offset(other)
     fun offset(other: Vec3i) = AABB(true, min + other, max + other)
+
+    @JvmName("plusBlockPosition")
+    operator fun plus(other: BlockPosition): AABB = offset(other)
+
+    @JvmName("offsetBlockPosition")
+    fun offset(other: BlockPosition) = AABB(true, min + other, max + other)
+
+    @JvmName("plusInChunkPosition")
+    operator fun plus(other: InChunkPosition): AABB = offset(other)
+
+    @JvmName("offsetInChunkPosition")
+    fun offset(other: InChunkPosition) = AABB(true, min + other, max + other)
+
+    @JvmName("plusInSectionPosition")
+    operator fun plus(other: InSectionPosition): AABB = offset(other)
+
+    @JvmName("offsetInSectionPosition")
+    fun offset(other: InSectionPosition) = AABB(true, min + other, max + other)
 
     operator fun plus(other: AABB): AABB {
         val newMin = Vec3d(minOf(min.x, other.min.x), minOf(min.y, other.min.y), minOf(min.z, other.min.z))

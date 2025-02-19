@@ -13,17 +13,15 @@
 
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
 
 class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
@@ -39,6 +37,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         return null
     }
 
+    @Deprecated("index")
     operator fun set(index: Int, chunk: Chunk) {
         this.chunk.lock.lock()
         val current = neighbours[index]
@@ -56,6 +55,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         set(getIndex(offset), chunk)
     }
 
+    @Deprecated("index")
     fun remove(index: Int) {
         chunk.lock.lock()
         val current = neighbours[index]
@@ -85,16 +85,14 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)
     }
 
-
+    @Deprecated("index")
     operator fun get(index: Int): Chunk? {
         return neighbours[index]
     }
 
-    operator fun get(offset: Vec2i): Chunk {
-        if (offset.x == 0 && offset.y == 0) {
-            return chunk
-        }
-        return this[getIndex(offset)]
+    operator fun get(offset: ChunkPosition): Chunk {
+        if (offset.xz == 0) return chunk
+        return this[getIndex(offset)] // TODO: trace
     }
 
     override fun iterator(): Iterator<Chunk?> {
@@ -114,11 +112,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         }
     }
 
-    fun trace(offset: ChunkPosition): Chunk? {
-        return trace(offset.x, offset.z)
-    }
-
-    fun trace(offsetX: Int, offsetZ: Int): Chunk? = when {
+    fun traceChunk(offset: ChunkPosition): Chunk = when {
         offsetX == 0 -> when {
             offsetZ == 0 -> chunk
             offsetZ < 0 -> neighbours[3]?.neighbours?.trace(offsetX, offsetZ + 1)
@@ -143,24 +137,12 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         else -> Broken()
     }
 
-    fun traceBlock(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {
-        val chunkDelta = (origin - blockPosition).chunkPosition
-
-        return traceBlock(blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F, chunkDelta)
+    fun traceBlock(position: BlockPosition): BlockState? {
+        val chunkPosition = position.chunkPosition
+        val chunkDelta = (chunkPosition - chunk.position)
+        val chunk = trace(chunkDelta)
+        return chunk?.get(position.inChunkPosition)
     }
-
-    fun traceBlock(offset: Vec3i): BlockState? {
-        return traceBlock(offset.inChunkPosition, offset.chunkPosition)
-    }
-
-    private fun traceBlock(inChunkPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
-        return trace(chunkOffset)?.get(inChunkPosition)
-    }
-
-    fun traceBlock(x: Int, y: Int, z: Int, chunkOffset: Vec2i): BlockState? {
-        return trace(chunkOffset)?.get(x, y, z)
-    }
-
 
     companion object {
         const val COUNT = 8

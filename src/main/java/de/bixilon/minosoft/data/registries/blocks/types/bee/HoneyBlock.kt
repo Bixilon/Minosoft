@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.bee
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler
@@ -75,7 +74,7 @@ open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, setti
         physics.fallDistance = 0.0f
     }
 
-    override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
+    override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         if (!isSliding(position, physics)) {
             return
         }

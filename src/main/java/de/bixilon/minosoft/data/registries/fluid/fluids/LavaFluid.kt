@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions
@@ -29,13 +28,13 @@ import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogOptions
 import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.LavaFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
@@ -80,7 +79,7 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         return other is LavaFluid
     }
 
-    override fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+    override fun randomTick(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, random: Random) {
         super.randomTick(session, blockState, blockPosition, random)
         val particle = session.world.particle ?: return
         val above = session.world[blockPosition + Directions.UP]
@@ -89,7 +88,7 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
             return
         }
         if (lavaParticleType != null && random.chance(1)) {
-            val position = blockPosition.toVec3d + Vec3d.horizontal(
+            val position = Vec3d(blockPosition) + Vec3d.horizontal(
                 { random.nextDouble() },
                 1.0
             )

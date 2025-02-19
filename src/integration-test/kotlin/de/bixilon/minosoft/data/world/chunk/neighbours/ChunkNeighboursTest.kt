@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,14 +33,14 @@ class ChunkNeighboursTest {
     fun `verify chunk neighbour tracing at 0,0`() {
         val world = create()
         val chunk = world.chunks[0, 0]!!
-        assertEquals(chunk.neighbours.trace(-1, -1)?.chunkPosition, Vec2i(-1, -1))
-        assertEquals(chunk.neighbours.trace(-1, 0)?.chunkPosition, Vec2i(-1, 0))
-        assertEquals(chunk.neighbours.trace(-1, 1)?.chunkPosition, Vec2i(-1, 1))
-        assertEquals(chunk.neighbours.trace(0, -1)?.chunkPosition, Vec2i(0, -1))
-        assertEquals(chunk.neighbours.trace(0, 0)?.chunkPosition, Vec2i(0, 0))
-        assertEquals(chunk.neighbours.trace(0, 1)?.chunkPosition, Vec2i(0, 1))
-        assertEquals(chunk.neighbours.trace(1, -1)?.chunkPosition, Vec2i(1, -1))
-        assertEquals(chunk.neighbours.trace(1, 0)?.chunkPosition, Vec2i(1, 0))
-        assertEquals(chunk.neighbours.trace(1, 1)?.chunkPosition, Vec2i(1, 1))
+        assertEquals(chunk.neighbours.trace(-1, -1)?.position, Vec2i(-1, -1))
+        assertEquals(chunk.neighbours.trace(-1, 0)?.position, Vec2i(-1, 0))
+        assertEquals(chunk.neighbours.trace(-1, 1)?.position, Vec2i(-1, 1))
+        assertEquals(chunk.neighbours.trace(0, -1)?.position, Vec2i(0, -1))
+        assertEquals(chunk.neighbours.trace(0, 0)?.position, Vec2i(0, 0))
+        assertEquals(chunk.neighbours.trace(0, 1)?.position, Vec2i(0, 1))
+        assertEquals(chunk.neighbours.trace(1, -1)?.position, Vec2i(1, -1))
+        assertEquals(chunk.neighbours.trace(1, 0)?.position, Vec2i(1, 0))
+        assertEquals(chunk.neighbours.trace(1, 1)?.position, Vec2i(1, 1))
     }
 }

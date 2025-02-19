@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -26,6 +26,6 @@ abstract class BlockEntity(
 
     open fun updateNBT(nbt: JsonObject) = Unit
 
-    open fun tick(session: PlaySession, state: BlockState, position: Vec3i, random: Random) = Unit
+    open fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) = Unit
 
 }

@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -24,8 +22,8 @@ import de.bixilon.minosoft.data.world.chunk.heightmap.LightHeightmap
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 class ChunkLight(val chunk: Chunk) {
@@ -56,7 +54,7 @@ class ChunkLight(val chunk: Chunk) {
         section.light.update = false
 
         val events = hashSetOf<AbstractWorldUpdate>()
-        val chunkPosition = chunk.chunkPosition
+        val chunkPosition = chunk.position
         if (fireSameChunkEvent) {
             events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight, true)
 
@@ -76,10 +74,10 @@ class ChunkLight(val chunk: Chunk) {
         var neighbourIndex = 0
         for (chunkX in -1..1) {
             for (chunkZ in -1..1) {
-                if (chunkX == 0 && chunkZ == 0) {
-                    continue
-                }
-                val nextPosition = chunkPosition + Vec2i(chunkX, chunkZ)
+                val offset = ChunkPosition(chunkX, chunkZ)
+                if (offset.xz == 0) continue
+
+                val nextPosition = chunkPosition + offset
                 val chunk = neighbours[neighbourIndex++]
                 for (chunkY in -1..1) {
                     val neighbourSection = chunk[sectionHeight + chunkY] ?: continue
@@ -102,23 +100,17 @@ class ChunkLight(val chunk: Chunk) {
     }
 
 
-    operator fun get(position: Vec3i): Int {
-        return get(position.x, position.y, position.z)
-    }
-
-    operator fun get(x: Int, y: Int, z: Int): Int {
-        val sectionHeight = y.sectionHeight
-        val inSectionHeight = y.inSectionHeight
-        val heightmapIndex = (z shl 4) or x
-        val index = inSectionHeight shl 8 or heightmapIndex
+    operator fun get(position: InChunkPosition): Int {
+        val sectionHeight = position.sectionHeight
+        val inSection = position.inSectionPosition
 
         val light = when (sectionHeight) {
-            chunk.minSection - 1 -> bottom[index].toInt()
-            chunk.maxSection + 1 -> return top[index].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
-            else -> chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
+            chunk.minSection - 1 -> bottom[inSection].toInt()
+            chunk.maxSection + 1 -> return top[inSection].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
+            else -> chunk[sectionHeight]?.light?.get(inSection)?.toInt() ?: 0x00
         } and 0xFF
 
-        if (y >= heightmap[heightmapIndex]) {
+        if (position.y >= heightmap[position]) {
             // set sky=15
             return light or SectionLight.SKY_LIGHT_MASK
         }
@@ -178,10 +170,5 @@ class ChunkLight(val chunk: Chunk) {
         if (fireEvent) {
             fireLightChange(sections, fireSameChunkEvent)
         }
-    }
-
-    @Deprecated("heightmap", ReplaceWith("heightmap[x, z]"))
-    inline fun getMaxHeight(x: Int, z: Int): Int {
-        return heightmap[x, z]
     }
 }

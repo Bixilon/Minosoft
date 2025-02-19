@@ -21,7 +21,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
-import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
@@ -154,8 +154,8 @@ object VecUtil {
         return this + direction.vector
     }
 
-    fun Vec3i.getWorldOffset(offsetType: RandomOffsetTypes): Vec3 {
-        val positionHash = BlockPositionUtil.generatePositionHash(x, 0, z)
+    fun BlockPosition.getWorldOffset(offsetType: RandomOffsetTypes): Vec3 {
+        val positionHash = hash
         val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
 
         fun horizontal(axisHash: Long): Float {

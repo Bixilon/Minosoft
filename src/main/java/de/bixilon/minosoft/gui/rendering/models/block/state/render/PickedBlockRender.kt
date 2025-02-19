@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -39,8 +40,8 @@ interface PickedBlockRender : BlockRender {
         default?.render(gui, offset, consumer, options, size, stack, tints)
     }
 
-    override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-        return pick(state, props.neighbours)?.render(props, state, entity, tints) ?: false
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+        return pick(state, props.neighbours)?.render(props, position, state, entity, tints) ?: false
     }
 
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {

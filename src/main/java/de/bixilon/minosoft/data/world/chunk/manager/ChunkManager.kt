@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
@@ -132,15 +131,15 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
     private fun onChunkCreate(chunk: Chunk): Set<AbstractWorldUpdate> {
         // TODO: update chunk neighbours, update section neighbours, build biome cache, update light (propagate from neighbours), fire update
-        size.onCreate(chunk.chunkPosition)
+        size.onCreate(chunk.position)
         world.view.updateServerDistance()
 
         val updates = HashSet<AbstractWorldUpdate>(9, 1.0f)
-        updates += ChunkCreateUpdate(chunk.chunkPosition, chunk)
+        updates += ChunkCreateUpdate(chunk.position, chunk)
 
         for (index in 0 until ChunkNeighbours.COUNT) {
             val offset = ChunkNeighbours.OFFSETS[index]
-            val neighbour = this.chunks.unsafe[chunk.chunkPosition + offset] ?: continue
+            val neighbour = this.chunks.unsafe[chunk.position + offset] ?: continue
             chunk.neighbours[index] = neighbour
             neighbour.neighbours[-offset] = chunk
 
@@ -151,7 +150,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
         for (neighbour in chunk.neighbours) {
             if (neighbour == null) continue
-            updates += NeighbourChangeUpdate(neighbour.chunkPosition, neighbour)
+            updates += NeighbourChangeUpdate(neighbour.position, neighbour)
         }
 
         return updates
@@ -172,7 +171,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         return chunk
     }
 
-    fun tick(simulationDistance: Int, cameraPosition: Vec2i) {
+    fun tick(simulationDistance: Int, cameraPosition: ChunkPosition) {
         ticker.tick(simulationDistance, cameraPosition)
     }
 }

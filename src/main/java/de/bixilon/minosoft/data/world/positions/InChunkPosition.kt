@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -25,12 +27,9 @@ value class InChunkPosition(
 ) : TextFormattable {
 
     constructor(x: Int, y: Int, z: Int) : this((y and 0xFFF shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
-        assert(x >= 0)
-        assert(x <= ProtocolDefinition.SECTION_MAX_X)
-        assert(y >= ProtocolDefinition.CHUNK_MIN_Y)
-        assert(y <= ProtocolDefinition.CHUNK_MAX_Y)
-        assert(z >= 0)
-        assert(z <= ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
     }
 
     inline val x: Int get() = (index and MASK_X) shr SHIFT_X
@@ -40,50 +39,47 @@ value class InChunkPosition(
 
 
     inline fun plusX(): InChunkPosition {
-        assert(this.x < ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
         return InChunkPosition(index + X * 1)
     }
 
     inline fun plusX(x: Int): InChunkPosition {
-        assert(this.x + x < ProtocolDefinition.SECTION_MAX_X)
-        assert(this.x + x > 0)
+        assertPosition(this.x + x, 0, ProtocolDefinition.SECTION_MAX_X)
         return InChunkPosition(index + X * x)
     }
 
     inline fun minusX(): InChunkPosition {
-        assert(this.x > 0)
+        assertPosition(this.x > 0)
         return InChunkPosition(index - X * 1)
     }
 
     inline fun plusY(): InChunkPosition {
-        assert(this.y < ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(this.y < ProtocolDefinition.CHUNK_MAX_Y)
         return InChunkPosition(index + Y * 1)
     }
 
     inline fun plusY(y: Int): InChunkPosition {
-        assert(this.y + y < ProtocolDefinition.CHUNK_MAX_Y)
-        assert(this.y + y > ProtocolDefinition.CHUNK_MIN_Y)
+        assertPosition(this.y + y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
         return InChunkPosition(index + Y * y)
     }
 
     inline fun minusY(): InChunkPosition {
-        assert(this.y > ProtocolDefinition.CHUNK_MIN_Y)
+        assertPosition(this.y > ProtocolDefinition.CHUNK_MIN_Y)
         return InChunkPosition(index - Y * 1)
     }
 
     inline fun plusZ(): InChunkPosition {
-        assert(this.z < ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
         return InChunkPosition(index + Z * 1)
     }
 
     inline fun plusZ(z: Int): InChunkPosition {
-        assert(this.z + z < ProtocolDefinition.SECTION_MAX_Z)
-        assert(this.z + z > 0)
+        assertPosition(this.z + z, 0, ProtocolDefinition.SECTION_MAX_Z)
         return InChunkPosition(index + Z * z)
     }
 
     inline fun minusZ(): InChunkPosition {
-        assert(this.z > 0)
+        assertPosition(this.z > 0)
         return InChunkPosition(index - Z * 1)
     }
 
@@ -91,6 +87,9 @@ value class InChunkPosition(
 
     inline operator fun plus(position: InChunkPosition) = InChunkPosition(this.x + position.x, this.y + position.y, this.z + position.z)
 
+    inline operator fun plus(direction: Directions) = InChunkPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
+    inline operator fun minus(direction: Directions) = InChunkPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+    
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
 
     inline val inSectionPosition get() = InSectionPosition(x, y.inSectionHeight, z)

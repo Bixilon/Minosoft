@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,6 @@ package de.bixilon.minosoft.camera.target
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.camera.SessionCamera
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
@@ -31,8 +30,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.voxel.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
 import de.bixilon.minosoft.terminal.RunConfiguration
 
@@ -115,8 +114,6 @@ class TargetHandler(
         var fluid: FluidTarget? = null
 
 
-        val blockPosition = BlockPosition()
-        val chunkPosition = ChunkPosition()
 
         for (step in 0..MAX_STEPS) {
             if (step > 0) {
@@ -124,12 +121,12 @@ class TargetHandler(
                 position.x += front.x * distance; position.y += front.y * distance; position.z += front.z * distance
             }
 
-            blockPosition.x = position.x.floor;blockPosition.y = position.y.floor;blockPosition.z = position.z.floor
-            chunkPosition.x = blockPosition.x shr 4; chunkPosition.y = blockPosition.z shr 4
+            val blockPosition = position.blockPosition
+            val chunkPosition = blockPosition.chunkPosition
             if (chunk == null) {
                 chunk = camera.session.world.chunks[chunkPosition] ?: break
-            } else if (chunk.chunkPosition != chunkPosition) {
-                chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: break
+            } else if (chunk.position != chunkPosition) {
+                chunk = chunk.neighbours.trace(chunkPosition - chunk.position) ?: break
             }
             val state = chunk[blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F] ?: continue
             if (state.block is FluidBlock) {
@@ -142,7 +139,7 @@ class TargetHandler(
                 continue
             }
             val hit = raycast(origin, front, state, blockPosition) ?: continue
-            val entity = chunk.getBlockEntity(blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F)
+            val entity = chunk.getBlockEntity(blockPosition.inChunkPosition)
             val target = BlockTarget(origin + front * hit.distance, hit.distance, hit.direction, state, entity, blockPosition, hit.inside)
             return Pair(target, fluid)
         }

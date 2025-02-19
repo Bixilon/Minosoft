@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -32,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import java.util.*
 
 open class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
-    override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?) = prototype()
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?) = prototype()
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = prototype()
     override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
     override fun getProperties(direction: Directions) = prototype()

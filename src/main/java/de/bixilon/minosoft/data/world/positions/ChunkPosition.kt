@@ -22,6 +22,11 @@ import de.bixilon.minosoft.util.KUtil.format
 value class ChunkPosition(
     inline val raw: Long,
 ) : TextFormattable {
+    init {
+        TODO()
+    }
+
+    constructor() : this(0, 0)
 
     constructor(x: Int, z: Int) : this((z shl SHIFT_Z) or (x shl SHIFT_X)) {
         assert(x >= 0)

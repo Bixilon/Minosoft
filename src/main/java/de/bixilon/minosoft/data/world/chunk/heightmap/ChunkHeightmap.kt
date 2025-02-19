@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -23,7 +24,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
     protected val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { Int.MIN_VALUE }
 
     override fun get(index: Int) = heightmap[index]
-    override fun get(x: Int, z: Int) = heightmap[(z shl 4) or x]
+    override fun get(x: Int, z: Int) = this[(z shl 4) or x]
 
 
     protected abstract fun passes(state: BlockState): HeightmapPass
@@ -85,7 +86,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
     }
 
 
-    override fun onBlockChange(x: Int, y: Int, z: Int, state: BlockState?) {
+    override fun onBlockChange(position: InChunkPosition, state: BlockState?) {
         chunk.lock.lock()
         val index = (z shl 4) or x
 
@@ -122,4 +123,6 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
         PASSES,
         ;
     }
+
+    companion object
 }

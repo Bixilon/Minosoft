@@ -70,8 +70,8 @@ class WeightedBlockRender(
         return getModel(random, position).getParticleTexture(random, position)
     }
 
-    override fun render(props: WorldRenderProps, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-        return getModel(props.random, props.position).render(props, state, entity, tints)
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+        return getModel(props.random, props.position).render(props, position, state, entity, tints)
     }
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
