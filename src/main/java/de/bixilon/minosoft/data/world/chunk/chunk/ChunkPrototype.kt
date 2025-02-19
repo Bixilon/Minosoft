@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.chunk
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.LightArray
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -29,7 +29,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class ChunkPrototype(
     var blocks: Array<Array<BlockState?>?>? = null,
-    var blockEntities: Map<Vec3i, JsonObject>? = null,
+    var blockEntities: Map<InChunkPosition, JsonObject>? = null,
     var biomeSource: BiomeSource? = null,
     var light: Array<LightArray?>? = null,
     var bottomLight: LightArray? = null,
@@ -102,9 +102,8 @@ class ChunkPrototype(
         }
     }
 
-    private fun Map<Vec3i, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, session: PlaySession) {
+    private fun Map<InChunkPosition, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, session: PlaySession) {
         val empty = isNullOrEmpty()
-        val position = Vec3i()
         for ((index, section) in chunk.sections.withIndex()) {
             if (section == null || section.blocks.isEmpty) continue
             val blocks = section.blocks
@@ -118,16 +117,13 @@ class ChunkPrototype(
                         val block = blocks[inSection]?.block ?: continue
                         if (block !is BlockWithEntity<*>) continue
 
-                        if (this != null) {
-                            position.x = x; position.y = yOffset + y; position.z = z
-                        }
                         var entity = section.blockEntities[inSection]
                         if (entity == null) {
                             entity = block.createBlockEntity(session) ?: continue
                             section.blockEntities[inSection] = entity
                         }
                         if (!empty) {
-                            this!![position]?.let { entity.updateNBT(it) }
+                            this!![InChunkPosition(x, y, z)]?.let { entity.updateNBT(it) }
                         }
                         affected?.add(sectionHeight)
                     }

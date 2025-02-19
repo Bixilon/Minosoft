@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -22,7 +21,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -48,7 +46,7 @@ class WeightedBlockRender(
 
     private fun getModel(random: Random?, position: BlockPosition): BlockRender {
         if (random == null) return models.first().model
-        random.setSeed(position.positionHash)
+        random.setSeed(position.hash)
 
         var weightLeft = abs(random.nextLong().toInt() % totalWeight)
 
@@ -66,12 +64,12 @@ class WeightedBlockRender(
         Broken("Could not find a model: This should never happen!")
     }
 
-    override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {
+    override fun getParticleTexture(random: Random?, position: BlockPosition): Texture? {
         return getModel(random, position).getParticleTexture(random, position)
     }
 
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-        return getModel(props.random, props.position).render(props, position, state, entity, tints)
+        return getModel(props.random, position).render(props, position, state, entity, tints)
     }
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {

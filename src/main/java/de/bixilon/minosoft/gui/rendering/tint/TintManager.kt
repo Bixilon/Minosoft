@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.tint
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -24,6 +23,8 @@ import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
 import de.bixilon.minosoft.gui.rendering.tint.tints.plants.FoliageTintCalculator
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -48,12 +49,12 @@ class TintManager(val session: PlaySession) {
         DefaultTints.init(this)
     }
 
-    fun getBlockTint(state: BlockState, chunk: Chunk?, x: Int, y: Int, z: Int, cache: IntArray?): IntArray? {
+    fun getBlockTint(state: BlockState, chunk: Chunk?, position: InChunkPosition, cache: IntArray?): IntArray? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
         val size = if (tintProvider is MultiTintProvider) tintProvider.tints else 1
         val tints = if (cache != null && cache.size >= size) cache else IntArray(size)
-        val biome = chunk?.getBiome(x, y, z)
+        val biome = chunk?.getBiome(position)
 
         for (tintIndex in 0 until size) {
             tints[tintIndex] = tintProvider.getBlockColor(state, biome, x, y, z, tintIndex)
@@ -61,23 +62,19 @@ class TintManager(val session: PlaySession) {
         return tints
     }
 
-    fun getParticleTint(state: BlockState, x: Int, y: Int, z: Int): Int? {
+    fun getParticleTint(state: BlockState, position: BlockPosition): Int? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
 
         // TODO: cache chunk of particle
-        val biome = session.world.biomes.getBiome(x, y, z)
-        return tintProvider.getParticleColor(state, biome, x, y, z)
+        val biome = session.world.biomes.getBiome(position)
+        return tintProvider.getParticleColor(state, biome, position)
     }
 
-    fun getParticleTint(blockState: BlockState, position: Vec3i): Int? {
-        return getParticleTint(blockState, position.x, position.y, position.z)
-    }
-
-    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, x: Int, y: Int, z: Int): Int? {
+    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): Int? {
         val provider = fluid.model?.tint ?: return null
-        val biome = chunk.getBiome(x and 0x0F, y, z and 0x0F)
-        return provider.getFluidTint(fluid, biome, height, x, y, z)
+        val biome = chunk.getBiome(position.inChunkPosition)
+        return provider.getFluidTint(fluid, biome, height, position)
     }
 
     private fun Item.getTintProvider(): TintProvider? {

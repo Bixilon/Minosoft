@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
@@ -36,6 +35,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -410,8 +410,8 @@ class PlayInByteBuffer : InByteBuffer {
         return PlayedSound(name, attenuation)
     }
 
-    fun readLongChunkPosition(): Vec2i {
+    fun readLongChunkPosition(): ChunkPosition {
         val long = readLong()
-        return Vec2i(long.toInt(), (long shr 32).toInt())
+        return ChunkPosition(long.toInt(), (long shr 32).toInt())
     }
 }

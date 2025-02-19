@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics.parts
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
@@ -30,7 +29,6 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 
@@ -41,7 +39,6 @@ object CollisionMovementPhysics {
         // TODO: add entity collisions (boat, shulker)
         // TODO: add world border collision shape
 
-        val inChunk = Vec3i.EMPTY
 
         for ((position, state, chunk) in WorldIterator(aabb.extend(movement).grow(1.0).positions(), this, chunk)) {
             if (state.block !is CollidableBlock) continue
@@ -52,10 +49,8 @@ object CollisionMovementPhysics {
             var shape = when (state.block) {
                 is FixedCollidable -> state.block.getCollisionShape(state)
                 is BlockWithEntity<*> -> {
-                    inChunk.x = position.x and 0x0F
-                    inChunk.z = position.z and 0x0F
 
-                    state.block.getCollisionShape(session, context, position, state, chunk.getBlockEntity(inChunk))
+                    state.block.getCollisionShape(session, context, position, state, chunk.getBlockEntity(position.inChunkPosition))
                 }
 
                 else -> {

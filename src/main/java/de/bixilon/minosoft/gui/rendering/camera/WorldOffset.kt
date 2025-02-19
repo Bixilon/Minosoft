@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class WorldOffset(private val camera: Camera) : Drawable {
-    var offset by observed(Vec3i.EMPTY)
+    var offset by observed(BlockPosition())
         private set
 
     override fun draw() {

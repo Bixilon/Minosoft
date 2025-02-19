@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
@@ -20,6 +19,7 @@ import de.bixilon.minosoft.data.chat.signature.lastSeen.MessageSignatureData
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -42,7 +42,7 @@ class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
         super.writeBareByteArray(data)
     }
 
-    fun writeBlockPosition(position: Vec3i?) {
+    fun writeBlockPosition(position: BlockPosition?) {
         when {
             position == null -> writeLong(0L) // 0,0,0
             versionId < V_18W43A -> writeLong(position.x.toLong() and 0x3FFFFFF shl 38 or (position.z.toLong() and 0x3FFFFFF) or (position.y.toLong() and 0xFFF shl 26))

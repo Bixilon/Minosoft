@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -20,6 +19,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -32,7 +32,7 @@ class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     data class ChunkBiomeData(
-        val position: Vec2i,
+        val position: ChunkPosition,
         val data: ByteArray,
     )
 

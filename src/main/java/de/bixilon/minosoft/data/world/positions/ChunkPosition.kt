@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -74,8 +75,16 @@ value class ChunkPosition(
 
     inline fun with(x: Int = this.x, z: Int = this.z) = ChunkPosition(x, z)
 
+    inline operator fun plus(value: Int) = ChunkPosition(this.x + value, this.z + value)
+    inline operator fun minus(value: Int) = ChunkPosition(this.x - value, this.z - value)
+    inline operator fun times(value: Int) = ChunkPosition(this.x * value, this.z * value)
+    inline operator fun div(value: Int) = ChunkPosition(this.x / value, this.z / value)
+
     inline operator fun plus(position: ChunkPosition) = ChunkPosition(this.x + position.x, this.z + position.z)
     inline operator fun minus(position: ChunkPosition) = ChunkPosition(this.x - position.x, this.z - position.z)
+
+    inline operator fun plus(direction: Directions) = ChunkPosition(this.x + direction.vector.x, this.z + direction.vector.z)
+    inline operator fun minus(direction: Directions) = ChunkPosition(this.x - direction.vector.x, this.z - direction.vector.z)
 
     inline operator fun unaryMinus() = ChunkPosition(-this.x, -this.z)
     inline operator fun unaryPlus() = this
@@ -84,6 +93,7 @@ value class ChunkPosition(
     inline fun blockPosition(position: InChunkPosition) = BlockPosition(this.x * ProtocolDefinition.SECTION_WIDTH_X + position.x, position.y, this.z * ProtocolDefinition.SECTION_WIDTH_Z + position.z)
 
     override fun toText() = "(${this.x.format()} ${this.z.format()})"
+    override fun toString() = "c($x $z)"
 
 
     val index: Int

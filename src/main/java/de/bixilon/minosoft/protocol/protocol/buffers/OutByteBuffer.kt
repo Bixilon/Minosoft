@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
@@ -141,10 +142,10 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
         }
     }
 
-    fun writeByteBlockPosition(blockPosition: BlockPosition?) {
-        writeInt(blockPosition?.x ?: 0)
-        writeByte(blockPosition?.y ?: 0)
-        writeInt(blockPosition?.z ?: 0)
+    fun writeByteBlockPosition(position: BlockPosition?) {
+        writeInt(position?.x ?: 0)
+        writeByte(position?.y ?: 0)
+        writeInt(position?.z ?: 0)
     }
 
     fun writeLegacyResourceLocation(resourceLocation: ResourceLocation) {

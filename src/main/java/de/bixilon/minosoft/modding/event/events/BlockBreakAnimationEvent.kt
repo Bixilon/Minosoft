@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockBreakAnimationS2CP

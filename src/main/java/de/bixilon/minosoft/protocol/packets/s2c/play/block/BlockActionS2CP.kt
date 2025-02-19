@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -25,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
+    val position = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readShortBlockPosition()
     } else {
         buffer.readBlockPosition()

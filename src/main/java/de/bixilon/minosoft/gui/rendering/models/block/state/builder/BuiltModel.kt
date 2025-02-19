@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -75,7 +74,7 @@ class BuiltModel(
         return model.getProperties(direction) // TODO: dynamic?
     }
 
-    override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {
+    override fun getParticleTexture(random: Random?, position: BlockPosition): Texture? {
         return model.getParticleTexture(random, position)
     }
 }

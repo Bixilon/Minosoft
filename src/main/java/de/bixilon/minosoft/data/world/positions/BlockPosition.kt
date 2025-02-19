@@ -30,7 +30,7 @@ value class BlockPosition(
     init {
         TODO()
     }
-    
+
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this((y and 0xFFF shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
         assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
@@ -91,7 +91,14 @@ value class BlockPosition(
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = BlockPosition(x, y, z)
 
+    inline operator fun plus(value: Int) = BlockPosition(this.x + value, this.y + value, this.z + value)
+    inline operator fun minus(value: Int) = BlockPosition(this.x - value, this.y - value, this.z - value)
+    inline operator fun times(value: Int) = BlockPosition(this.x * value, this.y * value, this.z * value)
+    inline operator fun div(value: Int) = BlockPosition(this.x / value, this.y / value, this.z / value)
+
     inline operator fun plus(position: BlockPosition) = BlockPosition(this.x + position.x, this.y + position.y, this.z + position.z)
+    inline operator fun plus(position: InChunkPosition) = BlockPosition(this.x + position.x, this.y + position.y, this.z + position.z)
+    inline operator fun plus(position: InSectionPosition) = BlockPosition(this.x + position.x, this.y + position.y, this.z + position.z)
     inline operator fun minus(position: BlockPosition) = BlockPosition(this.x - position.x, this.y - position.y, this.z - position.z)
     inline operator fun minus(position: InChunkPosition) = BlockPosition(this.x - position.x, this.y - position.y, this.z - position.z)
     inline operator fun minus(position: InSectionPosition) = BlockPosition(this.x - position.x, this.y - position.y, this.z - position.z)
@@ -110,6 +117,7 @@ value class BlockPosition(
     inline val inSectionPosition get() = InSectionPosition(x and 0x0F, y.inSectionHeight, z and 0x0F)
 
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+    override fun toString() = "b($x $y $z)"
 
     companion object {
         const val MASK_X = 0x00F

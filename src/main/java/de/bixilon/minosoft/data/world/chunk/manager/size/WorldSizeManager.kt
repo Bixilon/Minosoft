@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -65,22 +65,22 @@ class WorldSizeManager(private val world: World) {
     }
 
 
-    private fun addExtreme(position: ChunkPosition, min: Vec2i, max: Vec2i): Boolean {
+    private fun addExtreme(position: ChunkPosition, min: ChunkPosition, max: ChunkPosition): Boolean {
         var changes = 0
         if (position.x < min.x) {
             min.x = position.x
             changes++
         }
-        if (position.y < min.y) {
-            min.y = position.y
+        if (position.z < min.z) {
+            min.z = position.z
             changes++
         }
         if (position.x > max.x) {
             max.x = position.x
             changes++
         }
-        if (position.y > max.y) {
-            max.y = position.y
+        if (position.z > max.z) {
+            max.z = position.z
             changes++
         }
         return changes > 0

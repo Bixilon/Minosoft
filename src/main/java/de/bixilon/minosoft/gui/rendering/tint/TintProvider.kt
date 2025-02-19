@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,15 +17,16 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 interface TintProvider {
-    fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int = Colors.WHITE_RGB
+    fun getBlockColor(blockState: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int = Colors.WHITE_RGB
 
-    fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
-        return getBlockColor(blockState, biome, x, y, z, 0)
+    fun getParticleColor(blockState: BlockState, biome: Biome?, position: BlockPosition): Int {
+        return getBlockColor(blockState, biome, position, 0)
     }
 
     fun getItemColor(stack: ItemStack, tintIndex: Int): Int = Colors.WHITE_RGB
 
-    fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int = Colors.WHITE_RGB
+    fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, position: BlockPosition): Int = Colors.WHITE_RGB
 }

@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.exception.Broken
@@ -26,9 +24,10 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fixBlockEntity
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP
@@ -53,7 +52,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position: Vec2i
+    val position: ChunkPosition
     val prototype: ChunkPrototype = ChunkPrototype()
     var action: ChunkAction = ChunkAction.CREATE
         private set
@@ -114,23 +113,23 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    private fun PlayInByteBuffer.readBlockEntities(dimension: DimensionProperties): Map<Vec3i, JsonObject>? {
+    private fun PlayInByteBuffer.readBlockEntities(dimension: DimensionProperties): Map<InChunkPosition, JsonObject>? {
         if (versionId < V_1_9_4) return null
         val count = readVarInt()
         if (count <= 0) return null
-        val entities: MutableMap<Vec3i, JsonObject> = HashMap(count)
+        val entities: MutableMap<InChunkPosition, JsonObject> = HashMap(count)
 
         when {
             versionId < V_21W37A -> {
-                val positionOffset = Vec3i.of(position, dimension.minSection, Vec3i.EMPTY)
+                val positionOffset = BlockPosition.of(position, dimension.minSection)
                 for (i in 0 until count) {
                     val nbt = readNBT()?.asJsonObject() ?: continue
-                    val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
+                    val position = BlockPosition(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                     val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
                     if (nbt.size <= 4) continue // no additional data
                     val type = session.registries.blockEntityType[id] ?: continue
 
-                    entities[position] = nbt
+                    entities[InChunkPosition(position.x, position.y, position.z)] = nbt
                 }
             }
 
@@ -143,7 +142,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     if (nbt.isEmpty()) continue
                     if (type == null) continue
 
-                    entities[Vec3i(xz shr 4, y, xz and 0x0F)] = nbt
+                    entities[InChunkPosition(xz shr 4, y.toInt(), xz and 0x0F)] = nbt
                 }
             }
         }

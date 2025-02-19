@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -35,7 +34,7 @@ import java.util.*
 open class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?) = prototype()
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = prototype()
-    override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
+    override fun getParticleTexture(random: Random?, position: BlockPosition) = prototype()
     override fun getProperties(direction: Directions) = prototype()
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = prototype()
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = prototype()

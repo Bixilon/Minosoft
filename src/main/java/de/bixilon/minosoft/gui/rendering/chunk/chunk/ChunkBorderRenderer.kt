@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,6 +22,8 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
@@ -34,9 +36,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -49,8 +48,8 @@ class ChunkBorderRenderer(
     override val layers = LayerSettings()
     private val profile = session.profiles.rendering
     override val renderSystem: RenderSystem = context.system
-    private var offset = Vec3i.EMPTY
-    private var chunkPosition: Vec2i? = null
+    private var offset = BlockPosition()
+    private var chunkPosition: ChunkPosition? = null
     private var sectionHeight: Int = Int.MIN_VALUE
 
     override var mesh: LineMesh? = null
@@ -107,7 +106,7 @@ class ChunkBorderRenderer(
         this.nextMesh = mesh
     }
 
-    private fun LineMesh.drawOuterChunkLines(chunkPosition: Vec2i, offset: Vec3i, dimension: DimensionProperties) {
+    private fun LineMesh.drawOuterChunkLines(chunkPosition: ChunkPosition, offset: Vec3i, dimension: DimensionProperties) {
         for (x in -OUTER_CHUNK_SIZE..OUTER_CHUNK_SIZE + 1) {
             for (z in -OUTER_CHUNK_SIZE..OUTER_CHUNK_SIZE + 1) {
                 if ((x == 0 || x == 1) && (z == 0 || z == 1)) {

@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.world.chunk.chunk
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.direction.Directions
@@ -20,7 +19,6 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
-import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
@@ -43,7 +41,7 @@ class Chunk(
     val session: PlaySession,
     val position: ChunkPosition,
     var biomeSource: BiomeSource,
-) : Iterable<ChunkSection?>, BiomeAccessor {
+) : Iterable<ChunkSection?> {
     val lock = RWLock.rwlock()
     val world = session.world
     val light = ChunkLight(this)
@@ -63,13 +61,10 @@ class Chunk(
 
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections.getOrNull(sectionHeight - minSection)
 
-    operator fun get(x: Int, y: Int, z: Int) = this[InChunkPosition(x, y, z)]
-
     operator fun get(position: InChunkPosition): BlockState? {
         return this[position.y.sectionHeight]?.blocks?.get(position.inSectionPosition)
     }
 
-    operator fun set(x: Int, y: Int, z: Int, state: BlockState?) = set(InChunkPosition(x, y, z), state)
     operator fun set(position: InChunkPosition, state: BlockState?) {
         val section = getOrPut(position.y.sectionHeight) ?: return
         val previous = section.blocks.set(position.inSectionPosition, state)
@@ -77,7 +72,7 @@ class Chunk(
         if (previous?.block != state?.block) {
             this[position.y.sectionHeight]?.blockEntities?.set(position.inSectionPosition, null)
         }
-        val entity = getOrPutBlockEntity(x, y, z)
+        val entity = getOrPutBlockEntity(position)
 
         if (world.dimension.light) {
             light.onBlockChange(position, section, previous, state)
@@ -85,8 +80,6 @@ class Chunk(
 
         SingleBlockUpdate(this.position.blockPosition(position), this, state, entity).fire(session)
     }
-
-    operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 
     fun getBlockEntity(position: InChunkPosition): BlockEntity? {
         return this[position.y.sectionHeight]?.blockEntities?.get(position.inSectionPosition)
@@ -217,7 +210,7 @@ class Chunk(
         return sections.iterator()
     }
 
-    override fun getBiome(position: InChunkPosition): Biome? {
+    fun getBiome(position: InChunkPosition): Biome? {
         val position = position.with(y = position.y.clamp(world.dimension.minY, world.dimension.maxY))
         if (!cacheBiomes) {
             return biomeSource.get(position)

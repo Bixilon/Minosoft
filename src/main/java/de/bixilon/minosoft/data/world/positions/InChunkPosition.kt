@@ -91,6 +91,7 @@ value class InChunkPosition(
     inline operator fun minus(direction: Directions) = InChunkPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
     
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+    override fun toString() = "c($x $y $z)"
 
     inline val inSectionPosition get() = InSectionPosition(x, y.inSectionHeight, z)
     inline val sectionHeight get() = y.sectionHeight

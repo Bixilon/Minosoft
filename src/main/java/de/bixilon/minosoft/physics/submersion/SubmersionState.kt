@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics.submersion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions
@@ -32,8 +31,7 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.VanillaMath.vanillaNormalizeAssign
@@ -56,7 +54,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         private set
 
 
-    private fun getFluidHeight(position: Vec3i, state: BlockState, fluid: Fluid): Float {
+    private fun getFluidHeight(position: BlockPosition, state: BlockState, fluid: Fluid): Float {
         val top = world[position + Directions.UP]
         if (fluid.matches(top)) {
             return 1.0f
@@ -149,7 +147,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
             // TODO
         }
         val position = physics.position
-        val eyePosition = Vec3i(position.x.floor, eyeHeight.floor, position.z.floor)
+        val eyePosition = BlockPosition(position.x.floor, eyeHeight.floor, position.z.floor)
 
         val block = physics.positionInfo.chunk?.get(eyePosition.x and 0x0F, eyePosition.y, eyePosition.z and 0x0F) ?: return
         if (block.block !is FluidHolder) {

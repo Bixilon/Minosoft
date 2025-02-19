@@ -58,9 +58,6 @@ object Vec3Util {
     val Vec3.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
 
-    val Vec3.blockPosition: BlockPosition
-        get() = this.floor
-
     val Vec3.Companion.X: Vec3 get() = Vec3Util.X
     val Vec3.Companion.Y: Vec3 get() = Vec3Util.Y
     val Vec3.Companion.Z: Vec3 get() = Vec3Util.Z

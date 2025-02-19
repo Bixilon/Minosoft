@@ -49,7 +49,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

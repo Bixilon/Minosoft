@@ -90,6 +90,7 @@ value class InSectionPosition(
     inline operator fun minus(direction: Directions) = InSectionPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
     
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+    override fun toString() = "s($x $y $z)"
 
     companion object {
         const val MASK_X = 0x00F

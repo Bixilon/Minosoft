@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkSkyLight.Companion.NEIGHBOUR_TRACE_LEVEL
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
@@ -54,15 +53,15 @@ class SectionLight(
         }
     }
 
-    private fun startDecreaseTrace(x: Int, y: Int, z: Int) {
+    private fun startDecreaseTrace(position: InSectionPosition) {
         // that is kind of hacky, but far easier and kind of faster
-        val light = this.light[getIndex(x, y, z)].toInt() and BLOCK_LIGHT_MASK
+        val light = this.light[position].toInt() and BLOCK_LIGHT_MASK
 
-        decreaseLight(x, y, z, light, true) // just clear the light
-        decreaseLight(x, y, z, light, false) // increase the light in all sections
+        decreaseLight(position, light, true) // just clear the light
+        decreaseLight(position, light, false) // increase the light in all sections
     }
 
-    private fun decreaseLight(x: Int, y: Int, z: Int, light: Int, reset: Boolean) {
+    private fun decreaseLight(position: InSectionPosition, light: Int, reset: Boolean) {
         decreaseCheckLevel(x, z, light, reset)
 
         val neighbours = section.neighbours ?: return
@@ -120,7 +119,7 @@ class SectionLight(
         if (position.x == ProtocolDefinition.SECTION_MAX_X) this[Directions.O_EAST]?.light?.update = true
     }
 
-    fun traceBlockIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, target: Directions?) {
+    fun traceBlockIncrease(position: InSectionPosition, nextLuminance: Int, target: Directions?) {
         val index = InSectionPosition(x, y, z)
         val block = section.blocks[index]
         val lightProperties = block?.block?.getLightProperties(block) ?: TransparentProperty
@@ -248,10 +247,6 @@ class SectionLight(
         section.chunk.light.sky.recalculate(section.sectionHeight)
     }
 
-
-    override inline operator fun get(index: Int): Byte {
-        return light[index]
-    }
 
     fun propagateFromNeighbours() {
         val neighbours = section.neighbours ?: return
@@ -404,7 +399,7 @@ class SectionLight(
         }
     }
 
-    fun traceSkyLightDown(x: Int, y: Int, z: Int, target: Directions?, totalY: Int) { // TODO: remove code duplicates
+    fun traceSkyLightDown(position: InSectionPosition, target: Directions?, totalY: Int) { // TODO: remove code duplicates
         val chunk = section.chunk
         val index = InSectionPosition(x, y, z)
 

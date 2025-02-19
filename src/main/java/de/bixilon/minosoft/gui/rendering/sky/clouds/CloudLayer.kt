@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.random.RandomUtil.nextFloat
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import java.util.*
 import kotlin.math.abs
@@ -27,7 +28,7 @@ class CloudLayer(
     val index: Int,
     var height: IntRange,
 ) {
-    private var position = Vec2i(Int.MIN_VALUE)
+    private var position = ChunkPosition(Int.MIN_VALUE, Int.MIN_VALUE)
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(3 * 3).unsafeCast()
     private var offset = 0.0f
     var movement = true
@@ -92,13 +93,13 @@ class CloudLayer(
         }
     }
 
-    private fun Vec2i.cloudPosition(): Vec2i {
-        return this shr 4
+    private fun ChunkPosition.cloudPosition(): Vec2i {
+        return Vec2i(x shr 4, z shr 4)
     }
 
-    private fun calculateCloudPosition(): Vec2i {
+    private fun calculateCloudPosition(): ChunkPosition {
         val offset = this.offset.toInt()
-        return clouds.session.player.physics.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
+        return clouds.session.player.physics.positionInfo.chunkPosition + ChunkPosition(offset / CloudArray.CLOUD_SIZE, offset / CloudArray.CLOUD_SIZE)
     }
 
     private fun updatePosition() {

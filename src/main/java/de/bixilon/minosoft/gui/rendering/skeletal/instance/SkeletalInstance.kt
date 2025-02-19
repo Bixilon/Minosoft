@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -80,7 +80,7 @@ class SkeletalInstance(
         update(Vec3.EMPTY_INSTANCE, rotation, matrix = matrix)
     }
 
-    fun update(position: Vec3i, rotation: Vec3) {
+    fun update(position: BlockPosition, rotation: Vec3) {
         val position = Vec3(position - context.camera.offset.offset)
         position.x += 0.5f; position.z += 0.5f // models origin is the center of block origin
         update(position, rotation, BLOCK_PIVOT)

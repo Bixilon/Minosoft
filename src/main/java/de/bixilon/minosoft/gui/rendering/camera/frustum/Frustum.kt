@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import de.bixilon.kotlinglm.mat3x3.Mat3
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec4.Vec4
@@ -25,10 +24,11 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -155,22 +155,22 @@ class Frustum(
         return containsRegion(min.x, min.y, min.z, max.x, max.y, max.z)
     }
 
-    fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
+    fun containsChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = CHUNK_NIN_POSITION, maxPosition: InSectionPosition = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
         val offset = camera.offset.offset
         val baseX = ((chunkPosition.x shl 4) - offset.x).toFloat()
         val baseY = ((sectionHeight shl 4) - offset.y).toFloat()
-        val baseZ = ((chunkPosition.y shl 4) - offset.z).toFloat()
+        val baseZ = ((chunkPosition.z shl 4) - offset.z).toFloat()
         return containsRegion(
             baseX + minPosition.x, baseY + minPosition.y, baseZ + minPosition.z,
             baseX + maxPosition.x + 1.0f, baseY + maxPosition.y + 1.0f, baseZ + maxPosition.z + 1.0f,
         )
     }
 
-    fun containsChunk(chunkPosition: Vec2i): Boolean {
+    fun containsChunk(chunkPosition: ChunkPosition): Boolean {
         val dimension = world.dimension
         val offset = camera.offset.offset
         val baseX = (chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x).toFloat()
-        val baseZ = (chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z - offset.z).toFloat()
+        val baseZ = (chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z - offset.z).toFloat()
 
         val minY = (dimension.minY - offset.y).toFloat()
         val maxY = (dimension.maxY - offset.y).toFloat()
@@ -215,6 +215,6 @@ class Frustum(
     }
 
     private companion object {
-        val CHUNK_NIN_POSITION = Vec3i.EMPTY
+        val CHUNK_NIN_POSITION = InSectionPosition(0, 0, 0)
     }
 }

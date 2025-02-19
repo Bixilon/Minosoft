@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.registry.PacketExtraHandler
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ChunkLightS2CP(
     buffer: PlayInByteBuffer,
-    val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt()),
+    val position: ChunkPosition = ChunkPosition(buffer.readVarInt(), buffer.readVarInt()),
 ) : PlayS2CPacket {
     var recalculateNeighbours: Boolean = false
         private set

@@ -29,7 +29,7 @@ class BiomeSectionDataProvider(
     override fun get(position: InSectionPosition): Biome? {
         var biome = super.get(position)
         if (biome != null) return biome
-        biome = section.chunk.world.biomes.noise?.get(position.x, position.y, position.z, section.chunk)
+        biome = section.chunk.world.biomes.noise?.get(position, section.chunk)
         unsafeSet(position, biome)
         return biome
     }

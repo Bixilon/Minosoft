@@ -303,6 +303,6 @@ object ChunkUtil {
     }
 
     fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
-        return abs(this.x - cameraPosition.x) <= viewDistance && abs(this.y - cameraPosition.y) <= viewDistance
+        return abs(this.x - cameraPosition.x) <= viewDistance && abs(this.z - cameraPosition.z) <= viewDistance
     }
 }
