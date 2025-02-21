@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -140,7 +140,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             // ToDo: Only update when the position changes
             layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${inSectionPosition.format()} in (${chunkPosition.x.format()} ${sectionHeight.format()} ${chunkPosition.y.format()})" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${inSectionPosition.format()} in (${chunkPosition.x.format()} ${sectionHeight.format()} ${chunkPosition.z.format()})" } }
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 

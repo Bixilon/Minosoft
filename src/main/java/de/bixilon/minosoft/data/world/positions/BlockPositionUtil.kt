@@ -38,4 +38,7 @@ object BlockPositionUtil {
 
     val BlockPosition.center: Vec3d
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
+
+    val BlockPosition.entityPosition: Vec3d
+        get() = Vec3d(x + 0.5, y + 0.0, z + 0.5) // ToDo: Confirm
 }

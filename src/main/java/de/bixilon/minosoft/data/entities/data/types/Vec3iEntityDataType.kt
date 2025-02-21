@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-object Vec3iEntityDataType : EntityDataType<Vec3i> {
+object Vec3iEntityDataType : EntityDataType<BlockPosition> {
 
-    override fun read(buffer: PlayInByteBuffer): Vec3i {
+    override fun read(buffer: PlayInByteBuffer): BlockPosition {
         if (buffer.versionId < ProtocolVersions.V_1_8_PRE3) {
-            return Vec3i(buffer.readInt(), buffer.readInt(), buffer.readInt())
+            return BlockPosition(buffer.readInt(), buffer.readInt(), buffer.readInt())
         }
         return buffer.readBlockPosition()
     }

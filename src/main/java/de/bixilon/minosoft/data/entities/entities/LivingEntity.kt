@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
@@ -92,7 +92,7 @@ abstract class LivingEntity(session: PlaySession, entityType: EntityType, data: 
     val absorptionHearts: Int by data(ABSORPTION_HEARTS_DATA, 0)
 
     @get:SynchronizedEntityData
-    val bedPosition: Vec3i? by data(BED_POSITION_DATA, null)
+    val bedPosition: BlockPosition? by data(BED_POSITION_DATA, null)
 
     open val isSleeping: Boolean
         get() = bedPosition != null

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.datafixer.rls.MotifFixer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -43,7 +43,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             buffer.readRegistryItem(buffer.session.registries.motif)
         }
-        val position: Vec3i
+        val position: BlockPosition
         val direction: Directions
         if (buffer.versionId < ProtocolVersions.V_14W04B) {
             position = buffer.readIntBlockPosition()

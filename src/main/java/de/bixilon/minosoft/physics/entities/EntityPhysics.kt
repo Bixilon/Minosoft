@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -30,8 +29,6 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
@@ -106,10 +103,11 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     fun getLandingPosition(): BlockPosition {
         val info = this.positionInfo
-        val position = Vec3i(info.inChunkPosition.x, (position.y - 0.2).toInt(), info.inChunkPosition.z)
-        val state = positionInfo.chunk?.get(position)
+        val position = BlockPosition(info.blockPosition.x, (position.y - 0.2).toInt(), info.blockPosition.z) // TODO: can y get below 0?
+        val inChunk = position.inChunkPosition
+        val state = positionInfo.chunk?.get(inChunk)
         if (state == null) {
-            val down = positionInfo.chunk?.get(position + Directions.DOWN)
+            val down = positionInfo.chunk?.get(inChunk + Directions.DOWN)
             // TODO: check if block is fence, fence gate or wall
             // return down
         }

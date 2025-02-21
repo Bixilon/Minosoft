@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.outline
 
-import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.Offset
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
@@ -37,8 +38,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -50,7 +51,7 @@ class BlockOutlineRenderer(
     private val profile = session.profiles.block.outline
     override val renderSystem: RenderSystem = context.system
 
-    private var position: Vec3i? = null
+    private var position: BlockPosition? = null
     private var state: BlockState? = null
 
     override var mesh: LineMesh? = null
@@ -130,7 +131,7 @@ class BlockOutlineRenderer(
 
         val mesh = LineMesh(context)
 
-        val blockOffset = target.blockPosition.toVec3d
+        val blockOffset = Vec3d(target.blockPosition)
         if (target.state.block is OffsetBlock) {
             blockOffset += target.state.block.offsetShape(target.blockPosition)
         }

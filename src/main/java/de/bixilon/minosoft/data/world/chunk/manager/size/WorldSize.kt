@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.kotlinglm.vec2.Vec2i
 
 data class WorldSize(
-    val min: ChunkPosition = ChunkPosition(Int.MAX_VALUE, Int.MAX_VALUE),
-    val max: ChunkPosition = ChunkPosition(Int.MIN_VALUE, Int.MIN_VALUE),
-    val size: ChunkPosition = ChunkPosition(),
+    val min: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),
+    val max: Vec2i = Vec2i(Int.MIN_VALUE, Int.MIN_VALUE),
+    val size: Vec2i = Vec2i(),
 ) {
     companion object {
         val EMPTY = WorldSize()

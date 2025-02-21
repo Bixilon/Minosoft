@@ -18,6 +18,7 @@ import de.bixilon.kutil.array.ArrayUtil.getLast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class BorderSectionLight(
@@ -26,24 +27,11 @@ class BorderSectionLight(
 ) : AbstractSectionLight() {
     val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
-    override fun get(x: Int, y: Int, z: Int): Byte {
-        if ((top && y == 0) || (!top && y == ProtocolDefinition.SECTION_MAX_Y)) {
-            return light[getIndex(x, z)]
+    override fun get(position: InSectionPosition): Byte {
+        if ((top && position.y == 0) || (!top && position.y == ProtocolDefinition.SECTION_MAX_Y)) {
+            return light[position.xz]
         }
         return 0x00
-    }
-
-    override fun get(index: Int): Byte {
-        val y = index shr 8
-
-        if ((top && y == 0) || (!top && y == ProtocolDefinition.SECTION_MAX_Y)) {
-            return light[index and 0xFF]
-        }
-        return 0x00.toByte()
-    }
-
-    private fun getIndex(x: Int, z: Int): Int {
-        return z shl 4 or x
     }
 
     private fun updateY() {

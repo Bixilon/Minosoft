@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntitySleepS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readInt()
-    val blockPosition: BlockPosition = if (buffer.versionId < ProtocolVersions.V_14W04A) {
+    val blockPosition = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readByteBlockPosition()
     } else {
         buffer.readBlockPosition()

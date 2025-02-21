@@ -26,6 +26,8 @@ value class InChunkPosition(
     inline val index: Int,
 ) : TextFormattable {
 
+    constructor() : this(0, 0, 0)
+
     constructor(x: Int, y: Int, z: Int) : this((y and 0xFFF shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
         assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
         assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
@@ -89,7 +91,7 @@ value class InChunkPosition(
 
     inline operator fun plus(direction: Directions) = InChunkPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
     inline operator fun minus(direction: Directions) = InChunkPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
-    
+
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "c($x $y $z)"
 

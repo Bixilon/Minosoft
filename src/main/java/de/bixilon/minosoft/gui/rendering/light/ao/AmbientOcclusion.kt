@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.light.ao
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil.applyBottom
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil.applyEast
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil.applyNorth
@@ -31,9 +31,7 @@ class AmbientOcclusion(
     private var dirty = 0x00
 
 
-    fun apply(direction: Directions, position: BlockPosition) = apply(direction, position.x, position.y, position.z)
-
-    fun apply(direction: Directions, x: Int, y: Int, z: Int): IntArray {
+    fun apply(direction: Directions, position: InSectionPosition): IntArray {
         val mask = 1 shl direction.ordinal
         if (dirty and mask != 0) return output[direction.ordinal] // already calculated
 
@@ -41,14 +39,14 @@ class AmbientOcclusion(
 
         dirty = dirty or mask
         val output = when (direction) {
-            Directions.DOWN -> applyBottom(section, x, y, z, input)
-            Directions.UP -> applyTop(section, x, y, z, input)
+            Directions.DOWN -> applyBottom(section, position, input)
+            Directions.UP -> applyTop(section, position, input)
 
-            Directions.NORTH -> applyNorth(section, x, y, z, input)
-            Directions.SOUTH -> applySouth(section, x, y, z, input)
+            Directions.NORTH -> applyNorth(section, position, input)
+            Directions.SOUTH -> applySouth(section, position, input)
 
-            Directions.WEST -> applyWest(section, x, y, z, input)
-            Directions.EAST -> applyEast(section, x, y, z, input)
+            Directions.WEST -> applyWest(section, position, input)
+            Directions.EAST -> applyEast(section, position, input)
         }
         this.output[direction.ordinal] = output
 

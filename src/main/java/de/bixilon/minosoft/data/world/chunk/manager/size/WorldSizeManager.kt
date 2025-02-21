@@ -25,8 +25,8 @@ class WorldSizeManager(private val world: World) {
 
 
     fun onCreate(position: ChunkPosition) {
-        val min = Vec2i(size.min)
-        val max = Vec2i(size.max)
+        val min = size.min
+        val max = size.max
         if (!addExtreme(position, min, max)) return
 
         val size = calculateSize(min, max)
@@ -38,7 +38,7 @@ class WorldSizeManager(private val world: World) {
 
     fun onUnload(position: ChunkPosition) {
         val size = this.size
-        if (position.x == size.min.x || position.y == size.min.y || position.x == size.max.x || position.y == size.max.y) {
+        if (position.x == size.min.x || position.z == size.min.y || position.x == size.max.x || position.z == size.max.y) {
             recalculate(false)
         }
     }
@@ -65,22 +65,22 @@ class WorldSizeManager(private val world: World) {
     }
 
 
-    private fun addExtreme(position: ChunkPosition, min: ChunkPosition, max: ChunkPosition): Boolean {
+    private fun addExtreme(position: ChunkPosition, min: Vec2i, max: Vec2i): Boolean {
         var changes = 0
         if (position.x < min.x) {
             min.x = position.x
             changes++
         }
-        if (position.z < min.z) {
-            min.z = position.z
+        if (position.z < min.y) {
+            min.y = position.z
             changes++
         }
         if (position.x > max.x) {
             max.x = position.x
             changes++
         }
-        if (position.z > max.z) {
-            max.z = position.z
+        if (position.z > max.y) {
+            max.y = position.z
             changes++
         }
         return changes > 0
@@ -88,17 +88,17 @@ class WorldSizeManager(private val world: World) {
 
     private fun calculateSize(min: Vec2i, max: Vec2i, empty: Boolean = world.chunks.chunks.unsafe.isEmpty()): Vec2i {
         if (empty) return Vec2i.EMPTY
-        val size = (max - min) + 1
+        val size = Vec2i((max - min) + 1)
+        
         if (size.x > World.MAX_CHUNKS_SIZE) {
             size.x = World.MAX_CHUNKS_SIZE
-        }
-        if (size.x < 0) {
+        } else if (size.x < 0) {
             size.x = 0
         }
+
         if (size.y > World.MAX_CHUNKS_SIZE) {
             size.y = World.MAX_CHUNKS_SIZE
-        }
-        if (size.y < 0) {
+        } else if (size.y < 0) {
             size.y = 0
         }
         return size

@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.FastNoiseAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
@@ -27,14 +26,13 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
-class WorldBiomes(val world: World) : BiomeAccessor {
+class WorldBiomes(val world: World) {
     var noise: NoiseBiomeAccessor? = null
         set(value) {
             field = value
             resetCache()
         }
 
-    override fun getBiome(position: BlockPosition) = this[position]
     operator fun get(position: BlockPosition): Biome? {
         val chunk = world.chunks[position.chunkPosition] ?: return null
         val inChunk = position.inChunkPosition

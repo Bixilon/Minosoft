@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 
 object Vec2iUtil {
     private val empty = Vec2i.EMPTY
@@ -119,4 +120,7 @@ object Vec2iUtil {
         ret.y += direction.vector.z
         return ret
     }
+
+    @JvmName("constructorChunkPosition")
+    operator fun Vec2i.Companion.invoke(position: ChunkPosition) = Vec2i(position.x, position.z)
 }

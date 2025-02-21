@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.light.LightArray
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
@@ -33,7 +34,7 @@ object LightUtil {
         val blockLight = readLightArray(buffer, blockLightMask, emptyBlockLightMask, dimension)
 
         val chunkData = ChunkPrototype()
-        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
+        val light: Array<LightArray?> = arrayOfNulls(dimension.sections)
 
         for (i in light.indices) {
             val sectionBlockLight = blockLight.first.getOrNull(i)
@@ -90,18 +91,17 @@ object LightUtil {
         return Triple(light, bottomLight, topLight)
     }
 
-    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray): ByteArray {
+    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray): LightArray {
         check(blockLightArray.size == skyLightArray.size) { "Size difference: ${blockLightArray.size}, ${skyLightArray.size}" }
-        val light = ByteArray(blockLightArray.size * 2)
+        val light = LightArray()
 
-        var skyLight: Int
-        var blockLight: Int
 
-        for (index in blockLightArray.indices) {
-            blockLight = blockLightArray[index].toInt()
-            skyLight = skyLightArray[index].toInt()
-            light[index * 2] = ((blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)).toByte()
-            light[index * 2 + 1] = (((blockLight and 0xF0) shr 4) or (skyLight and 0xF0)).toByte()
+        for (index in light.array.indices) {
+            val blockLight = blockLightArray[index].toInt()
+            val skyLight = skyLightArray[index].toInt()
+
+            light.array[index * 2] = ((blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)).toByte()
+            light.array[index * 2 + 1] = (((blockLight and 0xF0) shr 4) or (skyLight and 0xF0)).toByte()
         }
 
         return light

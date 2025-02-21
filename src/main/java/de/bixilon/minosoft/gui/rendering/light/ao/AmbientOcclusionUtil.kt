@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 object AmbientOcclusionUtil {
@@ -80,118 +81,100 @@ object AmbientOcclusionUtil {
     }
 
 
-    fun setY(section: ChunkSection?, x: Int, y: Int, z: Int, flip: Boolean, ao: IntArray): IntArray {
+    fun setY(section: ChunkSection?, position: InSectionPosition, flip: Boolean, ao: IntArray): IntArray {
         if (section == null || section.blocks.isEmpty) return EMPTY
 
-        val west = section.trace(x - 1, y, z + 0)
-        val north = section.trace(x + 0, y, z - 1)
-        val east = section.trace(x + 1, y, z + 0)
-        val south = section.trace(x + 0, y, z + 1)
+        val west = section.trace(position.x - 1, position.y, position.z + 0)
+        val north = section.trace(position.x + 0, position.y, position.z - 1)
+        val east = section.trace(position.x + 1, position.y, position.z + 0)
+        val south = section.trace(position.x + 0, position.y, position.z + 1)
 
-        ao[0] = calculateLevel(west, north, section.trace(x - 1, y, z - 1))
-        ao[2] = calculateLevel(east, south, section.trace(x + 1, y, z + 1))
-        ao[if (flip) 3 else 1] = calculateLevel(north, east, section.trace(x + 1, y, z - 1))
-        ao[if (flip) 1 else 3] = calculateLevel(south, west, section.trace(x - 1, y, z + 1))
+        ao[0] = calculateLevel(west, north, section.trace(position.x - 1, position.y, position.z - 1))
+        ao[2] = calculateLevel(east, south, section.trace(position.x + 1, position.y, position.z + 1))
+        ao[if (flip) 3 else 1] = calculateLevel(north, east, section.trace(position.x + 1, position.y, position.z - 1))
+        ao[if (flip) 1 else 3] = calculateLevel(south, west, section.trace(position.x - 1, position.y, position.z + 1))
 
         return ao
     }
 
-    fun applyBottom(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray): IntArray {
-        var section: ChunkSection? = section
-        var y = y - 1
-        if (y < 0) {
-            section = section?.neighbours?.get(O_DOWN)
-            y = ProtocolDefinition.SECTION_MAX_Y
+    fun applyBottom(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
+        if (position.y == 0) {
+            return setY(section.neighbours?.get(O_DOWN), position.with(y = ProtocolDefinition.SECTION_MAX_Y), true, ao)
+        } else {
+            return setY(section, position.minusY(), true, ao)
         }
-
-        return setY(section, x, y, z, true, ao)
     }
 
-    fun applyTop(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray): IntArray {
-        var section: ChunkSection? = section
-        var y = y + 1
-        if (y > ProtocolDefinition.SECTION_MAX_Y) {
-            section = section?.neighbours?.get(O_UP)
-            y = 0
+    fun applyTop(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
+        if (position.y == ProtocolDefinition.SECTION_MAX_Y) {
+            return setY(section.neighbours?.get(O_UP), position.with(y = 0), false, ao)
+        } else {
+            return setY(section, position.plusY(), false, ao)
         }
-
-        return setY(section, x, y, z, false, ao)
     }
 
-    fun setZ(section: ChunkSection?, x: Int, y: Int, z: Int, flip: Boolean, ao: IntArray): IntArray {
+    fun setZ(section: ChunkSection?, position: InSectionPosition, flip: Boolean, ao: IntArray): IntArray {
         if (section == null || section.blocks.isEmpty) return EMPTY
 
-        val down = section.trace(x + 0, y - 1, z)
-        val west = section.trace(x - 1, y + 0, z)
-        val up = section.trace(x + 0, y + 1, z)
-        val east = section.trace(x + 1, y + 0, z)
+        val down = section.trace(position.x + 0, position.y - 1, position.z)
+        val west = section.trace(position.x - 1, position.y + 0, position.z)
+        val up = section.trace(position.x + 0, position.y + 1, position.z)
+        val east = section.trace(position.x + 1, position.y + 0, position.z)
 
-        ao[0] = calculateLevel(down, west, section.trace(x - 1, y - 1, z))
-        ao[if (flip) 3 else 1] = calculateLevel(west, up, section.trace(x - 1, y + 1, z))
-        ao[2] = calculateLevel(up, east, section.trace(x + 1, y + 1, z))
-        ao[if (flip) 1 else 3] = calculateLevel(east, down, section.trace(x + 1, y - 1, z))
+        ao[0] = calculateLevel(down, west, section.trace(position.x - 1, position.y - 1, position.z))
+        ao[if (flip) 3 else 1] = calculateLevel(west, up, section.trace(position.x - 1, position.y + 1, position.z))
+        ao[2] = calculateLevel(up, east, section.trace(position.x + 1, position.y + 1, position.z))
+        ao[if (flip) 1 else 3] = calculateLevel(east, down, section.trace(position.x + 1, position.y - 1, position.z))
 
         return ao
     }
 
 
-    fun applyNorth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray): IntArray {
-        var section: ChunkSection? = section
-        var z = z - 1
-        if (z < 0) {
-            section = section?.neighbours?.get(O_NORTH)
-            z = ProtocolDefinition.SECTION_MAX_Z
+    fun applyNorth(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
+        if (position.z == 0) {
+            return setZ(section.neighbours?.get(O_NORTH), position.with(z = ProtocolDefinition.SECTION_MAX_Z), true, ao)
+        } else {
+            return setZ(section, position.minusZ(), true, ao)
         }
-
-        return setZ(section, x, y, z, true, ao)
     }
 
-    fun applySouth(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray): IntArray {
-        var section: ChunkSection? = section
-        var z = z + 1
-        if (z > ProtocolDefinition.SECTION_MAX_Z) {
-            section = section?.neighbours?.get(O_SOUTH)
-            z = 0
+    fun applySouth(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
+        if (position.z == ProtocolDefinition.SECTION_MAX_Z) {
+            return setZ(section.neighbours?.get(O_SOUTH), position.with(z = 0), false, ao)
+        } else {
+            return setZ(section, position.plusZ(), false, ao)
         }
-
-        return setZ(section, x, y, z, false, ao)
     }
 
-    fun setX(section: ChunkSection?, x: Int, y: Int, z: Int, flip: Boolean, ao: IntArray): IntArray {
+    fun setX(section: ChunkSection?, position: InSectionPosition, flip: Boolean, ao: IntArray): IntArray {
         if (section == null || section.blocks.isEmpty) return EMPTY
 
-        val down = section.trace(x + 0, y - 1, z)
-        val north = section.trace(x, y + 0, z - 1)
-        val up = section.trace(x, y + 1, z)
-        val south = section.trace(x, y + 0, z + 1)
+        val down = section.trace(position.x + 0, position.y - 1, position.z)
+        val north = section.trace(position.x, position.y + 0, position.z - 1)
+        val up = section.trace(position.x, position.y + 1, position.z)
+        val south = section.trace(position.x, position.y + 0, position.z + 1)
 
-        ao[0] = calculateLevel(down, north, section.trace(x, y - 1, z - 1))
-        ao[if (flip) 3 else 1] = calculateLevel(north, up, section.trace(x, y + 1, z - 1))
-        ao[2] = calculateLevel(up, south, section.trace(x, y + 1, z + 1))
-        ao[if (flip) 1 else 3] = calculateLevel(south, down, section.trace(x, y - 1, z + 1))
+        ao[0] = calculateLevel(down, north, section.trace(position.x, position.y - 1, position.z - 1))
+        ao[if (flip) 3 else 1] = calculateLevel(north, up, section.trace(position.x, position.y + 1, position.z - 1))
+        ao[2] = calculateLevel(up, south, section.trace(position.x, position.y + 1, position.z + 1))
+        ao[if (flip) 1 else 3] = calculateLevel(south, down, section.trace(position.x, position.y - 1, position.z + 1))
 
         return ao
     }
 
-    fun applyWest(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray): IntArray {
-        var section: ChunkSection? = section
-        var x = x - 1
-        if (x < 0) {
-            section = section?.neighbours?.get(O_WEST)
-            x = ProtocolDefinition.SECTION_MAX_X
+    fun applyWest(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
+        if (position.z == 0) {
+            return setX(section.neighbours?.get(O_WEST), position.with(x = ProtocolDefinition.SECTION_MAX_X), true, ao)
+        } else {
+            return setX(section, position.minusX(), false, ao)
         }
-
-        return setX(section, x, y, z, false, ao)
     }
 
-    fun applyEast(section: ChunkSection, x: Int, y: Int, z: Int, ao: IntArray): IntArray {
-        var section: ChunkSection? = section
-        var x = x + 1
-        if (x > ProtocolDefinition.SECTION_MAX_X) {
-            section = section?.neighbours?.get(O_EAST)
-            x = 0
+    fun applyEast(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
+        if (position.z == ProtocolDefinition.SECTION_MAX_X) {
+            return setX(section.neighbours?.get(O_EAST), position.with(x = 0), true, ao)
+        } else {
+            return setX(section, position.plusX(), true, ao)
         }
-
-        return setX(section, x, y, z, true, ao)
     }
 }

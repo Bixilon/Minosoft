@@ -25,8 +25,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.assignChunkPosition
 
 class WorldIterator(
     private val iterator: Iterator<BlockPosition>,
@@ -47,26 +45,22 @@ class WorldIterator(
         val minY = world.dimension.minY
         val maxY = world.dimension.maxY
 
-        val chunkPosition = ChunkPosition.EMPTY
-        val offset = ChunkPosition.EMPTY
         for (position in iterator) {
             if (position.y !in minY..maxY) continue
-            chunkPosition.assignChunkPosition(position)
+            val chunkPosition = position.chunkPosition
 
             if (chunk == null) {
                 if (revision == world.chunks.revision) continue // previously found no chunk, can not find it now
                 this.revision = world.chunks.revision
                 chunk = world.chunks[chunkPosition] ?: continue
             } else if (chunk.position != chunkPosition) {
-                offset.x = chunkPosition.x - chunk.position.x
-                offset.y = chunkPosition.y - chunk.position.y
-                chunk = chunk.neighbours.trace(offset) ?: continue
+                chunk = chunk.neighbours.traceChunk(chunkPosition - chunk.position) ?: continue
             }
             if (this.chunk !== chunk) {
                 this.chunk = chunk
             }
 
-            val state = chunk[position.x and 0x0F, position.y, position.z and 0x0F] ?: continue
+            val state = chunk[position.inChunkPosition] ?: continue
             this.next = BlockPair(position, state, chunk)
             return true
         }

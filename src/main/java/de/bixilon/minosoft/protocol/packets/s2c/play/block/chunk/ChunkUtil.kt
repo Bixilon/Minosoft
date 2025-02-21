@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.light.LightArray
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
@@ -158,7 +159,7 @@ object ChunkUtil {
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, complete: Boolean, skylight: Boolean = false): ChunkPrototype {
         val chunkData = ChunkPrototype()
         val sectionBlocks: Array<Array<BlockState?>?> = arrayOfNulls(dimension.sections)
-        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
+        val light: Array<LightArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0
         val biomes: Array<Array<Biome?>?> = arrayOfNulls(dimension.sections)
 

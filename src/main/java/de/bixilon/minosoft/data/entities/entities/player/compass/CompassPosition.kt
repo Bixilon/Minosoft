@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.compass
 
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 class CompassPosition(
-    val position: Vec3i = Vec3i.EMPTY,
+    val position: BlockPosition = BlockPosition(),
     val angle: Float? = null,
-) {
-}
+)

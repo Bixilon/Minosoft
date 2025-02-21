@@ -89,13 +89,10 @@ class World(
         lock.unlock()
     }
 
-    operator fun set(x: Int, y: Int, z: Int, state: BlockState?) {
-        if (!isValidPosition(x, y, z)) return
-        val chunk = chunks[x shr 4, z shr 4] ?: return
-        chunk[x and 0x0F, y, z and 0x0F] = state
-    }
+    operator fun set(x: Int, y: Int, z: Int, state: BlockState?) = set(BlockPosition(x, y, z), state)
 
     operator fun set(position: BlockPosition, state: BlockState?) {
+        if (!isValidPosition(position)) return
         val chunk = chunks[position.chunkPosition] ?: return
         chunk[position.inChunkPosition] = state
     }
@@ -107,14 +104,12 @@ class World(
         return isValidPosition(blockPosition)
     }
 
-    fun isValidPosition(x: Int, y: Int, z: Int): Boolean {
-        if (x > MAX_SIZE || z > MAX_SIZE) return false
+    fun isValidPosition(position: BlockPosition): Boolean {
         val dimension = session.world.dimension
-        if (y < dimension.minY || y > dimension.maxY) return false
+        if (position.y < dimension.minY || position.y > dimension.maxY) return false
         return true
     }
 
-    fun isValidPosition(position: BlockPosition) = isValidPosition(position.x, position.y, position.z)
     fun isValidPosition(position: ChunkPosition): Boolean {
         return true // TODO
     }

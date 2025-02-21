@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -44,7 +43,7 @@ class BakedModel(
 
     override fun getProperties(direction: Directions) = properties[direction.ordinal]
 
-    override fun getParticleTexture(random: Random?, position: Vec3i) = particle
+    override fun getParticleTexture(random: Random?, position: BlockPosition) = particle
 
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
         var rendered = false
@@ -70,7 +69,7 @@ class BakedModel(
                 var aoRaw = AmbientOcclusionUtil.EMPTY
 
                 if (ao != null && face.properties != null) {
-                    aoRaw = ao.apply(direction, props.inSectionPosition)
+                    aoRaw = ao.apply(direction, position)
                 }
 
                 face.render(offset, mesh, light, tints, aoRaw)

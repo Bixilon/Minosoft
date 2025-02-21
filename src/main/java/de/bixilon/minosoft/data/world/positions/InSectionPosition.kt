@@ -24,6 +24,8 @@ value class InSectionPosition(
     inline val index: Int,
 ) : TextFormattable {
 
+    constructor() : this(0, 0, 0)
+
     constructor(x: Int, y: Int, z: Int) : this((y shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
         assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
         assertPosition(y, 0, ProtocolDefinition.SECTION_MAX_Y)

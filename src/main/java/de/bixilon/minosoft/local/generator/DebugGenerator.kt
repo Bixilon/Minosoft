@@ -16,6 +16,7 @@ package de.bixilon.minosoft.local.generator
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.sqrt
@@ -27,10 +28,10 @@ class DebugGenerator(val session: PlaySession) : ChunkGenerator {
 
     override fun generate(chunk: Chunk) {
         chunk.biomeSource = DummyBiomeSource(plains)
-        if (chunk.position.x < 0 || chunk.position.y < 0) return
+        if (chunk.position.x < 0 || chunk.position.z < 0) return
 
         val xOffset = chunk.position.x * ProtocolDefinition.SECTION_WIDTH_X
-        val zOffset = chunk.position.y * ProtocolDefinition.SECTION_WIDTH_Z
+        val zOffset = chunk.position.z * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X step 2) {
             val actuallyX = (xOffset + x) / 2
@@ -42,7 +43,7 @@ class DebugGenerator(val session: PlaySession) : ChunkGenerator {
 
                 val id = actuallyX * size + actuallyZ
                 val state = session.registries.blockState.getOrNull(id) ?: continue
-                chunk[x, 8, z] = state
+                chunk[InChunkPosition(x, 8, z)] = state
             }
         }
     }
