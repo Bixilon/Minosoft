@@ -17,18 +17,19 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 import de.bixilon.kotlinglm.mat3x3.Mat3
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -181,7 +182,7 @@ class Frustum(
         )
     }
 
-    fun containsRegion(min: Vec3i, max: Vec3i): Boolean {
+    fun containsRegion(min: BlockPosition, max: BlockPosition): Boolean {
         val offset = camera.offset.offset
         return containsRegion(Vec3(min - offset), Vec3(max - offset))
     }

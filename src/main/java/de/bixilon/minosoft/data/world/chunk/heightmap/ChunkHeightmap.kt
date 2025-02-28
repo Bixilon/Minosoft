@@ -37,19 +37,19 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
         for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
             for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                trace(x, maxY, z, false)
+                trace(InChunkPosition(x, maxY, z), false)
             }
         }
         chunk.lock.unlock()
     }
 
-    private fun trace(x: Int, startY: Int, z: Int, notify: Boolean) {
+    private fun trace(position: InChunkPosition, notify: Boolean) {
         val sections = chunk.sections
 
         var y = Int.MIN_VALUE
         val index = (z shl 4) or x
 
-        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.minSection) downTo 0) {
+        sectionLoop@ for (sectionIndex in (position.y.sectionHeight - chunk.minSection) downTo 0) {
             if (sectionIndex >= sections.size) {
                 // starting from above world
                 continue
@@ -60,7 +60,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
             val min = section.blocks.minPosition
             val max = section.blocks.maxPosition
 
-            if (x < min.x || x > max.x || z < min.z || z > max.z) continue // out of section
+            if (position.x < min.x || position.x > max.x || position.z < min.z || position.z > max.z) continue // out of section
 
 
             for (sectionY in max.y downTo min.y) {
@@ -81,7 +81,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
         heightmap[index] = y
 
         if (notify) {
-            onHeightmapUpdate(x, z, previous, y)
+            onHeightmapUpdate(position.x, position.z, previous, y)
         }
     }
 
@@ -92,20 +92,20 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
         val previous = heightmap[index]
 
-        if (previous > y + 1) {
+        if (previous > position.y + 1) {
             // our block is/was not the highest, ignore everything
             chunk.lock.unlock()
             return
         }
         if (state == null) {
-            trace(x, y, z, true)
+            trace(position, true)
             chunk.lock.unlock()
             return
         }
 
         val next = when (passes(state)) {
-            HeightmapPass.ABOVE -> y + 1
-            HeightmapPass.IN -> y
+            HeightmapPass.ABOVE -> position.y + 1
+            HeightmapPass.IN -> position.y
             HeightmapPass.PASSES -> previous
         }
 
@@ -113,7 +113,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
         if (previous != next) {
             heightmap[index] = next
-            onHeightmapUpdate(x, z, previous, next)
+            onHeightmapUpdate(position.x, position.z, previous, next)
         }
     }
 

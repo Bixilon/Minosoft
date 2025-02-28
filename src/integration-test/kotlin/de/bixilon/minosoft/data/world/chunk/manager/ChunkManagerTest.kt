@@ -450,7 +450,7 @@ class ChunkManagerTest {
         assertEquals(section[3, 3, 3], biome)
         assertEquals(section[0], biome)
 
-        assertEquals(manager.world.biomes.getBiome(BlockPosition(5, 5, 5)), biome)
+        assertEquals(manager.world.biomes.get(BlockPosition(5, 5, 5)), biome)
         assertEquals(chunk.getBiome(BlockPosition(5, 5, 5)), biome)
     }
 }

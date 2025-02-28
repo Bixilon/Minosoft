@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
@@ -21,6 +20,7 @@ import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
@@ -54,7 +54,7 @@ class SkyboxColor(
         var blue = 0
         var count = 0
 
-        val offset = Vec3i(eyePosition.x - (chunk.position.x shl 4), eyePosition.y, eyePosition.z - (chunk.position.y shl 4))
+        val offset = Vec3i(eyePosition.x - (chunk.position.x shl 4), eyePosition.y, eyePosition.z - (chunk.position.z shl 4))
 
         val dimension = sky.session.world.dimension
         val yRange: IntRange
@@ -79,11 +79,9 @@ class SkyboxColor(
                     if (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset > radius) {
                         continue
                     }
-                    val x = offset.x + xOffset
-                    val y = offset.y + yOffset
-                    val z = offset.z + zOffset
-                    val neighbour = chunk.neighbours.trace(Vec2i(x shr 4, z shr 4)) ?: continue
-                    val biome = neighbour.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
+                    val blockPosition = BlockPosition(offset.x + xOffset, offset.y + yOffset, offset.z + zOffset)
+                    val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
+                    val biome = neighbour.getBiome(blockPosition.inChunkPosition) ?: continue
 
                     count++
                     val color = average.invoke(biome) ?: continue

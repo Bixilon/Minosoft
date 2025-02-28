@@ -37,6 +37,8 @@ value class BlockPosition(
         assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
         assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
     }
+    constructor(position: InChunkPosition) : this(position.x, position.y, position.z)
+    constructor(position: InSectionPosition) : this(position.x, position.y, position.z)
 
     inline val x: Int get() = (index and MASK_X) shr SHIFT_X
     inline val y: Int get() = (index and MASK_Y) shr SHIFT_Y
@@ -109,6 +111,7 @@ value class BlockPosition(
     inline operator fun plus(direction: Directions) = BlockPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
     inline operator fun minus(direction: Directions) = BlockPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
 
+    inline infix fun and(mask: Int) = BlockPosition(x and mask, y and mask, z and mask)
 
     inline val hash get() = generatePositionHash(x, y, z)
     inline val sectionHeight get() = y.sectionHeight

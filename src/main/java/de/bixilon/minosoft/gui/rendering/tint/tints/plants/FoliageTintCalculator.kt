@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
@@ -32,12 +33,12 @@ class FoliageTintCalculator : ColorMapTint(FILE) {
         return map[biome.downfallIndex shl 8 or temperature]
     }
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return getBlockColor(biome, y)
+    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int {
+        return getBlockColor(biome, position.y)
     }
 
-    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
-        return getBlockColor(biome, y)
+    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): Int {
+        return getBlockColor(biome, position.y)
     }
 
     override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {

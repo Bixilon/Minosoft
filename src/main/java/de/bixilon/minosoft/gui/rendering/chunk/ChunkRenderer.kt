@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
@@ -47,9 +46,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -87,7 +86,7 @@ class ChunkRenderer(
     private var previousViewDistance = session.world.view.viewDistance
 
     private var cameraPosition = Vec3.EMPTY
-    var cameraChunkPosition = Vec2i.EMPTY
+    var cameraChunkPosition = ChunkPosition.EMPTY
     var cameraSectionHeight = 0
 
     var limitChunkTransferTime = true

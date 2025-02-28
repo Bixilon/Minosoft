@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -52,8 +52,8 @@ class WorldBiomesTest {
         assertEquals(world.biomes[BlockPosition(1, 2, 4)], b3)
         assertEquals(world.biomes[BlockPosition(16, 2, 4)], b2)
         val chunk = world.chunks[0, 0]!!
-        assertEquals(world.biomes.getBiome(1, 2, 3, chunk), b1)
-        assertEquals(world.biomes.getBiome(1, 2, 4, chunk), b3)
+        assertEquals(world.biomes.get(1, 2, 3, chunk), b1)
+        assertEquals(world.biomes.get(1, 2, 4, chunk), b3)
         assertEquals(chunk.getBiome(1, 2, 3), b1)
         assertEquals(chunk.getBiome(1, 2, 4), b3)
     }
@@ -65,8 +65,8 @@ class WorldBiomesTest {
         assertEquals(world.biomes[1, 2, 6], b2)
         assertEquals(world.biomes[BlockPosition(-1, 2, -2)], b1)
         val chunk = world.chunks[-1, -1]!!
-        assertEquals(world.biomes.getBiome(15, 2, 14, chunk), b1)
-        assertEquals(world.biomes.getBiome(15, 2, 13, chunk), b3)
+        assertEquals(world.biomes.get(15, 2, 14, chunk), b1)
+        assertEquals(world.biomes.get(15, 2, 13, chunk), b3)
         assertEquals(chunk.getBiome(15, 2, 14), b1)
         assertEquals(chunk.getBiome(15, 2, 13), b3)
     }

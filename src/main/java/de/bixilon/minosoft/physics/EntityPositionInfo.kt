@@ -58,7 +58,7 @@ class EntityPositionInfo(
             world.lock.acquire()
             val revision = world.chunks.revision
 
-            var chunk = if (previous.revision == revision) previous.chunk?.neighbours?.trace(chunkPosition - previous.chunkPosition) else null
+            var chunk = if (previous.revision == revision) previous.chunk?.neighbours?.traceChunk(chunkPosition - previous.chunkPosition) else null
 
             if (chunk == null) {
                 chunk = world.chunks.chunks.unsafe[chunkPosition]

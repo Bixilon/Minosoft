@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.tint
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -49,17 +50,24 @@ class TintManager(val session: PlaySession) {
         DefaultTints.init(this)
     }
 
-    fun getBlockTint(state: BlockState, chunk: Chunk?, position: InChunkPosition, cache: IntArray?): IntArray? {
+    fun getBlockTint(state: BlockState, position: BlockPosition, biome: Biome?, cache: IntArray?): IntArray? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
         val size = if (tintProvider is MultiTintProvider) tintProvider.tints else 1
         val tints = if (cache != null && cache.size >= size) cache else IntArray(size)
-        val biome = chunk?.getBiome(position)
 
         for (tintIndex in 0 until size) {
-            tints[tintIndex] = tintProvider.getBlockColor(state, biome, x, y, z, tintIndex)
+            tints[tintIndex] = tintProvider.getBlockColor(state, biome, position, tintIndex)
         }
+
         return tints
+    }
+
+    fun getBlockTint(state: BlockState, chunk: Chunk, position: InChunkPosition, cache: IntArray?): IntArray? {
+        val biome = chunk.getBiome(position)
+        val offset = chunk.position.blockPosition(position)
+
+        return getBlockTint(state, offset, biome, cache)
     }
 
     fun getParticleTint(state: BlockState, position: BlockPosition): Int? {
@@ -67,7 +75,7 @@ class TintManager(val session: PlaySession) {
         val tintProvider = state.block.tintProvider ?: return null
 
         // TODO: cache chunk of particle
-        val biome = session.world.biomes.getBiome(position)
+        val biome = session.world.biomes[position]
         return tintProvider.getParticleColor(state, biome, position)
     }
 

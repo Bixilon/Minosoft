@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -23,7 +22,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class LoadedMeshes(
     private val renderer: ChunkRenderer,
 ) {
-    val meshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<ChunkMeshes>> = hashMapOf() // all prepared (and up to date) meshes
+    val meshes: MutableMap<ChunkPosition, Int2ObjectOpenHashMap<ChunkMeshes>> = hashMapOf() // all prepared (and up to date) meshes
     private val lock = RWLock.rwlock()
 
 

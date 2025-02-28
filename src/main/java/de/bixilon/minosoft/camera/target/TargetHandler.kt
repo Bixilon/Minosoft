@@ -126,9 +126,9 @@ class TargetHandler(
             if (chunk == null) {
                 chunk = camera.session.world.chunks[chunkPosition] ?: break
             } else if (chunk.position != chunkPosition) {
-                chunk = chunk.neighbours.trace(chunkPosition - chunk.position) ?: break
+                chunk = chunk.neighbours.traceChunk(chunkPosition - chunk.position) ?: break
             }
-            val state = chunk[blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F] ?: continue
+            val state = chunk[blockPosition.inChunkPosition] ?: continue
             if (state.block is FluidBlock) {
                 if (fluid == null) {
                     val hit = raycast(origin, front, state, blockPosition)

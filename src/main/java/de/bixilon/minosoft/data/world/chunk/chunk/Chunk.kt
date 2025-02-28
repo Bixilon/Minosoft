@@ -215,7 +215,7 @@ class Chunk(
         if (!cacheBiomes) {
             return biomeSource.get(position)
         }
-        return session.world.biomes.getBiome(position, this)
+        return session.world.biomes.get(position, this)
     }
 }
 

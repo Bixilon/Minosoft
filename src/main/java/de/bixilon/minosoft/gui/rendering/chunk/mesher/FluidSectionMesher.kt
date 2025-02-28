@@ -16,9 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesher
 import de.bixilon.kotlinglm.func.cos
 import de.bixilon.kotlinglm.func.sin
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -31,17 +29,18 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.isTrue
 import kotlin.math.atan2
@@ -63,22 +62,23 @@ class FluidSectionMesher(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
+    fun mesh(chunkPosition: ChunkPosition, sectionHeight: Int, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
-        val position = Vec3i.EMPTY
+        var position = BlockPosition()
         var tint: Int
 
         val cameraOffset = context.camera.offset.offset
 
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-        val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
+        val offsetZ = chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                 for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                    val state = blocks[x, y, z] ?: continue
+                    val inSection = InSectionPosition(x, y, z)
+                    val state = blocks[inSection] ?: continue
                     val fluid = state.getFluid() ?: continue
 
                     val model = fluid.model ?: continue
@@ -87,7 +87,7 @@ class FluidSectionMesher(
                     val height = fluid.getHeight(state)
 
                     fun isSideCovered(direction: Directions): Boolean {
-                        val neighbour = section.traceBlock(x, y, z, direction) ?: return false
+                        val neighbour = section.traceBlock(inSection, direction) ?: return false
 
                         if (fluid.matches(neighbour)) {
                             return true
@@ -109,14 +109,14 @@ class FluidSectionMesher(
                     if (skip.isTrue) continue
 
                     var rendered = false
-                    position.x = offsetX + x; position.y = offsetY + y; position.z = offsetZ + z
+                    position = BlockPosition(x = offsetX + x, y = offsetY + y, z = offsetZ + z)
 
-                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE_RGB
+                    tint = tints.getFluidTint(chunk, fluid, height, position) ?: Colors.WHITE_RGB
                     val cornerHeights = floatArrayOf(
-                        getCornerHeight(chunk, chunkPosition, position, fluid),
-                        getCornerHeight(chunk, chunkPosition, position + Directions.EAST, fluid),
-                        getCornerHeight(chunk, chunkPosition, position + Directions.EAST + Directions.SOUTH, fluid),
-                        getCornerHeight(chunk, chunkPosition, position + Directions.SOUTH, fluid),
+                        getCornerHeight(chunk, position, fluid),
+                        getCornerHeight(chunk, position + Directions.EAST, fluid),
+                        getCornerHeight(chunk, position + Directions.EAST + Directions.SOUTH, fluid),
+                        getCornerHeight(chunk, position + Directions.SOUTH, fluid),
                     )
 
                     val offsetPosition = Vec3(position - cameraOffset)
@@ -161,7 +161,7 @@ class FluidSectionMesher(
                         )
 
 
-                        val light = chunk.light[x, position.y, z]
+                        val light = chunk.light[InChunkPosition(x, position.y, z)]
                         addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light)
                         rendered = true
                     }
@@ -245,28 +245,24 @@ class FluidSectionMesher(
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, fluidLight) }
     }
 
-    private fun getCornerHeight(providedChunk: Chunk, providedChunkPosition: Vec2i, position: Vec3i, fluid: Fluid): Float {
+    private fun getCornerHeight(providedChunk: Chunk, position: BlockPosition, fluid: Fluid): Float {
         var totalHeight = 0.0f
         var count = 0
 
         val neighbours = providedChunk.neighbours
-        val offset = ChunkPosition()
 
-        val blockPosition = Vec3i()
-        val inChunkPosition = InChunkPosition()
         for (side in 0 until 4) {
-            blockPosition.x = position.x - (side and 0x01); blockPosition.y = position.y; blockPosition.z = position.z - (side shr 1 and 0x01)
-            offset.x = (blockPosition.x shr 4) - providedChunkPosition.x
-            offset.y = (blockPosition.z shr 4) - providedChunkPosition.y
-            val chunk = neighbours[offset] ?: continue
+            val now = BlockPosition(x = position.x - (side and 0x01), y = position.y, z = position.z - (side shr 1 and 0x01))
+            val offset = position.chunkPosition - providedChunk.position
+            val chunk = neighbours[offset]
 
-            inChunkPosition.x = blockPosition.x and 0x0F; inChunkPosition.y = blockPosition.y; inChunkPosition.z = blockPosition.z and 0x0F
+            val inChunk = now.inChunkPosition
 
-            if (fluid.matches(chunk[inChunkPosition + Directions.UP])) {
+            if (fluid.matches(chunk[inChunk + Directions.UP])) {
                 return 1.0f
             }
 
-            val state = chunk[inChunkPosition]
+            val state = chunk[inChunk]
             if (state == null) {
                 count++
                 continue
@@ -274,7 +270,7 @@ class FluidSectionMesher(
 
             if (!fluid.matches(state)) {
                 // TODO: this was !blockState.material.solid
-                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.session, EmptyCollisionContext, blockPosition, state, null) == AbstractVoxelShape.EMPTY) {
+                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.session, EmptyCollisionContext, now, state, null) == AbstractVoxelShape.EMPTY) {
                     count++
                 }
                 continue

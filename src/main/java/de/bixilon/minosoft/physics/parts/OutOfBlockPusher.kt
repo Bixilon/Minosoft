@@ -31,7 +31,7 @@ object OutOfBlockPusher {
     }
 
     private fun LocalPlayerPhysics.pushOutOfBlocks(x: Double, z: Double) {
-        val position = BlockPosition(x.floor, this.position.y.floor, z)
+        val position = BlockPosition(x.floor, this.position.y.floor, z.floor)
         if (!wouldCollidePushable(position)) {
             return
         }

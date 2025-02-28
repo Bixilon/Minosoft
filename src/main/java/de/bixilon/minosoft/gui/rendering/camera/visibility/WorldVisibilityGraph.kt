@@ -66,7 +66,7 @@ class WorldVisibilityGraph(
 
     private var chunkMin = ChunkPosition.EMPTY
     private var chunkMax = ChunkPosition.EMPTY
-    private var worldSize = ChunkPosition.EMPTY
+    private var worldSize = Vec2i()
 
     private var graph: VisibilityGraph = arrayOfNulls(0)
 
@@ -168,7 +168,7 @@ class WorldVisibilityGraph(
         return true
     }
 
-    fun updateCamera(chunkPosition: Vec2i, sectionHeight: Int) {
+    fun updateCamera(chunkPosition: ChunkPosition, sectionHeight: Int) {
         if (this.cameraChunkPosition == chunkPosition && this.cameraSectionHeight == sectionHeight) {
             return
         }
@@ -189,7 +189,7 @@ class WorldVisibilityGraph(
         if (!this.isIndex(x)) return null
         var array = this[x]
         if (array == null) {
-            array = arrayOfNulls(worldSize.z)
+            array = arrayOfNulls(worldSize.y)
             this[x] = array
         }
         if (!array.isIndex(y)) return null
@@ -213,14 +213,14 @@ class WorldVisibilityGraph(
             array = ByteArray(worldSize.y)
             frustumCache[x] = array
         }
-        val y = chunkPosition.y - chunkMin.y
-        if (y >= array.size || y < 0) {
+        val z = chunkPosition.z - chunkMin.z
+        if (z >= array.size || z < 0) {
             return frustum.containsChunkSection(chunkPosition, sectionHeight)
         }
-        var visibility = array[y]
+        var visibility = array[z]
         if (visibility == 0.toByte()) {
             visibility = if (frustum.containsChunk(chunkPosition)) 1 else 2
-            array[y] = visibility
+            array[z] = visibility
         }
         if (visibility == 2.toByte()) {
             return false
@@ -284,7 +284,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionZ <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.z > chunkMin.y) {
+        if (directionZ <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.z > chunkMin.z) {
             val next = chunkPosition.minusZ()
             val nextChunk = chunk.neighbours[ChunkNeighbours.NORTH]
             if (nextChunk != null) {
@@ -338,14 +338,14 @@ class WorldVisibilityGraph(
             session.world.lock.release()
             return
         }
-        var worldSize = session.world.chunks.size.size.size
+        val worldSize = session.world.chunks.size.size.size
         worldSize += 3 // add 3 for forced neighbours and the camera chunk
-        val chunkMin = chunkPosition - (worldSize / 2)
-        chunkMin.x -= 1 // remove 1 for proper index calculation
+        var chunkMin = chunkPosition - ChunkPosition(worldSize.x / 2, worldSize.y / 2)
+        chunkMin = ChunkPosition(chunkMin.x - 1, chunkMin.z) // remove 1 for proper index calculation
 
         if (this.chunkMin != chunkMin || this.worldSize != worldSize) {
             this.chunkMin = chunkMin
-            this.chunkMax = chunkMin + worldSize - 1
+            this.chunkMax = chunkMin + ChunkPosition(worldSize.x - 1, worldSize.y - 1)
             this.worldSize = worldSize
         }
         this.frustumCache = arrayOfNulls(worldSize.x)

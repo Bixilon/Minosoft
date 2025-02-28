@@ -149,7 +149,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         val position = physics.position
         val eyePosition = BlockPosition(position.x.floor, eyeHeight.floor, position.z.floor)
 
-        val block = physics.positionInfo.chunk?.get(eyePosition.x and 0x0F, eyePosition.y, eyePosition.z and 0x0F) ?: return
+        val block = physics.positionInfo.chunk?.get(eyePosition.inChunkPosition) ?: return
         if (block.block !is FluidHolder) {
             return
         }

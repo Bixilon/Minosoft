@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
 
 class SkeletalInstance(
     val context: RenderContext,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : Particle(session, position, velocity, data) {
@@ -42,14 +42,14 @@ abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: V
         var maxBlockLight = emittingLight
         var maxSkyLight = 0
 
-        val chunkPosition = position.chunkPosition
+        val chunkPosition = position.blockPosition.chunkPosition
         val chunk = getChunk() ?: return maxBlockLight
 
         val offset = Vec2i.EMPTY
         val inChunk = Vec3i()
         for (position in aabb.positions()) {
             offset.x = (position.x shr 4) - chunkPosition.x
-            offset.y = (position.z shr 4) - chunkPosition.y
+            offset.y = (position.z shr 4) - chunkPosition.z
 
             inChunk.x = position.x and 0x0F
             inChunk.y = position.y

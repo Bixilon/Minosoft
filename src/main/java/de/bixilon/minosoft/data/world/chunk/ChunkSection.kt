@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
@@ -69,7 +70,12 @@ class ChunkSection(
         blockEntities.clear()
     }
 
+    fun traceBlock(offset: BlockPosition): BlockState?
+    fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset - origin)
+    fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock((BlockPosition(origin) + direction))
 
+
+    @Deprecated("")
     fun traceBlock(x: Int, y: Int, z: Int, direction: Directions) = when (direction) {
         Directions.DOWN -> {
             if (y == 0) {

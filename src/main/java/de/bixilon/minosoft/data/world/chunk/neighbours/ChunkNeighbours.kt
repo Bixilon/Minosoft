@@ -15,12 +15,14 @@ package de.bixilon.minosoft.data.world.chunk.neighbours
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
 
@@ -140,9 +142,12 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
     fun traceBlock(position: BlockPosition): BlockState? {
         val chunkPosition = position.chunkPosition
         val chunkDelta = (chunkPosition - chunk.position)
-        val chunk = trace(chunkDelta)
+        val chunk = traceChunk(chunkDelta)
         return chunk?.get(position.inChunkPosition)
     }
+
+    fun traceBlock(origin: InChunkPosition, offset: BlockPosition) = traceBlock(offset - origin)
+    fun traceBlock(origin: InChunkPosition, direction: Directions) = traceBlock((BlockPosition(origin) + direction))
 
     companion object {
         const val COUNT = 8

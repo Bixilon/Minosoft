@@ -24,7 +24,7 @@ class LocalChunkManager(
     val storage: WorldStorage,
     val generator: ChunkGenerator,
 ) {
-    private var previous = ChunkPosition(Int.MAX_VALUE)
+    private var previous = ChunkPosition(Int.MAX_VALUE, Int.MAX_VALUE)
 
     fun update() {
         val position = session.player.physics.positionInfo.chunkPosition
@@ -57,7 +57,7 @@ class LocalChunkManager(
 
     private fun load(center: ChunkPosition, distance: Int) {
         for (x in center.x - distance..center.x + distance) {
-            for (z in center.y - distance..center.y + distance) {
+            for (z in center.z - distance..center.z + distance) {
                 val position = ChunkPosition(x, z)
                 var chunk = session.world.chunks[position]
                 if (chunk != null) continue

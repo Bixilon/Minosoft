@@ -92,6 +92,8 @@ value class ChunkPosition(
     inline fun blockPosition(x: Int, y: Int, z: Int) = BlockPosition(this.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, this.z * ProtocolDefinition.SECTION_WIDTH_Z + z)
     inline fun blockPosition(position: InChunkPosition) = BlockPosition(this.x * ProtocolDefinition.SECTION_WIDTH_X + position.x, position.y, this.z * ProtocolDefinition.SECTION_WIDTH_Z + position.z)
 
+    inline infix fun and(mask: Int) = ChunkPosition(x and mask, z and mask)
+
     override fun toText() = "(${this.x.format()} ${this.z.format()})"
     override fun toString() = "c($x $z)"
 

@@ -51,7 +51,7 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
         val offset = blockPosition.inChunkPosition
         for (direction in Directions.SIDES) {
-            val neighbour = chunk.neighbours.traceBlock(offset + direction) ?: continue
+            val neighbour = chunk.neighbours.traceBlock(offset, direction) ?: continue
             if (!this.matches(neighbour)) {
                 continue
             }

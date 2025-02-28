@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -33,6 +32,8 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -58,7 +59,7 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
+    fun mesh(chunkPosition: ChunkPosition, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
@@ -77,7 +78,7 @@ class SolidSectionMesher(
 
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-        val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
+        val offsetZ = chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
 
         val floatOffset = FloatArray(3)
 
@@ -106,7 +107,7 @@ class SolidSectionMesher(
                     if (model == null && renderedBlockEntity == null) continue
 
 
-                    light[SELF_LIGHT_INDEX] = section.light[inSectionPosition.index]
+                    light[SELF_LIGHT_INDEX] = section.light[inSectionPosition]
                     position = position.with(z = offsetZ + z)
                     floatOffset[2] = (position.z - cameraOffset.z).toFloat()
 
@@ -141,7 +142,7 @@ class SolidSectionMesher(
                     ao?.clear()
 
 
-                    val tints = tints.getBlockTint(state, chunk, x, position.y, z, tint)
+                    val tints = tints.getBlockTint(state, chunk, InChunkPosition(x, position.y, z), tint)
                     var rendered = false
                     model?.render(props, position, state, blockEntity, tints)?.let { if (it) rendered = true }
 
@@ -173,7 +174,7 @@ class SolidSectionMesher(
             }
         } else {
             neighbourBlocks[O_DOWN] = section.blocks[position.minusY()]
-            light[O_DOWN] = section.light[position.minusY().index]
+            light[O_DOWN] = section.light[position.minusY()]
         }
     }
 
@@ -183,7 +184,7 @@ class SolidSectionMesher(
             light[O_UP] = (if (highest) chunk.light.top else neighbours[O_UP]?.light)?.get(position.with(y = 0)) ?: 0x00
         } else {
             neighbourBlocks[O_UP] = section.blocks[position.plusY()]
-            light[O_UP] = section.light[position.plusY().index]
+            light[O_UP] = section.light[position.plusY()]
         }
     }
 

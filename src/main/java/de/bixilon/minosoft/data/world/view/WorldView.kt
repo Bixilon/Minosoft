@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.view
 
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.minus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 
@@ -69,6 +70,6 @@ open class WorldView(
         val size = session.world.chunks.size.size
         val max = size.max - cameraPosition
         val min = size.min - cameraPosition
-        serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.z), abs(max.z)))
+        serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.y), abs(max.y)))
     }
 }

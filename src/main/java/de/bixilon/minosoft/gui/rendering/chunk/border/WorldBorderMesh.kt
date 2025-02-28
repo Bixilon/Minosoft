@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.chunk.border
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.WorldBorder
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class WorldBorderMesh(
     context: RenderContext,
-    val offset: Vec3i,
+    val offset: BlockPosition,
     val center: Vec2d,
     val radius: Double,
 ) : Mesh(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.FLOATS_PER_VERTEX) {

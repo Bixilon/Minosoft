@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 interface TintProvider {
-    fun getBlockColor(blockState: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int = Colors.WHITE_RGB
+    fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int = Colors.WHITE_RGB
 
-    fun getParticleColor(blockState: BlockState, biome: Biome?, position: BlockPosition): Int {
-        return getBlockColor(blockState, biome, position, 0)
+    fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): Int {
+        return getBlockColor(state, biome, position, 0)
     }
 
     fun getItemColor(stack: ItemStack, tintIndex: Int): Int = Colors.WHITE_RGB

@@ -18,13 +18,13 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.plus
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkQueueMaster(
@@ -39,7 +39,7 @@ class ChunkQueueMaster(
 
         val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.position, section.sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
-            val center = Vec3i.of(chunk.position, section.sectionHeight).toVec3() + CHUNK_CENTER
+            val center = CHUNK_CENTER + BlockPosition.of(chunk.position, section.sectionHeight)
             val item = WorldQueueItem(chunk.position, section.sectionHeight, chunk, section, center)
             renderer.meshingQueue.queue(item)
             return true

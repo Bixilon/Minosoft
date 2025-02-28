@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collectCollisions
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
@@ -48,7 +48,7 @@ abstract class Particle(
             session.registries.particleType[resourceLocation]!!.default()
         }
     }
-    var chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
+    var chunkPosition = position.blockPosition.chunkPosition
         private set
     protected val random = Random()
     private var lastTickTime = -1L
@@ -193,7 +193,7 @@ abstract class Particle(
             return
         }
         tick()
-        chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
+        chunkPosition = position.blockPosition.chunkPosition
 
         if (dead) {
             return

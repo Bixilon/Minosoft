@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -251,7 +251,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
 
     private fun travelSwimming(input: MovementInput) {
         val pitch = rotation.front.y
-        val fluid = positionInfo.chunk?.get(positionInfo.inChunkPosition.x, (position.y + 0.9).toInt(), positionInfo.inChunkPosition.z)
+        val fluid = positionInfo.chunk?.get(positionInfo.inChunkPosition.with(y = (position.y + 0.9).toInt()))
 
         if (pitch <= 0.0 || input.jumping || (fluid != null && fluid.block is FluidHolder)) {
             val speed = if (pitch < -0.2) 0.085 else 0.06

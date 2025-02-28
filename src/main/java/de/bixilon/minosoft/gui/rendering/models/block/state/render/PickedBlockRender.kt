@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -60,7 +59,7 @@ interface PickedBlockRender : BlockRender {
         return default?.getDisplay(position)
     }
 
-    override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {
+    override fun getParticleTexture(random: Random?, position: BlockPosition): Texture? {
         return default?.getParticleTexture(random, position)
     }
 }

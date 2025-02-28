@@ -32,8 +32,7 @@ import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.Duration.Companion.milliseconds

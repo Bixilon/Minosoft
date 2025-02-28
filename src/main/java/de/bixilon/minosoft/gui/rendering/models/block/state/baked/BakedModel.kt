@@ -69,7 +69,7 @@ class BakedModel(
                 var aoRaw = AmbientOcclusionUtil.EMPTY
 
                 if (ao != null && face.properties != null) {
-                    aoRaw = ao.apply(direction, position)
+                    aoRaw = ao.apply(direction, position.inSectionPosition)
                 }
 
                 face.render(offset, mesh, light, tints, aoRaw)

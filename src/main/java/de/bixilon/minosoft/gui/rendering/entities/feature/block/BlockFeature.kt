@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.block
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
@@ -53,7 +53,7 @@ open class BlockFeature(
         val model = (state.block.model ?: state.model) ?: return
         // TODO: block entity support?
 
-        val tint = renderer.renderer.context.tints.getBlockTint(state, null, InChunkPosition(), null)
+        val tint = renderer.renderer.context.tints.getBlockTint(state, BlockPosition(), null, null) // TODO
 
         model.render(mesh, state, tint)
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class ChunkQueueComparator : Comparator<WorldQueueItem> {
     private var sort = 1
-    private var position: ChunkPosition = Vec2i.EMPTY
+    private var position: ChunkPosition = ChunkPosition.EMPTY
     private var height = 0
 
 
@@ -38,7 +36,7 @@ class ChunkQueueComparator : Comparator<WorldQueueItem> {
         val array = item.sectionPosition.array
         val x = array[0] - position.x
         val y = array[1] - height
-        val z = array[2] - position.y
+        val z = array[2] - position.z
         val distance = (x * x + y * y + z * z)
 
         item.distance = distance

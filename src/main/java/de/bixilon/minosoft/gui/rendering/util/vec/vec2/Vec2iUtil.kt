@@ -123,4 +123,7 @@ object Vec2iUtil {
 
     @JvmName("constructorChunkPosition")
     operator fun Vec2i.Companion.invoke(position: ChunkPosition) = Vec2i(position.x, position.z)
+
+    operator fun Vec2i.plus(position: ChunkPosition) = Vec2i(x + position.x, y + position.z)
+    operator fun Vec2i.minus(position: ChunkPosition) = Vec2i(x + position.x, y + position.z)
 }

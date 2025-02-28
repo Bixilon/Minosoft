@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.latch.AbstractLatch
@@ -90,12 +89,12 @@ class ChunkBorderRenderer(
         val mesh = LineMesh(context)
 
         val dimension = context.session.world.dimension
-        val basePosition = chunkPosition * Vec2i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_WIDTH_Z) - Vec2i(offset.x, offset.z)
+        val basePosition = (chunkPosition * ProtocolDefinition.SECTION_WIDTH_X) - ChunkPosition(offset.x, offset.z)
 
-        mesh.drawInnerChunkLines(Vec3i(basePosition.x, -offset.y, basePosition.y), dimension)
+        mesh.drawInnerChunkLines(Vec3i(basePosition.x, -offset.y, basePosition.z), dimension)
 
         if (sectionHeight in dimension.minSection until dimension.maxSection) {
-            mesh.drawSectionLines(Vec3i(basePosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, basePosition.y))
+            mesh.drawSectionLines(Vec3i(basePosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, basePosition.z))
         }
 
         mesh.drawOuterChunkLines(chunkPosition, offset, dimension)
@@ -106,14 +105,14 @@ class ChunkBorderRenderer(
         this.nextMesh = mesh
     }
 
-    private fun LineMesh.drawOuterChunkLines(chunkPosition: ChunkPosition, offset: Vec3i, dimension: DimensionProperties) {
+    private fun LineMesh.drawOuterChunkLines(chunkPosition: ChunkPosition, offset: BlockPosition, dimension: DimensionProperties) {
         for (x in -OUTER_CHUNK_SIZE..OUTER_CHUNK_SIZE + 1) {
             for (z in -OUTER_CHUNK_SIZE..OUTER_CHUNK_SIZE + 1) {
                 if ((x == 0 || x == 1) && (z == 0 || z == 1)) {
                     continue
                 }
-                val chunkBase = (chunkPosition + Vec2i(x, z)) * Vec2i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_WIDTH_Z) - Vec2i(offset.x, offset.z)
-                drawLine(Vec3(chunkBase.x + 0, dimension.minY - offset.y, chunkBase.y), Vec3(chunkBase.x + 0, dimension.maxY - offset.y + 1, chunkBase.y), OUTER_CHUNK_LINE_WIDTH, OUTER_CHUNK_COLOR)
+                val chunkBase = (chunkPosition + ChunkPosition(x, z)) * ProtocolDefinition.SECTION_WIDTH_X - ChunkPosition(offset.x, offset.z)
+                drawLine(Vec3(chunkBase.x + 0, dimension.minY - offset.y, chunkBase.z), Vec3(chunkBase.x + 0, dimension.maxY - offset.y + 1, chunkBase.z), OUTER_CHUNK_LINE_WIDTH, OUTER_CHUNK_COLOR)
             }
         }
     }

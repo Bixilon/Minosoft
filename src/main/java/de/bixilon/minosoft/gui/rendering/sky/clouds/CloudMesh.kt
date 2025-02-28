@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -31,7 +31,7 @@ class CloudMesh(context: RenderContext) : Mesh(context, CloudMeshStruct, context
     }
 
 
-    fun createCloud(start: Vec2i, end: Vec2i, offset: Vec3i, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
+    fun createCloud(start: Vec2i, end: Vec2i, offset: BlockPosition, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
         val start = Vec3(start.x - offset.x, yStart - offset.y, start.y - offset.z) + CLOUD_OFFSET
         val end = Vec3(end.x - offset.x, yEnd - offset.y, end.y - offset.z) + CLOUD_OFFSET
 
