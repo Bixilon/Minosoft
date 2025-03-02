@@ -99,7 +99,7 @@ abstract class Particle(
 
         if (chunk != null) {
             if (chunk.position == this.chunkPosition) return chunk
-            chunk = chunk.neighbours.trace(chunkPosition - chunk.position)
+            chunk = chunk.neighbours.traceChunk(chunkPosition - chunk.position)
         }
         if (chunk == null && revision != this.chunkRevision) {
             chunk = session.world.chunks[chunkPosition]

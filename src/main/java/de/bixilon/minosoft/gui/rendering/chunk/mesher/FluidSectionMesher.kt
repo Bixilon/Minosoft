@@ -225,7 +225,7 @@ class FluidSectionMesher(
                         )
 
                         val meshToUse = mesh[model.flowing.transparency]
-                        val fluidLight = chunk.light[x, offsetY + y, z]
+                        val fluidLight = chunk.light[InChunkPosition(x, offsetY + y, z)]
                         addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight)
                         rendered = true
                     }
