@@ -68,11 +68,11 @@ class ChunkMesher(
     fun tryMesh(item: WorldQueueItem, task: MeshPrepareTask, runnable: InterruptableRunnable) {
         try {
             mesh(item, runnable)
+            renderer.meshingQueue.tasks -= task
         } catch (ignored: InterruptedException) {
         } finally {
             task.runnable.interruptable = false
-            if (Thread.interrupted()) throw InterruptedException()
-            renderer.meshingQueue.tasks -= task
+            Thread.interrupted() // clear interrupted flag
             renderer.meshingQueue.work()
         }
     }
