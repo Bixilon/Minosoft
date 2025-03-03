@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkSkyLight.Companion.NEIGHBOUR_TRACE_LEVEL
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -144,7 +143,7 @@ class SectionLight(
             update = true
         }
         val chunk = section.chunk
-        val chunkNeighbours = chunk.neighbours.get() ?: return
+        val chunkNeighbours = chunk.neighbours.neighbours
         val neighbours = section.neighbours ?: return
 
         if (nextLuminance == 1) {
@@ -183,28 +182,28 @@ class SectionLight(
             if (position.z > 0) {
                 traceBlockIncrease(position.minusZ(), neighbourLuminance, Directions.NORTH)
             } else {
-                neighbours[Directions.O_NORTH, ChunkNeighbours.NORTH, chunkNeighbours]?.light?.traceBlockIncrease(position.with(z = ProtocolDefinition.SECTION_MAX_Z), neighbourLuminance, Directions.NORTH)
+                neighbours[Directions.O_NORTH, Directions.NORTH, chunkNeighbours]?.light?.traceBlockIncrease(position.with(z = ProtocolDefinition.SECTION_MAX_Z), neighbourLuminance, Directions.NORTH)
             }
         }
         if (target == null || (target != Directions.NORTH && lightProperties.propagatesLight(Directions.SOUTH))) {
             if (position.z < ProtocolDefinition.SECTION_MAX_Y) {
                 traceBlockIncrease(position.plusZ(), neighbourLuminance, Directions.SOUTH)
             } else {
-                neighbours[Directions.O_SOUTH, ChunkNeighbours.SOUTH, chunkNeighbours]?.light?.traceBlockIncrease(position.with(z = 0), neighbourLuminance, Directions.SOUTH)
+                neighbours[Directions.O_SOUTH, Directions.SOUTH, chunkNeighbours]?.light?.traceBlockIncrease(position.with(z = 0), neighbourLuminance, Directions.SOUTH)
             }
         }
         if (target == null || (target != Directions.EAST && lightProperties.propagatesLight(Directions.WEST))) {
             if (position.x > 0) {
                 traceBlockIncrease(position.minusX(), neighbourLuminance, Directions.WEST)
             } else {
-                neighbours[Directions.O_WEST, ChunkNeighbours.WEST, chunkNeighbours]?.light?.traceBlockIncrease(position.with(x = ProtocolDefinition.SECTION_MAX_X), neighbourLuminance, Directions.WEST)
+                neighbours[Directions.O_WEST, Directions.WEST, chunkNeighbours]?.light?.traceBlockIncrease(position.with(x = ProtocolDefinition.SECTION_MAX_X), neighbourLuminance, Directions.WEST)
             }
         }
         if (target == null || (target != Directions.WEST && lightProperties.propagatesLight(Directions.EAST))) {
             if (position.x < ProtocolDefinition.SECTION_MAX_X) {
                 traceBlockIncrease(position.plusX(), neighbourLuminance, Directions.EAST)
             } else {
-                neighbours[Directions.O_EAST, ChunkNeighbours.EAST, chunkNeighbours]?.light?.traceBlockIncrease(position.with(x = 0), neighbourLuminance, Directions.EAST)
+                neighbours[Directions.O_EAST, Directions.EAST, chunkNeighbours]?.light?.traceBlockIncrease(position.with(x = 0), neighbourLuminance, Directions.EAST)
             }
         }
     }
@@ -317,7 +316,7 @@ class SectionLight(
             // this light level will be 15, don't care
             return
         }
-        val chunkNeighbours = chunk.neighbours.get() ?: return
+        val chunkNeighbours = chunk.neighbours.neighbours
         val currentLight = this[position].toInt()
         if (((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
@@ -372,28 +371,28 @@ class SectionLight(
             if (position.z > 0) {
                 traceSkyLightIncrease(position.minusZ(), nextNeighbourLevel, Directions.NORTH, totalY)
             } else {
-                neighbours[Directions.O_NORTH, ChunkNeighbours.NORTH, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(z = ProtocolDefinition.SECTION_MAX_Z), nextNeighbourLevel, Directions.NORTH, totalY)
+                neighbours[Directions.O_NORTH, Directions.NORTH, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(z = ProtocolDefinition.SECTION_MAX_Z), nextNeighbourLevel, Directions.NORTH, totalY)
             }
         }
         if (target != Directions.NORTH && (target == null || lightProperties.propagatesLight(Directions.SOUTH))) {
             if (position.z < ProtocolDefinition.SECTION_MAX_Z) {
                 traceSkyLightIncrease(position.plusZ(), nextNeighbourLevel, Directions.SOUTH, totalY)
             } else {
-                neighbours[Directions.O_SOUTH, ChunkNeighbours.SOUTH, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(z = 0), nextNeighbourLevel, Directions.SOUTH, totalY)
+                neighbours[Directions.O_SOUTH, Directions.SOUTH, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(z = 0), nextNeighbourLevel, Directions.SOUTH, totalY)
             }
         }
         if (target != Directions.EAST && (target == null || lightProperties.propagatesLight(Directions.WEST))) {
             if (position.x > 0) {
                 traceSkyLightIncrease(position.minusX(), nextNeighbourLevel, Directions.WEST, totalY)
             } else {
-                neighbours[Directions.O_WEST, ChunkNeighbours.WEST, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(x = ProtocolDefinition.SECTION_MAX_X), nextNeighbourLevel, Directions.WEST, totalY)
+                neighbours[Directions.O_WEST, Directions.WEST, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(x = ProtocolDefinition.SECTION_MAX_X), nextNeighbourLevel, Directions.WEST, totalY)
             }
         }
         if (target != Directions.WEST && (target == null || lightProperties.propagatesLight(Directions.EAST))) {
             if (position.x < ProtocolDefinition.SECTION_MAX_X) {
                 traceSkyLightIncrease(position.plusX(), nextNeighbourLevel, Directions.EAST, totalY)
             } else {
-                neighbours[Directions.O_EAST, ChunkNeighbours.EAST, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(x = 0), nextNeighbourLevel, Directions.EAST, totalY)
+                neighbours[Directions.O_EAST, Directions.EAST, chunkNeighbours]?.light?.traceSkyLightIncrease(position.with(x = 0), nextNeighbourLevel, Directions.EAST, totalY)
             }
         }
     }
@@ -428,8 +427,8 @@ class SectionLight(
         }
     }
 
-    private inline operator fun Array<ChunkSection?>.get(direction: Int, neighbour: Int, neighbours: Array<Chunk>): ChunkSection? {
-        return this[direction] ?: neighbours[neighbour].getOrPut(section.sectionHeight, false)
+    private inline operator fun Array<ChunkSection?>.get(direction: Int, neighbour: Directions, neighbours: ChunkNeighbourArray): ChunkSection? {
+        return this[direction] ?: neighbours[neighbour]?.getOrPut(section.sectionHeight, false)
     }
 
     fun propagateFromNeighbours(position: InSectionPosition) {
@@ -492,7 +491,8 @@ class SectionLight(
         val totalY = section.sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + position.y
         section.chunk.let {
             // check if neighbours are above heightmap, if so set light level to max
-            val chunkNeighbours = it.neighbours.get() ?: return@let
+            val chunkNeighbours = it.neighbours.neighbours
+            if (!it.neighbours.complete) return@let
             val minHeight = it.light.sky.getNeighbourMinHeight(chunkNeighbours, position.x, position.z)
             if (totalY > minHeight) {
                 skyLight = ProtocolDefinition.MAX_LIGHT_LEVEL_I

@@ -27,67 +27,61 @@ value class BlockPosition(
     inline val index: Long,
 ) : TextFormattable {
 
-    init {
-        TODO()
-    }
-
     constructor() : this(0, 0, 0)
-    constructor(x: Int, y: Int, z: Int) : this((y and 0xFFF shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
-        assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
-        assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
-        assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
+    constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y).toLong() shl SHIFT_Y) or ((z and MASK_Z).toLong() shl SHIFT_Z) or ((x and MASK_X).toLong() shl SHIFT_X)) {
+        assertPosition(x, -MAX_X, MAX_X)
+        assertPosition(y, -MAX_Y, MAX_Y)
+        assertPosition(z, -MAX_Z, MAX_Z)
     }
     constructor(position: InChunkPosition) : this(position.x, position.y, position.z)
-    constructor(position: InSectionPosition) : this(position.x, position.y, position.z)
 
-    inline val x: Int get() = (index and MASK_X) shr SHIFT_X
-    inline val y: Int get() = (index and MASK_Y) shr SHIFT_Y
-    inline val z: Int get() = (index and MASK_Z) shr SHIFT_Z
-    inline val xz: Int get() = (index and MASK_Z or MASK_X)
+    inline val x: Int get() = (index shr SHIFT_X).toInt() and MASK_X
+    inline val y: Int get() = (index shr SHIFT_Y).toInt() and MASK_Y
+    inline val z: Int get() = (index shr SHIFT_Z).toInt() and MASK_Z
 
 
     inline fun plusX(): BlockPosition {
-        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x < MAX_X)
         return BlockPosition(index + X * 1)
     }
 
     inline fun plusX(x: Int): BlockPosition {
-        assertPosition(this.x + x, 0, ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x + x, -MAX_X, MAX_X)
         return BlockPosition(index + X * x)
     }
 
     inline fun minusX(): BlockPosition {
-        assertPosition(this.x > 0)
+        assertPosition(this.x > -MAX_X)
         return BlockPosition(index - X * 1)
     }
 
     inline fun plusY(): BlockPosition {
-        assertPosition(this.y < ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(this.y < MAX_Y)
         return BlockPosition(index + Y * 1)
     }
 
     inline fun plusY(y: Int): BlockPosition {
-        assertPosition(this.y + y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(this.y + y, -MAX_Y, MAX_Y)
         return BlockPosition(index + Y * y)
     }
 
     inline fun minusY(): BlockPosition {
-        assertPosition(this.y > ProtocolDefinition.CHUNK_MIN_Y)
+        assertPosition(this.y > -MAX_Y)
         return BlockPosition(index - Y * 1)
     }
 
     inline fun plusZ(): BlockPosition {
-        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z < MAX_Y)
         return BlockPosition(index + Z * 1)
     }
 
     inline fun plusZ(z: Int): BlockPosition {
-        assertPosition(this.z + z, 0, ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z + z, -MAX_Z, MAX_Z)
         return BlockPosition(index + Z * z)
     }
 
     inline fun minusZ(): BlockPosition {
-        assertPosition(this.z > 0)
+        assertPosition(this.z > -MAX_Z)
         return BlockPosition(index - Z * 1)
     }
 
@@ -123,18 +117,25 @@ value class BlockPosition(
     override fun toString() = "b($x $y $z)"
 
     companion object {
-        const val MASK_X = 0x00F
+        const val BITS_X = 26
+        const val MASK_X = (1 shl BITS_X) - 1
         const val SHIFT_X = 0
 
-        const val MASK_Z = 0x0F0
-        const val SHIFT_Z = 4
+        const val BITS_Z = 26
+        const val MASK_Z = (1 shl BITS_Z) - 1
+        const val SHIFT_Z = BITS_X
 
-        const val MASK_Y = 0xFFF00
-        const val SHIFT_Y = 8
+        const val BITS_Y = 12
+        const val MASK_Y = (1 shl BITS_Y) - 1
+        const val SHIFT_Y = BITS_X + BITS_Z
 
         const val X = 1 shl SHIFT_X
         const val Z = 1 shl SHIFT_Z
         const val Y = 1 shl SHIFT_Y
+
+        const val MAX_X = 0
+        const val MAX_Y = 0
+        const val MAX_Z = 0
 
 
         val EMPTY = BlockPosition(0, 0, 0)

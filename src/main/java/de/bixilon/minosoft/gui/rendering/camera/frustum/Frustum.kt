@@ -156,7 +156,7 @@ class Frustum(
         return containsRegion(min.x, min.y, min.z, max.x, max.y, max.z)
     }
 
-    fun containsChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = CHUNK_NIN_POSITION, maxPosition: InSectionPosition = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
+    fun containsChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = SECTION_MIN_POSITION, maxPosition: InSectionPosition = SECTION_MAX_POSITION): Boolean {
         val offset = camera.offset.offset
         val baseX = ((chunkPosition.x shl 4) - offset.x).toFloat()
         val baseY = ((sectionHeight shl 4) - offset.y).toFloat()
@@ -215,7 +215,8 @@ class Frustum(
         }
     }
 
-    private companion object {
-        val CHUNK_NIN_POSITION = InSectionPosition(0, 0, 0)
+    companion object {
+        val SECTION_MIN_POSITION = InSectionPosition(0, 0, 0)
+        val SECTION_MAX_POSITION = InSectionPosition(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
     }
 }

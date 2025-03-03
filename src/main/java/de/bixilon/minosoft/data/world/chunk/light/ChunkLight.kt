@@ -75,7 +75,7 @@ class ChunkLight(val chunk: Chunk) {
         for (chunkX in -1..1) {
             for (chunkZ in -1..1) {
                 val offset = ChunkPosition(chunkX, chunkZ)
-                if (offset.xz == 0) continue
+                if (offset == ChunkPosition.EMPTY) continue
 
                 val nextPosition = chunkPosition + offset
                 val chunk = neighbours[neighbourIndex++]

@@ -25,6 +25,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
     override fun get(index: Int) = heightmap[index]
     override fun get(x: Int, z: Int) = this[(z shl 4) or x]
+    override fun get(position: InChunkPosition) = get(position.x, position.z)
 
 
     protected abstract fun passes(state: BlockState): HeightmapPass
@@ -47,7 +48,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
         val sections = chunk.sections
 
         var y = Int.MIN_VALUE
-        val index = (z shl 4) or x
+        val index = position.xz
 
         sectionLoop@ for (sectionIndex in (position.y.sectionHeight - chunk.minSection) downTo 0) {
             if (sectionIndex >= sections.size) {
@@ -88,7 +89,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
     override fun onBlockChange(position: InChunkPosition, state: BlockState?) {
         chunk.lock.lock()
-        val index = (z shl 4) or x
+        val index = position.xz
 
         val previous = heightmap[index]
 

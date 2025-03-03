@@ -29,7 +29,7 @@ open class SectionDataProvider<T>(
         private set
     val isEmpty: Boolean
         get() = count == 0
-    var minPosition = InSectionPosition(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_HEIGHT_Y, ProtocolDefinition.SECTION_WIDTH_Z)
+    var minPosition = InSectionPosition(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
         private set
     var maxPosition = InSectionPosition(0, 0, 0)
         private set

@@ -254,7 +254,7 @@ class FluidSectionMesher(
         for (side in 0 until 4) {
             val now = BlockPosition(x = position.x - (side and 0x01), y = position.y, z = position.z - (side shr 1 and 0x01))
             val offset = position.chunkPosition - providedChunk.position
-            val chunk = neighbours[offset]
+            val chunk = neighbours[offset] ?: continue
 
             val inChunk = now.inChunkPosition
 

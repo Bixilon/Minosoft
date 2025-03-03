@@ -32,15 +32,15 @@ class ChunkMesher(
             renderer.unload(item)
             return null
         }
-        val neighbours = item.chunk.neighbours.get()
-        if (neighbours == null) {
+        val neighbours = item.chunk.neighbours
+        if (!neighbours.complete) {
             renderer.unload(item)
             return null
         }
-        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, item.chunk, item.section.sectionHeight)
+        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours.neighbours, item.chunk, item.section.sectionHeight)
         val mesh = ChunkMeshes(renderer.context, item.chunkPosition, item.sectionHeight, item.section.smallMesh)
         try {
-            solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+            solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
 
             if (item.section.blocks.hasFluid) {
                 fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, mesh)

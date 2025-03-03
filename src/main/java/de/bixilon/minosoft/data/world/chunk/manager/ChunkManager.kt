@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.manager.size.WorldSizeManager
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
@@ -57,9 +57,9 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         }
         val updates = hashSetOf<AbstractWorldUpdate>(ChunkUnloadUpdate(position, chunk))
 
-        for ((index, neighbour) in chunk.neighbours.neighbours.withIndex()) {
+        for ((index, neighbour) in chunk.neighbours.neighbours.array.withIndex()) {
             if (neighbour == null) continue
-            val offset = ChunkNeighbours.OFFSETS[index]
+            val offset = ChunkPosition(ChunkNeighbourArray.OFFSETS[index])
             val neighbourPosition = position + offset
             neighbour.neighbours.remove(-offset)
             updates += NeighbourChangeUpdate(neighbourPosition, neighbour)
@@ -137,10 +137,10 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         val updates = HashSet<AbstractWorldUpdate>(9, 1.0f)
         updates += ChunkCreateUpdate(chunk.position, chunk)
 
-        for (index in 0 until ChunkNeighbours.COUNT) {
-            val offset = ChunkNeighbours.OFFSETS[index]
+        for (index in 0 until ChunkNeighbourArray.COUNT) {
+            val offset = ChunkPosition(ChunkNeighbourArray.OFFSETS[index])
             val neighbour = this.chunks.unsafe[chunk.position + offset] ?: continue
-            chunk.neighbours[index] = neighbour
+            chunk.neighbours[offset] = neighbour
             neighbour.neighbours[-offset] = chunk
 
         }
@@ -148,7 +148,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         // TODO: fire event
 
 
-        for (neighbour in chunk.neighbours) {
+        for (neighbour in chunk.neighbours.neighbours.array) {
             if (neighbour == null) continue
             updates += NeighbourChangeUpdate(neighbour.position, neighbour)
         }

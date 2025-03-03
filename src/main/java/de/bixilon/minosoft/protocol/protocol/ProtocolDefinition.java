@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors;
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor;
-import de.bixilon.minosoft.data.world.positions.InSectionPosition;
 
 import java.util.regex.Pattern;
 
@@ -48,8 +47,6 @@ public final class ProtocolDefinition {
     public static final int SECTION_HEIGHT_Y = SECTION_LENGTH;
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
-    @Deprecated
-    public static final InSectionPosition CHUNK_SECTION_SIZE = new InSectionPosition(SECTION_WIDTH_X, SECTION_HEIGHT_Y, SECTION_WIDTH_Z);
 
     public static final int CHUNK_MIN_Y = -2048;
     public static final int CHUNK_MIN_SECTION = CHUNK_MIN_Y / SECTION_HEIGHT_Y;

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.light.LightArray
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
@@ -226,80 +227,18 @@ object ChunkUtil {
         return XZBiomeArray(biomes)
     }
 
-    val Array<Chunk?>.fullyLoaded: Boolean
-        get() {
-            for (neighbour in this) {
-                if (neighbour == null) return false
-                if (neighbour.neighbours.complete) {
-                    continue
-                }
-                return false
-            }
-            return true
-        }
-
-
-    fun getChunkNeighbourPositions(chunkPosition: ChunkPosition): Array<ChunkPosition> {
-        return arrayOf(
-            chunkPosition + ChunkNeighbours.OFFSETS[0],
-            chunkPosition + ChunkNeighbours.OFFSETS[1],
-            chunkPosition + ChunkNeighbours.OFFSETS[2],
-            chunkPosition + ChunkNeighbours.OFFSETS[3],
-            chunkPosition + ChunkNeighbours.OFFSETS[4],
-            chunkPosition + ChunkNeighbours.OFFSETS[5],
-            chunkPosition + ChunkNeighbours.OFFSETS[6],
-            chunkPosition + ChunkNeighbours.OFFSETS[7],
-        )
-    }
 
     /**
      * @param neighbourChunks: **Fully loaded** direct neighbour chunks
      */
-    fun getDirectNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
+    fun getDirectNeighbours(neighbourChunks: ChunkNeighbourArray, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
         return arrayOf(
             chunk[sectionHeight - 1],
             chunk[sectionHeight + 1],
-            neighbourChunks[3][sectionHeight],
-            neighbourChunks[4][sectionHeight],
-            neighbourChunks[1][sectionHeight],
-            neighbourChunks[6][sectionHeight],
-        )
-    }
-
-    /**
-     * @param neighbourChunks: **Fully loaded** direct neighbour chunks
-     */
-    fun getAllNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
-        return arrayOf(
-            neighbourChunks[0][sectionHeight - 1], // 0, (-1 | -1)
-            neighbourChunks[1][sectionHeight - 1], // 1, (-1 | +0)
-            neighbourChunks[2][sectionHeight - 1], // 2, (-1 | +1)
-            neighbourChunks[3][sectionHeight - 1], // 3, (+0 | -1)
-            chunk[sectionHeight - 1],              // 4, (+0 | +0)
-            neighbourChunks[4][sectionHeight - 1], // 5, (+0 | +1)
-            neighbourChunks[5][sectionHeight - 1], // 6, (-1 | -1)
-            neighbourChunks[6][sectionHeight - 1], // 7, (-1 | -1)
-            neighbourChunks[7][sectionHeight - 1], // 8, (-1 | -1)
-
-            neighbourChunks[0][sectionHeight + 0], // 9, (-1 | -1)
-            neighbourChunks[1][sectionHeight + 0], // 10, (-1 | +0)
-            neighbourChunks[2][sectionHeight + 0], // 11, (-1 | +1)
-            neighbourChunks[3][sectionHeight + 0], // 12, (+0 | -1)
-            chunk[sectionHeight + 0],              // 13, (+0 | +0)
-            neighbourChunks[4][sectionHeight + 0], // 14, (+0 | +1)
-            neighbourChunks[5][sectionHeight + 0], // 15, (+1 | -1)
-            neighbourChunks[6][sectionHeight + 0], // 16, (+1 | +0)
-            neighbourChunks[7][sectionHeight + 0], // 17, (+1 | +1)
-
-            neighbourChunks[0][sectionHeight + 1], // 18, (-1 | -1)
-            neighbourChunks[1][sectionHeight + 1], // 19, (-1 | +0)
-            neighbourChunks[2][sectionHeight + 1], // 20, (-1 | +1)
-            neighbourChunks[3][sectionHeight + 1], // 21, (+0 | -1)
-            chunk[sectionHeight + 1],              // 22, (+0 | +0)
-            neighbourChunks[4][sectionHeight + 1], // 23, (+0 | +1)
-            neighbourChunks[5][sectionHeight + 1], // 24, (+1 | -1)
-            neighbourChunks[6][sectionHeight + 1], // 25, (+1 | +0)
-            neighbourChunks[7][sectionHeight + 1], // 26, (+1 | +1)
+            neighbourChunks[Directions.NORTH]!![sectionHeight],
+            neighbourChunks[Directions.SOUTH]!![sectionHeight],
+            neighbourChunks[Directions.WEST]!![sectionHeight],
+            neighbourChunks[Directions.EAST]!![sectionHeight],
         )
     }
 

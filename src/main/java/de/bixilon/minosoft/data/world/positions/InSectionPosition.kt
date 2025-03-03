@@ -32,11 +32,11 @@ value class InSectionPosition(
         assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
     }
 
-    inline val x: Int get() = (index and MASK_X) shr SHIFT_X
-    inline val y: Int get() = (index and MASK_Y) shr SHIFT_Y
-    inline val z: Int get() = (index and MASK_Z) shr SHIFT_Z
+    inline val x: Int get() = (index shr SHIFT_X) and MASK_X
+    inline val y: Int get() = (index shr SHIFT_Y) and MASK_Y
+    inline val z: Int get() = (index shr SHIFT_Z) and MASK_Z
 
-    inline val xz: Int get() = index and (MASK_X or MASK_Z)
+    inline val xz: Int get() = index and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
 
 
     inline fun plusX(): InSectionPosition {
@@ -95,14 +95,17 @@ value class InSectionPosition(
     override fun toString() = "s($x $y $z)"
 
     companion object {
-        const val MASK_X = 0x00F
+        const val BITS_X = 4
+        const val MASK_X = (1 shl BITS_X) - 1
         const val SHIFT_X = 0
 
-        const val MASK_Z = 0x0F0
-        const val SHIFT_Z = 4
+        const val BITS_Z = 4
+        const val MASK_Z = (1 shl BITS_Z) - 1
+        const val SHIFT_Z = BITS_X
 
-        const val MASK_Y = 0xF00
-        const val SHIFT_Y = 8
+        const val BITS_Y = 4
+        const val MASK_Y = (1 shl BITS_Y) - 1
+        const val SHIFT_Y = BITS_X + BITS_Z
 
         const val X = 1 shl SHIFT_X
         const val Z = 1 shl SHIFT_Z

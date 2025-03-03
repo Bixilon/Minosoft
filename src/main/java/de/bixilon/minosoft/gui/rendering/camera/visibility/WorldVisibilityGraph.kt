@@ -21,7 +21,6 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
@@ -31,10 +30,10 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 /**
@@ -149,7 +148,7 @@ class WorldVisibilityGraph(
         return frustum.containsAABB(aabb)
     }
 
-    fun isSectionVisible(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = DEFAULT_MIN_POSITION, maxPosition: InSectionPosition = ProtocolDefinition.CHUNK_SECTION_SIZE, checkChunk: Boolean = true): Boolean {
+    fun isSectionVisible(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = Frustum.SECTION_MIN_POSITION, maxPosition: InSectionPosition = Frustum.SECTION_MIN_POSITION, checkChunk: Boolean = true): Boolean {
         if (checkChunk && !isChunkVisible(chunkPosition)) {
             return false
         }
@@ -249,7 +248,7 @@ class WorldVisibilityGraph(
 
         if (directionX <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
             val next = chunkPosition.minusX()
-            val nextChunk = chunk.neighbours[ChunkNeighbours.WEST]
+            val nextChunk = chunk.neighbours[Directions.WEST]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
@@ -261,7 +260,7 @@ class WorldVisibilityGraph(
 
         if (directionX >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
             val next = chunkPosition.plusX()
-            val nextChunk = chunk.neighbours[ChunkNeighbours.EAST]
+            val nextChunk = chunk.neighbours[Directions.EAST]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
@@ -286,7 +285,7 @@ class WorldVisibilityGraph(
 
         if (directionZ <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.z > chunkMin.z) {
             val next = chunkPosition.minusZ()
-            val nextChunk = chunk.neighbours[ChunkNeighbours.NORTH]
+            val nextChunk = chunk.neighbours[Directions.NORTH]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
@@ -298,7 +297,7 @@ class WorldVisibilityGraph(
 
         if (directionZ >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.z < chunkMax.z) {
             val next = chunkPosition.plusZ()
-            val nextChunk = chunk.neighbours[ChunkNeighbours.SOUTH]
+            val nextChunk = chunk.neighbours[Directions.SOUTH]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
@@ -370,9 +369,5 @@ class WorldVisibilityGraph(
         if (invalid || frustum.revision != lastFrustumRevision) {
             calculateGraph()
         }
-    }
-
-    companion object {
-        private val DEFAULT_MIN_POSITION = InSectionPosition.EMPTY
     }
 }

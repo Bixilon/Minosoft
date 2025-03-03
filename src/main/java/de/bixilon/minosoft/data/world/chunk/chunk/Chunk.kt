@@ -167,9 +167,9 @@ class Chunk(
         var section = sections[index] // get another time, it might have changed already
         if (section == null) {
             section = ChunkSection(sectionHeight, chunk = this)
-            val neighbours = this.neighbours.get()
-            if (neighbours != null) {
-                this.neighbours.completeSection(neighbours, section, sectionHeight, world.biomes.noise)
+            val neighbours = this.neighbours
+            if (neighbours.complete) {
+                this.neighbours.completeSection(section, sectionHeight, world.biomes.noise)
             }
 
             sections[index] = section
@@ -181,10 +181,10 @@ class Chunk(
                 sections[index + 1]?.neighbours?.set(Directions.O_DOWN, section)
             }
 
-            if (neighbours != null) {
-                for (neighbour in neighbours) {
-                    val neighbourNeighbours = neighbour.neighbours.get() ?: continue
-                    neighbour.neighbours.update(neighbourNeighbours, sectionHeight)
+            if (neighbours.complete) {
+                for (neighbour in neighbours.neighbours.array) {
+                    if (neighbour == null || !neighbour.neighbours.complete) continue
+                    neighbour.neighbours.update(sectionHeight)
                 }
             }
 

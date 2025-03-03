@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class VoronoiBiomeAccessor(
@@ -37,9 +38,9 @@ class VoronoiBiomeAccessor(
         val biomeY = unpackY(offset)
         val biomeZ = unpackZ(offset)
 
-        val biomeChunk = chunk.neighbours.trace(biomeX shr 4, biomeZ shr 4)
+        val biomeChunk = chunk.neighbours.traceChunk(ChunkPosition(biomeX shr 4, biomeZ shr 4))
 
-        return biomeChunk?.biomeSource?.get(biomeX and 0x0F, biomeY, biomeZ and 0x0F)
+        return biomeChunk?.biomeSource?.get(InChunkPosition(biomeX and 0x0F, biomeY, biomeZ and 0x0F))
     }
 
     fun getBiomeOffset(seed: Long, x: Int, y: Int, z: Int): Int {

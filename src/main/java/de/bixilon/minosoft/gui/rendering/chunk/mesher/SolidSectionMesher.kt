@@ -30,7 +30,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.Offset
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -59,7 +59,7 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(chunkPosition: ChunkPosition, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
+    fun mesh(chunkPosition: ChunkPosition, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
@@ -188,13 +188,13 @@ class SolidSectionMesher(
         }
     }
 
-    private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {
+    private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
         if (position.z == 0) {
-            setNeighbour(neighbourBlocks, position.with(z = ProtocolDefinition.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[ChunkNeighbours.NORTH], O_NORTH)
+            setNeighbour(neighbourBlocks, position.with(z = ProtocolDefinition.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH]!!, O_NORTH) // TODO: bad assert
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
         } else if (position.z == ProtocolDefinition.SECTION_MAX_Z) {
             setNeighbour(neighbourBlocks, position.minusZ(), light, section, chunk, O_NORTH)
-            setNeighbour(neighbourBlocks, position.with(z = 0), light, neighbours[O_SOUTH], neighbourChunks[ChunkNeighbours.SOUTH], O_SOUTH)
+            setNeighbour(neighbourBlocks, position.with(z = 0), light, neighbours[O_SOUTH], neighbourChunks[Directions.SOUTH]!!, O_SOUTH)// TODO: bad assert
         } else {
             setNeighbour(neighbourBlocks, position.minusZ(), light, section, chunk, O_NORTH)
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
@@ -202,12 +202,12 @@ class SolidSectionMesher(
     }
 
 
-    private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {
+    private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
         if (position.x == 0) {
-            setNeighbour(neighbourBlocks, position.with(x = ProtocolDefinition.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[ChunkNeighbours.WEST], O_WEST)
+            setNeighbour(neighbourBlocks, position.with(x = ProtocolDefinition.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST]!!, O_WEST) // TODO: bad assert
             setNeighbour(neighbourBlocks, position.plusX(), light, section, chunk, O_EAST)
         } else if (position.x == ProtocolDefinition.SECTION_MAX_X) {
-            setNeighbour(neighbourBlocks, position.with(x = 0), light, neighbours[O_EAST], neighbourChunks[ChunkNeighbours.EAST], O_EAST)
+            setNeighbour(neighbourBlocks, position.with(x = 0), light, neighbours[O_EAST], neighbourChunks[Directions.EAST]!!, O_EAST) // TODO: bad assert
             setNeighbour(neighbourBlocks, position.minusX(), light, section, chunk, O_WEST)
         } else {
             setNeighbour(neighbourBlocks, position.minusX(), light, section, chunk, O_WEST)

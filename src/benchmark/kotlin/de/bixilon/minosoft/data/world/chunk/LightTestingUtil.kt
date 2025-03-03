@@ -35,7 +35,6 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -80,7 +79,7 @@ object LightTestingUtil {
     }
 
     fun createChunkWithNeighbours(): Chunk {
-        val chunk = createEmptyChunk(Vec2i.EMPTY)
+        val chunk = createEmptyChunk(ChunkPosition.EMPTY)
         var index = 0
         for (x in -1..1) {
             for (z in -1..1) {

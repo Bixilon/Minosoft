@@ -21,9 +21,9 @@ import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 /**
@@ -70,59 +70,16 @@ class ChunkSection(
         blockEntities.clear()
     }
 
-    fun traceBlock(offset: BlockPosition): BlockState?
-    fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset - origin)
-    fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock((BlockPosition(origin) + direction))
-
-
-    @Deprecated("")
-    fun traceBlock(x: Int, y: Int, z: Int, direction: Directions) = when (direction) {
-        Directions.DOWN -> {
-            if (y == 0) {
-                neighbours?.get(Directions.O_DOWN)?.blocks?.let { it[x, ProtocolDefinition.SECTION_MAX_Y, z] }
-            } else {
-                blocks[x, y - 1, z]
-            }
+    fun traceBlock(offset: BlockPosition): BlockState? {
+        val chunkOffset = offset.chunkPosition
+        val height = offset.sectionHeight
+        if (chunkOffset == ChunkPosition.EMPTY && height == 0) {
+            return blocks[offset.inSectionPosition]
         }
-
-        Directions.UP -> {
-            if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                neighbours?.get(Directions.O_UP)?.blocks?.let { it[x, 0, z] }
-            } else {
-                blocks[x, y + 1, z]
-            }
-        }
-
-        Directions.NORTH -> {
-            if (z == 0) {
-                neighbours?.get(Directions.O_NORTH)?.blocks?.let { it[x, y, ProtocolDefinition.SECTION_MAX_Z] }
-            } else {
-                blocks[x, y, z - 1]
-            }
-        }
-
-        Directions.SOUTH -> {
-            if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                neighbours?.get(Directions.O_SOUTH)?.blocks?.let { it[x, y, 0] }
-            } else {
-                blocks[x, y, z + 1]
-            }
-        }
-
-        Directions.WEST -> {
-            if (x == 0) {
-                neighbours?.get(Directions.O_WEST)?.blocks?.let { it[ProtocolDefinition.SECTION_MAX_X, y, z] }
-            } else {
-                blocks[x - 1, y, z]
-            }
-        }
-
-        Directions.EAST -> {
-            if (x == ProtocolDefinition.SECTION_MAX_X) {
-                neighbours?.get(Directions.O_EAST)?.blocks?.let { it[0, y, z] }
-            } else {
-                blocks[x + 1, y, z]
-            }
-        }
+        val chunk = this.chunk.neighbours.traceChunk(chunkOffset) ?: return null
+        return chunk[offset.inChunkPosition]
     }
+
+    fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset - origin)
+    fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock((BlockPosition(origin.x, origin.y, origin.z) + direction))
 }
