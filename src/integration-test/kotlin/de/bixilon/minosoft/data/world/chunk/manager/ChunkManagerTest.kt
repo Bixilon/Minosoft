@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.manager
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
@@ -22,10 +23,8 @@ import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
@@ -36,6 +35,7 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChan
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -83,8 +83,8 @@ class ChunkManagerTest {
         val chunk = manager.create(ChunkPosition(1, 1))
         manager.world[17, 1, 18] = StoneTest0.state
 
-        assertSame(manager.world[17, 1, 18], StoneTest0.state)
-        assertSame(chunk[1, 1, 2], StoneTest0.state)
+        assertSame(manager.world[BlockPosition(17, 1, 18)], StoneTest0.state)
+        assertSame(chunk[InChunkPosition(1, 1, 2)], StoneTest0.state)
     }
 
     fun destroyBlock() {
@@ -94,8 +94,8 @@ class ChunkManagerTest {
         manager.world[17, 1, 18] = StoneTest0.state
         manager.world[17, 1, 18] = null
 
-        assertNull(manager.world[17, 1, 18])
-        assertNull(chunk[1, 1, 2])
+        assertNull(manager.world[BlockPosition(17, 1, 18)])
+        assertNull(chunk[InChunkPosition(1, 1, 2)])
     }
 
     fun convertSinglePrototype() {
@@ -124,8 +124,8 @@ class ChunkManagerTest {
         val a = manager.create(ChunkPosition(4, 1))
         val b = manager.create(ChunkPosition(4, 2))
 
-        assertSame(a.neighbours[ChunkNeighbours.SOUTH], b)
-        assertSame(b.neighbours[ChunkNeighbours.NORTH], a)
+        assertSame(a.neighbours.neighbours[Directions.SOUTH], b)
+        assertSame(b.neighbours.neighbours[Directions.NORTH], a)
 
 
         assertEquals(manager.size.size.size, Vec2i(1, 2))
@@ -155,7 +155,7 @@ class ChunkManagerTest {
     fun neighboursUnload() {
         val manager = create()
         val matrix = manager.createMatrix()
-        manager.unload(Vec2i(0, 0))
+        manager.unload(ChunkPosition(0, 0))
 
         assertEquals(matrix[0][0].neighbours.neighbours, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], null))
         assertEquals(matrix[0][1].neighbours.neighbours, arrayOf(null, matrix[0][0], matrix[1][0], null, null, null, matrix[0][2], matrix[1][2]))
@@ -187,15 +187,15 @@ class ChunkManagerTest {
         manager -= ChunkPosition(0, 0)
 
         // create all horizontal neighbour chunks
-        manager[ChunkPosition(-1, 0)]!![3, 16, 3] = StoneTest0.state
-        manager[ChunkPosition(0, -1)]!![3, 16, 3] = StoneTest0.state
-        manager[ChunkPosition(1, 0)]!![3, 16, 3] = StoneTest0.state
-        manager[ChunkPosition(0, 1)]!![3, 16, 3] = StoneTest0.state
+        manager[ChunkPosition(-1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, -1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
 
         manager[ChunkPosition(0, 0)] = ChunkPrototype(blocks = arrayOf(
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[getIndex(3, 3, 3)] = StoneTest0.state },
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[getIndex(3, 3, 3)] = StoneTest0.state },
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[getIndex(3, 3, 3)] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = StoneTest0.state },
             null, null, null,
         ),
             blockEntities = emptyMap(),
@@ -219,14 +219,14 @@ class ChunkManagerTest {
         manager.createMatrix()
 
         // create all horizontal neighbour chunks
-        manager[ChunkPosition(-1, 0)]!![3, 16, 3] = StoneTest0.state
-        manager[ChunkPosition(0, -1)]!![3, 16, 3] = StoneTest0.state
-        manager[ChunkPosition(1, 0)]!![3, 16, 3] = StoneTest0.state
-        manager[ChunkPosition(0, 1)]!![3, 16, 3] = StoneTest0.state
+        manager[ChunkPosition(-1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, -1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
 
-        manager[ChunkPosition(0, 0)]!![3, 3, 3] = StoneTest0.state
-        manager[ChunkPosition(0, 0)]!![3, 17, 3] = StoneTest0.state
-        manager[ChunkPosition(0, 0)]!![3, 35, 3] = StoneTest0.state
+        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 3, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 17, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 35, 3)] = StoneTest0.state
 
         val chunk = manager[ChunkPosition(0, 0)]!!
 
@@ -367,8 +367,8 @@ class ChunkManagerTest {
     fun prototypeChangeUpdateReplace() {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
-        chunk[4, 36, 5] = StoneTest0.state
-        chunk[4, 3, 5] = StoneTest0.state
+        chunk[InChunkPosition(4, 36, 5)] = StoneTest0.state
+        chunk[InChunkPosition(4, 3, 5)] = StoneTest0.state
         var fired = 0
 
         manager.world.session.events.listen<WorldUpdateEvent> {
@@ -389,8 +389,8 @@ class ChunkManagerTest {
     fun prototypeChangeUpdateUpdate() {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
-        chunk[4, 36, 5] = StoneTest0.state
-        chunk[4, 3, 5] = StoneTest0.state
+        chunk[InChunkPosition(4, 36, 5)] = StoneTest0.state
+        chunk[InChunkPosition(4, 3, 5)] = StoneTest0.state
         var fired = 0
 
         manager.world.session.events.listen<WorldUpdateEvent> {
@@ -418,7 +418,7 @@ class ChunkManagerTest {
             assertTrue(it.update is NeighbourChangeUpdate)
             val update = it.update as NeighbourChangeUpdate
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
-            assertNotNull(update.chunk.neighbours[ChunkNeighbours.SOUTH])
+            assertNotNull(update.chunk.neighbours[Directions.SOUTH])
             fired++
         }
 
@@ -448,9 +448,9 @@ class ChunkManagerTest {
         val section = chunk.getOrPut(0)!!.biomes
         assertEquals(section[3, 3, 3], biome)
         assertEquals(section[3, 3, 3], biome)
-        assertEquals(section[0], biome)
+        assertEquals(section[InSectionPosition(0, 0, 0)], biome)
 
-        assertEquals(manager.world.biomes.get(BlockPosition(5, 5, 5)), biome)
-        assertEquals(chunk.getBiome(BlockPosition(5, 5, 5)), biome)
+        assertEquals(manager.world.biomes[BlockPosition(5, 5, 5)], biome)
+        assertEquals(chunk.getBiome(InChunkPosition(5, 5, 5)), biome)
     }
 }

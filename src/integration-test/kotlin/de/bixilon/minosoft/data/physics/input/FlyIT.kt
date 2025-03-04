@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.input
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -36,7 +36,7 @@ class FlyIT {
     fun flyLanding() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.abilities = Abilities(flying = true, allowFly = true)
         player.input = PlayerMovementInput(flyDown = true)
         player.runTicks(20)
@@ -49,7 +49,7 @@ class FlyIT {
     fun stopFlying() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.abilities = Abilities(flying = true, allowFly = true)
 
         player.input = PlayerMovementInput()
@@ -65,7 +65,7 @@ class FlyIT {
     fun startFlying() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.abilities = Abilities(flying = false, allowFly = true)
 
         player.inputActions = MovementInputActions(toggleFly = true)
@@ -78,7 +78,7 @@ class FlyIT {
     fun toggleMultipleTimes() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.abilities = Abilities(flying = false, allowFly = true)
 
         player.inputActions = MovementInputActions(toggleFly = true)
@@ -97,7 +97,7 @@ class FlyIT {
         player.additional.gamemode = Gamemodes.SPECTATOR
         player.abilities = Abilities(allowFly = true, flying = true)
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
 
         player.inputActions = MovementInputActions(toggleFly = true)
         player.runTicks(1)
@@ -116,7 +116,7 @@ class FlyIT {
         player.additional.gamemode = Gamemodes.SPECTATOR
         player.abilities = Abilities(allowFly = false, flying = false)
         player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
 
         player.inputActions = MovementInputActions(toggleFly = true)
         player.runTicks(1)

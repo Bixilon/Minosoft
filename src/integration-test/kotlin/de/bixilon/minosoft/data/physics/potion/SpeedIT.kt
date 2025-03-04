@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.potion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.applySlowness
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.applySpeed
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
@@ -33,7 +33,7 @@ import org.testng.annotations.Test
 class SpeedIT {
     private val session by lazy {
         val session = createSession(5)
-        session.world.fill(Vec3i(-20, 0, -20), Vec3i(20, 0, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-20, 0, -20), BlockPosition(20, 0, 20), StoneTest0.state)
 
         return@lazy session
     }

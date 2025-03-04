@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.fluid.flowing
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.SkipException
@@ -54,8 +54,8 @@ abstract class FlowingFluidIT {
 
     protected fun World.star(x: Int = 4, y: Int = 4, z: Int = 4, start: Int = 7, size: Int = 8) {
         fill(
-            Vec3i(x - size - 2, y - 1, z - size - 2),
-            Vec3i(x + size + 2, y - 1, z + size + 2),
+            BlockPosition(x - size - 2, y - 1, z - size - 2),
+            BlockPosition(x + size + 2, y - 1, z + size + 2),
             StoneTest0.block.states.default
         )
 

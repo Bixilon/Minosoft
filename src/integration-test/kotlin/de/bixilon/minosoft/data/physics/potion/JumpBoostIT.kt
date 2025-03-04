@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.potion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
@@ -37,7 +37,7 @@ class JumpBoostIT {
     fun jumpBoost1() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.applyJumpBoost(1)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -48,7 +48,7 @@ class JumpBoostIT {
     fun jumpBoost2() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.applyJumpBoost(2)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -59,7 +59,7 @@ class JumpBoostIT {
     fun jumpBoost10() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.applyJumpBoost(10)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -70,7 +70,7 @@ class JumpBoostIT {
     fun jumpBoost100() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[Vec3i(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
         player.applyJumpBoost(100)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)

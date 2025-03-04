@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -33,14 +33,14 @@ class ChunkNeighboursTest {
     fun `verify chunk neighbour tracing at 0,0`() {
         val world = create()
         val chunk = world.chunks[0, 0]!!
-        assertEquals(chunk.neighbours.trace(-1, -1)?.position, Vec2i(-1, -1))
-        assertEquals(chunk.neighbours.trace(-1, 0)?.position, Vec2i(-1, 0))
-        assertEquals(chunk.neighbours.trace(-1, 1)?.position, Vec2i(-1, 1))
-        assertEquals(chunk.neighbours.trace(0, -1)?.position, Vec2i(0, -1))
-        assertEquals(chunk.neighbours.trace(0, 0)?.position, Vec2i(0, 0))
-        assertEquals(chunk.neighbours.trace(0, 1)?.position, Vec2i(0, 1))
-        assertEquals(chunk.neighbours.trace(1, -1)?.position, Vec2i(1, -1))
-        assertEquals(chunk.neighbours.trace(1, 0)?.position, Vec2i(1, 0))
-        assertEquals(chunk.neighbours.trace(1, 1)?.position, Vec2i(1, 1))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(-1, -1))?.position, ChunkPosition(-1, -1))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(-1, 0))?.position, ChunkPosition(-1, 0))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(-1, 1))?.position, ChunkPosition(-1, 1))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(0, -1))?.position, ChunkPosition(0, -1))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(0, 0))?.position, ChunkPosition(0, 0))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(0, 1))?.position, ChunkPosition(0, 1))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(1, -1))?.position, ChunkPosition(1, -1))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(1, 0))?.position, ChunkPosition(1, 0))
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(1, 1))?.position, ChunkPosition(1, 1))
     }
 }

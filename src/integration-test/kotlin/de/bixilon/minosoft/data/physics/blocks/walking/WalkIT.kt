@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.physics.blocks.walking
 
 import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.SlabTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -41,7 +41,7 @@ abstract class WalkIT {
 
     private fun createSession(): PlaySession {
         val session = createSession(5)
-        session.world.fill(Vec3i(-20, 0, -20), Vec3i(20, 0, 20), block)
+        session.world.fill(BlockPosition(-20, 0, -20), BlockPosition(20, 0, 20), block)
 
         return session
     }
@@ -171,7 +171,7 @@ abstract class WalkIT {
 
     protected fun slabWalk(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(-20, 1, -20), Vec3i(20, 1, 20), SlabTest0.state)
+        player.session.world.fill(BlockPosition(-20, 1, -20), BlockPosition(20, 1, 20), SlabTest0.state)
         player.forceTeleport(Vec3d(-6.0, 1.5, -6.0))
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(5)
@@ -183,8 +183,8 @@ abstract class WalkIT {
 
     protected fun stoneBlockWalk1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
-        player.session.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
+        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-16, 3, 4), BlockPosition(-12, 3, 8), block!!)
 
         player.forceTeleport(Vec3d(-15.653410032035934, 4.0, 8.580128352737571))
         player.forceRotate(EntityRotation(180.29749f, 22.493956f))
@@ -199,8 +199,8 @@ abstract class WalkIT {
 
     protected fun stoneBlockWalk2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(-18, 3, 2), Vec3i(-10, 3, 10), StoneTest0.state)
-        player.session.world.fill(Vec3i(-16, 3, 4), Vec3i(-12, 3, 8), block!!)
+        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-16, 3, 4), BlockPosition(-12, 3, 8), block!!)
 
         player.forceTeleport(Vec3d(-15.653410032035934, 4.0, 8.580128352737571))
         player.forceRotate(EntityRotation(180.29749f, 22.493956f))

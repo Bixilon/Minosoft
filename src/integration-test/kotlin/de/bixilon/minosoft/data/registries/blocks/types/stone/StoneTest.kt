@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.stone
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import org.testng.Assert.assertEquals
@@ -39,11 +38,11 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun testOutlineShape() {
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), Vec3i.EMPTY, state))
+        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
     }
 
     fun testCollisionShape() {
-        assertEquals(AbstractVoxelShape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, state, null))
+        assertEquals(AbstractVoxelShape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
     }
 
     fun testStates() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.world.iterator
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.DirtTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.*
@@ -37,54 +37,54 @@ class WorldIteratorTest {
 
     fun single() {
         val session = createSession(3)
-        session.world[Vec3i(0, 0, 0)] = StoneTest0.state
+        session.world[BlockPosition(0, 0, 0)] = StoneTest0.state
         val aabb = AABB.BLOCK
         val iterator = session.world[aabb]
 
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(0, 0, 0), StoneTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(0, 0, 0), StoneTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
         assertFalse(iterator.hasNext())
         assertThrows { iterator.next() }
     }
 
     fun multiple() {
         val session = createSession(3)
-        session.world[Vec3i(0, 0, 0)] = StoneTest0.state
-        session.world[Vec3i(0, 1, 0)] = DirtTest0.state
+        session.world[BlockPosition(0, 0, 0)] = StoneTest0.state
+        session.world[BlockPosition(0, 1, 0)] = DirtTest0.state
         val iterator = AABBIterator(0, 0, 0, 0, 2, 0).blocks(session.world)
 
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(0, 0, 0), StoneTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(0, 0, 0), StoneTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(0, 1, 0), DirtTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(0, 1, 0), DirtTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
         assertFalse(iterator.hasNext())
         assertThrows { iterator.next() }
     }
 
     fun multipleUnused() {
         val session = createSession(3)
-        session.world[Vec3i(0, 0, 0)] = StoneTest0.state
-        session.world[Vec3i(0, 1, 0)] = DirtTest0.state
+        session.world[BlockPosition(0, 0, 0)] = StoneTest0.state
+        session.world[BlockPosition(0, 1, 0)] = DirtTest0.state
         val iterator = AABBIterator(0, 0, 0, 5, 5, 5).blocks(session.world)
 
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(0, 0, 0), StoneTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(0, 0, 0), StoneTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(0, 1, 0), DirtTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(0, 1, 0), DirtTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
         assertFalse(iterator.hasNext())
         assertThrows { iterator.next() }
     }
 
     fun crossChunk() {
         val session = createSession(3)
-        session.world[Vec3i(-3, 0, -3)] = StoneTest0.state
-        session.world[Vec3i(3, 3, 3)] = DirtTest0.state
+        session.world[BlockPosition(-3, 0, -3)] = StoneTest0.state
+        session.world[BlockPosition(3, 3, 3)] = DirtTest0.state
         val iterator = AABBIterator(-5, -5, -5, 5, 5, 5).blocks(session.world)
 
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(-3, 0, -3), StoneTest0.state, session.world.chunks[ChunkPosition(-1, -1)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(-3, 0, -3), StoneTest0.state, session.world.chunks[ChunkPosition(-1, -1)]!!), iterator.next())
         assertTrue(iterator.hasNext())
-        assertEquals(BlockPair(Vec3i(3, 3, 3), DirtTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
+        assertEquals(BlockPair(BlockPosition(3, 3, 3), DirtTest0.state, session.world.chunks[ChunkPosition(0, 0)]!!), iterator.next())
         assertFalse(iterator.hasNext())
         assertThrows { iterator.next() }
     }

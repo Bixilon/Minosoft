@@ -20,6 +20,7 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
@@ -102,7 +103,7 @@ class SectionOcclusionTest {
         val random = Random(12)
         for (i in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
             if (random.nextBoolean()) {
-                occlusion.provider[i] = stone
+                occlusion.provider[InSectionPosition(i)] = stone
             }
         }
         CALCULATE.setBoolean(occlusion, true)

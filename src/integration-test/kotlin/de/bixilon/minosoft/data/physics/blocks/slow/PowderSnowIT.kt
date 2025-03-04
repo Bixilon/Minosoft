@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.blocks.slow
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.LeatherArmor
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
@@ -100,7 +100,7 @@ class PowderSnowIT : SlowMovementIT() {
     fun powderSnowLongFalling() {
         val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(5.0, 15.0, 5.0))
-        player.session.world[Vec3i(5, 10, 5)] = block
+        player.session.world[BlockPosition(5, 10, 5)] = block
         player.runTicks(20)
 
         player.assertPosition(5.0, 7.0703936080893826, 5.0)
@@ -230,10 +230,10 @@ class PowderSnowIT : SlowMovementIT() {
     fun powderSnowUnfreeze() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
-        player.session.world[Vec3i(5, 10, 5)] = block
-        player.session.world[Vec3i(5, 9, 5)] = StoneTest0.state
-        player.session.world[Vec3i(5, 10, 6)] = block
-        player.session.world[Vec3i(5, 9, 6)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 10, 5)] = block
+        player.session.world[BlockPosition(5, 9, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 10, 6)] = block
+        player.session.world[BlockPosition(5, 9, 6)] = StoneTest0.state
 
         player.runTicks(5)
         player.input = PlayerMovementInput(forward = true)

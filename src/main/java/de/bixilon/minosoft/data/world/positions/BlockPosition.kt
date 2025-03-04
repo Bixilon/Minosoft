@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class BlockPosition(
-    inline val index: Long,
+    inline val raw: Long,
 ) : TextFormattable {
 
     constructor() : this(0, 0, 0)
@@ -35,54 +35,54 @@ value class BlockPosition(
     }
     constructor(position: InChunkPosition) : this(position.x, position.y, position.z)
 
-    inline val x: Int get() = (index shr SHIFT_X).toInt() and MASK_X
-    inline val y: Int get() = (index shr SHIFT_Y).toInt() and MASK_Y
-    inline val z: Int get() = (index shr SHIFT_Z).toInt() and MASK_Z
+    inline val x: Int get() = (raw shr SHIFT_X).toInt() and MASK_X
+    inline val y: Int get() = (raw shr SHIFT_Y).toInt() and MASK_Y
+    inline val z: Int get() = (raw shr SHIFT_Z).toInt() and MASK_Z
 
 
     inline fun plusX(): BlockPosition {
         assertPosition(this.x < MAX_X)
-        return BlockPosition(index + X * 1)
+        return BlockPosition(raw + X * 1)
     }
 
     inline fun plusX(x: Int): BlockPosition {
         assertPosition(this.x + x, -MAX_X, MAX_X)
-        return BlockPosition(index + X * x)
+        return BlockPosition(raw + X * x)
     }
 
     inline fun minusX(): BlockPosition {
         assertPosition(this.x > -MAX_X)
-        return BlockPosition(index - X * 1)
+        return BlockPosition(raw - X * 1)
     }
 
     inline fun plusY(): BlockPosition {
         assertPosition(this.y < MAX_Y)
-        return BlockPosition(index + Y * 1)
+        return BlockPosition(raw + Y * 1)
     }
 
     inline fun plusY(y: Int): BlockPosition {
         assertPosition(this.y + y, -MAX_Y, MAX_Y)
-        return BlockPosition(index + Y * y)
+        return BlockPosition(raw + Y * y)
     }
 
     inline fun minusY(): BlockPosition {
         assertPosition(this.y > -MAX_Y)
-        return BlockPosition(index - Y * 1)
+        return BlockPosition(raw - Y * 1)
     }
 
     inline fun plusZ(): BlockPosition {
         assertPosition(this.z < MAX_Y)
-        return BlockPosition(index + Z * 1)
+        return BlockPosition(raw + Z * 1)
     }
 
     inline fun plusZ(z: Int): BlockPosition {
         assertPosition(this.z + z, -MAX_Z, MAX_Z)
-        return BlockPosition(index + Z * z)
+        return BlockPosition(raw + Z * z)
     }
 
     inline fun minusZ(): BlockPosition {
         assertPosition(this.z > -MAX_Z)
-        return BlockPosition(index - Z * 1)
+        return BlockPosition(raw - Z * 1)
     }
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = BlockPosition(x, y, z)

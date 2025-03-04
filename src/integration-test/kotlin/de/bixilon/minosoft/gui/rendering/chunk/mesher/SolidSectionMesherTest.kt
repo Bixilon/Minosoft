@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -66,7 +66,7 @@ class SolidSectionMesherTest {
         return context
     }
 
-    private fun createSession(blocks: Map<Vec3i, BlockState?>): PlaySession {
+    private fun createSession(blocks: Map<BlockPosition, BlockState?>): PlaySession {
         val session = SessionTestUtil.createSession(worldSize = 2)
         for ((position, block) in blocks) {
             session.world[position] = block!!
@@ -82,13 +82,13 @@ class SolidSectionMesherTest {
         val chunk = world.chunks[0, 0]!!
         val meshes = ChunkMeshes(context, chunk.position, 0, true)
 
-        mesher.mesh(chunk.position, 0, chunk, chunk.sections[0]!!, chunk.neighbours.get()!!, chunk.sections[0]!!.neighbours!!, meshes)
+        mesher.mesh(chunk.position, 0, chunk, chunk.sections[0]!!, chunk.neighbours.neighbours, chunk.sections[0]!!.neighbours!!, meshes)
 
         return meshes
     }
 
 
-    private fun mesh(blocks: Map<Vec3i, BlockState?>): ChunkMeshes {
+    private fun mesh(blocks: Map<BlockPosition, BlockState?>): ChunkMeshes {
         val session = createSession(blocks)
 
         return session.mesh()
@@ -97,14 +97,14 @@ class SolidSectionMesherTest {
     fun `test simple stone block`() {
         val queue = TestQueue()
         val stone = queue.fullOpaque()
-        val meshes = mesh(mapOf(Vec3i(2, 2, 2) to stone))
+        val meshes = mesh(mapOf(BlockPosition(2, 2, 2) to stone))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 2), stone),
         )
 
-        assertEquals(meshes.minPosition, Vec3i(2, 2, 2))
-        assertEquals(meshes.maxPosition, Vec3i(2, 2, 2))
+        assertEquals(meshes.minPosition, BlockPosition(2, 2, 2))
+        assertEquals(meshes.maxPosition, BlockPosition(2, 2, 2))
     }
 
     fun `tinted and untinted block`() {
@@ -112,13 +112,13 @@ class SolidSectionMesherTest {
         val untinted = queue.fullOpaque()
         val tinted = queue.tinted()
         mesh(mapOf(
-            Vec3i(2, 2, 2) to untinted,
-            Vec3i(2, 3, 2) to tinted,
+            BlockPosition(2, 2, 2) to untinted,
+            BlockPosition(2, 3, 2) to tinted,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 2, 2), untinted),
-            TestQueue.RenderedBlock(Vec3i(2, 3, 2), tinted, 0x123456),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 2), untinted),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), tinted, 0x123456),
         )
     }
 
@@ -126,17 +126,17 @@ class SolidSectionMesherTest {
         val queue = TestQueue()
         val stone = queue.fullOpaque()
         val meshes = mesh(mapOf(
-            Vec3i(0, 0, 0) to stone,
-            Vec3i(15, 15, 15) to stone,
+            BlockPosition(0, 0, 0) to stone,
+            BlockPosition(15, 15, 15) to stone,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(0, 0, 0), stone),
-            TestQueue.RenderedBlock(Vec3i(15, 15, 15), stone),
+            TestQueue.RenderedBlock(BlockPosition(0, 0, 0), stone),
+            TestQueue.RenderedBlock(BlockPosition(15, 15, 15), stone),
         )
 
-        assertEquals(meshes.minPosition, Vec3i(0, 0, 0))
-        assertEquals(meshes.maxPosition, Vec3i(15, 15, 15))
+        assertEquals(meshes.minPosition, BlockPosition(0, 0, 0))
+        assertEquals(meshes.maxPosition, BlockPosition(15, 15, 15))
         assertEquals(meshes.blockEntities?.size, 0)
     }
 
@@ -146,23 +146,23 @@ class SolidSectionMesherTest {
         val stone = queue.fullOpaque()
         val small = queue.nonTouching()
         mesh(mapOf(
-            Vec3i(2, 1, 2) to stone,
-            Vec3i(2, 3, 2) to stone,
-            Vec3i(2, 2, 1) to stone,
-            Vec3i(2, 2, 3) to stone,
-            Vec3i(1, 2, 2) to stone,
-            Vec3i(3, 2, 2) to stone,
+            BlockPosition(2, 1, 2) to stone,
+            BlockPosition(2, 3, 2) to stone,
+            BlockPosition(2, 2, 1) to stone,
+            BlockPosition(2, 2, 3) to stone,
+            BlockPosition(1, 2, 2) to stone,
+            BlockPosition(3, 2, 2) to stone,
 
-            Vec3i(2, 2, 2) to small,
+            BlockPosition(2, 2, 2) to small,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 1, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 3, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 2, 1), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 2, 3), stone),
-            TestQueue.RenderedBlock(Vec3i(1, 2, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(3, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 3), stone),
+            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), stone),
         )
     }
 
@@ -171,15 +171,15 @@ class SolidSectionMesherTest {
         val entity = queue.blockEntity()
         val stone = queue.fullOpaque()
         val meshes = mesh(mapOf(
-            Vec3i(2, 2, 2) to entity,
-            Vec3i(2, 5, 2) to stone,
+            BlockPosition(2, 2, 2) to entity,
+            BlockPosition(2, 5, 2) to stone,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 5, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 5, 2), stone),
         )
         queue.assert(
-            TestQueue.RenderedEntity(Vec3i(2, 2, 2), entity),
+            TestQueue.RenderedEntity(BlockPosition(2, 2, 2), entity),
         )
         assertEquals(meshes.blockEntities?.size, 1)
     }
@@ -190,23 +190,23 @@ class SolidSectionMesherTest {
         val entity = queue.blockEntity()
         val stone = queue.fullOpaque()
         mesh(mapOf(
-            Vec3i(2, 1, 2) to stone,
-            Vec3i(2, 3, 2) to stone,
-            Vec3i(2, 2, 1) to stone,
-            Vec3i(2, 2, 3) to stone,
-            Vec3i(1, 2, 2) to stone,
-            Vec3i(3, 2, 2) to stone,
+            BlockPosition(2, 1, 2) to stone,
+            BlockPosition(2, 3, 2) to stone,
+            BlockPosition(2, 2, 1) to stone,
+            BlockPosition(2, 2, 3) to stone,
+            BlockPosition(1, 2, 2) to stone,
+            BlockPosition(3, 2, 2) to stone,
 
-            Vec3i(2, 2, 2) to entity,
+            BlockPosition(2, 2, 2) to entity,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 1, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 3, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 2, 1), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 2, 3), stone),
-            TestQueue.RenderedBlock(Vec3i(1, 2, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(3, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 3), stone),
+            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), stone),
         )
         assertEquals(queue.entities.size, 0)
     }
@@ -216,25 +216,25 @@ class SolidSectionMesherTest {
         val stone = queue.fullOpaque()
         val small = queue.nonTouching()
         mesh(mapOf(
-            Vec3i(2, 1, 2) to stone,
-            Vec3i(2, 3, 2) to stone,
-            Vec3i(1, 2, 2) to stone,
-            Vec3i(3, 2, 2) to stone,
-            Vec3i(2, 2, 1) to stone,
-            Vec3i(2, 2, 3) to small,
+            BlockPosition(2, 1, 2) to stone,
+            BlockPosition(2, 3, 2) to stone,
+            BlockPosition(1, 2, 2) to stone,
+            BlockPosition(3, 2, 2) to stone,
+            BlockPosition(2, 2, 1) to stone,
+            BlockPosition(2, 2, 3) to small,
 
-            Vec3i(2, 2, 2) to stone,
+            BlockPosition(2, 2, 2) to stone,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 1, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 3, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 2, 1), stone),
-            TestQueue.RenderedBlock(Vec3i(2, 2, 3), small),
-            TestQueue.RenderedBlock(Vec3i(1, 2, 2), stone),
-            TestQueue.RenderedBlock(Vec3i(3, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 3), small),
+            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), stone),
 
-            TestQueue.RenderedBlock(Vec3i(2, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 2), stone),
         )
         assertEquals(queue.entities.size, 0)
     }
@@ -244,15 +244,15 @@ class SolidSectionMesherTest {
         val entity = queue.blockEntity()
         val stone = queue.fullOpaque()
         mesh(mapOf(
-            Vec3i(2, 2, 2) to entity,
-            Vec3i(2, 5, 2) to stone,
+            BlockPosition(2, 2, 2) to entity,
+            BlockPosition(2, 5, 2) to stone,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 5, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 5, 2), stone),
         )
         queue.assert(
-            TestQueue.RenderedEntity(Vec3i(2, 2, 2), entity),
+            TestQueue.RenderedEntity(BlockPosition(2, 2, 2), entity),
         )
     }
 
@@ -261,15 +261,15 @@ class SolidSectionMesherTest {
         val entity = queue.meshedOnlyEntity()
         val stone = queue.fullOpaque()
         mesh(mapOf(
-            Vec3i(2, 2, 2) to entity,
-            Vec3i(2, 5, 2) to stone,
+            BlockPosition(2, 2, 2) to entity,
+            BlockPosition(2, 5, 2) to stone,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(Vec3i(2, 5, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 5, 2), stone),
         )
         queue.assert(
-            TestQueue.RenderedEntity(Vec3i(2, 2, 2), entity, true),
+            TestQueue.RenderedEntity(BlockPosition(2, 2, 2), entity, true),
         )
     }
 
@@ -283,17 +283,17 @@ class SolidSectionMesherTest {
         val stone = queue.lighted()
         val session = createSession(emptyMap())
         session.world.dimension = DimensionProperties()
-        session.world[Vec3i(6, 7, 9)] = stone
+        session.world[BlockPosition(6, 7, 9)] = stone
         val chunk = session.world.chunks[0, 0]!!
         val section = chunk.sections[0]!!
-        section.light.light[6, 6, 9] = 0x01
-        section.light.light[6, 8, 9] = 0x02
-        section.light.light[6, 7, 8] = 0x03
-        section.light.light[6, 7, 10] = 0x04
-        section.light.light[5, 7, 9] = 0x05
-        section.light.light[7, 7, 9] = 0x06
+        section.light.light[InSectionPosition(6, 6, 9)] = 0x01
+        section.light.light[InSectionPosition(6, 8, 9)] = 0x02
+        section.light.light[InSectionPosition(6, 7, 8)] = 0x03
+        section.light.light[InSectionPosition(6, 7, 10)] = 0x04
+        section.light.light[InSectionPosition(5, 7, 9)] = 0x05
+        section.light.light[InSectionPosition(7, 7, 9)] = 0x06
 
-        section.light.light[6, 7, 9] = 0x07
+        section.light.light[InSectionPosition(6, 7, 9)] = 0x07
 
         session.mesh()
     }
@@ -302,14 +302,14 @@ class SolidSectionMesherTest {
         val queue = TestQueue()
         val blocks = Array(6) { queue.nonTouching(it) }
         mesh(mapOf(
-            Vec3i(2, 1, 2) to blocks[0],
-            Vec3i(2, 3, 2) to blocks[1],
-            Vec3i(2, 2, 1) to blocks[2],
-            Vec3i(2, 2, 3) to blocks[3],
-            Vec3i(1, 2, 2) to blocks[4],
-            Vec3i(3, 2, 2) to blocks[5],
+            BlockPosition(2, 1, 2) to blocks[0],
+            BlockPosition(2, 3, 2) to blocks[1],
+            BlockPosition(2, 2, 1) to blocks[2],
+            BlockPosition(2, 2, 3) to blocks[3],
+            BlockPosition(1, 2, 2) to blocks[4],
+            BlockPosition(3, 2, 2) to blocks[5],
 
-            Vec3i(2, 2, 2) to queue.neighbours(blocks),
+            BlockPosition(2, 2, 2) to queue.neighbours(blocks),
         ))
 
         assertEquals(queue.blocks.size, 7)
@@ -366,13 +366,13 @@ class SolidSectionMesherTest {
         }
 
         data class RenderedBlock(
-            val position: Vec3i,
+            val position: BlockPosition,
             val block: BlockState,
             val tint: Int? = null,
         )
 
         data class RenderedEntity(
-            val position: Vec3i,
+            val position: BlockPosition,
             val block: BlockState,
             val meshed: Boolean = false,
         )
@@ -454,7 +454,7 @@ class SolidSectionMesherTest {
                     override var state = state
 
                     init {
-                        entities.add(TestQueue.RenderedEntity(Vec3i(position), state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
+                        entities.add(TestQueue.RenderedEntity(position, state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
                     }
                 }
             }
@@ -474,7 +474,7 @@ class SolidSectionMesherTest {
                 this.model = object : BlockRender {
 
                     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-                        entities.add(TestQueue.RenderedEntity(Vec3i(props.position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
+                        entities.add(TestQueue.RenderedEntity(position, state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
                     }
@@ -501,7 +501,7 @@ class SolidSectionMesherTest {
         }
 
         override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
-            queue.blocks.add(TestQueue.RenderedBlock(Vec3i(props.position), state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
+            queue.blocks.add(TestQueue.RenderedBlock(position, state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }
     }

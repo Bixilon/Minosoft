@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.WaterTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -38,8 +39,8 @@ class BlockSectionDataProviderTest {
 
     fun `single block set and removed`() {
         val blocks = create()
-        blocks[0] = StoneTest0.state
-        blocks[0] = null
+        blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = null
         assertTrue(blocks.isEmpty)
         assertFalse(blocks.hasFluid)
         assertEquals(blocks.count, 0)
@@ -47,7 +48,7 @@ class BlockSectionDataProviderTest {
 
     fun `single block set`() {
         val blocks = create()
-        blocks[0] = StoneTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
         assertFalse(blocks.isEmpty)
         assertFalse(blocks.hasFluid)
         assertEquals(blocks.count, 1)
@@ -55,7 +56,7 @@ class BlockSectionDataProviderTest {
 
     fun `single water set`() {
         val blocks = create()
-        blocks[0] = WaterTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = WaterTest0.state
         assertFalse(blocks.isEmpty)
         assertTrue(blocks.hasFluid)
         assertEquals(blocks.count, 1)
@@ -69,7 +70,7 @@ class BlockSectionDataProviderTest {
 
     fun `set min max position`() {
         val blocks = create()
-        blocks[0] = StoneTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
         assertEquals(blocks.minPosition, Vec3i(0, 0, 0))
         assertEquals(blocks.maxPosition, Vec3i(0, 0, 0))
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.place
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.minosoft.data.registries.blocks.TorchTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
@@ -22,6 +20,8 @@ import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.chunk.light.LightTestUtil.assertLight
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import org.testng.Assert.assertEquals
@@ -33,154 +33,154 @@ class BlockLightPlaceIT {
 
     fun inBlock() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(8, 10, 8, 0xFE)
     }
 
     fun nextToBlock1() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(8, 9, 8, 0xFD)
         world.assertLight(8, 0, 8, 0xF4)
     }
 
     fun nextToBlock2() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(8, 11, 8, 0xFD)
     }
 
     fun nextToBlock3() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(7, 10, 8, 0xFD)
     }
 
     fun nextToBlock4() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(9, 10, 8, 0xFD)
     }
 
     fun nextToBlock5() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(8, 10, 7, 0xFD)
     }
 
     fun nextToBlock6() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 10, 8)] = TorchTest0.state
+        world[BlockPosition(8, 10, 8)] = TorchTest0.state
         world.assertLight(8, 10, 9, 0xFD)
     }
 
     fun nextNeighbour1() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(16, 16, 16)] = TorchTest0.state
+        world[BlockPosition(16, 16, 16)] = TorchTest0.state
         world.assertLight(16, 17, 16, 0xFD)
     }
 
     fun nextNeighbour2() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(16, 16, 16)] = TorchTest0.state
+        world[BlockPosition(16, 16, 16)] = TorchTest0.state
         world.assertLight(17, 16, 16, 0xFD)
     }
 
     fun nextNeighbour3() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(16, 16, 16)] = TorchTest0.state
+        world[BlockPosition(16, 16, 16)] = TorchTest0.state
         world.assertLight(16, 16, 17, 0xFD)
     }
 
     fun nextNeighbour4() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(17, 17, 17)] = TorchTest0.state
+        world[BlockPosition(17, 17, 17)] = TorchTest0.state
         world.assertLight(17, 16, 17, 0xFD)
     }
 
     fun nextNeighbour5() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(17, 17, 17)] = TorchTest0.state
+        world[BlockPosition(17, 17, 17)] = TorchTest0.state
         world.assertLight(16, 17, 17, 0xFD)
     }
 
     fun nextNeighbour6() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(17, 17, 17)] = TorchTest0.state
+        world[BlockPosition(17, 17, 17)] = TorchTest0.state
         world.assertLight(17, 17, 16, 0xFD)
     }
 
     fun lowerSection() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 16, 8)] = TorchTest0.state
+        world[BlockPosition(8, 16, 8)] = TorchTest0.state
         world.assertLight(8, 15, 8, 0xFD)
     }
 
     fun upperSection() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 15, 8)] = TorchTest0.state
+        world[BlockPosition(8, 15, 8)] = TorchTest0.state
         world.assertLight(8, 16, 8, 0xFD)
     }
 
     fun totalPropagation1() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(12, 20, 12)] = TorchTest0.state
+        world[BlockPosition(12, 20, 12)] = TorchTest0.state
         world.assertLight(12, 7, 12, 0xF1)
     }
 
     fun totalPropagation2() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(12, 20, 12)] = TorchTest0.state
+        world[BlockPosition(12, 20, 12)] = TorchTest0.state
         world.assertLight(12, 33, 12, 0xF1)
     }
 
     fun totalPropagation3() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(12, 20, 12)] = TorchTest0.state
+        world[BlockPosition(12, 20, 12)] = TorchTest0.state
         world.assertLight(-1, 20, 12, 0xF1)
     }
 
     fun totalPropagation4() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(12, 20, 12)] = TorchTest0.state
+        world[BlockPosition(12, 20, 12)] = TorchTest0.state
         world.assertLight(25, 20, 12, 0xF1)
     }
 
     fun totalPropagation5() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(12, 20, 12)] = TorchTest0.state
+        world[BlockPosition(12, 20, 12)] = TorchTest0.state
         world.assertLight(12, 20, 25, 0xF1)
     }
 
     fun totalPropagation6() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(12, 20, 12)] = TorchTest0.state
+        world[BlockPosition(12, 20, 12)] = TorchTest0.state
         world.assertLight(12, 20, -1, 0xF1)
     }
 
     fun testEdgePropagation() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 24, 8)] = TorchTest0.state
+        world[BlockPosition(8, 24, 8)] = TorchTest0.state
         world.assertLight(2, 24, 15, 0xF1)
     }
 
     fun lightUpdate() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        val events: MutableList<Vec3i> = synchronizedListOf()
+        val events: MutableList<BlockPosition> = synchronizedListOf()
         world.session.events.listen<WorldUpdateEvent> {
             if (it.update !is ChunkLightUpdate) return@listen
-            events += Vec3i(it.update.chunkPosition.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunkPosition.y)
+            events += BlockPosition(it.update.chunkPosition.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunkPosition.z)
         }
-        world[Vec3i(8, 24, 8)] = TorchTest0.state
+        world[BlockPosition(8, 24, 8)] = TorchTest0.state
 
         assertEquals(events.toSet(), setOf(
-            Vec3i(+0, 1, +0),
-            Vec3i(+0, 0, +0),
-            Vec3i(+0, 2, +0),
-            Vec3i(+0, 1, -1),
-            Vec3i(+0, 1, +1),
-            Vec3i(-1, 1, +0),
-            Vec3i(+1, 1, +0),
+            BlockPosition(+0, 1, +0),
+            BlockPosition(+0, 0, +0),
+            BlockPosition(+0, 2, +0),
+            BlockPosition(+0, 1, -1),
+            BlockPosition(+0, 1, +1),
+            BlockPosition(-1, 1, +0),
+            BlockPosition(+1, 1, +0),
         ))
         assertEquals(events.size, 7)
     }
@@ -188,8 +188,8 @@ class BlockLightPlaceIT {
 
     fun bottomLight() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 0, 8)] = TorchTest0.state
-        val chunk = world.chunks[Vec2i(0, 0)]!!
+        world[BlockPosition(8, 0, 8)] = TorchTest0.state
+        val chunk = world.chunks[ChunkPosition(0, 0)]!!
         chunk.assertLight(8, -1, 8, 0xFD)
         chunk.assertLight(9, -1, 8, 0xFC)
     }
@@ -197,8 +197,8 @@ class BlockLightPlaceIT {
 
     fun topLight() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world[Vec3i(8, 255, 8)] = TorchTest0.state
-        val chunk = world.chunks[Vec2i(0, 0)]!!
+        world[BlockPosition(8, 255, 8)] = TorchTest0.state
+        val chunk = world.chunks[ChunkPosition(0, 0)]!!
         chunk.assertLight(8, 256, 8, 0xFD)
         chunk.assertLight(9, 256, 8, 0xFC)
     }
@@ -206,7 +206,7 @@ class BlockLightPlaceIT {
     @Test(enabled = false) // TODO: update heightmap of neighbours on change
     fun bottomHeightmap() {
         val world = SessionTestUtil.createSession(4).world
-        world.fill(Vec3i(-25, 0, -25), Vec3i(40, 1, 40), StoneTest0.state)
+        world.fill(BlockPosition(-25, 0, -25), BlockPosition(40, 1, 40), StoneTest0.state)
 
         world.assertLight(8, -1, 8, 0x00)
         world.assertLight(9, -1, 8, 0x00)
@@ -220,8 +220,8 @@ class BlockLightPlaceIT {
     @Test(enabled = false) // TODO: update heightmap of neighbours on change
     fun bottomPropagation() {
         val world = SessionTestUtil.createSession(4).world
-        world.fill(Vec3i(-25, 0, -25), Vec3i(40, 1, 40), StoneTest0.state)
-        world[Vec3i(8, 0, 8)] = TorchTest0.state
+        world.fill(BlockPosition(-25, 0, -25), BlockPosition(40, 1, 40), StoneTest0.state)
+        world[BlockPosition(8, 0, 8)] = TorchTest0.state
 
         world.assertLight(8, -1, 8, 0x0D)
         world.assertLight(9, -1, 8, 0x0C)
@@ -234,8 +234,8 @@ class BlockLightPlaceIT {
 
     fun topPropagation() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world.fill(Vec3i(-20, 254, -20), Vec3i(40, 255, 40), StoneTest0.state)
-        world[Vec3i(8, 255, 8)] = TorchTest0.state
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), StoneTest0.state)
+        world[BlockPosition(8, 255, 8)] = TorchTest0.state
 
         world.assertLight(8, 256, 8, 0xFD)
         world.assertLight(9, 256, 8, 0xFC)

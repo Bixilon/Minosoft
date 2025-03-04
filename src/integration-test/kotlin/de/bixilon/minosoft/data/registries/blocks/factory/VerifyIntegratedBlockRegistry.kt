@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.factory
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
@@ -36,7 +35,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
@@ -70,8 +69,8 @@ object VerifyIntegratedBlockRegistry {
     private fun compareCollisionShape(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
         if (integrated.block is OutlinedBlock && integrated.block !is FixedCollidable) return // not checkable without context
 
-        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, pixlyzer, null) else null
-        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, pixlyzer, null) else null
+        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer, null) else null
+        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer, null) else null
 
         if (expected == actual) {
             return
@@ -87,8 +86,8 @@ object VerifyIntegratedBlockRegistry {
         if (integrated.block is ScaffoldingBlock) return
         if (integrated.block is OffsetBlock) return // Don't compare, pixlyzer is probably wrong
 
-        val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, Vec3i.EMPTY, pixlyzer) else null
-        val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, Vec3i.EMPTY, pixlyzer) else null
+        val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, BlockPosition.EMPTY, pixlyzer) else null
+        val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, BlockPosition.EMPTY, pixlyzer) else null
 
         if (expected == actual) {
             return

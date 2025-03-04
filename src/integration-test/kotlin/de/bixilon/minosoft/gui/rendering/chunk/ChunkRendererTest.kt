@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
 import org.testng.Assert
@@ -45,7 +45,7 @@ class ChunkRendererTest {
     }
 
     fun queueEmptyChunk() {
-        val chunk = RenderTestUtil.context.session.world.chunks[Vec2i(0, 0)]!!
+        val chunk = RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!
         val renderer = create()
         renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
         Thread.sleep(50)
@@ -55,26 +55,26 @@ class ChunkRendererTest {
     }
 
     fun queueSingleChunk() {
-        val chunk = RenderTestUtil.context.session.world.chunks[Vec2i(0, 0)]!!
-        chunk[Vec3i(0, 0, 0)] = StoneTest0.state
+        val chunk = RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!
+        chunk[InChunkPosition(0, 0, 0)] = StoneTest0.state
         val renderer = create()
         renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
         renderer.awaitQueue(1)
-        chunk[Vec3i(0, 0, 0)] = null // reset
+        chunk[InChunkPosition(0, 0, 0)] = null // reset
         Assert.assertEquals(renderer.loaded.size, 1)
     }
 
     @Test(invocationCount = 10)
     fun queueMultipleChunks() {
         val chunks = setOf(
-            RenderTestUtil.context.session.world.chunks[Vec2i(0, 0)]!!,
-            RenderTestUtil.context.session.world.chunks[Vec2i(0, 1)]!!,
-            RenderTestUtil.context.session.world.chunks[Vec2i(1, 1)]!!,
-            RenderTestUtil.context.session.world.chunks[Vec2i(3, 1)]!!,
+            RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!,
+            RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 1)]!!,
+            RenderTestUtil.context.session.world.chunks[ChunkPosition(1, 1)]!!,
+            RenderTestUtil.context.session.world.chunks[ChunkPosition(3, 1)]!!,
         )
         for (chunk in chunks) {
-            chunk[Vec3i(0, 0, 0)] = StoneTest0.state
-            chunk[Vec3i(0, 16, 0)] = StoneTest0.state
+            chunk[InChunkPosition(0, 0, 0)] = StoneTest0.state
+            chunk[InChunkPosition(0, 16, 0)] = StoneTest0.state
         }
         val renderer = create()
         for (chunk in chunks) {
@@ -85,8 +85,8 @@ class ChunkRendererTest {
         val count = renderer.loaded.size
         // reset
         for (chunk in chunks) {
-            chunk[Vec3i(0, 0, 0)] = null
-            chunk[Vec3i(0, 16, 0)] = null
+            chunk[InChunkPosition(0, 0, 0)] = null
+            chunk[InChunkPosition(0, 16, 0)] = null
         }
         Assert.assertEquals(count, chunks.size)
     }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -26,7 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -70,14 +69,15 @@ object LightTestingUtil {
     }
 
     fun createChunkWithNeighbours(): Chunk {
-        val chunk = createEmptyChunk(Vec2i.EMPTY)
+        val chunk = createEmptyChunk(ChunkPosition.EMPTY)
         var index = 0
         for (x in -1..1) {
             for (z in -1..1) {
-                if (x == 0 && z == 0) {
+                val position = ChunkPosition(x, z)
+                if (position == ChunkPosition.EMPTY) {
                     continue
                 }
-                chunk.neighbours[index++] = createEmptyChunk(Vec2i(x, z))
+                chunk.neighbours[position] = createEmptyChunk(ChunkPosition(x, z))
             }
         }
 
@@ -86,7 +86,7 @@ object LightTestingUtil {
 
     fun ChunkSection.fill(state: BlockState) {
         for (index in 0 until 4096) {
-            blocks.unsafeSet(index, state)
+            blocks.unsafeSet(InSectionPosition(index), state)
         }
     }
 }

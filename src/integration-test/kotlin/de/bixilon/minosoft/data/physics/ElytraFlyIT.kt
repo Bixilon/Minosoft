@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.physics
 
 import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -31,6 +30,7 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.item.items.armor.extra.ElytraItem
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -132,7 +132,7 @@ class ElytraFlyIT {
     fun startFlyingInWater() {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 31.8, 0.0))
-        player.session.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.session.registries.block[WaterFluid]!!.states.default)
+        player.session.world.fill(BlockPosition(-3, 30, -3), BlockPosition(3, 33, 3), player.session.registries.block[WaterFluid]!!.states.default)
 
         player.equip()
 
@@ -149,7 +149,7 @@ class ElytraFlyIT {
     fun startFlyingInLava() {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(0.0, 31.8, 0.0))
-        player.session.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.session.registries.block[LavaFluid]!!.states.default)
+        player.session.world.fill(BlockPosition(-3, 30, -3), BlockPosition(3, 33, 3), player.session.registries.block[LavaFluid]!!.states.default)
         player.equip()
 
         player.runTicks(3)

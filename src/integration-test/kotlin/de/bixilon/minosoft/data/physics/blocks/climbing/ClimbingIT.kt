@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.blocks.climbing
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -50,7 +50,7 @@ abstract class ClimbingIT {
 
     protected fun fallingInto1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 15.0, 5.0))
 
         player.runTicks(20)
@@ -60,7 +60,7 @@ abstract class ClimbingIT {
 
     protected fun fallingInto2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 15.0, 5.0))
         player.input = PlayerMovementInput(sneak = true)
 
@@ -71,7 +71,7 @@ abstract class ClimbingIT {
 
     protected fun fallingInto3(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 15.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 
@@ -82,7 +82,7 @@ abstract class ClimbingIT {
 
     protected fun walkingForwards1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(forward = true)
 
@@ -93,7 +93,7 @@ abstract class ClimbingIT {
 
     protected fun walkingForwards2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 4.0, 5.0))
         player.input = PlayerMovementInput(forward = true)
 
@@ -104,7 +104,7 @@ abstract class ClimbingIT {
 
     protected fun walkingSideways1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(left = true)
 
@@ -115,7 +115,7 @@ abstract class ClimbingIT {
 
     protected fun walkingCombined1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(forward = true, left = true)
 
@@ -126,7 +126,7 @@ abstract class ClimbingIT {
 
     protected fun sneaking1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(sneak = true)
 
@@ -137,7 +137,7 @@ abstract class ClimbingIT {
 
     protected fun sneaking2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(sneak = true)
 
@@ -148,7 +148,7 @@ abstract class ClimbingIT {
 
     protected fun jumping1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 
@@ -159,7 +159,7 @@ abstract class ClimbingIT {
 
     protected fun jumping2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 
@@ -170,7 +170,7 @@ abstract class ClimbingIT {
 
     protected fun jumpingForwards1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(forward = true, jump = true)
 
@@ -181,7 +181,7 @@ abstract class ClimbingIT {
 
     protected fun jumpingForwards2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(forward = true, jump = true)
 
@@ -192,7 +192,7 @@ abstract class ClimbingIT {
 
     protected fun climbingDown1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
 
         player.runTicks(20)
@@ -202,7 +202,7 @@ abstract class ClimbingIT {
 
     protected fun climbingDown2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
 
         player.runTicks(27)
@@ -212,8 +212,8 @@ abstract class ClimbingIT {
 
     protected fun climbingUpCollision(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
-        player.session.world[Vec3i(5, 10, 5)] = StoneTest0.state
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
+        player.session.world[BlockPosition(5, 10, 5)] = StoneTest0.state
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 
@@ -224,8 +224,8 @@ abstract class ClimbingIT {
 
     protected fun climbingUpTrapdoor(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
-        player.session.world[Vec3i(5, 10, 5)] = player.session.registries.block[MinecraftBlocks.OAK_TRAPDOOR]?.states?.default?.withProperties(BlockProperties.DOOR_OPEN to true) ?: throw SkipException("Can not get oak trapdoor!")
+        player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
+        player.session.world[BlockPosition(5, 10, 5)] = player.session.registries.block[MinecraftBlocks.OAK_TRAPDOOR]?.states?.default?.withProperties(BlockProperties.DOOR_OPEN to true) ?: throw SkipException("Can not get oak trapdoor!")
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 

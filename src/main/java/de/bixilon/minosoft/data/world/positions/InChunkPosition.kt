@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class InChunkPosition(
-    inline val index: Int,
+    inline val raw: Int,
 ) : TextFormattable {
 
     constructor() : this(0, 0, 0)
@@ -34,55 +34,55 @@ value class InChunkPosition(
         assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
     }
 
-    inline val x: Int get() = (index shr SHIFT_X) and MASK_X
-    inline val y: Int get() = (index and (MASK_Y shl SHIFT_Y)) shl 20 shr 20
-    inline val z: Int get() = (index shr SHIFT_Z) and MASK_Z
-    inline val xz: Int get() = index and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
+    inline val x: Int get() = (raw shr SHIFT_X) and MASK_X
+    inline val y: Int get() = (raw and (MASK_Y shl SHIFT_Y)) shl 20 shr 20
+    inline val z: Int get() = (raw shr SHIFT_Z) and MASK_Z
+    inline val xz: Int get() = raw and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
 
 
     inline fun plusX(): InChunkPosition {
         assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
-        return InChunkPosition(index + X * 1)
+        return InChunkPosition(raw + X * 1)
     }
 
     inline fun plusX(x: Int): InChunkPosition {
         assertPosition(this.x + x, 0, ProtocolDefinition.SECTION_MAX_X)
-        return InChunkPosition(index + X * x)
+        return InChunkPosition(raw + X * x)
     }
 
     inline fun minusX(): InChunkPosition {
         assertPosition(this.x > 0)
-        return InChunkPosition(index - X * 1)
+        return InChunkPosition(raw - X * 1)
     }
 
     inline fun plusY(): InChunkPosition {
         assertPosition(this.y < ProtocolDefinition.CHUNK_MAX_Y)
-        return InChunkPosition(index + Y * 1)
+        return InChunkPosition(raw + Y * 1)
     }
 
     inline fun plusY(y: Int): InChunkPosition {
         assertPosition(this.y + y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
-        return InChunkPosition(index + Y * y)
+        return InChunkPosition(raw + Y * y)
     }
 
     inline fun minusY(): InChunkPosition {
         assertPosition(this.y > ProtocolDefinition.CHUNK_MIN_Y)
-        return InChunkPosition(index - Y * 1)
+        return InChunkPosition(raw - Y * 1)
     }
 
     inline fun plusZ(): InChunkPosition {
         assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
-        return InChunkPosition(index + Z * 1)
+        return InChunkPosition(raw + Z * 1)
     }
 
     inline fun plusZ(z: Int): InChunkPosition {
         assertPosition(this.z + z, 0, ProtocolDefinition.SECTION_MAX_Z)
-        return InChunkPosition(index + Z * z)
+        return InChunkPosition(raw + Z * z)
     }
 
     inline fun minusZ(): InChunkPosition {
         assertPosition(this.z > 0)
-        return InChunkPosition(index - Z * 1)
+        return InChunkPosition(raw - Z * 1)
     }
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = InChunkPosition(x, y, z)

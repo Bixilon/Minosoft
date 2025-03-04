@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.potion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.SlabTest0
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.annotations.Test
@@ -123,7 +123,7 @@ class SlowFallingIT {
     fun slowFallingCollisionMovement1() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(12.0, 9.0, 4.0))
-        player.session.world[Vec3i(12, 7, 4)] = SlabTest0.top
+        player.session.world[BlockPosition(12, 7, 4)] = SlabTest0.top
         player.applySlowFalling()
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(67)

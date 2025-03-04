@@ -139,8 +139,7 @@ class VoronoiBiomeAccessor(
     private fun nextNoiseOffset(seed: Long): Float {
         val floor = Math.floorMod((seed shr 24), SpatialBiomeArray.SIZE.toLong()).toInt()
 
-        // return ((floor - (SpatialBiomeArray.SIZE / 2)) / SpatialBiomeArray.SIZE.toDouble()) * 0.9
-        return (1.0f / 1137.0f) * floor + (-0.45f) // roughly equivalent and minimal faster
+        return ((floor - (SpatialBiomeArray.SIZE / 2)) / SpatialBiomeArray.SIZE.toFloat()) * 0.9f
     }
 
     // https://en.wikipedia.org/wiki/Linear_congruential_generator

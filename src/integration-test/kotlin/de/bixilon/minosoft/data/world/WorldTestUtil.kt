@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -24,11 +22,11 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.border.WorldBorder
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.entities.WorldEntities
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
@@ -68,21 +66,22 @@ object WorldTestUtil {
     }
 
     fun World.fill(startX: Int, startY: Int, startZ: Int, endX: Int, endY: Int, endZ: Int, state: BlockState?, superUnsafe: Boolean = true) {
-        fill(Vec3i(startX, startY, startZ), Vec3i(endX, endY, endZ), state, superUnsafe)
+        fill(BlockPosition(startX, startY, startZ), BlockPosition(endX, endY, endZ), state, superUnsafe)
     }
 
-    fun World.fill(start: Vec3i, end: Vec3i, state: BlockState?, superUnsafe: Boolean = true) {
+    fun World.fill(start: BlockPosition, end: BlockPosition, state: BlockState?, superUnsafe: Boolean = true) {
         // TODO: this can be optimized more (loop chunk after chunk, not x->z)
         var chunk: Chunk? = null
-        for (x in start.x..end.x) {
-            for (z in start.z..end.z) {
+        for (z in start.z..end.z) {
+            for (x in start.x..end.x) {
                 val chunkPosition = ChunkPosition(x shr 4, z shr 4)
                 if (chunk == null) {
                     chunk = this.chunks[chunkPosition] ?: continue
                 } else if (chunk.position != chunkPosition) {
-                    chunk = chunk.neighbours.trace(chunkPosition - chunk.position) ?: continue
+                    chunk = chunk.neighbours.traceChunk(chunkPosition - chunk.position) ?: continue
                 }
                 for (y in start.y..end.y) {
+                    val position = BlockPosition(x, y, z)
                     val section = chunk.getOrPut(y.sectionHeight) ?: continue
                     if (superUnsafe) {
                         var data = DATA[section.blocks] as Array<Any?>?
@@ -90,9 +89,9 @@ object WorldTestUtil {
                             data = arrayOfNulls<Any?>(ProtocolDefinition.BLOCKS_PER_SECTION)
                             DATA[section.blocks] = data
                         }
-                        data[getIndex(x and 0x0F, y and 0x0F, z and 0x0F)] = state
+                        data[position.inSectionPosition.index] = state
                     } else {
-                        section.blocks.unsafeSet(x and 0x0F, y and 0x0F, z and 0x0F, state)
+                        section.blocks.unsafeSet(position.inSectionPosition, state)
                     }
                 }
             }
@@ -103,9 +102,9 @@ object WorldTestUtil {
         if (superUnsafe) {
             for (x in (start.x shr 4)..(end.x shr 4)) {
                 for (z in (start.z shr 4)..(end.z shr 4)) {
-                    val chunkPosition = Vec2i(x, z)
+                    val chunkPosition = ChunkPosition(x, z)
                     chunk = if (chunk != null) {
-                        chunk.neighbours.trace(chunkPosition - chunk.position) ?: continue
+                        chunk.neighbours.traceChunk(chunkPosition - chunk.position) ?: continue
                     } else {
                         this.chunks[chunkPosition] ?: continue
                     }

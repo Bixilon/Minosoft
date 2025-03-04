@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pvp
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import org.testng.Assert.assertEquals
@@ -42,12 +41,12 @@ class CobwebTest : BlockTest<Block>() {
 
     fun testOutlineShape() {
         if (block !is OutlinedBlock) throw AssertionError("Not shaped!")
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), Vec3i.EMPTY, state))
+        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
     }
 
     fun testCollisionShape() {
         if (block !is CollidableBlock) return
-        assertEquals(AbstractVoxelShape.EMPTY, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, state, null))
+        assertEquals(AbstractVoxelShape.EMPTY, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
     }
 
     fun testStates() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics.blocks.bouncing
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
@@ -78,7 +78,7 @@ class HoneyBounceIT : BounceIT() {
     fun honeySliding1() {
         val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(5.0, 11.0, 5.0))
-        player.session.world.fill(Vec3i(5, 1, 6), Vec3i(5, 10, 6), block)
+        player.session.world.fill(BlockPosition(5, 1, 6), BlockPosition(5, 10, 6), block)
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(30)
 

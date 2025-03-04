@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.data.physics.fluid.still
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.SkipException
@@ -29,22 +29,22 @@ abstract class StillFluidIT {
     private val walking by lazy {
         val session = createSession(4)
         session.world.fill(
-            Vec3i(-10, 16, -10),
-            Vec3i(20, 16, 20),
+            BlockPosition(-10, 16, -10),
+            BlockPosition(20, 16, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        session.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), StoneTest0.state)
 
         return@lazy session
     }
     private val pool by lazy {
         val session = createSession(4)
         session.world.fill(
-            Vec3i(-10, 16, -10),
-            Vec3i(20, 20, 20),
+            BlockPosition(-10, 16, -10),
+            BlockPosition(20, 20, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        session.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), StoneTest0.state)
 
         return@lazy session
     }
@@ -57,8 +57,8 @@ abstract class StillFluidIT {
     protected fun landing1(): LocalPlayerEntity {
         val player = createPlayer(createSession(3))
         player.session.world.fill(
-            Vec3i(4, 5, 7),
-            Vec3i(4, 16, 7),
+            BlockPosition(4, 5, 7),
+            BlockPosition(4, 16, 7),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         player.forceTeleport(Vec3d(4.0, 18.0, 7.0))
@@ -69,8 +69,8 @@ abstract class StillFluidIT {
     protected fun landing2(): LocalPlayerEntity {
         val player = createPlayer(createSession(3))
         player.session.world.fill(
-            Vec3i(4, 5, 7),
-            Vec3i(4, 16, 7),
+            BlockPosition(4, 5, 7),
+            BlockPosition(4, 16, 7),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         player.forceTeleport(Vec3d(4.0, 30.0, 7.0))
@@ -97,11 +97,11 @@ abstract class StillFluidIT {
     protected fun walking3(): LocalPlayerEntity {
         val session = createSession(4)
         session.world.fill(
-            Vec3i(-10, 16, -10),
-            Vec3i(20, 17, 20),
+            BlockPosition(-10, 16, -10),
+            BlockPosition(20, 17, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        session.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), StoneTest0.state)
 
         val player = createPlayer(session)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkS2CP
@@ -41,7 +41,7 @@ class ChunkS2CPTest {
     }
 
     private operator fun Array<BlockState?>.get(x: Int, y: Int, z: Int): BlockState? {
-        return this[getIndex(x, y, z)]
+        return this[InSectionPosition(x, y, z).index]
     }
 
     private fun read(name: String, version: String, session: PlaySession = createSession(version = version), dimension: DimensionProperties): ChunkS2CP {

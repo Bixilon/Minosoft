@@ -67,9 +67,12 @@ object OutOfBlockPusher {
         }
         val dimensions = Vec2d(entity.dimensions)
 
-        pushOutOfBlocks(position.x - dimensions.x * 0.35, position.z + dimensions.y * 0.35)
-        pushOutOfBlocks(position.x - dimensions.x * 0.35, position.z - dimensions.y * 0.35)
-        pushOutOfBlocks(position.x + dimensions.x * 0.35, position.z - dimensions.y * 0.35)
-        pushOutOfBlocks(position.x + dimensions.x * 0.35, position.z + dimensions.y * 0.35)
+        val dimensionsX = dimensions.x * 0.35
+        val dimensionsY = dimensions.y * 0.35 // TODO: Really dimensions y???
+
+        pushOutOfBlocks(position.x - dimensionsX, position.z + dimensionsY)
+        pushOutOfBlocks(position.x - dimensionsX, position.z - dimensionsY)
+        pushOutOfBlocks(position.x + dimensionsX, position.z - dimensionsY)
+        pushOutOfBlocks(position.x + dimensionsX, position.z + dimensionsY)
     }
 }
