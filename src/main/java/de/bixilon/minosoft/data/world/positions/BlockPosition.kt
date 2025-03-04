@@ -30,7 +30,7 @@ value class BlockPosition(
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y).toLong() shl SHIFT_Y) or ((z and MASK_Z).toLong() shl SHIFT_Z) or ((x and MASK_X).toLong() shl SHIFT_X)) {
         assertPosition(x, -MAX_X, MAX_X)
-        assertPosition(y, -MAX_Y, MAX_Y)
+        assertPosition(y, MIN_Y, MAX_Y)
         assertPosition(z, -MAX_Z, MAX_Z)
     }
     constructor(position: InChunkPosition) : this(position.x, position.y, position.z)
@@ -133,9 +133,10 @@ value class BlockPosition(
         const val Z = 1 shl SHIFT_Z
         const val Y = 1 shl SHIFT_Y
 
-        const val MAX_X = 0
-        const val MAX_Y = 0
-        const val MAX_Z = 0
+        const val MAX_X = 30_000_000
+        const val MIN_Y = -2047
+        const val MAX_Y = 2048
+        const val MAX_Z = 30_000_000
 
 
         val EMPTY = BlockPosition(0, 0, 0)

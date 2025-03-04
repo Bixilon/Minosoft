@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -33,7 +32,8 @@ import java.util.*
 
 @Test(groups = ["models"])
 class WeightedModelTest {
-    private val getModel = WeightedBlockRender::class.java.getDeclaredMethod("getModel", Random::class.java, BlockPosition::class.java).apply { setUnsafeAccessible() }
+
+    private val getModel = WeightedBlockRender::class.java.declaredMethods.find { it.name.startsWith("getModel") && it.parameterCount == 2 && it.parameters.first().type == Random::class.java }!!.apply { setUnsafeAccessible() }
 
     fun `evenly distributed weight`() {
         val model = WeightedBlockStateApply(listOf(
@@ -46,43 +46,43 @@ class WeightedModelTest {
         model.load(createTextureManager("block/test"))
         val baked = model.bake()!!
 
-        baked.assert(Vec3i(29, -61, 12), 1)
-        baked.assert(Vec3i(29, -61, 13), 3)
-        baked.assert(Vec3i(29, -61, 14), 4)
-        baked.assert(Vec3i(29, -61, 15), 3)
-        baked.assert(Vec3i(29, -61, 16), 3)
-        baked.assert(Vec3i(29, -61, 17), 3)
+        baked.assert(BlockPosition(29, -61, 12), 1)
+        baked.assert(BlockPosition(29, -61, 13), 3)
+        baked.assert(BlockPosition(29, -61, 14), 4)
+        baked.assert(BlockPosition(29, -61, 15), 3)
+        baked.assert(BlockPosition(29, -61, 16), 3)
+        baked.assert(BlockPosition(29, -61, 17), 3)
 
-        baked.assert(Vec3i(30, -61, 12), 3)
-        baked.assert(Vec3i(30, -61, 13), 2)
-        baked.assert(Vec3i(30, -61, 14), 4)
-        baked.assert(Vec3i(30, -61, 15), 3)
-        baked.assert(Vec3i(30, -61, 16), 3)
-        baked.assert(Vec3i(30, -61, 17), 4)
+        baked.assert(BlockPosition(30, -61, 12), 3)
+        baked.assert(BlockPosition(30, -61, 13), 2)
+        baked.assert(BlockPosition(30, -61, 14), 4)
+        baked.assert(BlockPosition(30, -61, 15), 3)
+        baked.assert(BlockPosition(30, -61, 16), 3)
+        baked.assert(BlockPosition(30, -61, 17), 4)
 
-        baked.assert(Vec3i(31, -61, 12), 3)
-        baked.assert(Vec3i(31, -61, 13), 1)
-        baked.assert(Vec3i(31, -61, 14), 4)
-        baked.assert(Vec3i(31, -61, 15), 1)
-        baked.assert(Vec3i(31, -61, 16), 3)
-        baked.assert(Vec3i(31, -61, 17), 1)
+        baked.assert(BlockPosition(31, -61, 12), 3)
+        baked.assert(BlockPosition(31, -61, 13), 1)
+        baked.assert(BlockPosition(31, -61, 14), 4)
+        baked.assert(BlockPosition(31, -61, 15), 1)
+        baked.assert(BlockPosition(31, -61, 16), 3)
+        baked.assert(BlockPosition(31, -61, 17), 1)
 
-        baked.assert(Vec3i(32, -61, 12), 1)
-        baked.assert(Vec3i(32, -61, 13), 1)
-        baked.assert(Vec3i(32, -61, 14), 4)
-        baked.assert(Vec3i(32, -61, 15), 4)
-        baked.assert(Vec3i(32, -61, 16), 4)
-        baked.assert(Vec3i(32, -61, 17), 3)
+        baked.assert(BlockPosition(32, -61, 12), 1)
+        baked.assert(BlockPosition(32, -61, 13), 1)
+        baked.assert(BlockPosition(32, -61, 14), 4)
+        baked.assert(BlockPosition(32, -61, 15), 4)
+        baked.assert(BlockPosition(32, -61, 16), 4)
+        baked.assert(BlockPosition(32, -61, 17), 3)
 
-        baked.assert(Vec3i(33, -61, 12), 3)
-        baked.assert(Vec3i(33, -61, 13), 2)
-        baked.assert(Vec3i(33, -61, 14), 2)
-        baked.assert(Vec3i(33, -61, 15), 3)
-        baked.assert(Vec3i(33, -61, 16), 1)
-        baked.assert(Vec3i(33, -61, 17), 2)
+        baked.assert(BlockPosition(33, -61, 12), 3)
+        baked.assert(BlockPosition(33, -61, 13), 2)
+        baked.assert(BlockPosition(33, -61, 14), 2)
+        baked.assert(BlockPosition(33, -61, 15), 3)
+        baked.assert(BlockPosition(33, -61, 16), 1)
+        baked.assert(BlockPosition(33, -61, 17), 2)
     }
 
-    private fun WeightedBlockRender.assert(position: Vec3i, entry: Int) {
+    private fun WeightedBlockRender.assert(position: BlockPosition, entry: Int) {
         val model = getModel.invoke(this, Random(), position) as BakedModel
         assertEquals(model.faces[0][0].positions[0].toInt(), entry)
     }

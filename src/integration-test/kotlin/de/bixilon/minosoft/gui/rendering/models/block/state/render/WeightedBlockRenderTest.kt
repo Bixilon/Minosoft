@@ -26,14 +26,14 @@ import java.util.*
 
 @Test(groups = ["rendering"])
 class WeightedBlockRenderTest {
-    private val get = WeightedBlockRender::class.java.getDeclaredMethod("getModel", Random::class.java, BlockPosition::class.java).apply { setUnsafeAccessible() }
+    private val getModel = WeightedBlockRender::class.java.declaredMethods.find { it.name.startsWith("getModel") && it.parameterCount == 2 && it.parameters.first().type == Random::class.java }!!.apply { setUnsafeAccessible() }
     private val modelA = BakedModel::class.java.allocate().apply { this::properties.forceSet(arrayOfNulls(Directions.SIZE)) }
     private val modelB = BakedModel::class.java.allocate().apply { this::properties.forceSet(arrayOfNulls(Directions.SIZE)) }
 
     private val position = BlockPosition(1, 2, 3)
 
     private fun WeightedBlockRender.getModel(random: Random?, position: BlockPosition): BakedModel {
-        return get.invoke(this, random, position) as BakedModel
+        return getModel.invoke(this, random, position) as BakedModel
     }
 
     private fun create(models: Array<WeightedEntry>): WeightedBlockRender {

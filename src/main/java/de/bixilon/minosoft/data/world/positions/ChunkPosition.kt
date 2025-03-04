@@ -103,8 +103,8 @@ value class ChunkPosition(
         const val Z = 1L shl SHIFT_Z
 
 
-        const val MAX_X = Int.MAX_VALUE
-        const val MAX_Z = Int.MAX_VALUE
+        const val MAX_X = Int.MAX_VALUE // TODO
+        const val MAX_Z = Int.MAX_VALUE // TODO
 
 
         val EMPTY = ChunkPosition(0, 0)
