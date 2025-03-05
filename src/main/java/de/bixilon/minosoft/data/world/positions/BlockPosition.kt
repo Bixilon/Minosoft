@@ -114,6 +114,10 @@ value class BlockPosition(
     inline val inChunkPosition get() = InChunkPosition(x and 0x0F, y, this.z and 0x0F)
     inline val inSectionPosition get() = InSectionPosition(x and 0x0F, y.inSectionHeight, z and 0x0F)
 
+    inline operator fun component1() = x
+    inline operator fun component2() = y
+    inline operator fun component3() = z
+
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "b($x $y $z)"
 

@@ -64,6 +64,8 @@ class ChunkManagerTest {
     fun emptyWorldSize() {
         val manager = create()
         assertEquals(manager.size.size.size, Vec2i.EMPTY)
+        assertEquals(manager.size.size.min, Vec2i(Int.MAX_VALUE)) // TODO: That is undefined, but probably the best
+        assertEquals(manager.size.size.max, Vec2i(Int.MIN_VALUE))
     }
 
     fun createSingle() {
@@ -75,6 +77,8 @@ class ChunkManagerTest {
         assertEquals(chunk.position, ChunkPosition(0, 1))
         assertFalse(chunk.neighbours.complete)
         assertEquals(manager.size.size.size, Vec2i(1, 1))
+        assertEquals(manager.size.size.min, Vec2i(0, 1))
+        assertEquals(manager.size.size.max, Vec2i(0, 1))
     }
 
 
@@ -107,7 +111,7 @@ class ChunkManagerTest {
         val chunk = manager[ChunkPosition(3, 0)]
         assertNotNull(chunk)
         assertEquals(chunk!!.position, ChunkPosition(3, 0))
-        assertEquals(manager.size.size.size, ChunkPosition(1, 1))
+        assertEquals(manager.size.size.size, Vec2i(1, 1))
     }
 
     fun unloadSingle() {
@@ -128,7 +132,7 @@ class ChunkManagerTest {
         assertSame(b.neighbours.neighbours[Directions.NORTH], a)
 
 
-        assertEquals(manager.size.size.size, ChunkPosition(1, 2))
+        assertEquals(manager.size.size.size, Vec2i(1, 2))
     }
 
     fun neighbours9() {
@@ -136,17 +140,17 @@ class ChunkManagerTest {
         val matrix = manager.createMatrix()
         assertTrue(matrix[1][1].neighbours.complete)
 
-        assertEquals(matrix[0][0].neighbours.neighbours, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], matrix[1][1]))
-        assertEquals(matrix[0][1].neighbours.neighbours, arrayOf(null, matrix[0][0], matrix[1][0], null, matrix[1][1], null, matrix[0][2], matrix[1][2]))
-        assertEquals(matrix[0][2].neighbours.neighbours, arrayOf(null, matrix[0][1], matrix[1][1], null, matrix[1][2], null, null, null))
+        assertEquals(matrix[0][0].neighbours.neighbours.array, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], matrix[1][1]))
+        assertEquals(matrix[0][1].neighbours.neighbours.array, arrayOf(null, matrix[0][0], matrix[1][0], null, matrix[1][1], null, matrix[0][2], matrix[1][2]))
+        assertEquals(matrix[0][2].neighbours.neighbours.array, arrayOf(null, matrix[0][1], matrix[1][1], null, matrix[1][2], null, null, null))
 
-        assertEquals(matrix[1][0].neighbours.neighbours, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], matrix[1][1], matrix[2][1]))
-        assertEquals(matrix[1][1].neighbours.neighbours, arrayOf(matrix[0][0], matrix[1][0], matrix[2][0], matrix[0][1], matrix[2][1], matrix[0][2], matrix[1][2], matrix[2][2]))
-        assertEquals(matrix[1][2].neighbours.neighbours, arrayOf(matrix[0][1], matrix[1][1], matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
+        assertEquals(matrix[1][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], matrix[1][1], matrix[2][1]))
+        assertEquals(matrix[1][1].neighbours.neighbours.array, arrayOf(matrix[0][0], matrix[1][0], matrix[2][0], matrix[0][1], matrix[2][1], matrix[0][2], matrix[1][2], matrix[2][2]))
+        assertEquals(matrix[1][2].neighbours.neighbours.array, arrayOf(matrix[0][1], matrix[1][1], matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
 
-        assertEquals(matrix[2][0].neighbours.neighbours, arrayOf(null, null, null, matrix[1][0], null, matrix[1][1], matrix[2][1], null))
-        assertEquals(matrix[2][1].neighbours.neighbours, arrayOf(matrix[1][0], matrix[2][0], null, matrix[1][1], null, matrix[1][2], matrix[2][2], null))
-        assertEquals(matrix[2][2].neighbours.neighbours, arrayOf(matrix[1][1], matrix[2][1], null, matrix[1][2], null, null, null, null))
+        assertEquals(matrix[2][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[1][0], null, matrix[1][1], matrix[2][1], null))
+        assertEquals(matrix[2][1].neighbours.neighbours.array, arrayOf(matrix[1][0], matrix[2][0], null, matrix[1][1], null, matrix[1][2], matrix[2][2], null))
+        assertEquals(matrix[2][2].neighbours.neighbours.array, arrayOf(matrix[1][1], matrix[2][1], null, matrix[1][2], null, null, null, null))
 
 
         assertEquals(manager.size.size.size, Vec2i(3, 3))
@@ -157,16 +161,16 @@ class ChunkManagerTest {
         val matrix = manager.createMatrix()
         manager.unload(ChunkPosition(0, 0))
 
-        assertEquals(matrix[0][0].neighbours.neighbours, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], null))
-        assertEquals(matrix[0][1].neighbours.neighbours, arrayOf(null, matrix[0][0], matrix[1][0], null, null, null, matrix[0][2], matrix[1][2]))
-        assertEquals(matrix[0][2].neighbours.neighbours, arrayOf(null, matrix[0][1], null, null, matrix[1][2], null, null, null))
+        assertEquals(matrix[0][0].neighbours.neighbours.array, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], null))
+        assertEquals(matrix[0][1].neighbours.neighbours.array, arrayOf(null, matrix[0][0], matrix[1][0], null, null, null, matrix[0][2], matrix[1][2]))
+        assertEquals(matrix[0][2].neighbours.neighbours.array, arrayOf(null, matrix[0][1], null, null, matrix[1][2], null, null, null))
 
-        assertEquals(matrix[1][0].neighbours.neighbours, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], null, matrix[2][1]))
-        assertEquals(matrix[1][2].neighbours.neighbours, arrayOf(matrix[0][1], null, matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
+        assertEquals(matrix[1][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], null, matrix[2][1]))
+        assertEquals(matrix[1][2].neighbours.neighbours.array, arrayOf(matrix[0][1], null, matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
 
-        assertEquals(matrix[2][0].neighbours.neighbours, arrayOf(null, null, null, matrix[1][0], null, null, matrix[2][1], null))
-        assertEquals(matrix[2][1].neighbours.neighbours, arrayOf(matrix[1][0], matrix[2][0], null, null, null, matrix[1][2], matrix[2][2], null))
-        assertEquals(matrix[2][2].neighbours.neighbours, arrayOf(null, matrix[2][1], null, matrix[1][2], null, null, null, null))
+        assertEquals(matrix[2][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[1][0], null, null, matrix[2][1], null))
+        assertEquals(matrix[2][1].neighbours.neighbours.array, arrayOf(matrix[1][0], matrix[2][0], null, null, null, matrix[1][2], matrix[2][2], null))
+        assertEquals(matrix[2][2].neighbours.neighbours.array, arrayOf(null, matrix[2][1], null, matrix[1][2], null, null, null, null))
 
 
         assertEquals(manager.size.size.size, Vec2i(3, 3))

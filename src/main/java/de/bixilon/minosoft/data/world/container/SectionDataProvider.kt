@@ -46,26 +46,21 @@ open class SectionDataProvider<T>(
         }
         var count = 0
 
-        var minX = ProtocolDefinition.SECTION_WIDTH_X
-        var minY = ProtocolDefinition.SECTION_HEIGHT_Y
-        var minZ = ProtocolDefinition.SECTION_WIDTH_Z
+        var minX = ProtocolDefinition.SECTION_MAX_X
+        var minY = ProtocolDefinition.SECTION_MAX_Y
+        var minZ = ProtocolDefinition.SECTION_MAX_Z
 
         var maxX = 0
         var maxY = 0
         var maxZ = 0
 
-        var x: Int
-        var y: Int
-        var z: Int
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            data[index] ?: continue
+            if (data[index] == null) continue
             count++
             if (!checkSize) {
                 continue
             }
-            x = index and 0x0F
-            z = (index shr 4) and 0x0F
-            y = index shr 8
+            val (x, y, z) = InSectionPosition(index)
 
             if (x < minX) {
                 minX = x

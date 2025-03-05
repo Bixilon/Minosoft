@@ -41,7 +41,7 @@ object FloatListUtil {
             return
         }
         if (FLOAT_PUT_METHOD == null) { // Java < 16
-            for (i in 0 until length) {
+            for (i in 0 until length) { // TODO: optimize
                 destination.put(destinationOffset + i, this.get(sourceOffset + i))
             }
             destination.position(destination.position() + length)

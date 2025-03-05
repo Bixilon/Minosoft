@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,15 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.WorldOffset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
@@ -33,7 +32,7 @@ class FrustumTest {
     private val CAMERA = Frustum::class.java.getFieldOrNull("camera")!!
     private val RECALCULATE = Frustum::class.java.getDeclaredMethod("recalculate", Mat4::class.java).apply { setUnsafeAccessible() }
 
-    private fun create(matrix: Mat4, offset: Vec3i = Vec3i.EMPTY): Frustum {
+    private fun create(matrix: Mat4, offset: BlockPosition = BlockPosition.EMPTY): Frustum {
         val worldOffset = WorldOffset::class.java.allocate()
         worldOffset::offset.forceSet(DataObserver(offset))
 
@@ -80,7 +79,7 @@ class FrustumTest {
     }
 
     fun `aabb with world offset`() {
-        val frustum = create(Mat4(floatArrayOf(-0.50417376f, 1.1785046f, 0.0014267226f, 0.0014266947f, 0.0f, 0.0024691392f, -1.0000181f, -0.99999857f, 0.7365663f, 0.80667686f, 9.765802E-4f, 9.765611E-4f, 482.31094f, 369.0533f, 91.83938f, 91.85758f)), Vec3i(12288, 0, -1837056))
+        val frustum = create(Mat4(floatArrayOf(-0.50417376f, 1.1785046f, 0.0014267226f, 0.0014266947f, 0.0f, 0.0024691392f, -1.0000181f, -0.99999857f, 0.7365663f, 0.80667686f, 9.765802E-4f, 9.765611E-4f, 482.31094f, 369.0533f, 91.83938f, 91.85758f)), BlockPosition(12288, 0, -1837056))
 
         assertTrue(AABB(12381.468664298143, 75.0, -1837647.3519469386, 12381.718664298143, 75.25, -1837647.1019469386) in frustum)
         assertTrue(AABB(12392.072452953968, 77.0, -1837649.209980461, 12392.322452953968, 77.25, -1837648.959980461) in frustum)

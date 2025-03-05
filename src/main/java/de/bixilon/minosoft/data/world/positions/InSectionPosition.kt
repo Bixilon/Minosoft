@@ -90,7 +90,11 @@ value class InSectionPosition(
 
     inline operator fun plus(direction: Directions) = InSectionPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
     inline operator fun minus(direction: Directions) = InSectionPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
-    
+
+    inline operator fun component1() = x
+    inline operator fun component2() = y
+    inline operator fun component3() = z
+
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "s($x $y $z)"
 

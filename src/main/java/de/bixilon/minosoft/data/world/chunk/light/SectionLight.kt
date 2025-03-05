@@ -481,7 +481,7 @@ class SectionLight(
             neighbours[Directions.O_NORTH]?.light?.get(position.with(z = ProtocolDefinition.SECTION_MAX_Z))?.let { pushLight(it) }
         }
         if (position.z < ProtocolDefinition.SECTION_MAX_Z) {
-            pushLight(this[position.minusZ()])
+            pushLight(this[position.plusZ()])
         } else {
             neighbours[Directions.O_SOUTH]?.light?.get(position.with(z = 0))?.let { pushLight(it) }
         }

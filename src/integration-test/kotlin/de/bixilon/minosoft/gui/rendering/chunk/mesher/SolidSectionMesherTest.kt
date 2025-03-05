@@ -103,8 +103,8 @@ class SolidSectionMesherTest {
             TestQueue.RenderedBlock(BlockPosition(2, 2, 2), stone),
         )
 
-        assertEquals(meshes.minPosition, BlockPosition(2, 2, 2))
-        assertEquals(meshes.maxPosition, BlockPosition(2, 2, 2))
+        assertEquals(meshes.minPosition, InSectionPosition(2, 2, 2))
+        assertEquals(meshes.maxPosition, InSectionPosition(2, 2, 2))
     }
 
     fun `tinted and untinted block`() {
@@ -135,8 +135,8 @@ class SolidSectionMesherTest {
             TestQueue.RenderedBlock(BlockPosition(15, 15, 15), stone),
         )
 
-        assertEquals(meshes.minPosition, BlockPosition(0, 0, 0))
-        assertEquals(meshes.maxPosition, BlockPosition(15, 15, 15))
+        assertEquals(meshes.minPosition, InSectionPosition(0, 0, 0))
+        assertEquals(meshes.maxPosition, InSectionPosition(15, 15, 15))
         assertEquals(meshes.blockEntities?.size, 0)
     }
 

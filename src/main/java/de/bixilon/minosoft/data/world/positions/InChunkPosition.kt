@@ -92,6 +92,10 @@ value class InChunkPosition(
     inline operator fun plus(direction: Directions) = InChunkPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
     inline operator fun minus(direction: Directions) = InChunkPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
 
+    inline operator fun component1() = x
+    inline operator fun component2() = y
+    inline operator fun component3() = z
+
     override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "c($x $y $z)"
 

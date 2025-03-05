@@ -14,14 +14,12 @@
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class WorldSizeManager(private val world: World) {
-    var size by observed(WorldSize.EMPTY)
-        private set
+    val size = WorldSize()
 
 
     fun onCreate(position: ChunkPosition) {
@@ -29,9 +27,7 @@ class WorldSizeManager(private val world: World) {
         val max = size.max
         if (!addExtreme(position, min, max)) return
 
-        val size = calculateSize(min, max)
-
-        this.size = WorldSize(min, max, size)
+        this.size.size = calculateSize(min, max)
 
         world.view.updateServerDistance()
     }
@@ -44,7 +40,7 @@ class WorldSizeManager(private val world: World) {
     }
 
     fun clear() {
-        size = WorldSize.EMPTY
+        size.clear()
     }
 
     private fun recalculate(lock: Boolean = true) {
@@ -58,7 +54,9 @@ class WorldSizeManager(private val world: World) {
         }
         val size = calculateSize(min, max)
 
-        this.size = WorldSize(min, max, size)
+        this.size.min = min
+        this.size.max = max
+        this.size.size = size
         if (lock) world.lock.release()
 
         world.view.updateServerDistance()

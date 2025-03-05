@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class ChunkMeshes(
@@ -39,8 +40,8 @@ class ChunkMeshes(
     var blockEntities: ArrayList<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
-    var minPosition = InSectionPosition(16)
-    var maxPosition = InSectionPosition(0)
+    var minPosition = InSectionPosition(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
+    var maxPosition = InSectionPosition(0, 0, 0)
 
     fun finish() {
         this.opaqueMesh?.preload()
