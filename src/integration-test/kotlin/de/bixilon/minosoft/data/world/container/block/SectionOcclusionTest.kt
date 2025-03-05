@@ -16,12 +16,14 @@ package de.bixilon.minosoft.data.world.container.block
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -65,6 +67,12 @@ class SectionOcclusionTest {
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 
+    fun `one block set section`() {
+        val occlusion = create()
+        occlusion.provider[0, 0, 0] = opaque
+        assertEquals(occlusion.occlusion, BooleanArray(15) { false })
+    }
+
     fun `full opaque section`() {
         val occlusion = create()
         occlusion[0, 0, 0, 15, 15, 15] = opaque
@@ -93,6 +101,15 @@ class SectionOcclusionTest {
         val occlusion = create()
         occlusion[0, 0, 0, 15, 0, 15] = opaque
         occlusion[4, 0, 4, 4, 0, 4] = transparent
+        assertEquals(occlusion.occlusion, BooleanArray(15) { false })
+    }
+
+    fun `stack overflow error`() {
+        val occlusion = create()
+        val data = SectionOcclusionTest::class.java.getResourceAsStream("/chunk/occlusion_stack_overflow.txt")!!.readAsString().split(';').map { IT.REGISTRIES.block[it]?.states?.default }
+        for ((index, state) in data.withIndex()) {
+            occlusion.provider[InSectionPosition(index)] = state
+        }
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 

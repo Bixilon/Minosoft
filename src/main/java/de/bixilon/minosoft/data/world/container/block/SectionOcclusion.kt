@@ -72,15 +72,6 @@ class SectionOcclusion(
         return false
     }
 
-    private fun startTrace(regions: ShortArray, position: InSectionPosition) {
-        if (regions.setIfUnset(position, position.index)) return
-
-        // no need to trace negative coordinates initially
-        if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(regions, position.plusX(), position.index)
-        if (position.z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, position.plusZ(), position.index)
-        if (position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), position.index)
-    }
-
     private fun trace(regions: ShortArray, position: InSectionPosition, region: Int) {
         if (regions.setIfUnset(position, region)) return
 
@@ -97,7 +88,7 @@ class SectionOcclusion(
         Arrays.fill(array, EMPTY_REGION)
 
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            startTrace(array, InSectionPosition(index))
+            trace(array, InSectionPosition(index), index)
         }
 
         return array

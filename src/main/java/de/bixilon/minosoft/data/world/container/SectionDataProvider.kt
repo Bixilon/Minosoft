@@ -19,6 +19,7 @@ import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
+// Dump section: provider.joinToString(";") { it?.block?.identifier?.path ?: "" }
 open class SectionDataProvider<T>(
     var lock: Lock?,
     val checkSize: Boolean = false,
