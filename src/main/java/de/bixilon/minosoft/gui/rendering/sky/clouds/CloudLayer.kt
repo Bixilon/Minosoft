@@ -28,7 +28,7 @@ class CloudLayer(
     val index: Int,
     var height: IntRange,
 ) {
-    private var position = ChunkPosition(Int.MIN_VALUE, Int.MIN_VALUE)
+    private var position = ChunkPosition(-ChunkPosition.MAX_X, -ChunkPosition.MAX_Z)
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(3 * 3).unsafeCast()
     private var offset = 0.0f
     var movement = true

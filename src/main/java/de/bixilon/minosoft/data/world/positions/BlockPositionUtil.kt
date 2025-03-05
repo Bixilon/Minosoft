@@ -24,6 +24,10 @@ object BlockPositionUtil {
         return hash shr 16
     }
 
+    inline fun assertPosition(condition: Boolean, message: String) {
+        if (!DebugOptions.VERIFY_COORDINATES) return
+        if (!condition) throw AssertionError("Position assert failed: $message")
+    }
     inline fun assertPosition(condition: Boolean) {
         if (!DebugOptions.VERIFY_COORDINATES) return
         if (!condition) throw AssertionError("Position assert failed!")

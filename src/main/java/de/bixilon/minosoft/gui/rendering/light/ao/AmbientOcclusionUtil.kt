@@ -33,7 +33,7 @@ object AmbientOcclusionUtil {
 
     val EMPTY = IntArray(LEVELS) { LEVEL_NONE }
 
-    fun ChunkSection?.trace(x: Int, y: Int, z: Int): Int {
+    fun ChunkSection?.trace(x: Int, y: Int, z: Int): Int { // TODO: use packed and direction
         if (this == null) return 0
         var x = x
         var y = y
@@ -163,7 +163,7 @@ object AmbientOcclusionUtil {
     }
 
     fun applyWest(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
-        if (position.z == 0) {
+        if (position.x == 0) {
             return setX(section.neighbours?.get(O_WEST), position.with(x = ProtocolDefinition.SECTION_MAX_X), true, ao)
         } else {
             return setX(section, position.minusX(), false, ao)
@@ -171,7 +171,7 @@ object AmbientOcclusionUtil {
     }
 
     fun applyEast(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
-        if (position.z == ProtocolDefinition.SECTION_MAX_X) {
+        if (position.x == ProtocolDefinition.SECTION_MAX_X) {
             return setX(section.neighbours?.get(O_EAST), position.with(x = 0), true, ao)
         } else {
             return setX(section, position.plusX(), true, ao)
