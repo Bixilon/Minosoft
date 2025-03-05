@@ -55,10 +55,20 @@ abstract class Entity(
 ) : Initializable, EntityAttachable {
     private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
     protected val random = Random()
+    var _id: Int? = null
+    var _uuid: UUID? = null
     val id: Int?
-        get() = session.world.entities.getId(this)
+        get() {
+            if (_id != null) return _id
+            _id = session.world.entities.getId(this)
+            return _id
+        }
     open val uuid: UUID?
-        get() = session.world.entities.getUUID(this)
+        get() {
+            if (_uuid != null) return _uuid
+            _uuid = session.world.entities.getUUID(this)
+            return _uuid
+        }
 
     @Deprecated(message = "Use session.version", replaceWith = ReplaceWith("session.version.versionId"))
     protected val versionId: Int get() = session.version.versionId
@@ -94,6 +104,7 @@ abstract class Entity(
     open val physics: EntityPhysics<*> = unsafeNull()
 
     open val canRaycast: Boolean get() = true
+
 
     var age = 0
         private set

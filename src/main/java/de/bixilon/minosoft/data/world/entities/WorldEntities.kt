@@ -96,6 +96,8 @@ class WorldEntities : Iterable<Entity> {
 
     fun remove(entity: Entity) {
         lock.lock()
+        entity._id = null
+        entity._uuid = null
         if (entity !is LocalPlayerEntity && !entities.remove(entity)) {
             lock.unlock()
             return
@@ -112,6 +114,8 @@ class WorldEntities : Iterable<Entity> {
             lock.unlock()
             return
         }
+        entity._id = null
+        entity._uuid = null
         if (entity is LocalPlayerEntity) {
             idEntityMap.put(entityId, entity)
             lock.unlock()
@@ -192,6 +196,8 @@ class WorldEntities : Iterable<Entity> {
     fun clear(session: PlaySession, local: Boolean = false) {
         this.lock.lock()
         for (entity in this.entities) {
+            entity._id = null
+            entity._uuid = null
             if (!local && entity is LocalPlayerEntity) continue
             entityIdMap.remove(entity)?.let { idEntityMap.remove(it) }
             entityUUIDMap.remove(entity)?.let { uuidEntityMap.remove(it) }
