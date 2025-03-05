@@ -112,6 +112,6 @@ class ChunkNeighbours(val chunk: Chunk) {
         return chunk?.get(position.inChunkPosition)
     }
 
-    fun traceBlock(origin: InChunkPosition, offset: BlockPosition) = traceBlock(offset - origin)
-    fun traceBlock(origin: InChunkPosition, direction: Directions) = traceBlock((BlockPosition(origin) + direction))
+    fun traceBlock(origin: InChunkPosition, offset: BlockPosition) = traceBlock(BlockPosition.of(chunk.position, origin) + offset)
+    fun traceBlock(origin: InChunkPosition, direction: Directions) = traceBlock(BlockPosition.of(chunk.position, origin) + direction)
 }

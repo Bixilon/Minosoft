@@ -154,6 +154,13 @@ value class BlockPosition(
                 chunk.z * ProtocolDefinition.SECTION_WIDTH_Z
             ) // ToDo: Confirm
         }
+        fun of(chunk: ChunkPosition, inChunkPosition: InChunkPosition): BlockPosition {
+            return BlockPosition(
+                chunk.x * ProtocolDefinition.SECTION_WIDTH_X,
+                inChunkPosition.y,
+                chunk.z * ProtocolDefinition.SECTION_WIDTH_Z
+            ) // ToDo: Confirm
+        }
 
         fun of(chunk: ChunkPosition, sectionHeight: Int, inSection: InSectionPosition): BlockPosition {
             return BlockPosition(

@@ -28,7 +28,7 @@ value class InChunkPosition(
 
     constructor() : this(0, 0, 0)
 
-    constructor(x: Int, y: Int, z: Int) : this(((y and 0xFFF) shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
+    constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y) shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
         assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
         assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
         assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
