@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.WaterTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -64,30 +63,30 @@ class BlockSectionDataProviderTest {
 
     fun `initial min max position`() {
         val blocks = create()
-        assertEquals(blocks.minPosition, Vec3i(16, 16, 16))
-        assertEquals(blocks.maxPosition, Vec3i(0, 0, 0))
+        assertEquals(blocks.minPosition, InSectionPosition(15, 15, 15))
+        assertEquals(blocks.maxPosition, InSectionPosition(0, 0, 0))
     }
 
     fun `set min max position`() {
         val blocks = create()
         blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
-        assertEquals(blocks.minPosition, Vec3i(0, 0, 0))
-        assertEquals(blocks.maxPosition, Vec3i(0, 0, 0))
+        assertEquals(blocks.minPosition, InSectionPosition(0, 0, 0))
+        assertEquals(blocks.maxPosition, InSectionPosition(0, 0, 0))
     }
 
     fun `set min max position but block not on edge`() {
         val blocks = create()
         blocks[3, 5, 8] = StoneTest0.state
-        assertEquals(blocks.minPosition, Vec3i(3, 5, 8))
-        assertEquals(blocks.maxPosition, Vec3i(3, 5, 8))
+        assertEquals(blocks.minPosition, InSectionPosition(3, 5, 8))
+        assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 8))
     }
 
     fun `set min max position but multiple blocks set`() {
         val blocks = create()
         blocks[3, 5, 8] = StoneTest0.state
         blocks[1, 2, 12] = StoneTest0.state
-        assertEquals(blocks.minPosition, Vec3i(1, 2, 8))
-        assertEquals(blocks.maxPosition, Vec3i(3, 5, 12))
+        assertEquals(blocks.minPosition, InSectionPosition(1, 2, 8))
+        assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 12))
     }
 
     fun `remove one min max position but multiple blocks set`() {
@@ -95,10 +94,10 @@ class BlockSectionDataProviderTest {
         blocks[3, 5, 8] = StoneTest0.state
         blocks[1, 2, 12] = StoneTest0.state
         blocks[15, 14, 13] = StoneTest0.state
-        assertEquals(blocks.minPosition, Vec3i(1, 2, 8))
-        assertEquals(blocks.maxPosition, Vec3i(15, 14, 13))
+        assertEquals(blocks.minPosition, InSectionPosition(1, 2, 8))
+        assertEquals(blocks.maxPosition, InSectionPosition(15, 14, 13))
         blocks[15, 14, 13] = null
-        assertEquals(blocks.maxPosition, Vec3i(3, 5, 12))
+        assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 12))
     }
 
 

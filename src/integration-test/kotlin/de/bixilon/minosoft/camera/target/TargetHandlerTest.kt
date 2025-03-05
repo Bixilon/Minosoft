@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.camera.target
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.blocks.DirtTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -51,7 +51,7 @@ class TargetHandlerTest {
         assertNotNull(target)
         assertTrue(target is BlockTarget)
         target as BlockTarget
-        assertEquals(target.blockPosition, Vec3i(7, 69, 6))
+        assertEquals(target.blockPosition, BlockPosition(7, 69, 6))
         assertEquals(target.state, DirtTest0.state)
         assertEquals(target.direction, Directions.UP)
         assertEquals(target.cursor.y, 1.0)
@@ -75,7 +75,7 @@ class TargetHandlerTest {
         assertNotNull(target)
         assertTrue(target is BlockTarget)
         target as BlockTarget
-        assertEquals(target.blockPosition, Vec3i(8, 70, 2))
+        assertEquals(target.blockPosition, BlockPosition(8, 70, 2))
         assertEquals(target.state, StoneTest0.state)
         assertEquals(target.direction, Directions.EAST)
         assertEquals(target.cursor.x, 1.0)
@@ -99,7 +99,7 @@ class TargetHandlerTest {
         assertNotNull(target)
         assertTrue(target is BlockTarget)
         target as BlockTarget
-        assertEquals(target.blockPosition, Vec3i(9, 70, 2))
+        assertEquals(target.blockPosition, BlockPosition(9, 70, 2))
         assertEquals(target.state, StoneTest0.state)
         assertEquals(target.direction, Directions.WEST)
     }

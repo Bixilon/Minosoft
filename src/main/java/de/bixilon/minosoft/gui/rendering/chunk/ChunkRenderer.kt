@@ -274,7 +274,7 @@ class ChunkRenderer(
 
 
         for ((chunk, sectionHeight) in nextQueue) {
-            chunk.neighbours.get() ?: continue
+            if (!chunk.neighbours.complete) continue
             val section = chunk[sectionHeight] ?: continue
             master.tryQueue(section, force = true, chunk = chunk)
         }

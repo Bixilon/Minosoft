@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import org.testng.Assert.assertEquals
@@ -183,22 +182,22 @@ class BlockLightBreakIT {
     fun lightUpdate() {
         val world = SessionTestUtil.createSession(3, light = true).world
         world[BlockPosition(8, 24, 8)] = TorchTest0.state
-        val events: MutableSet<InChunkPosition> = synchronizedSetOf()
+        val events: MutableSet<BlockPosition> = synchronizedSetOf()
         world.session.events.listen<WorldUpdateEvent> {
             if (it.update !is ChunkLightUpdate) return@listen
-            events += InChunkPosition(it.update.chunkPosition.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunkPosition.z)
+            events += BlockPosition(it.update.chunkPosition.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunkPosition.z)
         }
         world[BlockPosition(8, 24, 8)] = null
 
         assertEquals(
             events, setOf(
-                InChunkPosition(+0, 1, +0),
-                InChunkPosition(+0, 0, +0),
-                InChunkPosition(+0, 2, +0),
-                InChunkPosition(+0, 1, -1),
-                InChunkPosition(+0, 1, +1),
-                InChunkPosition(-1, 1, +0),
-                InChunkPosition(+1, 1, +0),
+                BlockPosition(+0, 1, +0),
+                BlockPosition(+0, 0, +0),
+                BlockPosition(+0, 2, +0),
+                BlockPosition(+0, 1, -1),
+                BlockPosition(+0, 1, +1),
+                BlockPosition(-1, 1, +0),
+                BlockPosition(+1, 1, +0),
             )
         )
     }

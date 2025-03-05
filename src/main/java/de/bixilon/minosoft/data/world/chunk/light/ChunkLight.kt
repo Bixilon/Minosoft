@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.heightmap.FixedHeightmap
 import de.bixilon.minosoft.data.world.chunk.heightmap.LightHeightmap
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -41,13 +42,13 @@ class ChunkLight(val chunk: Chunk) {
 
         section.light.onBlockChange(position.inSectionPosition, previous, next)
 
-        val neighbours = chunk.neighbours.get() ?: return
+        if (!chunk.neighbours.complete) return
 
-        fireLightChange(section, position.y.sectionHeight, neighbours)
+        fireLightChange(section, position.y.sectionHeight, chunk.neighbours.neighbours)
     }
 
 
-    fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: Array<Chunk>, fireSameChunkEvent: Boolean = true) {
+    fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: ChunkNeighbourArray, fireSameChunkEvent: Boolean = true) {
         if (!section.light.update) {
             return
         }
@@ -78,9 +79,9 @@ class ChunkLight(val chunk: Chunk) {
                 if (offset == ChunkPosition.EMPTY) continue
 
                 val nextPosition = chunkPosition + offset
-                val chunk = neighbours[neighbourIndex++]
+                val chunk = neighbours.array[neighbourIndex++]
                 for (chunkY in -1..1) {
-                    val neighbourSection = chunk[sectionHeight + chunkY] ?: continue
+                    val neighbourSection = chunk?.get(sectionHeight + chunkY) ?: continue
                     if (!neighbourSection.light.update) {
                         continue
                     }
@@ -93,9 +94,9 @@ class ChunkLight(val chunk: Chunk) {
     }
 
     fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {
-        val neighbours = chunk.neighbours.get() ?: return
+        if (!chunk.neighbours.complete) return
         for ((index, section) in sections.withIndex()) {
-            fireLightChange(section ?: continue, index + chunk.minSection, neighbours, fireSameChunkEvent)
+            fireLightChange(section ?: continue, index + chunk.minSection, chunk.neighbours.neighbours, fireSameChunkEvent)
         }
     }
 

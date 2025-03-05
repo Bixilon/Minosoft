@@ -33,7 +33,7 @@ class WeightedBlockRenderTest {
     private val position = BlockPosition(1, 2, 3)
 
     private fun WeightedBlockRender.getModel(random: Random?, position: BlockPosition): BakedModel {
-        return getModel.invoke(this, random, position) as BakedModel
+        return getModel.invoke(this, random, position.raw) as BakedModel
     }
 
     private fun create(models: Array<WeightedEntry>): WeightedBlockRender {

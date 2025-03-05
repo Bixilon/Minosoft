@@ -73,7 +73,7 @@ class ChunkManagerTest {
 
         assertSame(manager[ChunkPosition(0, 1)], chunk)
         assertEquals(chunk.position, ChunkPosition(0, 1))
-        assertNull(chunk.neighbours.get())
+        assertFalse(chunk.neighbours.complete)
         assertEquals(manager.size.size.size, Vec2i(1, 1))
     }
 
@@ -107,7 +107,7 @@ class ChunkManagerTest {
         val chunk = manager[ChunkPosition(3, 0)]
         assertNotNull(chunk)
         assertEquals(chunk!!.position, ChunkPosition(3, 0))
-        assertEquals(manager.size.size.size, Vec2i(1, 1))
+        assertEquals(manager.size.size.size, ChunkPosition(1, 1))
     }
 
     fun unloadSingle() {
@@ -128,7 +128,7 @@ class ChunkManagerTest {
         assertSame(b.neighbours.neighbours[Directions.NORTH], a)
 
 
-        assertEquals(manager.size.size.size, Vec2i(1, 2))
+        assertEquals(manager.size.size.size, ChunkPosition(1, 2))
     }
 
     fun neighbours9() {

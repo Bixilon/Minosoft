@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -60,7 +60,7 @@ class ChunkS2CPTest {
         val session = createSession(version = "1.19.3")
         session.readRegistries("hypixel_registries")
         val packet = read("hypixel_hub_1_19_3", "1.19.3", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
-        assertEquals(packet.position, Vec2i(-10, 9))
+        assertEquals(packet.position, ChunkPosition(-10, 9))
         val blocks = packet.prototype.blocks!!
         assertNull(blocks[0])
         assertNull(blocks[1])
@@ -76,7 +76,7 @@ class ChunkS2CPTest {
 
     fun vanilla_1_19_3() {
         val packet = read("vanilla_1_19_3", "1.19.3", dimension = DimensionProperties(light = true, skyLight = true, minY = -64, height = 384))
-        assertEquals(packet.position, Vec2i(-4, 13))
+        assertEquals(packet.position, ChunkPosition(-4, 13))
         val prototype = packet.prototype
         assertNotNull(prototype.blocks)
         assertEquals(packet.prototype.blocks!![4]!![0]!!.block.identifier, MinecraftBlocks.BEDROCK)
@@ -84,7 +84,7 @@ class ChunkS2CPTest {
 
     fun feather_1_16_5() {
         val packet = read("feather_1_16_5", "1.16.5", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
-        assertEquals(packet.position, Vec2i(1, 0))
+        assertEquals(packet.position, ChunkPosition(1, 0))
         val prototype = packet.prototype
         assertNotNull(prototype.blocks)
         assertEquals(packet.prototype.blocks!![0]!![0]!!.block.identifier, MinecraftBlocks.BEDROCK)
@@ -92,7 +92,7 @@ class ChunkS2CPTest {
 
     fun cuberite_1_8_9() {
         val packet = read("cuberite_1_8_9", "1.8.9", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
-        assertEquals(packet.position, Vec2i(0, 0))
+        assertEquals(packet.position, ChunkPosition(0, 0))
         val blocks = packet.prototype.blocks
         assertNotNull(blocks); blocks!!
         assertEquals(blocks[0]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.BEDROCK)
@@ -106,7 +106,7 @@ class ChunkS2CPTest {
 
     fun cuberite_1_12_2() {
         val packet = read("cuberite_1_12_2", "1.12.2", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
-        assertEquals(packet.position, Vec2i(0, 0))
+        assertEquals(packet.position, ChunkPosition(0, 0))
         val blocks = packet.prototype.blocks
         assertNotNull(blocks); blocks!!
         assertNull(blocks[0]!![0, 0, 0])

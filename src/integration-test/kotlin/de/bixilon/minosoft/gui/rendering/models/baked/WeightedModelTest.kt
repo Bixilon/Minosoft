@@ -83,7 +83,7 @@ class WeightedModelTest {
     }
 
     private fun WeightedBlockRender.assert(position: BlockPosition, entry: Int) {
-        val model = getModel.invoke(this, Random(), position) as BakedModel
+        val model = getModel.invoke(this, Random(), position.raw) as BakedModel
         assertEquals(model.faces[0][0].positions[0].toInt(), entry)
     }
 

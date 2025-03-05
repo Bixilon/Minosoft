@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -32,13 +31,6 @@ class ChunkNeighbours(val chunk: Chunk) {
     private var count = 0
 
     val complete: Boolean get() = count == ChunkNeighbourArray.COUNT
-
-    fun get(): Array<Chunk>? {
-        if (complete) { // TODO: Race condition!
-            return neighbours.unsafeCast()
-        }
-        return null
-    }
 
     operator fun set(offset: ChunkPosition, chunk: Chunk) {
         this.chunk.lock.lock()

@@ -55,7 +55,7 @@ class ChunkQueueMaster(
         val chunk = chunk ?: section.chunk
         if (!chunk.neighbours.complete) return
 
-        chunk.neighbours.get() ?: return
+        if (!chunk.neighbours.complete) return
 
         if (queue(section, chunk, force)) {
             renderer.meshingQueue.sort()
@@ -63,14 +63,14 @@ class ChunkQueueMaster(
         }
     }
 
-    fun tryQueue(chunk: Chunk, sectionHeight: SectionHeight, force: Boolean = false) {
-        val section = chunk[sectionHeight] ?: return
+    fun tryQueue(chunk: Chunk?, sectionHeight: SectionHeight, force: Boolean = false) {
+        val section = chunk?.get(sectionHeight) ?: return
         tryQueue(section, force, chunk)
     }
 
     fun tryQueue(chunk: Chunk, ignoreLoaded: Boolean = false, force: Boolean = false) {
         if (!canQueue() || !chunk.neighbours.complete) return
-        chunk.neighbours.get() ?: return
+        if (!chunk.neighbours.complete) return
 
         if (!ignoreLoaded && chunk.position in renderer.loaded) {
             // chunks only get queued when the server sends them, we normally do not want to queue them again.

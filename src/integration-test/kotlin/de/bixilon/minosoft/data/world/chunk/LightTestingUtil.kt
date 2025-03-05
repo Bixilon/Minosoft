@@ -57,7 +57,7 @@ object LightTestingUtil {
         val objenesis = ObjenesisStd()
         val chunk = objenesis.newInstance(Chunk::class.java)
         chunk::lock.forceSet(RWLock.rwlock())
-        chunk::position.forceSet(position)
+        chunk::position.forceSet(position.raw)
         chunk::world.forceSet(world)
         chunk::maxSection.forceSet(chunk.world.dimension.maxSection)
         chunk::session.forceSet(chunk.world.session)
@@ -70,7 +70,6 @@ object LightTestingUtil {
 
     fun createChunkWithNeighbours(): Chunk {
         val chunk = createEmptyChunk(ChunkPosition.EMPTY)
-        var index = 0
         for (x in -1..1) {
             for (z in -1..1) {
                 val position = ChunkPosition(x, z)
