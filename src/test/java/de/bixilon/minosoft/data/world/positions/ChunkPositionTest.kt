@@ -41,9 +41,21 @@ class ChunkPositionTest {
     }
 
     @Test
+    fun `correct positive x large`() {
+        val position = ChunkPosition(1875000, 1875000)
+        assertEquals(position.x, 1875000)
+    }
+
+    @Test
     fun `correct negative x`() {
         val position = ChunkPosition(-2, 0xF)
         assertEquals(position.x, -2)
+    }
+
+    @Test
+    fun `correct negative x large`() {
+        val position = ChunkPosition(-1875000, -1875000)
+        assertEquals(position.x, -1875000)
     }
 
     @Test
@@ -71,9 +83,21 @@ class ChunkPositionTest {
     }
 
     @Test
+    fun `correct positive z large`() {
+        val position = ChunkPosition(1875000, 1875000)
+        assertEquals(position.z, 1875000)
+    }
+
+    @Test
     fun `correct negative z`() {
         val position = ChunkPosition(0xF, -4)
         assertEquals(position.z, -4)
+    }
+
+    @Test
+    fun `correct negative z large`() {
+        val position = ChunkPosition(-1875000, -1875000)
+        assertEquals(position.z, -1875000)
     }
 
     @Test

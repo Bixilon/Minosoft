@@ -26,7 +26,7 @@ value class ChunkPosition(
 
     constructor() : this(0, 0)
 
-    constructor(x: Int, z: Int) : this((z.toLong() shl SHIFT_Z) or (x.toLong() shl SHIFT_X)) {
+    constructor(x: Int, z: Int) : this(((z.toLong() and Integer.toUnsignedLong(MASK_Z)) shl SHIFT_Z) or ((x.toLong() and Integer.toUnsignedLong(MASK_X)) shl SHIFT_X)) {
         assertPosition(x, -MAX_X, MAX_X)
         assertPosition(z, -MAX_Z, MAX_Z)
     }
@@ -92,19 +92,19 @@ value class ChunkPosition(
 
     companion object {
         const val BITS_X = 32
-        const val MASK_X = (1 shl BITS_X) - 1
+        const val MASK_X = ((1L shl BITS_X) - 1).toInt()
         const val SHIFT_X = 0
 
         const val BITS_Z = 32
-        const val MASK_Z = (1 shl BITS_Z) - 1
+        const val MASK_Z = ((1L shl BITS_Z) - 1).toInt()
         const val SHIFT_Z = BITS_X
 
         const val X = 1L shl SHIFT_X
         const val Z = 1L shl SHIFT_Z
 
 
-        const val MAX_X = Int.MAX_VALUE // TODO
-        const val MAX_Z = Int.MAX_VALUE // TODO
+        const val MAX_X = (BlockPosition.MAX_X shr 4) + 1
+        const val MAX_Z = (BlockPosition.MAX_Z shr 4) + 1
 
 
         val EMPTY = ChunkPosition(0, 0)

@@ -34,9 +34,9 @@ value class InChunkPosition(
         assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
     }
 
-    inline val x: Int get() = (raw shr SHIFT_X) and MASK_X
-    inline val y: Int get() = (raw and (MASK_Y shl SHIFT_Y)) shl 20 shr 20
-    inline val z: Int get() = (raw shr SHIFT_Z) and MASK_Z
+    inline val x: Int get() = (raw ushr SHIFT_X) and MASK_X
+    inline val y: Int get() = (((raw ushr SHIFT_Y) and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
+    inline val z: Int get() = (raw ushr SHIFT_Z) and MASK_Z
     inline val xz: Int get() = raw and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
 
 

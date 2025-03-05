@@ -33,11 +33,12 @@ value class BlockPosition(
         assertPosition(y, MIN_Y, MAX_Y)
         assertPosition(z, -MAX_Z, MAX_Z)
     }
+
     constructor(position: InChunkPosition) : this(position.x, position.y, position.z)
 
-    inline val x: Int get() = (raw shr SHIFT_X).toInt() and MASK_X
-    inline val y: Int get() = (raw shr SHIFT_Y).toInt() and MASK_Y
-    inline val z: Int get() = (raw shr SHIFT_Z).toInt() and MASK_Z
+    inline val x: Int get() = (((raw ushr SHIFT_X).toInt() and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
+    inline val y: Int get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
+    inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
 
     inline fun plusX(): BlockPosition {
@@ -61,7 +62,7 @@ value class BlockPosition(
     }
 
     inline fun plusY(y: Int): BlockPosition {
-        assertPosition(this.y + y, -MAX_Y, MAX_Y)
+        assertPosition(this.y + y, MIN_Y, MAX_Y)
         return BlockPosition(raw + Y * y)
     }
 
@@ -129,13 +130,13 @@ value class BlockPosition(
         const val MASK_Y = (1 shl BITS_Y) - 1
         const val SHIFT_Y = BITS_X + BITS_Z
 
-        const val X = 1 shl SHIFT_X
-        const val Z = 1 shl SHIFT_Z
-        const val Y = 1 shl SHIFT_Y
+        const val X = 1L shl SHIFT_X
+        const val Z = 1L shl SHIFT_Z
+        const val Y = 1L shl SHIFT_Y
 
         const val MAX_X = 30_000_000
-        const val MIN_Y = -2047
-        const val MAX_Y = 2048
+        const val MIN_Y = -2048
+        const val MAX_Y = 2047
         const val MAX_Z = 30_000_000
 
 

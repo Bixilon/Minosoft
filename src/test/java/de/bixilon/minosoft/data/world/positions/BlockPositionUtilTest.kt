@@ -37,9 +37,4 @@ class BlockPositionUtilTest {
     fun hash4() {
         assertEquals(10888876138951, BlockPosition(123, -456, 789).hash)
     }
-
-    @Test
-    fun hash5() {
-        assertEquals(65198192324831, BlockPosition(5473628, 123123, 1234737534).hash)
-    }
 }
