@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
-import de.bixilon.minosoft.util.collections.DirectList
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
@@ -166,10 +165,6 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             cache.offset = Vec2(offset)
             cache.options = options
             forceRender(offset, cache, options)
-            if (cache.data !is DirectList) {
-                // not raw mesh data
-                cache.data.finish()
-            }
             cacheUpToDate = true
         }
         if (!directRendering) {
