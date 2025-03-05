@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
-import de.bixilon.minosoft.test.IT.reference
 
 
 object ContainerTestUtil {
@@ -33,10 +32,6 @@ object ContainerTestUtil {
     private val chest = IT.REGISTRIES.containerType[Generic9x3Container]!!
     private val furnace = IT.REGISTRIES.containerType[FurnaceContainer]!!
 
-
-    init {
-        reference()
-    }
 
     fun createInventory(session: PlaySession = createSession()): Container {
         val inventory = PlayerInventory(session.player.items, session)

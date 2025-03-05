@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import java.nio.ByteBuffer
 
 class DummyWindow : BaseWindow {
-    override val systemScale: Vec2 = Vec2(1.0f)
+    override val systemScale by observed(Vec2(1.0f))
     override var size: Vec2i = Vec2i.EMPTY
     override var minSize: Vec2i = Vec2i.EMPTY
     override var maxSize: Vec2i = Vec2i.EMPTY

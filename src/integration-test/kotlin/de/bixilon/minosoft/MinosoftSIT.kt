@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -58,7 +58,6 @@ internal object MinosoftSIT {
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is java version ${System.getProperty("java.version")}" }
         KUtil.initBootClasses()
         KUtil.initPlayClasses()
-        disableGC()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
 
         IntegratedAssets.DEFAULT.load()
@@ -75,19 +74,6 @@ internal object MinosoftSIT {
 
         loadPixlyzerData()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
-    }
-
-
-    @Deprecated("Not sure if that is needed")
-    fun disableGC() {
-        Thread {
-            val references = IT.references
-            // basically while (true)
-            for (i in 0 until Int.MAX_VALUE) {
-                Thread.sleep(100000L)
-            }
-            references.hashCode() // force keep reference to references
-        }.start()
     }
 
     fun loadPixlyzerData() {

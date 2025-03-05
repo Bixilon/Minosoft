@@ -52,6 +52,8 @@ object WorldTestUtil {
         world::time.forceSet(DataObserver(WorldTime()))
         world::biomes.forceSet(WorldBiomes(world))
         world::weather.forceSet(DataObserver(WorldWeather.Companion.SUNNY))
+        world::hardcore.forceSet(DataObserver(false))
+        world::difficulty.forceSet(DataObserver(null))
 
         return world
     }

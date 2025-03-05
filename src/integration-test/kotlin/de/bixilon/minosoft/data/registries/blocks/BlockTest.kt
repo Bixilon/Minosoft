@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.test.IT
-import de.bixilon.minosoft.test.IT.reference
 import org.testng.Assert
 import org.testng.Assert.assertEquals
 
@@ -28,9 +27,6 @@ abstract class BlockTest<T : Block> {
     val block: T = unsafeNull()
     val state: BlockState = unsafeNull()
 
-    init {
-        reference()
-    }
 
     fun retrieveBlock(name: ResourceLocation) {
         val block = IT.REGISTRIES.block[name]
