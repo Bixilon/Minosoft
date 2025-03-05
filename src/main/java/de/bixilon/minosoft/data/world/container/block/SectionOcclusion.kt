@@ -55,13 +55,10 @@ class SectionOcclusion(
             val regions = floodFill(array)
             update(calculateOcclusion(regions), notify)
         } catch (error: StackOverflowError) {
-            try {
-                val regions = floodFill(array)
-                update(calculateOcclusion(regions), notify)
-            } catch (error: StackOverflowError) {
-                println("Error: ${provider.section.chunk.position}; h=${provider.section.height} (ss=${error.stackTrace.size})")
-                error.printStackTrace()
-            }
+            // TODO: This is really stupid. The stack is large enough and still at some rare moments the method is crashing with an StackOverflow error.
+            // BUT: When running the EXACT same code again, it magically works and does not crash with an error. Stupid JVM.
+            val regions = floodFill(array)
+            update(calculateOcclusion(regions), notify)
         } finally {
             ALLOCATOR.free(array)
         }
