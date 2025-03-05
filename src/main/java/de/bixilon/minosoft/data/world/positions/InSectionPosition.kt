@@ -40,7 +40,7 @@ value class InSectionPosition(
 
 
     inline fun plusX(): InSectionPosition {
-        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X, "x < max")
+        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
         return InSectionPosition(index + X * 1)
     }
 
@@ -50,12 +50,12 @@ value class InSectionPosition(
     }
 
     inline fun minusX(): InSectionPosition {
-        assertPosition(this.x > 0, "x > 0")
+        assertPosition(this.x > 0)
         return InSectionPosition(index - X * 1)
     }
 
     inline fun plusY(): InSectionPosition {
-        assertPosition(this.y < ProtocolDefinition.SECTION_MAX_Y, "y < max")
+        assertPosition(this.y < ProtocolDefinition.SECTION_MAX_Y)
         return InSectionPosition(index + Y * 1)
     }
 
@@ -65,12 +65,12 @@ value class InSectionPosition(
     }
 
     inline fun minusY(): InSectionPosition {
-        assertPosition(this.y > 0, "y > 0")
+        assertPosition(this.y > 0)
         return InSectionPosition(index - Y * 1)
     }
 
     inline fun plusZ(): InSectionPosition {
-        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z, "z < max")
+        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
         return InSectionPosition(index + Z * 1)
     }
 
@@ -80,7 +80,7 @@ value class InSectionPosition(
     }
 
     inline fun minusZ(): InSectionPosition {
-        assertPosition(this.z > 0, "z > 0")
+        assertPosition(this.z > 0)
         return InSectionPosition(index - Z * 1)
     }
 

@@ -37,7 +37,7 @@ class ChunkMesher(
             renderer.unload(item)
             return null
         }
-        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours.neighbours, item.chunk, item.section.sectionHeight)
+        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours.neighbours, item.chunk, item.section.height)
         val mesh = ChunkMeshes(renderer.context, item.chunkPosition, item.sectionHeight, item.section.smallMesh)
         try {
             solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)

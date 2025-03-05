@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
@@ -95,4 +96,7 @@ object Vec3iUtil {
     }
 
     val Vec3i.blockPosition get() = BlockPosition(x, y, z)
+
+    @JvmName("constructorDirectionVector")
+    operator fun Vec3i.Companion.invoke(vector: DirectionVector) = Vec3i(vector.x, vector.y, vector.z)
 }

@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.array.BooleanArrayUtil.trySet
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -227,7 +228,7 @@ class WorldVisibilityGraph(
         return frustum.containsChunkSection(chunkPosition, sectionHeight)
     }
 
-    private fun VisibilityGraph.checkSection(chunkPosition: ChunkPosition, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, directionX: Int, directionY: Int, directionZ: Int, ignoreVisibility: Boolean) {
+    private fun VisibilityGraph.checkSection(chunkPosition: ChunkPosition, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, vector: DirectionVector, ignoreVisibility: Boolean) {
         if ((direction == Directions.UP && sectionIndex >= maxIndex) || (direction == Directions.DOWN && sectionIndex < 0)) {
             return
         }
@@ -246,63 +247,63 @@ class WorldVisibilityGraph(
         val section = chunk.sections.getOrNull(sectionIndex)?.blocks
 
 
-        if (directionX <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
-            val next = chunkPosition.minusX()
+        if (vector.x <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
             val nextChunk = chunk.neighbours[Directions.WEST]
             if (nextChunk != null) {
+                val next = chunkPosition.minusX()
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
-                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.WEST, -1, directionY, directionZ, false)
+                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.WEST, vector.with(Directions.WEST), false)
                 }
             }
         }
 
-        if (directionX >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
-            val next = chunkPosition.plusX()
+        if (vector.x >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
             val nextChunk = chunk.neighbours[Directions.EAST]
             if (nextChunk != null) {
+                val next = chunkPosition.plusX()
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
-                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.EAST, 1, directionY, directionZ, false)
+                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.EAST, vector.with(Directions.EAST), false)
                 }
             }
         }
 
-        if (sectionIndex > 0 && directionY <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.DOWN) != true)) {
+        if (sectionIndex > 0 && vector.y <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.DOWN) != true)) {
             if (!visibilities[visibilitySectionIndex - 1]) {
                 visibilities[visibilitySectionIndex - 1] = true
-                checkSection(chunkPosition, sectionIndex - 1, chunk, visibilities, Directions.DOWN, directionX, -1, directionZ, false)
+                checkSection(chunkPosition, sectionIndex - 1, chunk, visibilities, Directions.DOWN, vector.with(Directions.DOWN), false)
             }
         }
-        if (sectionIndex < maxIndex && directionY >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.UP) != true)) {
+        if (sectionIndex < maxIndex && vector.y >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.UP) != true)) {
             if (!visibilities[visibilitySectionIndex + 1]) {
                 visibilities[visibilitySectionIndex + 1] = true
-                checkSection(chunkPosition, sectionIndex + 1, chunk, visibilities, Directions.UP, directionX, 1, directionZ, false)
+                checkSection(chunkPosition, sectionIndex + 1, chunk, visibilities, Directions.UP, vector.with(Directions.UP), false)
             }
         }
 
-        if (directionZ <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.z > chunkMin.z) {
-            val next = chunkPosition.minusZ()
+        if (vector.z <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.z > chunkMin.z) {
             val nextChunk = chunk.neighbours[Directions.NORTH]
             if (nextChunk != null) {
+                val next = chunkPosition.minusZ()
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
-                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.NORTH, directionX, directionY, -1, false)
+                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.NORTH, vector.with(Directions.NORTH), false)
                 }
             }
         }
 
-        if (directionZ >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.z < chunkMax.z) {
-            val next = chunkPosition.plusZ()
+        if (vector.z >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.z < chunkMax.z) {
             val nextChunk = chunk.neighbours[Directions.SOUTH]
             if (nextChunk != null) {
+                val next = chunkPosition.plusZ()
                 val nextVisibilities = getVisibility(next) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
-                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.SOUTH, directionX, directionY, 1, false)
+                    checkSection(next, sectionIndex, nextChunk, nextVisibilities, Directions.SOUTH, vector.with(Directions.SOUTH), false)
                 }
             }
         }
@@ -313,8 +314,7 @@ class WorldVisibilityGraph(
         val next = chunkPosition + direction
         val nextChunk = session.world.chunks[next] ?: return
         val nextVisibility = getVisibility(next)
-        val vector = direction.vector
-        checkSection(next, cameraSectionIndex + vector.y, nextChunk, nextVisibility ?: return, direction, vector.x, vector.y, vector.z, true)
+        checkSection(next, cameraSectionIndex + direction.vector.y, nextChunk, nextVisibility ?: return, direction, direction.vector, true)
     }
 
     @Synchronized

@@ -248,7 +248,7 @@ class ChunkManagerTest {
         val manager = create()
         val matrix = manager.createMatrix()
         matrix[1][1].getOrPut(3)
-        assertEquals(manager[0, 0]!![3]!!.sectionHeight, 3)
+        assertEquals(manager[0, 0]!![3]!!.height, 3)
     }
 
     fun singleBlockUpdateWorld() {

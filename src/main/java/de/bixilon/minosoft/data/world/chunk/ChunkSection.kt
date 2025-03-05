@@ -30,7 +30,7 @@ import java.util.*
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    val sectionHeight: Int,
+    val height: Int,
     val chunk: Chunk,
 ) {
     val blocks = BlockSectionDataProvider(chunk.lock, this)
@@ -43,7 +43,7 @@ class ChunkSection(
     fun tick(session: PlaySession, random: Random) {
         if (blockEntities.isEmpty) return
 
-        val offset = BlockPosition.of(chunk.position, sectionHeight)
+        val offset = BlockPosition.of(chunk.position, height)
         var position = BlockPosition()
 
         val min = blockEntities.minPosition

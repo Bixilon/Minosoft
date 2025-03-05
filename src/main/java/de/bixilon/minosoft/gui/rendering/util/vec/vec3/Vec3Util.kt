@@ -28,6 +28,7 @@ import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -174,6 +175,9 @@ object Vec3Util {
     fun FloatArray.toVec3(): Vec3 {
         return Vec3(this[0], this[1], this[2])
     }
+
+    @JvmName("constructorDirectionVector")
+    operator fun Vec3.Companion.invoke(vector: DirectionVector) = Vec3(vector.x, vector.y, vector.z)
 
     @JvmName("constructorBlockPosition")
     operator fun Vec3.Companion.invoke(position: BlockPosition) = Vec3(position.x, position.y, position.z)

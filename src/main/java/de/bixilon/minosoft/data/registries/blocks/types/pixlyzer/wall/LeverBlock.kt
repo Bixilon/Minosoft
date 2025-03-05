@@ -46,7 +46,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         val direction = blockState.getFacing().inverted
         val mountDirection = getRealFacing(blockState)
 
-        val position = (Vec3d(blockPosition) + 0.5).plus((direction.vector * 0.1) + (mountDirection.vector * 0.2))
+        val position = (Vec3d(blockPosition) + 0.5).plus((direction.vectord * 0.1) + (mountDirection.vectord * 0.2))
 
         particle += DustParticle(session, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
     }

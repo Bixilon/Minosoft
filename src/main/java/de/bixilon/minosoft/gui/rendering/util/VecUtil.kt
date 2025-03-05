@@ -132,11 +132,11 @@ object VecUtil {
     }
 
     inline infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
-        return this + direction?.vector
+        return this + direction?.vectori
     }
 
     inline infix operator fun Vec3i.plusAssign(direction: Directions?) {
-        this += direction?.vector ?: return
+        this += direction?.vectori ?: return
     }
 
     inline infix operator fun Vec3i.plus(input: Vec3): Vec3 {
@@ -148,7 +148,7 @@ object VecUtil {
     }
 
     inline infix operator fun Vec2i.plus(direction: Directions): Vec2i {
-        return this + direction.vector
+        return this + direction.vectori
     }
 
     fun BlockPosition.getWorldOffset(offsetType: RandomOffsetTypes): Vec3 {
@@ -206,9 +206,5 @@ object VecUtil {
 
     fun Double.noised(random: Random): Double {
         return random.nextDouble() / this * if (random.nextBoolean()) 1.0 else -1.0
-    }
-
-    operator fun Directions.plus(direction: Directions): Vec3i {
-        return this.vector + direction.vector
     }
 }

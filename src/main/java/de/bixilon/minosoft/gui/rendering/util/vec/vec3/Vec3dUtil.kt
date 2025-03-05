@@ -21,6 +21,7 @@ import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -165,6 +166,9 @@ object Vec3dUtil {
         this.y = other.y
         this.z = other.z
     }
+
+    @JvmName("constructorDirectionVector")
+    operator fun Vec3d.Companion.invoke(vector: DirectionVector) = Vec3d(vector.x, vector.y, vector.z)
 
     @JvmName("constructorBlockPosition")
     operator fun Vec3d.Companion.invoke(position: BlockPosition) = Vec3d(position.x, position.y, position.z)

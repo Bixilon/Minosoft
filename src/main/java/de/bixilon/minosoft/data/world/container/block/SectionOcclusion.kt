@@ -54,12 +54,20 @@ class SectionOcclusion(
         try {
             val regions = floodFill(array)
             update(calculateOcclusion(regions), notify)
+        } catch (error: StackOverflowError) {
+            try {
+                val regions = floodFill(array)
+                update(calculateOcclusion(regions), notify)
+            } catch (error: StackOverflowError) {
+                println("Error: ${provider.section.chunk.position}; h=${provider.section.height} (ss=${error.stackTrace.size})")
+                error.printStackTrace()
+            }
         } finally {
             ALLOCATOR.free(array)
         }
     }
 
-    private inline fun ShortArray.setIfUnset(position: InSectionPosition, region: Int): Boolean {
+    private inline fun ShortArray.setIfUnset(position: InSectionPosition, region: Short): Boolean {
         if (this[position.index] != EMPTY_REGION) {
             return true
         }
@@ -68,11 +76,11 @@ class SectionOcclusion(
             this[position.index] = INVALID_REGION
             return true
         }
-        this[position.index] = region.toShort()
+        this[position.index] = region
         return false
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition, region: Int) {
+    private fun trace(regions: ShortArray, position: InSectionPosition, region: Short) {
         if (regions.setIfUnset(position, region)) return
 
         if (position.x > 0) trace(regions, position.minusX(), region)
@@ -88,7 +96,7 @@ class SectionOcclusion(
         Arrays.fill(array, EMPTY_REGION)
 
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            trace(array, InSectionPosition(index), index)
+            trace(array, InSectionPosition(index), index.toShort())
         }
 
         return array

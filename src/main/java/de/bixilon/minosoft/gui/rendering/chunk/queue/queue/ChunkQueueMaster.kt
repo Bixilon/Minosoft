@@ -33,19 +33,19 @@ class ChunkQueueMaster(
 
     private fun queue(section: ChunkSection, chunk: Chunk, force: Boolean): Boolean {
         if (section.blocks.isEmpty) {
-            renderer.unload(QueuePosition(chunk.position, section.sectionHeight))
+            renderer.unload(QueuePosition(chunk.position, section.height))
             return false
         }
 
-        val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.position, section.sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
+        val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.position, section.height, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
-            val center = CHUNK_CENTER + BlockPosition.of(chunk.position, section.sectionHeight)
-            val item = WorldQueueItem(chunk.position, section.sectionHeight, chunk, section, center)
+            val center = CHUNK_CENTER + BlockPosition.of(chunk.position, section.height)
+            val item = WorldQueueItem(chunk.position, section.height, chunk, section, center)
             renderer.meshingQueue.queue(item)
             return true
         }
 
-        renderer.culledQueue.queue(chunk.position, section.sectionHeight)
+        renderer.culledQueue.queue(chunk.position, section.height)
 
         return false
     }
