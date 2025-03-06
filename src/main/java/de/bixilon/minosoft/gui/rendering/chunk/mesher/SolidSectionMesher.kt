@@ -32,9 +32,9 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
@@ -59,12 +59,12 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(chunkPosition: ChunkPosition, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
+    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
-        val isLowestSection = sectionHeight == chunk.minSection
-        val isHighestSection = sectionHeight == chunk.maxSection
+        val isLowestSection = sectionPosition.y == chunk.minSection
+        val isHighestSection = sectionPosition.y == chunk.maxSection
         val blocks = section.blocks
         val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
@@ -76,9 +76,9 @@ class SolidSectionMesher(
 
         val cameraOffset = context.camera.offset.offset
 
-        val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
-        val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-        val offsetZ = chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
+        val offsetX = sectionPosition.x * ProtocolDefinition.SECTION_WIDTH_X
+        val offsetY = sectionPosition.y * ProtocolDefinition.SECTION_HEIGHT_Y
+        val offsetZ = sectionPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
 
         val floatOffset = FloatArray(3)
 

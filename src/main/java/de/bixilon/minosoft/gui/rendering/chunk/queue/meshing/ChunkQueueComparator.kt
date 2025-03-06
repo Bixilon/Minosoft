@@ -13,31 +13,26 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 
 class ChunkQueueComparator : Comparator<WorldQueueItem> {
     private var sort = 1
-    private var position: ChunkPosition = ChunkPosition.EMPTY
-    private var height = 0
+    private var position = SectionPosition()
 
 
     fun update(renderer: ChunkRenderer) {
-        if (this.position == renderer.cameraChunkPosition && this.height == renderer.cameraSectionHeight) return
-        this.position = renderer.cameraChunkPosition
-        this.height = renderer.cameraSectionHeight
+        if (this.position == renderer.cameraSectionPosition) return
+        this.position = renderer.cameraSectionPosition
         sort++
     }
 
     private fun getDistance(item: WorldQueueItem): Int {
         if (item.sort == this.sort) return item.distance
 
-        val array = item.sectionPosition.array
-        val x = array[0] - position.x
-        val y = array[1] - height
-        val z = array[2] - position.z
-        val distance = (x * x + y * y + z * z)
+        val position = item.position
+        val distance = (position - this.position).length2()
 
         item.distance = distance
         item.sort = sort

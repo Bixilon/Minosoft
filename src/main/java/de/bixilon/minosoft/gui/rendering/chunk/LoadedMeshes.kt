@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -67,17 +68,17 @@ class LoadedMeshes(
         if (lock) unlock()
     }
 
-    fun unload(position: ChunkPosition, sectionHeight: Int, lock: Boolean) {
+    fun unload(position: SectionPosition, lock: Boolean) {
         if (lock) lock()
 
-        val meshes = this.meshes[position]
+        val meshes = this.meshes[position.chunkPosition]
 
         if (meshes != null) {
-            meshes.remove(sectionHeight)?.let {
+            meshes.remove(position.y)?.let {
                 renderer.unloadingQueue.forceQueue(it, lock)
 
                 if (meshes.isEmpty()) {
-                    this.meshes.remove(position)
+                    this.meshes.remove(position.chunkPosition)
                 }
             }
         }
@@ -106,7 +107,7 @@ class LoadedMeshes(
 
             for (entry in meshes.int2ObjectEntrySet()) {
                 val mesh = entry.value
-                if (!renderer.visibilityGraph.isSectionVisible(chunkPosition, entry.intKey, mesh.minPosition, mesh.maxPosition, false)) {
+                if (!renderer.visibilityGraph.isSectionVisible(SectionPosition.of(chunkPosition, entry.intKey), mesh.minPosition, mesh.maxPosition, false)) {
                     continue
                 }
                 visible.addMesh(mesh)

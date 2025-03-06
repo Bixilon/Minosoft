@@ -72,11 +72,11 @@ class ChunkMeshingQueue(
             items += item
         }
         unlock()
-        val camera = renderer.cameraChunkPosition
+        val camera = renderer.cameraSectionPosition
         for (item in items) {
-            val distance = abs(item.chunkPosition.x - camera.x) + abs(item.chunkPosition.z - camera.z)
+            val distance = abs(item.position.x - camera.x) + abs(item.position.z - camera.z) // TODO: Check y?
             val runnable = HeavyPoolRunnable(if (distance < 1) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)
-            val task = MeshPrepareTask(item.chunkPosition, item.sectionHeight, runnable)
+            val task = MeshPrepareTask(item.position, runnable)
             task.runnable.runnable = Runnable { renderer.mesher.tryMesh(item, task, task.runnable) }
             tasks += task
         }
@@ -87,7 +87,7 @@ class ChunkMeshingQueue(
     fun remove(chunkPosition: ChunkPosition) {
         val remove: MutableSet<WorldQueueItem> = mutableSetOf()
         queue.removeAll {
-            if (it.chunkPosition != chunkPosition) {
+            if (it.position.chunkPosition != chunkPosition) {
                 return@removeAll false
             }
             remove += it
@@ -100,7 +100,7 @@ class ChunkMeshingQueue(
         if (lock) lock()
         val remove: MutableSet<WorldQueueItem> = mutableSetOf()
         queue.removeAll {
-            if (renderer.visibilityGraph.isChunkVisible(it.chunkPosition)) {
+            if (renderer.visibilityGraph.isChunkVisible(it.position.chunkPosition)) {
                 return@removeAll false
             }
             remove += it
@@ -153,7 +153,7 @@ class ChunkMeshingQueue(
         if (set.remove(item)) {
             queue -= item
         }
-        if (item.chunkPosition == renderer.cameraChunkPosition) {
+        if (item.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
             queue.add(0, item)
         } else {
             queue += item

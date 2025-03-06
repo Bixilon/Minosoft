@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -30,7 +31,7 @@ import java.util.*
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    val height: Int,
+    val height: SectionHeight,
     val chunk: Chunk,
 ) {
     val blocks = BlockSectionDataProvider(chunk.lock, this)

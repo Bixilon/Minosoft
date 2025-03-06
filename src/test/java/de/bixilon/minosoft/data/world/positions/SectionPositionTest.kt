@@ -17,153 +17,153 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 
-class BlockPositionTest {
+class SectionPositionTest {
 
     @Test
     fun `init correct min`() {
-        val position = BlockPosition(-30_000_000, -2048, -30_000_000)
+        val position = SectionPosition(-1875000, -128, -1875000)
     }
 
     @Test
     fun `init correct max`() {
-        val position = BlockPosition(30_000_000, 2047, 30_000_000)
+        val position = SectionPosition(1875000, 127, 1875000)
     }
 
     @Test
     fun `init badly`() {
-        assertThrows<AssertionError> { BlockPosition(-40_000_000, -5000, -40_000_000) }
+        assertThrows<AssertionError> { SectionPosition(-1875001, 128, -1875001) }
     }
 
     @Test
     fun `correct positive x`() {
-        val position = BlockPosition(2, 0xF, 0xF)
+        val position = SectionPosition(2, 0xF, 0xF)
         assertEquals(position.x, 2)
     }
 
     @Test
     fun `correct positive x large`() {
-        val position = BlockPosition(29_999_999, 0xF, 0xF)
-        assertEquals(position.x, 29_999_999)
+        val position = SectionPosition(1875000, 0xF, 0xF)
+        assertEquals(position.x, 1875000)
     }
 
     @Test
     fun `correct negative x`() {
-        val position = BlockPosition(-2, 0xF, 0xF)
+        val position = SectionPosition(-2, 0xF, 0xF)
         assertEquals(position.x, -2)
     }
 
     @Test
     fun `correct negative x large`() {
-        val position = BlockPosition(-29_999_999, 0xF, 0xF)
-        assertEquals(position.x, -29_999_999)
+        val position = SectionPosition(-1875000, 0xF, 0xF)
+        assertEquals(position.x, -1875000)
     }
 
     @Test
     fun `correct plus x`() {
-        val position = BlockPosition(2, 0xF, 0xF)
+        val position = SectionPosition(2, 0xF, 0xF)
         assertEquals(position.plusX().x, 3)
     }
 
     @Test
     fun `correct plus 2 x`() {
-        val position = BlockPosition(2, 0xF, 0xF)
+        val position = SectionPosition(2, 0xF, 0xF)
         assertEquals(position.plusX(2).x, 4)
     }
 
     @Test
     fun `correct minus x`() {
-        val position = BlockPosition(2, 0xF, 0xF)
+        val position = SectionPosition(2, 0xF, 0xF)
         assertEquals(position.minusX().x, 1)
     }
 
     @Test
     fun `correct negative y`() {
-        val position = BlockPosition(0xF, -1000, 0xF)
-        assertEquals(position.y, -1000)
+        val position = SectionPosition(0xF, -4, 0xF)
+        assertEquals(position.y, -4)
     }
 
     @Test
     fun `correct negative y large`() {
-        val position = BlockPosition(1234, -2048, 0xF)
-        assertEquals(position.y, -2048)
+        val position = SectionPosition(123, -128, 0xF)
+        assertEquals(position.y, -128)
     }
 
     @Test
     fun `correct positive y`() {
-        val position = BlockPosition(0xF, 1000, 0xF)
-        assertEquals(position.y, 1000)
+        val position = SectionPosition(0xF, 100, 0xF)
+        assertEquals(position.y, 100)
     }
 
     @Test
     fun `correct positive y large`() {
-        val position = BlockPosition(0xF, 2047, 0xF)
-        assertEquals(position.y, 2047)
+        val position = SectionPosition(0xF, 127, 0xF)
+        assertEquals(position.y, 127)
     }
 
     @Test
     fun `correct plus y`() {
-        val position = BlockPosition(0xF, 2, 0xF)
+        val position = SectionPosition(0xF, 2, 0xF)
         assertEquals(position.plusY().y, 3)
     }
 
     @Test
     fun `correct plus 2 y`() {
-        val position = BlockPosition(0xF, 2, 0xF)
+        val position = SectionPosition(0xF, 2, 0xF)
         assertEquals(position.plusY(2).y, 4)
     }
 
     @Test
     fun `correct minus y`() {
-        val position = BlockPosition(0xF, 2, 0xF)
+        val position = SectionPosition(0xF, 2, 0xF)
         assertEquals(position.minusY().y, 1)
     }
 
     @Test
     fun `correct positive z`() {
-        val position = BlockPosition(0xF, 0xF, 4)
+        val position = SectionPosition(0xF, 0xF, 4)
         assertEquals(position.z, 4)
     }
 
     @Test
     fun `correct positive z large`() {
-        val position = BlockPosition(0, 0, 29_999_999)
-        assertEquals(position.z, 29_999_999)
+        val position = SectionPosition(0, 0, 1875000)
+        assertEquals(position.z, 1875000)
     }
 
     @Test
     fun `correct negative z`() {
-        val position = BlockPosition(0xF, 0xF, -4)
+        val position = SectionPosition(0xF, 0xF, -4)
         assertEquals(position.z, -4)
     }
 
     @Test
     fun `correct negative z large`() {
-        val position = BlockPosition(0, 0, -29_999_999)
-        assertEquals(position.z, -29_999_999)
+        val position = SectionPosition(0, 0, -1875000)
+        assertEquals(position.z, -1875000)
     }
 
 
     @Test
     fun `correct plus z`() {
-        val position = BlockPosition(0xF, 0xF, 2)
+        val position = SectionPosition(0xF, 0xF, 2)
         assertEquals(position.plusZ().z, 3)
     }
 
     @Test
     fun `correct plus 2 z`() {
-        val position = BlockPosition(0xF, 0xF, 2)
+        val position = SectionPosition(0xF, 0xF, 2)
         assertEquals(position.plusZ(2).z, 4)
     }
 
     @Test
     fun `correct minus z`() {
-        val position = BlockPosition(0xF, 0xF, 2)
+        val position = SectionPosition(0xF, 0xF, 2)
         assertEquals(position.minusZ().z, 1)
     }
 
     @Test
     fun `unary minus`() {
-        val position = -BlockPosition(2, 2, 2)
+        val position = -SectionPosition(2, 2, 2)
         assertEquals(position.x, -2)
         assertEquals(position.y, -2)
         assertEquals(position.z, -2)
@@ -171,7 +171,7 @@ class BlockPositionTest {
 
     @Test
     fun `unary plus`() {
-        val position = +BlockPosition(2, 2, 2)
+        val position = +SectionPosition(2, 2, 2)
         assertEquals(position.x, 2)
         assertEquals(position.y, 2)
         assertEquals(position.z, 2)

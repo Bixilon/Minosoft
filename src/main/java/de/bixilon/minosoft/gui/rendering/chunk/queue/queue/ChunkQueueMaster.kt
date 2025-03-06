@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
@@ -32,15 +33,16 @@ class ChunkQueueMaster(
 ) {
 
     private fun queue(section: ChunkSection, chunk: Chunk, force: Boolean): Boolean {
+        val position = SectionPosition.of(chunk.position, section.height)
         if (section.blocks.isEmpty) {
-            renderer.unload(QueuePosition(chunk.position, section.height))
+            renderer.unload(QueuePosition(position))
             return false
         }
 
-        val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.position, section.height, section.blocks.minPosition, section.blocks.maxPosition, true)
+        val visible = force || renderer.visibilityGraph.isSectionVisible(position, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
             val center = CHUNK_CENTER + BlockPosition.of(chunk.position, section.height)
-            val item = WorldQueueItem(chunk.position, section.height, chunk, section, center)
+            val item = WorldQueueItem(position, chunk, section, center)
             renderer.meshingQueue.queue(item)
             return true
         }

@@ -111,6 +111,7 @@ value class BlockPosition(
     inline val hash get() = generatePositionHash(x, y, z)
     inline val sectionHeight get() = y.sectionHeight
     inline val chunkPosition get() = ChunkPosition(x shr 4, z shr 4)
+    inline val sectionPosition get() = SectionPosition(x shr 4, y shr 4, z shr 4)
     inline val inChunkPosition get() = InChunkPosition(x and 0x0F, y, this.z and 0x0F)
     inline val inSectionPosition get() = InSectionPosition(x and 0x0F, y.inSectionHeight, z and 0x0F)
 
@@ -167,6 +168,14 @@ value class BlockPosition(
                 chunk.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
                 sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
                 chunk.z * ProtocolDefinition.SECTION_WIDTH_Z + inSection.z
+            ) // ToDo: Confirm
+        }
+
+        fun of(section: SectionPosition, inSection: InSectionPosition): BlockPosition {
+            return BlockPosition(
+                section.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
+                section.y * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
+                section.z * ProtocolDefinition.SECTION_WIDTH_Z + inSection.z
             ) // ToDo: Confirm
         }
     }

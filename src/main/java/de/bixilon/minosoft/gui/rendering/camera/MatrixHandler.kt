@@ -138,7 +138,7 @@ class MatrixHandler(
 
         if (view.updateFrustum) {
             frustum.recalculate()
-            camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
+            camera.visibilityGraph.updateCamera(cameraBlockPosition.sectionPosition)
         }
 
         session.events.fire(CameraPositionChangeEvent(context, useEyePosition))

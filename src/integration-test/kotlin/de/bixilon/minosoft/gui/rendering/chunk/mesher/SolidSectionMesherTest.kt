@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -80,9 +81,9 @@ class SolidSectionMesherTest {
         val mesher = SolidSectionMesher(context)
 
         val chunk = world.chunks[0, 0]!!
-        val meshes = ChunkMeshes(context, chunk.position, 0, true)
+        val meshes = ChunkMeshes(context, SectionPosition.of(chunk.position, 0), true)
 
-        mesher.mesh(chunk.position, 0, chunk, chunk.sections[0]!!, chunk.neighbours.neighbours, chunk.sections[0]!!.neighbours!!, meshes)
+        mesher.mesh(SectionPosition.of(chunk.position, 0), chunk, chunk.sections[0]!!, chunk.neighbours.neighbours, chunk.sections[0]!!.neighbours!!, meshes)
 
         return meshes
     }

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 
 class MeshPrepareTaskManager(
@@ -58,17 +58,17 @@ class MeshPrepareTaskManager(
     fun interrupt(position: ChunkPosition) {
         lock.acquire()
         for (task in tasks) {
-            if (task.chunkPosition == position) {
+            if (task.position.chunkPosition == position) {
                 task.runnable.interrupt()
             }
         }
         lock.release()
     }
 
-    fun interrupt(position: ChunkPosition, height: SectionHeight) {
+    fun interrupt(position: SectionPosition) {
         lock.acquire()
         for (task in tasks) {
-            if (task.chunkPosition == position && task.sectionHeight == height) {
+            if (task.position == position) {
                 task.runnable.interrupt()
             }
         }
@@ -79,7 +79,7 @@ class MeshPrepareTaskManager(
     fun cleanup() {
         lock.acquire()
         for (task in tasks) {
-            if (!renderer.visibilityGraph.isChunkVisible(task.chunkPosition)) {
+            if (!renderer.visibilityGraph.isChunkVisible(task.position.chunkPosition)) {
                 task.runnable.interrupt()
             }
         }

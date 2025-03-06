@@ -30,9 +30,9 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -62,7 +62,7 @@ class FluidSectionMesher(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun mesh(chunkPosition: ChunkPosition, sectionHeight: Int, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
+    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
         var position = BlockPosition()
@@ -70,9 +70,9 @@ class FluidSectionMesher(
 
         val cameraOffset = context.camera.offset.offset
 
-        val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
-        val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-        val offsetZ = chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
+        val offsetX = sectionPosition.x * ProtocolDefinition.SECTION_WIDTH_X
+        val offsetY = sectionPosition.y * ProtocolDefinition.SECTION_HEIGHT_Y
+        val offsetZ = sectionPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {

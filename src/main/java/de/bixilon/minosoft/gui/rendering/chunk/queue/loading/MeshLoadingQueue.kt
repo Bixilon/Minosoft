@@ -58,18 +58,18 @@ class MeshLoadingQueue(
 
             mesh.load()
 
-            if (position != mesh.chunkPosition) {
-                meshes = renderer.loaded.meshes.getOrPut(mesh.chunkPosition) { Int2ObjectOpenHashMap() }
-                position = mesh.chunkPosition
+            if (position != mesh.position.chunkPosition) {
+                meshes = renderer.loaded.meshes.getOrPut(mesh.position.chunkPosition) { Int2ObjectOpenHashMap() }
+                position = mesh.position.chunkPosition
             }
 
 
-            meshes.put(mesh.sectionHeight, mesh)?.let {
+            meshes.put(mesh.position.y, mesh)?.let {
                 renderer.visible.removeMesh(it)
                 it.unload()
             }
 
-            val visible = renderer.visibilityGraph.isSectionVisible(mesh.chunkPosition, mesh.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
+            val visible = renderer.visibilityGraph.isSectionVisible(mesh.position, mesh.minPosition, mesh.maxPosition, true)
             if (visible) {
                 count++
                 renderer.visible.addMesh(mesh)
@@ -91,7 +91,7 @@ class MeshLoadingQueue(
             // already inside, remove
             meshes.remove(mesh)
         }
-        if (mesh.chunkPosition == renderer.cameraChunkPosition) {
+        if (mesh.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
             // still higher priority
             meshes.add(0, mesh)
         } else {
@@ -104,20 +104,20 @@ class MeshLoadingQueue(
         if (lock) lock()
         val positions: MutableSet<QueuePosition> = mutableSetOf()
         this.positions.removeAll {
-            if (it.position != position) {
+            if (it.position.chunkPosition != position) {
                 return@removeAll false
             }
             positions += it
             return@removeAll true
         }
-        this.meshes.removeAll { QueuePosition(it.chunkPosition, it.sectionHeight) in positions }
+        this.meshes.removeAll { QueuePosition(it.position) in positions }
         if (lock) unlock()
     }
 
     fun abort(position: QueuePosition, lock: Boolean = true) {
         if (lock) lock()
         if (this.positions.remove(position)) {
-            this.meshes.removeAll { it.chunkPosition == position.position && it.sectionHeight == position.sectionHeight }
+            this.meshes.removeAll { it.position == position.position }
         }
         if (lock) unlock()
     }
@@ -128,7 +128,7 @@ class MeshLoadingQueue(
 
         if (lock) lock()
         this.positions.removeAll {
-            if (renderer.visibilityGraph.isChunkVisible(it.position)) {
+            if (renderer.visibilityGraph.isChunkVisible(it.position.chunkPosition)) {
                 return@removeAll false
             }
             remove += it

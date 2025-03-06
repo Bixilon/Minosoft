@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
@@ -86,8 +87,7 @@ class ChunkRenderer(
     private var previousViewDistance = session.world.view.viewDistance
 
     private var cameraPosition = Vec3.EMPTY
-    var cameraChunkPosition = ChunkPosition.EMPTY
-    var cameraSectionHeight = 0
+    var cameraSectionPosition = SectionPosition.EMPTY
 
     var limitChunkTransferTime = true
 
@@ -198,15 +198,15 @@ class ChunkRenderer(
     }
 
 
-    fun unload(item: WorldQueueItem) = unload(QueuePosition(item.chunkPosition, item.sectionHeight))
+    fun unload(item: WorldQueueItem) = unload(QueuePosition(item.position))
     fun unload(position: QueuePosition) {
         lock.lock()
 
-        loaded.unload(position.position, position.sectionHeight, false)
-        culledQueue.remove(position.position, position.sectionHeight, false)
+        loaded.unload(position.position, false)
+        culledQueue.remove(position.position.chunkPosition, false)
         meshingQueue.remove(position, false)
         loadingQueue.abort(position, false)
-        meshingQueue.tasks.interrupt(position.position, position.sectionHeight)
+        meshingQueue.tasks.interrupt(position.position.chunkPosition)
 
         lock.unlock()
     }
@@ -252,15 +252,10 @@ class ChunkRenderer(
     private fun onFrustumChange() {
         var sortQueue = false
         val cameraPosition = Vec3(session.player.renderInfo.eyePosition - context.camera.offset.offset)
-        val cameraChunkPosition = cameraPosition.blockPosition.chunkPosition
-        val cameraSectionHeight = this.cameraSectionHeight
+        val sectionPosition = cameraPosition.blockPosition.sectionPosition
         if (this.cameraPosition != cameraPosition) {
-            if (this.cameraChunkPosition != cameraChunkPosition) {
-                this.cameraChunkPosition = cameraChunkPosition
-                sortQueue = true
-            }
-            if (this.cameraSectionHeight != cameraSectionHeight) {
-                this.cameraSectionHeight = cameraSectionHeight
+            if (this.cameraSectionPosition != sectionPosition) {
+                this.cameraSectionPosition = sectionPosition
                 sortQueue = true
             }
             this.cameraPosition = cameraPosition

@@ -60,7 +60,7 @@ class MeshUnloadingQueue(
     fun forceQueue(mesh: ChunkMeshes, lock: Boolean = true) {
         if (lock) lock()
 
-        if (mesh.chunkPosition == renderer.session.camera.entity.physics.positionInfo.chunkPosition) {
+        if (mesh.position.chunkPosition == renderer.session.camera.entity.physics.positionInfo.chunkPosition) {
             this.meshes.add(0, mesh)
         } else {
             this.meshes += mesh

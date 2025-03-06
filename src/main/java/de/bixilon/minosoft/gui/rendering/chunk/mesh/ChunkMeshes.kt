@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -29,11 +29,10 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class ChunkMeshes(
     context: RenderContext,
-    val chunkPosition: ChunkPosition,
-    val sectionHeight: Int,
+    val position: SectionPosition,
     smallMesh: Boolean = false,
 ) : BlockVertexConsumer {
-    val center: Vec3 = Vec3(BlockPosition.of(chunkPosition, sectionHeight, InSectionPosition(8, 8, 8)))
+    val center: Vec3 = Vec3(BlockPosition.of(position, InSectionPosition(8, 8, 8)))
     var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 8192 else 65536)
     var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 4096 else 16384)
     var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 1024 else 4096)

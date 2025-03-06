@@ -88,6 +88,8 @@ value class ChunkPosition(
     inline operator fun component1() = x
     inline operator fun component2() = z
 
+    fun sectionPosition(y: SectionHeight) = SectionPosition(x, y, z)
+
     override fun toText() = "(${this.x.format()} ${this.z.format()})"
     override fun toString() = "c($x $z)"
 
@@ -105,8 +107,8 @@ value class ChunkPosition(
         const val Z = 1L shl SHIFT_Z
 
 
-        const val MAX_X = (BlockPosition.MAX_X shr 4) + 1
-        const val MAX_Z = (BlockPosition.MAX_Z shr 4) + 1
+        const val MAX_X = BlockPosition.MAX_X shr 4
+        const val MAX_Z = BlockPosition.MAX_Z shr 4
 
 
         val EMPTY = ChunkPosition(0, 0)
