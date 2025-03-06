@@ -79,7 +79,7 @@ class MeshPrepareTaskManager(
     fun cleanup() {
         lock.acquire()
         for (task in tasks) {
-            if (!renderer.visibilityGraph.isChunkVisible(task.position.chunkPosition)) {
+            if (!renderer.visibility.isChunkVisible(task.position.chunkPosition)) {
                 task.runnable.interrupt()
             }
         }

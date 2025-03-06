@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 interface FogShader : AbstractShader, CameraPositionShader {
     var fog: FogManager
 
-    fun fog(default: FogManager = native.context.camera.fogManager): ShaderUniform<FogManager> {
+    fun fog(default: FogManager = native.context.camera.fog): ShaderUniform<FogManager> {
         return uniform("fog", default) { native, _, value -> value.use(native) }
     }
 }

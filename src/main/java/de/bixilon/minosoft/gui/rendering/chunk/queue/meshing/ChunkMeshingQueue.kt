@@ -100,7 +100,7 @@ class ChunkMeshingQueue(
         if (lock) lock()
         val remove: MutableSet<WorldQueueItem> = mutableSetOf()
         queue.removeAll {
-            if (renderer.visibilityGraph.isChunkVisible(it.position.chunkPosition)) {
+            if (renderer.visibility.isChunkVisible(it.position.chunkPosition)) {
                 return@removeAll false
             }
             remove += it

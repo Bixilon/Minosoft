@@ -69,7 +69,7 @@ class MeshLoadingQueue(
                 it.unload()
             }
 
-            val visible = renderer.visibilityGraph.isSectionVisible(mesh.position, mesh.minPosition, mesh.maxPosition, true)
+            val visible = renderer.visibility.isSectionVisible(mesh.position, mesh.minPosition, mesh.maxPosition)
             if (visible) {
                 count++
                 renderer.visible.addMesh(mesh)
@@ -128,7 +128,7 @@ class MeshLoadingQueue(
 
         if (lock) lock()
         this.positions.removeAll {
-            if (renderer.visibilityGraph.isChunkVisible(it.position.chunkPosition)) {
+            if (renderer.visibility.isChunkVisible(it.position.chunkPosition)) {
                 return@removeAll false
             }
             remove += it

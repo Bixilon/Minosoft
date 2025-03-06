@@ -17,7 +17,6 @@ import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
@@ -34,7 +33,7 @@ class CulledQueue(
         if (lock) lock()
         val iterator = queue.iterator()
         for ((chunkPosition, _) in iterator) {
-            if (renderer.visibilityGraph.isChunkVisible(chunkPosition)) {
+            if (renderer.visibility.isChunkVisible(chunkPosition)) {
                 continue
             }
             iterator.remove()
@@ -92,7 +91,7 @@ class CulledQueue(
 
         val queueIterator = this.queue.iterator()
         for ((chunkPosition, sectionHeights) in queueIterator) {
-            if (!renderer.visibilityGraph.isChunkVisible(chunkPosition)) {
+            if (!renderer.visibility.isChunkVisible(chunkPosition)) {
                 continue
             }
             val chunk = world.chunks.chunks.unsafe[chunkPosition] ?: continue
@@ -100,7 +99,7 @@ class CulledQueue(
             val heightIterator = sectionHeights.intIterator()
             for (sectionHeight in heightIterator) {
                 val section = chunk[sectionHeight] ?: continue
-                if (!renderer.visibilityGraph.isSectionVisible(SectionPosition.Companion.of(chunkPosition, sectionHeight), section.blocks.minPosition, section.blocks.maxPosition, false)) {
+                if (!renderer.visibility.isSectionVisible(section)) {
                     continue
                 }
                 list += Pair(chunk, sectionHeight)

@@ -35,7 +35,7 @@ class LoadedMeshes(
 
         val iterator = meshes.iterator()
         for ((chunkPosition, sections) in iterator) {
-            if (renderer.visibilityGraph.isInViewDistance(chunkPosition)) {
+            if (renderer.visibility.isInViewDistance(chunkPosition)) {
                 continue
             }
             iterator.remove()
@@ -101,13 +101,13 @@ class LoadedMeshes(
         renderer.lock.acquire()
         lock.acquire()
         for ((chunkPosition, meshes) in this.meshes) {
-            if (!renderer.visibilityGraph.isChunkVisible(chunkPosition)) {
+            if (!renderer.visibility.isChunkVisible(chunkPosition)) {
                 continue
             }
 
             for (entry in meshes.int2ObjectEntrySet()) {
                 val mesh = entry.value
-                if (!renderer.visibilityGraph.isSectionVisible(SectionPosition.of(chunkPosition, entry.intKey), mesh.minPosition, mesh.maxPosition, false)) {
+                if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, entry.intKey), mesh.minPosition, mesh.maxPosition)) {
                     continue
                 }
                 visible.addMesh(mesh)

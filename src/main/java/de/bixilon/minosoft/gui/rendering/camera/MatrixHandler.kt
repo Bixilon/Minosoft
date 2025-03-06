@@ -23,7 +23,6 @@ import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
-import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.camera.shaking.CameraShaking
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
@@ -44,7 +43,6 @@ class MatrixHandler(
     private val session = context.session
     private val profile = context.session.profiles.rendering.camera
     val shaking = CameraShaking(camera, profile.shaking)
-    val frustum = Frustum(camera, this, session.world)
 
     private var matrixPosition = Vec3.EMPTY
     private var previousFOV = 0.0f
@@ -94,7 +92,7 @@ class MatrixHandler(
     }
 
     private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2 = context.window.sizef) {
-        val fog = camera.fogManager.state
+        val fog = camera.fog.state
         var far = (session.world.view.viewDistance + 1) * ProtocolDefinition.SECTION_LENGTH.toFloat()
         if (fog.enabled) {
             far = fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
@@ -137,8 +135,8 @@ class MatrixHandler(
         val useEyePosition = if (view.updateFrustum) eyePosition else session.camera.entity.renderInfo.eyePosition
 
         if (view.updateFrustum) {
-            frustum.recalculate()
-            camera.visibilityGraph.updateCamera(cameraBlockPosition.sectionPosition)
+            camera.frustum.recalculate()
+            camera.occlusion.update(cameraBlockPosition.sectionPosition)
         }
 
         session.events.fire(CameraPositionChangeEvent(context, useEyePosition))

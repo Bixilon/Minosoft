@@ -200,7 +200,7 @@ class SkyboxColor(
 
 
     fun calculate(): RGBColor? {
-        sky.context.camera.fogManager.state.color?.let { return it }
+        sky.context.camera.fog.state.color?.let { return it }
         val properties = sky.effects
         val time = sky.time
         if (properties.fixedTexture != null) {

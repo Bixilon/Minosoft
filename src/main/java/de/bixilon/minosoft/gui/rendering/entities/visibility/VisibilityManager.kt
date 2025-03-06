@@ -37,8 +37,8 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     val opaque: ArrayList<EntityRenderFeature> = ArrayList(1000)
     val translucent: ArrayList<EntityRenderFeature> = ArrayList(1000)
     private val lock = Lock.lock()
-    private val graph = renderer.context.camera.visibilityGraph
-    private val frustum = renderer.context.camera.matrixHandler.frustum
+    private val graph = renderer.context.camera.occlusion
+    private val frustum = renderer.context.camera.frustum
     private var renderDistance = 0
 
     fun init() {

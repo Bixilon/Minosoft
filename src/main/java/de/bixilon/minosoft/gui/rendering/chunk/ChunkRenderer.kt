@@ -61,7 +61,7 @@ class ChunkRenderer(
     override val layers = LayerSettings()
     private val profile = session.profiles.block
     override val renderSystem: RenderSystem = context.system
-    val visibilityGraph = context.camera.visibilityGraph
+    val visibility = context.camera.visibility
     private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
     private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
     val lock = RWLock.rwlock()
@@ -300,7 +300,6 @@ class ChunkRenderer(
     companion object : RendererBuilder<ChunkRenderer> {
 
         override fun build(session: PlaySession, context: RenderContext): ChunkRenderer {
-            //        return null
             return ChunkRenderer(session, context)
         }
     }

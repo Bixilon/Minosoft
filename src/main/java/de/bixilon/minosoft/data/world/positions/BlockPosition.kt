@@ -148,14 +148,15 @@ value class BlockPosition(
         val EMPTY = BlockPosition(0, 0, 0)
 
 
-        fun of(chunk: ChunkPosition, sectionHeight: Int): BlockPosition {
+        inline fun of(chunk: ChunkPosition, sectionHeight: Int): BlockPosition {
             return BlockPosition(
                 chunk.x * ProtocolDefinition.SECTION_WIDTH_X,
                 sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y,
                 chunk.z * ProtocolDefinition.SECTION_WIDTH_Z
             ) // ToDo: Confirm
         }
-        fun of(chunk: ChunkPosition, inChunkPosition: InChunkPosition): BlockPosition {
+
+        inline fun of(chunk: ChunkPosition, inChunkPosition: InChunkPosition): BlockPosition {
             return BlockPosition(
                 chunk.x * ProtocolDefinition.SECTION_WIDTH_X,
                 inChunkPosition.y,
@@ -163,7 +164,7 @@ value class BlockPosition(
             ) // ToDo: Confirm
         }
 
-        fun of(chunk: ChunkPosition, sectionHeight: Int, inSection: InSectionPosition): BlockPosition {
+        inline fun of(chunk: ChunkPosition, sectionHeight: Int, inSection: InSectionPosition): BlockPosition {
             return BlockPosition(
                 chunk.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
                 sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
@@ -171,11 +172,19 @@ value class BlockPosition(
             ) // ToDo: Confirm
         }
 
-        fun of(section: SectionPosition, inSection: InSectionPosition): BlockPosition {
+        inline fun of(section: SectionPosition, inSection: InSectionPosition): BlockPosition {
             return BlockPosition(
                 section.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
                 section.y * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
                 section.z * ProtocolDefinition.SECTION_WIDTH_Z + inSection.z
+            ) // ToDo: Confirm
+        }
+
+        inline fun of(section: SectionPosition): BlockPosition {
+            return BlockPosition(
+                section.x * ProtocolDefinition.SECTION_WIDTH_X,
+                section.y * ProtocolDefinition.SECTION_HEIGHT_Y,
+                section.z * ProtocolDefinition.SECTION_WIDTH_Z
             ) // ToDo: Confirm
         }
     }

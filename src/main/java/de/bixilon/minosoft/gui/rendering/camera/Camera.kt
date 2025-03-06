@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,22 +20,27 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
+import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.camera.occlusion.WorldOcclusionManager
 import de.bixilon.minosoft.gui.rendering.camera.view.ViewManager
-import de.bixilon.minosoft.gui.rendering.camera.visibility.WorldVisibilityGraph
+import de.bixilon.minosoft.gui.rendering.camera.visibility.WorldVisibility
 
 class Camera(
     val context: RenderContext,
 ) {
-    val fogManager = FogManager(context)
-    val matrixHandler = MatrixHandler(context, this)
-    val visibilityGraph = WorldVisibilityGraph(context, this)
+    val fog = FogManager(context)
+    val matrix = MatrixHandler(context, this)
+
+    val frustum = Frustum(this, matrix, context.session.world)
+    val occlusion = WorldOcclusionManager(context, this)
+    val visibility = WorldVisibility(this)
 
     val view = ViewManager(this)
 
     val offset = WorldOffset(this)
 
     fun init() {
-        matrixHandler.init()
+        matrix.init()
         view.init()
         context.session.camera::entity.observe(this) { context.session.camera.entity = it }
     }
@@ -47,11 +52,11 @@ class Camera(
             entity._draw(millis())
         }
         view.draw()
-        matrixHandler.draw()
+        matrix.draw()
         val latch = SimpleLatch(2)
-        context.runAsync { visibilityGraph.draw(); latch.dec() }
+        context.runAsync { occlusion.draw(); latch.dec() }
         context.runAsync { context.session.camera.target.update(); latch.dec() }
-        fogManager.draw()
+        fog.draw()
         latch.await()
     }
 }

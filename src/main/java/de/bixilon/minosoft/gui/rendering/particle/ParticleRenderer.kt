@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -130,7 +130,7 @@ class ParticleRenderer(
     }
 
     private fun updateShader() {
-        val matrix = context.camera.matrixHandler.viewProjectionMatrix
+        val matrix = context.camera.matrix.viewProjectionMatrix
         val cameraRight = Vec3(matrix[0][0], matrix[1][0], matrix[2][0])
         val cameraUp = Vec3(matrix[0][1], matrix[1][1], matrix[2][1])
 

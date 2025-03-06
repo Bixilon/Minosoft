@@ -39,7 +39,7 @@ class ChunkQueueMaster(
             return false
         }
 
-        val visible = force || renderer.visibilityGraph.isSectionVisible(position, section.blocks.minPosition, section.blocks.maxPosition, true)
+        val visible = force || renderer.visibility.isSectionVisible(section)
         if (visible) {
             val center = CHUNK_CENTER + BlockPosition.of(chunk.position, section.height)
             val item = WorldQueueItem(position, chunk, section, center)

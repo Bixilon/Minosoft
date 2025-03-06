@@ -23,9 +23,12 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
@@ -156,22 +159,21 @@ class Frustum(
         return containsRegion(min.x, min.y, min.z, max.x, max.y, max.z)
     }
 
-    fun containsChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, minPosition: InSectionPosition = SECTION_MIN_POSITION, maxPosition: InSectionPosition = SECTION_MAX_POSITION): Boolean {
-        val offset = camera.offset.offset
-        val baseX = ((chunkPosition.x shl 4) - offset.x).toFloat()
-        val baseY = ((sectionHeight shl 4) - offset.y).toFloat()
-        val baseZ = ((chunkPosition.z shl 4) - offset.z).toFloat()
-        return containsRegion(
-            baseX + minPosition.x, baseY + minPosition.y, baseZ + minPosition.z,
-            baseX + maxPosition.x + 1.0f, baseY + maxPosition.y + 1.0f, baseZ + maxPosition.z + 1.0f,
-        )
+    fun containsChunkSection(section: ChunkSection) = containsChunkSection(SectionPosition.of(section.chunk.position, section.height), section.blocks.minPosition, section.blocks.maxPosition)
+
+    fun containsChunkSection(position: SectionPosition, minPosition: InSectionPosition = SECTION_MIN_POSITION, maxPosition: InSectionPosition = SECTION_MAX_POSITION): Boolean {
+        val base = BlockPosition.of(position) - camera.offset.offset
+        val min = Vec3(base + minPosition)
+        val max = Vec3(base + maxPosition + 1)
+        return containsRegion(min, max)
     }
 
-    fun containsChunk(chunkPosition: ChunkPosition): Boolean {
+    fun containsChunk(position: ChunkPosition): Boolean {
         val dimension = world.dimension
+
         val offset = camera.offset.offset
-        val baseX = (chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x).toFloat()
-        val baseZ = (chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z - offset.z).toFloat()
+        val baseX = (position.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x).toFloat()
+        val baseZ = (position.z * ProtocolDefinition.SECTION_WIDTH_Z - offset.z).toFloat()
 
         val minY = (dimension.minY - offset.y).toFloat()
         val maxY = (dimension.maxY - offset.y).toFloat()
@@ -196,6 +198,9 @@ class Frustum(
     }
 
     operator fun contains(aabb: AABB) = containsAABB(aabb)
+    operator fun contains(chunk: Chunk) = containsChunk(chunk.position)
+    operator fun contains(position: ChunkPosition) = containsChunk(position)
+    operator fun contains(section: ChunkSection) = containsChunkSection(section)
 
     private data class FrustumData(val normals: Array<Vec3>, val planes: Array<Vec4>)
 
