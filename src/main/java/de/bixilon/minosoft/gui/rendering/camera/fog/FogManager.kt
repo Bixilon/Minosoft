@@ -76,9 +76,9 @@ class FogManager(
             return
         }
 
-        save()
         this.options = options
         state.revision++
+        save()
         context.camera.matrix.invalidate()
     }
 
@@ -98,7 +98,7 @@ class FogManager(
         state.end = interpolateLinear(progress, interpolation.end, options?.end ?: 0.0f)
 
         val sourceColor = interpolation.color ?: options?.color ?: Colors.TRANSPARENT
-        val targetColor = options?.color ?: RGBColor(sourceColor.red, sourceColor.green, sourceColor.blue, 0x00)
+        val targetColor = options?.color ?: Colors.TRANSPARENT
         var color: RGBColor? = interpolateSine(progress, sourceColor, targetColor)
         if (color == Colors.TRANSPARENT) {
             color = null
