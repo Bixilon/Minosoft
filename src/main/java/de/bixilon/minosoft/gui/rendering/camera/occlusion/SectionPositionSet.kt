@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.bit.set.AbstractBitSet
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -25,7 +24,7 @@ class SectionPositionSet private constructor(
     private val set = AbstractBitSet.of(size.x * size.y * size.z) // TODO: cache old set one
 
 
-    constructor(center: ChunkPosition, size: Vec2i, minSection: Int, sections: Int) : this(SectionPosition(center.x - size.x / 2, minSection, center.z - size.y / 2), SectionPosition(size.x, sections, size.y))
+    constructor(center: ChunkPosition, radius: Int, minSection: Int, sections: Int) : this(SectionPosition(center.x - radius, minSection, center.z - radius), SectionPosition(radius * 2 + 1, sections, radius * 2 + 1))
 
 
     operator fun plusAssign(position: SectionPosition) {
@@ -44,7 +43,7 @@ class SectionPositionSet private constructor(
 
     operator fun set(position: SectionPosition, value: Boolean) {
         val index = position.index()
-        if (index == INVALID_INDEX) return
+        if (index == INVALID_INDEX) throw IndexOutOfBoundsException("Invalid set: $position (offset=$offset, size=$size)")
         set[index] = value
     }
 

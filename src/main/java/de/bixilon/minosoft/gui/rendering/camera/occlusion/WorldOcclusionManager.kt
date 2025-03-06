@@ -102,10 +102,10 @@ class WorldOcclusionManager(
 
 
         val world = context.session.world
-        val size = context.session.world.chunks.size.size.size
-        val chunk = context.session.world.chunks[this.position.chunkPosition] ?: return // TODO: optimize camera chunk retrieval
+        val chunk = world.chunks[this.position.chunkPosition] ?: return // TODO: optimize camera chunk retrieval
+        val viewDistance = world.view.viewDistance
 
-        this.graph = OcclusionTracer(this.position, size, world.dimension, camera).trace(chunk)
+        this.graph = OcclusionTracer(this.position, world.dimension, camera, viewDistance).trace(chunk)
         session.events.fire(VisibilityGraphChangeEvent(context))
     }
 }

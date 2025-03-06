@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -27,34 +26,39 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInV
 
 class OcclusionTracer(
     val position: SectionPosition,
-    size: Vec2i,
     dimension: DimensionProperties,
     camera: Camera,
+    val viewDistance: Int,
 ) {
     val chunkPosition = position.chunkPosition
     private val frustum = camera.frustum
-    private val viewDistance = camera.context.session.world.view.viewDistance
 
-    private val minSection = dimension.minSection
-    private val maxSection = dimension.maxSection
+    // allow tracing from above or below the world
+    private val minSection = dimension.minSection - 1
+    private val maxSection = dimension.maxSection + 1
 
-    private val skip = SectionPositionSet(chunkPosition, size, minSection, dimension.sections) // TODO: reuse
-    private val visible = SectionPositionSet(chunkPosition, size, minSection, dimension.sections)
+    private val skip = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) // TODO: reuse
+    private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
 
+
+    private inline fun isInViewDistance(chunk: Chunk): Boolean {
+        if (!chunk.position.isInViewDistance(viewDistance, this.chunkPosition)) return false
+        return true
+    }
 
     private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions?, vector: DirectionVector) {
-        if (!chunk.position.isInViewDistance(this.viewDistance, this.chunkPosition)) return
+        if (!isInViewDistance(chunk)) return
         if (height < minSection || height > maxSection) return
 
         val position = SectionPosition.of(chunk.position, height)
 
-        if (position in visible) return
+        if (direction != null && position in visible) return
         if (position in skip) return
 
         val section = chunk[height]
-        if (section != null && section !in frustum) {
-            skip += position
-            return
+        if (!frustum.containsChunkSection(position)) {
+            // skip += position
+            // return
         }
         visible += position
 
@@ -86,8 +90,10 @@ class OcclusionTracer(
     }
 
     fun trace(chunk: Chunk): OcclusionGraph {
+        trace(chunk, position.y, null, Directions.DOWN.vector)
+        trace(chunk, position.y, null, Directions.UP.vector)
         for (direction in Directions) {
-            trace(chunk, position.y, null, direction.vector)
+            //     trace(chunk, position.y, null, direction.vector)
         }
 
         visible += position

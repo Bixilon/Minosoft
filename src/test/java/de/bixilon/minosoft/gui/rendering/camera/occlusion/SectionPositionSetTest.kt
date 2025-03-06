@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class SectionPositionSetTest {
 
-    private fun create(minSection: Int = 0) = SectionPositionSet(ChunkPosition(20, 30), Vec2i(6, 8), minSection, 8)
+    private fun create(minSection: Int = 0) = SectionPositionSet(ChunkPosition(20, 30), 6, minSection, 8)
 
     @Test
     fun empty() {
@@ -55,25 +55,19 @@ class SectionPositionSetTest {
     @Test
     fun `set out of bounds x`() {
         val set = create()
-        set += SectionPosition(200, 1, 30)
-
-        assertFalse(SectionPosition(200, 1, 30) in set)
+        assertThrows<IndexOutOfBoundsException> { set += SectionPosition(200, 1, 30) }
     }
 
     @Test
     fun `set out of bounds y`() {
         val set = create()
-        set += SectionPosition(20, 100, 30)
-
-        assertFalse(SectionPosition(20, 100, 30) in set)
+        assertThrows<IndexOutOfBoundsException> { set += SectionPosition(20, 100, 30) }
     }
 
     @Test
     fun `set out of bounds z`() {
         val set = create()
-        set += SectionPosition(20, 1, 300)
-
-        assertFalse(SectionPosition(20, 1, 300) in set)
+        assertThrows<IndexOutOfBoundsException> { set += SectionPosition(20, 1, 300) }
     }
 
     @Test

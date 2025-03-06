@@ -42,7 +42,7 @@ class Frustum(
     private val matrixHandler: MatrixHandler,
     private val world: World,
 ) {
-    private lateinit var data: FrustumData
+    private var data: FrustumData? = null
     var revision = 0
         private set
 
@@ -123,7 +123,7 @@ class Frustum(
 
     private fun containsRegion(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
         if (!RenderConstants.FRUSTUM_CULLING_ENABLED) return true
-        val (normals, planes) = this.data
+        val (normals, planes) = this.data ?: return true
 
         for (i in 0 until Planes.SIZE) {
             val plane = planes[i].array

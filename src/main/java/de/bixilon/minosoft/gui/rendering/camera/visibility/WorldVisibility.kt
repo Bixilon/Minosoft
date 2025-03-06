@@ -56,7 +56,7 @@ class WorldVisibility(
     fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section.chunk.position, section.height), section.blocks.minPosition, section.blocks.maxPosition)
     fun isSectionVisible(position: SectionPosition, minPosition: InSectionPosition = Frustum.SECTION_MIN_POSITION, maxPosition: InSectionPosition = Frustum.SECTION_MIN_POSITION): Boolean {
         if (!isInViewDistance(position.chunkPosition)) return false
-        if (camera.frustum.containsChunkSection(position, minPosition, maxPosition)) return false
+        if (!camera.frustum.containsChunkSection(position, minPosition, maxPosition)) return false
 
 
         return !camera.occlusion.isSectionOccluded(position)
