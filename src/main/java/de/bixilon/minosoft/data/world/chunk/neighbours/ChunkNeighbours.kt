@@ -100,8 +100,8 @@ class ChunkNeighbours(val chunk: Chunk) {
             offset.z < 0 -> neighbours[Directions.NORTH]?.neighbours?.traceChunk(offset.plusZ())
             offset.z > 0 -> neighbours[Directions.SOUTH]?.neighbours?.traceChunk(offset.minusZ())
             offset.x < 0 -> neighbours[Directions.WEST]?.neighbours?.traceChunk(offset.plusX())
-            offset.x > 0 -> neighbours[Directions.WEST]?.neighbours?.traceChunk(offset.minusX())
-            else -> Broken()
+            offset.x > 0 -> neighbours[Directions.EAST]?.neighbours?.traceChunk(offset.minusX())
+            else -> Broken("Invalid chunk offset: $offset")
         }
     }
 
