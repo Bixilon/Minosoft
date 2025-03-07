@@ -74,8 +74,8 @@ class ChunkMeshingQueue(
         unlock()
         val camera = renderer.cameraSectionPosition
         for (item in items) {
-            val distance = abs(item.position.x - camera.x) + abs(item.position.z - camera.z) // TODO: Check y?
-            val runnable = HeavyPoolRunnable(if (distance < 1) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)
+            val distance = abs(item.position.x - camera.x) + abs(item.position.z - camera.z) // TODO: Should y get in here too?
+            val runnable = HeavyPoolRunnable(if (distance <= 1) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)
             val task = MeshPrepareTask(item.position, runnable)
             task.runnable.runnable = Runnable { renderer.mesher.tryMesh(item, task, task.runnable) }
             tasks += task
