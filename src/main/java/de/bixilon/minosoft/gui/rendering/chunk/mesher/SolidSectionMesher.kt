@@ -190,11 +190,11 @@ class SolidSectionMesher(
 
     private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
         if (position.z == 0) {
-            setNeighbour(neighbourBlocks, position.with(z = ProtocolDefinition.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH]!!, O_NORTH) // TODO: bad assert
+            setNeighbour(neighbourBlocks, position.with(z = ProtocolDefinition.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH], O_NORTH)
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
         } else if (position.z == ProtocolDefinition.SECTION_MAX_Z) {
             setNeighbour(neighbourBlocks, position.minusZ(), light, section, chunk, O_NORTH)
-            setNeighbour(neighbourBlocks, position.with(z = 0), light, neighbours[O_SOUTH], neighbourChunks[Directions.SOUTH]!!, O_SOUTH)// TODO: bad assert
+            setNeighbour(neighbourBlocks, position.with(z = 0), light, neighbours[O_SOUTH], neighbourChunks[Directions.SOUTH], O_SOUTH)
         } else {
             setNeighbour(neighbourBlocks, position.minusZ(), light, section, chunk, O_NORTH)
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
@@ -204,10 +204,10 @@ class SolidSectionMesher(
 
     private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
         if (position.x == 0) {
-            setNeighbour(neighbourBlocks, position.with(x = ProtocolDefinition.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST]!!, O_WEST) // TODO: bad assert
+            setNeighbour(neighbourBlocks, position.with(x = ProtocolDefinition.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST], O_WEST)
             setNeighbour(neighbourBlocks, position.plusX(), light, section, chunk, O_EAST)
         } else if (position.x == ProtocolDefinition.SECTION_MAX_X) {
-            setNeighbour(neighbourBlocks, position.with(x = 0), light, neighbours[O_EAST], neighbourChunks[Directions.EAST]!!, O_EAST) // TODO: bad assert
+            setNeighbour(neighbourBlocks, position.with(x = 0), light, neighbours[O_EAST], neighbourChunks[Directions.EAST], O_EAST)
             setNeighbour(neighbourBlocks, position.minusX(), light, section, chunk, O_WEST)
         } else {
             setNeighbour(neighbourBlocks, position.minusX(), light, section, chunk, O_WEST)
@@ -215,12 +215,13 @@ class SolidSectionMesher(
         }
     }
 
-    private inline fun setNeighbour(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, light: ByteArray, section: ChunkSection?, chunk: Chunk, ordinal: Int) {
-        neighbourBlocks[ordinal] = section?.blocks?.let { it[position] }
-        light[ordinal] = section?.light?.get(position) ?: 0x00
-        if (position.y >= chunk.light.heightmap[position.xz]) {
-            light[ordinal] = (light[ordinal].toInt() or SectionLight.SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
+    private inline fun setNeighbour(blocks: Array<BlockState?>, position: InSectionPosition, light: ByteArray, section: ChunkSection?, chunk: Chunk?, direction: Int) {
+        blocks[direction] = section?.blocks?.let { it[position] }
+        var level = section?.light?.get(position) ?: 0x00
+        if (chunk != null && position.y >= chunk.light.heightmap[position.xz]) {
+            level = (level.toInt() or SectionLight.SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
         }
+        light[direction] = level
     }
 
     companion object {
