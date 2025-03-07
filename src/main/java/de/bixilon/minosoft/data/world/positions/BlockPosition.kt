@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.generatePositionHash
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
@@ -148,44 +147,10 @@ value class BlockPosition(
         val EMPTY = BlockPosition(0, 0, 0)
 
 
-        inline fun of(chunk: ChunkPosition, sectionHeight: Int): BlockPosition {
-            return BlockPosition(
-                chunk.x * ProtocolDefinition.SECTION_WIDTH_X,
-                sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y,
-                chunk.z * ProtocolDefinition.SECTION_WIDTH_Z
-            ) // ToDo: Confirm
-        }
-
-        inline fun of(chunk: ChunkPosition, inChunkPosition: InChunkPosition): BlockPosition {
-            return BlockPosition(
-                chunk.x * ProtocolDefinition.SECTION_WIDTH_X,
-                inChunkPosition.y,
-                chunk.z * ProtocolDefinition.SECTION_WIDTH_Z
-            ) // ToDo: Confirm
-        }
-
-        inline fun of(chunk: ChunkPosition, sectionHeight: Int, inSection: InSectionPosition): BlockPosition {
-            return BlockPosition(
-                chunk.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
-                sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
-                chunk.z * ProtocolDefinition.SECTION_WIDTH_Z + inSection.z
-            ) // ToDo: Confirm
-        }
-
-        inline fun of(section: SectionPosition, inSection: InSectionPosition): BlockPosition {
-            return BlockPosition(
-                section.x * ProtocolDefinition.SECTION_WIDTH_X + inSection.x,
-                section.y * ProtocolDefinition.SECTION_HEIGHT_Y + inSection.y,
-                section.z * ProtocolDefinition.SECTION_WIDTH_Z + inSection.z
-            ) // ToDo: Confirm
-        }
-
-        inline fun of(section: SectionPosition): BlockPosition {
-            return BlockPosition(
-                section.x * ProtocolDefinition.SECTION_WIDTH_X,
-                section.y * ProtocolDefinition.SECTION_HEIGHT_Y,
-                section.z * ProtocolDefinition.SECTION_WIDTH_Z
-            ) // ToDo: Confirm
-        }
+        inline fun of(chunk: ChunkPosition, sectionHeight: SectionHeight) = BlockPosition(chunk.x shl 4, sectionHeight shl 4, chunk.z shl 4)
+        inline fun of(chunk: ChunkPosition, inChunk: InChunkPosition) = BlockPosition((chunk.x shl 4) or inChunk.x, inChunk.y, (chunk.z shl 4) or inChunk.z)
+        inline fun of(chunk: ChunkPosition, sectionHeight: SectionHeight, inSection: InSectionPosition) = BlockPosition((chunk.x shl 4) or inSection.x, (sectionHeight shl 4) or inSection.y, (chunk.z shl 4) or inSection.z)
+        inline fun of(section: SectionPosition, inSection: InSectionPosition) = BlockPosition((section.x shl 4) or inSection.x, (section.y shl 4) or inSection.y, (section.z shl 4) or inSection.z)
+        inline fun of(section: SectionPosition) = BlockPosition(section.x shl 4, section.y shl 4, section.z shl 4)
     }
 }
