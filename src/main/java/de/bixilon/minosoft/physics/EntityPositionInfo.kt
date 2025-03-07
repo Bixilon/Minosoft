@@ -14,50 +14,44 @@
 package de.bixilon.minosoft.physics
 
 import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 
 class EntityPositionInfo(
     val revision: Int,
     val chunkPosition: ChunkPosition,
-    val sectionHeight: Int,
-    val blockPosition: BlockPosition,
     val eyePosition: BlockPosition,
-    val inChunkPosition: InChunkPosition,
-    val inSectionPosition: InSectionPosition,
+    val position: BlockPosition,
 
     val chunk: Chunk?,
     val block: BlockState?,
     val velocityBlock: BlockState?,
 ) {
-    val biome: Biome? get() = chunk?.getBiome(inChunkPosition)
+    val biome: Biome? get() = chunk?.getBiome(position.inChunkPosition)
 
     companion object {
-        val EMPTY = EntityPositionInfo(0, ChunkPosition.EMPTY, 0, BlockPosition.EMPTY, BlockPosition.EMPTY, InChunkPosition.EMPTY, InSectionPosition.EMPTY, null, null, null)
+        const val VELOCITY_POSITION_OFFSET = 0.5000001
+        val EMPTY = EntityPositionInfo(-1, ChunkPosition.EMPTY, BlockPosition.EMPTY, BlockPosition.EMPTY, null, null, null)
 
 
         fun of(physics: EntityPhysics<*>, previous: EntityPositionInfo = EMPTY): EntityPositionInfo {
             val position = physics.position
-            val blockPosition = position.blockPosition
-            val chunkPosition = blockPosition.chunkPosition
-            val sectionHeight = blockPosition.sectionHeight
-            val eyePosition = BlockPosition(position.x.floor, (position.y + physics.entity.eyeHeight).floor, position.z.floor)
-            val inChunkPosition = blockPosition.inChunkPosition
-            val inSectionPosition = blockPosition.inSectionPosition
-
-            val velocityPosition = BlockPosition(blockPosition.x, (position.y - 0.5000001).toInt(), blockPosition.z)
-
             val world = physics.entity.session.world
+
+            if (position.x < -BlockPosition.MAX_X || position.x > BlockPosition.MAX_X || position.z < -BlockPosition.MAX_Z || position.z > BlockPosition.MAX_Z) {
+                // chunk position invalid; this should really not happen because the physics position is clamped at that
+                throw IllegalStateException("Invalid physics position: $position")
+            }
+            val chunkPosition = BlockPosition(position.x.floor, 0, position.y.floor).chunkPosition
+
             world.lock.acquire()
             val revision = world.chunks.revision
-
             var chunk = if (previous.revision == revision) previous.chunk?.neighbours?.traceChunk(chunkPosition - previous.chunkPosition) else null
 
             if (chunk == null) {
@@ -65,10 +59,22 @@ class EntityPositionInfo(
             }
             world.lock.release()
 
-            val block = chunk?.get(inChunkPosition)
-            val velocityBlock = chunk?.get(velocityPosition.inChunkPosition)
+            if (position.y - VELOCITY_POSITION_OFFSET < BlockPosition.MIN_Y || position.y > BlockPosition.MAX_Y) {
+                // invalid height; can easily happen when you fly around
+                val blockPosition = BlockPosition(position.x.floor, position.y.floor.clamp(BlockPosition.MIN_Y, BlockPosition.MAX_Y), position.z.floor)
 
-            return EntityPositionInfo(revision, chunkPosition, sectionHeight, blockPosition, eyePosition, inChunkPosition, inSectionPosition, chunk, block, velocityBlock)
+                return EntityPositionInfo(revision, chunkPosition, blockPosition, blockPosition, chunk, null, null)
+            }
+
+
+            val blockPosition = position.blockPosition
+            val eyePosition = BlockPosition(position.x.floor, (position.y + physics.entity.eyeHeight).floor, position.z.floor)
+
+
+            val block = chunk?.get(blockPosition.inChunkPosition)
+            val velocityBlock = chunk?.get(blockPosition.with(y = (position.y - VELOCITY_POSITION_OFFSET).toInt()).inChunkPosition)
+
+            return EntityPositionInfo(revision, chunkPosition, eyePosition, blockPosition, chunk, block, velocityBlock)
         }
     }
 }

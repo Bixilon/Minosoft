@@ -90,7 +90,7 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     private fun getCurrentLight(): Int {
-        var light = entity.physics.positionInfo.chunk?.light?.get(entity.physics.positionInfo.inChunkPosition) ?: return 0xFF
+        var light = entity.physics.positionInfo.chunk?.light?.get(entity.physics.positionInfo.position.inChunkPosition) ?: return 0xFF
         if (entity.isOnFire) {
             light = light or 0xF0
         }

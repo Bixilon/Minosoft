@@ -139,8 +139,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         session.camera.entity.physics.apply {
             // ToDo: Only update when the position changes
             layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${inSectionPosition.format()} in (${chunkPosition.x.format()} ${sectionHeight.format()} ${chunkPosition.z.format()})" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.position) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${position.inSectionPosition.format()} in (${chunkPosition.x.format()} ${position.sectionHeight.format()} ${chunkPosition.z.format()})" } }
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 

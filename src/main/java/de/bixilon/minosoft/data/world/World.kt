@@ -141,7 +141,7 @@ class World(
     }
 
     fun randomDisplayTick() {
-        val origin = session.player.physics.positionInfo.blockPosition
+        val origin = session.player.physics.positionInfo.position
         val chunk = this.chunks[origin.chunkPosition] ?: return
 
         for (i in 0 until 667) {

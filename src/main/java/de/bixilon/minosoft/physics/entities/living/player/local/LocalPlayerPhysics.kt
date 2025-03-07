@@ -251,7 +251,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
 
     private fun travelSwimming(input: MovementInput) {
         val pitch = rotation.front.y
-        val fluid = positionInfo.chunk?.get(positionInfo.inChunkPosition.with(y = (position.y + 0.9).toInt()))
+        val fluid = positionInfo.chunk?.get(positionInfo.position.inChunkPosition.with(y = (position.y + 0.9).toInt()))
 
         if (pitch <= 0.0 || input.jumping || (fluid != null && fluid.block is FluidHolder)) {
             val speed = if (pitch < -0.2) 0.085 else 0.06

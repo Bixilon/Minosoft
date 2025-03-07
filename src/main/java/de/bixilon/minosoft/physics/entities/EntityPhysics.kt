@@ -103,7 +103,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     fun getLandingPosition(): BlockPosition {
         val info = this.positionInfo
-        val position = BlockPosition(info.blockPosition.x, (position.y - 0.2).toInt(), info.blockPosition.z) // TODO: can y get below 0?
+        val position = BlockPosition(info.position.x, (position.y - 0.2).toInt(), info.position.z) // TODO: can y get below 0?
         val inChunk = position.inChunkPosition
         val state = positionInfo.chunk?.get(inChunk)
         if (state == null) {

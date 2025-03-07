@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
 
     override fun draw() {
         // TODO: make brightness depend on ambient light (e.g. rain gradient, thunder gradient, time, ...)
-        val brightness = context.session.world.getBrightness(context.session.player.physics.positionInfo.blockPosition) * 0.5f
+        val brightness = context.session.world.getBrightness(context.session.player.physics.positionInfo.position) * 0.5f
         tintColor = RGBColor(brightness, brightness, brightness, 0.1f)
 
         // ToDo: Minecraft sets the uv coordinates according to the yaw and pitch (see InGameOverlayRenderer::renderUnderwaterOverlay)
