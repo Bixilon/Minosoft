@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.chunk.light.breaking
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.minosoft.data.registries.blocks.TorchTest0
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.chunk.light.LightTestUtil.assertLight
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -224,7 +224,7 @@ class BlockLightBreakIT {
 
     fun bottomPropagation() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world.fill(BlockPosition(-20, 0, -20), BlockPosition(40, 1, 40), StoneTest0.state)
+        world.fill(BlockPosition(-20, 0, -20), BlockPosition(40, 1, 40), IT.BLOCK_1)
         world[BlockPosition(8, 0, 8)] = TorchTest0.state
         world[BlockPosition(8, 0, 8)] = null
 
@@ -239,7 +239,7 @@ class BlockLightBreakIT {
 
     fun topPropagation() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), StoneTest0.state)
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 255, 8)] = TorchTest0.state
         world[BlockPosition(8, 255, 8)] = null
 

@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 
 abstract class StillFluidIT {
@@ -33,7 +33,7 @@ abstract class StillFluidIT {
             BlockPosition(20, 16, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), IT.BLOCK_1)
 
         return@lazy session
     }
@@ -44,7 +44,7 @@ abstract class StillFluidIT {
             BlockPosition(20, 20, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), IT.BLOCK_1)
 
         return@lazy session
     }
@@ -101,7 +101,7 @@ abstract class StillFluidIT {
             BlockPosition(20, 17, 20),
             block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
-        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(20, 15, 20), IT.BLOCK_1)
 
         val player = createPlayer(session)
         player.forceTeleport(Vec3d(4.0, 17.0, 7.0))

@@ -23,10 +23,10 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.SlabTest0
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -36,7 +36,7 @@ class SneakIT {
     fun sneak1() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(1)
         player.assertPosition(17.0, 9.0, 8.00588000045985)
@@ -47,7 +47,7 @@ class SneakIT {
     fun sneak2() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(2)
         player.assertPosition(17.0, 9.0, 8.017110801492372)
@@ -58,7 +58,7 @@ class SneakIT {
     fun sneak4() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(4)
         player.assertPosition(17.0, 9.0, 8.107763377843378)
@@ -69,7 +69,7 @@ class SneakIT {
     fun sneak8() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(8)
         player.assertPosition(17.0, 9.0, 8.351754765625234)
@@ -80,7 +80,7 @@ class SneakIT {
     fun sneak20() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(20)
         player.assertPosition(17.0, 9.0, 9.12738151929247)
@@ -91,7 +91,7 @@ class SneakIT {
     fun sneak23() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(23)
         player.assertPosition(17.0, 9.0, 9.271653834465672)
@@ -102,7 +102,7 @@ class SneakIT {
     fun sneak24() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(24)
         player.assertPosition(17.0, 9.0, 9.286411484141851)
@@ -113,7 +113,7 @@ class SneakIT {
     fun sneak300() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(300)
         player.assertPosition(17.0, 9.0, 9.286411484141851)
@@ -124,7 +124,7 @@ class SneakIT {
     fun sneakStepping30() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 8, 9)] = SlabTest0.state
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(30)
@@ -136,7 +136,7 @@ class SneakIT {
     fun sneakSteppingSnow4() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.8))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 8, 9)] = player.session.registries.block[MinecraftBlocks.SNOW]!!.states.withProperties(BlockProperties.SNOW_LAYERS to 4)
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(20)
@@ -149,7 +149,7 @@ class SneakIT {
     fun sneakSteppingSnow5() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.8))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 8, 9)] = player.session.registries.block[MinecraftBlocks.SNOW]!!.states.withProperties(BlockProperties.SNOW_LAYERS to 5)
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(15)
@@ -162,7 +162,7 @@ class SneakIT {
     fun sneakStepping70() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 8, 9)] = SlabTest0.state
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(70)
@@ -174,9 +174,9 @@ class SneakIT {
     fun sneakStepping100() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 8, 9)] = SlabTest0.state
-        player.session.world[BlockPosition(17, 8, 10)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 10)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(100)
         player.assertPosition(17.0, 9.0, 11.292730428045934)
@@ -187,10 +187,10 @@ class SneakIT {
     fun sneakCollision100() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 8, 9)] = SlabTest0.state
-        player.session.world[BlockPosition(17, 8, 10)] = StoneTest0.state
-        player.session.world[BlockPosition(17, 9, 10)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 10)] = IT.BLOCK_1
+        player.session.world[BlockPosition(17, 9, 10)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(100)
         player.assertPosition(17.0, 8.5, 9.699999988079071)
@@ -201,8 +201,8 @@ class SneakIT {
     fun sneakSlab() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
-        player.session.world[BlockPosition(17, 8, 9)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
+        player.session.world[BlockPosition(17, 8, 9)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 10, 9)] = SlabTest0.top
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(25)
@@ -214,8 +214,8 @@ class SneakIT {
     fun unsneakSlab() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
-        player.session.world[BlockPosition(17, 8, 9)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
+        player.session.world[BlockPosition(17, 8, 9)] = IT.BLOCK_1
         player.session.world[BlockPosition(17, 10, 9)] = SlabTest0.top
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(25)

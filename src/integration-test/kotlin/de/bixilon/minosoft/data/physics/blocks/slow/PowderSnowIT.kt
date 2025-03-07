@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.LeatherArmor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
@@ -231,9 +230,9 @@ class PowderSnowIT : SlowMovementIT() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
         player.session.world[BlockPosition(5, 10, 5)] = block
-        player.session.world[BlockPosition(5, 9, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 9, 5)] = IT.BLOCK_1
         player.session.world[BlockPosition(5, 10, 6)] = block
-        player.session.world[BlockPosition(5, 9, 6)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 9, 6)] = IT.BLOCK_1
 
         player.runTicks(5)
         player.input = PlayerMovementInput(forward = true)

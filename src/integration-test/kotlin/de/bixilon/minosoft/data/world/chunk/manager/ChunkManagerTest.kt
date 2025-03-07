@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
@@ -40,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -85,17 +85,17 @@ class ChunkManagerTest {
     fun placeBlock() {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
-        manager.world[17, 1, 18] = StoneTest0.state
+        manager.world[17, 1, 18] = IT.BLOCK_1
 
-        assertSame(manager.world[BlockPosition(17, 1, 18)], StoneTest0.state)
-        assertSame(chunk[InChunkPosition(1, 1, 2)], StoneTest0.state)
+        assertSame(manager.world[BlockPosition(17, 1, 18)], IT.BLOCK_1)
+        assertSame(chunk[InChunkPosition(1, 1, 2)], IT.BLOCK_1)
     }
 
     fun destroyBlock() {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
 
-        manager.world[17, 1, 18] = StoneTest0.state
+        manager.world[17, 1, 18] = IT.BLOCK_1
         manager.world[17, 1, 18] = null
 
         assertNull(manager.world[BlockPosition(17, 1, 18)])
@@ -191,15 +191,15 @@ class ChunkManagerTest {
         manager -= ChunkPosition(0, 0)
 
         // create all horizontal neighbour chunks
-        manager[ChunkPosition(-1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
-        manager[ChunkPosition(0, -1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
-        manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
-        manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(-1, 0)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(0, -1)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
 
         manager[ChunkPosition(0, 0)] = ChunkPrototype(blocks = arrayOf(
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = StoneTest0.state },
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = StoneTest0.state },
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
             null, null, null,
         ),
             blockEntities = emptyMap(),
@@ -223,14 +223,14 @@ class ChunkManagerTest {
         manager.createMatrix()
 
         // create all horizontal neighbour chunks
-        manager[ChunkPosition(-1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
-        manager[ChunkPosition(0, -1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
-        manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
-        manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = StoneTest0.state
+        manager[ChunkPosition(-1, 0)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(0, -1)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
 
-        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 3, 3)] = StoneTest0.state
-        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 17, 3)] = StoneTest0.state
-        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 35, 3)] = StoneTest0.state
+        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 3, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 17, 3)] = IT.BLOCK_1
+        manager[ChunkPosition(0, 0)]!![InChunkPosition(3, 35, 3)] = IT.BLOCK_1
 
         val chunk = manager[ChunkPosition(0, 0)]!!
 
@@ -261,11 +261,11 @@ class ChunkManagerTest {
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
             assertSame(update.chunk, chunk)
             assertEquals(update.position, BlockPosition(18, 12, 19))
-            assertEquals(update.state, StoneTest0.state)
+            assertEquals(update.state, IT.BLOCK_1)
             fired++
         }
-        manager.world[BlockPosition(18, 12, 19)] = StoneTest0.state
-        manager.world[BlockPosition(18, 12, 19)] = StoneTest0.state // set twice, one event should be ignored
+        manager.world[BlockPosition(18, 12, 19)] = IT.BLOCK_1
+        manager.world[BlockPosition(18, 12, 19)] = IT.BLOCK_1 // set twice, one event should be ignored
 
         assertEquals(fired, 1)
     }
@@ -280,11 +280,11 @@ class ChunkManagerTest {
             assertEquals(update.chunkPosition, ChunkPosition(1, 1))
             assertSame(update.chunk, chunk)
             assertEquals(update.position, BlockPosition(18, 12, 19))
-            assertEquals(update.state, StoneTest0.state)
+            assertEquals(update.state, IT.BLOCK_1)
             fired++
         }
-        chunk[InChunkPosition(2, 12, 3)] = StoneTest0.state
-        chunk[InChunkPosition(2, 12, 3)] = StoneTest0.state  // set twice, one event should be ignored
+        chunk[InChunkPosition(2, 12, 3)] = IT.BLOCK_1
+        chunk[InChunkPosition(2, 12, 3)] = IT.BLOCK_1  // set twice, one event should be ignored
 
         assertEquals(fired, 1)
     }
@@ -293,7 +293,7 @@ class ChunkManagerTest {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
         var fired = 0
-        val updates = setOf(ChunkLocalBlockUpdate.LocalUpdate(InChunkPosition(4, 2, 1), StoneTest0.state), ChunkLocalBlockUpdate.LocalUpdate(InChunkPosition(3, 123, 9), StoneTest0.state))
+        val updates = setOf(ChunkLocalBlockUpdate.LocalUpdate(InChunkPosition(4, 2, 1), IT.BLOCK_1), ChunkLocalBlockUpdate.LocalUpdate(InChunkPosition(3, 123, 9), IT.BLOCK_1))
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkLocalBlockUpdate)
             val update = it.update as ChunkLocalBlockUpdate
@@ -371,8 +371,8 @@ class ChunkManagerTest {
     fun prototypeChangeUpdateReplace() {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
-        chunk[InChunkPosition(4, 36, 5)] = StoneTest0.state
-        chunk[InChunkPosition(4, 3, 5)] = StoneTest0.state
+        chunk[InChunkPosition(4, 36, 5)] = IT.BLOCK_1
+        chunk[InChunkPosition(4, 3, 5)] = IT.BLOCK_1
         var fired = 0
 
         manager.world.session.events.listen<WorldUpdateEvent> {
@@ -393,8 +393,8 @@ class ChunkManagerTest {
     fun prototypeChangeUpdateUpdate() {
         val manager = create()
         val chunk = manager.create(ChunkPosition(1, 1))
-        chunk[InChunkPosition(4, 36, 5)] = StoneTest0.state
-        chunk[InChunkPosition(4, 3, 5)] = StoneTest0.state
+        chunk[InChunkPosition(4, 36, 5)] = IT.BLOCK_1
+        chunk[InChunkPosition(4, 3, 5)] = IT.BLOCK_1
         var fired = 0
 
         manager.world.session.events.listen<WorldUpdateEvent> {

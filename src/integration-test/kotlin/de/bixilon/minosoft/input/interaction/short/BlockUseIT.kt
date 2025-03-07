@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.items.CoalTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
@@ -36,6 +35,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPa
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
+import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item", "block"])
@@ -43,7 +43,7 @@ class BlockUseIT {
 
     fun testAirOnStone() {
         val session = InteractionTestUtil.createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         val use = session.camera.interactions.use
 
         use.unsafePress()
@@ -54,7 +54,7 @@ class BlockUseIT {
 
     fun testCoalOnStone() {
         val session = InteractionTestUtil.createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
         val use = session.camera.interactions.use
 
@@ -68,7 +68,7 @@ class BlockUseIT {
 
     fun testCoalOnStone2() {
         val session = InteractionTestUtil.createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
         val use = session.camera.interactions.use
 
@@ -83,7 +83,7 @@ class BlockUseIT {
 
     fun testCoalOnStone3() {
         val session = InteractionTestUtil.createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
         session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
         val use = session.camera.interactions.use

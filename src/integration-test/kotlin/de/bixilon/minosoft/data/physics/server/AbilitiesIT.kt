@@ -19,18 +19,18 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
 class AbilitiesIT {
     private val session by lazy {
         val session = createSession(5)
-        session.world.fill(BlockPosition(-20, 0, -20), BlockPosition(20, 0, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-20, 0, -20), BlockPosition(20, 0, 20), IT.BLOCK_1)
 
         return@lazy session
     }

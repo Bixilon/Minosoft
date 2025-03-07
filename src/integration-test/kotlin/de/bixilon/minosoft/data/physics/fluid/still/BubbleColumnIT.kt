@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
@@ -43,7 +42,7 @@ class BubbleColumnIT {
     private fun bubbleColumn(height: Int, drag: Boolean): PlaySession {
         val session = SessionTestUtil.createSession(4)
         session.world.fill(BlockPosition(-10, 16, -10), BlockPosition(10, 15 + height, 10), block.states.withProperties(BlockProperties.BUBBLE_COLUMN_DRAG to drag))
-        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(10, 15, 10), StoneTest0.state)
+        session.world.fill(BlockPosition(-10, 15, -10), BlockPosition(10, 15, 10), IT.BLOCK_1)
 
         return session
     }

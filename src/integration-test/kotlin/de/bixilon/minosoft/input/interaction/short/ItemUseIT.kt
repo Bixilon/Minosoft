@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
@@ -39,6 +38,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -84,7 +84,7 @@ class ItemUseIT {
 
     fun eggOnStone() {
         val session = createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item)
         val use = session.camera.interactions.use
 
@@ -98,7 +98,7 @@ class ItemUseIT {
 
     fun eggOnStone2() {
         val session = createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggTest0.item)
         val use = session.camera.interactions.use
 
@@ -113,7 +113,7 @@ class ItemUseIT {
 
     fun eggOnStone3() {
         val session = createSession()
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item)
         session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggTest0.item)
         val use = session.camera.interactions.use

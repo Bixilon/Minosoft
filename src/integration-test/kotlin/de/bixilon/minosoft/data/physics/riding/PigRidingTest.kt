@@ -25,13 +25,13 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -171,7 +171,7 @@ class PigRidingTest : AbstractRidingTest<Pig>() {
 
     fun pigCarrotOnStick2() {
         val player = createPlayer(createSession(5))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))

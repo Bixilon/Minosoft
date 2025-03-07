@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.world.World
@@ -44,9 +43,9 @@ class MixedFluidIT {
 
     private fun World.fill() {
         this[BlockPosition(10, 2, 3)] = lava!!.states.withProperties(FluidBlock.LEVEL to 0)
-        this[BlockPosition(10, 1, 3)] = StoneTest0.state
+        this[BlockPosition(10, 1, 3)] = IT.BLOCK_1
         this[BlockPosition(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 0)
-        this[BlockPosition(10, 1, 4)] = StoneTest0.state
+        this[BlockPosition(10, 1, 4)] = IT.BLOCK_1
     }
 
     fun stillLavaAndWater1() {
@@ -90,7 +89,7 @@ class MixedFluidIT {
 
     fun mixedHeight1() {
         val player = createPlayer(createSession(3))
-        player.session.world[BlockPosition(10, 1, 4)] = StoneTest0.state
+        player.session.world[BlockPosition(10, 1, 4)] = IT.BLOCK_1
         player.session.world[BlockPosition(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.session.world[BlockPosition(10, 3, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
@@ -104,7 +103,7 @@ class MixedFluidIT {
 
     fun mixedHeight2() {
         val player = createPlayer(createSession(3))
-        player.session.world[BlockPosition(10, 1, 4)] = StoneTest0.state
+        player.session.world[BlockPosition(10, 1, 4)] = IT.BLOCK_1
         player.session.world[BlockPosition(10, 2, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.session.world[BlockPosition(10, 3, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
@@ -118,7 +117,7 @@ class MixedFluidIT {
 
     fun mixedHeight3() {
         val player = createPlayer(createSession(3))
-        player.session.world[BlockPosition(10, 1, 4)] = StoneTest0.state
+        player.session.world[BlockPosition(10, 1, 4)] = IT.BLOCK_1
         player.session.world[BlockPosition(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.session.world[BlockPosition(10, 3, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
@@ -132,7 +131,7 @@ class MixedFluidIT {
 
     fun mixedHeight4() {
         val player = createPlayer(createSession(3))
-        player.session.world[BlockPosition(10, 1, 4)] = StoneTest0.state
+        player.session.world[BlockPosition(10, 1, 4)] = IT.BLOCK_1
         player.session.world[BlockPosition(10, 2, 4)] = water!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.session.world[BlockPosition(10, 3, 4)] = lava!!.states.withProperties(FluidBlock.LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))

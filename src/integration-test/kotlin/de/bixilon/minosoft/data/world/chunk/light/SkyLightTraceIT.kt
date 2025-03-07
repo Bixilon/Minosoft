@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.light.LightTestUtil.assertLight
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
 
@@ -25,21 +25,21 @@ class SkyLightTraceIT {
 
     fun `check level below block`() {
         val world = createSession(3, light = true).world
-        world[BlockPosition(8, 10, 8)] = StoneTest0.state
+        world[BlockPosition(8, 10, 8)] = IT.BLOCK_1
         world.assertLight(8, 9, 8, 0xE0)
     }
 
     fun `heightmap optimization west, upper block set`() {
         val world = createSession(3, light = true).world
-        world[BlockPosition(8, 10, 8)] = StoneTest0.state
-        world[BlockPosition(7, 12, 8)] = StoneTest0.state
+        world[BlockPosition(8, 10, 8)] = IT.BLOCK_1
+        world[BlockPosition(7, 12, 8)] = IT.BLOCK_1
         world.assertLight(7, 11, 8, 0xE0)
     }
 
     fun `heightmap optimization west, upper block set 2`() {
         val world = createSession(3, light = true).world
-        world[BlockPosition(8, 255, 8)] = StoneTest0.state
-        world[BlockPosition(7, 1, 8)] = StoneTest0.state
+        world[BlockPosition(8, 255, 8)] = IT.BLOCK_1
+        world[BlockPosition(7, 1, 8)] = IT.BLOCK_1
         for (y in 0..254) {
             world.assertLight(8, y, 8, 0xE0)
         }
@@ -47,22 +47,22 @@ class SkyLightTraceIT {
 
     fun `heightmap optimization east, upper block set`() {
         val world = createSession(3, light = true).world
-        world[BlockPosition(8, 10, 8)] = StoneTest0.state
-        world[BlockPosition(9, 12, 8)] = StoneTest0.state
+        world[BlockPosition(8, 10, 8)] = IT.BLOCK_1
+        world[BlockPosition(9, 12, 8)] = IT.BLOCK_1
         world.assertLight(9, 11, 8, 0xE0)
     }
 
     fun `heightmap optimization north, upper block set`() {
         val world = createSession(3, light = true).world
-        world[BlockPosition(8, 10, 8)] = StoneTest0.state
-        world[BlockPosition(8, 12, 7)] = StoneTest0.state
+        world[BlockPosition(8, 10, 8)] = IT.BLOCK_1
+        world[BlockPosition(8, 12, 7)] = IT.BLOCK_1
         world.assertLight(8, 11, 7, 0xE0)
     }
 
     fun `heightmap optimization south, upper block set`() {
         val world = createSession(3, light = true).world
-        world[BlockPosition(8, 10, 8)] = StoneTest0.state
-        world[BlockPosition(8, 12, 9)] = StoneTest0.state
+        world[BlockPosition(8, 10, 8)] = IT.BLOCK_1
+        world[BlockPosition(8, 12, 9)] = IT.BLOCK_1
         world.assertLight(8, 11, 9, 0xE0)
     }
 }

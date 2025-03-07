@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 
 abstract class SlowMovementIT {
@@ -51,7 +51,7 @@ abstract class SlowMovementIT {
     protected fun forwardsMovement(player: LocalPlayerEntity = createPlayer(createSession(3))): LocalPlayerEntity {
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
         player.session.world[BlockPosition(5, 10, 5)] = block
-        player.session.world[BlockPosition(5, 9, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 9, 5)] = IT.BLOCK_1
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(10)
 
@@ -101,7 +101,7 @@ abstract class SlowMovementIT {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
         player.session.world[BlockPosition(5, 10, 5)] = block
-        player.session.world[BlockPosition(5, 9, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 9, 5)] = IT.BLOCK_1
         player.runTicks(10)
 
         return player
@@ -111,7 +111,7 @@ abstract class SlowMovementIT {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
         player.session.world[BlockPosition(5, 10, 5)] = block
-        player.session.world[BlockPosition(5, 9, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 9, 5)] = IT.BLOCK_1
 
         player.runTicks(10)
         player.input = PlayerMovementInput(jump = true)
@@ -124,7 +124,7 @@ abstract class SlowMovementIT {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(5.0, 10.0, 5.0))
         player.session.world[BlockPosition(5, 10, 5)] = block
-        player.session.world[BlockPosition(5, 9, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 9, 5)] = IT.BLOCK_1
 
         player.runTicks(10)
         player.input = PlayerMovementInput(jump = true)

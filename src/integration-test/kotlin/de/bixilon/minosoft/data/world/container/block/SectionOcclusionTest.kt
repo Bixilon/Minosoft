@@ -116,7 +116,7 @@ class SectionOcclusionTest {
     @Test(enabled = false)
     fun benchmark() {
         val occlusion = create()
-        val stone = StoneTest0.state
+        val stone = IT.BLOCK_1
         val random = Random(12)
         for (i in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
             if (random.nextBoolean()) {

@@ -20,14 +20,13 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
-import de.bixilon.minosoft.data.registries.blocks.DirtTest0
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
-@Test(groups = ["raycasting"], dependsOnGroups = ["block"])
+@Test(groups = ["raycasting"])
 class TargetHandlerTest {
 
     fun first() {
@@ -37,10 +36,10 @@ class TargetHandlerTest {
         player.physics.forceTeleport(Vec3d(7.7, 69.0, 5.7))
         player.physics.forceSetRotation(EntityRotation(-34.8f, 52.6f)) // 0.2963716, -0.80799085, 0.5092297
 
-        session.world[7, 68, 5] = StoneTest0.state
-        session.world[8, 69, 5] = StoneTest0.state
-        session.world[7, 69, 6] = DirtTest0.state
-        session.world[8, 69, 6] = StoneTest0.state
+        session.world[7, 68, 5] = IT.BLOCK_1
+        session.world[8, 69, 5] = IT.BLOCK_1
+        session.world[7, 69, 6] = IT.BLOCK_2
+        session.world[8, 69, 6] = IT.BLOCK_1
 
         player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
         player.renderInfo::rotation.forceSet(player.physics.rotation)
@@ -52,7 +51,7 @@ class TargetHandlerTest {
         assertTrue(target is BlockTarget)
         target as BlockTarget
         assertEquals(target.blockPosition, BlockPosition(7, 69, 6))
-        assertEquals(target.state, DirtTest0.state)
+        assertEquals(target.state, IT.BLOCK_2)
         assertEquals(target.direction, Directions.UP)
         assertEquals(target.cursor.y, 1.0)
     }
@@ -64,7 +63,7 @@ class TargetHandlerTest {
         player.physics.forceTeleport(Vec3d(9.3, 69.0, 2.59))
         player.physics.forceSetRotation(EntityRotation(89.0f, 8.1f))
 
-        session.world[8, 70, 2] = StoneTest0.state
+        session.world[8, 70, 2] = IT.BLOCK_1
 
         player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
         player.renderInfo::rotation.forceSet(player.physics.rotation)
@@ -76,7 +75,7 @@ class TargetHandlerTest {
         assertTrue(target is BlockTarget)
         target as BlockTarget
         assertEquals(target.blockPosition, BlockPosition(8, 70, 2))
-        assertEquals(target.state, StoneTest0.state)
+        assertEquals(target.state, IT.BLOCK_1)
         assertEquals(target.direction, Directions.EAST)
         assertEquals(target.cursor.x, 1.0)
     }
@@ -88,7 +87,7 @@ class TargetHandlerTest {
         player.physics.forceTeleport(Vec3d(9.3, 69.0, 2.59))
         player.physics.forceSetRotation(EntityRotation(89.0f, 8.1f))
 
-        session.world[9, 70, 2] = StoneTest0.state
+        session.world[9, 70, 2] = IT.BLOCK_1
 
         player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
         player.renderInfo::rotation.forceSet(player.physics.rotation)
@@ -100,7 +99,7 @@ class TargetHandlerTest {
         assertTrue(target is BlockTarget)
         target as BlockTarget
         assertEquals(target.blockPosition, BlockPosition(9, 70, 2))
-        assertEquals(target.state, StoneTest0.state)
+        assertEquals(target.state, IT.BLOCK_1)
         assertEquals(target.direction, Directions.WEST)
     }
 }

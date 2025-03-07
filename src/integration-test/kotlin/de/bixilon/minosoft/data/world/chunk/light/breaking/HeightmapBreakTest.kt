@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.world.chunk.light.breaking
 
 import de.bixilon.minosoft.data.registries.blocks.*
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebTest0
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -29,7 +29,7 @@ class HeightmapBreakTest {
 
     fun testEmpty() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[InChunkPosition(0, 0, 0)] = StoneTest0.state
+        chunk[InChunkPosition(0, 0, 0)] = IT.BLOCK_1
         chunk[InChunkPosition(0, 0, 0)] = null
         assertTrue(chunk.light.heightmap[0, 0] < 0)
     }
@@ -81,9 +81,9 @@ class HeightmapBreakTest {
 
     fun testStone() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[InChunkPosition(0, 0, 0)] = StoneTest0.state
-        chunk[InChunkPosition(0, 1, 0)] = StoneTest0.state
-        chunk[InChunkPosition(0, 2, 0)] = StoneTest0.state
+        chunk[InChunkPosition(0, 0, 0)] = IT.BLOCK_1
+        chunk[InChunkPosition(0, 1, 0)] = IT.BLOCK_1
+        chunk[InChunkPosition(0, 2, 0)] = IT.BLOCK_1
         chunk[InChunkPosition(0, 2, 0)] = null
         assertEquals(chunk.light.heightmap[0, 0], 2)
     }

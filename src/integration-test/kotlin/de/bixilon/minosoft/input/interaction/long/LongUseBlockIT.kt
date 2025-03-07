@@ -21,8 +21,6 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.DirtTest0
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.item.items.weapon.defend.ShieldItem
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -36,6 +34,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPa
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
+import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
@@ -48,7 +47,7 @@ class LongUseBlockIT {
     fun shieldOnDirt() {
         val session = InteractionTestUtil.createSession()
         session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, DirtTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_2, null, BlockPosition.EMPTY)))
         val use = session.camera.interactions.use
 
 
@@ -67,7 +66,7 @@ class LongUseBlockIT {
     fun offHandShieldOnDirt() {
         val session = InteractionTestUtil.createSession()
         session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(ShieldItem())
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, DirtTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_2, null, BlockPosition.EMPTY)))
         val use = session.camera.interactions.use
 
 
@@ -88,7 +87,7 @@ class LongUseBlockIT {
         todo()
         val session = InteractionTestUtil.createSession()
         session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
-        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, BlockPosition.EMPTY)))
+        session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
         val use = session.camera.interactions.use
 
 

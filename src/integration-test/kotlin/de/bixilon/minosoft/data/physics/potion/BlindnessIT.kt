@@ -21,11 +21,11 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -39,7 +39,7 @@ class BlindnessIT {
     fun blindness5() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.applyBlindness()
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(5)
@@ -52,7 +52,7 @@ class BlindnessIT {
     fun blindness30() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.applyBlindness()
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(30)

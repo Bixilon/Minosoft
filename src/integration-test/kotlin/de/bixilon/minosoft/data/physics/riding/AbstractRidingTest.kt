@@ -20,12 +20,12 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.properties.riding.Saddleable
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 
 abstract class AbstractRidingTest<T : Entity> {
 
@@ -111,7 +111,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun walking2(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
 
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
@@ -128,7 +128,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun walkSideways1(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
@@ -144,7 +144,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun walkSideways2(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
@@ -160,7 +160,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun walkBackwards(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
@@ -176,7 +176,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun walkUnsaddled(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         val vehicle = player.session.createVehicle(false)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
@@ -192,7 +192,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun jump1(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 
@@ -209,7 +209,7 @@ abstract class AbstractRidingTest<T : Entity> {
     protected fun jump2(): LocalPlayerEntity {
         val player = createPlayer(createSession(5))
         player.forceTeleport(Vec3d(6.0, 5.0, 4.0))
-        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-10, 4, -10), BlockPosition(10, 4, 10), IT.BLOCK_1)
         val vehicle = player.session.createVehicle(true)
         vehicle.forceTeleport(Vec3d(7.0, 6.0, 5.0))
 

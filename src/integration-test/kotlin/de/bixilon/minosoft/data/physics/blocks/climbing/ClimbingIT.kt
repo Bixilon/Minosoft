@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
@@ -31,6 +30,7 @@ import de.bixilon.minosoft.tags.MinecraftTagTypes
 import de.bixilon.minosoft.tags.Tag
 import de.bixilon.minosoft.tags.TagList
 import de.bixilon.minosoft.tags.TagManager
+import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 
 abstract class ClimbingIT {
@@ -213,7 +213,7 @@ abstract class ClimbingIT {
     protected fun climbingUpCollision(): LocalPlayerEntity {
         val player = createPlayer(createSession())
         player.session.world.fill(BlockPosition(5, 0, 5), BlockPosition(5, 10, 5), block)
-        player.session.world[BlockPosition(5, 10, 5)] = StoneTest0.state
+        player.session.world[BlockPosition(5, 10, 5)] = IT.BLOCK_1
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 

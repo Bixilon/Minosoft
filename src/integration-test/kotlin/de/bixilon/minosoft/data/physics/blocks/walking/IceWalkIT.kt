@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.parkour.ParkourUtil
 import de.bixilon.minosoft.data.physics.parkour.ParkourUtil.run
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -147,7 +146,7 @@ class IceWalkIT : WalkIT() {
     @Test(enabled = false)
     fun iceParkour1() {
         val player = createPlayer(createSession())
-        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), IT.BLOCK_1)
         player.session.world.fill(BlockPosition(-16, 3, 4), BlockPosition(-12, 3, 8), block!!)
 
         val ticks = ParkourUtil.read("ice_parkour_1")
@@ -157,7 +156,7 @@ class IceWalkIT : WalkIT() {
     @Test(enabled = false)
     fun iceParkourWalk1() {
         val player = createPlayer(createSession())
-        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), IT.BLOCK_1)
         player.session.world.fill(BlockPosition(-16, 3, 4), BlockPosition(-12, 3, 8), block!!)
 
         val ticks = ParkourUtil.read("ice_walk_1")

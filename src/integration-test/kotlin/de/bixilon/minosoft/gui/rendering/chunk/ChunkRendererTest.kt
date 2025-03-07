@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -56,7 +56,7 @@ class ChunkRendererTest {
 
     fun queueSingleChunk() {
         val chunk = RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!
-        chunk[InChunkPosition(0, 0, 0)] = StoneTest0.state
+        chunk[InChunkPosition(0, 0, 0)] = IT.BLOCK_1
         val renderer = create()
         renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
         renderer.awaitQueue(1)
@@ -73,8 +73,8 @@ class ChunkRendererTest {
             RenderTestUtil.context.session.world.chunks[ChunkPosition(3, 1)]!!,
         )
         for (chunk in chunks) {
-            chunk[InChunkPosition(0, 0, 0)] = StoneTest0.state
-            chunk[InChunkPosition(0, 16, 0)] = StoneTest0.state
+            chunk[InChunkPosition(0, 0, 0)] = IT.BLOCK_1
+            chunk[InChunkPosition(0, 16, 0)] = IT.BLOCK_1
         }
         val renderer = create()
         for (chunk in chunks) {

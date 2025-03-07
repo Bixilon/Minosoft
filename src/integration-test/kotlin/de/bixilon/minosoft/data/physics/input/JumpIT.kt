@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
@@ -31,7 +31,7 @@ class JumpIT {
     fun jumpStill1() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(1)
         player.assertPosition(17.0, 9.0, 8.0)
@@ -42,7 +42,7 @@ class JumpIT {
     fun jumpStill3() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(3)
         player.assertPosition(17.0, 9.419999986886978, 8.0)
@@ -53,7 +53,7 @@ class JumpIT {
     fun jumpStill10() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
         player.assertPosition(17.0, 10.024424088213681, 8.0)
@@ -64,7 +64,7 @@ class JumpIT {
     fun jumpStill13() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(13)
         player.assertPosition(17.0, 9.121296840539191, 8.0)
@@ -75,7 +75,7 @@ class JumpIT {
     fun jumpStill14() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(14)
         player.assertPosition(17.0, 9.0, 8.0)
@@ -86,7 +86,7 @@ class JumpIT {
     fun jumpStill15() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(15)
         player.assertPosition(17.0, 9.419999986886978, 8.0)
@@ -97,7 +97,7 @@ class JumpIT {
     fun jumpStill20() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(20)
         player.assertPosition(17.0, 10.252203340253725, 8.0)
@@ -108,7 +108,7 @@ class JumpIT {
     fun jumpStill200() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(200)
         player.assertPosition(17.0, 10.252203340253725, 8.0)
@@ -119,7 +119,7 @@ class JumpIT {
     fun jumpStill278() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(278)
         player.assertPosition(17.0, 9.0, 8.0)
@@ -130,7 +130,7 @@ class JumpIT {
     fun jumpStill400() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(400)
         player.assertPosition(17.0, 9.753199980521202, 8.0)

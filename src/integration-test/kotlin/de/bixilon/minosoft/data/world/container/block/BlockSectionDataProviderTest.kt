@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.world.container.block
 
 import de.bixilon.minosoft.data.registries.blocks.WaterTest0
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -38,7 +38,7 @@ class BlockSectionDataProviderTest {
 
     fun `single block set and removed`() {
         val blocks = create()
-        blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
         blocks[InSectionPosition(0, 0, 0)] = null
         assertTrue(blocks.isEmpty)
         assertFalse(blocks.hasFluid)
@@ -47,7 +47,7 @@ class BlockSectionDataProviderTest {
 
     fun `single block set`() {
         val blocks = create()
-        blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
         assertFalse(blocks.isEmpty)
         assertFalse(blocks.hasFluid)
         assertEquals(blocks.count, 1)
@@ -69,31 +69,31 @@ class BlockSectionDataProviderTest {
 
     fun `set min max position`() {
         val blocks = create()
-        blocks[InSectionPosition(0, 0, 0)] = StoneTest0.state
+        blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
         assertEquals(blocks.minPosition, InSectionPosition(0, 0, 0))
         assertEquals(blocks.maxPosition, InSectionPosition(0, 0, 0))
     }
 
     fun `set min max position but block not on edge`() {
         val blocks = create()
-        blocks[3, 5, 8] = StoneTest0.state
+        blocks[3, 5, 8] = IT.BLOCK_1
         assertEquals(blocks.minPosition, InSectionPosition(3, 5, 8))
         assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 8))
     }
 
     fun `set min max position but multiple blocks set`() {
         val blocks = create()
-        blocks[3, 5, 8] = StoneTest0.state
-        blocks[1, 2, 12] = StoneTest0.state
+        blocks[3, 5, 8] = IT.BLOCK_1
+        blocks[1, 2, 12] = IT.BLOCK_1
         assertEquals(blocks.minPosition, InSectionPosition(1, 2, 8))
         assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 12))
     }
 
     fun `remove one min max position but multiple blocks set`() {
         val blocks = create()
-        blocks[3, 5, 8] = StoneTest0.state
-        blocks[1, 2, 12] = StoneTest0.state
-        blocks[15, 14, 13] = StoneTest0.state
+        blocks[3, 5, 8] = IT.BLOCK_1
+        blocks[1, 2, 12] = IT.BLOCK_1
+        blocks[15, 14, 13] = IT.BLOCK_1
         assertEquals(blocks.minPosition, InSectionPosition(1, 2, 8))
         assertEquals(blocks.maxPosition, InSectionPosition(15, 14, 13))
         blocks[15, 14, 13] = null
@@ -104,7 +104,7 @@ class BlockSectionDataProviderTest {
     /*
     fun benchmark() {
         val water = WaterTest0.state
-        val stone = StoneTest0.state
+        val stone = IT.BLOCK_1
         val random = Random(12)
 
         val data = create()

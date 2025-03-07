@@ -20,11 +20,11 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
@@ -37,7 +37,7 @@ class JumpBoostIT {
     fun jumpBoost1() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.applyJumpBoost(1)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -48,7 +48,7 @@ class JumpBoostIT {
     fun jumpBoost2() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.applyJumpBoost(2)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -59,7 +59,7 @@ class JumpBoostIT {
     fun jumpBoost10() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.applyJumpBoost(10)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)
@@ -70,7 +70,7 @@ class JumpBoostIT {
     fun jumpBoost100() {
         val player = createPlayer(createSession(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
-        player.session.world[BlockPosition(17, 8, 8)] = StoneTest0.state
+        player.session.world[BlockPosition(17, 8, 8)] = IT.BLOCK_1
         player.applyJumpBoost(100)
         player.input = PlayerMovementInput(jump = true)
         player.runTicks(10)

@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.IronArmor
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
@@ -36,7 +35,7 @@ import org.testng.annotations.Test
 class SwiftSneakTest {
     private val session by lazy {
         val session = createSession(5)
-        session.world.fill(BlockPosition(-20, 0, -20), BlockPosition(20, 0, 20), StoneTest0.state)
+        session.world.fill(BlockPosition(-20, 0, -20), BlockPosition(20, 0, 20), IT.BLOCK_1)
 
         return@lazy session
     }

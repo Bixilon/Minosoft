@@ -21,12 +21,12 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
 import de.bixilon.minosoft.data.registries.blocks.SlabTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 
 abstract class WalkIT {
@@ -183,7 +183,7 @@ abstract class WalkIT {
 
     protected fun stoneBlockWalk1(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), IT.BLOCK_1)
         player.session.world.fill(BlockPosition(-16, 3, 4), BlockPosition(-12, 3, 8), block!!)
 
         player.forceTeleport(Vec3d(-15.653410032035934, 4.0, 8.580128352737571))
@@ -199,7 +199,7 @@ abstract class WalkIT {
 
     protected fun stoneBlockWalk2(): LocalPlayerEntity {
         val player = createPlayer(createSession())
-        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), StoneTest0.state)
+        player.session.world.fill(BlockPosition(-18, 3, 2), BlockPosition(-10, 3, 10), IT.BLOCK_1)
         player.session.world.fill(BlockPosition(-16, 3, 4), BlockPosition(-12, 3, 8), block!!)
 
         player.forceTeleport(Vec3d(-15.653410032035934, 4.0, 8.580128352737571))
