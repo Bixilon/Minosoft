@@ -48,7 +48,7 @@ class EntityPositionInfo(
                 // chunk position invalid; this should really not happen because the physics position is clamped at that
                 throw IllegalStateException("Invalid physics position: $position")
             }
-            val chunkPosition = BlockPosition(position.x.floor, 0, position.y.floor).chunkPosition
+            val chunkPosition = BlockPosition(position.x.floor, 0, position.z.floor).chunkPosition
 
             world.lock.acquire()
             val revision = world.chunks.revision
