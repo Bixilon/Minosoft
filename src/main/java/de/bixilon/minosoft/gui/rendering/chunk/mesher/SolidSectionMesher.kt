@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
@@ -29,7 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight.Companion.SKY_LIGHT_MASK
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -69,16 +68,12 @@ class SolidSectionMesher(
         val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
         val tint = IntArray(1)
-        var position = BlockPosition()
-        var inSectionPosition = InSectionPosition(0, 0, 0)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
         val cameraOffset = context.camera.offset.offset
 
-        val offsetX = sectionPosition.x * ProtocolDefinition.SECTION_WIDTH_X
-        val offsetY = sectionPosition.y * ProtocolDefinition.SECTION_HEIGHT_Y
-        val offsetZ = sectionPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
+        val offset = BlockPosition.of(sectionPosition)
 
         val floatOffset = FloatArray(3)
 
@@ -88,55 +83,50 @@ class SolidSectionMesher(
 
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
-            inSectionPosition = inSectionPosition.with(y = y)
-            position = position.with(y = offsetY + y)
-            floatOffset[1] = (position.y - cameraOffset.y).toFloat()
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                inSectionPosition = inSectionPosition.with(x = x)
-                position = position.with(x = offsetX + x)
-                floatOffset[0] = (position.x - cameraOffset.x).toFloat()
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
-                    inSectionPosition = inSectionPosition.with(z = z)
-                    val state = blocks[inSectionPosition] ?: continue
+                    val inSection = InSectionPosition(x, y, z)
+                    val state = blocks[inSection] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
                     val model = state.block.model ?: state.model
-                    val blockEntity = section.blockEntities[inSectionPosition]
+                    val blockEntity = section.blockEntities[inSection]
                     val renderedBlockEntity = blockEntity?.nullCast<RenderedBlockEntity<*>>()
                     if (model == null && renderedBlockEntity == null) continue
 
-
-                    light[SELF_LIGHT_INDEX] = section.light[inSectionPosition]
-                    position = position.with(z = offsetZ + z)
+                    val position = offset + inSection
+                    val inChunk = InChunkPosition(inSection.x, position.y, inSection.z)
+                    floatOffset[0] = (position.x - cameraOffset.x).toFloat()
+                    floatOffset[1] = (position.y - cameraOffset.y).toFloat()
                     floatOffset[2] = (position.z - cameraOffset.z).toFloat()
 
-                    val maxHeight = chunk.light.heightmap[inSectionPosition.xz]
-                    if (position.y >= maxHeight) {
-                        light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
+
+                    checkDown(state, fastBedrock, inSection, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
+                    checkUp(isHighestSection, inSection, neighbourBlocks, neighbours, light, section, chunk)
+
+                    setZ(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
+                    setX(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
+
+                    val maxHeight = chunk.light.heightmap[inSection.xz]
+                    light[SELF_LIGHT_INDEX] = section.light[inSection]
+                    if (position.y > maxHeight) {
+                        light[O_UP] = (light[O_UP].toInt() or SKY_LIGHT_MASK).toByte()
                     }
-
-                    checkDown(state, fastBedrock, inSectionPosition, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
-                    checkUp(isHighestSection, inSectionPosition, neighbourBlocks, neighbours, light, section, chunk)
-
-                    setZ(neighbourBlocks, inSectionPosition, neighbours, light, neighbourChunks, section, chunk)
-                    setX(neighbourBlocks, inSectionPosition, neighbours, light, neighbourChunks, section, chunk)
-
+                    if (position.y >= maxHeight) {
+                        light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or SKY_LIGHT_MASK).toByte()
+                    }
+                    if (position.y - 1 >= maxHeight) {
+                        light[O_DOWN] = (light[O_DOWN].toInt() or SKY_LIGHT_MASK).toByte()
+                    }
                     // TODO: cull neighbours
 
-                    if (position.y - 1 >= maxHeight) {
-                        light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
-                        light[O_DOWN] = (light[O_DOWN].toInt() or 0xF0).toByte()
-                    } else if (position.y + 1 >= maxHeight) {
-                        light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
-                    }
 
-                    var offset: Vec3? = null
                     if (state.block is OffsetBlock) {
-                        offset = state.block.offsetModel(position)
-                        floatOffset[0] += offset.x
-                        floatOffset[1] += offset.y
-                        floatOffset[2] += offset.z
+                        val randomOffset = state.block.offsetModel(position)
+                        floatOffset[0] += randomOffset.x
+                        floatOffset[1] += randomOffset.y
+                        floatOffset[2] += randomOffset.z
                     }
 
                     ao?.clear()
@@ -147,12 +137,6 @@ class SolidSectionMesher(
                     model?.render(props, position, state, blockEntity, tints)?.let { if (it) rendered = true }
 
                     renderedBlockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
-
-                    if (offset != null) {
-                        floatOffset[0] -= offset.x
-                        floatOffset[1] -= offset.y
-                        // z is automatically reset
-                    }
 
                     if (rendered) {
                         mesh.addBlock(x, y, z)
@@ -188,7 +172,7 @@ class SolidSectionMesher(
         }
     }
 
-    private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
+    private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
         if (position.z == 0) {
             setNeighbour(neighbourBlocks, position.with(z = ProtocolDefinition.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH], O_NORTH)
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
@@ -202,7 +186,7 @@ class SolidSectionMesher(
     }
 
 
-    private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InSectionPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
+    private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) {
         if (position.x == 0) {
             setNeighbour(neighbourBlocks, position.with(x = ProtocolDefinition.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST], O_WEST)
             setNeighbour(neighbourBlocks, position.plusX(), light, section, chunk, O_EAST)
@@ -215,11 +199,12 @@ class SolidSectionMesher(
         }
     }
 
-    private inline fun setNeighbour(blocks: Array<BlockState?>, position: InSectionPosition, light: ByteArray, section: ChunkSection?, chunk: Chunk?, direction: Int) {
-        blocks[direction] = section?.blocks?.let { it[position] }
-        var level = section?.light?.get(position) ?: 0x00
+    private inline fun setNeighbour(blocks: Array<BlockState?>, position: InChunkPosition, light: ByteArray, section: ChunkSection?, chunk: Chunk?, direction: Int) {
+        val inSection = position.inSectionPosition
+        blocks[direction] = section?.blocks?.let { it[inSection] }
+        var level = section?.light?.get(inSection) ?: 0x00
         if (chunk != null && position.y >= chunk.light.heightmap[position.xz]) {
-            level = (level.toInt() or SectionLight.SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
+            level = (level.toInt() or SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
         }
         light[direction] = level
     }

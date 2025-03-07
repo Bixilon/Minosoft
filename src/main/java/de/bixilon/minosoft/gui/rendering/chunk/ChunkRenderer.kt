@@ -184,13 +184,9 @@ class ChunkRenderer(
         lock.lock()
 
         meshingQueue.tasks.interrupt(chunkPosition)
-
         culledQueue.remove(chunkPosition, false)
-
         meshingQueue.remove(chunkPosition)
-
         loadingQueue.abort(chunkPosition, false)
-
 
         loaded.unload(chunkPosition, false)
 

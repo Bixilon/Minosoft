@@ -91,6 +91,12 @@ class SectionOcclusionTest {
         assertEquals(occlusion.occlusion, BooleanArray(15) { if (it <= 4) true else false })
     }
 
+    fun `everything except bottom line filled opaque`() {
+        val occlusion = create()
+        occlusion[0, 1, 0, 15, 15, 15] = opaque
+        assertEquals(occlusion.occlusion, booleanArrayOf(true, false, false, false, false, true, true, true, true, false, false, false, false, false, false))
+    }
+
     fun `y=1 line filled opaque`() {
         val occlusion = create()
         occlusion[0, 1, 0, 15, 1, 15] = opaque
