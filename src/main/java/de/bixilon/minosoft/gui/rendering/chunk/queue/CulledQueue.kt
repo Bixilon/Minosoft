@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
@@ -66,12 +67,12 @@ class CulledQueue(
         if (lock) unlock()
     }
 
-    fun remove(position: ChunkPosition, height: SectionHeight, lock: Boolean) {
+    fun remove(position: SectionPosition, lock: Boolean) {
         if (lock) lock()
 
-        queue[position]?.let {
-            if (it.remove(height) && it.isEmpty()) {
-                queue -= position
+        queue[position.chunkPosition]?.let {
+            if (it.remove(position.y) && it.isEmpty()) {
+                queue -= position.chunkPosition
             }
         }
 
