@@ -13,10 +13,15 @@
 
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
 /**
@@ -42,5 +47,77 @@ class ChunkNeighboursTest {
         assertEquals(chunk.neighbours.traceChunk(ChunkPosition(1, -1))?.position, ChunkPosition(1, -1))
         assertEquals(chunk.neighbours.traceChunk(ChunkPosition(1, 0))?.position, ChunkPosition(1, 0))
         assertEquals(chunk.neighbours.traceChunk(ChunkPosition(1, 1))?.position, ChunkPosition(1, 1))
+    }
+
+    fun `trace 2 in x- direction`() {
+        val world = create()
+        val chunk = world.chunks[0, 0]!!
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(-2, 0))?.position, ChunkPosition(-2, 0))
+    }
+
+    fun `trace 2 in x+ direction`() {
+        val world = create()
+        val chunk = world.chunks[0, 0]!!
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(2, 0))?.position, ChunkPosition(2, 0))
+    }
+
+    fun `trace 2 in z- direction`() {
+        val world = create()
+        val chunk = world.chunks[0, 0]!!
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(0, -2))?.position, ChunkPosition(0, -2))
+    }
+
+    fun `trace 2 in z+ direction`() {
+        val world = create()
+        val chunk = world.chunks[0, 0]!!
+        assertEquals(chunk.neighbours.traceChunk(ChunkPosition(0, 2))?.position, ChunkPosition(0, 2))
+    }
+
+    fun `trace non-existent chunk`() {
+        val world = create()
+        val chunk = world.chunks[0, 0]!!
+        assertNull(chunk.neighbours.traceChunk(ChunkPosition(0, 5)))
+    }
+
+    fun `trace block absolut same chunk`() {
+        val world = create()
+        val chunk = world.chunks[1, 1]!!
+        chunk[InChunkPosition(1, 2, 3)] = IT.BLOCK_1
+        assertEquals(chunk.neighbours.traceBlock(BlockPosition(17, 2, 19)), IT.BLOCK_1)
+    }
+
+    fun `trace block relative direction same chunk`() {
+        val world = create()
+        val chunk = world.chunks[1, 1]!!
+        chunk[InChunkPosition(1, 2, 3)] = IT.BLOCK_1
+        assertEquals(chunk.neighbours.traceBlock(InChunkPosition(1, 1, 3), Directions.UP), IT.BLOCK_1)
+    }
+
+    fun `trace block relative offset same chunk`() {
+        val world = create()
+        val chunk = world.chunks[1, 1]!!
+        chunk[InChunkPosition(3, 5, 7)] = IT.BLOCK_1
+        assertEquals(chunk.neighbours.traceBlock(InChunkPosition(1, 0, 3), BlockPosition(2, 5, 4)), IT.BLOCK_1)
+    }
+
+    fun `trace block absolut neighbour chunk`() {
+        val world = create()
+        val chunk = world.chunks[1, 1]!!
+        chunk[InChunkPosition(1, 2, 3)] = IT.BLOCK_1
+        assertEquals(world.chunks[0, 0]!!.neighbours.traceBlock(BlockPosition(17, 2, 19)), IT.BLOCK_1)
+    }
+
+    fun `trace block relative direction neighbour chunk`() {
+        val world = create()
+        val chunk = world.chunks[1, 0]!!
+        chunk[InChunkPosition(0, 1, 3)] = IT.BLOCK_1
+        assertEquals(world.chunks[0, 0]!!.neighbours.traceBlock(InChunkPosition(15, 1, 3), Directions.EAST), IT.BLOCK_1)
+    }
+
+    fun `trace block relative offset neighbour chunk`() {
+        val world = create()
+        val chunk = world.chunks[1, 1]!!
+        chunk[InChunkPosition(2, 5, 8)] = IT.BLOCK_1 // 18 5 24
+        assertEquals(world.chunks[-1, 0]!!.neighbours.traceBlock(InChunkPosition(3, 1, 3), BlockPosition(31, 4, 21)), IT.BLOCK_1)
     }
 }

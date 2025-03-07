@@ -17,6 +17,9 @@ import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.environment.Environment
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Andesite
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Cobblestone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
@@ -81,5 +84,9 @@ internal object MinosoftSIT {
         IT.VERSION = version
         IT.REGISTRIES = registries
         IT.FALLBACK_TAGS = FallbackTags.map(registries)
+
+        IT::BLOCK_1.forceSet(registries.block[StoneBlock.Block]!!.states.default)
+        IT::BLOCK_2.forceSet(registries.block[Cobblestone.Block]!!.states.default)
+        IT::BLOCK_3.forceSet(registries.block[Andesite.Block]!!.states.default)
     }
 }

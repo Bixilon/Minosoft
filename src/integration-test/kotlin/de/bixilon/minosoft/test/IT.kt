@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
@@ -27,4 +28,9 @@ object IT {
     var REGISTRIES: Registries = unsafeNull()
     var FALLBACK_TAGS: TagManager = unsafeNull()
     val NULL_CONNECTION = OBJENESIS.newInstance(PlaySession::class.java)
+
+
+    val BLOCK_1: BlockState = unsafeNull()
+    val BLOCK_2: BlockState = unsafeNull()
+    val BLOCK_3: BlockState = unsafeNull()
 }
