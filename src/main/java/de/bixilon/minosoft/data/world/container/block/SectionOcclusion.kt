@@ -92,6 +92,9 @@ class SectionOcclusion(
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
+        // TODO: Only start flood filling from sides (don't trace potential irrelevant regions in the middle)
+        // TODO: Keep track of direction and never go into negative again (we can't change the direction of the look; it can not refelct here)
+
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
             trace(array, InSectionPosition(index), index.toShort())
         }

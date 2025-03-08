@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -47,6 +48,7 @@ class OcclusionTracer(
     }
 
     private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions?, vector: DirectionVector) {
+        // TODO: keep track of direction and don't allow going of the axis too far (we can not bend our look direction). This will hide caves and reveans too if they are occluded
         if (!isInViewDistance(chunk)) return
         if (height < minSection || height > maxSection) return
 
@@ -57,8 +59,8 @@ class OcclusionTracer(
 
         val section = chunk[height]
         if (!frustum.containsChunkSection(position)) {
-            // skip += position
-            // return
+            skip += position
+            return
         }
         visible += position
 
@@ -90,10 +92,9 @@ class OcclusionTracer(
     }
 
     fun trace(chunk: Chunk): OcclusionGraph {
-        trace(chunk, position.y, null, Directions.DOWN.vector)
-        trace(chunk, position.y, null, Directions.UP.vector)
         for (direction in Directions) {
-            //     trace(chunk, position.y, null, direction.vector)
+            val neighbour = if (direction.axis == Axes.Y) chunk else chunk.neighbours[direction] ?: continue
+            trace(neighbour, position.y + direction.vector.y, null, direction.vector)
         }
 
         visible += position
