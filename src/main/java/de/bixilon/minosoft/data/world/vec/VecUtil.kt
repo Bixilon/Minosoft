@@ -11,28 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config
+package de.bixilon.minosoft.data.world.vec
 
-object DebugOptions {
-    const val INFINITE_TORCHES = false
+import de.bixilon.minosoft.config.DebugOptions
 
-    const val SIMULATE_TIME = false
+object VecUtil {
 
-    const val CLOUD_RASTER = false
 
-    const val LIGHTMAP_DEBUG_WINDOW = false
-    const val LIGHT_DEBUG_MODE = false
+    inline fun assertVec(condition: Boolean) {
+        if (!DebugOptions.VERIFY_VECTORS) return
+        if (!condition) throw AssertionError("Vector assert failed!")
+    }
 
-    const val LOG_RAW_CHAT = false
-
-    const val FORCE_CHEST_ANIMATION = false
-    const val EMPTY_BUFFERS = false
-
-    const val FORCE_CHECK_UPDATES = false
-
-    const val VERIFY_COORDINATES = true
-    const val VERIFY_LIGHT_LEVEL = true
-    const val VERIFY_VECTORS = true
-
-    // Add a test to ensure that all options are disabled!!!
+    inline fun assertVec(value: Int, min: Int, max: Int) {
+        if (!DebugOptions.VERIFY_VECTORS) return
+        if (value < min) throw AssertionError("vec out of range: $value < $min")
+        if (value > max) throw AssertionError("vec out of range: $value > $max")
+    }
 }
