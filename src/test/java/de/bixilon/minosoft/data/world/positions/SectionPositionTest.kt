@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.minosoft.config.DebugOptions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
@@ -31,6 +32,7 @@ class SectionPositionTest {
 
     @Test
     fun `init badly`() {
+        if (!DebugOptions.VERIFY_COORDINATES) return
         assertThrows<AssertionError> { SectionPosition(-1875001, 128, -1875001) }
     }
 

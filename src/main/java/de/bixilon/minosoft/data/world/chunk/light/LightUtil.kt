@@ -19,6 +19,6 @@ object LightUtil {
 
     inline fun assertLight(condition: Boolean) {
         if (!DebugOptions.VERIFY_LIGHT_LEVEL) return
-        if (!condition) throw AssertionError("Invalid light level!")
+        if (!condition) throw AssertionError("Light level assert failed!")
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.minosoft.config.DebugOptions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
@@ -32,6 +33,7 @@ class InChunkPositionTest {
 
     @Test
     fun `init badly`() {
+        if (!DebugOptions.VERIFY_COORDINATES) return
         assertThrows<AssertionError> { InChunkPosition(-1, -5000, -1) }
     }
 
