@@ -32,6 +32,6 @@ abstract class TextureParticle(session: PlaySession, position: Vec3d, velocity: 
         when {
             texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> translucentMesh
             else -> mesh
-        }.addVertex(getCameraPosition(time), scale, texture, color, light = light.index.toInt())
+        }.addVertex(getCameraPosition(time), scale, texture, color, light = light.index)
     }
 }

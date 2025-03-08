@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 interface BlockVertexConsumer : AbstractVertexConsumer {
 
-    fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int)
+    fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, lightIndex: Int)
     fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float)
     fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float)
 

@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -287,14 +288,14 @@ class SolidSectionMesherTest {
         session.world[BlockPosition(6, 7, 9)] = stone
         val chunk = session.world.chunks[0, 0]!!
         val section = chunk.sections[0]!!
-        section.light.light[InSectionPosition(6, 6, 9)] = 0x01
-        section.light.light[InSectionPosition(6, 8, 9)] = 0x02
-        section.light.light[InSectionPosition(6, 7, 8)] = 0x03
-        section.light.light[InSectionPosition(6, 7, 10)] = 0x04
-        section.light.light[InSectionPosition(5, 7, 9)] = 0x05
-        section.light.light[InSectionPosition(7, 7, 9)] = 0x06
+        section.light.light[InSectionPosition(6, 6, 9)] = LightLevel(block = 1, sky = 0)
+        section.light.light[InSectionPosition(6, 8, 9)] = LightLevel(block = 2, sky = 0)
+        section.light.light[InSectionPosition(6, 7, 8)] = LightLevel(block = 3, sky = 0)
+        section.light.light[InSectionPosition(6, 7, 10)] = LightLevel(block = 4, sky = 0)
+        section.light.light[InSectionPosition(5, 7, 9)] = LightLevel(block = 5, sky = 0)
+        section.light.light[InSectionPosition(7, 7, 9)] = LightLevel(block = 6, sky = 0)
 
-        section.light.light[InSectionPosition(6, 7, 9)] = 0x07
+        section.light.light[InSectionPosition(6, 7, 9)] = LightLevel(block = 7, sky = 0)
 
         session.mesh()
     }

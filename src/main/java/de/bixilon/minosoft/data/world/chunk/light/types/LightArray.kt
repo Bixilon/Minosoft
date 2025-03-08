@@ -22,7 +22,7 @@ value class LightArray(inline val array: ByteArray = ByteArray(ProtocolDefinitio
 
     inline operator fun get(position: InSectionPosition) = LightLevel(array[position.index])
     inline operator fun set(position: InSectionPosition, value: LightLevel) {
-        array[position.index] = value.index
+        array[position.index] = value.raw
     }
 
     inline fun clear() = Arrays.fill(array, 0.toByte())

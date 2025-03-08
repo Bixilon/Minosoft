@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.data.world.chunk.light.types
 
 
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.world.chunk.light.LightUtil.assertLight
 
 @JvmInline
-value class LightLevel(val index: Byte) {
+value class LightLevel(val raw: Byte) {
 
     constructor(block: Int, sky: Int) : this(((block shl BLOCK_SHIFT) or (sky shl SKY_SHIFT)).toByte()) {
         assertLight(block >= MIN_LEVEL)
@@ -27,13 +28,17 @@ value class LightLevel(val index: Byte) {
         assertLight(sky <= MAX_LEVEL)
     }
 
-    inline val block: Int get() = (index.toInt() ushr BLOCK_SHIFT) and BLOCK_MASK
-    inline val sky: Int get() = (index.toInt() ushr SKY_SHIFT) and SKY_MASK
+    inline val block: Int get() = (raw.toInt() ushr BLOCK_SHIFT) and BLOCK_MASK
+    inline val sky: Int get() = (raw.toInt() ushr SKY_SHIFT) and SKY_MASK
+
+    inline val index: Int get() = raw.toInt() and 0xFF
 
 
     inline fun with(block: Int = this.block, sky: Int = this.sky) = LightLevel(block, sky)
 
     inline fun max(other: LightLevel) = LightLevel(maxOf(block, other.block), maxOf(sky, other.sky))
+
+    override fun toString() = (raw.toInt() and 0xFF).toHex(2)
 
     companion object {
         const val BLOCK_SHIFT = 0
@@ -45,7 +50,7 @@ value class LightLevel(val index: Byte) {
         const val MIN_LEVEL = 0
         const val MAX_LEVEL = 15
 
-        val EMPTY = LightLevel(0, 0)
-        val MAX = LightLevel(0, 0)
+        val EMPTY = LightLevel(MIN_LEVEL, MIN_LEVEL)
+        val MAX = LightLevel(MAX_LEVEL, MAX_LEVEL)
     }
 }

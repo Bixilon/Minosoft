@@ -100,7 +100,7 @@ abstract class EntityRenderer<E : Entity>(
 
     protected open fun updateLight(delta: Float) {
         if (this.light.delta >= 1.0f) {
-            val rgb = renderer.context.light.map.buffer[getCurrentLight().index.toInt()]
+            val rgb = renderer.context.light.map.buffer[getCurrentLight().index]
             this.light.push(rgb)
         }
         this.light.add(delta, 0.1f)

@@ -41,7 +41,7 @@ class BlockGUIConsumer(
     override val order = consumer.order
 
 
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) = Broken("Not chunk rendering")
+    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, lightIndex: Int) = Broken("Not chunk rendering")
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 

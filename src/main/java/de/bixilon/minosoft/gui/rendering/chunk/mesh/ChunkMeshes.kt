@@ -131,7 +131,7 @@ class ChunkMeshes(
 
     override val order get() = Broken()
     override fun ensureSize(floats: Int) = Unit
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) = Broken()
+    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, lightIndex: Int) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken()
 

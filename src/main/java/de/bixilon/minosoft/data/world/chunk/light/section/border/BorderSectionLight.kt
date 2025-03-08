@@ -35,7 +35,7 @@ abstract class BorderSectionLight(
 
     protected inline operator fun get(index: Int) = LightLevel(this.light[index])
     protected inline operator fun set(index: Int, value: LightLevel) {
-        this.light[index] = value.index
+        this.light[index] = value.raw
     }
 
     private fun updateY() {

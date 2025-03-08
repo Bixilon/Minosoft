@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -162,7 +163,7 @@ class FluidSectionMesher(
 
 
                         val light = chunk.light[InChunkPosition(x, position.y, z)]
-                        addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light.index.toInt())
+                        addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light)
                         rendered = true
                     }
                     // ToDo: Sides: Minecraft uses (for water) an overlay texture (with cullface) that is used, when the face fits to a non opaque block
@@ -226,7 +227,7 @@ class FluidSectionMesher(
 
                         val meshToUse = mesh[model.flowing.transparency]
                         val fluidLight = chunk.light[InChunkPosition(x, offsetY + y, z)]
-                        addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight.index.toInt())
+                        addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight)
                         rendered = true
                     }
 
@@ -240,9 +241,10 @@ class FluidSectionMesher(
         }
     }
 
-    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: Int, fluidLight: Int) {
-        mesh.order.iterate { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, fluidLight) }
-        mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, fluidLight) }
+    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: Int, fluidLight: LightLevel) {
+        val lightIndex = fluidLight.index
+        mesh.order.iterate { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
+        mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
     }
 
     private fun getCornerHeight(providedChunk: Chunk, position: BlockPosition, fluid: Fluid): Float {

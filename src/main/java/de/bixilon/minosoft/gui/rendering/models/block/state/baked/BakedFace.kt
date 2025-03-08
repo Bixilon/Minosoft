@@ -46,7 +46,7 @@ class BakedFace(
 
     fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?, ao: IntArray) {
         val tint = color(tints.getOr0(tintIndex))
-        val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
+        val lightTint = ((light[lightIndex].toInt() and 0xFF shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 

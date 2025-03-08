@@ -27,14 +27,14 @@ class ChunkMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, C
 
     override val order = context.system.quadOrder
 
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) {
+    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, lightIndex: Int) {
         data.ensureSize(ChunkMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.transformUV(uv).array
         data.add(position)
         data.add(PackedUV.pack(transformedUV[0], transformedUV[1]))
         data.add(
             texture.shaderId.buffer(),
-            (((light shl 24) or tintColor).buffer())
+            (((lightIndex shl 24) or tintColor).buffer())
         )
     }
 
