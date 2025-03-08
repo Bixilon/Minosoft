@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.world.vec
 
+import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.VecUtil.assertVec
 import de.bixilon.minosoft.util.KUtil.format
@@ -27,6 +29,8 @@ value class SVec3(val raw: Int) {
         assertVec(y, -MAX_Y, MAX_Y)
         assertVec(z, -MAX_Z, MAX_Z)
     }
+
+    constructor(vector: DirectionVector) : this(vector.x, vector.y, vector.z)
 
 
     inline val x: Int get() = (((raw ushr SHIFT_X) and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
@@ -94,6 +98,12 @@ value class SVec3(val raw: Int) {
     inline operator fun minus(direction: Directions) = SVec3(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
 
     inline infix fun and(mask: Int) = SVec3(x and mask, y and mask, z and mask)
+
+    inline operator fun get(axis: Axes) = when (axis) {
+        Axes.X -> x
+        Axes.Y -> y
+        Axes.Z -> z
+    }
 
     override fun toString() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
 

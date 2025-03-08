@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.data.world.vec.SVec3
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 
@@ -47,7 +47,7 @@ class OcclusionTracer(
         return true
     }
 
-    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions?, vector: DirectionVector) {
+    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions?, vector: SVec3) {
         // TODO: keep track of direction and don't allow going of the axis too far (we can not bend our look direction). This will hide caves and reveans too if they are occluded
         if (!isInViewDistance(chunk)) return
         if (height < minSection || height > maxSection) return
@@ -80,21 +80,21 @@ class OcclusionTracer(
         if (vector.y >= 0) trace(occlusion, chunk, height, inverted, Directions.UP, vector)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions?, destination: Directions, vector: DirectionVector) {
+    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions?, destination: Directions, vector: SVec3) {
         if (occlusion != null && source != null && occlusion.isOccluded(source, destination)) return
         val next = neighbours[destination] ?: return
-        trace(next, height, destination, vector.with(destination))
+        trace(next, height, destination, vector + destination)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions?, destination: Directions, vector: DirectionVector) {
+    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions?, destination: Directions, vector: SVec3) {
         if (occlusion != null && source != null && occlusion.isOccluded(source, destination)) return
-        trace(chunk, height + destination.vector.y, destination, vector.with(destination))
+        trace(chunk, height + destination.vector.y, destination, vector + destination)
     }
 
     fun trace(chunk: Chunk): OcclusionGraph {
         for (direction in Directions) {
             val neighbour = if (direction.axis == Axes.Y) chunk else chunk.neighbours[direction] ?: continue
-            trace(neighbour, position.y + direction.vector.y, null, direction.vector)
+            trace(neighbour, position.y + direction.vector.y, null, SVec3(direction.vector))
         }
 
         visible += position

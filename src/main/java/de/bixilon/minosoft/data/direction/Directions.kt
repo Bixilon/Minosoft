@@ -22,6 +22,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.world.vec.SVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.invoke
@@ -29,14 +30,14 @@ import kotlin.collections.set
 
 enum class Directions(
     val axis: Axes,
-    val index: Vec3i,
+    val index: SVec3,
 ) {
-    DOWN(Axes.Y, Vec3i(1, -1, 1)),  // y-
-    UP(Axes.Y, Vec3i(3, -1, 3)),    // y+
-    NORTH(Axes.Z, Vec3i(0, 0, -1)), // z-
-    SOUTH(Axes.Z, Vec3i(2, 2, -1)), // z+
-    WEST(Axes.X, Vec3i(-1, 3, 2)),  // x-
-    EAST(Axes.X, Vec3i(-1, 1, 0)),  // x+
+    DOWN(Axes.Y, SVec3(1, -1, 1)),  // y-
+    UP(Axes.Y, SVec3(3, -1, 3)),    // y+
+    NORTH(Axes.Z, SVec3(0, 0, -1)), // z-
+    SOUTH(Axes.Z, SVec3(2, 2, -1)), // z+
+    WEST(Axes.X, SVec3(-1, 3, 2)),  // x-
+    EAST(Axes.X, SVec3(-1, 1, 0)),  // x+
     ;
 
     val negative = ordinal % 2 == 0
