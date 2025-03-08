@@ -162,7 +162,7 @@ class FluidSectionMesher(
 
 
                         val light = chunk.light[InChunkPosition(x, position.y, z)]
-                        addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light)
+                        addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light.index.toInt())
                         rendered = true
                     }
                     // ToDo: Sides: Minecraft uses (for water) an overlay texture (with cullface) that is used, when the face fits to a non opaque block
@@ -226,7 +226,7 @@ class FluidSectionMesher(
 
                         val meshToUse = mesh[model.flowing.transparency]
                         val fluidLight = chunk.light[InChunkPosition(x, offsetY + y, z)]
-                        addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight)
+                        addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight.index.toInt())
                         rendered = true
                     }
 

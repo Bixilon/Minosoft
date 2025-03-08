@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.chunk.light.section.SectionLight
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider

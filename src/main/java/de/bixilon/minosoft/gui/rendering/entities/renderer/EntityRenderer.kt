@@ -19,6 +19,7 @@ import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
@@ -89,17 +90,17 @@ abstract class EntityRenderer<E : Entity>(
         this.distance = (entity.renderInfo.eyePosition - renderer.session.camera.entity.renderInfo.eyePosition).length2()
     }
 
-    private fun getCurrentLight(): Int {
-        var light = entity.physics.positionInfo.chunk?.light?.get(entity.physics.positionInfo.position.inChunkPosition) ?: return 0xFF
+    private fun getCurrentLight(): LightLevel {
+        var light = with(entity.physics.positionInfo) { chunk?.light?.get(position.inChunkPosition) } ?: return LightLevel.MAX
         if (entity.isOnFire) {
-            light = light or 0xF0
+            light = light.with(block = LightLevel.MAX_LEVEL)
         }
         return light
     }
 
     protected open fun updateLight(delta: Float) {
         if (this.light.delta >= 1.0f) {
-            val rgb = renderer.context.light.map.buffer[getCurrentLight()]
+            val rgb = renderer.context.light.map.buffer[getCurrentLight().index.toInt()]
             this.light.push(rgb)
         }
         this.light.add(delta, 0.1f)

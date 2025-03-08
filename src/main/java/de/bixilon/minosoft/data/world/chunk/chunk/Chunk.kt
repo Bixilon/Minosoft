@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
+import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate

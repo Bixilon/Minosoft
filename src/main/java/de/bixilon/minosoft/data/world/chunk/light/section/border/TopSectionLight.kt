@@ -11,13 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light
+package de.bixilon.minosoft.data.world.chunk.light.section.border
 
+import de.bixilon.kutil.array.ArrayUtil.getLast
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
-abstract class AbstractSectionLight {
-    open var update = false
+class TopSectionLight(
+    chunk: Chunk,
+) : BorderSectionLight(chunk) {
 
+    override fun get(position: InSectionPosition): LightLevel {
+        if (position.y != 0) return LightLevel.EMPTY
+        return LightLevel(this.light[position.xz])
+    }
 
-    abstract operator fun get(position: InSectionPosition): Byte
+    override fun getNearestSection() = chunk.sections.getLast()
+    override fun Chunk.getBorderLight() = this.light.top
 }

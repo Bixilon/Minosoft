@@ -11,27 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config
+package de.bixilon.minosoft.data.world.chunk.light.section
 
-object DebugOptions {
-    const val INFINITE_TORCHES = false
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 
-    const val SIMULATE_TIME = false
+object ChunkLightUtil {
 
-    const val CLOUD_RASTER = false
-
-    const val LIGHTMAP_DEBUG_WINDOW = false
-    const val LIGHT_DEBUG_MODE = false
-
-    const val LOG_RAW_CHAT = false
-
-    const val FORCE_CHEST_ANIMATION = false
-    const val EMPTY_BUFFERS = false
-
-    const val FORCE_CHECK_UPDATES = false
-
-    const val VERIFY_COORDINATES = true
-    const val VERIFY_LIGHT_LEVEL = true
-
-    // Add a test to ensure that all options are disabled!!!
+    fun DimensionProperties.hasSkyLight(): Boolean {
+        return this.light && this.skyLight
+    }
 }

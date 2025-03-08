@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -34,26 +34,20 @@ abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: V
         this.light = retrieveLight()
     }
 
-    private fun retrieveLight(): Int {
+    private fun retrieveLight(): LightLevel {
         val aabb = aabb + position
-        var maxBlockLight = emittingLight
-        var maxSkyLight = 0
+        var maxLevel = LightLevel.EMPTY.with(emittingLight)
 
         val chunkPosition = position.blockPosition.chunkPosition
-        val chunk = getChunk() ?: return maxBlockLight
+        val chunk = getChunk() ?: return maxLevel
 
         for (position in aabb.positions()) {
             val next = chunk.neighbours.traceChunk(position.chunkPosition - chunkPosition)
 
-            val light = next?.light?.get(position.inChunkPosition) ?: SectionLight.SKY_LIGHT_MASK
-            if (light and SectionLight.BLOCK_LIGHT_MASK > maxBlockLight) {
-                maxBlockLight = light and SectionLight.BLOCK_LIGHT_MASK
-            }
-            if (light and SectionLight.SKY_LIGHT_MASK > maxSkyLight) {
-                maxSkyLight = light and SectionLight.SKY_LIGHT_MASK
-            }
+            val light = next?.light?.get(position.inChunkPosition) ?: LightLevel(0, LightLevel.MAX_LEVEL) // No chunk is given, assume there is light (otherwise particle might looks badly dark)
+            maxLevel = maxLevel.max(light)
         }
 
-        return maxBlockLight or maxSkyLight
+        return maxLevel
     }
 }

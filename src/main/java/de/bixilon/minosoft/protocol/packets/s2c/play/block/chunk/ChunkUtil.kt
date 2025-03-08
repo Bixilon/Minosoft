@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.data.world.chunk.light.LightArray
+import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory

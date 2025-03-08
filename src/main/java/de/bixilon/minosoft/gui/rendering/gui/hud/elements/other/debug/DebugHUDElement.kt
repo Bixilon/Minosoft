@@ -32,7 +32,6 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
@@ -299,7 +298,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", entity.session.world.dimension.effects) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.session.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.session.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", this.block, ", sky=", this.sky) } }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", chunk.neighbours.complete) }
 
                 lastChunk.value = chunk

@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight.Companion.SKY_LIGHT_MASK
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -109,15 +109,15 @@ class SolidSectionMesher(
                     setX(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
 
                     val maxHeight = chunk.light.heightmap[inSection.xz]
-                    light[SELF_LIGHT_INDEX] = section.light[inSection]
+                    light[SELF_LIGHT_INDEX] = section.light[inSection].index
                     if (position.y > maxHeight) {
-                        light[O_UP] = (light[O_UP].toInt() or SKY_LIGHT_MASK).toByte()
+                        light[O_UP] = (light[O_UP].toInt() or MAX_SKY_LIGHT).toByte()
                     }
                     if (position.y >= maxHeight) {
-                        light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or SKY_LIGHT_MASK).toByte()
+                        light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or MAX_SKY_LIGHT).toByte()
                     }
                     if (position.y - 1 >= maxHeight) {
-                        light[O_DOWN] = (light[O_DOWN].toInt() or SKY_LIGHT_MASK).toByte()
+                        light[O_DOWN] = (light[O_DOWN].toInt() or MAX_SKY_LIGHT).toByte()
                     }
                     // TODO: cull neighbours
 
@@ -154,21 +154,21 @@ class SolidSectionMesher(
                 neighbourBlocks[O_DOWN] = bedrock
             } else {
                 neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.let { it[position.with(y = ProtocolDefinition.SECTION_MAX_Y)] }
-                light[O_DOWN] = (if (lowest) chunk.light.bottom else neighbours[O_DOWN]?.light)?.get(position.with(y = ProtocolDefinition.SECTION_MAX_Y)) ?: 0x00
+                light[O_DOWN] = (if (lowest) chunk.light.bottom else neighbours[O_DOWN]?.light)?.get(position.with(y = ProtocolDefinition.SECTION_MAX_Y))?.index ?: 0x00
             }
         } else {
             neighbourBlocks[O_DOWN] = section.blocks[position.minusY()]
-            light[O_DOWN] = section.light[position.minusY()]
+            light[O_DOWN] = section.light[position.minusY()].index
         }
     }
 
     fun checkUp(highest: Boolean, position: InSectionPosition, neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, light: ByteArray, section: ChunkSection, chunk: Chunk) {
         if (position.y == ProtocolDefinition.SECTION_MAX_Y) {
             neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.let { it[position.with(y = 0)] }
-            light[O_UP] = (if (highest) chunk.light.top else neighbours[O_UP]?.light)?.get(position.with(y = 0)) ?: 0x00
+            light[O_UP] = (if (highest) chunk.light.top else neighbours[O_UP]?.light)?.get(position.with(y = 0))?.index ?: 0x00
         } else {
             neighbourBlocks[O_UP] = section.blocks[position.plusY()]
-            light[O_UP] = section.light[position.plusY()]
+            light[O_UP] = section.light[position.plusY()].index
         }
     }
 
@@ -202,14 +202,15 @@ class SolidSectionMesher(
     private inline fun setNeighbour(blocks: Array<BlockState?>, position: InChunkPosition, light: ByteArray, section: ChunkSection?, chunk: Chunk?, direction: Int) {
         val inSection = position.inSectionPosition
         blocks[direction] = section?.blocks?.let { it[inSection] }
-        var level = section?.light?.get(inSection) ?: 0x00
+        var level = section?.light?.get(inSection)?.index ?: 0x00
         if (chunk != null && position.y >= chunk.light.heightmap[position.xz]) {
-            level = (level.toInt() or SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
+            level = (level.toInt() or MAX_SKY_LIGHT).toByte() // set sky light to 0x0F
         }
         light[direction] = level
     }
 
     companion object {
         const val SELF_LIGHT_INDEX = 6 // after all directions
+        const val MAX_SKY_LIGHT = LightLevel.SKY_MASK shl LightLevel.SKY_SHIFT
     }
 }

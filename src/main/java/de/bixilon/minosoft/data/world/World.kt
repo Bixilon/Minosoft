@@ -28,8 +28,8 @@ import de.bixilon.minosoft.data.world.audio.WorldAudioPlayer
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLightUtil.hasSkyLight
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
 import de.bixilon.minosoft.data.world.entities.WorldEntities
@@ -177,17 +177,17 @@ class World(
         return !iterator.hasCollisions(entity, aabb, fluids)
     }
 
-    fun getLight(position: BlockPosition): Int {
-        return chunks[position.chunkPosition]?.light?.get(position.inChunkPosition) ?: 0x00
+    fun getLight(position: BlockPosition): LightLevel {
+        return chunks[position.chunkPosition]?.light?.get(position.inChunkPosition) ?: LightLevel.EMPTY
     }
 
     fun getBrightness(position: BlockPosition): Float {
-        val light = getLight(position)
-        var level = light and SectionLight.BLOCK_LIGHT_MASK
+        val level = getLight(position)
+        var max = level.block
         if (dimension.hasSkyLight()) {
-            level = maxOf(level, light and SectionLight.SKY_LIGHT_MASK shr 4)
+            max = maxOf(max, level.sky)
         }
-        return dimension.ambientLight[level]
+        return dimension.ambientLight[max]
     }
 
     fun recalculateLight(heightmap: Boolean = false) {

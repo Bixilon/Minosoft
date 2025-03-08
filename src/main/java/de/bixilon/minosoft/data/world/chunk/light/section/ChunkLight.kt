@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light
+package de.bixilon.minosoft.data.world.chunk.light.section
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -19,7 +19,10 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.heightmap.FixedHeightmap
 import de.bixilon.minosoft.data.world.chunk.heightmap.LightHeightmap
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
+import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLightUtil.hasSkyLight
+import de.bixilon.minosoft.data.world.chunk.light.section.border.BottomSectionLight
+import de.bixilon.minosoft.data.world.chunk.light.section.border.TopSectionLight
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
@@ -31,8 +34,8 @@ class ChunkLight(val chunk: Chunk) {
     private val session = chunk.session
     val heightmap = if (chunk.world.dimension.hasSkyLight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
 
-    val bottom = BorderSectionLight(false, chunk)
-    val top = BorderSectionLight(true, chunk)
+    val bottom = BottomSectionLight(chunk)
+    val top = TopSectionLight(chunk)
 
     val sky = ChunkSkyLight(this)
 
@@ -101,19 +104,19 @@ class ChunkLight(val chunk: Chunk) {
     }
 
 
-    operator fun get(position: InChunkPosition): Int {
+    operator fun get(position: InChunkPosition): LightLevel {
         val sectionHeight = position.sectionHeight
         val inSection = position.inSectionPosition
 
         val light = when (sectionHeight) {
-            chunk.minSection - 1 -> bottom[inSection].toInt()
-            chunk.maxSection + 1 -> return top[inSection].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
-            else -> chunk[sectionHeight]?.light?.get(inSection)?.toInt() ?: 0x00
-        } and 0xFF
+            chunk.minSection - 1 -> bottom[inSection]
+            chunk.maxSection + 1 -> return top[inSection].with(sky = LightLevel.MAX_LEVEL) // top has always sky=15; TODO: only if dimension has skylight?
+            else -> chunk[sectionHeight]?.light?.get(inSection) ?: LightLevel.EMPTY
+        }
 
         if (position.y >= heightmap[position]) {
             // set sky=15
-            return light or SectionLight.SKY_LIGHT_MASK
+            return light.with(sky = LightLevel.MAX_LEVEL)
         }
         return light
     }

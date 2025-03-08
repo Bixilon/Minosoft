@@ -11,45 +11,47 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light
+package de.bixilon.minosoft.data.world.chunk.light.section.border
 
 import de.bixilon.kutil.array.ArrayUtil.getFirst
 import de.bixilon.kutil.array.ArrayUtil.getLast
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.section.AbstractSectionLight
+import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import java.util.*
 
-class BorderSectionLight(
-    val top: Boolean,
+abstract class BorderSectionLight(
     val chunk: Chunk,
 ) : AbstractSectionLight() {
     val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
-    override fun get(position: InSectionPosition): Byte {
-        if ((top && position.y == 0) || (!top && position.y == ProtocolDefinition.SECTION_MAX_Y)) {
-            return light[position.xz]
-        }
-        return 0x00
+    protected abstract fun getNearestSection(): ChunkSection?
+    protected abstract fun Chunk.getBorderLight(): BorderSectionLight
+
+    protected inline operator fun get(index: Int) = LightLevel(this.light[index])
+    protected inline operator fun set(index: Int, value: LightLevel) {
+        this.light[index] = value.index
     }
 
     private fun updateY() {
         // we can not further increase the light
-        if (top) {
-            chunk.sections.getLast()?.light?.apply { if (!update) update = true }
-        } else {
-            chunk.sections.getFirst()?.light?.apply { if (!update) update = true }
-        }
+        val section = getNearestSection()
+        section?.light?.apply { if (!update) update = true }
     }
 
     fun traceBlockIncrease(x: Int, z: Int, nextLuminance: Int) {
         val index = z shl 4 or x
-        val currentLight = light[index].toInt() and SectionLight.BLOCK_LIGHT_MASK
-        if (currentLight >= nextLuminance) {
+        val currentLight = this[index]
+        if (currentLight.block >= nextLuminance) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((this.light[index].toInt() and SectionLight.SKY_LIGHT_MASK) or nextLuminance).toByte()
+        this[index] = currentLight.with(block = nextLuminance)
 
         if (!update) {
             update = true
@@ -61,7 +63,7 @@ class BorderSectionLight(
         }
         val neighbourLuminance = nextLuminance - 1
 
-        if (top) {
+        if (this is TopSectionLight) { // TODO: slow check
             chunk.sections.getLast()?.light?.traceBlockIncrease(InSectionPosition(x, ProtocolDefinition.SECTION_MAX_Y, z), neighbourLuminance, Directions.DOWN)
         } else {
             chunk.sections.getFirst()?.light?.traceBlockIncrease(InSectionPosition(x, 0, z), neighbourLuminance, Directions.UP)
@@ -90,19 +92,15 @@ class BorderSectionLight(
         }
     }
 
-    private fun Chunk.getBorderLight(): BorderSectionLight {
-        return if (top) light.top else light.bottom
-    }
-
     fun traceSkyIncrease(x: Int, z: Int, nextLevel: Int) {
         // TODO: check heightmap
         val index = z shl 4 or x
-        val light = light[index].toInt()
-        if ((light and SectionLight.SKY_LIGHT_MASK shr 4) >= nextLevel) {
+        val light = this[index]
+        if (light.sky >= nextLevel) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((light and SectionLight.BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
+        this[index] = light.with(sky = nextLevel)
 
         if (!update) {
             update = true
@@ -114,7 +112,7 @@ class BorderSectionLight(
         }
         val neighbourLevel = nextLevel - 1
 
-        if (top) {
+        if (this is TopSectionLight) { // TOOD: slow check
             chunk.sections.getLast()?.light?.traceSkyLightIncrease(InSectionPosition(x, ProtocolDefinition.SECTION_MAX_Y, z), neighbourLevel, Directions.DOWN, chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
         } else {
             chunk.sections.getFirst()?.light?.traceSkyLightIncrease(InSectionPosition(x, 0, z), neighbourLevel, Directions.UP, chunk.minSection * ProtocolDefinition.SECTION_HEIGHT_Y)
@@ -170,9 +168,7 @@ class BorderSectionLight(
     }
 
     fun reset() {
-        for (i in light.indices) {
-            light[i] = 0x00
-        }
+        Arrays.fill(this.light, 0x00)
     }
 
     fun update(array: LightArray) {

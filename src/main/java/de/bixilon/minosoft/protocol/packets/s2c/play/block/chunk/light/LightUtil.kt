@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.data.world.chunk.light.LightArray
+import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16

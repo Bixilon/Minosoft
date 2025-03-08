@@ -11,10 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light
+package de.bixilon.minosoft.data.world.chunk.light.section
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
+import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
