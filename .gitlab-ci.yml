@@ -22,15 +22,15 @@ cache:
       - .gradle
   - key:
       files:
-        - "*.kts"
+        - "build.gradle.kts"
         - "gradle.properties"
     paths:
-      - .gradle_home/caches
+      - $GRADLE_USER_HOME/caches
   - key:
       files:
         - "gradle/wrapper/gradle-wrapper.properties"
     paths:
-      - .gradle_home/wrapper
+      - $GRADLE_USER_HOME/wrapper
   - key:
       "minosoft-assets"
     paths:
