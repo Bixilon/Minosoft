@@ -46,7 +46,15 @@ class SectionOcclusion(
     fun recalculate(notify: Boolean) {
         if (!calculate) return
 
-        if (provider.count < ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { // When there are less than 256 blocks set, you will always be able to look from one side to another
+        val min = provider.minPosition
+        val max = provider.minPosition
+        if (min.x > 0 && min.y > 0 && min.z > 0 && max.x < ProtocolDefinition.SECTION_MAX_X && max.y < ProtocolDefinition.SECTION_MAX_X && max.z < ProtocolDefinition.SECTION_MAX_X) {
+            // blocks are only set in inner section, no blocking of any side possible.
+            clear(notify)
+            return
+        }
+        if (provider.count < ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
+            // When there are less than 256 blocks set, you will always be able to look from one side to another
             clear(notify)
             return
         }
