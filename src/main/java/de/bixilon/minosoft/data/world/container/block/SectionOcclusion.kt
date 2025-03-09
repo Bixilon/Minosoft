@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
-import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -60,12 +59,7 @@ class SectionOcclusion(
         }
         val array = ALLOCATOR.allocate(ProtocolDefinition.BLOCKS_PER_SECTION)
         try {
-            val regions = floodFill(array)
-            update(calculateOcclusion(regions), notify)
-        } catch (error: StackOverflowError) {
-            // TODO: This is really stupid. The stack is large enough and still at some rare moments the method is crashing with an StackOverflow error.
-            // BUT: When running the EXACT same code again, it magically works and does not crash with an error. Stupid JVM.
-            val regions = floodFill(array)
+            val regions = calculateSideRegions(array)
             update(calculateOcclusion(regions), notify)
         } finally {
             ALLOCATOR.free(array)
@@ -85,7 +79,11 @@ class SectionOcclusion(
         return false
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition) = trace(regions, position, position.index.toShort())
+    private fun trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
+        trace(regions, position, position.index.toShort())
+        set.add(regions[position.index].toInt())
+    }
+
     private fun trace(regions: ShortArray, position: InSectionPosition, region: Short) {
         if (regions.setIfUnset(position, region)) return
 
@@ -97,69 +95,33 @@ class SectionOcclusion(
         if (position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), region)
     }
 
-    private fun floodFill(array: ShortArray): ShortArray {
+    private fun calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
         // TODO: Keep track of direction and never go into negative again (we can't change the direction of the look; it can not reflect here)
 
 
+        val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
+
         for (index in 0 until 256) {
-            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F))
-            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F))
+            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), sides[Directions.O_DOWN])
+            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), sides[Directions.O_UP])
 
-            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00))
-            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F))
+            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), sides[Directions.O_NORTH])
+            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), sides[Directions.O_SOUTH])
 
-            trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F))
-            trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F))
+            trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_WEST])
+            trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_EAST])
         }
 
-        return array
+        return sides
     }
 
-    private fun calculateOcclusion(regions: ShortArray): BooleanArray {
-        val sideRegions: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
-
-        for (axis in Axes.VALUES) {
-            for (a in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                for (b in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    val indexPrefix = when (axis) {
-                        Axes.X -> a shl 8 or (b shl 4)
-                        Axes.Y -> (a shl 4) or b
-                        Axes.Z -> (a shl 8) or b
-                    }
-                    val nDirection = when (axis) {
-                        Axes.X -> Directions.WEST
-                        Axes.Y -> Directions.DOWN
-                        Axes.Z -> Directions.NORTH
-                    }
-                    val nRegion = regions[indexPrefix].toInt()
-                    if (nRegion > EMPTY_REGION) {
-                        sideRegions[nDirection.ordinal].add(nRegion) // primitive
-                    }
-
-                    val pDirection = when (axis) {
-                        Axes.X -> Directions.EAST
-                        Axes.Y -> Directions.UP
-                        Axes.Z -> Directions.SOUTH
-                    }
-                    val index2 = indexPrefix or when (axis) {
-                        Axes.X -> ProtocolDefinition.SECTION_MAX_X
-                        Axes.Y -> ProtocolDefinition.SECTION_MAX_Y shl 8
-                        Axes.Z -> ProtocolDefinition.SECTION_MAX_Z shl 4
-                    }
-                    val pRegion = regions[index2].toInt()
-                    if (pRegion > EMPTY_REGION) {
-                        sideRegions[pDirection.ordinal].add(pRegion) // primitive
-                    }
-                }
-            }
-        }
-
+    private fun calculateOcclusion(sides: Array<IntOpenHashSet>): BooleanArray {
         val occlusion = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
         for ((index, pair) in CubeDirections.PAIRS.withIndex()) {
-            occlusion[index] = sideRegions.canOcclude(pair.`in`, pair.out)
+            occlusion[index] = sides.canOcclude(pair.`in`, pair.out)
         }
         return occlusion
     }
