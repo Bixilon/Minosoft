@@ -15,14 +15,12 @@ package de.bixilon.minosoft.gui
 
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -32,9 +30,7 @@ class RenderLoop(
 ) {
     private var slowRendering = context.profile.performance.slowRendering
 
-    private var deltaFrameTime = 0.0
     private var lastFrame = 0.0
-    private var lastTick = TimeUtil.millis()
 
 
     init {
@@ -71,7 +67,10 @@ class RenderLoop(
 
             context.window.pollEvents()
 
-            context.input.draw(deltaFrameTime)
+            val time = context.window.time
+            lastFrame = time
+
+            context.input.draw(time - lastFrame)
             context.camera.draw()
 
             context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
@@ -79,16 +78,6 @@ class RenderLoop(
             context.light.updateAsync() // ToDo: do async
             context.light.update()
 
-
-            val currentTickTime = TimeUtil.millis()
-            if (currentTickTime - this.lastTick > ProtocolDefinition.TICK_TIME) {
-                // inputHandler.currentKeyConsumer?.tick(tickCount)
-                this.lastTick = currentTickTime
-            }
-
-            val currentFrame = context.window.time
-            deltaFrameTime = currentFrame - lastFrame
-            lastFrame = currentFrame
 
 
             context.textures.static.animator.update()
