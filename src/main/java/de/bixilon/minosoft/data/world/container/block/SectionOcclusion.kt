@@ -81,7 +81,10 @@ class SectionOcclusion(
 
     private fun trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
         trace(regions, position, position.index.toShort())
-        set.add(regions[position.index].toInt())
+        val region = regions[position.index].toInt()
+        if (region > EMPTY_REGION) {
+            set.add(region)
+        }
     }
 
     private fun trace(regions: ShortArray, position: InSectionPosition, region: Short) {
