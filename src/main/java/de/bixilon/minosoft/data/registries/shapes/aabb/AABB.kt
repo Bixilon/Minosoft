@@ -253,6 +253,7 @@ class AABB {
     operator fun contains(position: Vec3i): Boolean {
         return position.x in getRange(min.x, max.x) && position.y in getRange(min.y, max.y) && position.z in getRange(min.z, max.z)
     }
+
     operator fun contains(position: BlockPosition): Boolean {
         return position.x in getRange(min.x, max.x) && position.y in getRange(min.y, max.y) && position.z in getRange(min.z, max.z)
     }

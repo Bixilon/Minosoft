@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -62,10 +62,18 @@ class RenderLoop(
             if (context.state == RenderingStates.QUITTING || context.session.established || !context.state.active) {
                 break
             }
-
             context.renderStats.startFrame()
+
             context.framebuffer.clear()
             context.system.framebuffer = null
+            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+
+
+            context.window.pollEvents()
+
+            context.input.draw(deltaFrameTime)
+            context.camera.draw()
+
             context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
             context.light.updateAsync() // ToDo: do async
@@ -89,18 +97,19 @@ class RenderLoop(
 
             context.system.reset() // Reset to enable depth mask, etc again
 
+            // handle opengl context tasks, but limit it per frame
+            context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
+
             context.renderStats.endDraw()
 
 
-            context.window.pollEvents()
             context.window.swapBuffers()
-            context.window.pollEvents()
 
-            context.input.draw(deltaFrameTime)
-            context.camera.draw()
+            // glClear waits for any unfinished operation, so it might swill wait for the buffer swap and makes frame times really long.
+            context.framebuffer.clear()
+            context.system.framebuffer = null
+            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
-            // handle opengl context tasks, but limit it per frame
-            context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
             if (context.state == RenderingStates.SLOW && slowRendering) {
                 Thread.sleep(100L)
