@@ -116,6 +116,10 @@ class RGBColor(val rgba: Int) : TextFormattable {
         return this.with(red = floatRed * value, green = floatGreen * value, blue = floatBlue * value)
     }
 
+    operator fun times(color: RGBColor): RGBColor {
+        return this.with(red = floatRed * color.floatRed, green = floatGreen * color.floatGreen, blue = floatBlue * color.floatBlue, alpha = floatAlpha * color.floatAlpha)
+    }
+
     fun toVec4(): Vec4 {
         return Vec4(floatRed, floatGreen, floatBlue, floatAlpha)
     }
