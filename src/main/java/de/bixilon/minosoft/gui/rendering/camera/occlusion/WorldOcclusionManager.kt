@@ -20,15 +20,14 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 /**
  * Handles visibility of objects
@@ -65,22 +64,19 @@ class WorldOcclusionManager(
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) return false
         val graph = this.graph ?: return false
 
-        val positions: MutableSet<ChunkPosition> = HashSet(4, 1.0f)
-        val heights = IntOpenHashSet()
-        for (position in aabb.positions()) { // TODO: use ChunkPosition iterator
-            positions += position.chunkPosition
-            heights += position.sectionHeight
-        }
+        val min = aabb.min.blockPosition.sectionPosition
+        val max = aabb.max.blockPosition.sectionPosition
 
-        for (position in positions) {
-            val iterator = heights.intIterator()
-            while (iterator.hasNext()) {
-                val height = iterator.nextInt()
-                if (graph.isOccluded(SectionPosition.of(position, height))) continue
+        for (y in min.y..max.y) {
+            for (z in min.z..max.z) {
+                for (x in min.x..max.x) {
+                    if (graph.isOccluded(SectionPosition(x, y, z))) continue
 
-                return false
+                    return false
+                }
             }
         }
+
         return true
     }
 
