@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
+import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -80,22 +81,22 @@ class SectionOcclusion(
     }
 
     private fun trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
-        trace(regions, position, position.index.toShort())
+        trace(regions, position, DirectionVector(), position.index.toShort())
         val region = regions[position.index].toInt()
         if (region > EMPTY_REGION) {
             set.add(region)
         }
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition, region: Short) {
+    private fun trace(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
         if (regions.setIfUnset(position, region)) return
 
-        if (position.x > 0) trace(regions, position.minusX(), region)
-        if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(regions, position.plusX(), region)
-        if (position.z > 0) trace(regions, position.minusZ(), region)
-        if (position.z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, position.plusZ(), region)
-        if (position.y > 0) trace(regions, position.minusY(), region)
-        if (position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), region)
+        if (direction.x <= 0 && position.x > 0) trace(regions, position.minusX(), direction.with(Directions.WEST), region)
+        if (direction.x >= 0 && position.x < ProtocolDefinition.SECTION_MAX_X) trace(regions, position.plusX(), direction.with(Directions.EAST), region)
+        if (direction.z <= 0 && position.z > 0) trace(regions, position.minusZ(), direction.with(Directions.NORTH), region)
+        if (direction.z >= 0 && position.z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, position.plusZ(), direction.with(Directions.SOUTH), region)
+        if (direction.y <= 0 && position.y > 0) trace(regions, position.minusY(), direction.with(Directions.DOWN), region)
+        if (direction.y >= 0 && position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
     private fun calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
