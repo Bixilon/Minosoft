@@ -206,6 +206,7 @@ abstract class Entity(
         lastTickTime = time
     }
 
+    @Synchronized
     fun tryTick(): Boolean {
         val time = millis()
 
