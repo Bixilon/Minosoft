@@ -46,7 +46,7 @@ class SectionOcclusion(
     fun recalculate(notify: Boolean) {
         if (!calculate) return
 
-        if (provider.isEmpty) {
+        if (provider.count < ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { // When there are less than 256 blocks set, you will always be able to look from one side to another
             clear(notify)
             return
         }
