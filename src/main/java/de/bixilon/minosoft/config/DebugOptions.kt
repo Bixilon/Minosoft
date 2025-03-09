@@ -30,9 +30,9 @@ object DebugOptions {
 
     const val FORCE_CHECK_UPDATES = false
 
-    const val VERIFY_COORDINATES = true
-    const val VERIFY_LIGHT_LEVEL = true
-    const val VERIFY_VECTORS = true
+    const val VERIFY_COORDINATES = false
+    const val VERIFY_LIGHT_LEVEL = false
+    const val VERIFY_VECTORS = false
 
     // Add a test to ensure that all options are disabled!!!
 }
