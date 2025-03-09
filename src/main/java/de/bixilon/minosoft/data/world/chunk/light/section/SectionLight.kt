@@ -437,7 +437,6 @@ class SectionLight(
         val neighbours = section.neighbours ?: return
 
         var level = LightLevel(0, 0)
-        
 
         // ToDo: check if light can exit block at side or can enter block at neighbour
 

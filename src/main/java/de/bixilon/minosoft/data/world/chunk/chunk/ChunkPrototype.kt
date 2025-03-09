@@ -70,6 +70,8 @@ class ChunkPrototype(
         }
         this.blockEntities.update(dimension.minSection, chunk, null, session)
 
+        chunk.light.heightmap.recalculate()
+
         if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
             this.topLight?.let { chunk.light.top.update(it) }
             this.bottomLight?.let { chunk.light.bottom.update(it) }
@@ -100,6 +102,7 @@ class ChunkPrototype(
             section.blocks.setData(provider)
             affected += sectionHeight
         }
+        chunk.light.heightmap.recalculate()
     }
 
     private fun Map<InChunkPosition, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, session: PlaySession) {
@@ -123,7 +126,7 @@ class ChunkPrototype(
                             section.blockEntities[inSection] = entity
                         }
                         if (!empty) {
-                            this!![InChunkPosition(x, y, z)]?.let { entity.updateNBT(it) }
+                            this!![InChunkPosition(x, y + yOffset, z)]?.let { entity.updateNBT(it) }
                         }
                         affected?.add(sectionHeight)
                     }
