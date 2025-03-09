@@ -37,6 +37,7 @@ vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {
         case 7u: return textureLod(uTextures[7], uv, lod);
         case 8u: return textureLod(uTextures[8], uv, lod);
         case 9u: return textureLod(uTextures[9], uv, lod);
+        default: return textureLod(uTextures[0], uv, lod);
     }
     return textureLod(uTextures[0], uv, lod);
     #endif
@@ -63,6 +64,7 @@ vec4 getTexture(uint textureId, vec3 uv) {
         case 7u: return texture(uTextures[7], uv);
         case 8u: return texture(uTextures[8], uv);
         case 9u: return texture(uTextures[9], uv);
+        default: return texture(uTextures[0], uv);
     }
     return texture(uTextures[0], uv);
     #endif

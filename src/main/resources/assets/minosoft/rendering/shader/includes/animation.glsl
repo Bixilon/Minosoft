@@ -117,7 +117,7 @@ void animation_animated(uint animationId) {
     animationArray2 = animation_extractArray(texture2);
     animationLayer2 = animation_extractLayer(texture2);
 
-    animationInterpolation = data.z / 100.0f;
+animationInterpolation = data.z * (1.0f / 100.0f);
 }
 
 void setTexture(uint animation) {

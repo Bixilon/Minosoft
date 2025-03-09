@@ -19,8 +19,8 @@
 #define UV_UNPACK_MASK ((1u << UV_UNPACK_BITS) - 1u)
 
 vec2 uv_unpack(uint raw) {
-    float x = float((raw >> (1u * UV_UNPACK_BITS)) & UV_UNPACK_MASK) / float(UV_UNPACK_MASK);
-    float y = float((raw >> (0u * UV_UNPACK_BITS)) & UV_UNPACK_MASK) / float(UV_UNPACK_MASK);
+    float x = float((raw >> (1u * UV_UNPACK_BITS)) & UV_UNPACK_MASK) * (1.0f / float(UV_UNPACK_MASK));
+    float y = float((raw >> (0u * UV_UNPACK_BITS)) & UV_UNPACK_MASK) * (1.0f / float(UV_UNPACK_MASK));
     
     return vec2(x, y);
 }
