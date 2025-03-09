@@ -108,7 +108,7 @@ class SectionOcclusion(
 
         val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
 
-        for (index in 0 until 256) {
+        for (index in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
             trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), sides[Directions.O_DOWN])
             trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), sides[Directions.O_UP])
 
@@ -117,6 +117,7 @@ class SectionOcclusion(
 
             trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_WEST])
             trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_EAST])
+            // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
         return sides
@@ -184,10 +185,6 @@ class SectionOcclusion(
         private const val INVALID_REGION = (-2).toShort()
         private val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
         private val ALLOCATOR = ShortAllocator()
-
-        private const val X = 0x001
-        private const val Y = 0x100
-        private const val Z = 0x010
 
 
         fun BlockState?._isFullyOpaque(): Boolean {

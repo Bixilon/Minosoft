@@ -110,10 +110,6 @@ class World(
         return true
     }
 
-    fun isValidPosition(position: ChunkPosition): Boolean {
-        return true // TODO
-    }
-
     fun getBlockEntity(position: BlockPosition): BlockEntity? {
         return chunks[position.chunkPosition]?.getBlockEntity(position.inChunkPosition)
     }

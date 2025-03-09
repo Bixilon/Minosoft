@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.manager.LanguageManager
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
@@ -72,7 +73,7 @@ object SessionTestUtil {
     private val signature = OBJENESIS.newInstance(SignatureKeyManagement::class.java)
 
 
-    fun createSession(worldSize: Int = 0, light: Boolean = false, version: String? = null): PlaySession {
+    fun createSession(worldSize: Int = 0, light: Boolean = false, version: String? = null, dimension: DimensionProperties? = null): PlaySession {
         // TODO: Init with local world
         val session = OBJENESIS.newInstance(PlaySession::class.java)
         LANGUAGE.set(session, language)
@@ -83,7 +84,7 @@ object SessionTestUtil {
         REGISTRIES.set(session, Registries())
         session.registries.updateFlattened(version.flattened)
         session.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadRegistries(version)
-        WORLD.set(session, createWorld(session, light, (worldSize * 2 + 1).pow(2)))
+        WORLD.set(session, createWorld(session, light, (worldSize * 2 + 1).pow(2), dimension))
         PLAYER.set(session, LocalPlayerEntity(session.account, session, signature))
         session.player.startInit()
         CONNECTION.set(session, TestNetwork(session))

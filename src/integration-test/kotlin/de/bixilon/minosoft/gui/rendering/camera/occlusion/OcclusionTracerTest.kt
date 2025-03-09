@@ -16,10 +16,13 @@ package de.bixilon.minosoft.gui.rendering.camera.occlusion
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -38,7 +41,8 @@ class OcclusionTracerTest {
 
 
     private fun create(block: (World) -> Unit): OcclusionGraph {
-        val session = createSession(worldSize = 5)
+        val dimension = DimensionProperties(minY = -256, height = 512)
+        val session = createSession(worldSize = 5, dimension = dimension)
         block(session.world)
 
         val chunk = session.world.chunks[ChunkPosition(1, 1)]!!
@@ -50,9 +54,19 @@ class OcclusionTracerTest {
         camera::context.forceSet(context)
         camera::frustum.forceSet(Frustum::class.java.allocate().apply { this::class.java.getDeclaredField("camera").field[this] = camera }) // empty frustum, everything always visible
 
-        val graph = OcclusionTracer(SectionPosition(1, 1, 1), DimensionProperties(minY = -128, height = 256), camera, 5)
+        val graph = OcclusionTracer(SectionPosition(1, 1, 1), dimension, camera, 5)
 
         return graph.trace(chunk)
+    }
+
+    private fun ChunkSection.fill(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, value: BlockState?) {
+        for (y in minY..maxY) {
+            for (z in minZ..maxZ) {
+                for (x in minX..maxX) {
+                    this.blocks[InSectionPosition(x, y, z)] = value
+                }
+            }
+        }
     }
 
     private fun <T> OcclusionGraph.assertVisible(vararg position: T) = assertVisible1(positions = position.unsafeCast())
@@ -76,6 +90,8 @@ class OcclusionTracerTest {
         when (state) {
             OcclusionState.NONE -> section.blocks.clear()
             OcclusionState.FULL_OPAQUE -> section.blocks.setData(fullOpaque.unsafeCast())
+            OcclusionState.BOTTOM_Y -> section.fill(0, 0, 0, 15, 1, 15, opaque)
+            OcclusionState.TOP_Y -> section.fill(0, 15, 0, 15, 15, 15, opaque)
         }
     }
 
@@ -157,10 +173,54 @@ class OcclusionTracerTest {
         graph.assertOccluded(SectionPosition(3, 1, 1), SectionPosition(4, 1, 1))
     }
 
+    fun `blocked not 2 sides`() {
+        val graph = create {
+            it[SectionPosition(1, 2, 1)] = OcclusionState.FULL_OPAQUE
+        }
+
+        graph.assertVisible(SectionPosition(1, 2, 1), SectionPosition(2, 1, 1), SectionPosition(2, 2, 1), SectionPosition(3, 2, 1))
+        graph.assertOccluded(SectionPosition(1, 3, 1))
+    }
+
+    fun `blocked 2 sides`() {
+        val graph = create {
+            it[SectionPosition(1, 2, 1)] = OcclusionState.FULL_OPAQUE
+            it[SectionPosition(2, 1, 1)] = OcclusionState.FULL_OPAQUE
+        }
+
+        graph.assertVisible(SectionPosition(1, 2, 1), SectionPosition(2, 1, 1))
+        graph.assertOccluded(SectionPosition(2, 2, 1), SectionPosition(3, 2, 1), SectionPosition(2, 3, 1))
+    }
+
+    fun `real something`() {
+        val offset = SectionPosition(1, 1, 1) - SectionPosition(-50, 6, 36)
+        val graph = create {
+            it[SectionPosition(-50, 6, 36) + offset] = OcclusionState.NONE // standing in here
+            it[SectionPosition(-50, 5, 36) + offset] = OcclusionState.NONE
+            it[SectionPosition(-50, 4, 36) + offset] = OcclusionState.BOTTOM_Y
+
+            it[SectionPosition(-51, 6, 36) + offset] = OcclusionState.NONE
+            it[SectionPosition(-51, 5, 36) + offset] = OcclusionState.NONE
+            it[SectionPosition(-51, 4, 36) + offset] = OcclusionState.NONE
+            it[SectionPosition(-51, 3, 36) + offset] = OcclusionState.TOP_Y
+
+            it[SectionPosition(-51, 6, 37) + offset] = OcclusionState.NONE
+            it[SectionPosition(-51, 5, 37) + offset] = OcclusionState.TOP_Y
+
+            it[SectionPosition(-50, 5, 37) + offset] = OcclusionState.FULL_OPAQUE
+            it[SectionPosition(-50, 4, 37) + offset] = OcclusionState.FULL_OPAQUE
+        }
+
+        graph.assertVisible(SectionPosition(-51, 3, 36) + offset, SectionPosition(-51, 4, 37) + offset, SectionPosition(-51, 3, 37) + offset)
+        graph.assertOccluded(SectionPosition(-51, 2, 36) + offset)
+    }
+
 
     enum class OcclusionState {
         NONE,
         FULL_OPAQUE,
+        BOTTOM_Y,
+        TOP_Y,
         ;
     }
 }

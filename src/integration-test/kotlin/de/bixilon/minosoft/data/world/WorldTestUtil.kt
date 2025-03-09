@@ -39,13 +39,13 @@ import de.bixilon.minosoft.test.IT
 object WorldTestUtil {
 
 
-    fun createWorld(session: PlaySession?, light: Boolean = false, capacity: Int = 0): World {
+    fun createWorld(session: PlaySession?, light: Boolean = false, capacity: Int = 0, dimension: DimensionProperties? = null): World {
         val world = IT.OBJENESIS.newInstance(World::class.java)
         world::occlusion.forceSet(DataObserver(0))
         world::lock.forceSet(RWLock.rwlock())
         world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity), 0))
         world::border.forceSet(WorldBorder())
-        world::dimension.forceSet(DataObserver(DimensionProperties(light = light, skyLight = light)))
+        world::dimension.forceSet(DataObserver((dimension ?: DimensionProperties()).copy(light = light, skyLight = light)))
         world::session.forceSet(session)
         world::entities.forceSet(WorldEntities())
         world::view.forceSet(TEST_WORLD_VIEW)

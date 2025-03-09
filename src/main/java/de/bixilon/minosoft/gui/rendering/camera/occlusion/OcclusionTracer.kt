@@ -40,6 +40,7 @@ class OcclusionTracer(
 
     private val skip = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) // TODO: reuse
     private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
+    private val paths = Array(6) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
 
 
     private inline fun isInViewDistance(chunk: Chunk): Boolean {
@@ -47,25 +48,26 @@ class OcclusionTracer(
         return true
     }
 
-    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions?, vector: SVec3) {
+    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions, vector: SVec3) {
         // TODO: keep track of direction and don't allow going of the axis too far (we can not bend our look direction). This will hide caves and reveans too if they are occluded
         if (!isInViewDistance(chunk)) return
         if (height < minSection || height > maxSection) return
 
         val position = SectionPosition.of(chunk.position, height)
 
-        if (direction != null && position in visible) return
         if (position in skip) return
+        if (position in paths[direction.ordinal]) return // path from same source direction already taken
 
         val section = chunk[height]
         if (!frustum.containsChunkSection(position)) {
             skip += position
             return
         }
+        paths[direction.ordinal] += position
         visible += position
 
 
-        val inverted = direction?.inverted
+        val inverted = direction.inverted
         val neighbours = chunk.neighbours.neighbours
         val occlusion = section?.blocks?.occlusion // TODO: empty section bypass?
 
@@ -80,21 +82,21 @@ class OcclusionTracer(
         if (vector.y >= 0) trace(occlusion, chunk, height, inverted, Directions.UP, vector)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions?, destination: Directions, vector: SVec3) {
-        if (occlusion != null && source != null && occlusion.isOccluded(source, destination)) return
+    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3) {
+        if (occlusion != null && occlusion.isOccluded(source, destination)) return
         val next = neighbours[destination] ?: return
         trace(next, height, destination, vector + destination)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions?, destination: Directions, vector: SVec3) {
-        if (occlusion != null && source != null && occlusion.isOccluded(source, destination)) return
+    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3) {
+        if (occlusion != null && occlusion.isOccluded(source, destination)) return
         trace(chunk, height + destination.vector.y, destination, vector + destination)
     }
 
     fun trace(chunk: Chunk): OcclusionGraph {
         for (direction in Directions) {
             val neighbour = if (direction.axis == Axes.Y) chunk else chunk.neighbours[direction] ?: continue
-            trace(neighbour, position.y + direction.vector.y, null, SVec3(direction.vector))
+            trace(neighbour, position.y + direction.vector.y, direction, SVec3(direction.vector))
         }
 
         visible += position

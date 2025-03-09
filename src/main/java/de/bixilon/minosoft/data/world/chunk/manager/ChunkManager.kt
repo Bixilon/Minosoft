@@ -96,7 +96,6 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
     }
 
     fun set(position: ChunkPosition, prototype: ChunkPrototype, replaceExisting: Boolean) {
-        if (!world.isValidPosition(position)) throw IllegalArgumentException("Chunk position $position is not valid!")
         world.lock.lock()
         updateExisting(position, prototype, replaceExisting)?.let {
             world.lock.unlock()
@@ -158,7 +157,6 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
 
     fun create(position: ChunkPosition, biome: BiomeSource = DummyBiomeSource(null)): Chunk {
-        if (!world.isValidPosition(position)) throw IllegalArgumentException("Chunk position $position is not valid!")
         chunks.lock.lock()
         val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.session, position, biome) }
         val updates = onChunkCreate(chunk)

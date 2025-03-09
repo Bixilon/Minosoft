@@ -70,7 +70,6 @@ class ChunksS2CP : PlayS2CPacket {
                 session.world.chunks -= position
                 continue
             }
-            if (!session.world.isValidPosition(position)) continue
             session.world.chunks[position] = prototype // action is always CREATE, force replace existing prototypes
         }
     }
