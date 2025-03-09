@@ -77,6 +77,7 @@ class SectionOcclusion(
         return false
     }
 
+    private fun trace(regions: ShortArray, position: InSectionPosition) = trace(regions, position, position.index.toShort())
     private fun trace(regions: ShortArray, position: InSectionPosition, region: Short) {
         if (regions.setIfUnset(position, region)) return
 
@@ -92,11 +93,18 @@ class SectionOcclusion(
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
-        // TODO: Only start flood filling from sides (don't trace potential irrelevant regions in the middle)
-        // TODO: Keep track of direction and never go into negative again (we can't change the direction of the look; it can not refelct here)
+        // TODO: Keep track of direction and never go into negative again (we can't change the direction of the look; it can not reflect here)
 
-        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            trace(array, InSectionPosition(index), index.toShort())
+
+        for (index in 0 until 256) {
+            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F))
+            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F))
+
+            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00))
+            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F))
+
+            trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F))
+            trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F))
         }
 
         return array

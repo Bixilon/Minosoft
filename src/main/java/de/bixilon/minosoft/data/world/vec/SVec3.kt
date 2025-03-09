@@ -30,8 +30,6 @@ value class SVec3(val raw: Int) {
         assertVec(z, -MAX_Z, MAX_Z)
     }
 
-    constructor(vector: DirectionVector) : this(vector.x, vector.y, vector.z)
-
 
     inline val x: Int get() = (((raw ushr SHIFT_X) and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
     inline val y: Int get() = (((raw ushr SHIFT_Y) and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
@@ -131,5 +129,8 @@ value class SVec3(val raw: Int) {
 
 
         val EMPTY = SVec3(0, 0, 0)
+
+
+        operator fun invoke(vector: DirectionVector) = SVec3(vector.x, vector.y, vector.z)
     }
 }
