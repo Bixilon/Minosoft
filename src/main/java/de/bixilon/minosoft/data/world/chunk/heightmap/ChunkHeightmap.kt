@@ -33,13 +33,11 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
 
     override fun recalculate() {
-        chunk.lock.lock()
         val maxY = (chunk.maxSection + 1) * ProtocolDefinition.SECTION_HEIGHT_Y
 
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                trace(InChunkPosition(x, maxY, z), false)
-            }
+        chunk.lock.lock()
+        for (xz in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
+            trace(InChunkPosition(xz).with(y = maxY), false)
         }
         chunk.lock.unlock()
     }
@@ -124,6 +122,4 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
         PASSES,
         ;
     }
-
-    companion object
 }
