@@ -13,10 +13,16 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section
 
+import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
-abstract class AbstractSectionLight {
+interface AbstractSectionLight {
 
-    abstract operator fun get(position: InSectionPosition): LightLevel
+    operator fun get(position: InSectionPosition): LightLevel
+
+    fun clear()
+    fun propagate()
+
+    fun update(array: LightArray)
 }
