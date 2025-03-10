@@ -45,7 +45,7 @@ class ChunksS2CP : PlayS2CPacket {
                 val chunkPosition = buffer.readChunkPosition()
                 val sectionBitMask = buffer.readLegacyBitSet(2) // ToDo: Test
                 val addBitMask = buffer.readLegacyBitSet(2)// ToDo: Test
-                chunks[chunkPosition] = ChunkUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, skylight)
+                chunks[chunkPosition] = ChunkPacketUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, skylight)
             }
             return
         }
@@ -58,7 +58,7 @@ class ChunksS2CP : PlayS2CPacket {
             bitSets[buffer.readChunkPosition()] = buffer.readLegacyBitSet(2)
         }
         for ((chunkPosition, sectionBitMask) in bitSets) {
-            chunks[chunkPosition] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, skylight)
+            chunks[chunkPosition] = ChunkPacketUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, skylight)
         }
     }
 

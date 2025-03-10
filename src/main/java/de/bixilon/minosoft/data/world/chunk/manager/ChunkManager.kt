@@ -84,9 +84,9 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         revision++
     }
 
-    private fun updateExisting(position: ChunkPosition, prototype: ChunkPrototype, replaceExisting: Boolean): PrototypeChange? {
+    private fun updateExisting(position: ChunkPosition, prototype: ChunkPrototype, replace: Boolean): PrototypeChange? {
         val chunk = this.chunks.unsafe[position] ?: return null
-        val affected = prototype.updateChunk(chunk, replaceExisting) ?: return null
+        val affected = prototype.updateChunk(chunk, replace) ?: return null
         return PrototypeChange(chunk, affected)
     }
 
@@ -95,9 +95,9 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         set(position, prototype, true)
     }
 
-    fun set(position: ChunkPosition, prototype: ChunkPrototype, replaceExisting: Boolean) {
+    fun set(position: ChunkPosition, prototype: ChunkPrototype, replace: Boolean) {
         world.lock.lock()
-        updateExisting(position, prototype, replaceExisting)?.let {
+        updateExisting(position, prototype, replace)?.let {
             world.lock.unlock()
             PrototypeChangeUpdate(position, it.chunk, it.affected).fire(world.session)
             it.chunk.light.recalculate(fireEvent = true, fireSameChunkEvent = false)

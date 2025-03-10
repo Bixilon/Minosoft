@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import java.util.*
 
-object LightUtil {
+object LightPacketUtil {
     val EMPTY_LIGHT_ARRAY = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
 
     fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkPrototype {

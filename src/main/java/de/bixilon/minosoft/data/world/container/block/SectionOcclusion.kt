@@ -103,8 +103,7 @@ class SectionOcclusion(
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
-        // TODO: Keep track of direction and never go into negative again (we can't change the direction of the look; it can not reflect here)
-
+        // TODO: force trace first block (might already be in a different region from a different vector)
 
         val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
 

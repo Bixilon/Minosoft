@@ -74,7 +74,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             } else {
                 buffer
             }
-            val chunkData = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, action == ChunkAction.CREATE, dimension.skyLight)
+            val chunkData = ChunkPacketUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, action == ChunkAction.CREATE, dimension.skyLight)
             if (chunkData == null) {
                 action = ChunkAction.UNLOAD
             } else {
@@ -170,7 +170,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun ChunkReadingData.readChunkData() {
-        val chunkData = if (readingData.buffer.versionId < V_21W37A) ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight) else ChunkUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false)
+        val chunkData = if (readingData.buffer.versionId < V_21W37A) ChunkPacketUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight) else ChunkPacketUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false)
         if (chunkData == null) {
             action = ChunkAction.UNLOAD
         } else {

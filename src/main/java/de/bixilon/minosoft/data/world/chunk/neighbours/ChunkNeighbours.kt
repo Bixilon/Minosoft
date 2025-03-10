@@ -18,12 +18,12 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkUtil
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
 import kotlin.math.abs
 
 class ChunkNeighbours(val chunk: Chunk) {
@@ -56,7 +56,7 @@ class ChunkNeighbours(val chunk: Chunk) {
     }
 
     fun completeSection(section: ChunkSection, sectionHeight: SectionHeight, noise: NoiseBiomeAccessor?) {
-        section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, sectionHeight)
+        section.neighbours = ChunkUtil.getNeighbours(neighbours, chunk, sectionHeight)
     }
 
     private fun complete() {
@@ -66,8 +66,9 @@ class ChunkNeighbours(val chunk: Chunk) {
             val sectionHeight = index + chunk.minSection
             completeSection(section, sectionHeight, noise)
         }
-        chunk.light.recalculate(false)
-        chunk.light.propagate(fireEvent = false, fireSameChunkEvent = false)
+        chunk.light.clear()
+        chunk.light.calculate()
+        chunk.light.propagate()
     }
 
     operator fun get(direction: Directions): Chunk? {
@@ -86,7 +87,7 @@ class ChunkNeighbours(val chunk: Chunk) {
             }
 
             val section = chunk[nextSectionHeight] ?: continue
-            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, nextSectionHeight)
+            val sectionNeighbours = ChunkUtil.getNeighbours(neighbours, chunk, nextSectionHeight)
             section.neighbours = sectionNeighbours
         }
     }
