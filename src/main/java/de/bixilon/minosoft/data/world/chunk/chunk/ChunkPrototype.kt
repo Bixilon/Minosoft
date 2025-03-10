@@ -64,7 +64,7 @@ class ChunkPrototype(
             section.blocks.setData(blockData)
 
             if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
-                light?.get(index)?.let { section.light.light = it }
+                light?.get(index)?.let { section.light.update(it) }
             }
 
             chunk.sections[index] = section
@@ -145,7 +145,7 @@ class ChunkPrototype(
 
         if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
             this.topLight?.let { chunk.light.top.update(it) }
-            // TODO: section light, update affected
+            this.light?.forEachIndexed { index, data -> data?.let { chunk.sections[index]?.light?.update(it) } }
             this.bottomLight?.let { chunk.light.bottom.update(it) }
         }
 
