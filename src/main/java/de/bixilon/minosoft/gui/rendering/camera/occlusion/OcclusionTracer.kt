@@ -40,7 +40,7 @@ class OcclusionTracer(
 
     private val skip = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) // TODO: reuse
     private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
-    private val paths = Array(6) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
+    private val paths = Array(Axes.VALUES.size) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
 
 
     private inline fun isInViewDistance(chunk: Chunk): Boolean {
@@ -56,14 +56,14 @@ class OcclusionTracer(
         val position = SectionPosition.of(chunk.position, height)
 
         if (position in skip) return
-        if (position in paths[direction.ordinal]) return // path from same source direction already taken
+        if (position in paths[direction.axis.ordinal]) return // path from same source direction already taken
 
         val section = chunk[height]
         if (!frustum.containsChunkSection(position)) {
             skip += position
             return
         }
-        paths[direction.ordinal] += position
+        paths[direction.axis.ordinal] += position
         visible += position
 
 
