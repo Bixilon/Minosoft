@@ -16,45 +16,46 @@ package de.bixilon.minosoft.data.world.chunk.light.section
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
-    val section: ChunkSection,
-    var light: LightArray = LightArray(),
-) : AbstractSectionLight() {
+    private val section: ChunkSection,
+    private val light: LightArray = LightArray(),
+) : AbstractSectionLight {
 
     fun onBlockChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
         val previousLuminance = previous?.luminance ?: 0
         val luminance = state?.luminance ?: 0
 
-        if (previousLuminance == luminance) {
-            val nowProperties = state?.block?.getLightProperties(state)
-            if (previous?.block?.getLightProperties(previous)?.propagatesLight == nowProperties?.propagatesLight) {
-                // no change for light data
-                return
-            }
-            if (nowProperties == null || nowProperties.propagatesLight) {
-                // block got destroyed/is propagating light now
-                propagate(position)
-                return
-            }
-            // ToDo: else decrease light around placed block
-        }
-
-        if (luminance > previousLuminance) {
-            traceBlockIncrease(position, luminance, null)
-        } else {
-            startDecreaseTrace(position)
+        when {
+            luminance == previousLuminance -> Unit // TODO: check if light properties changed
+            luminance > previousLuminance -> onIncrease(position, luminance)
+            luminance < previousLuminance -> onDecrease(position)
         }
     }
 
-    fun reset()
+    private fun onIncrease(position: InSectionPosition, luminance: Int) {}
+    private fun onDecrease(position: InSectionPosition) {}
+
+    fun trace(position: InSectionPosition) {
+    }
+
+    fun trace(position: InSectionPosition, level: LightLevel) {
+    }
 
 
-    fun recalculate()
-    fun calculate()
-    fun propagate()
+    override fun clear() = this.light.clear()
+    fun calculate() {
+        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            trace(InSectionPosition(index))
+        }
+    }
 
+    override fun propagate() = Unit // TODO
+
+    override fun update(array: LightArray) = TODO("Save light from server")
 
     override fun get(position: InSectionPosition) = light[position]
 }

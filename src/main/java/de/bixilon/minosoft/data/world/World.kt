@@ -187,11 +187,11 @@ class World(
     }
 
     fun recalculateLight(heightmap: Boolean = false) {
-        val reset = UnconditionalWorker()
-        val calculate = UnconditionalWorker()
+        val reset = UnconditionalWorker(autoWork = true)
+        val calculate = UnconditionalWorker(autoWork = false)
         lock.acquire()
         for (chunk in chunks.chunks.unsafe.values) {
-            reset += { chunk.light.reset() }
+            reset += { chunk.light.clear() }
             calculate += {
                 if (heightmap) {
                     chunk.light.heightmap.recalculate()

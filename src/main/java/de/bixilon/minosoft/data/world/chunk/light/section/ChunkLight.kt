@@ -30,8 +30,6 @@ class ChunkLight(val chunk: Chunk) {
     val bottom = BottomSectionLight(chunk)
     val top = TopSectionLight(chunk)
 
-    val sky = ChunkSkyLight(this)
-
 
     fun onBlockChange(position: InChunkPosition, section: ChunkSection, previous: BlockState?, next: BlockState?) {
         heightmap.onBlockChange(position, next)
@@ -51,14 +49,30 @@ class ChunkLight(val chunk: Chunk) {
         }
 
         if (position.y >= heightmap[position]) {
-            // set sky=15
             return light.with(sky = LightLevel.MAX_LEVEL)
         }
         return light
     }
 
-    fun recalculate()
-    fun calculate()
-    fun reset()
-    fun propagate()
+    fun clear() {
+        bottom.clear()
+        for (section in chunk.sections) {
+            section?.light?.clear()
+        }
+        top.clear()
+    }
+
+    fun calculate() {
+        for (section in chunk.sections) {
+            section?.light?.calculate()
+        }
+    }
+
+    fun propagate() {
+        bottom.propagate()
+        for (section in chunk.sections) {
+            section?.light?.propagate()
+        }
+        top.propagate()
+    }
 }
