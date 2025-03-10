@@ -14,43 +14,46 @@
 package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_HEIGHT_Y
-import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_X
-import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_Z
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
-    protected val heightmap = IntArray(SECTION_WIDTH_X * SECTION_WIDTH_Z) { Int.MIN_VALUE }
+    protected val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { Int.MIN_VALUE }
 
     override fun get(index: Int) = heightmap[index]
     override fun get(x: Int, z: Int) = this[(z shl 4) or x]
-    override fun get(xz: InChunkPosition) = heightmap[xz.xz]
-    override fun get(xz: InSectionPosition) = heightmap[xz.xz]
+    override fun get(position: InChunkPosition) = get(position.x, position.z)
 
 
     protected abstract fun passes(state: BlockState): HeightmapPass
-    protected abstract fun onHeightmapUpdate(x: Int, z: Int, previousY: Int, y: Int)
+    protected abstract fun onHeightmapUpdate(x: Int, z: Int, previous: Int, now: Int)
 
 
     override fun recalculate() {
-        val maxY = (chunk.maxSection + 1) * SECTION_HEIGHT_Y
+        val maxY = (chunk.maxSection + 1) * ProtocolDefinition.SECTION_HEIGHT_Y
 
         chunk.lock.lock()
-        for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+        for (xz in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
             trace(InChunkPosition(xz).with(y = maxY), false)
         }
         chunk.lock.unlock()
     }
 
     private fun trace(position: InChunkPosition, notify: Boolean) {
+        val sections = chunk.sections
+
         var y = Int.MIN_VALUE
         val index = position.xz
 
-        sectionLoop@ for (sectionHeight in position.y.sectionHeight downTo chunk.minSection) {
-            val section = chunk[sectionHeight] ?: continue
+        sectionLoop@ for (sectionIndex in (position.y.sectionHeight - chunk.minSection) downTo 0) {
+            if (sectionIndex >= sections.size) {
+                // starting from above world
+                continue
+            }
+            val section = sections[sectionIndex] ?: continue
             if (section.blocks.isEmpty) continue
 
             val min = section.blocks.minPosition
@@ -60,11 +63,11 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
 
             for (sectionY in max.y downTo min.y) {
-                val state = section.blocks[InSectionPosition(index).with(y = sectionY)] ?: continue
+                val state = section.blocks[InSectionPosition((sectionY shl 8) or index)] ?: continue
                 val pass = passes(state)
                 if (pass == HeightmapPass.PASSES) continue
 
-                y = sectionHeight * SECTION_HEIGHT_Y + sectionY
+                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
                 if (pass == HeightmapPass.ABOVE) y++
 
                 break@sectionLoop

@@ -17,8 +17,6 @@ import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 abstract class AbstractSectionLight {
-    open var update = false
-
 
     abstract operator fun get(position: InSectionPosition): LightLevel
 }
