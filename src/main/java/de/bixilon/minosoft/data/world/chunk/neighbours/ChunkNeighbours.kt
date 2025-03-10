@@ -66,8 +66,9 @@ class ChunkNeighbours(val chunk: Chunk) {
             val sectionHeight = index + chunk.minSection
             completeSection(section, sectionHeight, noise)
         }
-        chunk.light.recalculate(false)
-        chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)
+        chunk.light.clear()
+        chunk.light.calculate()
+        chunk.light.propagate()
     }
 
     operator fun get(direction: Directions): Chunk? {

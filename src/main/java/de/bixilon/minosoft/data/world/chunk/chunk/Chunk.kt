@@ -190,7 +190,7 @@ class Chunk(
 
             // check light of neighbours to check if their light needs to be traced into our own chunk
             if (calculateLight) {
-                section.light.propagateFromNeighbours()
+                section.light.propagate()
             }
         }
         if (lock) this.lock.unlock()
