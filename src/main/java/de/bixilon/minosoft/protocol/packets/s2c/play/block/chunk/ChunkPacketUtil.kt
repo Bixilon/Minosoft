@@ -15,24 +15,18 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP.Companion.LIGHT_SIZE
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightUtil
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightPacketUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W35A
@@ -41,11 +35,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import java.lang.StrictMath.abs
 import java.util.*
 
 
-object ChunkUtil {
+object ChunkPacketUtil {
 
     fun readChunkPacket(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, complete: Boolean, containsSkyLight: Boolean): ChunkPrototype? {
         if (buffer.versionId < V_15W35A) { // ToDo: was this really changed in 62?
@@ -195,7 +188,7 @@ object ChunkUtil {
                     if (skylight) {
                         skyLight = buffer.readByteArray(LIGHT_SIZE)
                     }
-                    light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
+                    light[sectionHeight - dimension.minSection] = LightPacketUtil.mergeLight(blockLight, skyLight ?: LightPacketUtil.EMPTY_LIGHT_ARRAY)
                     lightReceived++
                 }
             }
@@ -225,25 +218,5 @@ object ChunkUtil {
             })
         }
         return XZBiomeArray(biomes)
-    }
-
-
-    /**
-     * @param neighbourChunks: **Fully loaded** direct neighbour chunks
-     */
-    fun getDirectNeighbours(neighbourChunks: ChunkNeighbourArray, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
-        return arrayOf(
-            chunk[sectionHeight - 1],
-            chunk[sectionHeight + 1],
-            neighbourChunks[Directions.NORTH]!![sectionHeight],
-            neighbourChunks[Directions.SOUTH]!![sectionHeight],
-            neighbourChunks[Directions.WEST]!![sectionHeight],
-            neighbourChunks[Directions.EAST]!![sectionHeight],
-        )
-    }
-
-    inline fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
-        val delta = cameraPosition - this
-        return abs(delta.x) <= viewDistance && abs(delta.z) <= viewDistance
     }
 }

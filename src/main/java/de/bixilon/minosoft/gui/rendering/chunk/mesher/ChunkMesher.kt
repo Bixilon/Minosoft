@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
 
 class ChunkMesher(
     private val renderer: ChunkRenderer,
@@ -33,11 +32,11 @@ class ChunkMesher(
             return null
         }
         val neighbours = item.chunk.neighbours
-        if (!neighbours.complete) {
+        val sectionNeighbours = item.section.neighbours
+        if (!neighbours.complete || sectionNeighbours == null) {
             renderer.unload(item)
             return null
         }
-        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours.neighbours, item.chunk, item.section.height)
         val mesh = ChunkMeshes(renderer.context, item.position, item.section.smallMesh)
         try {
             solid.mesh(item.position, item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)

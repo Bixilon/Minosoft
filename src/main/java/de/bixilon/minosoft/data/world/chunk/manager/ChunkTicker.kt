@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.world.chunk.manager
 
 import de.bixilon.kutil.collections.iterator.AsyncIteration.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 import java.util.*
 
 class ChunkTicker(val manager: ChunkManager) {

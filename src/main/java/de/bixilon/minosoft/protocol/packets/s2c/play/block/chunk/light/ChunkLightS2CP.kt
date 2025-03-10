@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.registry.PacketExtraHandler
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightUtil.readLightPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightPacketUtil.readLightPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer

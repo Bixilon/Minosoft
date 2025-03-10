@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.occlusion
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.data.world.vec.SVec3
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 
 class OcclusionTracer(
     val position: SectionPosition,
