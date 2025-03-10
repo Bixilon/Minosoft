@@ -23,7 +23,7 @@ import java.util.*
 
 abstract class BorderSectionLight(
     val chunk: Chunk,
-) : AbstractSectionLight() {
+) : AbstractSectionLight {
     val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
     protected abstract fun getNearestSection(): ChunkSection?
@@ -34,11 +34,9 @@ abstract class BorderSectionLight(
         this.light[index] = value.raw
     }
 
-    fun reset() {
+    override fun clear() {
         Arrays.fill(this.light, 0x00)
     }
 
-    fun update(array: LightArray) {
-        // ToDo: Save light from server
-    }
+    override fun update(array: LightArray) = TODO("Save light from server")
 }
