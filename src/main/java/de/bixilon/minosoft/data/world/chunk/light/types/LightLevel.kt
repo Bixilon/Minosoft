@@ -38,6 +38,8 @@ value class LightLevel(val raw: Byte) {
 
     inline fun max(other: LightLevel) = LightLevel(maxOf(block, other.block), maxOf(sky, other.sky))
 
+    inline fun decrease() = LightLevel(maxOf(0, block - 1), maxOf(0, sky - 1))
+
     override fun toString() = (raw.toInt() and 0xFF).toHex(2)
 
     companion object {
