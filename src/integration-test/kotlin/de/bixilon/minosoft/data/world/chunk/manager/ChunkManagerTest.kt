@@ -259,7 +259,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is SingleBlockUpdate)
             val update = it.update as SingleBlockUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertSame(update.chunk, chunk)
             assertEquals(update.position, BlockPosition(18, 12, 19))
             assertEquals(update.state, IT.BLOCK_1)
@@ -278,7 +278,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is SingleBlockUpdate)
             val update = it.update as SingleBlockUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertSame(update.chunk, chunk)
             assertEquals(update.position, BlockPosition(18, 12, 19))
             assertEquals(update.state, IT.BLOCK_1)
@@ -298,7 +298,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkLocalBlockUpdate)
             val update = it.update as ChunkLocalBlockUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertSame(update.chunk, chunk)
             assertEquals(update.updates, updates)
             fired++
@@ -316,7 +316,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkCreateUpdate)
             val update = it.update as ChunkCreateUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             fired++
         }
 
@@ -331,7 +331,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkCreateUpdate)
             val update = it.update as ChunkCreateUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             fired++
         }
 
@@ -348,7 +348,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is ChunkUnloadUpdate)
             val update = it.update as ChunkUnloadUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             fired++
         }
 
@@ -379,7 +379,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is PrototypeChangeUpdate)
             val update = it.update as PrototypeChangeUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertEquals(update.affected, setOf(0, 2))
             fired++
         }
@@ -401,7 +401,7 @@ class ChunkManagerTest {
         manager.world.session.events.listen<WorldUpdateEvent> {
             assertTrue(it.update is PrototypeChangeUpdate)
             val update = it.update as PrototypeChangeUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertEquals(update.affected, setOf(0))
             fired++
         }
@@ -422,7 +422,7 @@ class ChunkManagerTest {
             if (it.update is ChunkCreateUpdate) return@listen
             assertTrue(it.update is NeighbourChangeUpdate)
             val update = it.update as NeighbourChangeUpdate
-            assertEquals(update.chunkPosition, ChunkPosition(1, 1))
+            assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertNotNull(update.chunk.neighbours[Directions.SOUTH])
             fired++
         }
