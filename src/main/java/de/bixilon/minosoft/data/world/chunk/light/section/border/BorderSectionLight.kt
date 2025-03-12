@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section.border
 
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.AbstractSectionLight
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
@@ -27,7 +28,6 @@ abstract class BorderSectionLight(
     protected var event = false
     protected val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
-    protected abstract fun getNearestSection(): ChunkSection?
     protected abstract fun Chunk.getBorderLight(): BorderSectionLight
 
     protected inline operator fun get(index: Int) = LightLevel(this.light[index])
@@ -36,9 +36,19 @@ abstract class BorderSectionLight(
         event = true
     }
 
+    abstract fun trace(position: InSectionPosition, level: LightLevel)
+
     override fun clear() {
         Arrays.fill(this.light, 0x00)
         event = true
+    }
+
+    protected inline fun traceVertical(position: InSectionPosition, next: LightLevel) {
+        if (position.x > 0) trace(position.minusX(), next) else chunk.neighbours[Directions.WEST]?.getBorderLight()?.trace(position.with(x = ProtocolDefinition.SECTION_MAX_X), next)
+        if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(position.plusX(), next) else chunk.neighbours[Directions.EAST]?.getBorderLight()?.trace(position.with(x = 0), next)
+
+        if (position.z > 0) trace(position.minusZ(), next) else chunk.neighbours[Directions.NORTH]?.getBorderLight()?.trace(position.with(z = ProtocolDefinition.SECTION_MAX_Z), next)
+        if (position.z < ProtocolDefinition.SECTION_MAX_X) trace(position.plusZ(), next) else chunk.neighbours[Directions.SOUTH]?.getBorderLight()?.trace(position.with(z = 0), next)
     }
 
     override fun fireEvent(): AbstractWorldUpdate? {

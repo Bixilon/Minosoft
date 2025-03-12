@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 class LightHeightmap(chunk: Chunk) : ChunkHeightmap(chunk) {
 
     override fun onHeightmapUpdate(x: Int, z: Int, previous: Int, now: Int) {
-        TODO()
+        // TODO: Handle heightmap update
     }
 
 
