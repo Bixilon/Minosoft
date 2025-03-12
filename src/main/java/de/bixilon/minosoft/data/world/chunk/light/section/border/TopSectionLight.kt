@@ -15,8 +15,10 @@ package de.bixilon.minosoft.data.world.chunk.light.section.border
 
 import de.bixilon.kutil.array.ArrayUtil.getLast
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class TopSectionLight(
     chunk: Chunk,
@@ -29,4 +31,9 @@ class TopSectionLight(
 
     override fun getNearestSection() = chunk.sections.getLast()
     override fun Chunk.getBorderLight() = this.light.top
+
+
+    override fun update(array: LightArray) {
+        System.arraycopy(array.array, InSectionPosition(0, 0, 0).index, this.light, 0, ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+    }
 }

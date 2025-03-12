@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.world.chunk.light.section.border
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.AbstractSectionLight
-import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -49,7 +48,5 @@ abstract class BorderSectionLight(
         return null
     }
 
-    override fun propagate() = TODO()
-
-    override fun update(array: LightArray) = TODO("Save light from server")
+    override fun propagate() = Unit // TODO
 }
