@@ -55,14 +55,14 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
             world.lock.unlock()
             return
         }
-        val updates = hashSetOf<AbstractWorldUpdate>(ChunkUnloadUpdate(position, chunk))
+        val updates = hashSetOf<AbstractWorldUpdate>(ChunkUnloadUpdate(chunk))
 
         for ((index, neighbour) in chunk.neighbours.neighbours.array.withIndex()) {
             if (neighbour == null) continue
             val offset = ChunkPosition(ChunkNeighbourArray.OFFSETS[index])
             val neighbourPosition = position + offset
             neighbour.neighbours.remove(-offset)
-            updates += NeighbourChangeUpdate(neighbourPosition, neighbour)
+            updates += NeighbourChangeUpdate(neighbour)
         }
         size.onUnload(position)
         world.occlusion++
@@ -99,8 +99,8 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         world.lock.lock()
         updateExisting(position, prototype, replace)?.let {
             world.lock.unlock()
-            PrototypeChangeUpdate(position, it.chunk, it.affected).fire(world.session)
-            it.chunk.light.recalculate(fireEvent = true, fireSameChunkEvent = false)
+            PrototypeChangeUpdate(it.chunk, it.affected).fire(world.session)
+            // TODO: it.chunk.light.recalculate(fireEvent = true, fireSameChunkEvent = false)
             revision++
             return
         }
@@ -134,7 +134,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         world.view.updateServerDistance()
 
         val updates = HashSet<AbstractWorldUpdate>(9, 1.0f)
-        updates += ChunkCreateUpdate(chunk.position, chunk)
+        updates += ChunkCreateUpdate(chunk)
 
         for (index in 0 until ChunkNeighbourArray.COUNT) {
             val offset = ChunkPosition(ChunkNeighbourArray.OFFSETS[index])
@@ -149,7 +149,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
         for (neighbour in chunk.neighbours.neighbours.array) {
             if (neighbour == null) continue
-            updates += NeighbourChangeUpdate(neighbour.position, neighbour)
+            updates += NeighbourChangeUpdate(neighbour)
         }
 
         return updates

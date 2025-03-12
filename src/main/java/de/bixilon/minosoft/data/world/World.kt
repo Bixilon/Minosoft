@@ -187,28 +187,28 @@ class World(
     }
 
     fun recalculateLight(heightmap: Boolean = false) {
-        val reset = UnconditionalWorker(autoWork = true)
+        val clear = UnconditionalWorker(autoWork = true)
         val calculate = UnconditionalWorker(autoWork = false)
+        val events = UnconditionalWorker(autoWork = false)
         lock.acquire()
         for (chunk in chunks.chunks.unsafe.values) {
-            reset += { chunk.light.clear() }
+            clear += { chunk.light.clear() }
             calculate += {
                 if (heightmap) {
                     chunk.light.heightmap.recalculate()
                 }
                 chunk.light.calculate()
             }
+            events += { chunk.light.fireNeighbourEvents() }
         }
         lock.release()
-        reset.work()
+        clear.work()
         calculate.work()
+        events.work()
     }
 
     companion object {
-        const val MAX_SIZE = BlockPosition.MAX_X
-        const val MAX_SIZEf = MAX_SIZE.toFloat()
-        const val MAX_SIZEd = MAX_SIZE.toDouble()
-        const val MAX_RENDER_DISTANCE = 64
+        const val MAX_RENDER_DISTANCE = 64 // TODO: This limit can be increased, but you might also need to increase stack size, otherwise things like occlusion tracing fail with a StackOverflowError
         const val MAX_CHUNKS_SIZE = MAX_RENDER_DISTANCE * 2 + 1
     }
 }

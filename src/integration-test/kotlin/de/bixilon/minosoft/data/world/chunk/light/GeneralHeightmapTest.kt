@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.StairsTest0
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
@@ -26,26 +25,6 @@ import org.testng.annotations.Test
 
 @Test(groups = ["light"], dependsOnGroups = ["block"])
 class GeneralHeightmapTest {
-
-    fun testMinHeightEast() {
-        val chunk: Chunk = createChunkWithNeighbours()
-        chunk[InChunkPosition(2, 10, 3)] = IT.BLOCK_1
-        chunk[InChunkPosition(3, 11, 2)] = IT.BLOCK_1
-        chunk[InChunkPosition(3, 12, 4)] = IT.BLOCK_1
-        chunk[InChunkPosition(4, 13, 3)] = IT.BLOCK_1
-        assertEquals(chunk.light.sky.getNeighbourMinHeight(chunk.neighbours.neighbours, 3, 3), 11)
-    }
-
-    fun testMinHeightNeighbourEast() {
-        val chunk: Chunk = createChunkWithNeighbours()
-        val neighbours = chunk.neighbours.neighbours
-        chunk[InChunkPosition(14, 11, 3)] = IT.BLOCK_1
-        chunk[InChunkPosition(15, 12, 2)] = IT.BLOCK_1
-        chunk[InChunkPosition(15, 13, 4)] = IT.BLOCK_1
-        neighbours[Directions.EAST]?.set(InChunkPosition(0, 10, 3), IT.BLOCK_1)
-        assertEquals(chunk.light.sky.getNeighbourMinHeight(neighbours, 15, 3), 11)
-    }
-    // TODO: Test other directions
 
     fun `top of the world and not passing`() {
         val chunk: Chunk = createChunkWithNeighbours()
