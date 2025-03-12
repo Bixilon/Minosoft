@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.SectionLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.vec.SVec3
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
@@ -166,21 +167,21 @@ class BlockLightPlaceIT {
 
     fun lightUpdate() {
         val world = SessionTestUtil.createSession(3, light = true).world
-        val events: MutableList<BlockPosition> = synchronizedListOf()
+        val events: MutableList<SVec3> = synchronizedListOf()
         world.session.events.listen<WorldUpdateEvent> {
             if (it.update !is SectionLightUpdate) return@listen
-            events += BlockPosition(it.update.chunk.position.x, (it.update as SectionLightUpdate).section.height, it.update.chunk.position.z)
+            events += SVec3(it.update.chunk.position.x, (it.update as SectionLightUpdate).section.height, it.update.chunk.position.z)
         }
         world[BlockPosition(8, 24, 8)] = TorchTest0.state
 
         assertEquals(events.toSet(), setOf(
-            BlockPosition(+0, 1, +0),
-            BlockPosition(+0, 0, +0),
-            BlockPosition(+0, 2, +0),
-            BlockPosition(+0, 1, -1),
-            BlockPosition(+0, 1, +1),
-            BlockPosition(-1, 1, +0),
-            BlockPosition(+1, 1, +0),
+            SVec3(+0, 1, +0),
+            SVec3(+0, 0, +0),
+            SVec3(+0, 2, +0),
+            SVec3(+0, 1, -1),
+            SVec3(+0, 1, +1),
+            SVec3(-1, 1, +0),
+            SVec3(+1, 1, +0),
         ))
         assertEquals(events.size, 7)
     }

@@ -29,8 +29,22 @@ class BottomSectionLight(
         return LightLevel(this.light[position.xz])
     }
 
-    override fun getNearestSection() = chunk.sections.getFirst()
     override fun Chunk.getBorderLight() = this.light.bottom
+
+
+    override fun trace(position: InSectionPosition, level: LightLevel) {
+        val current = LightLevel(light[position.xz])
+        if (current.block >= level.block) return
+
+        // TODO: sky
+        light[position.xz] = level.raw
+        if (current.block <= 1) return // can not increase further
+
+        val next = current.decrease()
+
+        chunk.sections.getFirst()?.light?.trace(position.with(y = ProtocolDefinition.SECTION_MAX_Y), next)
+        traceVertical(position, next)
+    }
 
     override fun update(array: LightArray) {
         System.arraycopy(array.array, InSectionPosition(0, ProtocolDefinition.SECTION_MAX_Y, 0).index, this.light, 0, ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
