@@ -22,9 +22,9 @@ import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.SectionLightUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
@@ -115,9 +115,8 @@ object ChunkRendererChangeListener {
         }
     }
 
-    private fun ChunkRenderer.handle(update: ChunkLightUpdate) {
-        if (update.blockChange) return // change is already covered
-        master.tryQueue(update.chunk, update.sectionHeight)
+    private fun ChunkRenderer.handle(update: SectionLightUpdate) {
+        master.tryQueue(update.chunk, update.section.height) // TODO: ignore light change for same chunk if block has changed
     }
 
     private fun ChunkRenderer.handle(update: ChunkCreateUpdate) {
@@ -125,7 +124,7 @@ object ChunkRendererChangeListener {
     }
 
     private fun ChunkRenderer.handle(update: ChunkUnloadUpdate) {
-        unloadChunk(update.chunkPosition)
+        unloadChunk(update.chunk.position)
     }
 
     private fun ChunkRenderer.handle(update: NeighbourChangeUpdate) {
@@ -145,7 +144,7 @@ object ChunkRendererChangeListener {
             is SingleBlockUpdate -> handle(update)
             is SingleBlockDataUpdate -> handle(update)
             is ChunkLocalBlockUpdate -> handle(update)
-            is ChunkLightUpdate -> handle(update)
+            is SectionLightUpdate -> handle(update)
             is ChunkCreateUpdate -> handle(update)
             is ChunkUnloadUpdate -> handle(update)
             is NeighbourChangeUpdate -> handle(update)

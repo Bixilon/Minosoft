@@ -75,4 +75,19 @@ class ChunkLight(val chunk: Chunk) {
         }
         top.propagate()
     }
+
+    fun fireEvents() {
+        bottom.fireEvent()?.fire(chunk.session)
+        for (section in chunk.sections) {
+            section?.light?.fireEvent()?.fire(chunk.session)
+        }
+        top.fireEvent()?.fire(chunk.session)
+    }
+
+    fun fireNeighbourEvents() {
+        fireEvents()
+        for (neighbour in chunk.neighbours.neighbours.array) {
+            neighbour?.light?.fireEvents()
+        }
+    }
 }

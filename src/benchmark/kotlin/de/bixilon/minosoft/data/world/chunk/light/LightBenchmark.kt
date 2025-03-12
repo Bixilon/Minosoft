@@ -33,7 +33,8 @@ internal class LightBenchmark {
     fun calculateEmptyLight() {
         val chunk = createChunkWithNeighbours()
         BenchmarkUtil.benchmark(100000) {
-            chunk.light.recalculate()
+            chunk.light.clear()
+            chunk.light.calculate()
         }.println()
     }
 
@@ -42,7 +43,8 @@ internal class LightBenchmark {
         val chunk = createChunkWithNeighbours()
         chunk.fillBottom(createSolidBlock().states.default)
         BenchmarkUtil.benchmark(100000) {
-            chunk.light.recalculate()
+            chunk.light.clear()
+            chunk.light.calculate()
         }.println()
     }
 
