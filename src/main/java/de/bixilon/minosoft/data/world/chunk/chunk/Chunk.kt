@@ -79,6 +79,7 @@ class Chunk(
         }
 
         SingleBlockUpdate(this.position.blockPosition(position), this, state, entity).fire(session)
+        light.fireNeighbourEvents()
     }
 
     fun getBlockEntity(position: InChunkPosition): BlockEntity? {
@@ -144,7 +145,8 @@ class Chunk(
             return lock.unlock()
         }
         light.heightmap.recalculate()
-        light.recalculate(fireEvent = false)
+        // TODO: recalculate light
+        // light.recalculate(fireEvent = false)
 
         for (section in sections) {
             section.blocks.occlusion.recalculate(true)
@@ -152,8 +154,8 @@ class Chunk(
 
         lock.unlock()
 
-        ChunkLocalBlockUpdate(position, this, executed).fire(session)
-        light.fireLightChange(this.sections, true)
+        ChunkLocalBlockUpdate(this, executed).fire(session)
+        light.fireNeighbourEvents()
     }
 
     fun getOrPut(sectionHeight: Int, calculateLight: Boolean = true, lock: Boolean = true): ChunkSection? {

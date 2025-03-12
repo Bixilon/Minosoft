@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.border
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.area.BorderArea
 import de.bixilon.minosoft.data.world.border.area.DynamicBorderArea
 import de.bixilon.minosoft.data.world.border.area.StaticBorderArea
@@ -83,6 +82,6 @@ class WorldBorder {
     }
 
     companion object {
-        const val MAX_RADIUS = (World.MAX_SIZE - ProtocolDefinition.SECTION_WIDTH_X).toDouble()
+        const val MAX_RADIUS = (BlockPosition.MAX_X - ProtocolDefinition.SECTION_WIDTH_X).toDouble()
     }
 }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light.section
 
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
+import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 interface AbstractSectionLight {
@@ -25,4 +26,6 @@ interface AbstractSectionLight {
     fun propagate()
 
     fun update(array: LightArray)
+
+    fun fireEvent(): AbstractWorldUpdate?
 }
