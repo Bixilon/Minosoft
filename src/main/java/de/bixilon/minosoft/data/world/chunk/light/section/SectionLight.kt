@@ -59,6 +59,8 @@ class SectionLight(
         if (level.block <= 1) return // can not decrease any further
         val next = level.decrease()
 
+        // TODO: sky (trace and heightmap), check if light propagates in a direction
+
         if (position.x > 0) trace(position.minusX(), next) else section.neighbours?.get(Directions.O_WEST)?.light?.trace(position.with(x = ProtocolDefinition.SECTION_MAX_X), next)
         if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(position.plusX(), next) else section.neighbours?.get(Directions.O_EAST)?.light?.trace(position.with(x = 0), next)
 
@@ -111,5 +113,7 @@ class SectionLight(
     }
 
 
-    override fun update(array: LightArray) = TODO("Save light from server")
+    override fun update(array: LightArray) {
+        System.arraycopy(array.array, 0, this.light.array, 0, array.array.size)
+    }
 }
