@@ -24,6 +24,4 @@ data class SingleBlockUpdate(
     override val chunk: Chunk,
     val state: BlockState?,
     val entity: BlockEntity?,
-) : AbstractWorldUpdate {
-    override val chunkPosition = position.chunkPosition
-}
+) : AbstractWorldUpdate

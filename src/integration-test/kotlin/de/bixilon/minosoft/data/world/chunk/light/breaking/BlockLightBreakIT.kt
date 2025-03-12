@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.chunk.light.LightTestUtil.assertLight
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.SectionLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -185,8 +185,8 @@ class BlockLightBreakIT {
         world[BlockPosition(8, 24, 8)] = TorchTest0.state
         val events: MutableSet<BlockPosition> = synchronizedSetOf()
         world.session.events.listen<WorldUpdateEvent> {
-            if (it.update !is ChunkLightUpdate) return@listen
-            events += BlockPosition(it.update.chunkPosition.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunkPosition.z)
+            if (it.update !is SectionLightUpdate) return@listen
+            events += BlockPosition(it.update.chunk.position.x, (it.update as SectionLightUpdate).section.height, it.update.chunk.position.z)
         }
         world[BlockPosition(8, 24, 8)] = null
 
