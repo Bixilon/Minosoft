@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.light.section.border
 
 import de.bixilon.kutil.array.ArrayUtil.getFirst
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
@@ -42,7 +43,7 @@ class BottomSectionLight(
 
         val next = current.decrease()
 
-        chunk.sections.getFirst()?.light?.trace(position.with(y = ProtocolDefinition.SECTION_MAX_Y), next)
+        chunk.sections.getFirst()?.light?.trace(position.with(y = ProtocolDefinition.SECTION_MAX_Y), next, Directions.UP)
         traceVertical(position, next)
     }
 
