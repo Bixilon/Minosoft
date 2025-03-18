@@ -171,7 +171,6 @@ when (os) {
 testing {
     suites {
         val test by getting(JvmTestSuite::class) {
-            testType.set(TestSuiteType.UNIT_TEST)
             useJUnitJupiter("5.9.2")
 
             dependencies {
@@ -210,7 +209,6 @@ testing {
 
 
         val integrationTest by registering(JvmTestSuite::class) {
-            testType.set(TestSuiteType.INTEGRATION_TEST)
             useTestNG("7.7.1")
 
             dependencies {
@@ -269,7 +267,6 @@ testing {
             }
         }
         val benchmark by registering(JvmTestSuite::class) {
-            testType.set(TestSuiteType.PERFORMANCE_TEST)
             useTestNG("7.7.1")
 
             dependencies {
