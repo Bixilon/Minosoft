@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section.border
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.AbstractSectionLight
@@ -20,6 +21,8 @@ import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_MAX_X
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_MAX_Z
 import java.util.*
 
 abstract class BorderSectionLight(
@@ -28,7 +31,7 @@ abstract class BorderSectionLight(
     protected var event = false
     protected val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
-    protected abstract fun Chunk.getBorderLight(): BorderSectionLight
+    abstract fun Chunk.getBorderLight(): BorderSectionLight
 
     protected inline operator fun get(index: Int) = LightLevel(this.light[index])
     protected inline operator fun set(index: Int, value: LightLevel) {
@@ -43,12 +46,58 @@ abstract class BorderSectionLight(
         event = true
     }
 
-    protected inline fun traceVertical(position: InSectionPosition, next: LightLevel) {
-        if (position.x > 0) trace(position.minusX(), next) else chunk.neighbours[Directions.WEST]?.getBorderLight()?.trace(position.with(x = ProtocolDefinition.SECTION_MAX_X), next)
-        if (position.x < ProtocolDefinition.SECTION_MAX_X) trace(position.plusX(), next) else chunk.neighbours[Directions.EAST]?.getBorderLight()?.trace(position.with(x = 0), next)
+    override fun traceFrom(position: InSectionPosition, direction: Directions) {
+        val current = LightLevel(light[position.xz])
+        if (current.block <= 1) return
 
-        if (position.z > 0) trace(position.minusZ(), next) else chunk.neighbours[Directions.NORTH]?.getBorderLight()?.trace(position.with(z = ProtocolDefinition.SECTION_MAX_Z), next)
-        if (position.z < ProtocolDefinition.SECTION_MAX_X) trace(position.plusZ(), next) else chunk.neighbours[Directions.SOUTH]?.getBorderLight()?.trace(position.with(z = 0), next)
+        val next = current.decrease()
+
+        when (direction) {
+            Directions.WEST -> traceWest(position, next)
+            Directions.EAST -> traceEast(position, next)
+            Directions.NORTH -> traceNorth(position, next)
+            Directions.SOUTH -> traceSouth(position, next)
+            else -> Broken("Not a vertical direction: $direction")
+        }
+    }
+
+    protected inline fun traceWest(position: InSectionPosition, next: LightLevel) {
+        if (position.x > 0) {
+            trace(position.minusX(), next)
+        } else {
+            chunk.neighbours[Directions.WEST]?.getBorderLight()?.trace(position.with(x = SECTION_MAX_X), next)
+        }
+    }
+
+    protected inline fun traceEast(position: InSectionPosition, next: LightLevel) {
+        if (position.x < SECTION_MAX_X) {
+            trace(position.plusX(), next)
+        } else {
+            chunk.neighbours[Directions.EAST]?.getBorderLight()?.trace(position.with(x = 0), next)
+        }
+    }
+
+    protected inline fun traceNorth(position: InSectionPosition, next: LightLevel) {
+        if (position.z > 0) {
+            trace(position.minusZ(), next)
+        } else {
+            chunk.neighbours[Directions.NORTH]?.getBorderLight()?.trace(position.with(z = SECTION_MAX_Z), next)
+        }
+    }
+
+    protected inline fun traceSouth(position: InSectionPosition, next: LightLevel) {
+        if (position.z < SECTION_MAX_X) {
+            trace(position.plusZ(), next)
+        } else {
+            chunk.neighbours[Directions.SOUTH]?.getBorderLight()?.trace(position.with(z = 0), next)
+        }
+    }
+
+    protected inline fun traceVertical(position: InSectionPosition, next: LightLevel) {
+        traceWest(position, next)
+        traceEast(position, next)
+        traceNorth(position, next)
+        traceSouth(position, next)
     }
 
     override fun fireEvent(): AbstractWorldUpdate? {
@@ -58,5 +107,14 @@ abstract class BorderSectionLight(
         return null
     }
 
-    override fun propagate() = Unit // TODO
+    protected fun propagateVertical() {
+        for (x in 0 until SECTION_MAX_X) {
+            chunk.neighbours[Directions.NORTH]?.light?.bottom?.traceFrom(InSectionPosition(x, 0, SECTION_MAX_Z), Directions.SOUTH)
+            chunk.neighbours[Directions.SOUTH]?.light?.bottom?.traceFrom(InSectionPosition(x, 0, 0), Directions.SOUTH)
+        }
+        for (z in 0 until SECTION_MAX_Z) {
+            chunk.neighbours[Directions.WEST]?.light?.bottom?.traceFrom(InSectionPosition(SECTION_MAX_X, 0, z), Directions.EAST)
+            chunk.neighbours[Directions.EAST]?.light?.bottom?.traceFrom(InSectionPosition(0, 0, z), Directions.WEST)
+        }
+    }
 }
