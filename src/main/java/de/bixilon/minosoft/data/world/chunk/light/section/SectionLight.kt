@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.light.section
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -52,64 +53,112 @@ class SectionLight(
         // TODO: Trace until next light increase (or level 0), set all those levels to 0 and then force trace all blocks in range (also from neighbours).
     }
 
+    private inline fun traceWest(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
+        if (!properties.propagatesLight(Directions.WEST)) return
+
+        val neighbour = if (position.x > 0) this else section.neighbours?.get(Directions.O_WEST)?.light
+        neighbour?.trace(if (position.x > 0) position.minusX() else position.with(x = SECTION_MAX_X), next, Directions.WEST)
+    }
+
+    private inline fun traceEast(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
+        if (!properties.propagatesLight(Directions.EAST)) return
+
+        val neighbour = if (position.x < SECTION_MAX_X) this else section.neighbours?.get(Directions.O_EAST)?.light
+        neighbour?.trace(if (position.x < SECTION_MAX_X) position.plusX() else position.with(x = 0), next, Directions.EAST)
+    }
+
+    private inline fun traceUp(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
+        if (!properties.propagatesLight(Directions.UP)) return
+
+        when {
+            position.y > 0 -> trace(position.minusY(), next, Directions.UP)
+            section.height > section.chunk.minSection -> section.neighbours?.get(Directions.O_DOWN)?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.UP)
+            else -> section.chunk.light.bottom.trace(position.with(y = SECTION_MAX_Y), next)
+        }
+    }
+
+    private inline fun traceDown(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
+        if (!properties.propagatesLight(Directions.DOWN)) return
+
+        when {
+            position.y < SECTION_MAX_Y -> trace(position.plusY(), next, Directions.DOWN)
+            section.height < section.chunk.maxSection -> section.neighbours?.get(Directions.O_UP)?.light?.trace(position.with(y = 0), next, Directions.DOWN)
+            else -> section.chunk.light.top.trace(position.with(y = 0), next)
+        }
+    }
+
+    private inline fun traceNorth(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
+        if (!properties.propagatesLight(Directions.NORTH)) return
+
+        val neighbour = if (position.z > 0) this else section.neighbours?.get(Directions.O_NORTH)?.light
+        neighbour?.trace(if (position.z > 0) position.minusZ() else position.with(z = SECTION_MAX_Z), next, Directions.NORTH)
+    }
+
+    private inline fun traceSouth(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
+        if (!properties.propagatesLight(Directions.SOUTH)) return
+
+        val neighbour = if (position.z < SECTION_MAX_Z) this else section.neighbours?.get(Directions.O_SOUTH)?.light
+        neighbour?.trace(if (position.z < SECTION_MAX_Z) position.plusZ() else position.with(z = 0), next, Directions.SOUTH)
+    }
+
+
+    override fun traceFrom(position: InSectionPosition, direction: Directions) {
+        val current = this[position]
+        if (current.block <= 1 && current.sky <= 1) return
+
+        val state = section.blocks[position]
+        val lightProperties = state?.block?.getLightProperties(state) ?: TransparentProperty
+
+        if (lightProperties.propagatesLight(direction.inverted)) {
+            return // light can not pass into from that side
+        }
+
+        if (!lightProperties.propagatesLight) return
+
+        val next = current.decrease()
+        when (direction) {
+            Directions.DOWN -> traceDown(position, next, lightProperties)
+            Directions.UP -> traceUp(position, next, lightProperties)
+
+            Directions.NORTH -> traceNorth(position, next, lightProperties)
+            Directions.SOUTH -> traceSouth(position, next, lightProperties)
+
+            Directions.WEST -> traceWest(position, next, lightProperties)
+            Directions.EAST -> traceEast(position, next, lightProperties)
+        }
+    }
+
     fun trace(position: InSectionPosition, level: LightLevel, direction: Directions?) {
-        val light = this[position]
-        if (light.block >= level.block) return // light is already same or higher, no need to increase
+        var level = level
+        val current = this[position]
+        if (current.block >= level.block && current.sky >= level.sky) return // light is already same or higher, no need to increase
         val state = section.blocks[position]
         val lightProperties = state?.block?.getLightProperties(state) ?: TransparentProperty
 
         if (direction != null && lightProperties.propagatesLight(direction.inverted)) {
-            // light can not pass into from that side
-            return
+            return // light can not pass into from that side
+        }
+
+        val height = section.chunk.light.heightmap[position.xz]
+        if (position.y + section.height * SECTION_HEIGHT_Y >= height) { // TODO: > or >=
+            level = level.with(sky = 0) // level is set with heightmap, no need to trace anything
         }
 
         this[position] = level
+
         if (!lightProperties.propagatesLight) return
-
-
-        if (level.block <= 1) return // can not decrease any further
+        if (level.block <= 1 && level.sky <= 1) return // can not decrease any further
 
         val next = level.decrease()
 
-        // TODO: sky (trace and heightmap)
+        traceWest(position, next, lightProperties)
+        traceEast(position, next, lightProperties)
 
-        if (lightProperties.propagatesLight(Directions.WEST)) {
-            val neighbour = if (position.x > 0) this else section.neighbours?.get(Directions.O_WEST)?.light
-            neighbour?.trace(if (position.x > 0) position.minusX() else position.with(x = SECTION_MAX_X), next, Directions.WEST)
-        }
-        if (lightProperties.propagatesLight(Directions.EAST)) {
-            val neighbour = if (position.x < SECTION_MAX_X) this else section.neighbours?.get(Directions.O_EAST)?.light
-            neighbour?.trace(if (position.x < SECTION_MAX_X) position.plusX() else position.with(x = 0), next, Directions.EAST)
-        }
+        traceUp(position, next, lightProperties)
+        traceDown(position, next, lightProperties)
 
-
-        if (lightProperties.propagatesLight(Directions.UP)) {
-            if (position.y > 0) {
-                trace(position.minusY(), next, Directions.UP)
-            } else if (section.height > section.chunk.minSection) {
-                section.neighbours?.get(Directions.O_DOWN)?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.UP)
-            } else {
-                section.chunk.light.bottom.trace(position.with(y = SECTION_MAX_Y), next)
-            }
-        }
-        if (lightProperties.propagatesLight(Directions.DOWN)) {
-            if (position.y < SECTION_MAX_Y) {
-                trace(position.plusY(), next, Directions.DOWN)
-            } else if (section.height < section.chunk.maxSection) {
-                section.neighbours?.get(Directions.O_UP)?.light?.trace(position.with(y = 0), next, Directions.DOWN)
-            } else {
-                section.chunk.light.top.trace(position.with(y = 0), next)
-            }
-        }
-
-        if (lightProperties.propagatesLight(Directions.NORTH)) {
-            val neighbour = if (position.z > 0) this else section.neighbours?.get(Directions.O_NORTH)?.light
-            neighbour?.trace(if (position.z > 0) position.minusZ() else position.with(z = SECTION_MAX_Z), next, Directions.NORTH)
-        }
-        if (lightProperties.propagatesLight(Directions.SOUTH)) {
-            val neighbour = if (position.z < SECTION_MAX_Z) this else section.neighbours?.get(Directions.O_SOUTH)?.light
-            neighbour?.trace(if (position.z < SECTION_MAX_Z) position.plusZ() else position.with(z = 0), next, Directions.SOUTH)
-        }
+        traceNorth(position, next, lightProperties)
+        traceSouth(position, next, lightProperties)
     }
 
 
@@ -137,7 +186,52 @@ class SectionLight(
         }
     }
 
-    override fun propagate() = Unit // TODO
+    protected fun getNeighbour(direction: Directions): SectionLight? {
+        return section.chunk.neighbours[direction]?.sections?.get(section.height)?.light
+    }
+
+    private fun propagateVertical() {
+        val north = getNeighbour(Directions.NORTH)
+        val south = getNeighbour(Directions.SOUTH)
+        val west = getNeighbour(Directions.WEST)
+        val east = getNeighbour(Directions.EAST)
+
+        if (north == null && south == null && west == null && east == null) return
+
+        for (a in 0 until SECTION_WIDTH_X) {
+            for (y in 0 until SECTION_WIDTH_X) {
+                north?.traceFrom(InSectionPosition(a, y, SECTION_MAX_Z), Directions.SOUTH)
+                south?.traceFrom(InSectionPosition(a, y, 0), Directions.NORTH)
+
+                west?.traceFrom(InSectionPosition(SECTION_MAX_X, y, a), Directions.EAST)
+                east?.traceFrom(InSectionPosition(0, y, a), Directions.WEST)
+            }
+        }
+    }
+
+    private fun propagateHorizontal() {
+        val below = if (section.height == section.chunk.minSection) section.chunk.light.bottom else section.chunk[section.height - 1]?.light
+        val above = if (section.height == section.chunk.maxSection) section.chunk.light.top else section.chunk[section.height + 1]?.light
+
+        // TODO: merge both?
+        if (below != null) {
+            for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+                val position = InSectionPosition(xz).with(y = SECTION_MAX_Y)
+                below.traceFrom(position, Directions.UP)
+            }
+        }
+        if (above != null) {
+            for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+                val position = InSectionPosition(xz).with(y = 0)
+                above.traceFrom(position, Directions.DOWN)
+            }
+        }
+    }
+
+    override fun propagate() {
+        propagateVertical()
+        propagateHorizontal()
+    }
 
     override fun get(position: InSectionPosition) = light[position]
 

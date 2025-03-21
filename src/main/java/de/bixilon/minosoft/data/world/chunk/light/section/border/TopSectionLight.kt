@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 class TopSectionLight(
     chunk: Chunk,
@@ -39,13 +39,24 @@ class TopSectionLight(
         light[position.xz] = level.raw
         if (current.block <= 1) return // can not increase further
 
-        val next = LightLevel(block = current.block, sky = 0) // remove sky light, its always max
+        val next = LightLevel(block = current.block - 1, sky = 0) // remove sky light, its always max
 
-        chunk.sections.getLast()?.light?.trace(position.with(y = ProtocolDefinition.SECTION_MAX_Y), next, Directions.DOWN)
+        chunk.sections.getLast()?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.DOWN)
         traceVertical(position, next)
     }
 
     override fun update(array: LightArray) {
-        System.arraycopy(array.array, InSectionPosition(0, 0, 0).index, this.light, 0, ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+        System.arraycopy(array.array, InSectionPosition(0, 0, 0).index, this.light, 0, SECTION_WIDTH_X * SECTION_WIDTH_Z)
+    }
+
+
+    override fun propagate() {
+        super.propagateVertical()
+
+        val section = chunk.sections.last()?.light ?: return
+        for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+            val position = InSectionPosition(xz).with(y = SECTION_MAX_Y)
+            section.traceFrom(position, Directions.UP)
+        }
     }
 }

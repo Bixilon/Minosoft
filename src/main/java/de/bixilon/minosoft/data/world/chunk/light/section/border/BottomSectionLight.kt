@@ -19,13 +19,14 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 class BottomSectionLight(
     chunk: Chunk,
 ) : BorderSectionLight(chunk) {
 
     override fun get(position: InSectionPosition): LightLevel {
-        if (position.y != ProtocolDefinition.SECTION_MAX_Y) return LightLevel.EMPTY
+        if (position.y != SECTION_MAX_Y) return LightLevel.EMPTY
         return LightLevel(this.light[position.xz])
     }
 
@@ -33,20 +34,36 @@ class BottomSectionLight(
 
 
     override fun trace(position: InSectionPosition, level: LightLevel) {
+        var level = level
         val current = LightLevel(light[position.xz])
-        if (current.block >= level.block) return
+        if (current.block >= level.block && current.sky >= level.sky) return
 
-        // TODO: sky
+
+        val height = chunk.light.heightmap[position.xz]
+        if (position.y + chunk.minSection * SECTION_HEIGHT_Y >= height) { // TODO: > or >=
+            level = level.with(sky = 0) // level is set with heightmap, no need to trace anything
+        }
+
         light[position.xz] = level.raw
-        if (current.block <= 1) return // can not increase further
+        if (level.block <= 1 && level.sky <= 1) return // can not increase further
 
         val next = current.decrease()
 
-        chunk.sections.getFirst()?.light?.trace(position.with(y = ProtocolDefinition.SECTION_MAX_Y), next, Directions.UP)
+        chunk.sections.getFirst()?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.UP)
         traceVertical(position, next)
     }
 
     override fun update(array: LightArray) {
-        System.arraycopy(array.array, InSectionPosition(0, ProtocolDefinition.SECTION_MAX_Y, 0).index, this.light, 0, ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+        System.arraycopy(array.array, InSectionPosition(0, SECTION_MAX_Y, 0).index, this.light, 0, SECTION_WIDTH_X * SECTION_WIDTH_Z)
+    }
+
+    override fun propagate() {
+        super.propagateVertical()
+
+        val section = chunk.sections.first()?.light ?: return
+        for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+            val position = InSectionPosition(xz).with(y = 0)
+            section.traceFrom(position, Directions.DOWN)
+        }
     }
 }
