@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
@@ -21,6 +22,8 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 interface AbstractSectionLight {
 
     operator fun get(position: InSectionPosition): LightLevel
+
+    fun traceFrom(position: InSectionPosition, direction: Directions)
 
     fun clear()
     fun propagate()
