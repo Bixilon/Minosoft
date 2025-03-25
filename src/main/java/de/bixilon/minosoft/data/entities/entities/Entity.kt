@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
@@ -45,6 +46,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 
 abstract class Entity(
     val session: PlaySession,
@@ -53,6 +55,7 @@ abstract class Entity(
     private var initialPosition: Vec3d,
     private var initialRotation: EntityRotation,
 ) : Initializable, EntityAttachable {
+    private val lock = Lock.lock()
     private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
     protected val random = Random()
     var _id: Int? = null
@@ -197,24 +200,31 @@ abstract class Entity(
 
     fun forceTick(time: Long = millis()) {
         try {
+            lock.lock()
             preTick()
             tick()
             postTick()
         } catch (error: Throwable) {
             error.printStackTrace()
+        } finally {
+            lastTickTime = time
+            lock.unlock()
         }
-        lastTickTime = time
     }
 
-    @Synchronized
     fun tryTick(): Boolean {
         val time = millis()
 
-        if (time - lastTickTime >= ProtocolDefinition.TICK_TIME) {
+        if (time - lastTickTime < ProtocolDefinition.TICK_TIME) return false
+        if (!lock.lock((ProtocolDefinition.TICK_TIME / 2).milliseconds)) return false
+
+        try {
+            if (time - lastTickTime < ProtocolDefinition.TICK_TIME) return false
             forceTick(time)
             return true
+        } finally {
+            lock.unlock()
         }
-        return false
     }
 
     open fun draw(time: Long) {
