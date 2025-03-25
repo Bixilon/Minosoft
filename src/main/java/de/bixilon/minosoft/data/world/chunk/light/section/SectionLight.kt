@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
@@ -53,17 +54,29 @@ class SectionLight(
         // TODO: Trace until next light increase (or level 0), set all those levels to 0 and then force trace all blocks in range (also from neighbours).
     }
 
+    private inline fun getOrPut(direction: Directions): SectionLight? {
+        var section = this.section.neighbours?.get(direction.ordinal)
+
+        if (section == null) {
+            val chunk = if (direction.axis == Axes.Y) this.section.chunk else this.section.chunk.neighbours[direction]
+            section = chunk?.getOrPut(this.section.height + direction.vector.y)
+        }
+
+        return section?.light
+
+    }
+
     private inline fun traceWest(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
         if (!properties.propagatesLight(Directions.WEST)) return
 
-        val neighbour = if (position.x > 0) this else section.neighbours?.get(Directions.O_WEST)?.light
+        val neighbour = if (position.x > 0) this else getOrPut(Directions.WEST)
         neighbour?.trace(if (position.x > 0) position.minusX() else position.with(x = SECTION_MAX_X), next, Directions.WEST)
     }
 
     private inline fun traceEast(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
         if (!properties.propagatesLight(Directions.EAST)) return
 
-        val neighbour = if (position.x < SECTION_MAX_X) this else section.neighbours?.get(Directions.O_EAST)?.light
+        val neighbour = if (position.x < SECTION_MAX_X) this else getOrPut(Directions.EAST)
         neighbour?.trace(if (position.x < SECTION_MAX_X) position.plusX() else position.with(x = 0), next, Directions.EAST)
     }
 
@@ -72,7 +85,7 @@ class SectionLight(
 
         when {
             position.y > 0 -> trace(position.minusY(), next, Directions.UP)
-            section.height > section.chunk.minSection -> section.neighbours?.get(Directions.O_DOWN)?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.UP)
+            section.height > section.chunk.minSection -> getOrPut(Directions.DOWN)?.trace(position.with(y = SECTION_MAX_Y), next, Directions.UP)
             else -> section.chunk.light.bottom.trace(position.with(y = SECTION_MAX_Y), next)
         }
     }
@@ -82,7 +95,7 @@ class SectionLight(
 
         when {
             position.y < SECTION_MAX_Y -> trace(position.plusY(), next, Directions.DOWN)
-            section.height < section.chunk.maxSection -> section.neighbours?.get(Directions.O_UP)?.light?.trace(position.with(y = 0), next, Directions.DOWN)
+            section.height < section.chunk.maxSection -> getOrPut(Directions.UP)?.trace(position.with(y = 0), next, Directions.DOWN)
             else -> section.chunk.light.top.trace(position.with(y = 0), next)
         }
     }
@@ -90,14 +103,14 @@ class SectionLight(
     private inline fun traceNorth(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
         if (!properties.propagatesLight(Directions.NORTH)) return
 
-        val neighbour = if (position.z > 0) this else section.neighbours?.get(Directions.O_NORTH)?.light
+        val neighbour = if (position.z > 0) this else getOrPut(Directions.NORTH)
         neighbour?.trace(if (position.z > 0) position.minusZ() else position.with(z = SECTION_MAX_Z), next, Directions.NORTH)
     }
 
     private inline fun traceSouth(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
         if (!properties.propagatesLight(Directions.SOUTH)) return
 
-        val neighbour = if (position.z < SECTION_MAX_Z) this else section.neighbours?.get(Directions.O_SOUTH)?.light
+        val neighbour = if (position.z < SECTION_MAX_Z) this else getOrPut(Directions.SOUTH)
         neighbour?.trace(if (position.z < SECTION_MAX_Z) position.plusZ() else position.with(z = 0), next, Directions.SOUTH)
     }
 
@@ -135,7 +148,7 @@ class SectionLight(
         val state = section.blocks[position]
         val lightProperties = state?.block?.getLightProperties(state) ?: TransparentProperty
 
-        if (direction != null && lightProperties.propagatesLight(direction.inverted)) {
+        if (direction != null && !lightProperties.propagatesLight(direction.inverted)) {
             return // light can not pass into from that side
         }
 
@@ -184,6 +197,7 @@ class SectionLight(
                 }
             }
         }
+        // TODO: Start skylight tracing from heightmap start max per xz
     }
 
     protected fun getNeighbour(direction: Directions): SectionLight? {
