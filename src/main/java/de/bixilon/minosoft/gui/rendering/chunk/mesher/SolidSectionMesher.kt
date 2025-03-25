@@ -112,10 +112,10 @@ class SolidSectionMesher(
 
                     val maxHeight = chunk.light.heightmap[inSection.xz]
                     light[SELF_LIGHT_INDEX] = section.light[inSection].raw
-                    if (position.y > maxHeight) {
+                    if (position.y + 1 >= maxHeight) {
                         light[O_UP] = LightLevel(light[O_UP]).with(sky = MAX_LEVEL).raw
                     }
-                    if (position.y >= maxHeight) {
+                    if (position.y + 0 >= maxHeight) {
                         light[SELF_LIGHT_INDEX] = LightLevel(light[SELF_LIGHT_INDEX]).with(sky = MAX_LEVEL).raw
                     }
                     if (position.y - 1 >= maxHeight) {
