@@ -111,10 +111,10 @@ class SolidSectionMesher(
 
                     val maxHeight = chunk.light.heightmap[inSection.xz]
                     light[SELF_LIGHT_INDEX] = section.light[inSection].raw
-                    if (position.y > maxHeight) {
+                    if (position.y + 1 >= maxHeight) {
                         light[O_UP] = LightLevel(light[O_UP]).with(sky = MAX_LEVEL).raw
                     }
-                    if (position.y >= maxHeight) {
+                    if (position.y + 0 >= maxHeight) {
                         light[SELF_LIGHT_INDEX] = LightLevel(light[SELF_LIGHT_INDEX]).with(sky = MAX_LEVEL).raw
                     }
                     if (position.y - 1 >= maxHeight) {
@@ -211,6 +211,7 @@ class SolidSectionMesher(
     private inline fun setNeighbour(blocks: Array<BlockState?>, position: InChunkPosition, light: ByteArray, section: ChunkSection?, chunk: Chunk?, direction: Int) {
         val inSection = position.inSectionPosition
         blocks[direction] = section?.blocks?.let { it[inSection] }
+
         var level = section?.light?.get(inSection)?.raw ?: 0x00
         if (chunk != null && position.y >= chunk.light.heightmap[position.xz]) {
             level = LightLevel(level).with(sky = MAX_LEVEL).raw
