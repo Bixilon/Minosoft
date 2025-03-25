@@ -45,17 +45,11 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
     }
 
     private fun trace(position: InChunkPosition, notify: Boolean) {
-        val sections = chunk.sections
-
         var y = Int.MIN_VALUE
         val index = position.xz
 
-        sectionLoop@ for (sectionIndex in (position.y.sectionHeight - chunk.minSection) downTo 0) {
-            if (sectionIndex >= sections.size) {
-                // starting from above world
-                continue
-            }
-            val section = sections[sectionIndex] ?: continue
+        sectionLoop@ for (sectionHeight in position.y.sectionHeight downTo chunk.minSection) {
+            val section = chunk[sectionHeight] ?: continue
             if (section.blocks.isEmpty) continue
 
             val min = section.blocks.minPosition
@@ -65,11 +59,11 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
 
             for (sectionY in max.y downTo min.y) {
-                val state = section.blocks[InSectionPosition((sectionY shl 8) or index)] ?: continue
+                val state = section.blocks[InSectionPosition(index).with(y = sectionY)] ?: continue
                 val pass = passes(state)
                 if (pass == HeightmapPass.PASSES) continue
 
-                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
+                y = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
                 if (pass == HeightmapPass.ABOVE) y++
 
                 break@sectionLoop
