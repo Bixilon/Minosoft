@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section.border
 
-import de.bixilon.kutil.array.ArrayUtil.getLast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
@@ -41,7 +40,7 @@ class TopSectionLight(
 
         val next = LightLevel(block = current.block - 1, sky = 0) // remove sky light, its always max
 
-        chunk.sections.getLast()?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.DOWN)
+        chunk.getOrPut(chunk.maxSection)?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.DOWN)
         traceVertical(position, next)
     }
 

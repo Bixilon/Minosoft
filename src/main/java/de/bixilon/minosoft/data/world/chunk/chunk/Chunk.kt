@@ -202,7 +202,7 @@ class Chunk(
     fun tick(session: PlaySession, random: Random) {
         if (!neighbours.complete) return
         lock.acquire()
-        for ((index, section) in sections.withIndex()) {
+        for (section in sections) {
             section?.tick(session, random)
         }
         lock.release()
