@@ -39,14 +39,14 @@ class BottomSectionLight(
 
 
         val height = chunk.light.heightmap[position.xz]
-        if (position.y + chunk.minSection * SECTION_HEIGHT_Y >= height) { // TODO: > or >=
+        if ((chunk.minSection - 1) * SECTION_HEIGHT_Y + SECTION_MAX_Y >= height) {
             level = level.with(sky = 0) // level is set with heightmap, no need to trace anything
         }
 
         light[position.xz] = level.raw
-        if (level.block <= 1 && level.sky <= 1) return // can not increase further
+        if (level.block <= 1 && level.sky <= 1) return // can not decrease any further
 
-        val next = current.decrease()
+        val next = level.decrease()
 
         chunk.getOrPut(chunk.minSection)?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.UP)
         traceVertical(position, next)
@@ -59,7 +59,7 @@ class BottomSectionLight(
     override fun propagate() {
         super.propagateVertical()
 
-        val section = chunk.sections.first()?.light ?: return
+        val section = chunk[chunk.minSection]?.light ?: return
         for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
             val position = InSectionPosition(xz).with(y = 0)
             section.traceFrom(position, Directions.DOWN)

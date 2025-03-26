@@ -153,7 +153,7 @@ class SectionLight(
         }
 
         val height = section.chunk.light.heightmap[position.xz]
-        if (position.y + section.height * SECTION_HEIGHT_Y >= height) { // TODO: > or >=
+        if (section.height * SECTION_HEIGHT_Y + position.y >= height) {
             level = level.with(sky = 0) // level is set with heightmap, no need to trace anything
         }
 
@@ -180,7 +180,7 @@ class SectionLight(
         event = true
     }
 
-    fun calculate() {
+    private fun calculateBlocks() {
         if (section.blocks.isEmpty) return
         val min = section.blocks.minPosition
         val max = section.blocks.maxPosition
@@ -197,11 +197,15 @@ class SectionLight(
                 }
             }
         }
-        // TODO: Start skylight tracing from heightmap start max per xz
+    }
+
+    fun calculate() {
+        calculateBlocks()
+        // TODO: Start skylight tracing from (top of the world (max neighbour heightmap) to heightmap start) per xz
     }
 
     protected fun getNeighbour(direction: Directions): SectionLight? {
-        return section.chunk.neighbours[direction]?.sections?.get(section.height)?.light
+        return section.chunk.neighbours[direction]?.get(section.height)?.light
     }
 
     private fun propagateVertical() {

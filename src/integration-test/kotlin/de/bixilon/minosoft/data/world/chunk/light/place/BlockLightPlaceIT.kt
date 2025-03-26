@@ -204,9 +204,8 @@ class BlockLightPlaceIT {
         chunk.assertLight(9, 256, 8, 0xFC)
     }
 
-    @Test(enabled = false) // TODO: update heightmap of neighbours on change
     fun bottomHeightmap() {
-        val world = SessionTestUtil.createSession(4).world
+        val world = SessionTestUtil.createSession(4, light = true).world
         world.fill(BlockPosition(-25, 0, -25), BlockPosition(40, 1, 40), IT.BLOCK_1)
 
         world.assertLight(8, -1, 8, 0x00)
@@ -218,9 +217,8 @@ class BlockLightPlaceIT {
         world.assertLight(+8, -1, -4, 0x00)
     }
 
-    @Test(enabled = false) // TODO: update heightmap of neighbours on change
     fun bottomPropagation() {
-        val world = SessionTestUtil.createSession(4).world
+        val world = SessionTestUtil.createSession(4, light = true).world
         world.fill(BlockPosition(-25, 0, -25), BlockPosition(40, 1, 40), IT.BLOCK_1)
         world[BlockPosition(8, 0, 8)] = TorchTest0.state
 
@@ -228,7 +226,7 @@ class BlockLightPlaceIT {
         world.assertLight(9, -1, 8, 0x0C)
 
         world.assertLight(+20, -1, +8, 0x01)
-        world.assertLight(+8, -1, +8, 0x01)
+        world.assertLight(+8, -1, +20, 0x01)
         world.assertLight(-4, -1, +8, 0x01)
         world.assertLight(+8, -1, -4, 0x01)
     }

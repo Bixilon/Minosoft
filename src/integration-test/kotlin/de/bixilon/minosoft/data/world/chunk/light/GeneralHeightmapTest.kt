@@ -43,5 +43,4 @@ class GeneralHeightmapTest {
         chunk[InChunkPosition(2, 255, 3)] = GlassTest0.state
         assertEquals(chunk.light.heightmap[2, 3], Int.MIN_VALUE)
     }
-
 }
