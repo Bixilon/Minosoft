@@ -24,10 +24,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
@@ -90,28 +92,29 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             apply()
         }
 
-    open val maxSize: Vec2
-        get() {
-            var maxSize = Vec2(prefMaxSize)
-
-            var parentMaxSize = parent?.maxSize
-            if (parentMaxSize == null && !ignoreDisplaySize) {
-                parentMaxSize = guiRenderer.scaledSize
-            }
-
-            if (maxSize.x < 0) {
-                maxSize.x = parentMaxSize?.x ?: guiRenderer.scaledSize.x
-            }
-            if (maxSize.y < 0) {
-                maxSize.y = parentMaxSize?.y ?: guiRenderer.scaledSize.y
-            }
-
-            parentMaxSize?.let {
-                maxSize = maxSize.min(it)
-            }
-
-            return Vec2.EMPTY.max(maxSize - margin.spaceSize)
+    protected open fun applyMaxSize(max: Vec2) {
+        if (parent == null && !ignoreDisplaySize) {
+            max.x = guiRenderer.scaledSize.x
+            max.y = guiRenderer.scaledSize.y
         }
+
+        val pref = prefMaxSize
+        if (pref.x > 0 && pref.x < max.x) max.x = pref.x
+        if (pref.y > 0 && pref.y < max.y) max.y = pref.y
+
+        if (max.x < 0 || (pref.x < 0 && max.x > guiRenderer.scaledSize.x)) {
+            max.x = guiRenderer.scaledSize.x
+        }
+        if (max.y < 0 || (pref.y < 0 && max.y > guiRenderer.scaledSize.y)) {
+            max.y = guiRenderer.scaledSize.y
+        }
+        parent?.applyMaxSize(max)
+        max.x = maxOf(0.0f, max.x - margin.horizontal)
+        max.y = maxOf(0.0f, max.y - margin.vertical)
+    }
+
+    val maxSize: Vec2
+        get() = Vec2.MAX.apply { applyMaxSize(this) }
 
     protected open var _size: Vec2 = Vec2.EMPTY
     open var size: Vec2

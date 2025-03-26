@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -72,9 +72,11 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
         if (bold) {
             // render char another time but offset in x direction
             val boldOffset = BOLD_OFFSET * scale
+            startPosition.x += boldOffset
+            endPosition.x += boldOffset
             consumer.addChar(
-                start = startPosition + Vec2(boldOffset, 0.0f),
-                end = endPosition + Vec2(boldOffset, 0.0f),
+                start = startPosition,
+                end = endPosition,
                 texture, uvStart, uvEnd, italic, color, options)
         }
     }

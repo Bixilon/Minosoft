@@ -85,7 +85,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 
-        this.prefMaxSize = Vec2(-1, Int.MAX_VALUE)
+        this.prefMaxSize = Vec2(-1, Float.MAX_VALUE)
         this.ignoreDisplaySize = true
     }
 
@@ -266,7 +266,6 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
         private val chunk = Reference<Chunk?>(null)
         private var lastChunk = Reference<Chunk?>(null)
-        private val world = guiRenderer.context.session.world
         private val entity = guiRenderer.context.session.player
 
         // TODO: Cleanup this class
