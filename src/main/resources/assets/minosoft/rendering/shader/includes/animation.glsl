@@ -36,23 +36,23 @@ layout(std140) uniform uSpriteBuffer
 #if defined SHADER_TYPE_VERTEX
 uint animationArray1; float animationLayer1;
 uint animationArray2; float animationLayer2;
-float animationInterpolation;
+lowp float animationInterpolation;
 #ifndef HAS_GEOMETRY_SHADER
 flat out uint finAnimationArray1; out float finAnimationLayer1;
 flat out uint finAnimationArray2; out float finAnimationLayer2;
-out vec2 finAnimationUV;
-out float finAnimationInterpolation;
+out mediump vec2 finAnimationUV;
+out lowp float finAnimationInterpolation;
 #endif
 #elif defined SHADER_TYPE_GEOMETRY
 flat out uint finAnimationArray1; out float finAnimationLayer1;
 flat out uint finAnimationArray2; out float finAnimationLayer2;
-out vec2 finAnimationUV;
-out float finAnimationInterpolation;
+out mediump vec2 finAnimationUV;
+out lowp float finAnimationInterpolation;
 #elif defined SHADER_TYPE_FRAGMENT
 flat in uint finAnimationArray1; in float finAnimationLayer1;
 flat in uint finAnimationArray2; in float finAnimationLayer2;
-in vec2 finAnimationUV;
-in float finAnimationInterpolation;
+in mediump vec2 finAnimationUV;
+in lowp float finAnimationInterpolation;
 #endif
 
 

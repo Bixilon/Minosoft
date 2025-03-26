@@ -15,7 +15,7 @@
 
 #define DISTANCE_MULTIPLIER 0.03f
 
-out vec4 foutColor;
+out lowp vec4 foutColor;
 
 uniform vec3 uCloudsColor;
 

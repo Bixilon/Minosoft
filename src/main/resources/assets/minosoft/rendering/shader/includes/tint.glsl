@@ -15,11 +15,11 @@
 #define INCLUDE_MINOSOFT_TINT
 
 #ifdef SHADER_TYPE_VERTEX
-out vec4 finTintColor;
+out lowp vec4 finTintColor;
 #endif
 
 #ifdef SHADER_TYPE_FRAGMENT
-in vec4 finTintColor;
+in lowp vec4 finTintColor;
 
 
 void applyTint() {

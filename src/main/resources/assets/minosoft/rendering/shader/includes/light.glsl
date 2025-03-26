@@ -17,6 +17,6 @@ layout(std140) uniform uLightMapBuffer
 };
 
 
-vec4 getLight(uint light) {
+lowp vec4 getLight(uint light) {
     return uLightMap[light];
 }

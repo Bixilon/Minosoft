@@ -15,7 +15,7 @@
 
 in vec2 finUV;
 
-out vec4 foutColor;
+out lowp vec4 foutColor;
 
 uniform sampler2D uTexture;
 
