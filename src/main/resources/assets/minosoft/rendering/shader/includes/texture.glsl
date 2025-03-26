@@ -22,7 +22,7 @@ uniform sampler2DArray uTextures[10];
 // ToDo: Those methods are just stupid and workaround an opengl crash with mesa drivers
 
 
-vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {
+lowp vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {
     float lod = float(mipmapLevel);
     #ifdef UNIFORM_ARRAY_AS_ARRAY
     return textureLod(uTextures[textureId], uv, lod);
@@ -43,11 +43,11 @@ vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {
     #endif
 }
 
-vec4 getTexture(uint textureId, vec3 uv, int mipmapLevel) {
+lowp vec4 getTexture(uint textureId, vec3 uv, int mipmapLevel) {
     return getTexture(textureId, uv, uint(mipmapLevel));
 }
 
-vec4 getTexture(uint textureId, vec3 uv) {
+lowp vec4 getTexture(uint textureId, vec3 uv) {
     #ifdef FIXED_MIPMAP_LEVEL
     return getTexture(textureId, uv, FIXED_MIPMAP_LEVEL);
     #else

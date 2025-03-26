@@ -16,7 +16,7 @@
 precision highp float;
 
 
-out vec4 foutColor;
+out lowp vec4 foutColor;
 
 in vec3 finFragmentPosition;
 

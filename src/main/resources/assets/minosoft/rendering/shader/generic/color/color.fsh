@@ -16,7 +16,7 @@
 in vec4 finTintColor;
 
 
-out vec4 foutColor;
+out lowp vec4 foutColor;
 
 
 void main() {

@@ -13,7 +13,7 @@
 
 #version 330 core
 
-out vec4 foutColor;
+out lowp vec4 foutColor;
 
 uniform float uIntensity;
 
