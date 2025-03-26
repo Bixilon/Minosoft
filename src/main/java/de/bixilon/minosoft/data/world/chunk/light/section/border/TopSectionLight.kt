@@ -36,9 +36,9 @@ class TopSectionLight(
         if (current.block >= level.block) return
 
         light[position.xz] = level.raw
-        if (current.block <= 1) return // can not increase further
+        if (level.block <= 1) return // can not decrease any further
 
-        val next = LightLevel(block = current.block - 1, sky = 0) // remove sky light, its always max
+        val next = LightLevel(block = level.block - 1, sky = 0) // remove sky light, its always max
 
         chunk.getOrPut(chunk.maxSection)?.light?.trace(position.with(y = SECTION_MAX_Y), next, Directions.DOWN)
         traceVertical(position, next)
@@ -48,11 +48,10 @@ class TopSectionLight(
         System.arraycopy(array.array, InSectionPosition(0, 0, 0).index, this.light, 0, SECTION_WIDTH_X * SECTION_WIDTH_Z)
     }
 
-
     override fun propagate() {
         super.propagateVertical()
 
-        val section = chunk.sections.last()?.light ?: return
+        val section = chunk[chunk.maxSection]?.light ?: return
         for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
             val position = InSectionPosition(xz).with(y = SECTION_MAX_Y)
             section.traceFrom(position, Directions.UP)
