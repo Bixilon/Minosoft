@@ -169,6 +169,11 @@ object VecUtil {
             z = horizontal(positionHash shr 8)).clamp(-maxModelOffset, maxModelOffset)
     }
 
+    fun Vec3.clampAssign(min: Float, max: Float) {
+        this.x = x.clamp(min, max)
+        this.y = y.clamp(min, max)
+        this.z = z.clamp(min, max)
+    }
     fun Vec3.clamp(min: Float, max: Float): Vec3 {
         return Vec3(
             x = x.clamp(min, max),

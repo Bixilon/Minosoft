@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
@@ -24,7 +23,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 class ParticleTicker(val renderer: ParticleRenderer) {
     private val particles = renderer.particles
     private val context = renderer.context
-    private var task: RepeatedTask? = null
 
 
     private fun canTick(): Boolean {
@@ -69,8 +67,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
             if (collect) {
                 particle.addVertex(renderer.mesh, renderer.translucentMesh, time)
             }
-            if (index % 1000 == 0) {
-                // check periodically if time is exceeded
+            if (index % 1000 == 0) { // don't spam the os with time calls
                 time = millis()
                 if (time - start > MAX_TICK_TIME) {
                     break

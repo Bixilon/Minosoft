@@ -101,6 +101,8 @@ class ParticleRenderer(
         profile::maxAmount.observe(this, true) { maxAmount = minOf(it, MAXIMUM_AMOUNT) }
         profile::enabled.observe(this, true) { enabled = it }
 
+        // TODO: unload particles when renderer is paused
+
         session.events.listen<CameraMatrixChangeEvent> { matrixUpdate = true }
 
         mesh.load()

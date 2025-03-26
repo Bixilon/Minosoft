@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.clampAssign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -91,9 +91,10 @@ class NormalLightmapUpdater(
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
+        var color = Vec3()
         for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-                var color = combine(skyColors[sky], blockColors[block])
+                combine(skyColors[sky], blockColors[block], color)
                 color = tweak(color, gamma, dimension.effects.brighten, nightVision)
                 buffer[sky, block] = color
             }
@@ -165,10 +166,10 @@ class NormalLightmapUpdater(
     }
 
 
-    private fun combine(sky: Vec3, block: Vec3): Vec3 {
-        val color = sky + block
+    private fun combine(sky: Vec3, block: Vec3, output: Vec3) {
+        Vec3.plus(output, sky, block.x, block.y, block.z)
 
-        return color.clamp()
+        output.clampAssign()
     }
 
     private fun tweak(
@@ -200,7 +201,7 @@ class NormalLightmapUpdater(
     }
 
     private fun applyBrighten(color: Vec3, brighten: Vec3): Vec3 {
-        return interpolateLinear(0.25f, color, brighten).clamp()
+        return interpolateLinear(0.25f, color, brighten).apply { clampAssign() }
     }
 
     private fun applyGamma(color: Vec3, gamma: Float): Vec3 {
@@ -225,8 +226,8 @@ class NormalLightmapUpdater(
         return this * (1.0f - value) + value
     }
 
-    private fun Vec3.clamp(): Vec3 {
-        return clamp(0.0f, 1.0f)
+    private fun Vec3.clampAssign() {
+        this.clampAssign(0.0f, 1.0f)
     }
 
     private companion object {
