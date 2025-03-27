@@ -29,6 +29,9 @@ import kotlin.math.abs
 
 object Vec3dUtil {
     const val MARGIN = 0.003
+    private val empty = Vec3d()
+
+    val Vec3d.Companion.EMPTY_INSTANCE get() = empty
 
     val Vec3d.Companion.MIN: Vec3d
         get() = Vec3d(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)

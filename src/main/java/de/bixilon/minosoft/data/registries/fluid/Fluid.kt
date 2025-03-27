@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -72,7 +73,7 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
         // ToDo: Falling fluid
 
-        if (velocity == Vec3d.EMPTY) {
+        if (velocity == Vec3d.EMPTY_INSTANCE) {
             return velocity
         }
 
