@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 data class BlockPair(
-    val position: BlockPosition,
-    val state: BlockState,
-    val chunk: Chunk,
+    var position: BlockPosition,
+    var state: BlockState,
+    var chunk: Chunk,
 )

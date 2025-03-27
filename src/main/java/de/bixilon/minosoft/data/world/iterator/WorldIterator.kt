@@ -31,6 +31,7 @@ class WorldIterator(
     private val world: World,
     private var chunk: Chunk? = null,
 ) : Iterator<BlockPair> {
+    private var pair: BlockPair? = null
     private var next: BlockPair? = null
     private var revision = -1
 
@@ -61,7 +62,15 @@ class WorldIterator(
             }
 
             val state = chunk[position.inChunkPosition] ?: continue
-            this.next = BlockPair(position, state, chunk)
+
+            val pair = pair ?: BlockPair(position, state, chunk)
+            this.pair = pair
+
+            pair.position = position
+            pair.state = state
+            pair.chunk = chunk
+            this.next = pair
+
             return true
         }
 
