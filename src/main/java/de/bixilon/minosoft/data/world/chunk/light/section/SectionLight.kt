@@ -21,8 +21,11 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel.Companion.MAX_LEVEL
 import de.bixilon.minosoft.data.world.chunk.update.chunk.SectionLightUpdate
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 class SectionLight(
@@ -35,10 +38,7 @@ class SectionLight(
         val previousLuminance = previous?.luminance ?: 0
         val luminance = state?.luminance ?: 0
 
-        if (luminance == previousLuminance) {
-            // TODO: check if light properties changed
-            return
-        }
+        // TODO: check if light properties changed
 
         when {
             luminance > previousLuminance -> onIncrease(position, luminance)
@@ -47,7 +47,7 @@ class SectionLight(
     }
 
     private fun onIncrease(position: InSectionPosition, luminance: Int) {
-        trace(position, LightLevel(block = luminance, sky = 0), null) // TODO: sky light
+        trace(position, LightLevel(block = luminance, sky = this[position].sky), null)
     }
 
     private fun onDecrease(position: InSectionPosition) {
@@ -63,7 +63,6 @@ class SectionLight(
         }
 
         return section?.light
-
     }
 
     private inline fun traceWest(position: InSectionPosition, next: LightLevel, properties: LightProperties) {
@@ -141,12 +140,40 @@ class SectionLight(
         }
     }
 
+    // TODO: traceSky for border sections
+    fun traceSky(position: InSectionPosition) {
+        val current = this[position]
+        val level = current.with(sky = MAX_LEVEL)
+
+        if (current.block >= level.block && current.sky >= level.sky) return // light is already same or higher, no need to increase
+        val lightProperties = section.blocks[position]?.let { it.block.getLightProperties(it) } ?: TransparentProperty
+
+        val height = section.chunk.light.heightmap[position.xz]
+
+        this[position] = level
+
+        if (!lightProperties.propagatesLight) return
+
+        val next = level.decrease()
+
+        traceWest(position, next, lightProperties)
+        traceEast(position, next, lightProperties)
+
+        // don't trace up, we are already above the heightmap
+        if (height == section.height * SECTION_HEIGHT_Y + position.y) { // TODO: verify
+            traceDown(position, next, lightProperties)
+        }
+
+        traceNorth(position, next, lightProperties)
+        traceSouth(position, next, lightProperties)
+    }
+
+
     fun trace(position: InSectionPosition, level: LightLevel, direction: Directions?) {
         var level = level
         val current = this[position]
         if (current.block >= level.block && current.sky >= level.sky) return // light is already same or higher, no need to increase
-        val state = section.blocks[position]
-        val lightProperties = state?.block?.getLightProperties(state) ?: TransparentProperty
+        val lightProperties = section.blocks[position]?.let { it.block.getLightProperties(it) } ?: TransparentProperty
 
         if (direction != null && !lightProperties.propagatesLight(direction.inverted)) {
             return // light can not pass into from that side
@@ -201,7 +228,17 @@ class SectionLight(
 
     fun calculate() {
         calculateBlocks()
-        // TODO: Start skylight tracing from (top of the world (max neighbour heightmap) to heightmap start) per xz
+
+        val limit = (section.height + 1) * SECTION_HEIGHT_Y
+
+        for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+            val height = section.chunk.light.heightmap[xz]
+            if (height >= limit) continue
+            val min = if (height.sectionHeight == section.height) height.inSectionHeight else 0
+            for (y in min until SECTION_MAX_Y) { // TODO: do that in chunk light and only up to max of neighbours
+                traceSky(InSectionPosition(xz).with(y = y))
+            }
+        }
     }
 
     protected fun getNeighbour(direction: Directions): SectionLight? {
