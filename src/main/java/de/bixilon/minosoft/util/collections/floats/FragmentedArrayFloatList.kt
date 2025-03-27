@@ -14,7 +14,10 @@
 package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
+import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.reflection.ReflectionUtil.field
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil.copy
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import org.lwjgl.system.MemoryUtil.memFree
@@ -192,38 +195,41 @@ class FragmentedArrayFloatList(
         return true
     }
 
-    override fun add(array: FloatArray) {
-        if (array.isEmpty()) return
+    fun add(array: FloatArray, offset: Int, length: Int) {
+        if (offset + length > array.size) throw IndexOutOfBoundsException("Index ${offset + length} out of bounds!")
+        if (length == 0) return
         checkFinished()
         invalidateOutput()
 
-        var offset = 0
-        var indexOffset = 0
-        for (index in 0 until incomplete.size) {
-            val fragment = incomplete[index + indexOffset]
-            val remaining = fragment.limit() - fragment.position()
-            val copy = minOf(array.size - offset, remaining)
+
+        var offset = offset
+        var left = length
+
+        var fragmentOffset = 0 // avoid ConcurrentModificationException when pushing list
+        for (fragmentIndex in 0 until incomplete.size) {
+            val fragment = incomplete[fragmentIndex + fragmentOffset]
+            val capacity = fragment.limit() - fragment.position()
+            val copy = minOf(left, capacity)
             fragment.put(array, offset, copy)
+
             offset += copy
-            if (tryPush(fragment)) indexOffset--
+            left -= copy
 
+            if (tryPush(fragment)) fragmentOffset-- // fragment not anymore in the list (shifted)
+            this.size += copy // tryPush needs the current size
 
-            if (array.size == offset) {
-                // everything copied
-                size += array.size
-                // verifyPosition()
-                return
-            }
+            if (left == 0) break
         }
-        size += offset
-        val length = array.size - offset
-        val next = tryGrow(length)
-        next.put(array, offset, length)
-        size += length
-        next.position(length)
-        tryPush(next)
-        // verifyPosition()
+
+        if (left > 0) {
+            val next = tryGrow(left)
+            next.put(array, offset, left)
+            tryPush(next)
+            this.size += left
+        }
     }
+
+    override fun add(array: FloatArray) = add(array, 0, array.size)
 
     override fun add(buffer: FloatBuffer) {
         if (buffer.position() == 0) return
@@ -266,6 +272,7 @@ class FragmentedArrayFloatList(
             }
 
             is DirectArrayFloatList -> add(floatList.toBuffer())
+            is HeapArrayFloatList -> add(HEAP_DATA[floatList], 0, floatList.size)
             else -> add(floatList.toArray())
         }
         invalidateOutput()
@@ -376,5 +383,10 @@ class FragmentedArrayFloatList(
         if (expected != actual) {
             Broken("Buffer size mismatch: expected=$expected, actual=$actual")
         }
+    }
+
+
+    companion object {
+        private val HEAP_DATA = HeapArrayFloatList::class.java.getFieldOrNull("data")!!.field
     }
 }
