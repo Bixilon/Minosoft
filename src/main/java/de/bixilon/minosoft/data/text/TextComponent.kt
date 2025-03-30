@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,13 +20,14 @@ import de.bixilon.minosoft.data.text.events.hover.HoverEvent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.TextStyle
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 
 open class TextComponent(
     message: Any? = "",
-    override var color: RGBColor? = null,
+    override var color: RGBAColor? = null,
     override val formatting: BitEnumSet<FormattingCodes> = FormattingCodes.set(),
     var font: ResourceLocation? = null,
     var clickEvent: ClickEvent? = null,
@@ -64,7 +65,8 @@ open class TextComponent(
         return this
     }
 
-    fun color(color: RGBColor): TextComponent {
+    fun color(color: RGBColor) = this.color(color.rgba())
+    fun color(color: RGBAColor): TextComponent {
         this.color = color
         return this
     }
@@ -73,7 +75,7 @@ open class TextComponent(
         return legacy
     }
 
-    override fun setFallbackColor(color: RGBColor): TextComponent {
+    override fun setFallbackColor(color: RGBAColor): TextComponent {
         if (this.color == null) {
             this.color = color
         }
@@ -98,7 +100,7 @@ open class TextComponent(
     override val legacy: String
         get() {
             val builder = StringBuilder()
-            ChatColors.getChar(color)?.let { builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(it) }
+            ChatColors.getChar(color?.rgb())?.let { builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(it) }
             for (formattingCode in this.formatting) {
                 builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX)
                 builder.append(formattingCode.char)
@@ -127,15 +129,13 @@ open class TextComponent(
         return json
     }
 
-    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: BitEnumSet<FormattingCodes> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
-        return TextComponent(
+    fun copy(message: Any? = this.message, color: RGBAColor? = this.color, formatting: BitEnumSet<FormattingCodes> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent) = TextComponent(
             message = message,
             color = color,
             formatting = formatting,
             clickEvent = clickEvent,
             hoverEvent = hoverEvent,
         )
-    }
 
     override val length: Int
         get() = message.length

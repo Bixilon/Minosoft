@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
-        background.tint = RGBColor(0xFF, 0x00, 0x00, 0x7F)
+        background.tint = RGBAColor(0xFF, 0x00, 0x00, 0x7F)
         add(TextElement(guiRenderer, "You died!", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 3.0f)))
         add(SpacerElement(guiRenderer, Vec2(0, 20)))
         if (guiRenderer.session.world.hardcore) {

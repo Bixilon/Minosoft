@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -36,7 +37,7 @@ class BuiltModel(
     val dynamic: Array<BlockRender>,
 ) : BlockRender {
 
-    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
         var rendered = model.render(props, position, state, entity, tints)
 
         for (dynamic in this.dynamic) {
@@ -48,7 +49,7 @@ class BuiltModel(
         return rendered
     }
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) {
         model.render(gui, offset, consumer, options, size, stack, tints)
 
         for (dynamic in this.dynamic) {
@@ -56,14 +57,14 @@ class BuiltModel(
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
         model.render(mesh, state, tints)
         for (dynamic in this.dynamic) {
             dynamic.render(mesh, state, tints)
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
         model.render(mesh, stack, tints)
         for (dynamic in this.dynamic) {
             dynamic.render(mesh, stack, tints)

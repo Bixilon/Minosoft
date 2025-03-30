@@ -19,22 +19,26 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 object RedstoneWireTintCalculator : TintProvider {
-    private val COLORS = IntArray(16) {
+    private val COLORS = RGBArray(16) {
         val level = it / 15.0f
         val red = level * 0.6f + (if (it > 0) 0.4f else 0.3f)
         val green = (level * level * 0.7f - 0.5f).clamp(0.0f, 1.0f)
         val blue = (level * level * 0.6f - 0.7f).clamp(0.0f, 1.0f)
-        return@IntArray ((red * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 16) or ((green * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 8) or ((blue * RGBColor.COLOR_FLOAT_DIVIDER).toInt())
+        return@RGBArray RGBColor(red, green, blue)
     }
 
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int {
-        if (state !is PropertyBlockState) return -1
-        return COLORS[state.properties[BlockProperties.REDSTONE_POWER]?.toInt() ?: return -1]
+    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+        if (state !is PropertyBlockState) return Colors.WHITE_RGB
+        val power = state.properties[BlockProperties.REDSTONE_POWER]?.toInt() ?: return Colors.WHITE_RGB
+
+        return COLORS[power]
     }
 }

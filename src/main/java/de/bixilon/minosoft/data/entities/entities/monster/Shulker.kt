@@ -44,7 +44,7 @@ class Shulker(session: PlaySession, entityType: EntityType, data: EntityData, po
 
     @get:SynchronizedEntityData
     val color: RGBColor
-        get() = ChatColors.VALUES.getOrNull(data.get(COLOR_DATA, 0x00)) ?: ChatColors.DARK_PURPLE
+        get() = ChatColors.VALUES.getOrNull(data.get(COLOR_DATA, 0x00))?.rgb() ?: ChatColors.DARK_PURPLE.rgb()
 
 
     companion object : EntityFactory<Shulker> {

@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
@@ -67,7 +68,7 @@ class SolidSectionMesher(
         val blocks = section.blocks
         val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
-        val tint = IntArray(1)
+        val tint = RGBArray(1)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 

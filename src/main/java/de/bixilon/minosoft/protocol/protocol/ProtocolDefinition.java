@@ -13,9 +13,6 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors;
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor;
-
 import java.util.regex.Pattern;
 
 import static de.bixilon.minosoft.data.entities.EntityRotation.CIRCLE_DEGREE;
@@ -65,11 +62,4 @@ public final class ProtocolDefinition {
     public static final double TICK_TIMEd = TICK_TIME;
 
     public static final float VELOCITY_NETWORK_DIVIDER = 8000.0f;
-
-
-    public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
-
-    public static final byte LIGHT_LEVELS = 16;
-    public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
-    public static final int MAX_LIGHT_LEVEL_I = MAX_LIGHT_LEVEL;
 }

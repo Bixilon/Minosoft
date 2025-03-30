@@ -12,144 +12,84 @@
  */
 package de.bixilon.minosoft.data.text.formatting.color
 
-import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.kutil.ansi.ANSI
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
-import org.checkerframework.common.value.qual.IntRange
+import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.BITS
+import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
+import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
+import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
 
-// TODO: JvmInline value class
-class RGBColor(val rgba: Int) : TextFormattable {
-    val ansi: String get() = ANSI.rgb(red, green, blue)
+@JvmInline
+value class RGBColor(override val rgb: Int) : Color, TextFormattable {
 
-    @JvmOverloads
-    constructor(red: Int, green: Int, blue: Int, alpha: Int = 0xFF) : this(alpha or (blue shl 8) or (green shl 16) or (red shl 24))
+    constructor(red: Int, green: Int, blue: Int) : this(((red and MASK) shl RED_SHIFT) or ((green and MASK) shl GREEN_SHIFT) or ((blue and MASK) shl BLUE_SHIFT))
 
-    constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 0xFF.toByte()) : this(red.toInt() and 0xFF, green.toInt() and 0xFF, blue.toInt() and 0xFF, alpha.toInt() and 0xFF)
+    constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
+    constructor(rgb: Vec3) : this(rgb.r, rgb.g, rgb.b)
 
-    constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this((red * 255.0f).toInt(), (green * COLOR_FLOAT_DIVIDER).toInt(), (blue * COLOR_FLOAT_DIVIDER).toInt(), (alpha * COLOR_FLOAT_DIVIDER).toInt())
+    override inline val red: Int get() = (rgb ushr RED_SHIFT) and MASK
+    override inline val green: Int get() = (rgb ushr GREEN_SHIFT) and MASK
+    override inline val blue: Int get() = (rgb ushr BLUE_SHIFT) and MASK
 
-    constructor(red: Double, green: Double, blue: Double, alpha: Double = 1.0) : this(red.toFloat(), green.toFloat(), blue.toFloat(), alpha.toFloat())
 
-    constructor(vec3: Vec3) : this(vec3.r, vec3.g, vec3.b)
+    override inline val redf get() = Color.toFloat(red)
+    override inline val greenf get() = Color.toFloat(green)
+    override inline val bluef get() = Color.toFloat(blue)
 
-    val argb: Int
-        get() = (alpha shl 24) or (red shl 16) or (green shl 8) or blue
 
-    val abgr: Int
-        get() = (alpha shl 24) or (blue shl 16) or (green shl 8) or red
+    inline operator fun plus(value: Int) = plus(RGBColor(value, value, value))
+    inline operator fun minus(value: Int) = minus(RGBColor(value, value, value))
+    inline operator fun times(value: Int) = times(RGBColor(value, value, value))
 
-    val alpha: @IntRange(from = 0L, to = 255L) Int
-        get() = rgba and 0xFF
+    inline operator fun plus(value: Float) = plus(Color.fromFloat(value))
+    inline operator fun minus(value: Float) = minus(Color.fromFloat(value))
+    inline operator fun times(value: Float) = times(Color.fromFloat(value))
 
-    val red: @IntRange(from = 0L, to = 255L) Int
-        get() = rgba ushr 24 and 0xFF
+    inline operator fun plus(color: RGBColor) = RGBColor(red + color.red, green + color.green, blue + color.blue)
+    inline operator fun minus(color: RGBColor) = RGBColor(red - color.red, green - color.green, blue - color.blue)
+    inline operator fun times(color: RGBColor) = RGBColor(red * color.red / TIMES, green * color.green / TIMES, blue * color.blue / TIMES)
 
-    val floatRed: @IntRange(from = 0L, to = 1L) Float
-        get() = red / COLOR_FLOAT_DIVIDER
 
-    val green: @IntRange(from = 0L, to = 255L) Int
-        get() = rgba ushr 16 and 0xFF
+    inline fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue) = RGBColor(red, green, blue)
+    inline fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue, alpha: Int) = RGBAColor(red, green, blue, alpha)
 
-    val floatGreen: @IntRange(from = 0L, to = 1L) Float
-        get() = green / COLOR_FLOAT_DIVIDER
+    inline fun with(red: Float = this.redf, green: Float = this.greenf, blue: Float = this.bluef) = RGBColor(red, green, blue)
+    inline fun with(red: Float = this.redf, green: Float = this.greenf, blue: Float = this.bluef, alpha: Float) = RGBAColor(red, green, blue, alpha)
 
-    val blue: @IntRange(from = 0L, to = 255L) Int
-        get() = rgba ushr 8 and 0xFF
+    fun rgba() = RGBAColor(red, green, blue, MAX)
 
-    val floatBlue: @IntRange(from = 0L, to = 1L) Float
-        get() = blue / COLOR_FLOAT_DIVIDER
 
-    val floatAlpha: @IntRange(from = 0L, to = 1L) Float
-        get() = alpha / COLOR_FLOAT_DIVIDER
+    fun mix(other: RGBColor) = RGBColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2)
 
-    val rgb: Int
-        get() = rgba ushr 8
 
-    override fun hashCode(): Int {
-        return rgba
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (super.equals(other)) {
-            return true
-        }
-        if (other !is RGBColor) {
-            return false
-        }
-        val their = other as RGBColor? ?: return false
-        return rgba == their.rgba
-    }
-
-    override fun toString(): String {
-        return if (alpha != 255) {
-            String.format("#%08X", rgba)
-        } else {
-            String.format("#%06X", rgb)
-        }
-    }
+    override fun toString() = String.format("#%06X", rgb)
 
     override fun toText(): ChatComponent {
-        return TextComponent(this).color(this)
+        return TextComponent(this).color(this.rgba())
     }
 
-    fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue, alpha: Int = this.alpha): RGBColor {
-        return RGBColor(red, green, blue, alpha)
-    }
-
-    fun with(red: Float = this.floatRed, green: Float = this.floatGreen, blue: Float = this.floatBlue, alpha: Float = this.floatAlpha): RGBColor {
-        return RGBColor(red.clamp(0.0f, 1.0f), green.clamp(0.0f, 1.0f), blue.clamp(0.0f, 1.0f), alpha.clamp(0.0f, 1.0f))
-    }
-
-    fun mix(vararg colors: RGBColor): RGBColor {
-        return Companion.mix(this, *colors)
-    }
-
-    fun mix(other: RGBColor): RGBColor {
-        return RGBColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
-    }
-
-    operator fun times(value: Float): RGBColor {
-        return this.with(red = floatRed * value, green = floatGreen * value, blue = floatBlue * value)
-    }
-
-    operator fun times(color: RGBColor): RGBColor {
-        return this.with(red = floatRed * color.floatRed, green = floatGreen * color.floatGreen, blue = floatBlue * color.floatBlue, alpha = floatAlpha * color.floatAlpha)
-    }
-
-    fun toVec4(): Vec4 {
-        return Vec4(floatRed, floatGreen, floatBlue, floatAlpha)
-    }
-
-    fun toVec3(): Vec3 {
-        return Vec3(floatRed, floatGreen, floatBlue)
-    }
+    fun toVec3() = Vec3(redf, greenf, bluef)
 
     companion object {
-        const val COLOR_FLOAT_DIVIDER = 255.0f
+        const val RED_SHIFT = 2 * BITS
+        const val GREEN_SHIFT = 1 * BITS
+        const val BLUE_SHIFT = 0 * BITS
 
-        fun String.asColor(): RGBColor {
-            var colorString = this
-            if (colorString.startsWith("#")) {
-                colorString = colorString.substring(1)
-            }
-            val rgb = if (colorString.length == 6) {
-                Integer.parseUnsignedInt(colorString + "ff", 16)
-            } else {
-                Integer.parseUnsignedInt(colorString, 16)
+
+        fun Vec3.color() = RGBColor(r, g, b)
+        fun Int.rgb() = RGBColor(this)
+
+        fun String.rgb(): RGBColor {
+            val string = this.removePrefix("#")
+            val int = Integer.parseUnsignedInt(string, 16)
+            val rgb = when (string.length) {
+                6 -> int
+                8 -> int ushr BITS // rgba
+                else -> throw IllegalArgumentException("Invalid color string: $this")
             }
             return RGBColor(rgb)
-        }
-
-        fun Int.asRGBColor(): RGBColor {
-            return RGBColor(this shl 8 or 0xFF)
-        }
-
-        fun Int.asRGBAColor(): RGBColor {
-            return RGBColor(this)
         }
 
         fun Int.asGray(): RGBColor {
@@ -162,19 +102,6 @@ class RGBColor(val rgba: Int) : TextFormattable {
 
         fun Double.asGray(): RGBColor {
             return RGBColor(this.toFloat(), this.toFloat(), this.toFloat())
-        }
-
-        fun mix(vararg colors: RGBColor): RGBColor {
-            var red = 0
-            var green = 0
-            var blue = 0
-
-            for (color in colors) {
-                red += color.red
-                green += color.green
-                blue += color.blue
-            }
-            return RGBColor(red / colors.size, green / colors.size, blue / colors.size)
         }
     }
 }

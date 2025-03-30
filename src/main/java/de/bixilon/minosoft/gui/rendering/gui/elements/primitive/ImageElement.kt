@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -31,7 +31,7 @@ open class ImageElement(
     uvStart: Vec2 = Vec2.EMPTY,
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
     size: Vec2 = texture?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
-    tint: RGBColor = ChatColors.WHITE,
+    tint: RGBAColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: Texture? = texture
         set(value) {
@@ -62,7 +62,7 @@ open class ImageElement(
             size = value
         }
 
-    var tint: RGBColor = tint
+    var tint: RGBAColor = tint
         set(value) {
             field = value
             cacheUpToDate = false
@@ -73,7 +73,7 @@ open class ImageElement(
     }
 
 
-    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2 = Vec2(texture.size), tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.array.pixel, Vec2(uvEnd) * texture.array.pixel, size, tint)
+    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2 = Vec2(texture.size), tint: RGBAColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.array.pixel, Vec2(uvEnd) * texture.array.pixel, size, tint)
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,100 +13,66 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.collections.map.bi.MutableBiMap
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 object ChatColors {
-    @JvmField
-    val BLACK = RGBColor(0, 0, 0)
-
-    @JvmField
-    val DARK_BLUE = RGBColor(0, 0, 170)
-
-    @JvmField
-    val DARK_GREEN = RGBColor(0, 170, 0)
-
-    @JvmField
-    val DARK_AQUA = RGBColor(0, 170, 170)
-
-    @JvmField
-    val DARK_RED = RGBColor(170, 0, 0)
-
-    @JvmField
-    val DARK_PURPLE = RGBColor(170, 0, 170)
-
-    @JvmField
-    val GOLD = RGBColor(255, 170, 0)
-
-    @JvmField
-    val GRAY = RGBColor(170, 170, 170)
-
-    @JvmField
-    val DARK_GRAY = RGBColor(85, 85, 85)
-
-    @JvmField
-    val BLUE = RGBColor(85, 85, 255)
-
-    @JvmField
-    val GREEN = RGBColor(85, 255, 85)
-
-    @JvmField
-    val AQUA = RGBColor(85, 255, 255)
-
-    @JvmField
-    val RED = RGBColor(255, 85, 85)
-
-    @JvmField
-    val LIGHT_PURPLE = RGBColor(255, 85, 255)
-
-    @JvmField
-    val YELLOW = RGBColor(255, 255, 85)
-
-    @JvmField
-    val WHITE = RGBColor(255, 255, 255)
+    val BLACK = RGBAColor(0, 0, 0)
+    val DARK_BLUE = RGBAColor(0, 0, 170)
+    val DARK_GREEN = RGBAColor(0, 170, 0)
+    val DARK_AQUA = RGBAColor(0, 170, 170)
+    val DARK_RED = RGBAColor(170, 0, 0)
+    val DARK_PURPLE = RGBAColor(170, 0, 170)
+    val GOLD = RGBAColor(255, 170, 0)
+    val GRAY = RGBAColor(170, 170, 170)
+    val DARK_GRAY = RGBAColor(85, 85, 85)
+    val BLUE = RGBAColor(85, 85, 255)
+    val GREEN = RGBAColor(85, 255, 85)
+    val AQUA = RGBAColor(85, 255, 255)
+    val RED = RGBAColor(255, 85, 85)
+    val LIGHT_PURPLE = RGBAColor(255, 85, 255)
+    val YELLOW = RGBAColor(255, 255, 85)
+    val WHITE = RGBAColor(255, 255, 255)
 
 
-    val VALUES: Array<RGBColor>
-    val NAME_MAP: AbstractBiMap<String, RGBColor>
-    val CHAR_MAP = Object2IntOpenHashMap<RGBColor>(16)
+    val VALUES = RGBAArray(16)
+    val NAME_MAP: AbstractBiMap<String, RGBAColor>
+    val CHAR_MAP = Object2IntOpenHashMap<RGBAColor>(16)
 
 
     init {
-        val values: Array<RGBColor?> = arrayOfNulls(16)
-        val nameMap: MutableBiMap<String, RGBColor> = mutableBiMapOf()
+        val nameMap: MutableBiMap<String, RGBAColor> = mutableBiMapOf()
 
 
         var index = 0
         for (field in this::class.java.declaredFields) {
             val color = field.get(null)
-            if (color !is RGBColor) {
+            if (color !is RGBAColor) {
                 continue
             }
-            values[index] = color
+            VALUES[index] = color
             CHAR_MAP[color] = index
             nameMap[field.name.lowercase()] = color
             index++
         }
 
-        VALUES = values.cast()
         NAME_MAP = nameMap
 
         CHAR_MAP.defaultReturnValue(-1)
     }
 
-    operator fun get(id: Int): RGBColor {
+    operator fun get(id: Int): RGBAColor {
         return VALUES[id]
     }
 
-    fun getOrNull(id: Int): RGBColor? {
+    fun getOrNull(id: Int): RGBAColor? {
         return VALUES.getOrNull(id)
     }
 
-    operator fun get(name: String): RGBColor? {
+    operator fun get(name: String): RGBAColor? {
         return when (name) {
             "dark_grey" -> DARK_GRAY
             else -> NAME_MAP[name]
@@ -121,9 +87,9 @@ object ChatColors {
         return Integer.toHexString(char)
     }
 
-    fun String.toColor(): RGBColor? {
+    fun String.toColor(): RGBAColor? {
         if (this.startsWith("#")) {
-            return this.asColor()
+            return this.rgba()
         }
         return ChatColors[this]
     }

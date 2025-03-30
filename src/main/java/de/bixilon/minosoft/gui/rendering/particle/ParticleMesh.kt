@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -29,7 +30,7 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
 
     override fun clear() = Unit
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
+    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) {
             EMPTY_UV_ARRAY
         } else {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -26,8 +26,8 @@ data class TextRenderProperties(
     val lineSpacing: Float = 0.0f,
     val scale: Float = 1.0f,
     val shadow: Boolean = true,
-    val forcedColor: RGBColor? = null,
-    val fallbackColor: RGBColor = ChatColors.WHITE,
+    val forcedColor: RGBAColor? = null,
+    val fallbackColor: RGBAColor = ChatColors.WHITE,
     val allowNewLine: Boolean = true,
     val font: FontType? = null,
 ) {

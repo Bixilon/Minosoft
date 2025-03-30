@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.light.debug
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.light.Lightmap
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import javafx.fxml.FXML
 import javafx.scene.canvas.Canvas
 
@@ -45,10 +45,10 @@ class LightmapDebugWindow(private val lightmap: Lightmap) : JavaFXWindowControll
         }
         val buffer = lightmap.buffer.buffer.buffer
 
-        for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-            for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+        for (sky in 0 until LightLevel.LEVELS) {
+            for (block in 0 until LightLevel.LEVELS) {
                 val offset = ((sky shl 4) or block) * 4
-                val color = RGBColor(buffer.get(offset + 0), buffer.get(offset + 1), buffer.get(offset + 2))
+                val color = RGBAColor(buffer.get(offset + 0), buffer.get(offset + 1), buffer.get(offset + 2))
                 canvasFX.graphicsContext2D.pixelWriter.setArgb(block, sky, color.argb)
             }
         }

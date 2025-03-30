@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,16 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 
 object TintUtil {
 
-    fun calculateTint(tint: Int, shade: Shades): Int {
+    fun calculateTint(tint: RGBColor, shade: Shades): RGBColor {
         if (shade == Shades.UP) return tint
 
-        var red = (tint shr 16) and 0xFF
-        var green = (tint shr 8) and 0xFF
-        var blue = tint and 0xFF
+        var red = tint.red
+        var green = tint.green
+        var blue = tint.blue
 
         when (shade) {
             Shades.UP -> Broken()
@@ -45,6 +46,6 @@ object TintUtil {
         }
 
 
-        return (red shl 16) or (green shl 8) or blue
+        return RGBColor(red, green, blue)
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
 import de.bixilon.kutil.avg._float.FloatAverage
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -41,7 +41,7 @@ class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
             return
         }
         this.render = true
-        tintColor = RGBColor(1.0f, 1.0f, 1.0f, avg)
+        tintColor = RGBAColor(1.0f, 1.0f, 1.0f, avg)
     }
 
 

@@ -17,17 +17,18 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
 
 class SugarCaneTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int {
+    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         return grassTintCalculator.getBlockColor(state, biome, position, tintIndex)
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
+    override fun getItemColor(stack: ItemStack, tintIndex: Int): RGBColor {
         return Colors.WHITE_RGB
     }
 }

@@ -38,7 +38,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -194,7 +194,7 @@ abstract class Entity(
     @get:SynchronizedEntityData
     val ticksFrozen: Int by data(TICKS_FROZEN_DATA, 0)
 
-    open val hitboxColor: RGBColor?
+    open val hitboxColor: RGBAColor?
         get() = ChatColors.WHITE
 
 

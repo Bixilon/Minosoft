@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
@@ -42,13 +44,8 @@ class RGB8Buffer(
         setRGB(x, y, red, green, blue)
     }
 
-    override fun setRGBA(x: Int, y: Int, value: Int) {
-        val red = (value ushr 24) and 0xFF
-        val green = (value ushr 16) and 0xFF
-        val blue = (value ushr 8) and 0xFF
-
-        setRGB(x, y, red, green, blue)
-    }
+    override fun setRGB(x: Int, y: Int, value: RGBColor) = setRGB(x, y, value.red, value.green, value.blue)
+    override fun setRGBA(x: Int, y: Int, value: RGBAColor) = setRGBA(x, y, value.red, value.green, value.blue, value.alpha)
 
     override fun copy() = RGB8Buffer(Vec2i(size), data.duplicate())
 
@@ -58,14 +55,14 @@ class RGB8Buffer(
         return data[index].toInt() and 0xFF
     }
 
-    override fun getRGBA(x: Int, y: Int): Int {
+    override fun getRGBA(x: Int, y: Int): RGBAColor {
         val stride = stride(x, y)
-        return (this[stride + 0] shl 24) or (this[stride + 1] shl 16) or (this[stride + 2] shl 8) or 0xFF
+        return RGBAColor(this[stride + 0], this[stride + 1], this[stride + 2])
     }
 
-    override fun getRGB(x: Int, y: Int): Int {
+    override fun getRGB(x: Int, y: Int): RGBColor {
         val stride = stride(x, y)
-        return (this[stride + 0] shl 16) or (this[stride + 1] shl 8) or this[stride + 2]
+        return RGBColor(this[stride + 0], this[stride + 1], this[stride + 2])
     }
 
 

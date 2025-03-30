@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ open class CloudParticle(session: PlaySession, position: Vec3d, velocity: Vec3d,
         this.velocity *= 0.1
         this.velocity += velocity
 
-        this.color = (1.0f - random.nextFloat() * 0.3).asGray()
+        this.color = (1.0f - random.nextFloat() * 0.3).asGray().rgba()
 
         super.scale *= 1.875f
 

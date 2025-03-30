@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
@@ -266,12 +266,12 @@ class OpenGLRenderSystem(
         return OpenGLTextureManager(context)
     }
 
-    override var clearColor: RGBColor = Colors.TRUE_BLACK
+    override var clearColor: RGBAColor = Colors.TRUE_BLACK.rgba()
         set(value) {
             if (value == field) {
                 return
             }
-            glClearColor(value.floatRed, value.floatGreen, value.floatBlue, value.floatAlpha)
+            glClearColor(value.redf, value.greenf, value.bluef, value.alphaf)
 
             field = value
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,9 +36,9 @@ abstract class AnimatedParticle(session: PlaySession, position: Vec3d, gravitySt
 
             targetColor?.let {
                 this.color = this.color.with(
-                    red = this.color.floatRed + (it.floatRed - this.color.floatRed) * 0.2f,
-                    green = this.color.floatGreen + (it.floatGreen - this.color.floatGreen) * 0.2f,
-                    blue = this.color.floatBlue + (it.floatBlue - this.color.floatBlue) * 0.2f,
+                    red = this.color.redf + (it.redf - this.color.redf) * 0.2f,
+                    green = this.color.greenf + (it.greenf - this.color.greenf) * 0.2f,
+                    blue = this.color.bluef + (it.bluef - this.color.bluef) * 0.2f,
                 )
             }
         }

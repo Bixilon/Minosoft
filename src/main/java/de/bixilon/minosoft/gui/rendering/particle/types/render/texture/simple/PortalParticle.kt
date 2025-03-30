@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.pow
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -39,7 +39,7 @@ class PortalParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, dat
         this.scale = 0.1f * (random.nextFloat() * 0.2f + 0.5f)
 
         (random.nextFloat() * 0.6f + 0.4f).let {
-            this.color = RGBColor(it * 0.9f, it * 0.3f, it)
+            this.color = RGBAColor(it * 0.9f, it * 0.3f, it)
         }
 
         this.maxAge = (random.nextInt(10) + 40)

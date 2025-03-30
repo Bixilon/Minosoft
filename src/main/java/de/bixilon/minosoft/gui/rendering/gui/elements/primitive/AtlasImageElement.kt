@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -30,7 +30,7 @@ open class AtlasImageElement(
     guiRenderer: GUIRenderer,
     texturePart: TexturePart?,
     size: Vec2 = texturePart?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
-    tint: RGBColor = ChatColors.WHITE,
+    tint: RGBAColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: Texture? = texturePart?.texture
         set(value) {
@@ -61,7 +61,7 @@ open class AtlasImageElement(
             size = value
         }
 
-    var tint: RGBColor = tint
+    var tint: RGBAColor = tint
         set(value) {
             field = value
             cacheUpToDate = false
@@ -89,7 +89,7 @@ open class AtlasImageElement(
         guiRenderer: GUIRenderer,
         texturePart: TexturePart?,
         size: Vec2i,
-        tint: RGBColor = ChatColors.WHITE,
+        tint: RGBAColor = ChatColors.WHITE,
     ) : this(guiRenderer, texturePart, Vec2(size), tint)
 
 

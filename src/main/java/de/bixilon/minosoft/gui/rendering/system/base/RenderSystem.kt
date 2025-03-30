@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
@@ -56,7 +56,7 @@ interface RenderSystem {
         sourceAlpha: BlendingFunctions = RenderSettings.DEFAULT.sourceAlpha,
         destinationAlpha: BlendingFunctions = RenderSettings.DEFAULT.destinationAlpha,
         depth: DepthFunctions = RenderSettings.DEFAULT.depth,
-        clearColor: RGBColor = RenderSettings.DEFAULT.clearColor,
+        clearColor: RGBAColor = RenderSettings.DEFAULT.clearColor,
         polygonOffsetFactor: Float = RenderSettings.DEFAULT.polygonOffsetFactor,
         polygonOffsetUnit: Float = RenderSettings.DEFAULT.polygonOffsetUnit,
     ) {
@@ -108,7 +108,7 @@ interface RenderSystem {
     val version: String
     val gpuType: String
 
-    var clearColor: RGBColor
+    var clearColor: RGBAColor
 
     var quadType: PrimitiveTypes
 

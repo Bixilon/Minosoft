@@ -378,7 +378,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readVelocity(): Vec3d {
-        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
+        return Vec3d(readShort(), readShort(), readShort()) * (1.0f / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER)
     }
 
     fun readVibrationSource(): VibrationSource {

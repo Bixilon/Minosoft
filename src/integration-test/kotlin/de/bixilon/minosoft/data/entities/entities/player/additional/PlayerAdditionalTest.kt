@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -58,7 +58,7 @@ class PlayerAdditionalTest {
 
     fun `team prefix and suffix and color`() {
         val additional = PlayerAdditional("Me")
-        additional.team = Team("test", TeamFormatting(ChatComponent.EMPTY, color = ChatColors.LIGHT_PURPLE, prefix = TextComponent("[P]").color(ChatColors.RED), suffix = TextComponent("[S]").color(ChatColors.BLUE)))
+        additional.team = Team("test", TeamFormatting(ChatComponent.EMPTY, color = ChatColors.LIGHT_PURPLE.rgb(), prefix = TextComponent("[P]").color(ChatColors.RED), suffix = TextComponent("[S]").color(ChatColors.BLUE)))
         assertEquals(additional.tabDisplayName, BaseComponent(TextComponent("[P]").color(ChatColors.RED), TextComponent("Me").color(ChatColors.LIGHT_PURPLE), TextComponent("[S]").color(ChatColors.BLUE)))
     }
 

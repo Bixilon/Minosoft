@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,10 +15,10 @@ package de.bixilon.minosoft.util.logging
 
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 
-enum class LogLevels(val levelColors: RGBColor, val error: Boolean = false) {
-    FATAL(Colors.DARK_RED, true),
+enum class LogLevels(val levelColors: RGBAColor, val error: Boolean = false) {
+    FATAL(Colors.DARK_RED.rgba(), true),
     WARN(ChatColors.RED, true),
     INFO(ChatColors.WHITE),
     VERBOSE(ChatColors.YELLOW),

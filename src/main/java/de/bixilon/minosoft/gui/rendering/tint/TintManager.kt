@@ -21,8 +21,9 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -50,11 +51,11 @@ class TintManager(val session: PlaySession) {
         DefaultTints.init(this)
     }
 
-    fun getBlockTint(state: BlockState, position: BlockPosition, biome: Biome?, cache: IntArray?): IntArray? {
+    fun getBlockTint(state: BlockState, position: BlockPosition, biome: Biome?, cache: RGBArray?): RGBArray? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
         val size = if (tintProvider is MultiTintProvider) tintProvider.tints else 1
-        val tints = if (cache != null && cache.size >= size) cache else IntArray(size)
+        val tints = if (cache != null && cache.size >= size) cache else RGBArray(size)
 
         for (tintIndex in 0 until size) {
             tints[tintIndex] = tintProvider.getBlockColor(state, biome, position, tintIndex)
@@ -63,14 +64,14 @@ class TintManager(val session: PlaySession) {
         return tints
     }
 
-    fun getBlockTint(state: BlockState, chunk: Chunk, position: InChunkPosition, cache: IntArray?): IntArray? {
+    fun getBlockTint(state: BlockState, chunk: Chunk, position: InChunkPosition, cache: RGBArray?): RGBArray? {
         val biome = chunk.getBiome(position)
         val offset = chunk.position.blockPosition(position)
 
         return getBlockTint(state, offset, biome, cache)
     }
 
-    fun getParticleTint(state: BlockState, position: BlockPosition): Int? {
+    fun getParticleTint(state: BlockState, position: BlockPosition): RGBColor? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
 
@@ -79,7 +80,7 @@ class TintManager(val session: PlaySession) {
         return tintProvider.getParticleColor(state, biome, position)
     }
 
-    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): Int? {
+    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): RGBColor? {
         val provider = fluid.model?.tint ?: return null
         val biome = chunk.getBiome(position.inChunkPosition)
         return provider.getFluidTint(fluid, biome, height, position)
@@ -94,11 +95,11 @@ class TintManager(val session: PlaySession) {
         return block.tintProvider
     }
 
-    fun getItemTint(stack: ItemStack): IntArray? {
+    fun getItemTint(stack: ItemStack): RGBArray? {
         val tintProvider = stack.item.item.getTintProvider() ?: return null
-        val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
+        val tints = RGBArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 
-        for (tintIndex in tints.indices) {
+        for (tintIndex in tints.array.indices) {
             tints[tintIndex] = tintProvider.getItemColor(stack, tintIndex)
         }
 
@@ -112,7 +113,7 @@ class TintManager(val session: PlaySession) {
             if (color == 0) {
                 return null
             }
-            return color.asRGBColor()
+            return color.rgb()
         }
 
         fun Any?.jsonTint(): RGBColor? {

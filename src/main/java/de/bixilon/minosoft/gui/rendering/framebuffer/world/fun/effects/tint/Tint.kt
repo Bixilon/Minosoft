@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ class Tint(override val context: RenderContext) : FunEffect {
     override val identifier: ResourceLocation get() = Tint.identifier
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/tint.fsh".toResourceLocation()) { TintShader(it) }
     private var updateUniform = true
-    var color = Random().let { RGBColor(it.nextInt(20, 255), it.nextInt(20, 255), it.nextInt(20, 255), 0xFF) }
+    var color = Random().let { RGBColor(it.nextInt(20, 255), it.nextInt(20, 255), it.nextInt(20, 255)) }
         set(value) {
             field = value
             updateUniform = true
@@ -34,7 +34,7 @@ class Tint(override val context: RenderContext) : FunEffect {
 
     override fun update() {
         if (updateUniform) {
-            shader.tintColor = color
+            shader.tintColor = color.rgba()
             updateUniform = false
         }
     }

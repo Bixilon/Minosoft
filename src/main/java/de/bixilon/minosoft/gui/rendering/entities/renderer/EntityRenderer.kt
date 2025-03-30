@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
+import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
@@ -44,7 +44,7 @@ abstract class EntityRenderer<E : Entity>(
 
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
-    val light = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB)
+    val light = Interpolator(ChatColors.WHITE.rgb(), ColorInterpolation::interpolateRGB)
     val matrix = Mat4()
     var visible = true
         protected set

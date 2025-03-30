@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGUIVertexConsumer
@@ -30,7 +30,7 @@ class RasterizedCodePointRendererTest {
 
     fun verifySimpleSetup() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 this.char++
                 assertEquals(tint, ChatColors.BLUE)
                 assertEquals(uvStart, Vec2(0.1, 0.2))
@@ -48,7 +48,7 @@ class RasterizedCodePointRendererTest {
     fun verifyComplexSetup() {
         var chars = 0
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 chars++
             }
         }
@@ -85,7 +85,7 @@ class RasterizedCodePointRendererTest {
 
     fun scaled() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 assertEquals(start, Vec2(10.0f, 13.5f)) // top spacing
                 assertEquals(end, Vec2(17.5f, 25.5f)) // start + width | start + height
 

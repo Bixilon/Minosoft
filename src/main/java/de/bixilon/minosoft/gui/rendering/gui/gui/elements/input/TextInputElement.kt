@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -44,7 +44,7 @@ open class TextInputElement(
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
     var onChangeCallback: () -> Unit = {},
-    val background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
+    val background: RGBAColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
     val cutAtSize: Boolean = false,
     parent: Element? = null,

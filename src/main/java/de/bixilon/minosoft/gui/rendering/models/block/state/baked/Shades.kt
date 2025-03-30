@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 enum class Shades(val shade: Float) {
     DOWN(0.5f),
@@ -25,10 +26,10 @@ enum class Shades(val shade: Float) {
     val color = color()
 
 
-    private fun color(): Int {
+    private fun color(): RGBColor {
         val int = (shade * 255).toInt()
 
-        return (int shl 16) or (int shl 8) or int
+        return RGBColor(int, int, int)
     }
 
     companion object {

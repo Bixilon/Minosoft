@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors.toColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 object RGBColorSerializer : SimpleModule() {
 
@@ -33,13 +33,11 @@ object RGBColorSerializer : SimpleModule() {
 
     object Deserializer : StdDeserializer<RGBColor>(RGBColor::class.java) {
 
-        override fun deserialize(parser: JsonParser, context: DeserializationContext?): RGBColor {
-            return when (parser.currentToken) {
+        override fun deserialize(parser: JsonParser, context: DeserializationContext?) = when (parser.currentToken) {
                 JsonToken.VALUE_NUMBER_INT -> RGBColor(parser.valueAsInt)
-                JsonToken.VALUE_STRING -> parser.valueAsString.toColor()!!
+            JsonToken.VALUE_STRING -> parser.valueAsString.rgb()
                 else -> TODO("Can not parse color!")
             }
-        }
     }
 
     object Serializer : StdSerializer<RGBColor>(RGBColor::class.java) {

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -35,11 +36,11 @@ class GUIMesh(
     override fun clear() = Unit
 
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
     }
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         addVertex(data, halfSize, x, y, textureId, u, v, tint, options)
     }
 
@@ -66,11 +67,11 @@ class GUIMesh(
             return res
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
-            addVertex(data, halfSize, x, y, texture.shaderId.buffer(), u, v, tint.rgba, options)
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+            addVertex(data, halfSize, x, y, texture.shaderId.buffer(), u, v, tint, options)
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) {
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
             val x = x / halfSize.x - 1.0f
             val y = 1.0f - y / halfSize.y
 
@@ -78,13 +79,10 @@ class GUIMesh(
             var color = tint
 
             if (options != null) {
-                options.tintColor?.let { color = RGBColor(tint).mix(it).rgba }
+                options.tintColor?.let { color = tint.mix(it) }
 
                 if (options.alpha != 1.0f) {
-                    val alpha = color and 0xFF
-                    color = color and 0xFF.inv()
-
-                    color = color or ((alpha * options.alpha).toInt() and 0xFF)
+                    color = color.with(alpha = color.alpha * options.alpha)
                 }
             }
 
@@ -93,7 +91,7 @@ class GUIMesh(
             data.add(u)
             data.add(v)
             data.add(textureId)
-            data.add(color.buffer())
+            data.add(color.rgba.buffer())
         }
     }
 

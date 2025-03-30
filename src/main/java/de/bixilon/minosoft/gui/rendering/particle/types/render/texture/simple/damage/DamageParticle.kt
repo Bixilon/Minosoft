@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ abstract class DamageParticle(session: PlaySession, position: Vec3d, velocity: V
         gravityStrength = 0.5f
         this.velocity *= 0.1
         this.velocity += velocity * 1.2f // ToDo: This is 0.4 in minecraft
-        color = (random.nextFloat() * 0.3 + 0.6).asGray()
+        color = (random.nextFloat() * 0.3 + 0.6).asGray().rgba()
         super.scale *= 0.75f
         maxAge = (6.0f / (random.nextFloat() * 0.8f + 0.6f)).toInt().coerceAtLeast(1)
         physics = false
@@ -43,6 +43,6 @@ abstract class DamageParticle(session: PlaySession, position: Vec3d, velocity: V
 
     final override fun tick() {
         super.tick()
-        color = color.with(green = this.color.floatGreen * 0.96f, blue = this.color.floatBlue * 0.96f)
+        color = color.with(green = this.color.greenf * 0.96f, blue = this.color.bluef * 0.96f)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -81,7 +81,7 @@ class TabListEntryElement(
         }
 
     init {
-        background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
+        background = ColorElement(guiRenderer, size, RGBAColor(120, 120, 120, 130))
         DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.session.connection.nullCast<NetworkConnection>()?.client?.encrypted == true, async = false)?.texture }
         forceSilentApply()
     }

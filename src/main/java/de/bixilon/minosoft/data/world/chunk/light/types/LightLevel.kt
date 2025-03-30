@@ -41,6 +41,7 @@ value class LightLevel(val raw: Byte) {
     override fun toString() = (raw.toInt() and 0xFF).toHex(2)
 
     companion object {
+        const val BITS = 4
         const val BLOCK_SHIFT = 0
         const val BLOCK_MASK = 0x0F
         const val SKY_SHIFT = 4
@@ -48,7 +49,9 @@ value class LightLevel(val raw: Byte) {
 
 
         const val MIN_LEVEL = 0
-        const val MAX_LEVEL = 15
+        const val MAX_LEVEL = (1 shl BITS) - 1
+
+        const val LEVELS = (1 shl BITS)
 
         val EMPTY = LightLevel(MIN_LEVEL, MIN_LEVEL)
         val MAX = LightLevel(MAX_LEVEL, MAX_LEVEL)

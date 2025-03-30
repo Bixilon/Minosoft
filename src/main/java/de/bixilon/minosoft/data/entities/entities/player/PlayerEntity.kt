@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
@@ -128,16 +128,16 @@ abstract class PlayerEntity(
     val lastDeathPosition: GlobalPosition?
         get() = data.get(LAST_DEATH_POSITION_DATA, null)
 
-    override val hitboxColor: RGBColor
+    override val hitboxColor: RGBAColor
         get() {
             if (this.isInvisible) {
                 return ChatColors.GREEN
             }
             val chestPlate = equipment[EquipmentSlots.CHEST]
             if (chestPlate != null && chestPlate.item.item is DyeableItem) {
-                chestPlate._display?.dyeColor?.let { return it }
+                chestPlate._display?.dyeColor?.let { return it.rgba() }
             }
-            additional.team?.formatting?.color?.let { return it }
+            additional.team?.formatting?.color?.let { return it.rgba() }
             return ChatColors.RED
         }
 

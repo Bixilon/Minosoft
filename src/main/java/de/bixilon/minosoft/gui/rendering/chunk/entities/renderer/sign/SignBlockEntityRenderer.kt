@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
@@ -57,7 +58,7 @@ class SignBlockEntityRenderer(
         return STANDING_ROTATIONS[rotation]
     }
 
-    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
         state.model?.render(props, position, state, entity, tints) // render wood part
         if (entity !is SignBlockEntity) return true
 
@@ -68,11 +69,11 @@ class SignBlockEntityRenderer(
         return true
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
         state.model?.render(mesh, state, tints) // render wood part
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
         // TODO
     }
 
@@ -127,7 +128,7 @@ class SignBlockEntityRenderer(
         this += 0.5f
     }
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Unit
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Unit
 
     companion object {
         private val TEXT_PROPERTIES = TextRenderProperties(scale = 1.35f, allowNewLine = false, shadow = false, fallbackColor = ChatColors.BLACK)

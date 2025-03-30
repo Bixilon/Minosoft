@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -49,7 +49,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     val header = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
     val footer = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
 
-    private val background = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBColor(0, 0, 0, 120))
+    private val background = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBAColor(0, 0, 0, 120))
 
     private var entriesSize = Vec2.EMPTY
     private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()

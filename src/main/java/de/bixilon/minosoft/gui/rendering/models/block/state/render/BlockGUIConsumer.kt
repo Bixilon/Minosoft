@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -41,14 +42,14 @@ class BlockGUIConsumer(
     override val order = consumer.order
 
 
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, lightIndex: Int) = Broken("Not chunk rendering")
+    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken("Not chunk rendering")
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 
     override fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) = Broken("Not chunk rendering")
 
     override fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
-        val tint = (lightTint.toBits() shl 8) or 0xFF
+        val tint = RGBColor(lightTint.toBits()).rgba()
 
         order.iterateReverse { p, uv ->
             val vertexOffset = p * Vec3.length

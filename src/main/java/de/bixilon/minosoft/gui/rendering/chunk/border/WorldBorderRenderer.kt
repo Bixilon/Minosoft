@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,8 +18,8 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.data.world.border.WorldBorderState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
@@ -68,7 +68,7 @@ class WorldBorderRenderer(
         shader.textureIndexLayer = texture.renderData.shaderTextureId
     }
 
-    private fun calculateColor(): RGBColor {
+    private fun calculateColor(): RGBAColor {
         val distance = border.getDistanceTo(context.session.player.physics.position).toFloat() - 1.0f // 1 block padding
         val strength = 1.0f - distance.clamp(0.0f, MAX_DISTANCE) / MAX_DISTANCE // slowly fade in
         val color = when (border.area.state) {
@@ -139,9 +139,9 @@ class WorldBorderRenderer(
     }
 
     companion object : RendererBuilder<WorldBorderRenderer> {
-        val GROWING_COLOR = "#40FF80".asColor()
-        val SHRINKING_COLOR = "#FF3030".asColor()
-        val STATIC_COLOR = "#20A0FF".asColor()
+        val GROWING_COLOR = "#40FF80".rgba()
+        val SHRINKING_COLOR = "#FF3030".rgba()
+        val STATIC_COLOR = "#20A0FF".rgba()
         const val ANIMATION_SPEED = 2000
         const val MAX_DISTANCE = 100.0f
 

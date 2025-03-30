@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.gui.rendering.tint.tints.StaticTintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.plants.StemTintCalculator
@@ -33,9 +34,9 @@ object DefaultTints {
         manager.applyTo(setOf(MinecraftBlocks.REDSTONE_WIRE), RedstoneWireTintCalculator)
         manager.applyTo(setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON), WaterTintProvider)
         manager.applyTo(setOf(MinecraftBlocks.SUGAR_CANE), SugarCaneTintCalculator(manager.grass))
-        manager.applyTo(setOf(MinecraftBlocks.ATTACHED_MELON_STEM, MinecraftBlocks.ATTACHED_PUMPKIN_STEM), StaticTintProvider(0xE0C71C))
+        manager.applyTo(setOf(MinecraftBlocks.ATTACHED_MELON_STEM, MinecraftBlocks.ATTACHED_PUMPKIN_STEM), StaticTintProvider(0xE0C71C.rgb()))
         manager.applyTo(setOf(MinecraftBlocks.MELON_STEM, MinecraftBlocks.PUMPKIN_STEM), StemTintCalculator)
-        manager.applyTo(setOf(MinecraftBlocks.LILY_PAD), StaticTintProvider(block = 0x208030, item = 0x71C35C))
+        manager.applyTo(setOf(MinecraftBlocks.LILY_PAD), StaticTintProvider(block = 0x208030.rgb(), item = 0x71C35C.rgb()))
     }
 
     private fun TintManager.applyTo(names: Set<ResourceLocation>, provider: TintProvider) {

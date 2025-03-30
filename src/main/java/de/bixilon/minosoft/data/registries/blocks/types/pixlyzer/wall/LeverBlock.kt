@@ -48,7 +48,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
 
         val position = (Vec3d(blockPosition) + 0.5).plus((direction.vectord * 0.1) + (mountDirection.vectord * 0.2))
 
-        particle += DustParticle(session, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
+        particle += DustParticle(session, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED.rgba(), scale, dustParticleType))
     }
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {

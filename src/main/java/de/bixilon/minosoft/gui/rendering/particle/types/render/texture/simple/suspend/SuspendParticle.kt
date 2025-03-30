@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 abstract class SuspendParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, velocity, data) {
 
     init {
-        this.color = (random.nextFloat() * 0.1f + 0.2f).asGray()
+        this.color = (random.nextFloat() * 0.1f + 0.2f).asGray().rgba()
         spacing = Vec3(0.2f)
         super.scale *= random.nextFloat() * 0.6f + 0.5f
         this.velocity *= 0.019999999552965164

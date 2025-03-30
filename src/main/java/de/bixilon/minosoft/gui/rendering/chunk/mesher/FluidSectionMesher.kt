@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
@@ -66,8 +67,8 @@ class FluidSectionMesher(
     fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
-        var position = BlockPosition()
-        var tint: Int
+        var position: BlockPosition
+        var tint: RGBColor
 
         val cameraOffset = context.camera.offset.offset
 
@@ -241,7 +242,7 @@ class FluidSectionMesher(
         }
     }
 
-    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: Int, fluidLight: LightLevel) {
+    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: RGBColor, fluidLight: LightLevel) {
         val lightIndex = fluidLight.index
         mesh.order.iterate { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }

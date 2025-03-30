@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import example.jonathan2520.SRGBAverager
 import java.nio.ByteBuffer
@@ -36,13 +39,13 @@ interface TextureBuffer {
                 val yOffset = y * 2
 
                 val output = SRGBAverager.average(
-                    getRGBA(xOffset + 0, yOffset + 0),
-                    getRGBA(xOffset + 1, yOffset + 0),
-                    getRGBA(xOffset + 0, yOffset + 1),
-                    getRGBA(xOffset + 1, yOffset + 1),
+                    getRGBA(xOffset + 0, yOffset + 0).rgba,
+                    getRGBA(xOffset + 1, yOffset + 0).rgba,
+                    getRGBA(xOffset + 0, yOffset + 1).rgba,
+                    getRGBA(xOffset + 1, yOffset + 1).rgba,
                 )
 
-                target.setRGBA(x, y, output)
+                target.setRGBA(x, y, output.rgba())
             }
         }
 
@@ -56,10 +59,11 @@ interface TextureBuffer {
     fun getB(x: Int, y: Int): Int
     fun getA(x: Int, y: Int): Int
 
-    fun getRGB(x: Int, y: Int): Int
+    fun getRGB(x: Int, y: Int): RGBColor
 
-    fun getRGBA(x: Int, y: Int): Int
-    fun setRGBA(x: Int, y: Int, value: Int)
+    fun getRGBA(x: Int, y: Int): RGBAColor
+    fun setRGB(x: Int, y: Int, value: RGBColor)
+    fun setRGBA(x: Int, y: Int, value: RGBAColor)
     fun setRGBA(x: Int, y: Int, red: Int, green: Int, blue: Int, alpha: Int)
 
     fun copy(): TextureBuffer

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,7 +45,7 @@ abstract class AscendingParticle(
         accelerateIfYBlocked = true
         this.velocity *= velocityMultiplier
         this.velocity += velocity
-        color = (random.nextFloat() * colorMultiplier).asGray()
+        color = (random.nextFloat() * colorMultiplier).asGray().rgba()
         super.scale *= 0.75f * scaleMultiplier
         super.maxAge = ((baseAge.toFloat() / (random.nextFloat() * 0.8f + 0.2f)).toInt() * scaleMultiplier).toInt().coerceAtLeast(1)
         this.physics = physics

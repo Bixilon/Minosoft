@@ -31,8 +31,9 @@ import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttribute
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
@@ -79,7 +80,7 @@ abstract class LivingEntity(session: PlaySession, entityType: EntityType, data: 
 
     @get:SynchronizedEntityData
     val effectColor: RGBColor?
-        get() = data.get<Int?>(EFFECT_COLOR_DATA, null)?.asRGBColor()
+        get() = data.get<Int?>(EFFECT_COLOR_DATA, null)?.rgb()
 
     @get:SynchronizedEntityData
     val effectAmbient: Boolean
@@ -98,7 +99,7 @@ abstract class LivingEntity(session: PlaySession, entityType: EntityType, data: 
         get() = bedPosition != null
 
 
-    override val hitboxColor: RGBColor?
+    override val hitboxColor: RGBAColor?
         get() = when {
             isInvisible -> ChatColors.GREEN
             else -> super.hitboxColor
