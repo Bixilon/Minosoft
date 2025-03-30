@@ -25,6 +25,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -120,7 +123,7 @@ class SolidSectionMesherTest {
 
         queue.assert(
             TestQueue.RenderedBlock(BlockPosition(2, 2, 2), untinted),
-            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), tinted, 0x123456),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), tinted, 0x123456.rgb()),
         )
     }
 
@@ -370,7 +373,7 @@ class SolidSectionMesherTest {
         data class RenderedBlock(
             val position: BlockPosition,
             val block: BlockState,
-            val tint: Int? = null,
+            val tint: RGBColor? = null,
         )
 
         data class RenderedEntity(
@@ -401,7 +404,7 @@ class SolidSectionMesherTest {
     fun TestQueue.tinted(): BlockState {
         val block = object : Block(minosoft("test3"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), TintedBlock {
             override val hardness get() = 0.0f
-            override val tintProvider = StaticTintProvider(0x123456)
+            override val tintProvider = StaticTintProvider(0x123456.rgb())
         }
         val state = BlockState(block, 0)
         state.model = TestModel(this, null)
@@ -415,7 +418,7 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+            override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
                 assertEquals(props.light.size, 7)
                 for ((index, entry) in props.light.withIndex()) {
                     assertEquals(required[index], entry.toInt() and 0xFF)
@@ -433,7 +436,7 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+            override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
                 assertEquals(props.neighbours.size, 6)
                 for ((index, entry) in props.neighbours.withIndex()) {
                     assertEquals(required[index], entry)
@@ -475,15 +478,15 @@ class SolidSectionMesherTest {
             init {
                 this.model = object : BlockRender {
 
-                    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+                    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
                         entities.add(TestQueue.RenderedEntity(position, state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
                     }
 
-                    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Broken()
-                    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = Broken()
-                    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = Broken()
+                    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Broken()
+                    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
+                    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
                 }
             }
 
@@ -495,14 +498,14 @@ class SolidSectionMesherTest {
 
     private open class TestModel(val queue: TestQueue, val properties: SideProperties?) : BlockRender {
 
-        override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Broken()
-        override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = Broken()
-        override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = Broken()
+        override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Broken()
+        override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
+        override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
         override fun getProperties(direction: Directions): SideProperties? {
             return this.properties
         }
 
-        override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+        override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
             queue.blocks.add(TestQueue.RenderedBlock(position, state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }

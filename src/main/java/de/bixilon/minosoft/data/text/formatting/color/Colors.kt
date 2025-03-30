@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,9 +24,9 @@ object Colors {
 
     val DARK_RED = RGBColor(255, 50, 30)
 
-    val TRANSPARENT = RGBColor(0, 0, 0, 0)
+    val TRANSPARENT = RGBAColor(0, 0, 0, 0)
 
 
-    const val WHITE_RGB = 0xFFFFFF
-    const val WHITE_RGBA = 0xFFFFFFFF.toInt()
+    val WHITE_RGB = RGBColor(0xFF, 0xFF, 0xFF)
+    val WHITE_RGBA = RGBAColor(0xFF, 0xFF, 0xFF, 0xFF)
 }

@@ -80,7 +80,7 @@ open class BlockFeature(
     protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
         shader.use()
         shader.matrix = matrix
-        shader.tint = renderer.light.value
+        shader.tint = renderer.light.value.rgba()
         super.draw(mesh)
     }
 

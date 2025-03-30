@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,10 @@
 package de.bixilon.minosoft.data.registries.particle.data
 
 import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-class DustParticleData(val color: RGBColor, val scale: Float, type: ParticleType) : ParticleData(type) {
+class DustParticleData(val color: RGBAColor, val scale: Float, type: ParticleType) : ParticleData(type) {
 
     override fun toString(): String {
         return "$type (scale=$scale, color=$color)"
@@ -24,7 +24,7 @@ class DustParticleData(val color: RGBColor, val scale: Float, type: ParticleType
 
     companion object : ParticleDataFactory<DustParticleData> {
         override fun read(buffer: PlayInByteBuffer, type: ParticleType): DustParticleData {
-            return DustParticleData(RGBColor(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()), buffer.readFloat(), type)
+            return DustParticleData(RGBAColor(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()), buffer.readFloat(), type)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.MemoryAssetsManager
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -31,6 +32,6 @@ class GrassTintCalculatorTest {
 
 
     fun `color of dessert`() {
-        assertEquals(map.getColor(255, 0), 0xBFB755)
+        assertEquals(map.getColor(255, 0), 0xBFB755.rgb())
     }
 }

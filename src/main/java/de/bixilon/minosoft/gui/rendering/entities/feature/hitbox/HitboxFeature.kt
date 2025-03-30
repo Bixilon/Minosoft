@@ -18,7 +18,7 @@ import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
+import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
@@ -36,7 +36,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
     private var eyePosition = Vec3.EMPTY
     private var rotation = EntityRotation.EMPTY
 
-    private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorUtil::interpolateRGB)
+    private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorInterpolation::interpolateRGBA)
     private var velocity = Interpolator(Vec3.EMPTY, Vec3Util::interpolateLinear)
 
     override fun update(millis: Long, delta: Float) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -29,7 +29,7 @@ abstract class Popper(
     position: Vec2,
     val background: Boolean = true,
 ) : Element(guiRenderer), LayoutedElement {
-    private val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBColor(10, 10, 20, 230))
+    private val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBAColor(10, 10, 20, 230))
     open var dead = false
     override var layoutOffset: Vec2 = EMPTY
         protected set

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
 import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -97,16 +97,16 @@ class FogManager(
         state.start = interpolateLinear(progress, interpolation.start, options?.start ?: 0.0f)
         state.end = interpolateLinear(progress, interpolation.end, options?.end ?: 0.0f)
 
-        val sourceColor = interpolation.color ?: options?.color ?: Colors.TRANSPARENT
-        val targetColor = options?.color ?: Colors.TRANSPARENT
-        var color: RGBColor? = interpolateSine(progress, sourceColor, targetColor)
+        val sourceColor = interpolation.color ?: options?.color?.rgba() ?: Colors.TRANSPARENT
+        val targetColor = options?.color?.rgba() ?: Colors.TRANSPARENT
+        var color: RGBAColor? = interpolateSine(progress, sourceColor, targetColor)
         if (color == Colors.TRANSPARENT) {
             color = null
         }
         state.color = color
         if (progress >= 1.0f) {
             interpolation.change = -1L // this avoid further interpolations with the same data
-            interpolation.color = options?.color
+            interpolation.color = options?.color?.rgba()
         }
 
         state.revision++
@@ -146,7 +146,7 @@ class FogManager(
         shader.update(start, end, distance, color, flags)
     }
 
-    private fun NativeShader.update(start: Float, end: Float, distance: Float, color: RGBColor?, flags: Int) {
+    private fun NativeShader.update(start: Float, end: Float, distance: Float, color: RGBAColor?, flags: Int) {
         use()
 
         this["uFogStart"] = start

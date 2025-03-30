@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -40,12 +40,12 @@ class GUIMeshCache(
     }
 
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         GUIMesh.addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
         revision++
     }
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         GUIMesh.addVertex(data, halfSize, x, y, textureId, u, v, tint, options)
     }
 

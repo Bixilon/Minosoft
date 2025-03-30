@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.sim
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -31,7 +31,7 @@ class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
     override fun draw() {
         // TODO: make brightness depend on ambient light (e.g. rain gradient, thunder gradient, time, ...)
         val brightness = context.session.world.getBrightness(context.session.player.physics.positionInfo.position) * 0.5f
-        tintColor = RGBColor(brightness, brightness, brightness, 0.1f)
+        tintColor = RGBAColor(brightness, brightness, brightness, 0.1f)
 
         // ToDo: Minecraft sets the uv coordinates according to the yaw and pitch (see InGameOverlayRenderer::renderUnderwaterOverlay)
 

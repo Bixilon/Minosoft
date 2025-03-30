@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierC
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.Colored
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 class PixlyzerStatusEffectType(
     override val identifier: ResourceLocation,
@@ -41,7 +41,7 @@ class PixlyzerStatusEffectType(
             return PixlyzerStatusEffectType(
                 identifier = identifier,
                 category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] } ?: StatusEffectCategories.NEUTRAL,
-                color = data["color"]?.toInt()?.asRGBColor() ?: ChatColors.WHITE,
+                color = data["color"]?.toInt()?.rgb() ?: ChatColors.WHITE.rgb(),
             )
         }
     }

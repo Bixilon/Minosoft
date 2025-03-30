@@ -20,50 +20,52 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
 class GrassTintCalculator : ColorMapTint(FILE) {
 
-    fun getColor(downfallIndex: Int, temperatureIndex: Int): Int {
+    fun getColor(downfallIndex: Int, temperatureIndex: Int): RGBColor {
         val map = map ?: return FALLBACK
 
         val color = map[downfallIndex shl 8 or temperatureIndex]
-        if (color == 0xFFFFFF) return 0x48B518
+        if (color == Colors.WHITE_RGB) return 0x48B518.rgb()
 
         return color
     }
 
-    fun getBlockColor(biome: Biome?): Int {
+    fun getBlockColor(biome: Biome?): RGBColor {
         if (biome == null) return getColor(127, 255)
 
         val color = getColor(biome.downfallIndex, biome.temperatureIndex)
 
         return when (biome.grassModifier) {
             null -> color
-            GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
-            GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
+            GrassColorModifiers.SWAMP -> 0x6A7039.rgb() // ToDo: Biome noise is applied here
+            GrassColorModifiers.DARK_FOREST -> ((color.rgb and 0xFEFEFE) + 0x28340A shr 1).rgb()
         }
     }
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int {
+    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         return getBlockColor(biome)
     }
 
-    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): Int {
+    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): RGBColor {
         if (state.block is GrassBlock) { // dirt particles
             return Colors.WHITE_RGB
         }
         return getBlockColor(biome)
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
+    override fun getItemColor(stack: ItemStack, tintIndex: Int): RGBColor {
         return getColor(173, 50) // TODO: plains, verify
     }
 
     companion object {
         val FILE = minecraft("colormap/grass").texture()
-        private const val FALLBACK = 0xFF00FF // ToDo: Is this correct? Was used in my old implementation
+        private val FALLBACK = 0xFF00FF.rgb() // ToDo: Is this correct? Was used in my old implementation
     }
 }

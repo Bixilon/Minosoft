@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import kotlin.time.Duration.Companion.milliseconds
 
 object RenderConstants {
-    val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
+    val TEXT_BACKGROUND_COLOR = RGBAColor(0, 0, 0, 80)
 
 
     const val FRUSTUM_CULLING_ENABLED = true

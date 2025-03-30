@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
@@ -95,6 +95,6 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
         val ATLAS = minecraft("hud/hotbar/experience")
         private val TEXT_PROPERTIES = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false)
         private val SIZE = Vec2(182, 5)
-        val LEVEL_COLOR = "#80ff20".asColor()
+        val LEVEL_COLOR = "#80ff20".rgba()
     }
 }

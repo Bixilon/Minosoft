@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(session, entityType, data, position, rotation) {
@@ -49,7 +49,7 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
     }
 
     override val canRaycast: Boolean get() = !isMarker && super.canRaycast
-    override val hitboxColor: RGBColor? get() = if (isMarker) null else super.hitboxColor
+    override val hitboxColor: RGBAColor? get() = if (isMarker) null else super.hitboxColor
     override var defaultAABB: AABB = AABB.EMPTY
     override var dimensions: Vec2 = DIMENSIONS
         private set

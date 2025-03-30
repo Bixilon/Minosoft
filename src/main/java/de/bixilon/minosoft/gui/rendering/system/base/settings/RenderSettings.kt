@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.settings
 
 import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 
@@ -29,7 +29,7 @@ data class RenderSettings(
     val sourceAlpha: BlendingFunctions = BlendingFunctions.ONE,
     val destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
     val depth: DepthFunctions = DepthFunctions.LESS_OR_EQUAL,
-    val clearColor: RGBColor = Colors.TRANSPARENT,
+    val clearColor: RGBAColor = Colors.TRANSPARENT,
     val polygonOffsetFactor: Float = 0.0f,
     val polygonOffsetUnit: Float = 0.0f,
 ) {

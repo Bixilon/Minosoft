@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,7 +53,7 @@ class CampfireSmokeParticle(session: PlaySession, position: Vec3d, velocity: Vec
         velocity.z += horizontal()
 
         if (age >= maxAge - 60) {
-            color = color.with(alpha = color.floatAlpha - 0.015f)
+            color = color.with(alpha = color.alphaf - 0.015f)
         }
         if (color.alpha == 0) {
             dead = true

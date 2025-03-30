@@ -11,28 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config
+package de.bixilon.minosoft.data.text.formatting.color
 
-object DebugOptions {
-    const val INFINITE_TORCHES = false
+import de.bixilon.kutil.ansi.ANSI
 
-    const val SIMULATE_TIME = false
+interface Color {
+    val ansi: String get() = ANSI.rgb(red, green, blue)
 
-    const val CLOUD_RASTER = false
+    val red: Int
+    val green: Int
+    val blue: Int
 
-    const val LIGHTMAP_DEBUG_WINDOW = false
-    const val LIGHT_DEBUG_MODE = false
+    val redf: Float
+    val greenf: Float
+    val bluef: Float
 
-    const val LOG_RAW_CHAT = false
+    val rgb: Int
 
-    const val FORCE_CHEST_ANIMATION = false
-    const val EMPTY_BUFFERS = false
+    companion object {
+        const val BITS = 8
 
-    const val FORCE_CHECK_UPDATES = false
+        const val MIN = 0
+        const val VALUES = (1 shl BITS)
+        const val MAX = VALUES - 1
 
-    const val VERIFY_COORDINATES = true
-    const val VERIFY_LIGHT_LEVEL = true
-    const val VERIFY_VECTORS = true
+        const val MASK = VALUES - 1
 
-    // When adding new options: add tests to ensure that they are disabled normally!!!
+        const val TIMES = VALUES * VALUES
+
+
+        fun toFloat(value: Int) = value * (1.0f / MAX)
+        fun fromFloat(value: Float) = (value * MAX).toInt()
+    }
 }

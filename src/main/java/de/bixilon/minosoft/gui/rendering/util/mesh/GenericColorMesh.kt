@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
@@ -23,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 
 open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType, initialCacheSize: Int = 1000) : Mesh(context, GenericColorMeshStruct, primitiveType, initialCacheSize) {
 
-    fun addVertex(position: Vec3, color: RGBColor?) {
+    fun addVertex(position: Vec3, color: RGBAColor?) {
         data.add(position.array)
         data.add((color ?: ChatColors.WHITE).rgba.buffer())
     }
@@ -37,7 +38,7 @@ open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveType
         data.add(x, y, z, color)
     }
 
-    fun addVertex(position: FaceVertexData, offset: Int, color: RGBColor?) {
+    fun addVertex(position: FaceVertexData, offset: Int, color: RGBAColor?) {
         data.add(
             position[offset + 0], position[offset + 1], position[offset + 2],
             (color ?: ChatColors.WHITE).rgba.buffer(),

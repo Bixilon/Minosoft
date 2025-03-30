@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,8 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
@@ -34,16 +35,16 @@ class FlatItemRender(
     override val particle: Texture?,
 ) : ItemRender {
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) {
         for ((index, layer) in layers.withIndex()) {
-            val tint = tints?.get(index)?.let { RGBColor(it shl 8) } ?: ChatColors.WHITE
+            val tint = tints?.get(index)?.rgba() ?: ChatColors.WHITE
             ImageElement(gui, layer, size = size, tint = tint).render(offset, consumer, options)
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
         for ((index, layer) in layers.withIndex()) {
-            mesh.addQuad(POSITIONS, UV, layer.shaderId.buffer(), (tints?.get(index) ?: 0xFFFFFF).buffer())
+            mesh.addQuad(POSITIONS, UV, layer.shaderId.buffer(), (tints?.get(index) ?: Colors.WHITE_RGB).rgb.buffer())
         }
         // TODO: items have depth
         // TODO: light, ...

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.Entit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
@@ -63,7 +63,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
         random.setSeed(position.hash)
         texture = blockState?.model?.getParticleTexture(random, position) ?: return
 
-        tintColor = RGBColor(0.1f, 0.1f, 0.1f, 1.0f)
+        tintColor = RGBAColor(0.1f, 0.1f, 0.1f, 1.0f)
 
         super.draw()
     }

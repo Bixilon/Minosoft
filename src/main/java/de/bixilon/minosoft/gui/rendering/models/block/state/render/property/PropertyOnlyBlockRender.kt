@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -26,9 +27,9 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
 
 interface PropertyOnlyBlockRender : BlockRender {
-    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?) = false
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?) = false
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Unit
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = Unit
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = Unit
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Unit
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Unit
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Unit
 }

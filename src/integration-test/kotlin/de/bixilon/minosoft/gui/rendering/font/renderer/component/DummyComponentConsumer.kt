@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
@@ -31,12 +31,12 @@ class DummyComponentConsumer : GUIVertexConsumer {
     val quads: MutableList<RendererdQuad> = mutableListOf()
 
     override val order: RenderOrder get() = RenderOrder(IntArray(0))
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) = Broken()
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken()
     override fun ensureSize(size: Int) = Unit
 
-    override fun addQuad(start: Vec2, end: Vec2, texture: ShaderTexture?, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addQuad(start: Vec2, end: Vec2, texture: ShaderTexture?, uvStart: Vec2, uvEnd: Vec2, tint: RGBAColor, options: GUIVertexOptions?) {
         quads += RendererdQuad(Vec2(start), Vec2(end))
     }
 
@@ -49,7 +49,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
             return width * scale
         }
 
-        override fun render(position: Vec2, properties: TextRenderProperties, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        override fun render(position: Vec2, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
             chars += RendererdCodePoint(Vec2(position))
         }
     }

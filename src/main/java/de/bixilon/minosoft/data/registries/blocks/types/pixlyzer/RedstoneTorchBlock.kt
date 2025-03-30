@@ -39,7 +39,7 @@ open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Re
             return
         }
 
-        (flameParticle ?: redstoneDustParticle)?.let { particle += it.factory?.build(session, Vec3d(position) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, 1.0f, it)) }
+        (flameParticle ?: redstoneDustParticle)?.let { particle += it.factory?.build(session, Vec3d(position) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED.rgba(), 1.0f, it)) }
     }
 
     companion object : PixLyzerBlockFactory<RedstoneTorchBlock> {

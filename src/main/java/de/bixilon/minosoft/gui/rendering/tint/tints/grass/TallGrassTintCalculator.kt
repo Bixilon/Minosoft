@@ -15,15 +15,16 @@ package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 class TallGrassTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
 
-    fun getColor(state: BlockState, biome: Biome?): Int {
+    fun getColor(state: BlockState, biome: Biome?): RGBColor {
         return grassTintCalculator.getBlockColor(biome) // TODO: check for top/bottom
     }
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int = getColor(state, biome)
+    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int) = getColor(state, biome)
     override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition) = getColor(state, biome)
 }

@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.clampAssign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -74,7 +74,7 @@ class NormalLightmapUpdater(
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
-        for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+        for (block in 0 until LightLevel.LEVELS) {
             var color = calculateBlock(dimension.ambientLight[block])
             color = tweak(color, gamma, dimension.effects.brighten, nightVision)
             buffer[0, block] = color
@@ -85,15 +85,15 @@ class NormalLightmapUpdater(
         val time = session.world.time
         val weather = session.world.weather
 
-        val skyColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateSky(dimension.ambientLight[it], weather, time) }
-        val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.ambientLight[it]) }
+        val skyColors = Array(LightLevel.LEVELS) { calculateSky(dimension.ambientLight[it], weather, time) }
+        val blockColors = Array(LightLevel.LEVELS) { calculateBlock(dimension.ambientLight[it]) }
 
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
         var color = Vec3()
-        for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-            for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+        for (sky in 0 until LightLevel.LEVELS) {
+            for (block in 0 until LightLevel.LEVELS) {
                 combine(skyColors[sky], blockColors[block], color)
                 color = tweak(color, gamma, dimension.effects.brighten, nightVision)
                 buffer[sky, block] = color

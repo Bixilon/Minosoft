@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -74,7 +74,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
 
 
     companion object {
-        val NORMAL_TEXT_COLOR = "#ff1313".asColor()
+        val NORMAL_TEXT_COLOR = "#ff1313".rgba()
         private const val HP_PER_ROW = 20
         const val HEARTS_PER_ROW = HP_PER_ROW / 2
         val HEART_SIZE = Vec2i(8, 9)

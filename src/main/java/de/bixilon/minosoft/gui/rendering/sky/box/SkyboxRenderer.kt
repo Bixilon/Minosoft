@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
@@ -99,7 +99,7 @@ class SkyboxRenderer(
     }
 
     private fun updateColorShader() {
-        colorShader.skyColor = color.color ?: DEFAULT_SKY_COLOR
+        colorShader.skyColor = (color.color ?: DEFAULT_SKY_COLOR).rgba()
         if (updateMatrix) {
             colorShader.skyViewProjectionMatrix = sky.matrix
             updateMatrix = false
@@ -140,6 +140,6 @@ class SkyboxRenderer(
     }
 
     companion object {
-        private val DEFAULT_SKY_COLOR = "#ecff89".asColor()
+        private val DEFAULT_SKY_COLOR = "#ecff89".rgb()
     }
 }

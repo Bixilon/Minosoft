@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 
 object EmptyComponent : ChatComponent {
     override val ansi: String get() = ""
@@ -22,7 +22,7 @@ object EmptyComponent : ChatComponent {
 
     override fun getJson(): Any = emptyList<Any>()
 
-    override fun setFallbackColor(color: RGBColor) = this
+    override fun setFallbackColor(color: RGBAColor) = this
 
     override fun getTextAt(pointer: Int): TextComponent = throw IllegalArgumentException()
 

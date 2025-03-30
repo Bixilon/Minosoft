@@ -29,7 +29,6 @@ import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -52,9 +51,6 @@ object Vec3Util {
 
     val Vec3.Companion.MAX: Vec3
         get() = Vec3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-
-    val Vec3.rgb: Int
-        get() = ((r * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 16) or ((g * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 8) or (b * RGBColor.COLOR_FLOAT_DIVIDER).toInt()
 
     val Vec3.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)

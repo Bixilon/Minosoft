@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,38 +19,38 @@ import de.bixilon.minosoft.data.registries.effects.properties.categories.Harmful
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.Colored
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 interface MovementEffect {
 
 
     object Speed : StatusEffectType(), MovementEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("speed")
-        override val color = 0x7CAFC6.asRGBColor()
+        override val color = 0x7CAFC6.rgb()
     }
 
     object Slowness : StatusEffectType(), MovementEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("slowness")
-        override val color = 0x5A6C81.asRGBColor()
+        override val color = 0x5A6C81.rgb()
     }
 
     object JumpBoost : StatusEffectType(), MovementEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("jump_boost")
-        override val color = 0x22FF4C.asRGBColor()
+        override val color = 0x22FF4C.rgb()
     }
 
     object Levitation : StatusEffectType(), MovementEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("levitation")
-        override val color = 0xCEFFFF.asRGBColor()
+        override val color = 0xCEFFFF.rgb()
     }
 
     object SlowFalling : StatusEffectType(), MovementEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("slow_falling")
-        override val color = 0xFFEFD1.asRGBColor()
+        override val color = 0xFFEFD1.rgb()
     }
 
     object DolphinsGrace : StatusEffectType(), MovementEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("dolphins_grace")
-        override val color = 0x88A3BE.asRGBColor()
+        override val color = 0x88A3BE.rgb()
     }
 }

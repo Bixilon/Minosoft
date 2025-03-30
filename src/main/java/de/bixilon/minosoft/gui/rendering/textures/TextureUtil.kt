@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,10 @@ package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.file.FileUtil.createParent
+import de.bixilon.kutil.file.FileUtil.mkdirParent
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -71,12 +72,12 @@ object TextureUtil {
 
         for (y in 0 until image.height) {
             for (x in 0 until image.width) {
-                var rgba = (image.raster.getSample(x, y, samples[0]) shl 24) or (image.raster.getSample(x, y, samples[1]) shl 16) or (image.raster.getSample(x, y, samples[2]) shl 8)
+                var rgba = RGBAColor(image.raster.getSample(x, y, samples[0]), image.raster.getSample(x, y, samples[1]), image.raster.getSample(x, y, samples[2]))
 
                 if (samples.size > 3) {
-                    rgba = rgba or (image.raster.getSample(x, y, samples[3]))
+                    rgba = rgba.with(image.raster.getSample(x, y, samples[3]))
                 } else {
-                    rgba = rgba or (image.alphaRaster?.getSample(x, y, 0) ?: 0xFF)
+                    rgba = rgba.with(image.alphaRaster?.getSample(x, y, 0) ?: 0xFF)
                 }
                 buffer.setRGBA(x, y, rgba)
             }
@@ -103,21 +104,22 @@ object TextureUtil {
 
                 val targetY = if (flipY) buffer.size.y - (y + 1) else y
 
-                bufferedImage.setRGB(x, targetY, 0xFF shl 24 or (rgba shr 8))
+                bufferedImage.setRGB(x, targetY, 0xFF shl 24 or rgba.rgb)
                 if (alpha) {
-                    bufferedImage.alphaRaster.setSample(x, targetY, 0, rgba ushr 24)
+                    bufferedImage.alphaRaster.setSample(x, targetY, 0, rgba.alpha)
                 }
             }
         }
 
-        file.createParent()
+        mkdirParent()
 
         ImageIO.write(bufferedImage, "png", file)
     }
 
-    fun Int.isBlack(): Boolean {
-        if (this and 0xFF == 0x00) return true // alpha
-        if (this shr 8 == 0x00) return true // rgb is black
+    fun RGBAColor.isBlack(): Boolean {
+        if (alpha == 0x00) return true
+        if (rgb == 0x00) return true
+
         return false
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,42 +13,19 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import de.bixilon.kutil.math.interpolation.FloatInterpolation
-
 object ColorUtil {
 
-    fun mixColors(vararg colors: Int): Int {
+
+    fun mix(colors: Array<RGBColor>): RGBColor {
         var red = 0
         var green = 0
         var blue = 0
 
         for (color in colors) {
-            red += color shr 16 and 0xFF
-            green += color shr 8 and 0xFF
-            blue += color and 0xFF
+            red += color.red
+            green += color.green
+            blue += color.blue
         }
-
-        return ((red / colors.size) shl 16) or ((green / colors.size) shl 8) or (blue / colors.size)
-    }
-
-    fun Float.asGray(): Int {
-        val color = (this * RGBColor.COLOR_FLOAT_DIVIDER).toInt()
-        return color shl 16 or color shl 8 or color
-    }
-
-    fun interpolateLinear(delta: Float, start: Int, end: Int): Int {
-        return (start.toFloat() + delta * (end.toFloat() - start.toFloat())).toInt()
-    }
-
-    fun interpolateRGB(delta: Float, start: RGBColor, end: RGBColor, component: (Float, Float, Float) -> Float = FloatInterpolation::interpolateLinear): RGBColor {
-        if (delta <= 0.0f) return start
-        if (delta >= 1.0f) return end
-
-        return RGBColor(
-            red = interpolateLinear(delta, start.red, end.red),
-            green = interpolateLinear(delta, start.green, end.green),
-            blue = interpolateLinear(delta, start.blue, end.blue),
-            alpha = interpolateLinear(delta, start.alpha, end.alpha),
-        )
+        return RGBColor(red / colors.size, green / colors.size, blue / colors.size)
     }
 }

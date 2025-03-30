@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.tint.tints
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 abstract class ColorMapTint(
     private val file: ResourceLocation,
 ) : TintProvider {
-    protected var map: IntArray? = null
+    protected var map: RGBArray? = null
 
     fun init(assets: AssetsManager) {
         val map = ignoreAll { assets[file].readTexture() } ?: return
@@ -37,8 +38,8 @@ abstract class ColorMapTint(
         this.map = map.toColorMap()
     }
 
-    private fun TextureBuffer.toColorMap(): IntArray {
-        val array = IntArray(size.x * size.y)
+    private fun TextureBuffer.toColorMap(): RGBArray {
+        val array = RGBArray(size.x * size.y)
         var index = 0
         for (y in 0 until size.y) {
             for (x in 0 until size.x) {

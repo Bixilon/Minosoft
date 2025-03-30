@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ class PoofParticle(session: PlaySession, position: Vec3d, data: ParticleData? = 
     init {
         this.gravityStrength = -0.1f
         this.friction = 0.9f
-        this.color = ((random.nextFloat() * 0.3f) + 0.7f).asGray()
+        this.color = ((random.nextFloat() * 0.3f) + 0.7f).asGray().rgba()
         this.scale = 0.1f * (random.nextFloat() * random.nextFloat() * 0.6f + 1.0f)
         maxAge = (16.0f / random.nextFloat() * 0.8f + 0.2f).toInt() + 2
     }

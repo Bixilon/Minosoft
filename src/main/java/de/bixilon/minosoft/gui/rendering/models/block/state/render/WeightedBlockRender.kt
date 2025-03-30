@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -68,19 +69,19 @@ class WeightedBlockRender(
         return getModel(random, position).getParticleTexture(random, position)
     }
 
-    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: IntArray?): Boolean {
+    override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
         return getModel(props.random, position).render(props, position, state, entity, tints)
     }
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) {
         models.first().model.render(gui, offset, consumer, options, size, stack, tints)
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
         models.first().model.render(mesh, state, tints)
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
         models.first().model.render(mesh, stack, tints)
     }
 

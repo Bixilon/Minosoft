@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,6 +40,6 @@ abstract class SpellParticle(session: PlaySession, position: Vec3d, velocity: Ve
     override fun tick() {
         super.tick()
 
-        color = color.with(alpha = interpolateLinear(0.05f, color.floatAlpha, 1.0f))
+        color = color.with(alpha = interpolateLinear(0.05f, color.alphaf, 1.0f))
     }
 }

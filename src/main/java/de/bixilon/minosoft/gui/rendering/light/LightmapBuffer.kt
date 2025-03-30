@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.light
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
 class LightmapBuffer(renderSystem: RenderSystem) {
@@ -53,7 +53,7 @@ class LightmapBuffer(renderSystem: RenderSystem) {
     operator fun get(sky: Int, block: Int) = get((sky shl 4) or block)
     operator fun get(light: Int): RGBColor {
         val offset = light * 4
-        return RGBColor(buffer.buffer.get(offset + 0), buffer.buffer.get(offset + 1), buffer.buffer.get(offset + 2), 1.0f)
+        return RGBColor(buffer.buffer.get(offset + 0), buffer.buffer.get(offset + 1), buffer.buffer.get(offset + 2))
     }
 
     fun upload() {
@@ -70,6 +70,6 @@ class LightmapBuffer(renderSystem: RenderSystem) {
 
 
     private companion object {
-        private const val UNIFORM_BUFFER_SIZE = ProtocolDefinition.LIGHT_LEVELS * ProtocolDefinition.LIGHT_LEVELS * 4 // skyLight * blockLight * RGBA
+        private const val UNIFORM_BUFFER_SIZE = LightLevel.LEVELS * LightLevel.LEVELS * 4 // skyLight * blockLight * RGBA
     }
 }

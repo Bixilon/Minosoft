@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -67,7 +67,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             return render3d(context, properties, maxSize, consumer, text, null)
         }
 
-        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
+        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBAColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives)
 

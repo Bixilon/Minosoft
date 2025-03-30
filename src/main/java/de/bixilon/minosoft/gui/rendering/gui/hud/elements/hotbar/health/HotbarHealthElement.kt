@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.effects.damage.DamageEffect
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -149,9 +149,9 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     }
 
     companion object {
-        private val POISON_TEXT_COLOR = "#602020".asColor()
-        private val WITHER_TEXT_COLOR = "#2b2b2b".asColor()
-        private val FROZEN_TEXT_COLOR = "#a8f7ff".asColor()
-        private val ABSORPTION_TEXT_COLOR = "#d4af37".asColor()
+        private val POISON_TEXT_COLOR = "#602020".rgba()
+        private val WITHER_TEXT_COLOR = "#2b2b2b".rgba()
+        private val FROZEN_TEXT_COLOR = "#a8f7ff".rgba()
+        private val ABSORPTION_TEXT_COLOR = "#d4af37".rgba()
     }
 }

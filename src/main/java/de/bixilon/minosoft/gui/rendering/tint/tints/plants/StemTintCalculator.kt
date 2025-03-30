@@ -18,15 +18,17 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 object StemTintCalculator : TintProvider {
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): Int {
-        if (state !is PropertyBlockState) return -1
-        val age = state.properties[BlockProperties.AGE]?.toInt() ?: return -1
+    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+        if (state !is PropertyBlockState) return Colors.WHITE_RGB
+        val age = state.properties[BlockProperties.AGE]?.toInt() ?: return Colors.WHITE_RGB
 
-        return ((age * 32) shl 16) or ((0xFF - age * 8) shl 8) or (age * 4)
+        return RGBColor(age * 32, 0xFF - age * 8, age * 4)
     }
 }

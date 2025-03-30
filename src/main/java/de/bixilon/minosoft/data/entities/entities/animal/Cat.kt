@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -52,7 +52,7 @@ class Cat(session: PlaySession, entityType: EntityType, data: EntityData, positi
 
     @get:SynchronizedEntityData
     val collarColor: RGBColor
-        get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0x0C)) ?: ChatColors.RED
+        get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0x0C))?.rgb() ?: ChatColors.RED.rgb()
 
     companion object : EntityFactory<Cat> {
         override val identifier: ResourceLocation = minecraft("cat")

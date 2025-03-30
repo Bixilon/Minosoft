@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -27,7 +27,7 @@ class WorldBorderOverlay(context: RenderContext) : SimpleOverlay(context) {
         get() = config.worldBorder && context.session.world.border.isOutside(context.session.player.physics.position)
 
     override fun update() {
-        tintColor = RGBColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
+        tintColor = RGBAColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
     }
 
 

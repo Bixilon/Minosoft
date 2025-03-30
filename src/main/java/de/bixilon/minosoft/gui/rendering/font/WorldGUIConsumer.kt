@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
@@ -31,13 +31,13 @@ class WorldGUIConsumer(val mesh: ChunkMesh, val transform: Mat4, val light: Int)
     override val order: RenderOrder get() = mesh.order
     private val uv = Vec2()
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
         this.uv.x = u; this.uv.y = v
-        mesh.addVertex(transformed, this.uv, texture ?: whiteTexture.texture, tint.rgb, light)
+        mesh.addVertex(transformed, this.uv, texture ?: whiteTexture.texture, tint.rgb(), light)
     }
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) {
         throw IllegalStateException("This is not hud!")
     }

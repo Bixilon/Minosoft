@@ -11,28 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config
+package de.bixilon.minosoft.data.text.formatting.color
 
-object DebugOptions {
-    const val INFINITE_TORCHES = false
+@JvmInline
+value class RGBArray(val array: IntArray) {
 
-    const val SIMULATE_TIME = false
+    constructor(size: Int) : this(IntArray(size))
+    constructor(size: Int, init: (Int) -> RGBColor) : this(IntArray(size) { init.invoke(it).rgb })
 
-    const val CLOUD_RASTER = false
+    inline val size get() = array.size
 
-    const val LIGHTMAP_DEBUG_WINDOW = false
-    const val LIGHT_DEBUG_MODE = false
-
-    const val LOG_RAW_CHAT = false
-
-    const val FORCE_CHEST_ANIMATION = false
-    const val EMPTY_BUFFERS = false
-
-    const val FORCE_CHECK_UPDATES = false
-
-    const val VERIFY_COORDINATES = true
-    const val VERIFY_LIGHT_LEVEL = true
-    const val VERIFY_VECTORS = true
-
-    // When adding new options: add tests to ensure that they are disabled normally!!!
+    inline operator fun get(index: Int) = RGBColor(array[index])
+    inline fun getOrNull(index: Int) = array.getOrNull(index)?.let { RGBColor(it) }
+    inline operator fun set(index: Int, value: RGBColor) {
+        array[index] = value.rgb
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,19 +19,19 @@ import de.bixilon.minosoft.data.registries.effects.properties.categories.Harmful
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.Colored
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 interface MiningEffect {
 
 
     object Haste : StatusEffectType(), MiningEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("haste")
-        override val color = 0xD9C043.asRGBColor()
+        override val color = 0xD9C043.rgb()
     }
 
     object MiningFatigue : StatusEffectType(), MiningEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("mining_fatigue")
-        override val color = 0x4A4217.asRGBColor()
+        override val color = 0x4A4217.rgb()
 
         fun calculateSpeed(amplifier: Int): Float {
             return when (amplifier) {

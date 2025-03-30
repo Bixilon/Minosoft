@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.text.events.click.SuggestChatClickEvent
 import de.bixilon.minosoft.data.text.events.hover.EntityHoverEvent
 import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
 import kotlin.test.assertEquals
@@ -144,7 +144,7 @@ internal class ChatComponentTest {
 
     @Test
     fun testHexColor() {
-        val expected = TextComponent("Test").color("#123456".asColor())
+        val expected = TextComponent("Test").color("#123456".rgb())
         val actual = """{"text":"Test", "color": "#123456"}""".chat()
         assertEquals(expected, actual)
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,9 +19,8 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -38,10 +37,10 @@ class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, 
         texture = (data.blockState.block.model ?: data.blockState.model)?.getParticleTexture(textureRandom, blockPosition)
 
         gravityStrength = 1.0f
-        color = 0.6f.asGray()
+        color = 0.6f.asGray().rgba()
 
-        session.rendering?.context?.tints?.getParticleTint(data.blockState, blockPosition)?.asRGBColor()?.let {
-            color = RGBColor(color.floatRed * it.floatRed, color.floatGreen * it.floatGreen, color.floatBlue * it.floatBlue)
+        session.rendering?.context?.tints?.getParticleTint(data.blockState, blockPosition)?.let {
+            color = RGBAColor(color.redf * it.redf, color.greenf * it.greenf, color.bluef * it.bluef)
         }
         scale /= 2.0f
 

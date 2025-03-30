@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -27,14 +28,14 @@ class ChunkMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, C
 
     override val order = context.system.quadOrder
 
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, lightIndex: Int) {
+    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
         data.ensureSize(ChunkMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.transformUV(uv).array
         data.add(position)
         data.add(PackedUV.pack(transformedUV[0], transformedUV[1]))
         data.add(
             texture.shaderId.buffer(),
-            (((lightIndex shl 24) or tintColor).buffer())
+            (((lightIndex shl 24) or tintColor.rgb).buffer())
         )
     }
 

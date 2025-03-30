@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.entities.entities.player.properties.textures.Pla
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.SkinPlayerTexture
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinMetadata
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
@@ -98,6 +99,6 @@ class SkinManagerTest {
         assertEquals(skin?.texture?.state, DynamicTextureState.LOADED)
         val buffer = skin?.texture?.data?.buffer!!
         // assertEquals(buffer.getRGBA(9, 0), 0x0F00FA_FF)
-        assertEquals(buffer.getRGBA(9, 0), 0x0D00FA_FF) // TODO: wrong? should be the value above
+        assertEquals(buffer.getRGBA(9, 0), 0x0D00FA_FF.rgba()) // TODO: wrong? should be the value above
     }
 }

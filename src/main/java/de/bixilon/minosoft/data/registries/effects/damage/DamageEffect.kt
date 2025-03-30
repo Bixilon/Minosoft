@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,63 +20,63 @@ import de.bixilon.minosoft.data.registries.effects.properties.categories.Harmful
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.Colored
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 interface DamageEffect {
 
 
     object Strength : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("strength")
-        override val color = 0x932423.asRGBColor()
+        override val color = 0x932423.rgb()
     }
 
     object InstantHealth : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect, InstantEffect {
         override val identifier = minecraft("instant_health")
-        override val color = 0xF82423.asRGBColor()
+        override val color = 0xF82423.rgb()
     }
 
     object InstantDamage : StatusEffectType(), DamageEffect, Identified, Colored, HarmfulEffect, InstantEffect {
         override val identifier = minecraft("instant_damage")
-        override val color = 0x430A09.asRGBColor()
+        override val color = 0x430A09.rgb()
     }
 
     object Regeneration : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("regeneration")
-        override val color = 0xCD5CAB.asRGBColor()
+        override val color = 0xCD5CAB.rgb()
     }
 
     object Resistance : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("resistance")
-        override val color = 0x99453A.asRGBColor()
+        override val color = 0x99453A.rgb()
     }
 
     object FireResistance : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("fire_resistance")
-        override val color = 0xE49A3A.asRGBColor()
+        override val color = 0xE49A3A.rgb()
     }
 
     object Weakness : StatusEffectType(), DamageEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("weakness")
-        override val color = 0x484D48.asRGBColor()
+        override val color = 0x484D48.rgb()
     }
 
     object Poison : StatusEffectType(), DamageEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("poison")
-        override val color = 0x4E9331.asRGBColor()
+        override val color = 0x4E9331.rgb()
     }
 
     object Wither : StatusEffectType(), DamageEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("wither")
-        override val color = 0x352A27.asRGBColor()
+        override val color = 0x352A27.rgb()
     }
 
     object HealthBoost : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("heath_boost")
-        override val color = 0xF87D23.asRGBColor()
+        override val color = 0xF87D23.rgb()
     }
 
     object Absorption : StatusEffectType(), DamageEffect, Identified, Colored, BeneficalEffect {
         override val identifier = minecraft("absorption")
-        override val color = 0x2552A5.asRGBColor()
+        override val color = 0x2552A5.rgb()
     }
 }

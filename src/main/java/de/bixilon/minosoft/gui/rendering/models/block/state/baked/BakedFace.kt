@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
@@ -39,14 +41,14 @@ class BakedFace(
 
     constructor(positions: FaceVertexData, uv: UnpackedUV, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
 
-    private fun color(tint: Int): Int {
-        if (tint <= 0) return shade.color
+    private fun color(tint: RGBColor): RGBColor {
+        if (tint.rgb <= 0) return shade.color
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?, ao: IntArray) {
+    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: RGBArray?, ao: IntArray) {
         val tint = color(tints.getOr0(tintIndex))
-        val lightTint = ((light[lightIndex].toInt() and 0xFF shl 24) or tint).buffer()
+        val lightTint = ((light[lightIndex].toInt() and 0xFF shl 24) or tint.rgb).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 
@@ -54,9 +56,9 @@ class BakedFace(
         mesh.addQuad(offset, this.positions, packedUV, textureId, lightTint, ao)
     }
 
-    fun render(mesh: BlockVertexConsumer, tints: IntArray?) {
+    fun render(mesh: BlockVertexConsumer, tints: RGBArray?) {
         val tint = color(tints.getOr0(tintIndex))
-        val lightTint = tint.buffer()
+        val lightTint = tint.rgb.buffer()
         val textureId = this.texture.shaderId.buffer()
 
         val mesh = mesh[texture.transparency]
@@ -64,8 +66,8 @@ class BakedFace(
     }
 
 
-    fun IntArray?.getOr0(index: Int): Int {
-        if (this == null) return 0
-        return if (index >= 0 && index < size) get(index) else 0
+    fun RGBArray?.getOr0(index: Int): RGBColor {
+        if (this == null) return RGBColor(0)
+        return if (index >= 0 && index < size) get(index) else RGBColor(0)
     }
 }

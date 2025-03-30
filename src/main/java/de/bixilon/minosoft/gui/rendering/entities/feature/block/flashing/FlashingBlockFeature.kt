@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
@@ -28,7 +28,7 @@ open class FlashingBlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
     scale: Vec3 = DEFAULT_SCALE,
-    var flashColor: RGBColor = ChatColors.WHITE,
+    var flashColor: RGBAColor = ChatColors.WHITE,
     var flashInterval: Float = 0.2f,
     var maxFlash: Float = 0.5f
 ) : BlockFeature(renderer, state, scale) {

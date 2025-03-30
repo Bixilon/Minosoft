@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLinkingException
@@ -200,7 +201,11 @@ class OpenGLNativeShader(
     }
 
     override fun setRGBColor(uniformName: String, color: RGBColor) {
-        setVec4(uniformName, Vec4(color.floatRed, color.floatGreen, color.floatBlue, color.floatAlpha))
+        setVec4(uniformName, Vec4(color.redf, color.greenf, color.bluef, 1.0f))
+    }
+
+    override fun setRGBAColor(uniformName: String, color: RGBAColor) {
+        setVec4(uniformName, Vec4(color.redf, color.greenf, color.bluef, color.alphaf))
     }
 
     override fun setTexture(uniformName: String, textureId: Int) {

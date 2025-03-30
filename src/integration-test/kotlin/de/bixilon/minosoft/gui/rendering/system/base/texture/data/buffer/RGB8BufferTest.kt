@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -39,7 +41,7 @@ class RGB8BufferTest {
 
     fun `set rgba and check buffer at random`() {
         val source = RGB8Buffer(Vec2i(12, 13))
-        source.setRGBA(9, 3, 0x112233FF)
+        source.setRGBA(9, 3, 0x112233FF.rgba())
         assertEquals(source.data.get(135 + 0), 0x11)
         assertEquals(source.data.get(135 + 1), 0x22)
         assertEquals(source.data.get(135 + 2), 0x33)
@@ -49,7 +51,7 @@ class RGB8BufferTest {
         val source = RGB8Buffer(Vec2i(12, 13))
         source.data.put(0, 0x11).put(1, 0x22).put(2, 0x33).put(3, 0x44)
         val rgba = source.getRGBA(0, 0)
-        assertEquals(rgba, 0x112233FF)
+        assertEquals(rgba, 0x112233FF.rgba())
         assertEquals(source.getR(0, 0), 0x11)
         assertEquals(source.getG(0, 0), 0x22)
         assertEquals(source.getB(0, 0), 0x33)
@@ -60,7 +62,7 @@ class RGB8BufferTest {
         val source = RGB8Buffer(Vec2i(12, 13))
         source.data.put(117 + 0, 0x11).put(117 + 1, 0x22).put(117 + 2, 0x33)
         val rgba = source.getRGBA(3, 3)
-        assertEquals(rgba, 0x112233FF)
+        assertEquals(rgba, 0x112233FF.rgba())
         assertEquals(source.getR(3, 3), 0x11)
         assertEquals(source.getG(3, 3), 0x22)
         assertEquals(source.getB(3, 3), 0x33)
@@ -70,8 +72,8 @@ class RGB8BufferTest {
     fun `get rgb at 3,3`() {
         val source = RGB8Buffer(Vec2i(12, 13))
         source.data.put(117 + 0, 0x11).put(117 + 1, 0x22).put(117 + 2, 0x33)
-        val rgba = source.getRGB(3, 3)
-        assertEquals(rgba, 0x112233)
+        val rgb = source.getRGB(3, 3)
+        assertEquals(rgb, 0x112233.rgb())
     }
 
 
@@ -84,9 +86,9 @@ class RGB8BufferTest {
         val destination = RGB8Buffer(Vec2i(12, 13))
         destination.put(source, Vec2i.EMPTY_INSTANCE, Vec2i.EMPTY_INSTANCE, Vec2i(12, 13))
 
-        assertEquals(destination.getRGBA(0, 0), 0x112233FF)
-        assertEquals(destination.getRGBA(10, 11), 0x112233FF)
-        assertEquals(destination.getRGBA(11, 12), 0x112233FF)
+        assertEquals(destination.getRGBA(0, 0), 0x112233FF.rgba())
+        assertEquals(destination.getRGBA(10, 11), 0x112233FF.rgba())
+        assertEquals(destination.getRGBA(11, 12), 0x112233FF.rgba())
     }
 
 
@@ -98,7 +100,7 @@ class RGB8BufferTest {
         val destination = RGB8Buffer(Vec2i(11, 9))
         destination.put(source, Vec2i(1, 1), Vec2i(3, 3), Vec2i(4, 3))
 
-        assertEquals(destination.getRGBA(3, 3), 0x112233FF)
-        assertEquals(destination.getRGBA(5, 5), 0x112233FF)
+        assertEquals(destination.getRGBA(3, 3), 0x112233FF.rgba())
+        assertEquals(destination.getRGBA(5, 5), 0x112233FF.rgba())
     }
 }

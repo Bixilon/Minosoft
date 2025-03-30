@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
@@ -33,14 +34,14 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
         data.ensureSize(size)
     }
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         data.add(x * SCALE, y * SCALE)
         data.add(u, v)
         data.add((texture?.shaderId ?: context.textures.whiteTexture.texture.shaderId).buffer())
         data.add(tint.rgba.buffer())
     }
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken("This is not a text only consumer!")
 
     data class BillboardTextMeshStruct(
