@@ -17,44 +17,44 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ceil
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 
 class AABBIterator(
-    private val rangeX: IntRange,
-    private val rangeY: IntRange,
-    private val rangeZ: IntRange,
+    val min: BlockPosition,
+    val max: BlockPosition,
 ) : Iterator<BlockPosition> {
     private var count = 0
-    private var x = rangeX.first
-    private var y = rangeY.first
-    private var z = rangeZ.first
+    private var current = min
 
+    val size = maxOf(0, max.x - min.x + 1) * maxOf(0, max.y - min.y + 1) * maxOf(0, max.z - min.z + 1)
 
-    val size: Int = maxOf(0, rangeX.last - rangeX.first + 1) * maxOf(0, rangeY.last - rangeY.first + 1) * maxOf(0, rangeZ.last - rangeZ.first + 1)
-
-    constructor(aabb: AABB) : this(AABB.getRange(aabb.min.x, aabb.max.x), AABB.getRange(aabb.min.y, aabb.max.y), AABB.getRange(aabb.min.z, aabb.max.z))
-    constructor(min: BlockPosition, max: BlockPosition) : this(min.x..max.x, min.y..max.y, min.z..max.z)
-    constructor(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int) : this(minX..maxX, minY..maxY, minZ..maxZ)
-
+    constructor(aabb: AABB) : this(aabb.min.floor, aabb.max.ceil - 1)
+    constructor(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int) : this(BlockPosition(minX, minY, minZ), BlockPosition(maxX, maxY, maxZ))
 
     override fun hasNext(): Boolean {
         return count < size
     }
 
     override fun next(): BlockPosition {
-        if (count >= size) throw IllegalStateException("No positions available anymore!")
+        if (!hasNext()) throw IllegalStateException("No positions available anymore!")
 
+        val current = current
+        var next = current
 
-        val position = BlockPosition(x, y, z)
-        if (z < rangeZ.last) z++ else {
-            z = rangeZ.first
-            if (y < rangeY.last) y++ else {
-                y = rangeY.first
-                if (x < rangeX.last) x++
+        if (next.x < max.x) next = next.plusX() else {
+            next = next.with(x = min.x)
+            if (next.z < max.z) next = next.plusZ() else {
+                next = next.with(z = min.z)
+
+                if (next.y < max.y) next = next.plusY()
             }
         }
 
+        this.current = next
+
         count++
-        return position
+        return current
     }
 
     fun blocks(world: World, chunk: Chunk? = null): WorldIterator {
