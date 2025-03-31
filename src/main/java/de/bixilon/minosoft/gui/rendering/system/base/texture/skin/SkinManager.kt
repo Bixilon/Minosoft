@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -105,7 +105,7 @@ class SkinManager(private val textures: TextureManager) {
         }
 
         private fun TextureBuffer.isReallyWide(): Boolean {
-            // check if pixel at arm (wide, not slim) is black. If not, its a wide skinn
+            // check if pixel at arm (wide, not slim) is black. If not, its a wide skin
             if (!this[50, 16].isBlack()) return true // left arm slim
             if (!this[42, 48].isBlack()) return true // right arm slim
 

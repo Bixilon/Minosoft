@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
+
 @JvmInline
 value class RGBArray(val array: IntArray) {
 
@@ -21,8 +23,8 @@ value class RGBArray(val array: IntArray) {
 
     inline val size get() = array.size
 
-    inline operator fun get(index: Int) = RGBColor(array[index])
-    inline fun getOrNull(index: Int) = array.getOrNull(index)?.let { RGBColor(it) }
+    inline operator fun get(index: Int) = array[index].rgb()
+    inline fun getOrNull(index: Int) = array.getOrNull(index)?.rgb()
     inline operator fun set(index: Int, value: RGBColor) {
         array[index] = value.rgb
     }

@@ -130,12 +130,12 @@ open class TextComponent(
     }
 
     fun copy(message: Any? = this.message, color: RGBAColor? = this.color, formatting: BitEnumSet<FormattingCodes> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent) = TextComponent(
-            message = message,
-            color = color,
-            formatting = formatting,
-            clickEvent = clickEvent,
-            hoverEvent = hoverEvent,
-        )
+        message = message,
+        color = color,
+        formatting = formatting,
+        clickEvent = clickEvent,
+        hoverEvent = hoverEvent,
+    )
 
     override val length: Int
         get() = message.length

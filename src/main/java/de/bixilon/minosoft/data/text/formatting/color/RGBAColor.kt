@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
 
 
 @JvmInline
-value class RGBAColor(val argb: Int) : Color, TextFormattable {
+value class RGBAColor(val rgba: Int) : Color, TextFormattable {
 
     constructor(red: Int, green: Int, blue: Int) : this(red, green, blue, MAX)
     constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(((alpha.clamp() and MASK) shl ALPHA_SHIFT) or ((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
@@ -35,10 +35,10 @@ value class RGBAColor(val argb: Int) : Color, TextFormattable {
     constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
     constructor(red: Float, green: Float, blue: Float, alpha: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue), Color.fromFloat(alpha))
 
-    override inline val red: Int get() = (argb ushr RED_SHIFT) and MASK
-    override inline val green: Int get() = (argb ushr GREEN_SHIFT) and MASK
-    override inline val blue: Int get() = (argb ushr BLUE_SHIFT) and MASK
-    inline val alpha: Int get() = (argb ushr ALPHA_SHIFT) and MASK
+    override inline val red: Int get() = (rgba ushr RED_SHIFT) and MASK
+    override inline val green: Int get() = (rgba ushr GREEN_SHIFT) and MASK
+    override inline val blue: Int get() = (rgba ushr BLUE_SHIFT) and MASK
+    inline val alpha: Int get() = (rgba ushr ALPHA_SHIFT) and MASK
 
 
     override inline val redf get() = Color.toFloat(red)
@@ -46,8 +46,8 @@ value class RGBAColor(val argb: Int) : Color, TextFormattable {
     override inline val bluef get() = Color.toFloat(blue)
     inline val alphaf get() = Color.toFloat(alpha)
 
-    override inline val rgb get() = argb and ((MASK shl RED_SHIFT) or (MASK shl GREEN_SHIFT) or (MASK shl BLUE_SHIFT))
-    inline val rgba get() = (argb shl BITS) or alpha
+    override inline val rgb get() = rgba ushr BITS
+    inline val argb get() = (rgba ushr BITS) or (rgba shl 3 * BITS)
 
 
     inline operator fun plus(value: Int) = plus(RGBAColor(value, value, value, value))
@@ -93,22 +93,21 @@ value class RGBAColor(val argb: Int) : Color, TextFormattable {
 
 
     companion object {
-        const val ALPHA_SHIFT = 3 * BITS
-        const val RED_SHIFT = 2 * BITS
-        const val GREEN_SHIFT = 1 * BITS
-        const val BLUE_SHIFT = 0 * BITS
+        const val RED_SHIFT = 3 * BITS
+        const val GREEN_SHIFT = 2 * BITS
+        const val BLUE_SHIFT = 1 * BITS
+        const val ALPHA_SHIFT = 0 * BITS
 
         fun Vec4.color() = RGBAColor(r, g, b, a)
 
-        inline fun Int.rgba() = RGBAColor(this shr BITS or (this and BITS shl (BITS * 3)))
-        inline fun Int.argb() = RGBColor(this)
+        inline fun Int.rgba() = RGBAColor(this)
 
 
         fun String.rgba(): RGBAColor {
             val string = this.removePrefix("#")
             val int = Integer.parseUnsignedInt(string, 16)
             return when (string.length) {
-                6 -> RGBAColor(int or (MASK shl ALPHA_SHIFT))
+                6 -> ((int shl BITS) or (MASK shl ALPHA_SHIFT)).rgba()
                 8 -> int.rgba()
                 else -> throw IllegalArgumentException("Invalid color string: $this")
             }

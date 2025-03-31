@@ -75,9 +75,9 @@ object TextureUtil {
                 var rgba = RGBAColor(image.raster.getSample(x, y, samples[0]), image.raster.getSample(x, y, samples[1]), image.raster.getSample(x, y, samples[2]))
 
                 if (samples.size > 3) {
-                    rgba = rgba.with(image.raster.getSample(x, y, samples[3]))
+                    rgba = rgba.with(alpha = image.raster.getSample(x, y, samples[3]))
                 } else {
-                    rgba = rgba.with(image.alphaRaster?.getSample(x, y, 0) ?: 0xFF)
+                    rgba = rgba.with(alpha = image.alphaRaster?.getSample(x, y, 0) ?: 0xFF)
                 }
                 buffer.setRGBA(x, y, rgba)
             }

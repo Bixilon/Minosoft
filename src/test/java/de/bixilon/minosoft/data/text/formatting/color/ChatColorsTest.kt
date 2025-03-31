@@ -13,16 +13,28 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-@JvmInline
-value class RGBAArray(val array: IntArray) {
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-    constructor(size: Int) : this(IntArray(size))
-    constructor(size: Int, init: (Int) -> RGBAColor) : this(IntArray(size) { init.invoke(it).rgba })
+class ChatColorsTest {
 
+    @Test
+    fun `get yellow`() {
+        assertEquals(ChatColors["yellow"], RGBAColor(255, 255, 85))
+    }
 
-    operator fun get(index: Int) = RGBAColor(array[index])
-    inline fun getOrNull(index: Int) = array.getOrNull(index)?.let { RGBAColor(it) }
-    operator fun set(index: Int, value: RGBAColor) {
-        array[index] = value.rgba
+    @Test
+    fun `get name of gold`() {
+        assertEquals(ChatColors.NAME_MAP.getKey(RGBAColor(255, 170, 0)), "gold")
+    }
+
+    @Test
+    fun `get a`() {
+        assertEquals(ChatColors.VALUES.getOrNull(Character.digit('a', 16)), RGBAColor(85, 255, 85))
+    }
+
+    @Test
+    fun `get char of red`() {
+        assertEquals(ChatColors.getChar(RGBAColor(170, 0, 0)), "4")
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -70,6 +70,7 @@ class SignBlockEntityTest {
         assertEquals(entity.back.color, ChatColors.BLUE)
         assertEquals(entity.back.text, arrayOf(ChatComponent.of("This is the back"), ChatComponent.of("text"), ChatComponent.of("of"), ChatComponent.of("this sign.")))
     }
+
     fun `nbt 1_20_4`() {
         val nbt = mapOf(
             "is_waxed" to 1.toByte(),

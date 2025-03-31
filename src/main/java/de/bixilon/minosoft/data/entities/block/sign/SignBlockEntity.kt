@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class SignBlockEntity(session: PlaySession) : BlockEntity(session) {
@@ -56,7 +56,7 @@ class SignBlockEntity(session: PlaySession) : BlockEntity(session) {
 
     class SignTextProperties(
         var glowing: Boolean = false,
-        var color: RGBColor? = null,
+        var color: RGBAColor? = null,
         val text: Array<ChatComponent> = Array(LINES) { EmptyComponent },
     ) {
 
@@ -78,7 +78,7 @@ class SignBlockEntity(session: PlaySession) : BlockEntity(session) {
         }
 
         fun update(color: Any?, glowing: Any?) {
-            this.color = color?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it]?.rgb() }
+            this.color = color?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it] }
             this.glowing = glowing?.toBoolean() ?: false
         }
     }

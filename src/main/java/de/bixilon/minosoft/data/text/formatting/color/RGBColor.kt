@@ -20,11 +20,12 @@ import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.BITS
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
+import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
 
 @JvmInline
 value class RGBColor(override val rgb: Int) : Color, TextFormattable {
 
-    constructor(red: Int, green: Int, blue: Int) : this(((red and MASK) shl RED_SHIFT) or ((green and MASK) shl GREEN_SHIFT) or ((blue and MASK) shl BLUE_SHIFT))
+    constructor(red: Int, green: Int, blue: Int) : this(((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
 
     constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
     constructor(rgb: Vec3) : this(rgb.r, rgb.g, rgb.b)
@@ -87,7 +88,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
             val int = Integer.parseUnsignedInt(string, 16)
             val rgb = when (string.length) {
                 6 -> int
-                8 -> int ushr BITS // rgba
+                8 -> int ushr BITS
                 else -> throw IllegalArgumentException("Invalid color string: $this")
             }
             return RGBColor(rgb)
