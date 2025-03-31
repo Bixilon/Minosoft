@@ -159,14 +159,17 @@ object VecUtil {
             return (((axisHash and 0xF) / 15.0f) - 0.5f) / 2.0f
         }
 
-        return Vec3(
+        val offset = Vec3(
             x = horizontal(positionHash),
             y = if (offsetType === RandomOffsetTypes.XYZ) {
                 (((positionHash shr 4 and 0xF) / 15.0f) - 1.0f) / 5.0f
             } else {
                 0.0f
             },
-            z = horizontal(positionHash shr 8)).clamp(-maxModelOffset, maxModelOffset)
+            z = horizontal(positionHash shr 8))
+        offset.clampAssign(-maxModelOffset, maxModelOffset)
+
+        return offset
     }
 
     fun Vec3.clampAssign(min: Float, max: Float) {
@@ -174,6 +177,7 @@ object VecUtil {
         this.y = y.clamp(min, max)
         this.z = z.clamp(min, max)
     }
+
     fun Vec3.clamp(min: Float, max: Float): Vec3 {
         return Vec3(
             x = x.clamp(min, max),

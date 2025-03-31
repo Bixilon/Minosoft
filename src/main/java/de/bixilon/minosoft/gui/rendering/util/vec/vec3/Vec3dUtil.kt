@@ -45,8 +45,11 @@ object Vec3dUtil {
     val Vec3d.Companion.MAX: Vec3d
         get() = Vec3d(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
 
-    val Vec3d.floor: Vec3i
-        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
+    val Vec3d.floor: BlockPosition
+        get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)
+
+    val Vec3d.ceil: BlockPosition
+        get() = BlockPosition(this.x.ceil, this.y.ceil, this.z.ceil)
 
     val Vec3d.blockPosition: BlockPosition
         get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)

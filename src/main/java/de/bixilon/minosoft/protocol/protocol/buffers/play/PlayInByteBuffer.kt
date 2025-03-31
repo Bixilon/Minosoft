@@ -41,6 +41,7 @@ import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W21A
@@ -378,7 +379,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readVelocity(): Vec3d {
-        return Vec3d(readShort(), readShort(), readShort()) * (1.0f / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER)
+        return Vec3d(readShort() * (1.0 / VELOCITY_NETWORK_DIVIDER), readShort() * (1.0 / VELOCITY_NETWORK_DIVIDER), readShort() * (1.0 / VELOCITY_NETWORK_DIVIDER))
     }
 
     fun readVibrationSource(): VibrationSource {

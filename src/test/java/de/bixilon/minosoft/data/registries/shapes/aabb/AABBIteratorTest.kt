@@ -27,7 +27,39 @@ class AABBIteratorTest {
     }
 
     @Test
-    fun singleBlock() {
+    fun `correct min and max`() {
+        val iterator = AABBIterator(1, 2, 3, 4, 5, 6)
+        assertEquals(iterator.min, BlockPosition(1, 2, 3))
+        assertEquals(iterator.max, BlockPosition(4, 5, 6))
+    }
+
+    @Test
+    fun `correct floor and ceil not`() {
+        val iterator = AABB(1.0, 2.0, 3.0, 4.0, 5.0, 6.0).positions()
+        assertEquals(iterator.min, BlockPosition(1, 2, 3))
+        assertEquals(iterator.max, BlockPosition(3, 4, 5))
+    }
+
+    @Test
+    fun `correct floor and ceil`() {
+        val iterator = AABB(1.2, 2.2, 3.3, 4.5, 5.7, 6.4).positions()
+        assertEquals(iterator.min, BlockPosition(1, 2, 3))
+        assertEquals(iterator.max, BlockPosition(4, 5, 6))
+    }
+
+    @Test
+    fun `less than single block`() {
+        val aabb = AABB(0.0, 0.0, 0.0, 0.1, 0.1, 0.1)
+
+        val positions = aabb.positions()
+        assertEquals(1, positions.size)
+        assertTrue(positions.hasNext())
+        assertEquals(BlockPosition(0, 0, 0), positions.next())
+        assertFalse(positions.hasNext())
+    }
+
+    @Test
+    fun `exactly one block`() {
         val aabb = AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
 
         val positions = aabb.positions()
@@ -43,14 +75,14 @@ class AABBIteratorTest {
 
         val positions = aabb.positions()
         assertEquals(24, positions.size)
-        val set: MutableSet<BlockPosition> = mutableSetOf()
+        val set: MutableSet<BlockPosition> = hashSetOf()
 
         for (position in positions) {
             set += position
         }
         assertEquals(24, set.size)
 
-        assertEquals(setOf(
+        assertEquals(hashSetOf(
             BlockPosition(0, 0, 0),
             BlockPosition(0, 0, 1),
             BlockPosition(0, 0, 2),
@@ -108,9 +140,10 @@ class AABBIteratorTest {
 
         val positions = aabb.positions()
         assertEquals(64, positions.size)
-        for (x in -2 until 2) {
-            for (y in -2 until 2) {
-                for (z in -2 until 2) {
+
+        for (y in -2 until 2) {
+            for (z in -2 until 2) {
+                for (x in -2 until 2) {
                     assertEquals(BlockPosition(x, y, z), positions.next())
                 }
             }
