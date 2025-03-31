@@ -111,7 +111,7 @@ object TextureUtil {
             }
         }
 
-        mkdirParent()
+        file.mkdirParent()
 
         ImageIO.write(bufferedImage, "png", file)
     }

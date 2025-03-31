@@ -49,10 +49,8 @@ object ChatColors {
 
         var index = 0
         for (field in this::class.java.declaredFields) {
-            val color = field.get(null)
-            if (color !is RGBAColor) {
-                continue
-            }
+            if (field.type != Int::class.java) continue // inlined datatype
+            val color = RGBAColor(field.getInt(null))
             VALUES[index] = color
             CHAR_MAP[color] = index
             nameMap[field.name.lowercase()] = color
@@ -60,6 +58,7 @@ object ChatColors {
         }
 
         NAME_MAP = nameMap
+        if (NAME_MAP.size != 16) throw IllegalStateException("No colors found?")
 
         CHAR_MAP.defaultReturnValue(-1)
     }
@@ -72,14 +71,12 @@ object ChatColors {
         return VALUES.getOrNull(id)
     }
 
-    operator fun get(name: String): RGBAColor? {
-        return when (name) {
-            "dark_grey" -> DARK_GRAY
-            else -> NAME_MAP[name]
-        }
+    operator fun get(name: String) = when (name) {
+        "dark_grey" -> DARK_GRAY
+        else -> NAME_MAP[name]
     }
 
-    fun getChar(color: RGBColor?): String? {
+    fun getChar(color: RGBAColor?): String? {
         if (color == null) return null
         val char = CHAR_MAP.getInt(color)
         if (char < 0) return null

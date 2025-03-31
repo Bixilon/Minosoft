@@ -100,7 +100,7 @@ open class TextComponent(
     override val legacy: String
         get() {
             val builder = StringBuilder()
-            ChatColors.getChar(color?.rgb())?.let { builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(it) }
+            ChatColors.getChar(color)?.let { builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(it) }
             for (formattingCode in this.formatting) {
                 builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX)
                 builder.append(formattingCode.char)

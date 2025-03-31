@@ -334,9 +334,9 @@ internal class ChatComponentTest {
     private fun assertEquals(expected: ChatComponent, actual: ChatComponent) {
         when (expected) {
             is BaseComponent -> {
-                if (actual !is BaseComponent) throw AssertionFailedError("Type mismatch", "BaseComponent", actual::class.java.name)
+                if (actual !is BaseComponent) assert("Type mismatch", "BaseComponent", actual::class.java.name)
 
-                if (expected.parts.size != actual.parts.size) throw AssertionFailedError("Count of parts does not match", expected.parts, actual.parts)
+                if (expected.parts.size != actual.parts.size) assert("Count of parts does not match", expected.parts, actual.parts)
 
                 for (index in expected.parts.indices) {
                     val first = expected.parts[index]
@@ -347,20 +347,20 @@ internal class ChatComponentTest {
             }
 
             is TextComponent -> {
-                if (actual !is TextComponent) throw AssertionFailedError("Type mismatch", "TextComponent", actual::class.java.name)
-                if (expected.message != actual.message) {
-                    throw AssertionFailedError("Message mismatch", expected.message, actual.message)
-                }
-                if (expected.clickEvent != actual.clickEvent) {
-                    throw AssertionFailedError("Click event mismatch: $expected", expected.clickEvent, actual.clickEvent)
-                }
-                if (expected.hoverEvent != actual.hoverEvent) {
-                    throw AssertionFailedError("Click event mismatch: $expected", expected.hoverEvent, actual.hoverEvent)
-                }
+                if (actual !is TextComponent) assert("Type mismatch", "TextComponent", actual::class.java.name)
+                if (expected.message != actual.message) assert("Message mismatch", expected.message, actual.message)
+                if (expected.clickEvent != actual.clickEvent) assert("Click event mismatch: $expected", expected.clickEvent, actual.clickEvent)
+                if (expected.hoverEvent != actual.hoverEvent) assert("Click event mismatch: $expected", expected.hoverEvent, actual.hoverEvent)
+                if (expected.color != actual.color) assert("Color mismatch", expected.color, actual.color)
+                if (expected.font != actual.font) assert("Font mismatch: $expected", expected.font, actual.font)
+                if (expected.formatting != actual.formatting) assert("Formatting mismatch: $expected", expected.formatting, actual.formatting)
+
                 assertEquals(expected as Any, actual)
             }
 
             else -> assertEquals(expected as Any, actual)
         }
     }
+
+    private fun assert(message: String, expected: Any?, actual: Any?): Nothing = throw AssertionFailedError("$message: expected=$expected, actual=$actual", expected, actual)
 }

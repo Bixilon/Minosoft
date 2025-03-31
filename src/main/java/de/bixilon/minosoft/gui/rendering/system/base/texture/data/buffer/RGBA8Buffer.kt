@@ -54,7 +54,7 @@ class RGBA8Buffer(
 
     override fun getRGBA(x: Int, y: Int): RGBAColor {
         val stride = stride(x, y)
-        return RGBAColor(this[stride + 0], this[stride + 1], this[stride + 2], this[stride + 3] shl 0)
+        return RGBAColor(this[stride + 0], this[stride + 1], this[stride + 2], this[stride + 3])
     }
 
     override fun getRGB(x: Int, y: Int): RGBColor {
