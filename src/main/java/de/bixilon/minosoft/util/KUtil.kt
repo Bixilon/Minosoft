@@ -37,6 +37,7 @@ import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.checkInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -60,6 +61,7 @@ import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -351,4 +353,15 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
+
+    @Deprecated("kutil 1.27.1")
+    private val IN_BYTE_BUFFER_BYTES = InByteBuffer::class.java.getFieldOrNull("bytes")!!
+
+    @Deprecated("kutil 1.27.1")
+    fun InByteBuffer.readByteArray(array: ByteArray, offset: Int = 0, length: Int) {
+        require(length, 1)
+        if (offset + array.size < length) throw IllegalArgumentException("Provided array has not enough capacity! (required: ${offset + array.size}, length=$length)")
+        System.arraycopy(IN_BYTE_BUFFER_BYTES[this], pointer, array, offset, length)
+        pointer += length
+    }
 }

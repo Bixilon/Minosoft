@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.gui.rendering.util.allocator.ByteAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketReadException
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.KUtil.readByteArray
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -39,26 +41,37 @@ class PacketDecoder(
     override fun decode(context: ChannelHandlerContext, array: ByteArray, out: MutableList<Any>) {
         val buffer = InByteBuffer(array)
         val packetId = buffer.readVarInt()
-        val data = buffer.readRemaining()
+        val length = buffer.size - buffer.pointer
+        val data = ALLOCATOR.create(length)
+        buffer.readByteArray(data, 0, length)
 
+        try {
+            val queued = decode(packetId, length, data) ?: return
+            out += queued
+        } finally {
+            ALLOCATOR.free(data)
+        }
+    }
+
+    private fun decode(packetId: Int, length: Int, data: ByteArray): QueuedS2CP<S2CPacket>? {
         val state = client.connection.state
         if (state == null) {
             Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Tried decoding a packet while being not connected. Skipping." }
-            return
+            return null
         }
 
 
         val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
 
         if (type.extra != null && type.extra.skip(client.session)) {
-            return
+            return null
         }
 
         val packet = try {
-            type.create(data, client.session).unsafeCast<S2CPacket>()
+            type.create(data, length, client.session).unsafeCast<S2CPacket>()
         } catch (error: PacketNotImplementedException) {
             error.printStackTrace()
-            return
+            return null
         } catch (exception: NetworkException) {
             type.extra?.onError(exception, client.session)
             throw exception
@@ -71,11 +84,12 @@ class PacketDecoder(
             throw PacketReadException(realError)
         }
 
-        out += QueuedS2CP(type, packet)
+        return QueuedS2CP(type, packet)
     }
 
 
     companion object {
         const val NAME = "packet_decoder"
+        val ALLOCATOR = ByteAllocator()
     }
 }

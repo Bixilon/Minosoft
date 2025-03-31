@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fixBlockEntity
+import de.bixilon.minosoft.gui.rendering.util.allocator.ByteAllocator
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP
@@ -45,6 +46,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W03A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil.readByteArray
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -97,7 +99,10 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (action == ChunkAction.CREATE && buffer.versionId >= V_19W36A && buffer.versionId < V_21W37A) {
                 this.prototype.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
-            readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.session), dimension, sectionBitMask)
+            val length = buffer.readVarInt()
+            val data = ALLOCATOR.create(length)
+            buffer.readByteArray(data, 0, length)
+            readingData = ChunkReadingData(data, PlayInByteBuffer(data, buffer.session), dimension, sectionBitMask)
 
             // set position to expected read positions; the server sometimes sends a bunch of useless zeros (~ 190k), thanks @pokechu22
 
@@ -171,6 +176,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     private fun ChunkReadingData.readChunkData() {
         val chunkData = if (readingData.buffer.versionId < V_21W37A) ChunkPacketUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight) else ChunkPacketUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false)
+        ALLOCATOR.free(data)
         if (chunkData == null) {
             action = ChunkAction.UNLOAD
         } else {
@@ -203,9 +209,14 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunk (position=$position)" }
     }
 
-    private data class ChunkReadingData(
+    private class ChunkReadingData(
+        val data: ByteArray,
         val buffer: PlayInByteBuffer,
         val dimension: DimensionProperties,
         val sectionBitMask: BitSet?,
     )
+
+    companion object {
+        val ALLOCATOR = ByteAllocator()
+    }
 }
