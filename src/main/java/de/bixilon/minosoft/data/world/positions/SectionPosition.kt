@@ -35,49 +35,68 @@ value class SectionPosition(
     inline val y: SectionHeight get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
     inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
+
+    inline fun modify(other: Long, component: Long, add: Long): SectionPosition {
+        val bc = raw and other
+        val a = ((raw and component) + add) and component
+        return SectionPosition(bc or a)
+    }
+
+    inline fun modifyX(modify: Long): SectionPosition {
+        return modify((Integer.toUnsignedLong(MASK_Y) shl SHIFT_Y) or (Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z), Integer.toUnsignedLong(MASK_X) shl SHIFT_X, modify)
+    }
+
+    inline fun modifyY(modify: Long): SectionPosition {
+        return modify((Integer.toUnsignedLong(MASK_X) shl SHIFT_X) or (Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z), Integer.toUnsignedLong(MASK_Y) shl SHIFT_Y, modify)
+    }
+
+    inline fun modifyZ(modify: Long): SectionPosition {
+        return modify((Integer.toUnsignedLong(MASK_X) shl SHIFT_X) or (Integer.toUnsignedLong(MASK_Y) shl SHIFT_Y), Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z, modify)
+    }
+
     inline fun plusX(): SectionPosition {
         assertPosition(this.x < MAX_X)
-        return SectionPosition(raw + X * 1)
+        return modifyX(X * 1)
     }
 
     inline fun plusX(x: Int): SectionPosition {
         assertPosition(this.x + x, -MAX_X, MAX_X)
-        return SectionPosition(raw + X * x)
+        return modifyX(X * x)
     }
 
     inline fun minusX(): SectionPosition {
         assert(this.x > -MAX_X)
-        return SectionPosition(raw - X * 1)
+        return modifyX(-X * 1)
     }
 
     inline fun plusY(): SectionPosition {
         assertPosition(this.y < MAX_Y)
-        return SectionPosition(raw + Y * 1)
+        return modifyY(Y * 1)
     }
 
     inline fun plusY(y: Int): SectionPosition {
         assertPosition(this.y + y, MIN_Y, MAX_Y)
-        return SectionPosition(raw + Y * y)
+        return modifyY(Y * y)
     }
 
     inline fun minusY(): SectionPosition {
         assert(this.y > MIN_Y)
-        return SectionPosition(raw - Y * 1)
+        return modifyY(-Y * 1)
     }
 
     inline fun plusZ(): SectionPosition {
         assert(this.z < MAX_Z)
-        return SectionPosition(raw + Z * 1)
+        return modifyZ(Z * 1)
     }
 
     inline fun plusZ(z: Int): SectionPosition {
         assertPosition(this.z + z, -MAX_Z, MAX_Z)
-        return SectionPosition(raw + Z * z)
+        return modifyZ(Z * z)
     }
 
     inline fun minusZ(): SectionPosition {
         assert(this.z > -MAX_Z)
-        return SectionPosition(raw - Z * 1)
+        return modifyZ(-Z * 1)
     }
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = SectionPosition(x, y, z)

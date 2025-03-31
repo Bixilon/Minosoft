@@ -39,6 +39,15 @@ value class InChunkPosition(
     inline val z: Int get() = (raw ushr SHIFT_Z) and MASK_Z
     inline val xz: Int get() = raw and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
 
+    inline fun modify(other: Int, component: Int, add: Int): InChunkPosition {
+        val bc = raw and other
+        val a = ((raw and component) + add) and component
+        return InChunkPosition(bc or a)
+    }
+
+    inline fun modifyY(modify: Int): InChunkPosition {
+        return modify((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z), MASK_Y shl SHIFT_Y, modify)
+    }
 
     inline fun plusX(): InChunkPosition {
         assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
@@ -57,17 +66,17 @@ value class InChunkPosition(
 
     inline fun plusY(): InChunkPosition {
         assertPosition(this.y < ProtocolDefinition.CHUNK_MAX_Y)
-        return InChunkPosition(raw + Y * 1)
+        return modifyY(Y * 1)
     }
 
     inline fun plusY(y: Int): InChunkPosition {
         assertPosition(this.y + y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
-        return InChunkPosition(raw + Y * y)
+        return modifyY(Y * y)
     }
 
     inline fun minusY(): InChunkPosition {
         assertPosition(this.y > ProtocolDefinition.CHUNK_MIN_Y)
-        return InChunkPosition(raw - Y * 1)
+        return modifyY(-Y * 1)
     }
 
     inline fun plusZ(): InChunkPosition {

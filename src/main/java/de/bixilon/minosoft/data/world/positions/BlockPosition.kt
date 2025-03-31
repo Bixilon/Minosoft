@@ -39,50 +39,67 @@ value class BlockPosition(
     inline val y: Int get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
     inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
+    inline fun modify(other: Long, component: Long, add: Long): BlockPosition {
+        val bc = raw and other
+        val a = ((raw and component) + add) and component
+        return BlockPosition(bc or a)
+    }
+
+    inline fun modifyX(modify: Long): BlockPosition {
+        return modify((Integer.toUnsignedLong(MASK_Y) shl SHIFT_Y) or (Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z), Integer.toUnsignedLong(MASK_X) shl SHIFT_X, modify)
+    }
+
+    inline fun modifyY(modify: Long): BlockPosition {
+        return modify((Integer.toUnsignedLong(MASK_X) shl SHIFT_X) or (Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z), Integer.toUnsignedLong(MASK_Y) shl SHIFT_Y, modify)
+    }
+
+    inline fun modifyZ(modify: Long): BlockPosition {
+        return modify((Integer.toUnsignedLong(MASK_X) shl SHIFT_X) or (Integer.toUnsignedLong(MASK_Y) shl SHIFT_Y), Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z, modify)
+    }
 
     inline fun plusX(): BlockPosition {
         assertPosition(this.x < MAX_X)
-        return BlockPosition(raw + X * 1)
+        return modifyX(X * 1)
     }
 
     inline fun plusX(x: Int): BlockPosition {
         assertPosition(this.x + x, -MAX_X, MAX_X)
-        return BlockPosition(raw + X * x)
+        return modifyX(X * x)
     }
 
     inline fun minusX(): BlockPosition {
         assertPosition(this.x > -MAX_X)
-        return BlockPosition(raw - X * 1)
+        return modifyX(-X * 1)
     }
 
     inline fun plusY(): BlockPosition {
         assertPosition(this.y < MAX_Y)
-        return BlockPosition(raw + Y * 1)
+        return modifyY(Y * 1)
     }
 
     inline fun plusY(y: Int): BlockPosition {
         assertPosition(this.y + y, MIN_Y, MAX_Y)
-        return BlockPosition(raw + Y * y)
+        return modifyY(Y * y)
     }
 
     inline fun minusY(): BlockPosition {
         assertPosition(this.y > -MAX_Y)
-        return BlockPosition(raw - Y * 1)
+        return modifyY(-Y * 1)
     }
 
     inline fun plusZ(): BlockPosition {
         assertPosition(this.z < MAX_Y)
-        return BlockPosition(raw + Z * 1)
+        return modifyZ(Z * 1)
     }
 
     inline fun plusZ(z: Int): BlockPosition {
         assertPosition(this.z + z, -MAX_Z, MAX_Z)
-        return BlockPosition(raw + Z * z)
+        return modifyZ(Z * z)
     }
 
     inline fun minusZ(): BlockPosition {
         assertPosition(this.z > -MAX_Z)
-        return BlockPosition(raw - Z * 1)
+        return modifyZ(-Z * 1)
     }
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = BlockPosition(x, y, z)
