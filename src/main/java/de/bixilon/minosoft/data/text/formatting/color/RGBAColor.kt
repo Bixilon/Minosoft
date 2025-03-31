@@ -66,7 +66,8 @@ value class RGBAColor(val argb: Int) : Color, TextFormattable {
     inline fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue, alpha: Int = this.alpha) = RGBAColor(red, green, blue, alpha)
     inline fun with(red: Float = this.redf, green: Float = this.greenf, blue: Float = this.bluef, alpha: Float = this.alphaf) = RGBAColor(red, green, blue, alpha)
 
-    fun rgb() = RGBColor(red, green, blue)
+    override inline fun rgb() = RGBColor(red, green, blue)
+    override inline fun rgba() = this
 
     fun mix(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
 
