@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.ansi.ANSI
 
 interface Color {
@@ -39,6 +40,8 @@ interface Color {
 
         const val TIMES = VALUES * VALUES
 
+
+        fun Int.clamp() = this.clamp(MIN, MAX)
 
         fun toFloat(value: Int) = value * (1.0f / MAX)
         fun fromFloat(value: Float) = (value * MAX).toInt()

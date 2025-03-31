@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.text.formatting.color
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -22,13 +23,14 @@ import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.BITS
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
+import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
 
 
 @JvmInline
 value class RGBAColor(val argb: Int) : Color, TextFormattable {
 
     constructor(red: Int, green: Int, blue: Int) : this(red, green, blue, MAX)
-    constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(((alpha and MASK) shl ALPHA_SHIFT) or ((red and MASK) shl RED_SHIFT) or ((green and MASK) shl GREEN_SHIFT) or ((blue and MASK) shl BLUE_SHIFT))
+    constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(((alpha.clamp() and MASK) shl ALPHA_SHIFT) or ((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
 
     constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
     constructor(red: Float, green: Float, blue: Float, alpha: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue), Color.fromFloat(alpha))
@@ -73,11 +75,15 @@ value class RGBAColor(val argb: Int) : Color, TextFormattable {
     fun toVec4() = Vec4(redf, greenf, bluef, alphaf)
 
     override fun toString(): String {
-        return if (alpha != MAX) {
-            String.format("#%08X", rgba)
-        } else {
-            String.format("#%06X", rgb)
+        val builder = StringBuilder(9)
+        builder.append('#')
+        builder.append(red.toHex(2))
+        builder.append(green.toHex(2))
+        builder.append(blue.toHex(2))
+        if (alpha != MAX) {
+            builder.append(alpha.toHex(2))
         }
+        return builder.toString()
     }
 
     override fun toText(): ChatComponent {
@@ -93,7 +99,7 @@ value class RGBAColor(val argb: Int) : Color, TextFormattable {
 
         fun Vec4.color() = RGBAColor(r, g, b, a)
 
-        inline fun Int.rgba() = RGBAColor(this shl BITS or (this ushr (BITS * 3)))
+        inline fun Int.rgba() = RGBAColor(this shr BITS or (this and BITS shl (BITS * 3)))
         inline fun Int.argb() = RGBColor(this)
 
 
