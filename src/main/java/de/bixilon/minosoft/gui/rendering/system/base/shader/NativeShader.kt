@@ -76,6 +76,7 @@ interface NativeShader {
             is Vec3 -> setVec3(uniformName, data)
             is Vec2 -> setVec2(uniformName, data)
             is RGBColor -> setRGBColor(uniformName, data)
+            is RGBAColor -> setRGBAColor(uniformName, data)
             is UniformBuffer -> setUniformBuffer(uniformName, data)
             // ToDo: PNGTexture
             is Boolean -> setBoolean(uniformName, data)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.textures
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -69,10 +70,9 @@ class TextureReadingTest {
     }
 
     private fun TextureBuffer.assertSand() {
-        assertEquals(getRGBA(0, 0), 0xE7E4BBFF.toInt())
-        assertEquals(getRGBA(1, 0), 0xDACFA3FF.toInt())
-        assertEquals(getRGBA(0, 1), 0xD5C496FF.toInt())
-
+        assertEquals(getRGBA(0, 0), RGBAColor(0xE7, 0xE4, 0xBB))
+        assertEquals(getRGBA(1, 0), RGBAColor(0xDA, 0xCF, 0xA3))
+        assertEquals(getRGBA(0, 1), RGBAColor(0xD5, 0xC4, 0x96))
     }
 
     fun `read1 sand rgba`() {

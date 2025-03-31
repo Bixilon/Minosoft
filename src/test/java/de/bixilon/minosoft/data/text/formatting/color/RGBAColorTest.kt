@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -85,5 +86,16 @@ class RGBAColorTest {
         assertEquals(color.rgb(), RGBColor(0x12, 0x34, 0x56))
     }
 
-    // TODO: operations (plus, times), conversion, toString, Int::rgb, Int::rgba, mix
+    @Test
+    fun `int to rgba`() {
+        assertEquals(0x12345678.rgba(), RGBAColor(0x12, 0x34, 0x56, 0x78))
+    }
+
+    @Test
+    fun `string to rgba`() {
+        assertEquals("#123456".rgba(), RGBAColor(0x12, 0x34, 0x56))
+        assertEquals("#12345678".rgba(), RGBAColor(0x12, 0x34, 0x56, 0x78))
+    }
+
+    // TODO: operations (plus, times), toString, mix
 }
