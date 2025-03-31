@@ -105,9 +105,11 @@ class LoadedMeshes(
                 continue
             }
 
-            for (entry in meshes.int2ObjectEntrySet()) {
-                val mesh = entry.value
-                if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, entry.intKey), mesh.minPosition, mesh.maxPosition)) {
+            val iterator = meshes.keys.iterator()
+            while (iterator.hasNext()) {
+                val key = iterator.nextInt()
+                val mesh = meshes[key] ?: continue
+                if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, key), mesh.minPosition, mesh.maxPosition)) {
                     continue
                 }
                 visible.addMesh(mesh)

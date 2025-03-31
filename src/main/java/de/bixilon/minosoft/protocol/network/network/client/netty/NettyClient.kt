@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,10 +34,8 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthEncoder
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -154,14 +152,15 @@ class NettyClient(
         } else if (cause is EncoderException) {
             cause = error.cause ?: cause
         }
-        if (RunConfiguration.DISABLE_EROS || session is StatusSession) {
-            val log = if (cause is PacketHandleException || cause is PacketReadException) cause.cause else cause
-            Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { log }
-        }
+        var log = true
         if (cause !is NetworkException || cause is CriticalNetworkException || connection.state == ProtocolStates.LOGIN) {
             session.error = cause
+            log = false
             disconnect()
-            return
+        }
+        if (log) {
+            val message = if (cause is PacketHandleException || cause is PacketReadException) cause.cause else cause
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { message }
         }
     }
 

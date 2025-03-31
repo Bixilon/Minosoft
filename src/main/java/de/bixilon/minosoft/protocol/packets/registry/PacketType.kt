@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,15 +33,15 @@ class PacketType(
     var factory: PacketFactory?,
 ) {
 
-    fun create(data: ByteArray, session: Session): Packet {
+    fun create(data: ByteArray, length: Int, session: Session): Packet {
         val connection = session.nullCast<StatusSession>()?.connection ?: session.nullCast<PlaySession>()?.connection?.nullCast<NetworkConnection>()
         val factory = this.factory ?: throw PacketNotImplementedException(name, connection!!.state!!, session.version)
 
         val buffer = if (session is PlaySession) PlayInByteBuffer(data, session) else InByteBuffer(data)
         val packet = factory.create(buffer)
 
-        if (buffer.pointer < buffer.size) {
-            throw PacketBufferUnderflowException(this, buffer.size, buffer.size - buffer.pointer)
+        if (buffer.pointer < length) {
+            throw PacketBufferUnderflowException(this, length, length - buffer.pointer)
         }
 
         return packet
