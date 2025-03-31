@@ -29,6 +29,9 @@ interface Color {
 
     val rgb: Int
 
+    fun rgb() = RGBColor(red, green, blue)
+    fun rgba() = RGBAColor(red, green, blue)
+
     companion object {
         const val BITS = 8
 

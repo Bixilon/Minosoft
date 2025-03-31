@@ -21,28 +21,28 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.Color
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 object RGBColorSerializer : SimpleModule() {
 
     init {
-        addDeserializer(RGBColor::class.java, Deserializer)
-        addSerializer(RGBColor::class.java, Serializer)
+        addDeserializer(Color::class.java, Deserializer)
+        addSerializer(Color::class.java, Serializer)
     }
 
-    object Deserializer : StdDeserializer<RGBColor>(RGBColor::class.java) {
+    object Deserializer : StdDeserializer<Color>(Color::class.java) {
 
         override fun deserialize(parser: JsonParser, context: DeserializationContext?) = when (parser.currentToken) {
-                JsonToken.VALUE_NUMBER_INT -> RGBColor(parser.valueAsInt)
+            JsonToken.VALUE_NUMBER_INT -> parser.valueAsInt.rgb()
             JsonToken.VALUE_STRING -> parser.valueAsString.rgb()
-                else -> TODO("Can not parse color!")
-            }
+            else -> TODO("Can not parse color!")
+        }
     }
 
-    object Serializer : StdSerializer<RGBColor>(RGBColor::class.java) {
+    object Serializer : StdSerializer<Color>(Color::class.java) {
 
-        override fun serialize(value: RGBColor?, generator: JsonGenerator, provider: SerializerProvider?) {
+        override fun serialize(value: Color?, generator: JsonGenerator, provider: SerializerProvider?) {
             generator.writeString(value?.toString())
         }
     }

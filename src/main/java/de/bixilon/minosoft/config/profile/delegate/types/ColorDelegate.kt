@@ -15,12 +15,12 @@ package de.bixilon.minosoft.config.profile.delegate.types
 
 import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.text.formatting.color.Color
 
 open class ColorDelegate(
     override val profile: Profile,
-    default: RGBAColor,
-) : SimpleDelegate<RGBAColor>(profile, default) {
+    default: Color,
+) : SimpleDelegate<Color>(profile, default) {
 
-    override fun validate(value: RGBAColor) = Unit
+    override fun validate(value: Color) = Unit
 }
