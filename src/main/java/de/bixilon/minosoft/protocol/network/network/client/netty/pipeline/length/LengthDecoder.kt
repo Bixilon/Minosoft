@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
 import de.bixilon.kutil.exception.FastException
+import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
+import de.bixilon.minosoft.protocol.network.network.client.netty.ReadArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
@@ -47,10 +49,10 @@ class LengthDecoder(
             return
         }
 
-        val array = ByteArray(length)
-        buffer.readBytes(array)
+        val array = NetworkAllocator.allocate(length)
+        buffer.readBytes(array, 0, length)
 
-        out += array
+        out += ReadArray(array, length)
     }
 
 

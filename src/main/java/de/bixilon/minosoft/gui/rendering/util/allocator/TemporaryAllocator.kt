@@ -70,5 +70,5 @@ abstract class TemporaryAllocator<T> {
 
     protected abstract fun getSize(value: T): Int
 
-    abstract fun create(size: Int): T
+    protected abstract fun create(size: Int): T
 }

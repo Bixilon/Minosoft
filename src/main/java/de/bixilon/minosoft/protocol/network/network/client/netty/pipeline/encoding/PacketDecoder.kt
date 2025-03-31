@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.gui.rendering.util.allocator.ByteAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
+import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
+import de.bixilon.minosoft.protocol.network.network.client.netty.ReadArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketReadException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.UnknownPacketIdException
@@ -35,21 +36,22 @@ import java.lang.reflect.InvocationTargetException
 
 class PacketDecoder(
     private val client: NettyClient,
-) : MessageToMessageDecoder<ByteArray>() {
+) : MessageToMessageDecoder<ReadArray>() {
     private val version: Version? = client.session.version
 
-    override fun decode(context: ChannelHandlerContext, array: ByteArray, out: MutableList<Any>) {
-        val buffer = InByteBuffer(array)
+    override fun decode(context: ChannelHandlerContext, array: ReadArray, out: MutableList<Any>) {
+        val buffer = InByteBuffer(array.array)
         val packetId = buffer.readVarInt()
-        val length = buffer.size - buffer.pointer
-        val data = ALLOCATOR.create(length)
+        val length = array.length - buffer.pointer
+        val data = NetworkAllocator.allocate(length)
         buffer.readByteArray(data, 0, length)
+        NetworkAllocator.free(array.array)
 
         try {
             val queued = decode(packetId, length, data) ?: return
             out += queued
         } finally {
-            ALLOCATOR.free(data)
+            NetworkAllocator.free(data)
         }
     }
 
@@ -90,6 +92,5 @@ class PacketDecoder(
 
     companion object {
         const val NAME = "packet_decoder"
-        val ALLOCATOR = ByteAllocator()
     }
 }
