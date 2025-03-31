@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -74,8 +74,8 @@ class PacketEncoder(
         throw PacketNotAvailableException(type, state, version)
     }
 
-    private fun encode(packet: C2SPacket): ByteArray {
-        val state = client.connection.state!!
+    private fun encode(packet: C2SPacket): ByteArray? {
+        val state = client.connection.state ?: return null
 
         val type = DefaultPackets.C2S[state]?.get(packet::class) ?: throw UnknownPacketException(packet::class.java)
         val id = getPacketId(version, state, type)
@@ -90,7 +90,7 @@ class PacketEncoder(
     }
 
     override fun encode(context: ChannelHandlerContext, packet: C2SPacket, out: MutableList<Any>) {
-        out += encode(packet)
+        out += encode(packet) ?: return
     }
 
     companion object {

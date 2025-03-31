@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encryption
 
+import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
@@ -23,11 +24,15 @@ class PacketDecryptor(
 ) : ByteToMessageDecoder() {
 
     override fun decode(context: ChannelHandlerContext, data: ByteBuf, out: MutableList<Any>) {
-        val bytes = ByteArray(data.readableBytes())
-        data.readBytes(bytes)
+        val length = data.readableBytes()
+        val encrypted = NetworkAllocator.allocate(length)
+        data.readBytes(encrypted)
 
-        val decrypted = cipher.update(bytes)
+        val decrypted = NetworkAllocator.allocate(length)
+        cipher.update(encrypted, 0, length, decrypted)
+        NetworkAllocator.free(encrypted)
         out += context.alloc().buffer(decrypted.size).apply { writeBytes(decrypted) }
+        NetworkAllocator.free(decrypted)
     }
 
     companion object {

@@ -100,7 +100,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 this.prototype.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
             val length = buffer.readVarInt()
-            val data = ALLOCATOR.create(length)
+            val data = ALLOCATOR.allocate(length)
             buffer.readByteArray(data, 0, length)
             readingData = ChunkReadingData(data, PlayInByteBuffer(data, buffer.session), dimension, sectionBitMask)
 
