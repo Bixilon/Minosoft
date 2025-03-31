@@ -67,6 +67,12 @@ class ChunkPositionTest {
     }
 
     @Test
+    fun `correct plus negative x`() {
+        val position = ChunkPosition(-1, 0xF).plusX()
+        assertEquals(position, ChunkPosition(0, 0xF))
+    }
+
+    @Test
     fun `correct plus 2 x`() {
         val position = ChunkPosition(2, 0xF)
         assertEquals(position.plusX(2).x, 4)
@@ -106,6 +112,12 @@ class ChunkPositionTest {
     fun `correct plus z`() {
         val position = ChunkPosition(0xF, 2)
         assertEquals(position.plusZ().z, 3)
+    }
+
+    @Test
+    fun `correct plus negative z`() {
+        val position = ChunkPosition(0xF, -1).plusZ()
+        assertEquals(position, ChunkPosition(0xF, 0))
     }
 
     @Test

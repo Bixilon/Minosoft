@@ -67,6 +67,12 @@ class SectionPositionTest {
     }
 
     @Test
+    fun `correct plus negative x`() {
+        val position = SectionPosition(-1, 0xF, 0xF).plusX()
+        assertEquals(position, SectionPosition(0, 0xF, 0xF))
+    }
+
+    @Test
     fun `correct plus 2 x`() {
         val position = SectionPosition(2, 0xF, 0xF)
         assertEquals(position.plusX(2).x, 4)
@@ -109,6 +115,12 @@ class SectionPositionTest {
     }
 
     @Test
+    fun `correct plus negative y`() {
+        val position = SectionPosition(0xF, -1, 0xF).plusY()
+        assertEquals(position, SectionPosition(0xF, 0, 0xF))
+    }
+
+    @Test
     fun `correct plus 2 y`() {
         val position = SectionPosition(0xF, 2, 0xF)
         assertEquals(position.plusY(2).y, 4)
@@ -144,11 +156,16 @@ class SectionPositionTest {
         assertEquals(position.z, -1875000)
     }
 
-
     @Test
     fun `correct plus z`() {
         val position = SectionPosition(0xF, 0xF, 2)
         assertEquals(position.plusZ().z, 3)
+    }
+
+    @Test
+    fun `correct plus negative z`() {
+        val position = SectionPosition(0xF, 0xF, -1).plusZ()
+        assertEquals(position, SectionPosition(0xF, 0xF, 0))
     }
 
     @Test

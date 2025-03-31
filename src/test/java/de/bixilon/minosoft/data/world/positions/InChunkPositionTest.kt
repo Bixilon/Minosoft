@@ -86,6 +86,12 @@ class InChunkPositionTest {
     }
 
     @Test
+    fun `correct plus negative y`() {
+        val position = InChunkPosition(0xF, -1, 0xF).plusY()
+        assertEquals(position, InChunkPosition(0xF, 0, 0xF))
+    }
+
+    @Test
     fun `correct plus 2 y`() {
         val position = InChunkPosition(0xF, 2, 0xF)
         assertEquals(position.plusY(2).y, 4)

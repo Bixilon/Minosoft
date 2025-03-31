@@ -34,35 +34,49 @@ value class ChunkPosition(
     inline val x: Int get() = (raw ushr SHIFT_X).toInt() and MASK_X
     inline val z: Int get() = (raw ushr SHIFT_Z).toInt() and MASK_Z
 
+    inline fun modify(other: Long, component: Long, add: Long): ChunkPosition {
+        val bc = raw and other
+        val a = ((raw and component) + add) and component
+        return ChunkPosition(bc or a)
+    }
+
+    inline fun modifyX(modify: Long): ChunkPosition {
+        return modify(Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z, Integer.toUnsignedLong(MASK_X) shl SHIFT_X, modify)
+    }
+
+    inline fun modifyZ(modify: Long): ChunkPosition {
+        return modify(Integer.toUnsignedLong(MASK_X) shl SHIFT_X, Integer.toUnsignedLong(MASK_Z) shl SHIFT_Z, modify)
+    }
+
 
     inline fun plusX(): ChunkPosition {
         assertPosition(this.x < MAX_X)
-        return ChunkPosition(raw + X * 1)
+        return modifyX(X * 1)
     }
 
     inline fun plusX(x: Int): ChunkPosition {
         assertPosition(this.x + x, -MAX_X, MAX_X)
-        return ChunkPosition(raw + X * x)
+        return modifyX(X * x)
     }
 
     inline fun minusX(): ChunkPosition {
         assert(this.x > -MAX_X)
-        return ChunkPosition(raw - X * 1)
+        return modifyX(-X * 1)
     }
 
     inline fun plusZ(): ChunkPosition {
         assert(this.z < MAX_Z)
-        return ChunkPosition(raw + Z * 1)
+        return modifyZ(Z * 1)
     }
 
     inline fun plusZ(z: Int): ChunkPosition {
         assertPosition(this.z + z, -MAX_Z, MAX_Z)
-        return ChunkPosition(raw + Z * z)
+        return modifyZ(Z * z)
     }
 
     inline fun minusZ(): ChunkPosition {
         assert(this.z > -MAX_Z)
-        return ChunkPosition(raw - Z * 1)
+        return modifyZ(-Z * 1)
     }
 
     inline fun with(x: Int = this.x, z: Int = this.z) = ChunkPosition(x, z)
