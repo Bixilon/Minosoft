@@ -30,7 +30,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
 
     protected abstract fun passes(state: BlockState): HeightmapPass
-    protected abstract fun onHeightmapUpdate(x: Int, z: Int, previous: Int, now: Int)
+    protected abstract fun onHeightmapUpdate(x: Int, z: Int, previousY: Int, y: Int)
 
 
     override fun recalculate() {

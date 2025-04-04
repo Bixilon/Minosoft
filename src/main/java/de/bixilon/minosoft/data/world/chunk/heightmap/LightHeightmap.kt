@@ -16,10 +16,15 @@ package de.bixilon.minosoft.data.world.chunk.heightmap
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 class LightHeightmap(chunk: Chunk) : ChunkHeightmap(chunk) {
 
-    override fun onHeightmapUpdate(x: Int, z: Int, previous: Int, now: Int) {
+    override fun onHeightmapUpdate(x: Int, z: Int, previousY: Int, y: Int) {
+        if (y < previousY) {
+            // blocks were removed, trace down
+            chunk.light.traceSkyDown(InSectionPosition(x, 0, z), y, previousY)
+        }
         // TODO: Handle heightmap update
     }
 

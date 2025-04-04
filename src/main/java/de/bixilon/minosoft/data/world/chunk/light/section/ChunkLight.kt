@@ -98,7 +98,7 @@ class ChunkLight(val chunk: Chunk) {
         }
     }
 
-    private fun traceSkyDown(xz: InSectionPosition, topY: Int, bottomY: Int) {
+    fun traceSkyDown(xz: InSectionPosition, bottomY: Int, topY: Int) {
         if (topY >= (chunk.maxSection + 1) * SECTION_HEIGHT_Y) return // no blocks are set in that column, no need to tracee
         val topSection = minOf(chunk.maxSection, topY.sectionHeight)
         val bottomSection = maxOf(chunk.minSection, bottomY.sectionHeight)
@@ -144,7 +144,7 @@ class ChunkLight(val chunk: Chunk) {
             val position = InSectionPosition(xz)
             val bottomY = chunk.light.heightmap[xz]
             val topY = getNeighbourMinHeight(position)
-            traceSkyDown(position, topY, maxOf(bottomY, chunk.minSection - 1))
+            traceSkyDown(position, maxOf(bottomY, chunk.minSection - 1), topY)
         }
     }
 }
