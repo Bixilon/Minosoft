@@ -140,7 +140,12 @@ class SectionLight(
         }
     }
 
-    // TODO: traceSky for border sections
+    fun traceSkyDown(xz: InSectionPosition, topY: Int, bottomY: Int) {
+        for (y in bottomY..topY) {
+            traceSky(xz.with(y = y))
+        }
+    }
+
     fun traceSky(position: InSectionPosition) {
         val current = this[position]
         val level = current.with(sky = MAX_LEVEL)
@@ -207,7 +212,7 @@ class SectionLight(
         event = true
     }
 
-    private fun calculateBlocks() {
+    fun calculateBlocks() {
         if (section.blocks.isEmpty) return
         val min = section.blocks.minPosition
         val max = section.blocks.maxPosition
@@ -226,9 +231,7 @@ class SectionLight(
         }
     }
 
-    fun calculate() {
-        calculateBlocks()
-
+    fun calculateSky() {
         val limit = (section.height + 1) * SECTION_HEIGHT_Y
 
         for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {

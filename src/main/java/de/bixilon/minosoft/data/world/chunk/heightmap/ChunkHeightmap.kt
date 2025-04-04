@@ -18,14 +18,15 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
-    protected val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { Int.MIN_VALUE }
+    protected val heightmap = IntArray(SECTION_WIDTH_X * SECTION_WIDTH_Z) { Int.MIN_VALUE }
 
     override fun get(index: Int) = heightmap[index]
     override fun get(x: Int, z: Int) = this[(z shl 4) or x]
-    override fun get(position: InChunkPosition) = get(position.x, position.z)
+    override fun get(xz: InChunkPosition) = heightmap[xz.xz]
+    override fun get(xz: InSectionPosition) = heightmap[xz.xz]
 
 
     protected abstract fun passes(state: BlockState): HeightmapPass
@@ -33,10 +34,10 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
 
     override fun recalculate() {
-        val maxY = (chunk.maxSection + 1) * ProtocolDefinition.SECTION_HEIGHT_Y
+        val maxY = (chunk.maxSection + 1) * SECTION_HEIGHT_Y
 
         chunk.lock.lock()
-        for (xz in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
+        for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
             trace(InChunkPosition(xz).with(y = maxY), false)
         }
         chunk.lock.unlock()
