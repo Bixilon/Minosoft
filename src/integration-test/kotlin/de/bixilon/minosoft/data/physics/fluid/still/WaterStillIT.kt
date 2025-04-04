@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.test.IT
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["physics"], dependsOnGroups = ["block"])
@@ -139,6 +140,17 @@ class WaterStillIT : StillFluidIT() {
         player.assertPosition(4.0, 16.0, 7.0)
         player.assertVelocity(0.0, -0.005, 0.0)
         player.assertGround()
+    }
+
+    fun `water height correctly`() {
+        val player = super.sinking2()
+        val height = player.physics.submersion[WaterFluid]
+        assertTrue(height > 2.0)
+    }
+
+    fun `eye submersion is water`() {
+        val player = super.sinking2()
+        assertTrue(player.physics.submersion.eye is WaterFluid)
     }
     // TODO: water[FALLING=true]
 }
