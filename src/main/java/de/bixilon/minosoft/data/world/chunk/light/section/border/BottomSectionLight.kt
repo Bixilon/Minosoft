@@ -52,6 +52,13 @@ class BottomSectionLight(
         traceVertical(position, next)
     }
 
+    fun traceSky(position: InSectionPosition) {
+        val level = LightLevel(light[position.xz]).with(sky = LightLevel.MAX_LEVEL)
+        val next = level.decrease()
+
+        traceVertical(position, next)
+    }
+
     override fun update(array: LightArray) {
         System.arraycopy(array.array, InSectionPosition(0, SECTION_MAX_Y, 0).index, this.light, 0, SECTION_WIDTH_X * SECTION_WIDTH_Z)
     }
