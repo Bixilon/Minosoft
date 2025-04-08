@@ -150,13 +150,12 @@ when (os) {
                 zstdNatives += "-x86"
                 javafxNatives += "-x86"
             }
-            /*
-            Architectures.ARM -> {
+
+            Architectures.AARCH64 -> {
                 lwjglNatives += "-arm64"
-                zstdNatives += "-amd64"
+                zstdNatives += "_aarch64"
                  // TODO: javafx for Windows on arm is not yet supported
             }
-             */
 
             else -> throw IllegalArgumentException("Can not determinate windows natives on $architecture")
         }
@@ -317,8 +316,10 @@ tasks.named("check") {
 }
 
 fun DependencyHandler.javafx(name: String) {
-    implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives) {
-        version { strictly(javafxVersion) }
+    if ( os != OSTypes.WINDOWS && architecture != Architectures.AARCH64 ) {
+        implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives) {
+            version { strictly(javafxVersion) }
+        }
     }
 }
 
