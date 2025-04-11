@@ -107,6 +107,8 @@ abstract class BorderSectionLight(
         return null
     }
 
+    override fun calculate() = Unit // TODO: bottom sky light
+
     protected fun propagateVertical() {
         for (x in 0 until SECTION_MAX_X) {
             chunk.neighbours[Directions.NORTH]?.light?.bottom?.traceFrom(InSectionPosition(x, 0, SECTION_MAX_Z), Directions.SOUTH)

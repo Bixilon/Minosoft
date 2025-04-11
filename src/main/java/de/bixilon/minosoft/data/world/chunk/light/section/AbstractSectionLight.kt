@@ -23,10 +23,12 @@ interface AbstractSectionLight {
 
     operator fun get(position: InSectionPosition): LightLevel
 
+    fun traceFrom(direction: Directions)
     fun traceFrom(position: InSectionPosition, direction: Directions)
 
     fun clear()
     fun propagate()
+    fun calculate()
 
     fun update(array: LightArray)
 
