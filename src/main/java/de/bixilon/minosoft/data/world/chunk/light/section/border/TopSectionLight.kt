@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.section.border
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
@@ -30,6 +31,19 @@ class TopSectionLight(
     }
 
     override fun Chunk.getBorderLight() = this.light.top
+
+    override fun traceFrom(direction: Directions) {
+        if (direction != Directions.DOWN) Broken()
+        val above = chunk[chunk.maxSection]?.light ?: return
+        for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
+            val position = InSectionPosition(xz)
+            val current = LightLevel(light[xz])
+            if (current.block <= 1) return
+
+            val next = current.decrease()
+            above.trace(position.with(y = SECTION_MAX_Y), next, Directions.DOWN)
+        }
+    }
 
     override fun trace(position: InSectionPosition, level: LightLevel) {
         val current = LightLevel(light[position.xz])

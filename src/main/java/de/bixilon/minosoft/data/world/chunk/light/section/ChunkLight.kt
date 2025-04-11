@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.light.section.border.TopSectionLight
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
@@ -48,11 +49,7 @@ class ChunkLight(val chunk: Chunk) {
         val sectionHeight = position.sectionHeight
         val inSection = position.inSectionPosition
 
-        val light = when (sectionHeight) {
-            chunk.minSection - 1 -> bottom[inSection]
-            chunk.maxSection + 1 -> top[inSection]
-            else -> chunk[sectionHeight]?.light?.get(inSection) ?: LightLevel.EMPTY
-        }
+        val light = chunk.light[sectionHeight]?.get(inSection) ?: LightLevel.EMPTY
 
         if (position.y >= heightmap[position]) {
             return light.with(sky = LightLevel.MAX_LEVEL)
@@ -70,7 +67,7 @@ class ChunkLight(val chunk: Chunk) {
 
     fun calculate() {
         for (section in chunk.sections) {
-            section?.light?.calculateBlocks()
+            section?.light?.calculateBlock()
         }
         calculateSky()
     }
@@ -146,5 +143,11 @@ class ChunkLight(val chunk: Chunk) {
             val topY = getNeighbourMinHeight(position)
             traceSkyDown(position, maxOf(bottomY, chunk.minSection - 1), topY)
         }
+    }
+
+    operator fun get(height: SectionHeight) = when {
+        height < chunk.minSection -> bottom
+        height > chunk.maxSection -> top
+        else -> chunk[height]?.light
     }
 }
