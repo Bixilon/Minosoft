@@ -204,8 +204,6 @@ abstract class Entity(
             preTick()
             tick()
             postTick()
-        } catch (error: Throwable) {
-            error.printStackTrace()
         } finally {
             lastTickTime = time
             lock.unlock()

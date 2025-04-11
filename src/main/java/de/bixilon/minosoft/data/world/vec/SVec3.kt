@@ -16,12 +16,13 @@ package de.bixilon.minosoft.data.world.vec
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.vec.VecUtil.assertVec
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
-value class SVec3(val raw: Int) {
-
+value class SVec3(val raw: Int) : TextFormattable {
 
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y) shl SHIFT_Y) or ((z and MASK_Z) shl SHIFT_Z) or ((x and MASK_X) shl SHIFT_X)) {
@@ -103,7 +104,16 @@ value class SVec3(val raw: Int) {
         Axes.Z -> z
     }
 
-    override fun toString() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+    override fun toString() = "(${this.x} ${this.y} ${this.z})"
+    override fun toText() = BaseComponent().apply {
+        this += "("
+        this += x.format()
+        this += " "
+        this += y.format()
+        this += " "
+        this += z.format()
+        this += ")"
+    }
 
 
     companion object {

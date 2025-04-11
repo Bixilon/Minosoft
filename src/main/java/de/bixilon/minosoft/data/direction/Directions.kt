@@ -90,9 +90,9 @@ enum class Directions(
         @Deprecated("outsource")
         fun byDirection(direction: Vec3): Directions {
             var minDirection = VALUES[0]
-            var minError = 2.0f
+            var minError = 2.0f * 2.0f
             for (testDirection in VALUES) {
-                val error = (testDirection.vectorf - direction).length()
+                val error = (testDirection.vectorf - direction).length2()
                 if (error < MIN_ERROR) {
                     return testDirection
                 } else if (error < minError) {

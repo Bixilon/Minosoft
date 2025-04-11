@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -57,6 +58,19 @@ object Vec3dUtil {
     fun Vec3d.toVec3(): Vec3 {
         val array = array
         return Vec3(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+    }
+
+    private fun Double.clamp(min: Int, max: Int) = clamp(min.toDouble(), max.toDouble())
+
+    fun Vec3d.clampBlockPosition(): Vec3d { // TODO: remove +1/-1. AABBIterator otherwise crashes when subtracting one
+        val x = x.clamp(-BlockPosition.MAX_X + 1, BlockPosition.MAX_X - 1)
+        val y = y.clamp(+BlockPosition.MIN_Y + 1, BlockPosition.MAX_Y - 1)
+        val z = z.clamp(-BlockPosition.MAX_Z + 1, BlockPosition.MAX_Z - 1)
+
+        if (x != this.x || y != this.y || this.z != z) {
+            return Vec3d(x, y, z)
+        }
+        return this
     }
 
 

@@ -47,7 +47,11 @@ class Camera(
 
     fun draw() {
         val entity = context.session.camera.entity
-        (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
+        try {
+            (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
         if (entity is LocalPlayerEntity) {
             entity._draw(millis())
         }

@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.clampBlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
@@ -100,7 +101,7 @@ class AABB {
     }
 
     fun positions(order: AABBIterator.IterationOrder = AABBIterator.IterationOrder.OPTIMIZED): AABBIterator {
-        return AABBIterator(this, order)
+        return AABBIterator(min.clampBlockPosition(), max.clampBlockPosition(), order)
     }
 
     fun extend(vec3: Vec3d): AABB {
