@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 class AABBIterator(
     val min: BlockPosition,
     val max: BlockPosition,
+    val order: IterationOrder = IterationOrder.OPTIMIZED,
 ) : Iterator<BlockPosition> {
     private var count = 0
     private var current = min
@@ -30,6 +31,7 @@ class AABBIterator(
     val size = maxOf(0, max.x - min.x + 1) * maxOf(0, max.y - min.y + 1) * maxOf(0, max.z - min.z + 1)
 
     constructor(aabb: AABB) : this(aabb.min.floor, aabb.max.ceil - 1)
+    constructor(aabb: AABB, order: IterationOrder) : this(aabb.min.floor, aabb.max.ceil - 1, order)
     constructor(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int) : this(BlockPosition(minX, minY, minZ), BlockPosition(maxX, maxY, maxZ))
 
     override fun hasNext(): Boolean {
@@ -40,6 +42,17 @@ class AABBIterator(
         if (!hasNext()) throw IllegalStateException("No positions available anymore!")
 
         val current = current
+        val next = when (order) {
+            IterationOrder.OPTIMIZED -> nextOptimized()
+            IterationOrder.NATURAL -> nextNatural()
+        }
+        this.current = next
+
+        count++
+        return current
+    }
+
+    private fun nextOptimized(): BlockPosition {
         var next = current
 
         if (next.x < max.x) next = next.plusX() else {
@@ -50,14 +63,30 @@ class AABBIterator(
                 if (next.y < max.y) next = next.plusY()
             }
         }
+        return next
+    }
 
-        this.current = next
+    private fun nextNatural(): BlockPosition {
+        var next = current
 
-        count++
-        return current
+        if (next.z < max.z) next = next.plusZ() else {
+            next = next.with(z = min.z)
+            if (next.y < max.y) next = next.plusY() else {
+                next = next.with(y = min.y)
+
+                if (next.x < max.x) next = next.plusX()
+            }
+        }
+        return next
     }
 
     fun blocks(world: World, chunk: Chunk? = null): WorldIterator {
         return WorldIterator(this, world, chunk)
+    }
+
+    enum class IterationOrder {
+        NATURAL,
+        OPTIMIZED,
+        ;
     }
 }

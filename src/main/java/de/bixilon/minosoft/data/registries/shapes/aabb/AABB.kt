@@ -99,8 +99,8 @@ class AABB {
         return AABB(true, newMin, newMax)
     }
 
-    fun positions(): AABBIterator {
-        return AABBIterator(this)
+    fun positions(order: AABBIterator.IterationOrder = AABBIterator.IterationOrder.OPTIMIZED): AABBIterator {
+        return AABBIterator(this, order)
     }
 
     fun extend(vec3: Vec3d): AABB {

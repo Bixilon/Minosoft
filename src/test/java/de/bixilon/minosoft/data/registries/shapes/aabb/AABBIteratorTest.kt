@@ -111,6 +111,35 @@ class AABBIteratorTest {
     }
 
     @Test
+    fun `order optimized`() {
+        val aabb = AABB(0.0, 0.0, 0.0, 2.0, 3.0, 4.0)
+
+        val positions = aabb.positions(AABBIterator.IterationOrder.OPTIMIZED)
+
+        for (y in 0 until 3) {
+            for (z in 0 until 4) {
+                for (x in 0 until 2) {
+                    assertEquals(BlockPosition(x, y, z), positions.next())
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `order natural`() {
+        val aabb = AABB(0.0, 0.0, 0.0, 2.0, 3.0, 4.0)
+
+        val positions = aabb.positions(AABBIterator.IterationOrder.NATURAL)
+
+        for (x in 0 until 2) {
+            for (y in 0 until 3) {
+                for (z in 0 until 4) {
+                    assertEquals(BlockPosition(x, y, z), positions.next())
+                }
+            }
+        }
+    }
+    @Test
     fun halfBlock() {
         val aabb = AABB(0.0, 0.0, 0.0, 0.5, 0.5, 0.5)
 
