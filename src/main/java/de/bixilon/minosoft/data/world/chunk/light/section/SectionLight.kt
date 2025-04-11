@@ -34,16 +34,35 @@ class SectionLight(
 ) : AbstractSectionLight {
     private var event = false
 
-    fun onBlockChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
+    private fun handleLuminanceChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
         val previousLuminance = previous?.luminance ?: 0
         val luminance = state?.luminance ?: 0
-
-        // TODO: check if light properties changed
 
         when {
             luminance > previousLuminance -> onIncrease(position, luminance)
             luminance < previousLuminance -> onDecrease(position)
         }
+    }
+
+    fun handleLightPropertiesChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
+        val previousProperties = previous?.block?.getLightProperties(previous) ?: TransparentProperty
+        val properties = state?.block?.getLightProperties(state) ?: TransparentProperty
+
+        if (previousProperties == properties) return
+
+        if (position.x > 0) traceFrom(position.minusX(), Directions.EAST) else getNeighbour(Directions.WEST)?.traceFrom(position.with(x = SECTION_MAX_X), Directions.EAST)
+        if (position.x < SECTION_MAX_X) traceFrom(position.plusX(), Directions.WEST) else getNeighbour(Directions.EAST)?.traceFrom(position.with(x = 0), Directions.WEST)
+
+        if (position.y > 0) traceFrom(position.minusY(), Directions.DOWN) else getNeighbour(Directions.UP)?.traceFrom(position.with(y = SECTION_MAX_Y), Directions.DOWN)
+        if (position.y < SECTION_MAX_Y) traceFrom(position.plusY(), Directions.UP) else getNeighbour(Directions.DOWN)?.traceFrom(position.with(y = 0), Directions.UP)
+
+        if (position.z > 0) traceFrom(position.minusZ(), Directions.NORTH) else getNeighbour(Directions.SOUTH)?.traceFrom(position.with(z = SECTION_MAX_Z), Directions.NORTH)
+        if (position.z < SECTION_MAX_Z) traceFrom(position.plusZ(), Directions.SOUTH) else getNeighbour(Directions.NORTH)?.traceFrom(position.with(z = 0), Directions.SOUTH)
+    }
+
+    fun onBlockChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
+        handleLightPropertiesChange(position, previous, state)
+        handleLuminanceChange(position, previous, state)
     }
 
     private fun onIncrease(position: InSectionPosition, luminance: Int) {
@@ -244,8 +263,12 @@ class SectionLight(
         }
     }
 
-    protected fun getNeighbour(direction: Directions): SectionLight? {
-        return section.chunk.neighbours[direction]?.get(section.height)?.light
+    protected fun getNeighbour(direction: Directions): AbstractSectionLight? {
+        return when (direction) {
+            Directions.UP -> if (section.height == section.chunk.maxSection) section.chunk.light.top else section.chunk[section.height + 1]?.light
+            Directions.DOWN -> if (section.height == section.chunk.minSection) section.chunk.light.bottom else section.chunk[section.height - 1]?.light
+            else -> section.chunk.neighbours[direction]?.get(section.height)?.light
+        }
     }
 
     private fun propagateVertical() {
