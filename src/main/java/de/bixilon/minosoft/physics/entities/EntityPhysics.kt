@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -214,7 +215,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     fun checkBlockCollisions() {
         val aabb = aabb.shrink()
 
-        for ((position, state) in WorldIterator(aabb.positions(), entity.session.world, positionInfo.chunk)) {
+        for ((position, state) in WorldIterator(aabb.positions(AABBIterator.IterationOrder.NATURAL), entity.session.world, positionInfo.chunk)) {
             val block = state.block
             if (block !is EntityCollisionHandler) {
                 continue
