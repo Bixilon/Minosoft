@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class VoxelShape(
     val aabb: Collection<AABB>,
-) : AbstractVoxelShape() {
+) : AbstractVoxelShape {
     override val aabbs: Int = aabb.size
 
     constructor(vararg aabbs: AABB) : this(ObjectOpenHashSet(aabbs))
@@ -47,7 +47,6 @@ class VoxelShape(
         if (other == null && aabbs == 0) return true
         if (other !is AbstractVoxelShape) return false
         if (other is VoxelShape) return aabb == other.aabb
-        if (other is MutableVoxelShape) return aabb == other.aabb
         TODO("Can not compare $this with $other")
     }
 }

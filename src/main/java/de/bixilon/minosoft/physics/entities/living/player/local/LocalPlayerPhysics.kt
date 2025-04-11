@@ -108,7 +108,9 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         val aabb = aabb
         val offset = AABB(position.x + 0.0, aabb.min.y, position.z + 0.0, position.x + 1.0, aabb.max.y, position.z + 1.0).shrink(1.0E-7)
         val collisions = collectCollisions(Vec3d.EMPTY, offset, predicate = predicate)
-        return collisions.intersect(aabb)
+        val intersects = collisions.intersects(aabb)
+        collisions.free()
+        return intersects
     }
 
     private fun shouldSprint(): Boolean {

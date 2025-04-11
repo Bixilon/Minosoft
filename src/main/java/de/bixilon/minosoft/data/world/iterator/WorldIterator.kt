@@ -60,6 +60,7 @@ class WorldIterator(
             if (this.chunk !== chunk) {
                 this.chunk = chunk
             }
+            // TODO: some fast skip? (if section is empty, can not be in section or chunk is null)
 
             val state = chunk[position.inChunkPosition] ?: continue
 
@@ -116,7 +117,7 @@ class WorldIterator(
             if (predicate != null && !predicate.invoke(state)) continue
 
             val shape = state.block.getCollisionShape(world.session, context, position, state, null) ?: continue
-            if ((shape + position).intersect(aabb)) {
+            if ((shape + position).intersects(aabb)) {
                 return true
             }
         }

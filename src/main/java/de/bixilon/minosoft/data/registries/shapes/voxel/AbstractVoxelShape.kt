@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.registries.shapes.voxel
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
@@ -30,14 +29,20 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
-abstract class AbstractVoxelShape : Iterable<AABB> {
-    abstract val aabbs: Int
+interface AbstractVoxelShape : Iterable<AABB> {
+    val aabbs: Int
 
-    fun intersect(other: AABB): Boolean {
+    fun intersects(other: AABB): Boolean {
         for (aabb in this) {
-            if (!aabb.intersect(other)) {
-                continue
-            }
+            if (!aabb.intersects(other)) continue
+            return true
+        }
+        return false
+    }
+
+    fun intersects(other: AABB, offset: BlockPosition): Boolean {
+        for (aabb in this) {
+            if (!aabb.intersects(other, offset)) continue
             return true
         }
         return false
@@ -51,18 +56,14 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
         return VoxelShape(result)
     }
 
-    operator fun plus(offset: Vec3t<out Number>) = modify { it + offset }
     operator fun plus(offset: Vec3d) = modify { it + offset }
     operator fun plus(offset: Vec3) = modify { it + offset }
     operator fun plus(offset: Vec3i) = modify { it + offset }
 
-    @JvmName("plusBlockPosition")
     operator fun plus(offset: BlockPosition) = modify { it + offset }
 
-    @JvmName("plusInChunkPosition")
     operator fun plus(offset: InChunkPosition) = modify { it + offset }
 
-    @JvmName("plusInSectionPosition")
     operator fun plus(offset: InSectionPosition) = modify { it + offset }
 
     fun add(other: AbstractVoxelShape): AbstractVoxelShape {
@@ -75,7 +76,15 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
         for (aabb in this) {
-            distance = aabb.calculateMaxOffset(other, distance, axis)
+            distance = aabb.calculateMaxDistance(other, distance, axis)
+        }
+        return distance
+    }
+
+    fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+        var distance = maxDistance
+        for (aabb in this) {
+            distance = aabb.calculateMaxDistance(other, offset, distance, axis)
         }
         return distance
     }
@@ -109,7 +118,6 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     fun shouldDrawLine(start: Vec3, end: Vec3): Boolean {
         return shouldDrawLine(start.toVec3d, end.toVec3d)
     }
-
 
     fun getMax(axis: Axes): Double {
         if (aabbs == 0) return Double.NaN
