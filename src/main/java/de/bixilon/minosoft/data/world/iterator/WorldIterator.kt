@@ -22,12 +22,12 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.Entit
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 class WorldIterator(
-    private val iterator: Iterator<BlockPosition>,
+    private val iterator: AABBIterator,
     private val world: World,
     private var chunk: Chunk? = null,
 ) : Iterator<BlockPair> {
