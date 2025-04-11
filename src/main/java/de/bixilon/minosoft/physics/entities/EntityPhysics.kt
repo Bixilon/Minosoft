@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -104,10 +105,10 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     fun getLandingPosition(): BlockPosition {
         val info = this.positionInfo
-        val position = BlockPosition(info.position.x, (position.y - 0.2).toInt(), info.position.z) // TODO: can y get below 0?
+        val position = BlockPosition(info.position.x, (position.y - 0.2).toInt().clamp(BlockPosition.MIN_Y, BlockPosition.MAX_Y), info.position.z) // TODO: can y get below 0?
         val inChunk = position.inChunkPosition
         val state = positionInfo.chunk?.get(inChunk)
-        if (state == null) {
+        if (state == null && inChunk.y > BlockPosition.MIN_Y) {
             val down = positionInfo.chunk?.get(inChunk + Directions.DOWN)
             // TODO: check if block is fence, fence gate or wall
             // return down

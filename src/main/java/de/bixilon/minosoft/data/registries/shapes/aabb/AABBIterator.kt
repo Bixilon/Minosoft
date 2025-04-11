@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.shapes.aabb
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
@@ -30,8 +31,7 @@ class AABBIterator(
 
     val size = maxOf(0, max.x - min.x + 1) * maxOf(0, max.y - min.y + 1) * maxOf(0, max.z - min.z + 1)
 
-    constructor(aabb: AABB) : this(aabb.min.floor, aabb.max.ceil - 1)
-    constructor(aabb: AABB, order: IterationOrder) : this(aabb.min.floor, aabb.max.ceil - 1, order)
+    constructor(min: Vec3d, max: Vec3d, order: IterationOrder) : this(min.floor, max.ceil - 1, order)
     constructor(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int) : this(BlockPosition(minX, minY, minZ), BlockPosition(maxX, maxY, maxZ))
 
     override fun hasNext(): Boolean {

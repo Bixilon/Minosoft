@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.physics.submersion
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Tickable
@@ -67,7 +68,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         val totalVelocity = Vec3d.EMPTY
         var count = 0
 
-        for ((position, state, chunk) in WorldIterator(aabb.positions(), world, physics.positionInfo.chunk)) {
+        for ((position, state, chunk) in WorldIterator(aabb, world, physics.positionInfo.chunk)) {
             if (!fluid.matches(state)) continue // TODO: tags?
 
             val height = position.y + if (fluid.matches(chunk[position.inChunkPosition + Directions.UP])) 1.0f else fluid.getHeight(state)
@@ -147,7 +148,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
             // TODO
         }
         val position = physics.position
-        val eyePosition = BlockPosition(position.x.floor, eyeHeight.floor, position.z.floor)
+        val eyePosition = BlockPosition(position.x.floor, eyeHeight.floor.clamp(BlockPosition.MIN_Y, BlockPosition.MAX_Y), position.z.floor)
 
         val block = physics.positionInfo.chunk?.get(eyePosition.inChunkPosition) ?: return
         if (block.block !is FluidHolder) {

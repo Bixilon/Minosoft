@@ -16,11 +16,11 @@ package de.bixilon.minosoft.physics.parts
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.get
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 
 object OutOfBlockPusher {
@@ -31,7 +31,7 @@ object OutOfBlockPusher {
     }
 
     private fun LocalPlayerPhysics.pushOutOfBlocks(x: Double, z: Double) {
-        val position = BlockPosition(x.floor, this.position.y.floor, z.floor)
+        val position = BlockPosition(x.floor, this.position.y.floor.clamp(BlockPosition.MIN_Y, BlockPosition.MAX_Y), z.floor)
         if (!wouldCollidePushable(position)) {
             return
         }
