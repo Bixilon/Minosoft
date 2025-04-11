@@ -82,4 +82,32 @@ class CollisionIT {
         player.assertPosition(0.0, 1.5, 0.0)
         player.assertVelocity(0.0, -0.0784000015258789, 0.0)
     }
+
+    fun `not crashing when already exceeding negative y`() {
+        val player = createPlayer(createSession(2))
+        player.forceTeleport(Vec3d(0.0, -3000, 0.0))
+        player.physics.velocity = Vec3d(0.0, -150.0, 0.0)
+        player.runTicks(10)
+    }
+
+    fun `not crashing when exceeding negative y`() {
+        val player = createPlayer(createSession(2))
+        player.forceTeleport(Vec3d(0.0, -2040, 0.0))
+        player.physics.velocity = Vec3d(0.0, -150.0, 0.0)
+        player.runTicks(10)
+    }
+
+    fun `not crashing when already exceeding positive y`() {
+        val player = createPlayer(createSession(2))
+        player.forceTeleport(Vec3d(0.0, 3000, 0.0))
+        player.physics.velocity = Vec3d(0.0, 150.0, 0.0)
+        player.runTicks(10)
+    }
+
+    fun `not crashing when exceeding positive y`() {
+        val player = createPlayer(createSession(2))
+        player.forceTeleport(Vec3d(0.0, 2040, 0.0))
+        player.physics.velocity = Vec3d(0.0, 150.0, 0.0)
+        player.runTicks(10)
+    }
 }

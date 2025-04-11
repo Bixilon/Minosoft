@@ -177,7 +177,7 @@ class WorldEntities : Iterable<Entity> {
                 }
                 val aabb = entity.physics.aabb
 
-                if (shape.intersect(aabb)) {
+                if (shape.intersects(aabb)) {
                     return true
                 }
             }

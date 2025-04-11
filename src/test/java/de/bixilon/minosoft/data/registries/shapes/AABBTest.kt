@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ internal class AABBTest {
         val a = AABB(Vec3d(5.0, 0.0, 7.0), Vec3d(6.0, 1.0, 8.0))
         val b = AABB(Vec3d(5.7, 1.0, 6.3), Vec3d(6.3, 3, 6.9))
 
-        assertEquals(1239312.0, a.calculateMaxOffset(b, 1239312.0, Axes.Z))
+        assertEquals(1239312.0, a.calculateMaxDistance(b, 1239312.0, Axes.Z))
     }
 
     @Test
@@ -41,7 +41,7 @@ internal class AABBTest {
         val a = AABB(Vec3d(5.0, 0.0, 7.0), Vec3d(6.0, 1.0, 8.0))
         val b = AABB(Vec3d(5.699999988079071, 0.5358406250445555, 6.373910529638632), Vec3d(6.300000011920929, 2.3358405773608397, 6.97391055348049))
 
-        assertNotEquals(0.1, a.calculateMaxOffset(b, 0.1, Axes.Z))
+        assertNotEquals(0.1, a.calculateMaxDistance(b, 0.1, Axes.Z))
     }
 
     @Test
@@ -49,7 +49,7 @@ internal class AABBTest {
         val a = AABB(Vec3d(5.0, 0.0, 6.0), Vec3d(5.8, 1.0, 7.0))
         val b = AABB(Vec3d(5.7, 1.0, 6.0), Vec3d(6.3, 2.8, 6.6))
 
-        assertEquals(0.0, a.calculateMaxOffset(b, -0.0784000015258789, Axes.Y))
+        assertEquals(0.0, a.calculateMaxDistance(b, -0.0784000015258789, Axes.Y))
     }
 
     @Test
@@ -57,7 +57,7 @@ internal class AABBTest {
         val a = AABB(Vec3d(5.0, 0.0, 6.0), Vec3d(5.8, 1.0, 7.0))
         val b = AABB(Vec3d(5.0, 1.0, 6.0), Vec3d(5.8, 2.8, 6.6))
 
-        assertEquals(0.0, a.calculateMaxOffset(b, -0.0784000015258789, Axes.Y))
+        assertEquals(0.0, a.calculateMaxDistance(b, -0.0784000015258789, Axes.Y))
     }
 
     @Test
@@ -65,7 +65,7 @@ internal class AABBTest {
         val a = AABB(Vec3d(5.0, 0.0, 6.0), Vec3d(5.8, 1.0, 7.0))
         val b = AABB(Vec3d(5.1, 1.0, 5.9), Vec3d(5.5, 2.8, 7.1))
 
-        assertEquals(0.0, a.calculateMaxOffset(b, -0.0784000015258789, Axes.Y))
+        assertEquals(0.0, a.calculateMaxDistance(b, -0.0784000015258789, Axes.Y))
     }
 
 

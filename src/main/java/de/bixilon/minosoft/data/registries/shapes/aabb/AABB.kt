@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
@@ -59,12 +58,13 @@ class AABB {
         this.max = max
     }
 
-    fun intersect(other: AABB): Boolean {
+    fun intersects(other: AABB): Boolean {
         return (min.x < other.max.x && max.x > other.min.x) && (min.y < other.max.y && max.y > other.min.y) && (min.z < other.max.z && max.z > other.min.z)
     }
 
-    operator fun plus(other: Vec3t<out Number>): AABB = offset(other)
-    fun offset(other: Vec3t<out Number>) = AABB(true, min + other, max + other)
+    fun intersects(other: AABB, offset: BlockPosition): Boolean {
+        return (min.x < (other.max.x + offset.x) && max.x > (other.min.x + offset.x)) && (min.y < (other.max.y + offset.y) && max.y > (other.min.y + offset.y)) && (min.z < (other.max.z + offset.z) && max.z > (other.min.z + offset.z))
+    }
 
     operator fun plus(other: Vec3d): AABB = offset(other)
     fun offset(other: Vec3d) = AABB(true, min + other, max + other)
@@ -128,14 +128,9 @@ class AABB {
         return AABB(true, newMin, newMax)
     }
 
-    fun extend(vec3i: Vec3i): AABB {
-        return this.extend(Vec3d(vec3i))
-    }
-
     fun extend(direction: Directions): AABB {
         return this.extend(direction.vectord)
     }
-
 
     fun grow(size: Double = 1.0E-7): AABB {
         return AABB(min - size, max + size)
@@ -149,37 +144,38 @@ class AABB {
         return this > min && this < max
     }
 
-    private fun intersects(axis: Axes, other: AABB): Boolean {
+    private fun intersects(axis: Axes, other: AABB, offset: BlockPosition): Boolean {
         val min = min[axis]
         val max = max[axis]
 
-        val otherMin = other.min[axis]
-        val otherMax = other.max[axis]
+        val otherMin = other.min[axis] + offset[axis]
+        val otherMax = other.max[axis] + offset[axis]
 
         return min.isIn(otherMin, otherMax)
-                || max.isIn(otherMin, otherMax)
-                || otherMin.isIn(min, max)
-                || otherMax.isIn(min, max)
-                || (min == otherMin && max == otherMax)
+            || max.isIn(otherMin, otherMax)
+            || otherMin.isIn(min, max)
+            || otherMax.isIn(min, max)
+            || (min == otherMin && max == otherMax)
     }
 
-    fun calculateMaxOffset(other: AABB, offset: Double, axis: Axes): Double {
-        if (!intersects(axis.next(), other) || !intersects(axis.previous(), other)) {
-            return offset
+    fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes) = calculateMaxDistance(other, BlockPosition(), maxDistance, axis)
+    fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+        if (!intersects(axis.next(), other, offset) || !intersects(axis.previous(), other, offset)) {
+            return maxDistance
         }
         val min = min[axis]
         val max = max[axis]
-        val otherMin = other.min[axis]
-        val otherMax = other.max[axis]
+        val otherMin = other.min[axis] + offset[axis]
+        val otherMax = other.max[axis] + offset[axis]
 
-        if (offset > 0 && otherMax <= min && otherMax + offset > min) {
-            return (min - otherMax).clamp(0.0, offset)
+        if (maxDistance > 0 && otherMax <= min && otherMax + maxDistance > min) {
+            return (min - otherMax).clamp(0.0, maxDistance)
         }
-        if (offset < 0 && max <= otherMin && otherMin + offset < max) {
-            return (max - otherMin).clamp(offset, 0.0)
+        if (maxDistance < 0 && max <= otherMin && otherMin + maxDistance < max) {
+            return (max - otherMin).clamp(maxDistance, 0.0)
         }
 
-        return offset
+        return maxDistance
     }
 
     @Deprecated("mutable")
@@ -188,12 +184,10 @@ class AABB {
         max.array[axis.ordinal] += value
     }
 
-    fun offset(axis: Axes, offset: Double): AABB {
-        return when (axis) {
-            Axes.X -> this + Vec3d(-offset, 0.0, 0.0)
-            Axes.Y -> this + Vec3d(0.0, -offset, 0.0)
-            Axes.Z -> this + Vec3d(0.0, 0.0, -offset)
-        }
+    fun offset(axis: Axes, offset: Double) = when (axis) {
+        Axes.X -> this + Vec3d(-offset, 0.0, 0.0)
+        Axes.Y -> this + Vec3d(0.0, -offset, 0.0)
+        Axes.Z -> this + Vec3d(0.0, 0.0, -offset)
     }
 
     /**
@@ -296,19 +290,19 @@ class AABB {
 
         fun checkSide(x: Double): Boolean {
             return (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, max.y, min.z))
-                    || (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, min.y, max.z))
-                    || (this.min == Vec3d(x, max.y, min.z) && this.max == Vec3d(x, max.y, max.z))
-                    || (this.min == Vec3d(x, min.y, max.z) && this.max == Vec3d(x, max.y, max.z))
+                || (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, min.y, max.z))
+                || (this.min == Vec3d(x, max.y, min.z) && this.max == Vec3d(x, max.y, max.z))
+                || (this.min == Vec3d(x, min.y, max.z) && this.max == Vec3d(x, max.y, max.z))
         }
 
 
         return checkSide(min.x) // left quad
-                || checkSide(max.x) // right quad
-                // connections between 2 quads
-                || (this.min == min && this.max == Vec3d(max.x, min.y, min.z))
-                || (this.min == Vec3d(min.x, max.y, min.z) && this.max == Vec3d(max.x, max.y, min.z))
-                || (this.min == Vec3d(min.x, max.y, max.z) && this.max == max)
-                || (this.min == Vec3d(min.x, min.y, max.z) && this.max == Vec3d(max.x, min.y, max.z))
+            || checkSide(max.x) // right quad
+            // connections between 2 quads
+            || (this.min == min && this.max == Vec3d(max.x, min.y, min.z))
+            || (this.min == Vec3d(min.x, max.y, min.z) && this.max == Vec3d(max.x, max.y, min.z))
+            || (this.min == Vec3d(min.x, max.y, max.z) && this.max == max)
+            || (this.min == Vec3d(min.x, min.y, max.z) && this.max == Vec3d(max.x, min.y, max.z))
     }
 
     override fun toString(): String {

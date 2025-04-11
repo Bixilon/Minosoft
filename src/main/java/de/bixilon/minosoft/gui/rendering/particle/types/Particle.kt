@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
-import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collectCollisions
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -138,7 +138,7 @@ abstract class Particle(
     private fun collide(movement: Vec3d): Vec3d {
         val aabb = aabb + movement
         val context = ParticleCollisionContext(this)
-        val collisions = session.world.collectCollisions(context, movement, aabb, getChunk())
+        val collisions = CollisionShape(session.world, context, aabb, movement, getChunk())
         val adjusted = collide(movement, aabb, collisions)
         if (adjusted.y != movement.y) {
             onGround = true

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
@@ -100,6 +101,12 @@ value class BlockPosition(
     inline fun minusZ(): BlockPosition {
         assertPosition(this.z > -MAX_Z)
         return modifyZ(-Z * 1)
+    }
+
+    operator fun get(axis: Axes) = when (axis) {
+        Axes.X -> x
+        Axes.Y -> y
+        Axes.Z -> z
     }
 
     inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = BlockPosition(x, y, z)
