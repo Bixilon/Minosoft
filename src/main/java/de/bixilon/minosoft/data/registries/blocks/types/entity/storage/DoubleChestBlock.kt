@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,13 +20,14 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface DoubleChestBlock<T : StorageBlockEntity> : ChestBlock<T> {
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): VoxelShape {
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         if (state !is PropertyBlockState) return super.getOutlineShape(session, position, state)
         val type = state.properties[BlockProperties.CHEST_TYPE] ?: return ChestBlock.SINGLE
         if (type == ChestTypes.SINGLE) return ChestBlock.SINGLE
@@ -40,10 +41,10 @@ interface DoubleChestBlock<T : StorageBlockEntity> : ChestBlock<T> {
 
     companion object {
         val SHAPES = arrayOf(
-            VoxelShape(0.0625, 0.0, 0.0, 0.9375, 0.875, 0.9375),
-            VoxelShape(0.0625, 0.0, 0.0625, 0.9375, 0.875, 1.0),
-            VoxelShape(0.0, 0.0, 0.0625, 0.9375, 0.875, 0.9375),
-            VoxelShape(0.0625, 0.0, 0.0625, 1.0, 0.875, 0.9375),
+            AABB(0.0625, 0.0, 0.0, 0.9375, 0.875, 0.9375),
+            AABB(0.0625, 0.0, 0.0625, 0.9375, 0.875, 1.0),
+            AABB(0.0, 0.0, 0.0625, 0.9375, 0.875, 0.9375),
+            AABB(0.0625, 0.0, 0.0625, 1.0, 0.875, 0.9375),
         )
     }
 }

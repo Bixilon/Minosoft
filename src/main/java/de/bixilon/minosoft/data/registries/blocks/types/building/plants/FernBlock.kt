@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTinted
@@ -42,7 +42,7 @@ abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState) = SHAPE
 
     companion object {
-        private val SHAPE = VoxelShape(0.125, 0.0, 0.125, 0.875, 0.8125, 0.875)
+        private val SHAPE = AABB(0.125, 0.0, 0.125, 0.875, 0.8125, 0.875)
     }
 
     open class DeadBush(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FernBlock(identifier, settings) {

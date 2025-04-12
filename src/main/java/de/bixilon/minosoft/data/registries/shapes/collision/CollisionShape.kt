@@ -23,7 +23,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
@@ -38,21 +39,18 @@ class CollisionShape(
     movement: Vec3d,
     chunk: Chunk?,
     predicate: CollisionPredicate? = null,
-) : AbstractVoxelShape {
-    override val aabbs: Int
-
-    private var total: Int
+) : Shape {
+    private var count: Int
     private val positions: LongArray
-    private val shapes: Array<AbstractVoxelShape>
+    private val shapes: Array<Shape>
 
 
     init {
         val aabbs = aabb.extend(movement).grow(1.0).positions()
         val positions = POSITIONS.allocate(aabbs.size)
-        val shapes: Array<AbstractVoxelShape?> = SHAPES.allocate(aabbs.size)
+        val shapes: Array<Shape?> = SHAPES.allocate(aabbs.size)
 
         var index = 0
-        var total = 0
 
         // TODO: add entity collisions (boat, shulker)
         // TODO: add world border collision shape
@@ -74,12 +72,10 @@ class CollisionShape(
             positions[index] = position.raw
             shapes[index] = shape
             index++
-            total += shape.aabbs
         }
         this.shapes = shapes.cast()
-        this.total = index
+        this.count = index
         this.positions = positions
-        this.aabbs = total
     }
 
     override fun iterator(): Iterator<AABB> {
@@ -87,7 +83,7 @@ class CollisionShape(
     }
 
     override fun intersects(other: AABB): Boolean {
-        for (index in 0 until total) {
+        for (index in 0 until count) {
             val position = BlockPosition(this.positions[index])
             val shape = this.shapes[index]
 
@@ -96,10 +92,22 @@ class CollisionShape(
         return false
     }
 
+    override fun intersects(other: AABB, offset: BlockPosition): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit? {
+        TODO("Not yet implemented")
+    }
+
     override fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
 
-        for (index in 0 until total) {
+        for (index in 0 until count) {
             val position = BlockPosition(this.positions[index])
             val shape = this.shapes[index]
 
@@ -117,9 +125,9 @@ class CollisionShape(
 
     companion object {
         private val POSITIONS = LongAllocator()
-        private val SHAPES = object : TemporaryAllocator<Array<AbstractVoxelShape?>>() {
-            override fun getSize(value: Array<AbstractVoxelShape?>) = value.size
-            override fun create(size: Int): Array<AbstractVoxelShape?> = arrayOfNulls(size)
+        private val SHAPES = object : TemporaryAllocator<Array<Shape?>>() {
+            override fun getSize(value: Array<Shape?>) = value.size
+            override fun create(size: Int): Array<Shape?> = arrayOfNulls(size)
         }
     }
 }

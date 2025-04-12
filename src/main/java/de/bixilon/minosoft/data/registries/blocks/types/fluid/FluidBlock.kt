@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.Ran
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
@@ -49,8 +48,8 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
         fluid.nullCast<TintedBlock>()?.initTint(manager)
     }
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): VoxelShape {
-        return VoxelShape(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(state), 1.0f)))
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AABB {
+        return AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(state), 1.0f))
     }
 
     override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES

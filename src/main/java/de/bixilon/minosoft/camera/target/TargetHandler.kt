@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.shapes.voxel.AABBRaycastHit
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d

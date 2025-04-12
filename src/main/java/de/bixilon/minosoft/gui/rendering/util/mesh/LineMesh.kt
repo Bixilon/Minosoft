@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -62,14 +62,14 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal1, invertedNormal2, direction, floatColor)
     }
 
-    fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: AbstractVoxelShape? = null) {
+    fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {
         if (shape != null && !shape.shouldDrawLine(start, end)) {
             return
         }
         drawLine(start.x, start.y, start.z, end.x, end.y, end.z, lineWidth, color)
     }
 
-    fun tryDrawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: AbstractVoxelShape? = null) {
+    fun tryDrawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {
         if (shape != null) { // && !shape.shouldDrawLine(startX, startY, startZ, endX, endY, endZ)
             return
         }
@@ -96,7 +96,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         }
     }
 
-    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f, shape: AbstractVoxelShape? = null) {
+    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
         drawAABB(aabb + position, lineWidth, color, margin, shape)
     }
 
@@ -112,7 +112,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         }
     }
 
-    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: AbstractVoxelShape? = null) {
+    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
         data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         val offset = context.camera.offset.offset
         val min = Vec3(aabb.min) - margin - offset
@@ -138,14 +138,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         tryDrawLine(min.x, min.y, max.z, max.x, min.y, max.z, lineWidth, color, shape)
     }
 
-    fun drawVoxelShape(shape: AbstractVoxelShape, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f) {
-        val aabbs = shape.aabbs
-        if (aabbs == 0) {
-            return
-        }
-        if (aabbs == 1) {
-            return drawAABB(shape.first(), position, lineWidth, color)
-        }
+    fun drawVoxelShape(shape: Shape, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f) {
         val positionedShape = shape + position
 
         for (aabb in shape) {

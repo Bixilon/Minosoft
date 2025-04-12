@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 
 open class SoulSand(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), ShovelRequirement, FullOpaqueBlock, BlockWithItem<Item>, VelocityBlock {
     override val item: Item = this::item.inject(identifier)
@@ -35,7 +35,7 @@ open class SoulSand(identifier: ResourceLocation = Companion.identifier, setting
 
     companion object : BlockFactory<SoulSand> {
         override val identifier = minecraft("soul_sand")
-        private val COLLISION_SHAPE = VoxelShape(0.0, 0.0, 0.0, 1.0, 0.875, 1.0)
+        private val COLLISION_SHAPE = AABB(0.0, 0.0, 0.0, 1.0, 0.875, 1.0)
 
         override fun build(registries: Registries, settings: BlockSettings) = SoulSand(settings = settings)
     }

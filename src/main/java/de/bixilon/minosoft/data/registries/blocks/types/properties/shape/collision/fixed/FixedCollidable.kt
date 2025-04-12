@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.Colli
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -28,11 +28,11 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
  */
 interface FixedCollidable : CollidableBlock {
 
-    fun getCollisionShape(state: BlockState): AbstractVoxelShape? {
+    fun getCollisionShape(state: BlockState): Shape? {
         return state.nullCast<AdvancedBlockState>()?.collisionShape
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
         return getCollisionShape(state)
     }
 }

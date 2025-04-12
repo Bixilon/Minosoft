@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPred
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -32,7 +32,7 @@ object CollisionMovementPhysics {
         return CollisionShape(this.entity.session.world, EntityCollisionContext(entity, this, aabb), aabb, movement, positionInfo.chunk, predicate)
     }
 
-    private fun checkMovement(axis: Axes, originalValue: Double, offsetAABB: Boolean, aabb: AABB, collisions: AbstractVoxelShape): Double {
+    private fun checkMovement(axis: Axes, originalValue: Double, offsetAABB: Boolean, aabb: AABB, collisions: Shape): Double {
         var value = originalValue
         if (value == 0.0 || abs(value) < 1.0E-7) {
             return 0.0
@@ -44,7 +44,7 @@ object CollisionMovementPhysics {
         return value
     }
 
-    fun collide(movement: Vec3d, aabb: AABB, collisions: AbstractVoxelShape): Vec3d {
+    fun collide(movement: Vec3d, aabb: AABB, collisions: Shape): Vec3d {
         if (movement.length2() < 1.0E-7) return movement
 
         val adjustedAABB = AABB(aabb)
@@ -89,7 +89,7 @@ object CollisionMovementPhysics {
         }
     }
 
-    private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: Vec3d, collisions: AbstractVoxelShape): Vec3d {
+    private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: Vec3d, collisions: Shape): Vec3d {
         val collided = movement.equal(collision)
 
         val grounded = this.onGround || collided.y && movement.y < 0.0

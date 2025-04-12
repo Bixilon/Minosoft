@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.shapes.voxel
+package de.bixilon.minosoft.data.registries.shapes.shape
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
@@ -24,36 +24,21 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
-interface AbstractVoxelShape : Iterable<AABB> {
-    val aabbs: Int
+interface Shape : Iterable<AABB> {
 
-    fun intersects(other: AABB): Boolean {
-        for (aabb in this) {
-            if (!aabb.intersects(other)) continue
-            return true
-        }
-        return false
-    }
+    fun intersects(other: AABB): Boolean
+    fun intersects(other: AABB, offset: BlockPosition): Boolean
 
-    fun intersects(other: AABB, offset: BlockPosition): Boolean {
+    private inline fun modify(modify: (AABB) -> AABB): Shape {
+        val result: MutableList<AABB> = ArrayList()
         for (aabb in this) {
-            if (!aabb.intersects(other, offset)) continue
-            return true
+            result.add(modify.invoke(aabb))
         }
-        return false
-    }
-
-    private inline fun modify(modify: (AABB) -> AABB): AbstractVoxelShape {
-        val result: MutableList<AABB> = ArrayList(aabbs)
-        for (aabb in this) {
-            result += modify(aabb)
-        }
-        return VoxelShape(result)
+        return CombinedShape(result.toTypedArray())
     }
 
     operator fun plus(offset: Vec3d) = modify { it + offset }
@@ -66,39 +51,16 @@ interface AbstractVoxelShape : Iterable<AABB> {
 
     operator fun plus(offset: InSectionPosition) = modify { it + offset }
 
-    fun add(other: AbstractVoxelShape): AbstractVoxelShape {
+    fun add(other: Shape): Shape {
         val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
         aabbs += this
         aabbs += other
-        return VoxelShape(aabbs)
+        return CombinedShape(aabbs.toTypedArray())
     }
 
-    fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double {
-        var distance = maxDistance
-        for (aabb in this) {
-            distance = aabb.calculateMaxDistance(other, distance, axis)
-        }
-        return distance
-    }
-
-    fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
-        var distance = maxDistance
-        for (aabb in this) {
-            distance = aabb.calculateMaxDistance(other, offset, distance, axis)
-        }
-        return distance
-    }
-
-    fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit? {
-        var hit: AABBRaycastHit? = null
-        for (aabb in this) {
-            val aabbHit = aabb.raycast(position, direction) ?: continue
-            if (hit == null || aabbHit.inside || hit.distance > aabbHit.distance) {
-                hit = aabbHit
-            }
-        }
-        return hit
-    }
+    fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double
+    fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double
+    fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit?
 
     fun shouldDrawLine(start: Vec3d, end: Vec3d): Boolean {
         var count = 0
@@ -119,44 +81,34 @@ interface AbstractVoxelShape : Iterable<AABB> {
         return shouldDrawLine(start.toVec3d, end.toVec3d)
     }
 
-    fun getMax(axis: Axes): Double {
-        if (aabbs == 0) return Double.NaN
-
-        var max = Double.MIN_VALUE
-        forEach { max = maxOf(max, it.max[axis]) }
-
-        return max
-    }
-
     companion object {
-        val EMPTY = VoxelShape()
-        val FULL = VoxelShape(AABB.BLOCK)
+        val FULL = AABB.BLOCK
 
-        fun ShapeRegistry.deserialize(data: Any): AbstractVoxelShape {
+        fun ShapeRegistry.deserialize(data: Any): Shape? {
             when (data) {
                 is Int -> return this[data]
                 is Collection<*> -> {
-                    if (data.isEmpty()) return EMPTY
-                    val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
+                    if (data.isEmpty()) return null
+                    val shape: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
-                        aabbs += this[id.toInt()]
+                        shape += this[id.toInt()] ?: continue
                     }
-                    return VoxelShape(aabbs)
+                    return CombinedShape(shape.toTypedArray())
                 }
             }
             TODO("Can not deserialize voxel shape")
         }
 
-        fun deserialize(data: Any, aabbs: Array<AABB>): AbstractVoxelShape {
+        fun deserialize(data: Any, aabbs: Array<AABB>): Shape? {
             when (data) {
-                is Int -> return VoxelShape(aabbs[data])
+                is Int -> return aabbs[data]
                 is Collection<*> -> {
-                    if (data.isEmpty()) return EMPTY
+                    if (data.isEmpty()) return null
                     val shape: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
-                        shape += aabbs[id.toInt()]
+                        shape.add(aabbs[id.toInt()])
                     }
-                    return VoxelShape(shape)
+                    return CombinedShape(shape.toTypedArray())
                 }
             }
             TODO("Can not deserialize voxel shape: $data")
