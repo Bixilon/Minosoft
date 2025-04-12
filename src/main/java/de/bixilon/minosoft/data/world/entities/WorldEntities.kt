@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -168,7 +168,7 @@ class WorldEntities : Iterable<Entity> {
         return closestEntity
     }
 
-    fun isEntityIn(shape: AbstractVoxelShape): Boolean {
+    fun isEntityIn(shape: Shape): Boolean {
         try {
             lock.acquire()
             for (entity in this) {

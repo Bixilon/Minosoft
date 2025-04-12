@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,8 +35,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
@@ -88,7 +88,7 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
         val shape = when (half) {
             Halves.LOWER -> BOTTOM_SHAPE
             Halves.UPPER -> TOP_SHAPE
-            Halves.DOUBLE -> AbstractVoxelShape.FULL
+            Halves.DOUBLE -> Shape.FULL
             else -> Broken()
         }
         val light = if (half == Halves.DOUBLE) OpaqueProperty else DirectedProperty.of(shape)
@@ -96,8 +96,8 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     companion object {
-        private val BOTTOM_SHAPE = VoxelShape(0.0, 0.0, 0.0, 1.0, 0.5, 1.0)
-        private val TOP_SHAPE = VoxelShape(0.0, 0.5, 0.0, 1.0, 1.0, 1.0)
+        private val BOTTOM_SHAPE = AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0)
+        private val TOP_SHAPE = AABB(0.0, 0.5, 0.0, 1.0, 1.0, 1.0)
         val TYPE = EnumProperty("type", Halves)
         val HALF = EnumProperty("half", Halves) // <1.13
     }

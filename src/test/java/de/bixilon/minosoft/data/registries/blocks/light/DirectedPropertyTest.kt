@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.light
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty.Companion.isSideCovered
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -25,27 +25,27 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered1() {
-        assertTrue(VoxelShape(AABB.BLOCK).isSideCovered(Directions.DOWN))
-        assertTrue(VoxelShape(AABB.BLOCK).isSideCovered(Directions.UP))
-        assertTrue(VoxelShape(AABB.BLOCK).isSideCovered(Directions.NORTH))
-        assertTrue(VoxelShape(AABB.BLOCK).isSideCovered(Directions.SOUTH))
-        assertTrue(VoxelShape(AABB.BLOCK).isSideCovered(Directions.WEST))
-        assertTrue(VoxelShape(AABB.BLOCK).isSideCovered(Directions.EAST))
+        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.DOWN))
+        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.UP))
+        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.NORTH))
+        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.SOUTH))
+        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.WEST))
+        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.EAST))
     }
 
     @Test
     fun testSideCovered2() {
-        assertFalse(VoxelShape(AABB.EMPTY).isSideCovered(Directions.DOWN))
-        assertFalse(VoxelShape(AABB.EMPTY).isSideCovered(Directions.UP))
-        assertFalse(VoxelShape(AABB.EMPTY).isSideCovered(Directions.NORTH))
-        assertFalse(VoxelShape(AABB.EMPTY).isSideCovered(Directions.SOUTH))
-        assertFalse(VoxelShape(AABB.EMPTY).isSideCovered(Directions.WEST))
-        assertFalse(VoxelShape(AABB.EMPTY).isSideCovered(Directions.EAST))
+        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.DOWN))
+        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.UP))
+        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.NORTH))
+        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.SOUTH))
+        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.WEST))
+        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.EAST))
     }
 
     @Test
     fun testSideCovered3() {
-        val shape = VoxelShape(AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f))
+        val shape = CombinedShape(AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f))
         assertTrue(shape.isSideCovered(Directions.DOWN))
         assertFalse(shape.isSideCovered(Directions.UP))
         assertFalse(shape.isSideCovered(Directions.NORTH))
@@ -56,7 +56,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered4() {
-        val shape = VoxelShape(AABB(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f))
+        val shape = CombinedShape(AABB(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f))
         assertFalse(shape.isSideCovered(Directions.DOWN))
         assertFalse(shape.isSideCovered(Directions.UP))
         assertTrue(shape.isSideCovered(Directions.NORTH))
@@ -67,7 +67,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered5() {
-        val shape = VoxelShape(
+        val shape = CombinedShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
             AABB(0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f),
         )
@@ -82,7 +82,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered6() {
-        val shape = VoxelShape(
+        val shape = CombinedShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
             AABB(0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f),
         )
@@ -97,7 +97,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered7() {
-        val shape = VoxelShape(
+        val shape = CombinedShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
             AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
         )
@@ -112,7 +112,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered8() {
-        val shape = VoxelShape(
+        val shape = CombinedShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
             AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
         )
@@ -128,7 +128,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered9() { // overlapping
-        val shape = VoxelShape(
+        val shape = CombinedShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.6f, 1.0f),
             AABB(0.0f, 0.4f, 0.5f, 1.0f, 1.0f, 1.0f),
         )
@@ -143,7 +143,7 @@ internal class DirectedPropertyTest {
 
     // @Test // TODO: This test is correct, isSideCovered is broken
     fun testSideCovered10() { // overlapping
-        val shape = VoxelShape(
+        val shape = CombinedShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.6f, 1.0f),
             AABB(0.1f, 0.0f, 0.0f, 0.9f, 0.8f, 1.0f),
             AABB(0.0f, 0.4f, 0.5f, 1.0f, 0.9f, 1.0f),

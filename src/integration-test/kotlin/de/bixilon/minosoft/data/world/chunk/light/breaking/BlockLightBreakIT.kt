@@ -253,57 +253,73 @@ class BlockLightBreakIT {
         world.assertLight(+8, 256, -4, 0xF0)
     }
 
-    fun `increase on break down`() {
+    fun `increase on break down 1`() {
         val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
+        world[BlockPosition(8, 7, 8)] = StoneTest0.state
+        world[BlockPosition(8, 8, 8)] = TorchTest0.state
+        world.assertLight(8, 6, 8, 0x0A)
+        world[BlockPosition(8, 7, 8)] = null
+        world.assertLight(8, 6, 8, 0x0C)
+    }
+
+    fun `increase on break down 2`() {
+        val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 8, 8)] = TorchTest0.state
         world[BlockPosition(8, 7, 8)] = StoneTest0.state
-        world.assertLight(8, 6, 8, 0xA0)
+        world.assertLight(8, 6, 8, 0x0A)
         world[BlockPosition(8, 7, 8)] = null
-        world.assertLight(8, 6, 8, 0xC0)
+        world.assertLight(8, 6, 8, 0x0C)
     }
 
     fun `increase on break up`() {
         val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 8, 8)] = TorchTest0.state
         world[BlockPosition(8, 9, 8)] = StoneTest0.state
-        world.assertLight(8, 10, 8, 0xA0)
+        world.assertLight(8, 10, 8, 0x0A)
         world[BlockPosition(8, 9, 8)] = null
-        world.assertLight(8, 10, 8, 0xC0)
+        world.assertLight(8, 10, 8, 0x0C)
     }
 
     fun `increase on break west`() {
         val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 8, 8)] = TorchTest0.state
         world[BlockPosition(7, 8, 8)] = StoneTest0.state
-        world.assertLight(6, 8, 8, 0xA0)
+        world.assertLight(6, 8, 8, 0x0A)
         world[BlockPosition(7, 8, 8)] = null
-        world.assertLight(6, 8, 8, 0xC0)
+        world.assertLight(6, 8, 8, 0x0C)
     }
 
     fun `increase on break east`() {
         val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 8, 8)] = TorchTest0.state
         world[BlockPosition(9, 8, 8)] = StoneTest0.state
-        world.assertLight(10, 8, 8, 0xA0)
+        world.assertLight(10, 8, 8, 0x0A)
         world[BlockPosition(9, 8, 8)] = null
-        world.assertLight(10, 8, 8, 0xC0)
+        world.assertLight(10, 8, 8, 0x0C)
     }
 
     fun `increase on break north`() {
         val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 8, 8)] = TorchTest0.state
         world[BlockPosition(8, 8, 7)] = StoneTest0.state
-        world.assertLight(8, 8, 6, 0xA0)
+        world.assertLight(8, 8, 6, 0x0A)
         world[BlockPosition(8, 8, 7)] = null
-        world.assertLight(8, 8, 6, 0xC0)
+        world.assertLight(8, 8, 6, 0x0C)
     }
 
     fun `increase on break south`() {
         val world = SessionTestUtil.createSession(3, light = true).world
+        world.fill(BlockPosition(-20, 254, -20), BlockPosition(40, 255, 40), IT.BLOCK_1)
         world[BlockPosition(8, 8, 8)] = TorchTest0.state
         world[BlockPosition(8, 8, 9)] = StoneTest0.state
-        world.assertLight(8, 8, 10, 0xA0)
+        world.assertLight(8, 8, 10, 0x0A)
         world[BlockPosition(8, 8, 9)] = null
-        world.assertLight(8, 8, 10, 0xC0)
+        world.assertLight(8, 8, 10, 0x0C)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.protocol.versions.Version
 
 class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FixedCollidable, OutlinedBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock, BlockStateBuilder {
@@ -43,8 +43,8 @@ class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settin
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         val layer = settings.properties?.get(BlockProperties.SNOW_LAYERS)?.toInt() ?: return BlockState(this, settings)
 
-        settings.collisionShape = VoxelShape(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
-        settings.outlineShape = VoxelShape(0.0, 0.0, 0.0, 1.0, layer * LAYER_HEIGHT, 1.0)
+        settings.collisionShape = AABB(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
+        settings.outlineShape = AABB(0.0, 0.0, 0.0, 1.0, layer * LAYER_HEIGHT, 1.0)
         return AdvancedBlockState(this, settings)
     }
 

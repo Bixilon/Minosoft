@@ -33,8 +33,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.block.climbing.ClimbingItems
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -44,14 +44,14 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
     override fun canPushOut(entity: Entity) = false
 
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         if (session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is ClimbingItems.ScaffoldingItem) {
-            return AbstractVoxelShape.FULL
+            return Shape.FULL
         }
         return if (state.isBottom()) BOTTOM_OUTLINE else OUTLINE
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
         if (context.isAbove(1.0, position) && (context !is EntityCollisionContext || !context.descending)) {
             return OUTLINE
         }
@@ -65,15 +65,15 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
 
     companion object : BlockFactory<ScaffoldingBlock> {
         override val identifier = minecraft("scaffolding")
-        private val COLLISION = VoxelShape(0.0, 0.0, 0.0, 1.0, 0.125, 1.0)
-        private val OUTLINE = VoxelShape(
+        private val COLLISION = AABB(0.0, 0.0, 0.0, 1.0, 0.125, 1.0)
+        private val OUTLINE = CombinedShape(
             AABB(0.0, 0.875, 0.0, 1.0, 1.0, 1.0),      // top
             AABB(0.0, 0.0, 0.0, 0.125, 0.875, 0.125),
             AABB(0.875, 0.0, 0.0, 1.0, 0.875, 0.125),
             AABB(0.0, 0.0, 0.875, 0.125, 0.875, 1.0),
             AABB(0.875, 0.0, 0.875, 1.0, 0.875, 1.0),
         )
-        private val BOTTOM_OUTLINE = VoxelShape(
+        private val BOTTOM_OUTLINE = CombinedShape(
             AABB(0.0, 0.875, 0.0, 1.0, 1.0, 1.0),       // top
             AABB(0.0, 0.0, 0.0, 1.0, 0.125, 1.0),       // bottom
             AABB(0.0, 0.125, 0.0, 0.125, 0.875, 0.125),

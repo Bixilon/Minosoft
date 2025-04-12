@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
@@ -38,11 +38,11 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun testOutlineShape() {
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
+        assertEquals(Shape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
     }
 
     fun testCollisionShape() {
-        assertEquals(AbstractVoxelShape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
+        assertEquals(Shape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
     }
 
     fun testStates() {

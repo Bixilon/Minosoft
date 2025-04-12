@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -273,7 +272,7 @@ class FluidSectionMesher(
 
             if (!fluid.matches(state)) {
                 // TODO: this was !blockState.material.solid
-                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.session, EmptyCollisionContext, now, state, null) == AbstractVoxelShape.EMPTY) {
+                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.session, EmptyCollisionContext, now, state, null) == null) {
                     count++
                 }
                 continue

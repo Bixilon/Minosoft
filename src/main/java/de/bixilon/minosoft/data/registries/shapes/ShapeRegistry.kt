@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,10 +17,10 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 
 class ShapeRegistry {
-    private var shapes: Array<AbstractVoxelShape> = emptyArray()
+    private var shapes: Array<Shape?> = emptyArray()
 
     fun load(data: JsonObject?) {
         if (data == null) {
@@ -31,10 +31,10 @@ class ShapeRegistry {
     }
 
     private fun loadShapes(data: Collection<Any>, aabbs: Array<AABB>) {
-        this.shapes = arrayOfNulls<AbstractVoxelShape>(data.size).cast()
+        this.shapes = arrayOfNulls(data.size)
 
         for ((index, shape) in data.withIndex()) {
-            this.shapes[index] = AbstractVoxelShape.deserialize(shape, aabbs)
+            this.shapes[index] = Shape.deserialize(shape, aabbs)
         }
     }
 
@@ -52,7 +52,7 @@ class ShapeRegistry {
     }
 
 
-    operator fun get(index: Int): AbstractVoxelShape {
+    operator fun get(index: Int): Shape? {
         return shapes[index]
     }
 }

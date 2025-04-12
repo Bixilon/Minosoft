@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.TestBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
@@ -110,7 +109,7 @@ object LightTestingUtil {
 
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
         val block = TestBlock(minosoft(name), BlockSettings(Versions.AUTOMATIC))
-        val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = AbstractVoxelShape.EMPTY, outlineShape = AbstractVoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties)
+        val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = null, outlineShape = null, luminance = luminance, lightProperties = lightProperties)
         state.flags += BlockStateFlags.FULLY_OPAQUE
         block::states.forceSet(SimpleStateManager(state))
 

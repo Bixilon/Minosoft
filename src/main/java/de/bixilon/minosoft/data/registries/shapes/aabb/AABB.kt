@@ -17,11 +17,13 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.shapes.voxel.AABBRaycastHit
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -36,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
 import kotlin.math.abs
 
 
-class AABB {
+class AABB : Shape {
     val min: Vec3d
     val max: Vec3d
 
@@ -59,37 +61,33 @@ class AABB {
         this.max = max
     }
 
-    fun intersects(other: AABB): Boolean {
+    override fun intersects(other: AABB): Boolean {
         return (min.x < other.max.x && max.x > other.min.x) && (min.y < other.max.y && max.y > other.min.y) && (min.z < other.max.z && max.z > other.min.z)
     }
 
-    fun intersects(other: AABB, offset: BlockPosition): Boolean {
+    override fun intersects(other: AABB, offset: BlockPosition): Boolean {
         return (min.x < (other.max.x + offset.x) && max.x > (other.min.x + offset.x)) && (min.y < (other.max.y + offset.y) && max.y > (other.min.y + offset.y)) && (min.z < (other.max.z + offset.z) && max.z > (other.min.z + offset.z))
     }
 
-    operator fun plus(other: Vec3d): AABB = offset(other)
+    override operator fun plus(offset: Vec3d): AABB = this.offset(offset)
     fun offset(other: Vec3d) = AABB(true, min + other, max + other)
 
-    operator fun plus(other: Vec3): AABB = offset(other)
+    override operator fun plus(offset: Vec3): AABB = this.offset(offset)
     fun offset(other: Vec3) = AABB(true, min + other, max + other)
 
-    operator fun plus(other: Vec3i): AABB = offset(other)
+    override operator fun plus(offset: Vec3i): AABB = this.offset(offset)
     fun offset(other: Vec3i) = AABB(true, min + other, max + other)
 
-    @JvmName("plusBlockPosition")
-    operator fun plus(other: BlockPosition): AABB = offset(other)
+    override operator fun plus(offset: BlockPosition): AABB = this.offset(offset)
 
     @JvmName("offsetBlockPosition")
     fun offset(other: BlockPosition) = AABB(true, min + other, max + other)
 
-    @JvmName("plusInChunkPosition")
-    operator fun plus(other: InChunkPosition): AABB = offset(other)
+    override operator fun plus(offset: InChunkPosition): AABB = offset(offset)
 
-    @JvmName("offsetInChunkPosition")
     fun offset(other: InChunkPosition) = AABB(true, min + other, max + other)
 
-    @JvmName("plusInSectionPosition")
-    operator fun plus(other: InSectionPosition): AABB = offset(other)
+    override operator fun plus(offset: InSectionPosition): AABB = offset(offset)
 
     @JvmName("offsetInSectionPosition")
     fun offset(other: InSectionPosition) = AABB(true, min + other, max + other)
@@ -159,8 +157,8 @@ class AABB {
             || (min == otherMin && max == otherMax)
     }
 
-    fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes) = calculateMaxDistance(other, BlockPosition(), maxDistance, axis)
-    fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes) = calculateMaxDistance(other, BlockPosition(), maxDistance, axis)
+    override fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
         if (!intersects(axis.next(), other, offset) || !intersects(axis.previous(), other, offset)) {
             return maxDistance
         }
@@ -196,20 +194,20 @@ class AABB {
      * If the origin is inside the AABB, it returns the direction where it exists it.
      */
     // this was a test, but credit is needed where credit belongs: https://chat.openai.com/chat (but heavily refactored and improved :D)
-    fun raycast(origin: Vec3d, front: Vec3d): AABBRaycastHit? {
+    override fun raycast(position: Vec3d, front: Vec3d): AABBRaycastHit? {
         var minAxis = -1
         var min = Double.NEGATIVE_INFINITY
         var max = Double.POSITIVE_INFINITY
 
         for (axis in Axes.VALUES.indices) {
             if (abs(front[axis]) < 0.00001) {
-                if (origin[axis] < this.min[axis] || origin[axis] > this.max[axis]) {
+                if (position[axis] < this.min[axis] || position[axis] > this.max[axis]) {
                     return null
                 }
                 continue
             }
-            var minDistance = (this.min[axis] - origin[axis]) / front[axis]
-            var maxDistance = (this.max[axis] - origin[axis]) / front[axis]
+            var minDistance = (this.min[axis] - position[axis]) / front[axis]
+            var maxDistance = (this.max[axis] - position[axis]) / front[axis]
 
             if (minDistance > maxDistance) {
                 // swamp values
@@ -225,7 +223,7 @@ class AABB {
             if (maxDistance < max) max = maxDistance
         }
 
-        val inside = origin in this
+        val inside = position in this
 
         if (inside) {
             min = abs(min)
@@ -274,17 +272,15 @@ class AABB {
         return min.hashCode() + max.hashCode()
     }
 
+    override fun iterator() = SingleIterator(this)
+
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
-        if (this.hashCode() != other?.hashCode()) {
-            return false
-        }
-        if (other !is AABB) {
-            return false
-        }
-        return min == other.min && max == other.max
+        if (other == null) return false
+        if (this === other) return true
+        if (this.hashCode() != other.hashCode()) return false
+        if (other is AABB) return min == other.min && max == other.max
+        if (other is Shape) return other == this
+        return false
     }
 
     fun isOnEdge(min: Vec3d, max: Vec3d): Boolean {

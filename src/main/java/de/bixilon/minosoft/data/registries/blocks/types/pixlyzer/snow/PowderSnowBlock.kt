@@ -36,8 +36,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.LeatherArmor
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -56,7 +55,7 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
         physics.slowMovement(state, SLOW)
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
         if (context !is EntityCollisionContext) {
             return null
         }
@@ -64,7 +63,7 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
             return FALLING_SHAPE
         }
         if (context.entity is FallingBlockEntity || (context.entity.canWalkOnPowderSnow() && context.isAbove(1.0, position) && !context.descending)) {
-            return AbstractVoxelShape.FULL
+            return Shape.FULL
         }
         return null
     }
@@ -73,7 +72,7 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
     companion object : BlockFactory<PowderSnowBlock> {
         override val identifier = minecraft("powder_snow")
         private val SLOW = Vec3d(0.9f, 1.5, 0.9f)
-        private val FALLING_SHAPE = VoxelShape(AABB(Vec3d(0.0, 0.0, 0.0), Vec3d(1.0, 0.9f, 1.0)))
+        private val FALLING_SHAPE = AABB(Vec3d(0.0, 0.0, 0.0), Vec3d(1.0, 0.9f, 1.0))
         private val TAG = minecraft("powder_snow_walkable_mobs")
 
 

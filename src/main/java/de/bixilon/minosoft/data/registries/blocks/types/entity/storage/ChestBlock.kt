@@ -19,16 +19,17 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.Colli
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface ChestBlock<T : StorageBlockEntity> : StorageBlock<T>, OutlinedBlock, CollidableBlock {
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState) = SINGLE
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?) = getOutlineShape(session, position, state)
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? = SINGLE
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? = getOutlineShape(session, position, state)
 
     companion object {
-        val SINGLE = VoxelShape(0.0625, 0.0, 0.0625, 0.9375, 0.875, 0.9375)
+        val SINGLE = AABB(0.0625, 0.0, 0.0625, 0.9375, 0.875, 0.9375)
     }
 }

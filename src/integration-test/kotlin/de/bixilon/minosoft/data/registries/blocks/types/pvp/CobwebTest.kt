@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManag
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
@@ -41,12 +41,12 @@ class CobwebTest : BlockTest<Block>() {
 
     fun testOutlineShape() {
         if (block !is OutlinedBlock) throw AssertionError("Not shaped!")
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
+        assertEquals(Shape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
     }
 
     fun testCollisionShape() {
         if (block !is CollidableBlock) return
-        assertEquals(AbstractVoxelShape.EMPTY, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
+        assertEquals(null, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
     }
 
     fun testStates() {

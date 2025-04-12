@@ -47,8 +47,8 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -109,7 +109,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         ))
     }
 
-    private fun getShape(hinge: Sides, open: Boolean, facing: Directions): VoxelShape {
+    private fun getShape(hinge: Sides, open: Boolean, facing: Directions): AABB {
         val direction = when {
             !open -> facing.inverted
             hinge == Sides.LEFT -> facing.rotateY(-1)
@@ -119,7 +119,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return SHAPES[direction.ordinal - Directions.SIDE_OFFSET]
     }
 
-    private fun getLegacyShape(session: PlaySession, position: BlockPosition, state: BlockState): VoxelShape? {
+    private fun getLegacyShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         val isTop = isTop(state, session)
         val other = session.world[position + if (isTop) Directions.DOWN else Directions.UP]
         if (other !is PropertyBlockState || other.block !is DoorBlock) return null
@@ -137,13 +137,13 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return getShape(hinge, open, facing)
     }
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         if (session.version.flattened) return super.getOutlineShape(session, position, state)
 
         return getLegacyShape(session, position, state)
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
         if (session.version.flattened) return super.getCollisionShape(session, context, position, state, blockEntity)
         return getLegacyShape(session, position, state)
     }
@@ -170,10 +170,10 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         val OPEN = BooleanProperty("open")
 
         private val SHAPES = arrayOf(
-            VoxelShape(0.0, 0.0, 0.0, 1.0, 1.0, 0.1875),
-            VoxelShape(0.0, 0.0, 0.8125, 1.0, 1.0, 1.0),
-            VoxelShape(0.0, 0.0, 0.0, 0.1875, 1.0, 1.0),
-            VoxelShape(0.8125, 0.0, 0.0, 1.0, 1.0, 1.0),
+            AABB(0.0, 0.0, 0.0, 1.0, 1.0, 0.1875),
+            AABB(0.0, 0.0, 0.8125, 1.0, 1.0, 1.0),
+            AABB(0.0, 0.0, 0.0, 0.1875, 1.0, 1.0),
+            AABB(0.8125, 0.0, 0.0, 1.0, 1.0, 1.0),
         )
     }
 

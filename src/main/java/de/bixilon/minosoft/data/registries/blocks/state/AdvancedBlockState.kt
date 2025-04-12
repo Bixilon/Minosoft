@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 
 open class AdvancedBlockState(
     block: Block,
     properties: Map<BlockProperty<*>, Any>,
     luminance: Int,
-    val collisionShape: AbstractVoxelShape?,
-    val outlineShape: AbstractVoxelShape?,
+    val collisionShape: Shape?,
+    val outlineShape: Shape?,
     val lightProperties: LightProperties,
 ) : PropertyBlockState(block, properties, luminance) {
 

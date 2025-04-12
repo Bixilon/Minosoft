@@ -34,8 +34,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -46,7 +45,7 @@ open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, setti
     override val item: Item = this::item.inject(identifier)
     override val velocity: Float get() = 0.4f
     override val jumpBoost: Float get() = 0.5f
-    override val collisionShape: AbstractVoxelShape get() = COLLISION_BOX
+    override val collisionShape: Shape get() = COLLISION_BOX
 
     override fun buildState(version: Version, settings: BlockStateSettings) = BlockState(this, settings)
 
@@ -84,7 +83,7 @@ open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, setti
 
     companion object : BlockFactory<HoneyBlock> {
         override val identifier = minecraft("honey_block")
-        private val COLLISION_BOX = VoxelShape(AABB(0.0625, 0.0, 0.0625, 0.9375, 0.9375, 0.9375))
+        private val COLLISION_BOX = AABB(0.0625, 0.0, 0.0625, 0.9375, 0.9375, 0.9375)
         const val MAX_Y = 0.9375
         const val SLIDE_GRAVITY = 0.05
 
