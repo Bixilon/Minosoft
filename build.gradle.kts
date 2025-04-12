@@ -154,6 +154,7 @@ when (os) {
             Architectures.AARCH64 -> {
                 lwjglNatives += "-arm64"
                 zstdNatives += "_aarch64"
+                javafxNatives += "-aarch64"
                  // TODO: javafx for Windows on arm is not yet supported
             }
 
@@ -316,7 +317,7 @@ tasks.named("check") {
 }
 
 fun DependencyHandler.javafx(name: String) {
-    if ( os != OSTypes.WINDOWS && architecture != Architectures.AARCH64 ) {
+    if ( javafxNatives != "win-aarch64" ) {
         implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives) {
             version { strictly(javafxVersion) }
         }
