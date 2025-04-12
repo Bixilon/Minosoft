@@ -118,6 +118,7 @@ If you want to get notified when cool new features arrive or other interesting s
 
 The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/?ref=gitlab.bixilon.de)
 
+JRE+FX is essential on Windows ARM64 platform. You can install Full JRE from [Liberica JDK](https://bell-sw.com/pages/downloads/)
 
 #### Arch
 
