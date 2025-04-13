@@ -23,6 +23,7 @@ abstract class TemporaryAllocator<T> {
     private val list: ArrayList<WeakReference<T>> = ArrayList()
 
     private fun cleanup() {
+        if (list.size < 10) return
         lock.lock()
         val iterator = list.iterator()
         while (iterator.hasNext()) {
@@ -41,7 +42,8 @@ abstract class TemporaryAllocator<T> {
         lock.unlock()
     }
 
-    fun allocate(size: Int): T {
+    private fun find(size: Int): T? {
+        if (this.list.isEmpty()) return null
         lock.lock()
 
         var array: T? = null
@@ -61,6 +63,11 @@ abstract class TemporaryAllocator<T> {
         }
         lock.unlock()
 
+        return array
+    }
+
+    fun allocate(size: Int): T {
+        val array = find(size)
         if (array != null) return array
 
         // println("Allocating array of size $size")

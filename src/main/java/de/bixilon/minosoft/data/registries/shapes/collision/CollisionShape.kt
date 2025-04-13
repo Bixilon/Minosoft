@@ -54,18 +54,18 @@ class CollisionShape(
 
 
     private fun iterator(aabb: AABB, movement: Vec3d): AABBIterator {
-        var minX = aabb.min.x
-        var minY = aabb.min.y - 1 // only fences can have a higher box rn
-        var minZ = aabb.min.z
+        var minX = aabb.min.x - 0.1
+        var minY = aabb.min.y - 1.0 // only fences can have a higher box rn
+        var minZ = aabb.min.z - 0.1
 
-        var maxX = aabb.max.x
-        var maxY = aabb.max.y
-        var maxZ = aabb.max.z
+        var maxX = aabb.max.x + 0.1
+        var maxY = aabb.max.y + 0.1
+        var maxZ = aabb.max.z + 0.1
 
 
-        if (minX < 0) minX -= movement.x else maxX += movement.x
-        if (minY < 0) minY -= movement.y else maxY += movement.y
-        if (minZ < 0) minZ -= movement.z else maxZ += movement.z
+        if (movement.x < 0) minX += movement.x else maxX += movement.x
+        if (movement.y < 0) minY += movement.y else maxY += movement.y
+        if (movement.z < 0) minZ += movement.z else maxZ += movement.z
 
         val min = BlockPosition(minX.floor.clampX(), minY.floor.clampY(), minZ.floor.clampZ())
         val max = BlockPosition(maxX.ceil.clampX(), maxY.ceil.clampY(), maxZ.ceil.clampZ())
