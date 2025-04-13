@@ -147,7 +147,7 @@ when (os) {
 
             Architectures.X86 -> {
                 lwjglNatives += "-x86"
-                zstdNatives += "-x86"
+                zstdNatives += "_x86"
                 javafxNatives += "-x86"
             }
             /*
