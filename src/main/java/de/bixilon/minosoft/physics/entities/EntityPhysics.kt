@@ -215,13 +215,9 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     }
 
     fun checkBlockCollisions() {
-        val aabb = aabb.shrink()
-
-        for ((position, state) in WorldIterator(aabb.positions(AABBIterator.IterationOrder.NATURAL), entity.session.world, positionInfo.chunk)) {
+        for ((position, state) in WorldIterator(aabb.innerPositions(AABBIterator.IterationOrder.NATURAL), entity.session.world, positionInfo.chunk)) {
             val block = state.block
-            if (block !is EntityCollisionHandler) {
-                continue
-            }
+            if (block !is EntityCollisionHandler) continue
             block.onEntityCollision(entity, this, position, state)
         }
     }

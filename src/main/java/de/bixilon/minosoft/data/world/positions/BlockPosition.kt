@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -176,5 +177,10 @@ value class BlockPosition(
         inline fun of(chunk: ChunkPosition, sectionHeight: SectionHeight, inSection: InSectionPosition) = BlockPosition((chunk.x shl 4) or inSection.x, (sectionHeight shl 4) or inSection.y, (chunk.z shl 4) or inSection.z)
         inline fun of(section: SectionPosition, inSection: InSectionPosition) = BlockPosition((section.x shl 4) or inSection.x, (section.y shl 4) or inSection.y, (section.z shl 4) or inSection.z)
         inline fun of(section: SectionPosition) = BlockPosition(section.x shl 4, section.y shl 4, section.z shl 4)
+
+
+        fun Int.clampX() = this.clamp(-MAX_X + 1, MAX_X - 1)
+        fun Int.clampY() = this.clamp(+MIN_Y + 1, MAX_Y - 1)
+        fun Int.clampZ() = this.clamp(-MAX_Z + 1, MAX_Z - 1)
     }
 }

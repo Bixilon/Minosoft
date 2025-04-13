@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.shapes.collision
 
-import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -33,6 +32,9 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampX
+import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
+import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
 import de.bixilon.minosoft.gui.rendering.util.allocator.LongAllocator
 import de.bixilon.minosoft.gui.rendering.util.allocator.TemporaryAllocator
 
@@ -47,10 +49,6 @@ class CollisionShape(
     private var count: Int
     private val positions: LongArray
     private val shapes: Array<Shape>
-
-    private fun Int.clampX() = this.clamp(-BlockPosition.MAX_X + 1, BlockPosition.MAX_X - 1)
-    private fun Int.clampY() = this.clamp(+BlockPosition.MIN_Y + 1, BlockPosition.MAX_Y - 1)
-    private fun Int.clampZ() = this.clamp(-BlockPosition.MAX_Z + 1, BlockPosition.MAX_Z - 1)
 
 
     private fun iterator(aabb: AABB, movement: Vec3d): AABBIterator {

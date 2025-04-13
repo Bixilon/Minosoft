@@ -37,12 +37,13 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
     }
 
     private fun updateVelocity() {
-        val minLevel = entity.eyeHeight - Fluid.MIN_LEVEL
-
-        for ((fluid, height) in submersion.heights) {
-            if (height <= minLevel) continue
-            updateFluidVelocity(fluid.friction)
-            return
+        if (submersion.heights.isNotEmpty()) {
+            val minLevel = entity.eyeHeight - Fluid.MIN_LEVEL
+            for ((fluid, height) in submersion.heights) {
+                if (height <= minLevel) continue
+                updateFluidVelocity(fluid.friction)
+                return
+            }
         }
 
         if (!entity.hasGravity) return
