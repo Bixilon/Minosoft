@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -66,7 +67,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val element = this.element ?: return
         val size = element.size
         ColorElement(guiRenderer, size + BACKGROUND_SIZE * 2, 0x3c05aa.rgb().rgba()).render(offset, consumer, options)
-        ColorElement(guiRenderer, size + (BACKGROUND_SIZE - 2) * 2, 0x160611A0.rgb().rgba()).render(offset + (BACKGROUND_SIZE - (BACKGROUND_SIZE - 2)), consumer, options)
+        ColorElement(guiRenderer, size + (BACKGROUND_SIZE - 2) * 2, 0x160611A0.rgba()).render(offset + (BACKGROUND_SIZE - (BACKGROUND_SIZE - 2)), consumer, options)
         element.forceRender(offset + BACKGROUND_SIZE, consumer, options)
     }
 
