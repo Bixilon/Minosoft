@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,6 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.entity
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
@@ -28,7 +26,6 @@ class EntityActionC2SP(
     val action: EntityActions,
     val parameter: Int = 0, // currently used as jump boost for horse jumping
 ) : PlayC2SPacket {
-    constructor(entity: Entity, session: PlaySession, action: EntityActions, parameter: Int = 0) : this(session.world.entities.getId(entity)!!, action, parameter)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeEntityId(entityId)

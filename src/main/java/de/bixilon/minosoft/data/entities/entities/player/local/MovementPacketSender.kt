@@ -51,7 +51,7 @@ class MovementPacketSender(
         if (this.sprinting == sprinting) {
             return
         }
-        session.connection.send(EntityActionC2SP(player, session, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
+        session.connection.send(EntityActionC2SP(player.id, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
         this.sprinting = sprinting
     }
 
@@ -59,7 +59,7 @@ class MovementPacketSender(
         if (this.sneaking == sneaking) {
             return
         }
-        session.connection.send(EntityActionC2SP(player, session, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
+        session.connection.send(EntityActionC2SP(player.id, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
         this.sneaking = sneaking
     }
 

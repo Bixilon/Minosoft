@@ -60,7 +60,7 @@ abstract class Entity(
     protected val random = Random()
     var _id: Int? = null
     var _uuid: UUID? = null
-    val id: Int?
+    open val id: Int?
         get() {
             if (_id != null) return _id
             _id = session.world.entities.getId(this)
