@@ -26,12 +26,12 @@ class PacketDecryptor(
     override fun decode(context: ChannelHandlerContext, data: ByteBuf, out: MutableList<Any>) {
         val length = data.readableBytes()
         val encrypted = NetworkAllocator.allocate(length)
-        data.readBytes(encrypted)
+        data.readBytes(encrypted, 0, length)
 
         val decrypted = NetworkAllocator.allocate(length)
         cipher.update(encrypted, 0, length, decrypted)
         NetworkAllocator.free(encrypted)
-        out += context.alloc().buffer(decrypted.size).apply { writeBytes(decrypted) }
+        out += context.alloc().buffer(decrypted.size).apply { writeBytes(decrypted, 0, length) }
         NetworkAllocator.free(decrypted)
     }
 
