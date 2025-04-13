@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics.entities.item
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock
@@ -58,7 +57,8 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
             val frictionPosition = (position + FRICTION_OFFSET).blockPosition.inChunkPosition
             friction *= positionInfo.chunk?.get(frictionPosition)?.block?.nullCast<FrictionBlock>()?.friction ?: FrictionBlock.DEFAULT_FRICTION
         }
-        this.velocity = this.velocity * Vec3d(friction, PhysicsConstants.AIR_RESISTANCE, friction)
+        val velocity = this.velocity
+        this.velocity = Vec3d(velocity.x * friction, velocity.y * PhysicsConstants.AIR_RESISTANCE, velocity.z * friction)
     }
 
     private fun boost() {
@@ -75,7 +75,8 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
         if (position.y < entity.session.world.dimension.minY - 20.0) return // ignore out of world entities
 
         updateVelocity()
-        if (onGround && this.velocity.xz.length2() <= 9.999999747378752E-6 && entity.age % 4 != 0) return
+        val velocity = this.velocity
+        if (onGround && (velocity.x * velocity.x + velocity.z * velocity.z) <= 9.999999747378752E-6 && entity.age % 4 != 0) return
 
         move(this.velocity)
 

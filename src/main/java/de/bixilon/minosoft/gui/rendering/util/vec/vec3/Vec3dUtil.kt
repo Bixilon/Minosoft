@@ -216,4 +216,19 @@ object Vec3dUtil {
 
     @JvmName("minusInSectionPosition")
     operator fun Vec3d.minus(position: InSectionPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
+
+
+    fun distance2(a: Vec3d, b: Vec3d): Double {
+        val x = a.x - b.x
+        val y = a.y - b.y
+        val z = a.z - b.z
+        return x * x + y * y + z * z
+    }
+
+    fun distance2(a: Vec3d, b: Vec3): Double {
+        val x = a.x - b.x
+        val y = a.y - b.y
+        val z = a.z - b.z
+        return x * x + y * y + z * z
+    }
 }

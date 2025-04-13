@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.format
 
@@ -32,7 +33,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
 
 
     fun addMesh(mesh: ChunkMeshes) {
-        val distance = (cameraPosition - mesh.center).length2()
+        val distance = Vec3Util.distance2(cameraPosition, mesh.center)
         mesh.opaqueMesh?.let {
             it.distance = distance
             opaque += it

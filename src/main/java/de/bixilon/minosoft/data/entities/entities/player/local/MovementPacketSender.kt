@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
@@ -76,7 +77,7 @@ class MovementPacketSender(
     private fun sendMovement(position: Vec3d, rotation: EntityRotation, onGround: Boolean) {
         this.lastPacket++
 
-        val positionChange = (position - this.position).length2() > MIN_MOVEMENT_SQUARED
+        val positionChange = Vec3dUtil.distance2(position, this.position) > MIN_MOVEMENT_SQUARED
         val sendPosition = positionChange || this.lastPacket >= MAX_POSITION_PACKET_INTERVAL
         val sendRotation = rotation != this.rotation
 

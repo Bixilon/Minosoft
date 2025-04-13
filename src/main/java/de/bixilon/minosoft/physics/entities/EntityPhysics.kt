@@ -203,9 +203,10 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     }
 
     private fun applyVelocityMultiplier() {
-        val velocityMultiplier = getVelocityMultiplier()
+        val multiplier = getVelocityMultiplier()
+        if (multiplier == 1.0f) return
         val velocity = velocity
-        this.velocity = Vec3d(velocity.x * velocityMultiplier, velocity.y, velocity.z * velocityMultiplier)
+        this.velocity = Vec3d(velocity.x * multiplier, velocity.y, velocity.z * multiplier)
     }
 
     open fun slowMovement(state: BlockState, multiplier: Vec3d) {

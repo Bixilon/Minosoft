@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -141,7 +142,7 @@ class WorldEntities : Iterable<Entity> {
 
         val distance2 = distance * distance
         for (entity in this) {
-            if ((entity.physics.position - position).length2() > distance2) {
+            if (Vec3dUtil.distance2(entity.physics.position, position) > distance2) {
                 continue
             }
             if (check(entity)) {
@@ -158,7 +159,7 @@ class WorldEntities : Iterable<Entity> {
         var closestEntity: Entity? = null
 
         for (entity in entities) {
-            val currentDistance = (entity.physics.position - position).length2()
+            val currentDistance = Vec3dUtil.distance2(entity.physics.position, position)
             if (currentDistance < closestDistance) {
                 closestDistance = currentDistance
                 closestEntity = entity
