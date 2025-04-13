@@ -25,12 +25,14 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampX
+import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
+import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.clampBlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
@@ -99,7 +101,24 @@ class AABB : Shape {
     }
 
     fun positions(order: AABBIterator.IterationOrder = AABBIterator.IterationOrder.OPTIMIZED): AABBIterator {
-        return AABBIterator(min.clampBlockPosition(), max.clampBlockPosition(), order)
+        val min = BlockPosition(min.x.floor.clampX(), min.y.floor.clampY(), min.z.floor.clampZ())
+        val max = BlockPosition((max.x.ceil - 1).clampX(), (max.y.ceil - 1).clampY(), (max.z.ceil - 1).clampZ())
+        return AABBIterator(min, max, order)
+    }
+
+    fun innerPositions(order: AABBIterator.IterationOrder = AABBIterator.IterationOrder.OPTIMIZED): AABBIterator {
+        val minX = (min.x + 1.0E-7).floor
+        val minY = (min.y + 1.0E-7).floor
+        val minZ = (min.z + 1.0E-7).floor
+
+        val maxX = (max.x - 1.0E-7).ceil - 1
+        val maxY = (max.y - 1.0E-7).ceil - 1
+        val maxZ = (max.z - 1.0E-7).ceil - 1
+
+        val min = BlockPosition(minX.clampX(), minY.clampY(), minZ.clampZ())
+        val max = BlockPosition(maxX.clampX(), maxY.clampY(), maxZ.clampZ())
+
+        return AABBIterator(min, max, order)
     }
 
     fun extend(vec3: Vec3d): AABB {
