@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.camera.target
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -71,14 +70,12 @@ class TargetHandler(
     private fun raycastEntity(origin: Vec3d, front: Vec3d, maxDistance: Double): EntityTarget? {
         var target: EntityTarget? = null
 
-        val originF = Vec3(origin)
         val world = camera.session.world
 
         world.entities.lock.acquire()
         for (entity in world.entities) {
-            if (entity is LocalPlayerEntity) continue
             if (!entity.canRaycast) continue
-            if (Vec3dUtil.distance2(entity.renderInfo.position, originF) > MAX_ENTITY_DISTANCE) {
+            if (Vec3dUtil.distance2(entity.renderInfo.position, origin) > MAX_ENTITY_DISTANCE) {
                 continue
             }
             val aabb = entity.renderInfo.cameraAABB

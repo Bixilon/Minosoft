@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,8 +34,7 @@ object ElytraPhysics {
 
     private fun LocalPlayerPhysics.startElytraFalling() {
         entity.isFlyingWithElytra = true
-        val id = entity.session.world.entities.getId(entity) ?: return
-        entity.session.connection.send(EntityActionC2SP(id, EntityActionC2SP.EntityActions.START_ELYTRA_FLYING))
+        entity.session.connection.send(EntityActionC2SP(entity.id, EntityActionC2SP.EntityActions.START_ELYTRA_FLYING))
     }
 
     private fun LocalPlayerPhysics.canStartElytraFlight(): Boolean {

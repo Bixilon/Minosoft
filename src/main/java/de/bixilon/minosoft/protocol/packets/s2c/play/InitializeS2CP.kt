@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -179,6 +179,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         session.world.entities.clear(session, local = true)
         session.world.entities.add(entityId, null, playerEntity)
+        playerEntity.id = entityId
         session.world.biomes.updateNoise(hashedSeed)
         session.world.border.reset()
 
