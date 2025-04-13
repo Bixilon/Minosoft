@@ -25,27 +25,27 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered1() {
-        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.DOWN))
-        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.UP))
-        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.NORTH))
-        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.SOUTH))
-        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.WEST))
-        assertTrue(CombinedShape(AABB.BLOCK).isSideCovered(Directions.EAST))
+        assertTrue(AABB.BLOCK.isSideCovered(Directions.DOWN))
+        assertTrue(AABB.BLOCK.isSideCovered(Directions.UP))
+        assertTrue(AABB.BLOCK.isSideCovered(Directions.NORTH))
+        assertTrue(AABB.BLOCK.isSideCovered(Directions.SOUTH))
+        assertTrue(AABB.BLOCK.isSideCovered(Directions.WEST))
+        assertTrue(AABB.BLOCK.isSideCovered(Directions.EAST))
     }
 
     @Test
     fun testSideCovered2() {
-        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.DOWN))
-        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.UP))
-        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.NORTH))
-        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.SOUTH))
-        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.WEST))
-        assertFalse(CombinedShape(AABB.EMPTY).isSideCovered(Directions.EAST))
+        assertFalse(AABB.EMPTY.isSideCovered(Directions.DOWN))
+        assertFalse(AABB.EMPTY.isSideCovered(Directions.UP))
+        assertFalse(AABB.EMPTY.isSideCovered(Directions.NORTH))
+        assertFalse(AABB.EMPTY.isSideCovered(Directions.SOUTH))
+        assertFalse(AABB.EMPTY.isSideCovered(Directions.WEST))
+        assertFalse(AABB.EMPTY.isSideCovered(Directions.EAST))
     }
 
     @Test
     fun testSideCovered3() {
-        val shape = CombinedShape(AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f))
+        val shape = AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f)
         assertTrue(shape.isSideCovered(Directions.DOWN))
         assertFalse(shape.isSideCovered(Directions.UP))
         assertFalse(shape.isSideCovered(Directions.NORTH))
@@ -56,7 +56,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered4() {
-        val shape = CombinedShape(AABB(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f))
+        val shape = AABB(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f)
         assertFalse(shape.isSideCovered(Directions.DOWN))
         assertFalse(shape.isSideCovered(Directions.UP))
         assertTrue(shape.isSideCovered(Directions.NORTH))

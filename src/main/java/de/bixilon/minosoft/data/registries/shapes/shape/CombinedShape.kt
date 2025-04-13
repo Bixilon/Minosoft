@@ -92,9 +92,7 @@ class CombinedShape(
         if (this === other) return true
         if (other !is Shape) return false
         if (other is CombinedShape) return aabbs.contentEquals(other.aabbs)
-        if (other is AABB) {
-            return if (aabbs.size == 1) aabbs.first() == other else false
-        }
+        if (other is AABB) return false // one aabb is not a combined shape
         TODO("Can not compare $this with $other")
     }
 
