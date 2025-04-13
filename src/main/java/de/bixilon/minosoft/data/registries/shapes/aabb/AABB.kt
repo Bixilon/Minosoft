@@ -277,10 +277,9 @@ class AABB : Shape {
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (this === other) return true
-        if (this.hashCode() != other.hashCode()) return false
-        if (other is AABB) return min == other.min && max == other.max
-        if (other is Shape) return other == this
-        return false
+        if (other !is AABB) return false
+
+        return min == other.min && max == other.max
     }
 
     fun isOnEdge(min: Vec3d, max: Vec3d): Boolean {
