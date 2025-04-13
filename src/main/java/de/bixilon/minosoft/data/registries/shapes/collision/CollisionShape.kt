@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.shapes.collision
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.math.simple.DoubleMath.ceil
+import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
@@ -23,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.World
@@ -44,9 +48,33 @@ class CollisionShape(
     private val positions: LongArray
     private val shapes: Array<Shape>
 
+    private fun Int.clampX() = this.clamp(-BlockPosition.MAX_X + 1, BlockPosition.MAX_X - 1)
+    private fun Int.clampY() = this.clamp(+BlockPosition.MIN_Y + 1, BlockPosition.MAX_Y - 1)
+    private fun Int.clampZ() = this.clamp(-BlockPosition.MAX_Z + 1, BlockPosition.MAX_Z - 1)
+
+
+    private fun iterator(aabb: AABB, movement: Vec3d): AABBIterator {
+        var minX = aabb.min.x
+        var minY = aabb.min.y - 1 // only fences can have a higher box rn
+        var minZ = aabb.min.z
+
+        var maxX = aabb.max.x
+        var maxY = aabb.max.y
+        var maxZ = aabb.max.z
+
+
+        if (minX < 0) minX -= movement.x else maxX += movement.x
+        if (minY < 0) minY -= movement.y else maxY += movement.y
+        if (minZ < 0) minZ -= movement.z else maxZ += movement.z
+
+        val min = BlockPosition(minX.floor.clampX(), minY.floor.clampY(), minZ.floor.clampZ())
+        val max = BlockPosition(maxX.ceil.clampX(), maxY.ceil.clampY(), maxZ.ceil.clampZ())
+
+        return AABBIterator(min, max)
+    }
 
     init {
-        val aabbs = aabb.extend(movement).grow(1.0).positions()
+        val aabbs = iterator(aabb, movement)
         val positions = POSITIONS.allocate(aabbs.size)
         val shapes: Array<Shape?> = SHAPES.allocate(aabbs.size)
 

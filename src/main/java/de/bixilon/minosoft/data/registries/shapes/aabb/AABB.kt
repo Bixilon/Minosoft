@@ -132,7 +132,7 @@ class AABB : Shape {
     }
 
     fun grow(size: Double = 1.0E-7): AABB {
-        return AABB(min - size, max + size)
+        return AABB(true, min - size, max + size)
     }
 
     fun grow(size: Float): AABB {

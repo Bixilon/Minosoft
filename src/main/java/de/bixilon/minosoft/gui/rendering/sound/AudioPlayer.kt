@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.logging.Log
@@ -185,7 +186,7 @@ class AudioPlayer(
 
     private fun shouldPlay(sound: Sound, position: Vec3d?): Boolean {
         if (position == null) return true
-        val distance = (this.listener.position - position.toVec3).length2()
+        val distance = Vec3dUtil.distance2(position, this.listener.position)
         if (distance >= sound.attenuationDistance * sound.attenuationDistance) {
             return false
         }

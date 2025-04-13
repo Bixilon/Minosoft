@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFe
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
@@ -56,7 +56,9 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun updateMatrix(delta: Float) {
         // TODO: update on demand
-        val position = Vec3(entity.renderInfo.position - renderer.context.camera.offset.offset)
+        val offset = renderer.context.camera.offset.offset
+        val original = entity.renderInfo.position
+        val position = Vec3((original.x - offset.x).toFloat(), (original.y - offset.y).toFloat(), (original.z - offset.z).toFloat())
         matrix.reset()
         matrix.translateAssign(position)
 
@@ -87,11 +89,13 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun updateRenderInfo(millis: Long) {
         entity.draw(millis)
-        this.distance = (entity.renderInfo.eyePosition - renderer.session.camera.entity.renderInfo.eyePosition).length2()
+        this.distance = Vec3dUtil.distance2(entity.renderInfo.eyePosition, renderer.session.camera.entity.renderInfo.eyePosition)
     }
 
     private fun getCurrentLight(): LightLevel {
-        var light = with(entity.physics.positionInfo) { chunk?.light?.get(position.inChunkPosition) } ?: return LightLevel.MAX
+        val positionInfo = entity.physics.positionInfo
+        if (positionInfo.chunk == null) return LightLevel.MAX
+        var light = positionInfo.chunk.light[positionInfo.position.inChunkPosition]
         if (entity.isOnFire) {
             light = light.with(block = LightLevel.MAX_LEVEL)
         }

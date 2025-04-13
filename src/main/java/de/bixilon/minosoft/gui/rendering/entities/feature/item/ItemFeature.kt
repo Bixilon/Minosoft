@@ -102,8 +102,12 @@ open class ItemFeature(
             .translateXAssign(-0.5f)
             .translateZAssign(-0.5f)
 
+        val next = Mat4(renderer.matrix)
+        next *= displayMatrix
+        next *= matrix
 
-        this.matrix = renderer.matrix * displayMatrix * matrix
+
+        this.matrix = next
     }
 
     override fun draw(mesh: BlockMesh) {

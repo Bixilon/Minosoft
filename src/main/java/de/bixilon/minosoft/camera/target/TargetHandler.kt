@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -77,7 +78,7 @@ class TargetHandler(
         for (entity in world.entities) {
             if (entity is LocalPlayerEntity) continue
             if (!entity.canRaycast) continue
-            if ((entity.renderInfo.position - originF).length2() > MAX_ENTITY_DISTANCE) {
+            if (Vec3dUtil.distance2(entity.renderInfo.position, originF) > MAX_ENTITY_DISTANCE) {
                 continue
             }
             val aabb = entity.renderInfo.cameraAABB
