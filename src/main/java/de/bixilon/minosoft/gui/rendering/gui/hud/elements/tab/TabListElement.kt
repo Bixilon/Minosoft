@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -92,7 +91,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
             }
         }
         offset.x = offsetBefore.x
-        offset.y = offsetBefore.y + (columns > 1).decide(ENTRIES_PER_COLUMN, toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
+        offset.y = offsetBefore.y + (if(columns > 1) ENTRIES_PER_COLUMN else toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
 
 
         footer.size.let {
@@ -150,7 +149,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
             widths[column] = currentMaxPrefWidth
             totalEntriesWidth += currentMaxPrefWidth
         }
-        size.y += (columns > 1).decide(ENTRIES_PER_COLUMN, toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
+        size.y += (if(columns > 1) ENTRIES_PER_COLUMN else toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
 
         size.y -= ENTRY_VERTICAL_SPACING // Remove already added space again
 

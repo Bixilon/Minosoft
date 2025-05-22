@@ -17,7 +17,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.latch.CallbackLatch
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.profile.ProfileType
@@ -236,7 +235,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             updateServer(server)
         }
 
-        serverListViewFX.items.contains(selected).decide(selected, null).let {
+        selected.takeIf {selected in serverListViewFX.items}.let {
             serverListViewFX.selectionModel.select(it)
 
             serverListViewFX.scrollTo(it)

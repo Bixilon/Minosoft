@@ -19,7 +19,6 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -105,7 +104,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             }
         }
 
-        accountListViewFX.items.contains(selected).decide(selected, null).let {
+        (if (selected in accountListViewFX.items) selected else null).let {
             accountListViewFX.selectionModel.select(it)
             accountListViewFX.scrollTo(it)
             setAccountInfo(it)

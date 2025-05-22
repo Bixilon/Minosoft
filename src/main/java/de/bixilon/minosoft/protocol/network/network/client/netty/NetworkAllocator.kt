@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty
 
-import de.bixilon.minosoft.gui.rendering.util.allocator.ByteAllocator
+import de.bixilon.kutil.memory.allocator.ByteAllocator
+
 
 val NetworkAllocator = ByteAllocator()

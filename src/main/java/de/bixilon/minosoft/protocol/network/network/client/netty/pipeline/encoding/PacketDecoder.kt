@@ -26,7 +26,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.readByteArray
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 import java.lang.reflect.InvocationTargetException

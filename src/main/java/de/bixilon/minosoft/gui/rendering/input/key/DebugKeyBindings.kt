@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -71,7 +70,7 @@ object DebugKeyBindings {
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
             KeyActions.STICKY to setOf(KeyCodes.KEY_P),
         )) {
-            val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
+            val nextMode = if(it) PolygonModes.LINE else PolygonModes.FILL
             context.framebuffer.world.polygonMode = nextMode
             session.util.sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }

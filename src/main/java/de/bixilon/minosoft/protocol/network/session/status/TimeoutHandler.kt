@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.unit.UnitFormatter.formatMillis
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.concurrent.TimeoutException
+import kotlin.time.Duration.Companion.milliseconds
 
 class TimeoutHandler(val session: StatusSession) {
     private var task: QueuedTask? = null
@@ -48,7 +49,7 @@ class TimeoutHandler(val session: StatusSession) {
         cancel()
         cancelled = false
 
-        task = runLater(ProtocolDefinition.SOCKET_TIMEOUT) {
+        task = runLater(ProtocolDefinition.SOCKET_TIMEOUT.milliseconds) {
             if (cancelled) return@runLater
             if (session.state == StatusSessionStates.ERROR) return@runLater
             if (session.state == StatusSessionStates.PING_DONE) return@runLater

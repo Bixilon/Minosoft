@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -72,7 +71,7 @@ class ServerModifyDialog(
 
     public override fun show() {
         JavaFXUtil.runLater {
-            JavaFXUtil.openModal((server == null).decide(ADD_TITLE, EDIT_TITLE), LAYOUT, this)
+            JavaFXUtil.openModal(if(server == null) ADD_TITLE else EDIT_TITLE, LAYOUT, this)
             super.show()
         }
     }
@@ -176,8 +175,8 @@ class ServerModifyDialog(
         if (modifyServerButtonFX.isDisable) {
             return
         }
-        val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC).decide(null) { forcedVersionFX.selectionModel.selectedItem }
-        DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion, profiles, optionQueryVersionFX.isSelected) }
+        val forcedVersion = forcedVersionFX.selectionModel.selectedItem.takeIf { forcedVersionFX.selectionModel.selectedItem != Versions.AUTOMATIC }
+        DefaultThreadPool += { onUpdate(if(serverNameFX.text.isBlank()) serverAddressFX.text.toString() else serverNameFX.text.trim(), serverAddressFX.text, forcedVersion, profiles, optionQueryVersionFX.isSelected) }
         stage.close()
     }
 

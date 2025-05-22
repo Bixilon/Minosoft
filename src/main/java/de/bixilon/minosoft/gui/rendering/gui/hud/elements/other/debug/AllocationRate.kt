@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import kotlin.time.Duration.Companion.milliseconds
 
 object AllocationRate {
     const val RUNS_PER_SECOND = 3
@@ -24,7 +25,7 @@ object AllocationRate {
     private var previous = 0L
 
     init {
-        TaskScheduler += RepeatedTask(1000 / RUNS_PER_SECOND) { tick() }
+        TaskScheduler += RepeatedTask(1000.milliseconds / RUNS_PER_SECOND) { tick() }
     }
 
     private fun tick() {

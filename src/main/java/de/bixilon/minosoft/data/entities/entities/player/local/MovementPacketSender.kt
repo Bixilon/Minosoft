@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -51,7 +50,7 @@ class MovementPacketSender(
         if (this.sprinting == sprinting) {
             return
         }
-        session.connection.send(EntityActionC2SP(player.id, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
+        session.connection.send(EntityActionC2SP(player.id, if(sprinting) EntityActionC2SP.EntityActions.START_SPRINTING else EntityActionC2SP.EntityActions.STOP_SPRINTING))
         this.sprinting = sprinting
     }
 
@@ -59,7 +58,7 @@ class MovementPacketSender(
         if (this.sneaking == sneaking) {
             return
         }
-        session.connection.send(EntityActionC2SP(player.id, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
+        session.connection.send(EntityActionC2SP(player.id, if(sneaking) EntityActionC2SP.EntityActions.START_SNEAKING else EntityActionC2SP.EntityActions.STOP_SNEAKING))
         this.sneaking = sneaking
     }
 

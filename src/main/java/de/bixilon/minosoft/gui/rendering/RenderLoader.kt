@@ -18,7 +18,6 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
@@ -124,9 +123,9 @@ object RenderLoader {
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Finishing up (after ${stopwatch.labTime()})..." }
 
-        window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
+        window::focused.observeRendering(this) { state = if(it) RenderingStates.RUNNING else RenderingStates.SLOW }
 
-        window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
+        window::iconified.observeRendering(this) { state = if(it) RenderingStates.PAUSED else RenderingStates.RUNNING }
 
 
         input.init()

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
+import de.bixilon.kutil.memory.allocator.ShortAllocator
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.allocator.ShortAllocator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.*

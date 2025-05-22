@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.item.items.pixlyzer
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
@@ -26,7 +25,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 class PixLyzerFoodItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: Map<String, Any>,
+    data: Map<String, Any>
 ) : PixLyzerItem(resourceLocation, registries, data), FoodItem {
     override val nutrition: Int
     override val alwaysEdible: Boolean
@@ -36,7 +35,7 @@ class PixLyzerFoodItem(
         val foodProperties = data["food_properties"].asJsonObject()
         nutrition = foodProperties["nutrition"]?.toInt() ?: 0
         alwaysEdible = foodProperties["can_always_eat"]?.toBoolean() ?: false
-        eatTime = foodProperties["time_to_eat"]?.toInt() ?: foodProperties["fast_food"]?.toBoolean()?.decide(16, 32) ?: 100
+        eatTime = foodProperties["time_to_eat"]?.toInt() ?: foodProperties["fast_food"]?.toBoolean()?.let { if(it) 16 else 32 } ?: 100
     }
 
     companion object : PixLyzerItemFactory<PixLyzerFoodItem>, MultiClassFactory<PixLyzerFoodItem> {

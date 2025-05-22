@@ -36,6 +36,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.concurrent.TimeoutException
+import kotlin.time.Duration.Companion.seconds
 
 object MicrosoftOAuthUtils {
     const val CLIENT_ID = "feb3836f-0333-4185-8eb9-4cbf0498f947" // Minosoft 2 (microsoft-bixilon2)
@@ -68,7 +69,7 @@ object MicrosoftOAuthUtils {
                     }
                     if (response == null) {
                         // no response yet
-                        runLater(deviceCode.interval * 1000) { checkToken() }
+                        runLater(deviceCode.interval.seconds) { checkToken() }
                         return
                     }
                     Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Code (${deviceCode.userCode}) is valid, logging in..." }
