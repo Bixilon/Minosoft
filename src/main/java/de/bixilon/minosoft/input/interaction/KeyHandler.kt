@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.Duration.Companion.milliseconds
 
 abstract class KeyHandler {
     private var task: RepeatedTask? = null
@@ -25,7 +26,7 @@ abstract class KeyHandler {
         private set
 
     private fun queueTick() {
-        val task = RepeatedTask(ProtocolDefinition.TICK_TIME, maxDelay = ProtocolDefinition.TICK_TIME, priority = ThreadPool.HIGH) { onTick() }
+        val task = RepeatedTask(ProtocolDefinition.TICK_TIME.milliseconds, priority = ThreadPool.HIGH) { onTick() }
         this.task = task
         TaskScheduler += task
     }

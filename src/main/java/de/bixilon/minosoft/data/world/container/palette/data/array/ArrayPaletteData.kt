@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.world.container.palette.data.array
 
+import de.bixilon.kutil.memory.allocator.LongAllocator
 import de.bixilon.minosoft.data.world.container.palette.data.PaletteData
-import de.bixilon.minosoft.gui.rendering.util.allocator.LongAllocator
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
@@ -91,6 +91,5 @@ class ArrayPaletteData(
     companion object {
         private val ALLOCATOR = LongAllocator()
         const val LONG_BIT_SPLITTING_VERSION = V_1_16 // ToDo: When did this changed? is just a guess
-
     }
 }

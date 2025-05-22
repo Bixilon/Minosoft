@@ -18,6 +18,8 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.kutil.memory.allocator.LongAllocator
+import de.bixilon.kutil.memory.allocator.TemporaryAllocator
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
@@ -35,8 +37,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampX
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
-import de.bixilon.minosoft.gui.rendering.util.allocator.LongAllocator
-import de.bixilon.minosoft.gui.rendering.util.allocator.TemporaryAllocator
 
 class CollisionShape(
     val world: World,

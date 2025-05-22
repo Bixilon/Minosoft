@@ -18,6 +18,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.memory.allocator.ByteAllocator
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fixBlockEntity
-import de.bixilon.minosoft.gui.rendering.util.allocator.ByteAllocator
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP
@@ -46,7 +46,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W03A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.readByteArray
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

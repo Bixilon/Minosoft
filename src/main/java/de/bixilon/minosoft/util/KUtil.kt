@@ -31,10 +31,9 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
-import de.bixilon.kutil.primitive.IntUtil.checkInt
+import de.bixilon.kutil.primitive.IntUtil.isIntSafe
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
@@ -169,7 +168,7 @@ object KUtil {
                 is CharSequence -> this.toString()
                 null -> TextComponent("null").color(ChatColors.DARK_RED)
                 is TextFormattable -> this.toText()
-                is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
+                is Boolean -> TextComponent(this.toString()).color(if(this) ChatColors.GREEN else ChatColors.RED)
                 is Enum<*> -> {
                     val name = this.name
                     TextComponent(
@@ -230,7 +229,7 @@ object KUtil {
         if (string == "true") return true
         if (string == "false") return false
 
-        string.checkInt()?.let { return it }
+        string.isIntSafe()?.let { return it }
 
         return string
     }
@@ -353,15 +352,4 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
-
-    @Deprecated("kutil 1.27.1")
-    private val IN_BYTE_BUFFER_BYTES = InByteBuffer::class.java.getFieldOrNull("bytes")!!
-
-    @Deprecated("kutil 1.27.1")
-    fun InByteBuffer.readByteArray(array: ByteArray, offset: Int = 0, length: Int) {
-        require(length, 1)
-        if (offset + array.size < length) throw IllegalArgumentException("Provided array has not enough capacity! (required: ${offset + array.size}, length=$length)")
-        System.arraycopy(IN_BYTE_BUFFER_BYTES[this], pointer, array, offset, length)
-        pointer += length
-    }
 }

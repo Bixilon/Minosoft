@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.eros.main.profiles
 
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -92,7 +91,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
             updateProfile(profile)
         }
 
-        profilesListViewFX.items.contains(selected).decide(selected, null).let {
+        selected.takeIf { selected in profilesListViewFX.items }.let {
             profilesListViewFX.selectionModel.select(it)
 
             profilesListViewFX.scrollTo(it)
@@ -104,7 +103,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
         // Platform.runLater {serverListViewFX.items.remove(card)}
 
 
-        if (!profilesListViewFX.items.contains(profile)) {
+        if (profile !in profilesListViewFX.items) {
             profilesListViewFX.items.add(profile)
         }
 

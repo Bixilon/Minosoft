@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
-import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
+import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.ReadArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression.exception.SizeMismatchInflaterException
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
-import de.bixilon.minosoft.util.KUtil.readByteArray
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
-import java.util.zip.Inflater
 
 
 class PacketInflater(
@@ -53,22 +51,6 @@ class PacketInflater(
             throw SizeMismatchInflaterException()
         }
         out += ReadArray(decompressed, uncompressedLength)
-    }
-
-
-    @Deprecated("kutil 1.27.1")
-    private fun ByteArray.decompress(output: ByteArray): Int {
-        val inflater = Inflater()
-        inflater.setInput(this, 0, this.size)
-        val buffer = createBuffer()
-        var pointer = 0
-
-        while (!inflater.finished()) {
-            val length = inflater.inflate(buffer)
-            System.arraycopy(buffer, 0, output, pointer, length)
-            pointer += length
-        }
-        return pointer
     }
 
     companion object {

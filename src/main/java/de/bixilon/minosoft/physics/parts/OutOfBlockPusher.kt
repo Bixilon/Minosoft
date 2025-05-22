@@ -68,7 +68,7 @@ object OutOfBlockPusher {
         val dimensions = Vec2d(entity.dimensions)
 
         val dimensionsX = dimensions.x * 0.35
-        val dimensionsY = dimensions.y * 0.35 // TODO: Really dimensions y???
+        val dimensionsY = dimensions.y * 0.35
 
         pushOutOfBlocks(position.x - dimensionsX, position.z + dimensionsY)
         pushOutOfBlocks(position.x - dimensionsX, position.z - dimensionsY)

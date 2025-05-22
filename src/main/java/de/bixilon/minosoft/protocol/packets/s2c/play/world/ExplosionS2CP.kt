@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.world
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
@@ -35,7 +34,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = if (buffer.versionId >= ProtocolVersions.V_22W42A) buffer.readVec3d() else Vec3d(buffer.readVec3f())
     val power = buffer.readFloat()
-    val explodedBlocks: Array<BlockPosition> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { BlockPosition(buffer.readByte().toInt(), buffer.readByte().toInt(), buffer.readByte().toInt()) } // ToDo: Find out version
+    val explodedBlocks: Array<BlockPosition> = buffer.readArray(if(buffer.versionId < V_1_17)buffer.readInt() else buffer.readVarInt()) { BlockPosition(buffer.readByte().toInt(), buffer.readByte().toInt(), buffer.readByte().toInt()) } // ToDo: Find out version
     val velocity = buffer.readVec3f()
     val destruct = if (buffer.versionId >= V_23W45A) buffer.readEnum(DestructionTypes) else DestructionTypes.DESTROY
     val particle = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null

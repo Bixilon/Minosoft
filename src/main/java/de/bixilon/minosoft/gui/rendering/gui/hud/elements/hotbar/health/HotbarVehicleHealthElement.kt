@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -61,7 +60,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
             image?.render(offset + Vec2(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 
             heart++
-            healthLeft -= halfHeart.decide(1.0f, 2.0f)
+            healthLeft -= if(halfHeart) 1.0f else 2.0f
         }
     }
 
