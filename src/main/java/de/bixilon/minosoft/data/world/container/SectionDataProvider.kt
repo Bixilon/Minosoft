@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.container
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.iterator.EmptyIterator
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -30,7 +31,7 @@ open class SectionDataProvider<T>(
         private set
     val isEmpty: Boolean
         get() = count == 0
-    var minPosition = InSectionPosition(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
+    var minPosition = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
         private set
     var maxPosition = InSectionPosition(0, 0, 0)
         private set
@@ -47,15 +48,15 @@ open class SectionDataProvider<T>(
         }
         var count = 0
 
-        var minX = ProtocolDefinition.SECTION_MAX_X
-        var minY = ProtocolDefinition.SECTION_MAX_Y
-        var minZ = ProtocolDefinition.SECTION_MAX_Z
+        var minX = ChunkSize.SECTION_MAX_X
+        var minY = ChunkSize.SECTION_MAX_Y
+        var minZ = ChunkSize.SECTION_MAX_Z
 
         var maxX = 0
         var maxY = 0
         var maxZ = 0
 
-        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+        for (index in 0 until ChunkSize.BLOCKS_PER_SECTION) {
             if (data[index] == null) continue
             count++
             if (!checkSize) {
@@ -109,7 +110,7 @@ open class SectionDataProvider<T>(
             count++
         }
         if (data == null) {
-            data = arrayOfNulls<Any?>(ProtocolDefinition.BLOCKS_PER_SECTION).unsafeCast()!!
+            data = arrayOfNulls<Any?>(ChunkSize.BLOCKS_PER_SECTION).unsafeCast()!!
             this.data = data
         }
         data[position.index] = value
@@ -145,7 +146,7 @@ open class SectionDataProvider<T>(
     @Suppress("UNCHECKED_CAST")
     fun setData(data: Array<T>) {
         lock?.lock()
-        check(data.size == ProtocolDefinition.BLOCKS_PER_SECTION) { "Size does not match!" }
+        check(data.size == ChunkSize.BLOCKS_PER_SECTION) { "Size does not match!" }
         this.data = data as Array<Any?>
         recalculate()
         lock?.unlock()

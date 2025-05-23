@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertSame
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["textures"])
 class TextureAnimationTest {
@@ -117,5 +118,7 @@ class TextureAnimationTest {
         assertSame(animation.frame2, a)
         assertEquals(animation.progress, 0.5f)
     }
+
+    fun TextureAnimation.update(seconds: Float) = update(seconds.toDouble().seconds)
 }
 

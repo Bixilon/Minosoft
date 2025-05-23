@@ -333,7 +333,7 @@ class SolidSectionMesherTest {
         
         val random = Random(12L.murmur64())
         val block = session.registries.block[StoneBlock.Block]!!.states.default
-        for(index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+        for(index in 0 until ChunkSize.BLOCKS_PER_SECTION) {
             if(!random.nextBoolean()) continue
             section.blocks[index] = block
         }

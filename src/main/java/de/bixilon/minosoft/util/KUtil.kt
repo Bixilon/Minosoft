@@ -36,7 +36,6 @@ import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.isIntSafe
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
-import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -59,8 +58,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -76,6 +73,8 @@ import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
 
 
 object KUtil {
@@ -141,18 +140,6 @@ object KUtil {
         var setBreakPointHere = 1
     }
 
-    /**
-     * Converts millis to ticks
-     */
-    val Number.ticks: Int
-        get() = this.toInt() / ProtocolDefinition.TICK_TIME
-
-    /**
-     * Converts ticks to millis
-     */
-    val Number.millis: Int
-        get() = this.toInt() * ProtocolDefinition.TICK_TIME
-
     fun Collection<Int>.entities(session: PlaySession): Set<Entity> {
         val entities: MutableList<Entity> = mutableListOf()
         for (id in this) {
@@ -168,7 +155,7 @@ object KUtil {
                 is CharSequence -> this.toString()
                 null -> TextComponent("null").color(ChatColors.DARK_RED)
                 is TextFormattable -> this.toText()
-                is Boolean -> TextComponent(this.toString()).color(if(this) ChatColors.GREEN else ChatColors.RED)
+                is Boolean -> TextComponent(this.toString()).color(if (this) ChatColors.GREEN else ChatColors.RED)
                 is Enum<*> -> {
                     val name = this.name
                     TextComponent(
@@ -352,4 +339,12 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
+
+
+    @Deprecated("kutil 1.27.2")
+    operator fun Duration.rem(rem: Duration): Duration {
+        if (rem == Duration.ZERO) throw ArithmeticException("Division by zero!")
+
+        return (inWholeNanoseconds % rem.inWholeNanoseconds).nanoseconds
+    }
 }

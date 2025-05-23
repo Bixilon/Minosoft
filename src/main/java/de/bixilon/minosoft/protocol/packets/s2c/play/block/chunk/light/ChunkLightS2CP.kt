@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.Session
@@ -61,7 +62,7 @@ class ChunkLightS2CP(
     }
 
     companion object : PacketExtraHandler {
-        const val LIGHT_SIZE = ProtocolDefinition.BLOCKS_PER_SECTION / 2
+        const val LIGHT_SIZE = ChunkSize.BLOCKS_PER_SECTION / 2
 
         override fun skip(session: Session) = StaticConfiguration.IGNORE_SERVER_LIGHT
     }

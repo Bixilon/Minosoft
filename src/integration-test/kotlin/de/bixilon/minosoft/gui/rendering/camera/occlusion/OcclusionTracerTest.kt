@@ -37,7 +37,7 @@ import org.testng.annotations.Test
 @Test(groups = ["rendering"])
 class OcclusionTracerTest {
     private val opaque by lazy { IT.REGISTRIES.block[StoneBlock.Block]!!.states.default }
-    private val fullOpaque by lazy { Array(ProtocolDefinition.BLOCKS_PER_SECTION) { opaque } }
+    private val fullOpaque by lazy { Array(ChunkSize.BLOCKS_PER_SECTION) { opaque } }
 
 
     private fun create(block: (World) -> Unit): OcclusionGraph {

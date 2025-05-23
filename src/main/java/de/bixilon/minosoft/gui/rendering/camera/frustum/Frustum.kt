@@ -24,6 +24,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -172,15 +173,15 @@ class Frustum(
         val dimension = world.dimension
 
         val offset = camera.offset.offset
-        val baseX = (position.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x).toFloat()
-        val baseZ = (position.z * ProtocolDefinition.SECTION_WIDTH_Z - offset.z).toFloat()
+        val baseX = (position.x * ChunkSize.SECTION_WIDTH_X - offset.x).toFloat()
+        val baseZ = (position.z * ChunkSize.SECTION_WIDTH_Z - offset.z).toFloat()
 
         val minY = (dimension.minY - offset.y).toFloat()
         val maxY = (dimension.maxY - offset.y).toFloat()
 
         return containsRegion(
             baseX, minY, baseZ,
-            baseX + ProtocolDefinition.SECTION_WIDTH_X, maxY, baseZ + ProtocolDefinition.SECTION_WIDTH_Z,
+            baseX + ChunkSize.SECTION_WIDTH_X, maxY, baseZ + ChunkSize.SECTION_WIDTH_Z,
         )
     }
 
@@ -222,6 +223,6 @@ class Frustum(
 
     companion object {
         val SECTION_MIN_POSITION = InSectionPosition(0, 0, 0)
-        val SECTION_MAX_POSITION = InSectionPosition(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
+        val SECTION_MAX_POSITION = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
     }
 }

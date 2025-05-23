@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.Shak
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -31,8 +32,8 @@ class CameraShaking(
     private val profile: ShakingC,
 ) : Drawable {
     private var rotation = 0.0f
-    private var strength = FloatAverage((5 * ProtocolDefinition.TICK_TIME).milliseconds, 1.0f)
-    private val speed = FloatAverage((5 * ProtocolDefinition.TICK_TIME).milliseconds, 0.0f)
+    private var strength = FloatAverage(5.ticks.duration, 1.0f)
+    private val speed = FloatAverage(5.ticks.duration, 0.0f)
 
     val isEmpty: Boolean get() = rotation == 0.0f
 

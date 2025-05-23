@@ -39,7 +39,7 @@ internal class TimeParserTest {
     @Test
     fun testSecondsUnit() {
         val reader = CommandReader("64s")
-        assertEquals(TimeParser().parse(reader), 64 * ProtocolDefinition.TICKS_PER_SECOND)
+        assertEquals(TimeParser().parse(reader), 64 * TickUtil.TICKS_PER_SECOND)
     }
 
     @Test

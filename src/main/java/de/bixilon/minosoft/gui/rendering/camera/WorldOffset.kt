@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -41,7 +42,7 @@ class WorldOffset(private val camera: Camera) : Drawable {
 
 
     companion object {
-        const val MAX_DISTANCE = World.MAX_RENDER_DISTANCE * ProtocolDefinition.SECTION_WIDTH_X // coordinates higher than that value are not allowed
-        const val THRESHOLD = (World.MAX_RENDER_DISTANCE / 8) * ProtocolDefinition.SECTION_WIDTH_X // only if value is lower that that value coordinates will be back offset
+        const val MAX_DISTANCE = World.MAX_RENDER_DISTANCE * ChunkSize.SECTION_WIDTH_X // coordinates higher than that value are not allowed
+        const val THRESHOLD = (World.MAX_RENDER_DISTANCE / 8) * ChunkSize.SECTION_WIDTH_X // only if value is lower that that value coordinates will be back offset
     }
 }

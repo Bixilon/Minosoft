@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.data.abilities
 
-import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
+import kotlin.time.ComparableTimeMark
 
 data class ItemCooldown(
-    val start: Long,
-    val time: Int,
+    val start: ComparableTimeMark,
+    val ticks: Int,
 ) {
-    val end: Long = start + (time * ProtocolDefinition.TICK_TIME)
+    val end = start + (TickUtil.INTERVAL * ticks)
 
     val ended: Boolean
-        get() = millis() >= end
+        get() = end.hasPassedNow()
 }

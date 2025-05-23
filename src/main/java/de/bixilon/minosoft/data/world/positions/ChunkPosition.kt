@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -95,8 +96,8 @@ value class ChunkPosition(
     inline operator fun unaryMinus() = ChunkPosition(-this.x, -this.z)
     inline operator fun unaryPlus() = this
 
-    inline fun blockPosition(x: Int, y: Int, z: Int) = BlockPosition(this.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, this.z * ProtocolDefinition.SECTION_WIDTH_Z + z)
-    inline fun blockPosition(position: InChunkPosition) = BlockPosition(this.x * ProtocolDefinition.SECTION_WIDTH_X + position.x, position.y, this.z * ProtocolDefinition.SECTION_WIDTH_Z + position.z)
+    inline fun blockPosition(x: Int, y: Int, z: Int) = BlockPosition(this.x * ChunkSize.SECTION_WIDTH_X + x, y, this.z * ChunkSize.SECTION_WIDTH_Z + z)
+    inline fun blockPosition(position: InChunkPosition) = BlockPosition(this.x * ChunkSize.SECTION_WIDTH_X + position.x, position.y, this.z * ChunkSize.SECTION_WIDTH_Z + position.z)
 
     inline infix fun and(mask: Int) = ChunkPosition(x and mask, z and mask)
     inline operator fun component1() = x

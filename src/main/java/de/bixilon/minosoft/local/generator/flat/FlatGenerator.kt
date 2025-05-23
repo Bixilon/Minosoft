@@ -16,6 +16,7 @@ package de.bixilon.minosoft.local.generator.flat
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.local.generator.ChunkGenerator
@@ -33,8 +34,8 @@ class FlatGenerator(
         for ((index, layer) in layers.withIndex()) {
             if (layer == null) continue
 
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
+                for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
                     chunk[InChunkPosition(x, index + minY, z)] = layer
                 }
             }

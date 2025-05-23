@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.commands.parser.minecraft.time
 
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 enum class TimeUnit(val multiplier: Int) {
     TICKS(1),
-    SECONDS(ProtocolDefinition.TICKS_PER_SECOND),
+    SECONDS(TickUtil.TICKS_PER_SECOND),
     DAYS(WorldTime.TICKS_PER_DAY),
     ;
 

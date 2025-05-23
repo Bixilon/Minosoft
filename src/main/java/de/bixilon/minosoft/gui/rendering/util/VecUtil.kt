@@ -97,9 +97,6 @@ object VecUtil {
     val Float.sqr: Float
         get() = this * this
 
-    val Vec3.ticks: Vec3
-        get() = this / ProtocolDefinition.TICKS_PER_SECOND
-
     fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }

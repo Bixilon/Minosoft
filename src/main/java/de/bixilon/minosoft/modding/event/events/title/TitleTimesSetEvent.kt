@@ -14,16 +14,16 @@ package de.bixilon.minosoft.modding.event.events.title
 
 import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleTimesS2CP
 
 @Deprecated("Observables")
 class TitleTimesSetEvent(
     session: PlaySession,
-    val fadeInTime: Int,
-    val stayTime: Int,
-    val fadeOutTime: Int,
+    val fadeIn: Ticks,
+    val stay: Ticks,
+    val fadeOut: Ticks,
 ) : PlaySessionEvent(session) {
 
-    constructor(session: PlaySession, packet: TitleTimesS2CP) : this(session, packet.fadeInTime, packet.stayTime, packet.fadeOutTime)
-
+    constructor(session: PlaySession, packet: TitleTimesS2CP) : this(session, packet.fadeIn, packet.stay, packet.fadeOut)
 }

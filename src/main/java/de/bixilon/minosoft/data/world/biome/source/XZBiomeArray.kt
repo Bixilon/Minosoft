@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.data.world.biome.source
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class XZBiomeArray(private val biomes: Array<Biome?>) : BiomeSource {
 
     init {
-        check(biomes.size == ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
+        assert(biomes.size == ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
     }
 
     override fun get(position: InChunkPosition): Biome? {

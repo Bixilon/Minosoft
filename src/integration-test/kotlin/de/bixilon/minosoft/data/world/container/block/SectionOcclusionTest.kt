@@ -124,7 +124,7 @@ class SectionOcclusionTest {
         val occlusion = create()
         val stone = IT.BLOCK_1
         val random = Random(12)
-        for (i in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+        for (i in 0 until ChunkSize.BLOCKS_PER_SECTION) {
             if (random.nextBoolean()) {
                 occlusion.provider[InSectionPosition(i)] = stone
             }

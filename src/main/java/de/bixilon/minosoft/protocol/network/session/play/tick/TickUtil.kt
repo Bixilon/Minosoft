@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures.properties
+package de.bixilon.minosoft.protocol.network.session.play.tick
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
-data class AnimationFrame(
-    val index: Int,
-    val time: Duration,
-    val texture: Texture,
-)
+object TickUtil {
+    const val TICKS_PER_SECOND = 20
+    val TIME_PER_TICK = (1000 / TICKS_PER_SECOND).milliseconds
+    val INTERVAL = TIME_PER_TICK
+}

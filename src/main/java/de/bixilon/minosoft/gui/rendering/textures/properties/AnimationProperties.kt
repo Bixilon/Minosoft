@@ -16,7 +16,9 @@ package de.bixilon.minosoft.gui.rendering.textures.properties
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.Duration
 
 data class AnimationProperties(
     val interpolate: Boolean = false,
@@ -33,7 +35,7 @@ data class AnimationProperties(
         val count = size.y / height
 
         val frames: MutableList<Frame> = mutableListOf()
-        val frameTime = ticksToSeconds(this.frameTime)
+        val frameTime = this.frameTime.ticks.duration
 
         if (this.frames.isEmpty()) {
             // automatic
@@ -45,7 +47,7 @@ data class AnimationProperties(
                 when (frame) {
                     is Number -> frames += Frame(frameTime, frame.toInt())
                     is Map<*, *> -> {
-                        frames += Frame(ticksToSeconds(frame["time"].toInt()), frame["index"].toInt())
+                        frames += Frame(frame["time"].toInt().ticks.duration, frame["index"].toInt())
                     }
                 }
             }
@@ -61,15 +63,7 @@ data class AnimationProperties(
     )
 
     data class Frame(
-        val time: Float,
+        val time: Duration,
         val texture: Int,
     )
-
-    companion object {
-
-        private fun ticksToSeconds(ticks: Int): Float {
-            val millis = ticks * ProtocolDefinition.TICK_TIME
-            return millis / 1000.0f
-        }
-    }
 }

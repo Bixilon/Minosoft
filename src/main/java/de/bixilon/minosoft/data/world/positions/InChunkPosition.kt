@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -29,9 +30,9 @@ value class InChunkPosition(
     constructor() : this(0, 0, 0)
 
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y) shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
-        assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
-        assertPosition(y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
-        assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(x, 0, ChunkSize.SECTION_MAX_X)
+        assertPosition(y, ChunkSize.CHUNK_MIN_Y, ChunkSize.CHUNK_MAX_Y)
+        assertPosition(z, 0, ChunkSize.SECTION_MAX_Z)
     }
 
     inline val x: Int get() = (raw ushr SHIFT_X) and MASK_X
@@ -50,12 +51,12 @@ value class InChunkPosition(
     }
 
     inline fun plusX(): InChunkPosition {
-        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x < ChunkSize.SECTION_MAX_X)
         return InChunkPosition(raw + X * 1)
     }
 
     inline fun plusX(x: Int): InChunkPosition {
-        assertPosition(this.x + x, 0, ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x + x, 0, ChunkSize.SECTION_MAX_X)
         return InChunkPosition(raw + X * x)
     }
 
@@ -65,27 +66,27 @@ value class InChunkPosition(
     }
 
     inline fun plusY(): InChunkPosition {
-        assertPosition(this.y < ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(this.y < ChunkSize.CHUNK_MAX_Y)
         return modifyY(Y * 1)
     }
 
     inline fun plusY(y: Int): InChunkPosition {
-        assertPosition(this.y + y, ProtocolDefinition.CHUNK_MIN_Y, ProtocolDefinition.CHUNK_MAX_Y)
+        assertPosition(this.y + y, ChunkSize.CHUNK_MIN_Y, ChunkSize.CHUNK_MAX_Y)
         return modifyY(Y * y)
     }
 
     inline fun minusY(): InChunkPosition {
-        assertPosition(this.y > ProtocolDefinition.CHUNK_MIN_Y)
+        assertPosition(this.y > ChunkSize.CHUNK_MIN_Y)
         return modifyY(-Y * 1)
     }
 
     inline fun plusZ(): InChunkPosition {
-        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z < ChunkSize.SECTION_MAX_Z)
         return InChunkPosition(raw + Z * 1)
     }
 
     inline fun plusZ(z: Int): InChunkPosition {
-        assertPosition(this.z + z, 0, ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z + z, 0, ChunkSize.SECTION_MAX_Z)
         return InChunkPosition(raw + Z * z)
     }
 

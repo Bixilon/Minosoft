@@ -13,14 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.fade
 
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
 data class FadingTimes(
-    val `in`: Int = 100,
-    val stay: Int = 100,
-    val out: Int = 100,
+    val `in`: Duration = 100.milliseconds,
+    val stay: Duration = 100.milliseconds,
+    val out: Duration = 100.milliseconds,
 ) {
+
+    constructor(`in`: Ticks, stay: Ticks, out: Ticks) : this(`in`.duration, stay.duration, out.duration)
 
     companion object {
         val DEFAULT = FadingTimes()
-        val EMPTY = FadingTimes(0, 0, 0)
+        val EMPTY = FadingTimes(0.milliseconds, 0.milliseconds, 0.milliseconds)
     }
 }

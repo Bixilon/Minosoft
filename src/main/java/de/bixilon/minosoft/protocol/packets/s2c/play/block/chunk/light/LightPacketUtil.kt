@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -23,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import java.util.*
 
 object LightPacketUtil {
-    val EMPTY_LIGHT_ARRAY = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+    val EMPTY_LIGHT_ARRAY = ByteArray(ChunkSize.BLOCKS_PER_SECTION / 2)
 
     fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkPrototype {
         val skyLight = if (dimension.skyLight || buffer.versionId > V_1_16) { // ToDo: find out version
@@ -60,7 +61,7 @@ object LightPacketUtil {
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
             buffer.readVarInt() // section count
         }
-        check(sections in 0..ProtocolDefinition.CHUNK_MAX_SECTIONS) { "Sections out of bounds: $sections" }
+        check(sections in 0..ChunkSize.CHUNK_MAX_SECTIONS) { "Sections out of bounds: $sections" }
 
         val light: Array<ByteArray?> = arrayOfNulls(sections)
 

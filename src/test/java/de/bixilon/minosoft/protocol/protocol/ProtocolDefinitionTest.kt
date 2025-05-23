@@ -25,7 +25,7 @@ internal class ProtocolDefinitionTest {
 
     @Test
     fun testTicksPerSecond() {
-        assertEquals(ProtocolDefinition.TICKS_PER_SECOND, 20)
+        assertEquals(TickUtil.TICKS_PER_SECOND, 20)
     }
 
     @Test
@@ -35,6 +35,6 @@ internal class ProtocolDefinitionTest {
 
     @Test
     fun testSectionSize() {
-        assertEquals(ProtocolDefinition.BLOCKS_PER_SECTION, 4096)
+        assertEquals(ChunkSize.BLOCKS_PER_SECTION, 4096)
     }
 }

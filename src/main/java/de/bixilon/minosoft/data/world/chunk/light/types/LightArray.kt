@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.types
 
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 @JvmInline
-value class LightArray(inline val array: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION)) {
+value class LightArray(inline val array: ByteArray = ByteArray(ChunkSize.BLOCKS_PER_SECTION)) {
 
     inline operator fun get(position: InSectionPosition) = LightLevel(array[position.index])
     inline operator fun set(position: InSectionPosition, value: LightLevel) {

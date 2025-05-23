@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isW
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -71,9 +72,9 @@ class FluidSectionMesher(
 
         val cameraOffset = context.camera.offset.offset
 
-        val offsetX = sectionPosition.x * ProtocolDefinition.SECTION_WIDTH_X
-        val offsetY = sectionPosition.y * ProtocolDefinition.SECTION_HEIGHT_Y
-        val offsetZ = sectionPosition.z * ProtocolDefinition.SECTION_WIDTH_Z
+        val offsetX = sectionPosition.x * ChunkSize.SECTION_WIDTH_X
+        val offsetY = sectionPosition.y * ChunkSize.SECTION_HEIGHT_Y
+        val offsetZ = sectionPosition.z * ChunkSize.SECTION_WIDTH_Z
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
