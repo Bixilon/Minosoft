@@ -74,6 +74,8 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.math.cos
 import kotlin.math.sin
 
