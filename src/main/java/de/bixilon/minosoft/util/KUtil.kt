@@ -70,6 +70,8 @@ import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
 
 
 object KUtil {
@@ -343,4 +345,12 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
+
+
+    @Deprecated("kutil 1.27.2")
+    operator fun Duration.rem(rem: Duration): Duration {
+        if (rem == Duration.ZERO) throw ArithmeticException("Division by zero!")
+
+        return (inWholeNanoseconds % rem.inWholeNanoseconds).nanoseconds
+    }
 }

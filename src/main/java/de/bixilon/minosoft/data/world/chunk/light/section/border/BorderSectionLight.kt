@@ -15,21 +15,22 @@ package de.bixilon.minosoft.data.world.chunk.light.section.border
 
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_X
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_Z
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.AbstractSectionLight
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_MAX_X
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_MAX_Z
 import java.util.*
 
 abstract class BorderSectionLight(
     val chunk: Chunk,
 ) : AbstractSectionLight {
     protected var event = false
-    protected val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+    protected val light = ByteArray(ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z)
 
     abstract fun Chunk.getBorderLight(): BorderSectionLight
 
