@@ -165,7 +165,7 @@ class SolidSectionMesher(
     }
 
     fun setUp(highest: Boolean, position: InSectionPosition, neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, light: ByteArray, section: ChunkSection, chunk: Chunk) {
-        if (position.y == ProtocolDefinition.SECTION_MAX_Y) {
+        if (position.y == ChunkSize.SECTION_MAX_Y) {
             neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.let { it[position.with(y = 0)] }
             light[O_UP] = (if (highest) chunk.light.top else neighbours[O_UP]?.light)?.get(position.with(y = 0))?.raw ?: 0x00
         } else {
@@ -176,11 +176,11 @@ class SolidSectionMesher(
 
     private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) = when (position.z) {
         0 -> {
-            setNeighbour(neighbourBlocks, position.with(z = ProtocolDefinition.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH], O_NORTH)
+            setNeighbour(neighbourBlocks, position.with(z = ChunkSize.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH], O_NORTH)
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
         }
 
-        ProtocolDefinition.SECTION_MAX_Z -> {
+        ChunkSize.SECTION_MAX_Z -> {
             setNeighbour(neighbourBlocks, position.minusZ(), light, section, chunk, O_NORTH)
             setNeighbour(neighbourBlocks, position.with(z = 0), light, neighbours[O_SOUTH], neighbourChunks[Directions.SOUTH], O_SOUTH)
         }
@@ -194,11 +194,11 @@ class SolidSectionMesher(
 
     private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) = when (position.x) {
         0 -> {
-            setNeighbour(neighbourBlocks, position.with(x = ProtocolDefinition.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST], O_WEST)
+            setNeighbour(neighbourBlocks, position.with(x = ChunkSize.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST], O_WEST)
             setNeighbour(neighbourBlocks, position.plusX(), light, section, chunk, O_EAST)
         }
 
-        ProtocolDefinition.SECTION_MAX_X -> {
+        ChunkSize.SECTION_MAX_X -> {
             setNeighbour(neighbourBlocks, position.with(x = 0), light, neighbours[O_EAST], neighbourChunks[Directions.EAST], O_EAST)
             setNeighbour(neighbourBlocks, position.minusX(), light, section, chunk, O_WEST)
         }
