@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.WorldBorder
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -34,7 +35,7 @@ class WorldBorderMesh(
 
 
     private fun width(): Float {
-        return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ProtocolDefinition.SECTION_WIDTH_X)
+        return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
     }
 
     private fun positions(width: Float, center: Double): Array<Vec2> {

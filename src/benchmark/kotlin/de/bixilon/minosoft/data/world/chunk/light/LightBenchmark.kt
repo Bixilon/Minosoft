@@ -52,16 +52,16 @@ internal class LightBenchmark {
         val solid = createSolidBlock().states.default
         val light = createOpaqueLight().states.default
         val lowest = chunk.getOrPut(0)!!.blocks
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+        for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
+            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
                 lowest.unsafeSet(InSectionPosition(x, 0, z), solid)
             }
         }
         val highest = chunk.getOrPut(15)!!.blocks
 
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                highest.unsafeSet(InSectionPosition(x, ProtocolDefinition.SECTION_MAX_Y, z), solid)
+        for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
+            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
+                highest.unsafeSet(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), solid)
             }
         }
         var totalPlace = 0L
@@ -80,15 +80,15 @@ internal class LightBenchmark {
         val chunk = createChunkWithNeighbours()
         val solid = createSolidBlock().states.default
         val lowest = chunk.getOrPut(0)!!.blocks
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+        for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
+            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
                 lowest.unsafeSet(InSectionPosition(x, 0, z), solid)
             }
         }
         val highest = chunk.getOrPut(15)!!.blocks
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                highest.unsafeSet(InSectionPosition(x, ProtocolDefinition.SECTION_MAX_Y, z), solid)
+        for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
+            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
+                highest.unsafeSet(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), solid)
             }
         }
 
@@ -110,9 +110,9 @@ internal class LightBenchmark {
         val solid = createSolidBlock().states.default
         val light = createOpaqueLight().states.default
         val highest = chunk.getOrPut(15)!!.blocks
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                highest.unsafeSet(InSectionPosition(x, ProtocolDefinition.SECTION_MAX_Y, z), solid)
+        for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
+            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
+                highest.unsafeSet(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), solid)
             }
         }
         var totalPlace = 0L

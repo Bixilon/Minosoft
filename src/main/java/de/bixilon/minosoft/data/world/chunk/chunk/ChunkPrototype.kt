@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -111,7 +112,7 @@ class ChunkPrototype(
             if (section == null || section.blocks.isEmpty) continue
             val blocks = section.blocks
             val sectionHeight = (index + minSection)
-            val yOffset = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
+            val yOffset = sectionHeight * ChunkSize.SECTION_HEIGHT_Y
 
             for (y in blocks.minPosition.y..blocks.maxPosition.y) {
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {

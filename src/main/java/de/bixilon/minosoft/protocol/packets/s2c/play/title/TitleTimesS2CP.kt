@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,21 +15,22 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
 import de.bixilon.minosoft.modding.event.events.title.TitleTimesSetEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TitleTimesS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
-    val fadeInTime = buffer.readInt()
-    val stayTime = buffer.readInt()
-    val fadeOutTime = buffer.readInt()
+    val fadeIn = Ticks(buffer.readInt())
+    val stay = Ticks(buffer.readInt())
+    val fadeOut = Ticks(buffer.readInt())
 
     override fun handle(session: PlaySession) {
         session.events.fire(TitleTimesSetEvent(session, this))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Title time (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Title time (fadeIn=$fadeIn, stay=$stay, fadeOut=$fadeOut)" }
     }
 }

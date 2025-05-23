@@ -11,20 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light.types
+package de.bixilon.minosoft.protocol.network.session.play.tick
 
-import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 
-@JvmInline
-value class LightArray(inline val array: ByteArray = ByteArray(ChunkSize.BLOCKS_PER_SECTION)) {
-
-    inline operator fun get(position: InSectionPosition) = LightLevel(array[position.index])
-    inline operator fun set(position: InSectionPosition, value: LightLevel) {
-        array[position.index] = value.raw
-    }
-
-    inline fun clear() = Arrays.fill(array, 0.toByte())
+object TickUtil {
+    const val TICKS_PER_SECOND = 20
+    val TIME_PER_TICK = (1000 / TICKS_PER_SECOND).milliseconds
+    val INTERVAL = TIME_PER_TICK
 }

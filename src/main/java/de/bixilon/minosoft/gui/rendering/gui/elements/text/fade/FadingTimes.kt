@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.fade
 
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
 data class FadingTimes(
-    val `in`: Int = 100,
-    val stay: Int = 100,
-    val out: Int = 100,
+    val `in`: Duration = 100.milliseconds,
+    val stay: Duration = 100.milliseconds,
+    val out: Duration = 100.milliseconds,
 ) {
+
+    constructor(`in`: Ticks, stay: Ticks, out: Ticks) : this(`in`.duration, stay.duration, out.duration)
 
     companion object {
         val DEFAULT = FadingTimes()
-        val EMPTY = FadingTimes(0, 0, 0)
+        val EMPTY = FadingTimes(0.milliseconds, 0.milliseconds, 0.milliseconds)
     }
 }

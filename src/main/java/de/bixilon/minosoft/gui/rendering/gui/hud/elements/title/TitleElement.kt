@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.events.title.*
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -124,18 +124,14 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
             this.show()
         }
         session.events.listen<TitleTimesSetEvent> {
-            this.times = FadingTimes(it.fadeInTime * ProtocolDefinition.TICK_TIME, it.stayTime * ProtocolDefinition.TICK_TIME, it.fadeOutTime * ProtocolDefinition.TICK_TIME)
+            this.times = FadingTimes(it.fadeIn, it.stay, it.fadeOut)
         }
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
         override val identifier: ResourceLocation = "minosoft:title".toResourceLocation()
         const val SUBTITLE_VERTICAL_OFFSET = 10
-        private val DEFAULT_TIMES = FadingTimes(
-            20 * ProtocolDefinition.TICK_TIME,
-            60 * ProtocolDefinition.TICK_TIME,
-            20 * ProtocolDefinition.TICK_TIME,
-        )
+        private val DEFAULT_TIMES = FadingTimes(20.ticks, 60.ticks, 20.ticks) // TODO: default constructor?
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TitleElement> {
             return LayoutedGUIElement(TitleElement(guiRenderer))

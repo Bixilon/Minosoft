@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -27,9 +28,9 @@ value class InSectionPosition(
     constructor() : this(0, 0, 0)
 
     constructor(x: Int, y: Int, z: Int) : this((y shl SHIFT_Y) or (z shl SHIFT_Z) or (x shl SHIFT_X)) {
-        assertPosition(x, 0, ProtocolDefinition.SECTION_MAX_X)
-        assertPosition(y, 0, ProtocolDefinition.SECTION_MAX_Y)
-        assertPosition(z, 0, ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(x, 0, ChunkSize.SECTION_MAX_X)
+        assertPosition(y, 0, ChunkSize.SECTION_MAX_Y)
+        assertPosition(z, 0, ChunkSize.SECTION_MAX_Z)
     }
 
     inline val x: Int get() = (index shr SHIFT_X) and MASK_X
@@ -40,12 +41,12 @@ value class InSectionPosition(
 
 
     inline fun plusX(): InSectionPosition {
-        assertPosition(this.x < ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x < ChunkSize.SECTION_MAX_X)
         return InSectionPosition(index + X * 1)
     }
 
     inline fun plusX(x: Int): InSectionPosition {
-        assertPosition(this.x + x, 0, ProtocolDefinition.SECTION_MAX_X)
+        assertPosition(this.x + x, 0, ChunkSize.SECTION_MAX_X)
         return InSectionPosition(index + X * x)
     }
 
@@ -55,12 +56,12 @@ value class InSectionPosition(
     }
 
     inline fun plusY(): InSectionPosition {
-        assertPosition(this.y < ProtocolDefinition.SECTION_MAX_Y)
+        assertPosition(this.y < ChunkSize.SECTION_MAX_Y)
         return InSectionPosition(index + Y * 1)
     }
 
     inline fun plusY(y: Int): InSectionPosition {
-        assertPosition(this.y + y, 0, ProtocolDefinition.SECTION_MAX_Y)
+        assertPosition(this.y + y, 0, ChunkSize.SECTION_MAX_Y)
         return InSectionPosition(index + Y * y)
     }
 
@@ -70,12 +71,12 @@ value class InSectionPosition(
     }
 
     inline fun plusZ(): InSectionPosition {
-        assertPosition(this.z < ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z < ChunkSize.SECTION_MAX_Z)
         return InSectionPosition(index + Z * 1)
     }
 
     inline fun plusZ(z: Int): InSectionPosition {
-        assertPosition(this.z + z, 0, ProtocolDefinition.SECTION_MAX_Z)
+        assertPosition(this.z + z, 0, ChunkSize.SECTION_MAX_Z)
         return InSectionPosition(index + Z * z)
     }
 

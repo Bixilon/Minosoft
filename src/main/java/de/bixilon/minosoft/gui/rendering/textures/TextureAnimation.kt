@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.textures
 import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
+import de.bixilon.minosoft.util.KUtil.rem
+import kotlin.time.Duration
 
 class TextureAnimation(
     val animationData: Int,
@@ -25,7 +27,7 @@ class TextureAnimation(
 ) {
     private val totalTime = frames.getTotalTime()
     private var frame = frames.first()
-    private var time = 0.0f
+    private var time = Duration.ZERO
 
     var frame1: Texture = frame.texture
         private set
@@ -35,11 +37,11 @@ class TextureAnimation(
         private set
 
     init {
-        if (frames.isEmpty() || totalTime <= 0.0f) throw IllegalArgumentException("Invalid texture animation!")
+        assert(frames.isNotEmpty() && totalTime > Duration.ZERO) { "Invalid texture animation!" }
     }
 
-    private fun Array<AnimationFrame>.getTotalTime(): Float {
-        var total = 0.0f
+    private fun Array<AnimationFrame>.getTotalTime(): Duration {
+        var total = Duration.ZERO
         for (frame in this) {
             total += frame.time
         }
@@ -48,7 +50,7 @@ class TextureAnimation(
     }
 
 
-    fun update(delta: Float) {
+    fun update(delta: Duration) {
         val delta = delta % totalTime
         var frame = this.frame
         var left = this.time + delta
@@ -60,7 +62,7 @@ class TextureAnimation(
         this.time = left
         this.frame1 = frame.texture
         this.frame2 = frame.next().texture
-        this.progress = if (left == 0.0f) 0.0f else left / frame.time
+        this.progress = if (left == Duration.ZERO) 0.0f else (left / frame.time).toFloat()
     }
 
     private fun AnimationFrame.next(): AnimationFrame {
@@ -70,5 +72,4 @@ class TextureAnimation(
         }
         return frames[next]
     }
-
 }

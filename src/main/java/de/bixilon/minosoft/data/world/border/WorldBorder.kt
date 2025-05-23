@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.world.border
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.area.BorderArea
 import de.bixilon.minosoft.data.world.border.area.DynamicBorderArea
 import de.bixilon.minosoft.data.world.border.area.StaticBorderArea
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -83,6 +83,6 @@ class WorldBorder {
     }
 
     companion object {
-        const val MAX_RADIUS = (World.MAX_SIZE - ProtocolDefinition.SECTION_WIDTH_X).toDouble()
+        const val MAX_RADIUS = (BlockPosition.MAX_X - ChunkSize.SECTION_WIDTH_X).toDouble()
     }
 }

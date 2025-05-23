@@ -88,7 +88,7 @@ object WorldTestUtil {
                     if (superUnsafe) {
                         var data = DATA[section.blocks] as Array<Any?>?
                         if (data == null) {
-                            data = arrayOfNulls<Any?>(ProtocolDefinition.BLOCKS_PER_SECTION)
+                            data = arrayOfNulls<Any?>(ChunkSize.BLOCKS_PER_SECTION)
                             DATA[section.blocks] = data
                         }
                         data[position.inSectionPosition.index] = state

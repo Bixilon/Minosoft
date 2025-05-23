@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -48,17 +49,17 @@ class SectionOcclusion(
 
         val min = provider.minPosition
         val max = provider.minPosition
-        if (min.x > 0 && min.y > 0 && min.z > 0 && max.x < ProtocolDefinition.SECTION_MAX_X && max.y < ProtocolDefinition.SECTION_MAX_X && max.z < ProtocolDefinition.SECTION_MAX_X) {
+        if (min.x > 0 && min.y > 0 && min.z > 0 && max.x < ChunkSize.SECTION_MAX_X && max.y < ChunkSize.SECTION_MAX_X && max.z < ChunkSize.SECTION_MAX_X) {
             // blocks are only set in inner section, no blocking of any side possible.
             clear(notify)
             return
         }
-        if (provider.count < ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
+        if (provider.count < ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
             // When there are less than 256 blocks set, you will always be able to look from one side to another
             clear(notify)
             return
         }
-        val array = ALLOCATOR.allocate(ProtocolDefinition.BLOCKS_PER_SECTION)
+        val array = ALLOCATOR.allocate(ChunkSize.BLOCKS_PER_SECTION)
         try {
             val regions = calculateSideRegions(array)
             update(calculateOcclusion(regions), notify)
@@ -92,11 +93,11 @@ class SectionOcclusion(
         if (regions.setIfUnset(position, region)) return
 
         if (direction.x <= 0 && position.x > 0) trace(regions, position.minusX(), direction.with(Directions.WEST), region)
-        if (direction.x >= 0 && position.x < ProtocolDefinition.SECTION_MAX_X) trace(regions, position.plusX(), direction.with(Directions.EAST), region)
+        if (direction.x >= 0 && position.x < ChunkSize.SECTION_MAX_X) trace(regions, position.plusX(), direction.with(Directions.EAST), region)
         if (direction.z <= 0 && position.z > 0) trace(regions, position.minusZ(), direction.with(Directions.NORTH), region)
-        if (direction.z >= 0 && position.z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, position.plusZ(), direction.with(Directions.SOUTH), region)
+        if (direction.z >= 0 && position.z < ChunkSize.SECTION_MAX_Z) trace(regions, position.plusZ(), direction.with(Directions.SOUTH), region)
         if (direction.y <= 0 && position.y > 0) trace(regions, position.minusY(), direction.with(Directions.DOWN), region)
-        if (direction.y >= 0 && position.y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
+        if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
     private fun calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
@@ -107,7 +108,7 @@ class SectionOcclusion(
 
         val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
 
-        for (index in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
+        for (index in 0 until ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
             trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), sides[Directions.O_DOWN])
             trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), sides[Directions.O_UP])
 

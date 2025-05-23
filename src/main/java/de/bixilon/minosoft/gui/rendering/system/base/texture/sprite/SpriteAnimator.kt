@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.sprite
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -30,12 +29,14 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 class SpriteAnimator(val context: RenderContext) {
     private val animations: MutableList<TextureAnimation> = ArrayList()
     private var buffer: IntUniformBuffer? = null
     private var enabled = true
-    private var previous = 0L
+    private var previous = TimeSource.Monotonic.markNow()
     val size get() = animations.size
 
     fun init() {
@@ -59,10 +60,10 @@ class SpriteAnimator(val context: RenderContext) {
     }
 
     fun update() {
-        val nanos = nanos()
-        val delta = nanos - previous
+        val now = TimeSource.Monotonic.markNow()
+        val delta = now - previous
         update(delta)
-        previous = nanos
+        previous = now
     }
 
     fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {
@@ -74,10 +75,9 @@ class SpriteAnimator(val context: RenderContext) {
         buffer.data[offset + 2] = (progress * 100.0f).toInt()
     }
 
-    private fun update(delta: Long) {
-        val seconds = delta / 1_000_00 / 1_000_0.0f // nano -> 10 milli -> seconds
+    private fun update(delta: Duration) {
         for (animation in animations) {
-            animation.update(seconds)
+            animation.update(delta)
 
             update(animation, animation.frame1, animation.frame2, animation.progress)
         }

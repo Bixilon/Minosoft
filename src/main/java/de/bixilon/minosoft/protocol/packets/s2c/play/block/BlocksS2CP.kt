@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 
 import de.bixilon.kutil.array.ArrayUtil.cast
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -68,7 +69,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             else -> {
                 val raw = buffer.readLong()
                 chunkPosition = ChunkPosition((raw shr 42).toInt(), (raw shl 22 shr 42).toInt())
-                val yOffset = ((raw shl 44 shr 44) * ProtocolDefinition.SECTION_HEIGHT_Y).toInt()
+                val yOffset = ((raw shl 44 shr 44) * ChunkSize.SECTION_HEIGHT_Y).toInt()
                 if (buffer.versionId > ProtocolVersions.V_1_16_2_PRE3 && buffer.versionId < ProtocolVersions.V_23W17A) {
                     buffer.readBoolean() // ignore light updates
                 }

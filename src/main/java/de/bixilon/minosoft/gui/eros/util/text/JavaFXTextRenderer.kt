@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -64,7 +64,7 @@ interface JavaFXTextRenderer<C> {
                         KeyFrame(Duration.millis(50.0), {
                             val chars = node.text.toCharArray()
                             for (i in chars.indices) {
-                                chars[i] = ProtocolDefinition.OBFUSCATED_CHARS[index.getAndIncrement() % ProtocolDefinition.OBFUSCATED_CHARS.size]
+                                chars[i] = OBFUSCATED_CHARS[index.getAndIncrement() % OBFUSCATED_CHARS.size]
                             }
                             node.text = String(chars)
                         }),
@@ -104,6 +104,8 @@ interface JavaFXTextRenderer<C> {
     }
 
     companion object : JavaFXTextRenderer<ChatComponent> {
+        @Deprecated("The width of all chars should be constant")
+        val OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray()
 
         fun render(text: ChatComponent): MutableList<Node> {
             val nodes: MutableList<Node> = mutableListOf()

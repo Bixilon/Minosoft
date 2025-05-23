@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.util
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
@@ -49,17 +50,17 @@ object ChunkRendererChangeListener {
 
         if (inPosition.y == 0) {
             master.tryQueue(update.chunk, sectionHeight - 1)
-        } else if (inPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
+        } else if (inPosition.y == ChunkSize.SECTION_MAX_Y) {
             master.tryQueue(update.chunk, sectionHeight + 1)
         }
         if (inPosition.z == 0) {
             master.tryQueue(chunk = neighbours[Directions.NORTH], sectionHeight)
-        } else if (inPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
+        } else if (inPosition.z == ChunkSize.SECTION_MAX_Z) {
             master.tryQueue(chunk = neighbours[Directions.SOUTH], sectionHeight)
         }
         if (inPosition.x == 0) {
             master.tryQueue(chunk = neighbours[Directions.WEST], sectionHeight)
-        } else if (inPosition.x == ProtocolDefinition.SECTION_MAX_X) {
+        } else if (inPosition.x == ChunkSize.SECTION_MAX_X) {
             master.tryQueue(chunk = neighbours[Directions.EAST], sectionHeight)
         }
     }
@@ -76,17 +77,17 @@ object ChunkRendererChangeListener {
             val inSectionHeight = position.y.inSectionHeight
             if (inSectionHeight == 0) {
                 neighbours[0] = true
-            } else if (inSectionHeight == ProtocolDefinition.SECTION_MAX_Y) {
+            } else if (inSectionHeight == ChunkSize.SECTION_MAX_Y) {
                 neighbours[1] = true
             }
             if (position.z == 0) {
                 neighbours[2] = true
-            } else if (position.z == ProtocolDefinition.SECTION_MAX_Z) {
+            } else if (position.z == ChunkSize.SECTION_MAX_Z) {
                 neighbours[3] = true
             }
             if (position.x == 0) {
                 neighbours[4] = true
-            } else if (position.x == ProtocolDefinition.SECTION_MAX_X) {
+            } else if (position.x == ChunkSize.SECTION_MAX_X) {
                 neighbours[5] = true
             }
         }

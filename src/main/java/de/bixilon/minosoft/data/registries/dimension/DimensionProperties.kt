@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEff
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.minecraft.OverworldEffects
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
@@ -44,15 +45,15 @@ data class DimensionProperties(
     val supports3DBiomes: Boolean = true,
 ) {
     val maxY = height + minY - 1
-    val sections = height / ProtocolDefinition.SECTION_HEIGHT_Y
+    val sections = height / ChunkSize.SECTION_HEIGHT_Y
     val minSection = minY shr 4
     val maxSection = (minSection + sections - 1)
 
 
     init {
         check(maxSection >= minSection) { "Upper section can not be lower that the lower section ($minSection >= $maxSection)" }
-        check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
-        check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
+        check(minSection in ChunkSize.CHUNK_MIN_SECTION..ChunkSize.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
+        check(maxSection in ChunkSize.CHUNK_MIN_SECTION..ChunkSize.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
     }
 
 

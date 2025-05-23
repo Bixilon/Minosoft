@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.visibility
 
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
@@ -49,7 +50,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
 
     private fun updateViewDistance(entity: Int = renderer.profile.general.renderDistance, server: Int = renderer.session.world.view.serverViewDistance) {
         var distance = if (entity < 0) (server - 1) else entity
-        distance *= ProtocolDefinition.SECTION_LENGTH
+        distance *= ChunkSize.SECTION_LENGTH
         this.renderDistance = distance * distance // length^2
     }
 

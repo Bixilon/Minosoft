@@ -108,7 +108,7 @@ class BlockSectionDataProviderTest {
         val random = Random(12)
 
         val data = create()
-        for (i in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+        for (i in 0 until ChunkSize.BLOCKS_PER_SECTION) {
             if (random.nextBoolean()) {
                 data[i] = water
             } else if (random.nextBoolean()) {

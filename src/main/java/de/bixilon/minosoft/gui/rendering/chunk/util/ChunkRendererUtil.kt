@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.util
 
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.isEmpty
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -36,5 +37,5 @@ object ChunkRendererUtil {
         }
 
 
-    val ChunkSection.smallMesh: Boolean get() = blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z
+    val ChunkSection.smallMesh: Boolean get() = blocks.count < ChunkSize.SECTION_MAX_X * ChunkSize.SECTION_MAX_Z
 }

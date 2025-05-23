@@ -197,9 +197,9 @@ class ChunkManagerTest {
         manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
 
         manager[ChunkPosition(0, 0)] = ChunkPrototype(blocks = arrayOf(
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
-            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
+            arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
+            arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
+            arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
             null, null, null,
         ),
             blockEntities = emptyMap(),
@@ -405,7 +405,7 @@ class ChunkManagerTest {
             fired++
         }
 
-        manager.set(ChunkPosition(1, 1), ChunkPrototype(blocks = Array(16) { if (it == 0) arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION) else null }), false)
+        manager.set(ChunkPosition(1, 1), ChunkPrototype(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }), false)
 
         assertNotNull(manager[ChunkPosition(1, 1)])
 

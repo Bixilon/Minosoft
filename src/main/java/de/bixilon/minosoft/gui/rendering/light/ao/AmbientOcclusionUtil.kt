@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -45,23 +46,23 @@ object AmbientOcclusionUtil {
 
         if (x < 0) {
             section = section?.neighbours?.get(O_WEST)
-            x = ProtocolDefinition.SECTION_MAX_X
-        } else if (x > ProtocolDefinition.SECTION_MAX_X) {
+            x = ChunkSize.SECTION_MAX_X
+        } else if (x > ChunkSize.SECTION_MAX_X) {
             section = section?.neighbours?.get(O_EAST)
             x = 0
         }
 
         if (y < 0) {
             section = section?.neighbours?.get(O_DOWN)
-            y = ProtocolDefinition.SECTION_MAX_Y
-        } else if (y > ProtocolDefinition.SECTION_MAX_Y) {
+            y = ChunkSize.SECTION_MAX_Y
+        } else if (y > ChunkSize.SECTION_MAX_Y) {
             section = section?.neighbours?.get(O_UP)
             y = 0
         }
         if (z < 0) {
             section = section?.neighbours?.get(O_NORTH)
-            z = ProtocolDefinition.SECTION_MAX_Z
-        } else if (z > ProtocolDefinition.SECTION_MAX_Z) {
+            z = ChunkSize.SECTION_MAX_Z
+        } else if (z > ChunkSize.SECTION_MAX_Z) {
             section = section?.neighbours?.get(O_SOUTH)
             z = 0
         }
@@ -99,14 +100,14 @@ object AmbientOcclusionUtil {
 
     fun applyBottom(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.y == 0) {
-            return setY(section.neighbours?.get(O_DOWN), position.with(y = ProtocolDefinition.SECTION_MAX_Y), true, ao)
+            return setY(section.neighbours?.get(O_DOWN), position.with(y = ChunkSize.SECTION_MAX_Y), true, ao)
         } else {
             return setY(section, position.minusY(), true, ao)
         }
     }
 
     fun applyTop(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
-        if (position.y == ProtocolDefinition.SECTION_MAX_Y) {
+        if (position.y == ChunkSize.SECTION_MAX_Y) {
             return setY(section.neighbours?.get(O_UP), position.with(y = 0), false, ao)
         } else {
             return setY(section, position.plusY(), false, ao)
@@ -132,14 +133,14 @@ object AmbientOcclusionUtil {
 
     fun applyNorth(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.z == 0) {
-            return setZ(section.neighbours?.get(O_NORTH), position.with(z = ProtocolDefinition.SECTION_MAX_Z), true, ao)
+            return setZ(section.neighbours?.get(O_NORTH), position.with(z = ChunkSize.SECTION_MAX_Z), true, ao)
         } else {
             return setZ(section, position.minusZ(), true, ao)
         }
     }
 
     fun applySouth(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
-        if (position.z == ProtocolDefinition.SECTION_MAX_Z) {
+        if (position.z == ChunkSize.SECTION_MAX_Z) {
             return setZ(section.neighbours?.get(O_SOUTH), position.with(z = 0), false, ao)
         } else {
             return setZ(section, position.plusZ(), false, ao)
@@ -164,14 +165,14 @@ object AmbientOcclusionUtil {
 
     fun applyWest(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.x == 0) {
-            return setX(section.neighbours?.get(O_WEST), position.with(x = ProtocolDefinition.SECTION_MAX_X), true, ao)
+            return setX(section.neighbours?.get(O_WEST), position.with(x = ChunkSize.SECTION_MAX_X), true, ao)
         } else {
             return setX(section, position.minusX(), false, ao)
         }
     }
 
     fun applyEast(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
-        if (position.x == ProtocolDefinition.SECTION_MAX_X) {
+        if (position.x == ChunkSize.SECTION_MAX_X) {
             return setX(section.neighbours?.get(O_EAST), position.with(x = 0), true, ao)
         } else {
             return setX(section, position.plusX(), true, ao)

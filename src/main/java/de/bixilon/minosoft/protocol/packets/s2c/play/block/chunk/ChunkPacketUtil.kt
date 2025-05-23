@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
@@ -50,7 +51,7 @@ object ChunkPacketUtil {
     private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, complete: Boolean, containsSkyLight: Boolean): ChunkPrototype {
         val chunkData = ChunkPrototype()
 
-        val totalBytes = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
+        val totalBytes = ChunkSize.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val halfBytes = totalBytes / 2
 
 
@@ -74,9 +75,9 @@ object ChunkPacketUtil {
                 continue
             }
 
-            val blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+            val blocks: Array<BlockState?> = arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION)
 
-            for (yzx in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            for (yzx in 0 until ChunkSize.BLOCKS_PER_SECTION) {
                 var blockId = (blockData[index].toInt() and 0xFF) shl 4
                 var meta: Int
                 // get block meta and shift and add (merge) id if needed
@@ -117,7 +118,7 @@ object ChunkPacketUtil {
         }
         val chunkData = ChunkPrototype()
 
-        val totalEntries: Int = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
+        val totalEntries: Int = ChunkSize.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2
 
         val blockData = buffer.readUnsignedShortsLE(totalEntries) // blocks >>> 4, data & 0xF
@@ -138,8 +139,8 @@ object ChunkPacketUtil {
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
-            val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
-            for (yzx in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            val blocks = arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION)
+            for (yzx in 0 until ChunkSize.BLOCKS_PER_SECTION) {
                 val blockId = blockData[index++]
                 val block = buffer.session.registries.blockState.getOrNull(blockId) ?: continue
                 blocks[yzx] = block
@@ -209,7 +210,7 @@ object ChunkPacketUtil {
 
 
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
-        val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+        val biomes: Array<Biome?> = arrayOfNulls(ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z)
         for (i in biomes.indices) {
             biomes[i] = buffer.session.registries.biome.getOrNull(if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
                 buffer.readUnsignedByte()

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertSame
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["textures"])
 class TextureAnimationTest {
@@ -117,5 +118,7 @@ class TextureAnimationTest {
         assertSame(animation.frame2, a)
         assertEquals(animation.progress, 0.5f)
     }
+
+    fun TextureAnimation.update(seconds: Float) = update(seconds.toDouble().seconds)
 }
 

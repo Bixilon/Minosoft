@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.biome.source
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -33,7 +34,7 @@ class SpatialBiomeArray(val data: Array<Biome>) : BiomeSource {
     }
 
     companion object {
-        const val SIZE = ProtocolDefinition.BLOCKS_PER_SECTION / 4
+        const val SIZE = ChunkSize.BLOCKS_PER_SECTION / 4
         const val XZ_BITS = 2
         const val XZ_MASK = (1 shl XZ_BITS) - 1
 
