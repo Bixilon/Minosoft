@@ -16,6 +16,12 @@ package de.bixilon.minosoft.data.world.chunk.light.section
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_HEIGHT_Y
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_X
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_Y
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_Z
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_X
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_Z
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.heightmap.FixedHeightmap
 import de.bixilon.minosoft.data.world.chunk.heightmap.LightHeightmap
@@ -28,7 +34,6 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 class ChunkLight(val chunk: Chunk) {
     val heightmap = if (chunk.world.dimension.hasSkyLight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
@@ -129,7 +134,7 @@ class ChunkLight(val chunk: Chunk) {
         val east = if (xz.x == SECTION_MAX_X) neighbours[Directions.EAST]?.light?.heightmap?.get(xz.with(x = 0)) ?: Int.MIN_VALUE else heightmap[xz.plusX()]
 
         val north = if (xz.z == 0) neighbours[Directions.NORTH]?.light?.heightmap?.get(xz.with(z = SECTION_MAX_Z)) ?: Int.MIN_VALUE else heightmap[xz.minusZ()]
-        val south = if (xz.z == SECTION_MAX_X) neighbours[Directions.SOUTH]?.light?.heightmap?.get(xz.with(z = 0)) ?: Int.MIN_VALUE else heightmap[xz.plusZ()]
+        val south = if (xz.z == SECTION_MAX_Z) neighbours[Directions.SOUTH]?.light?.heightmap?.get(xz.with(z = 0)) ?: Int.MIN_VALUE else heightmap[xz.plusZ()]
 
         // TODO: Only trace in direction where heightmap is higher (separate for each horizontal direction)
 
