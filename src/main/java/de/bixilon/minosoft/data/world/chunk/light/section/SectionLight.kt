@@ -20,6 +20,12 @@ import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_HEIGHT_Y
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_X
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_Y
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_Z
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_X
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_Z
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel.Companion.MAX_LEVEL
@@ -28,7 +34,6 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 class SectionLight(
     private val section: ChunkSection,

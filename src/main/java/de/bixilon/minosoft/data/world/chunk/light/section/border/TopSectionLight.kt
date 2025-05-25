@@ -15,11 +15,13 @@ package de.bixilon.minosoft.data.world.chunk.light.section.border
 
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_MAX_Y
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_X
+import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_Z
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.*
 
 class TopSectionLight(
     chunk: Chunk,
