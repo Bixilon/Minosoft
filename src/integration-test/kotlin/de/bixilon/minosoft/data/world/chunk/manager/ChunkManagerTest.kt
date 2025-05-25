@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent

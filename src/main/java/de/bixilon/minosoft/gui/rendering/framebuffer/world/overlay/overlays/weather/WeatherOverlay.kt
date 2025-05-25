@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -29,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 
 class WeatherOverlay(private val context: RenderContext) : Overlay {
     private val world = context.session.world
@@ -94,7 +96,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
 
     private fun updateShader() {
         shader.intensity = world.weather.rain
-        val offset = (millis() % 500L) / 500.0f
+        val offset = (millis() % 500.0f) / 500.0f
         shader.offset = -offset
         shader.textureIndexLayer = texture!!.shaderId
     }

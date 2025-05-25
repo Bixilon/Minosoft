@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class SkeletalInstance(
     val context: RenderContext,
@@ -58,7 +60,7 @@ class SkeletalInstance(
         model.mesh.draw()
     }
 
-    fun update(time: Long = millis()) {
+    fun update(time: ValueTimeMark = now()) {
         transform.reset()
         animation.draw(time)
         transform.pack(matrix)

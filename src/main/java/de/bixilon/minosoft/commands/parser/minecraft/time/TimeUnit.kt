@@ -15,12 +15,14 @@ package de.bixilon.minosoft.commands.parser.minecraft.time
 
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
-enum class TimeUnit(val multiplier: Int) {
-    TICKS(1),
-    SECONDS(TickUtil.TICKS_PER_SECOND),
-    DAYS(WorldTime.TICKS_PER_DAY),
+enum class TimeUnit(val convert: (Float) -> Duration) {
+    TICKS({ it.toInt().ticks.duration }),
+    SECONDS({ it.toDouble().seconds }),
+    DAYS({ (it * WorldTime.TICKS_PER_DAY / TickUtil.TICKS_PER_SECOND).toDouble().seconds }),
     ;
 
     companion object {

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 @JvmInline
-value class LightArray(inline val array: ByteArray = ByteArray(ChunkSize.BLOCKS_PER_SECTION)) {
+value class LightArray(val array: ByteArray = ByteArray(ChunkSize.BLOCKS_PER_SECTION)) {
 
     inline operator fun get(position: InSectionPosition) = LightLevel(array[position.index])
     inline operator fun set(position: InSectionPosition, value: LightLevel) {

@@ -31,12 +31,15 @@ import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
+import de.bixilon.minosoft.util.KUtil
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration.Companion.seconds
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
     val entity: E,
 ) {
-    private var update = 0L
+    private var update = KUtil.TIME_ZERO
     val features = FeatureManager(this)
     val info = entity.renderInfo
     var distance: Double = 0.0
@@ -69,25 +72,25 @@ abstract class EntityRenderer<E : Entity>(
         }
     }
 
-    open fun update(millis: Long) {
-        val delta = if (this.update <= 0L) 0.0f else ((millis - update) / 1000.0f)
-        update(millis, delta)
-        this.update = millis
+    open fun update(time: ValueTimeMark) {
+        val delta = if (this.update == KUtil.TIME_ZERO) 0.0f else ((time - update) / 1.seconds).toFloat()
+        update(time, delta)
+        this.update = time
     }
 
-    open fun update(millis: Long, delta: Float) {
+    open fun update(time: ValueTimeMark, delta: Float) {
         this.isInvisible = entity.isInvisible(renderer.session.camera.entity)
         updateLight(delta)
-        updateRenderInfo(millis)
+        updateRenderInfo(time)
         updateMatrix(delta)
-        features.update(millis, delta)
+        features.update(time, delta)
     }
 
     open fun prepare() {
         features.prepare()
     }
 
-    open fun updateRenderInfo(millis: Long) {
+    open fun updateRenderInfo(millis: ValueTimeMark) {
         entity.draw(millis)
         this.distance = Vec3dUtil.distance2(entity.renderInfo.eyePosition, renderer.session.camera.entity.renderInfo.eyePosition)
     }

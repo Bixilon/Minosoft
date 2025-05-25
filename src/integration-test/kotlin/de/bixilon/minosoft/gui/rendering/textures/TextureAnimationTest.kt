@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertSame
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["textures"])
@@ -26,7 +27,7 @@ class TextureAnimationTest {
     private val b = DummyTexture()
     private val c = DummyTexture()
 
-    private fun create(frames: Array<AnimationFrame> = arrayOf(AnimationFrame(0, 0.5f, a), AnimationFrame(1, 1.0f, b), AnimationFrame(2, 2.0f, c))): TextureAnimation {
+    private fun create(frames: Array<AnimationFrame> = arrayOf(AnimationFrame(0, 500.milliseconds, a), AnimationFrame(1, 1.seconds, b), AnimationFrame(2, 2.seconds, c))): TextureAnimation {
         return TextureAnimation(0, frames, true, frames.map { it.texture }.toList().toTypedArray())
     }
 
@@ -102,7 +103,7 @@ class TextureAnimationTest {
     }
 
     fun `draw but just one frame available`() {
-        val animation = create(arrayOf(AnimationFrame(0, 1.0f, a)))
+        val animation = create(arrayOf(AnimationFrame(0, 1.seconds, a)))
         animation.update(2.0f)
         assertSame(animation.frame1, a)
         assertSame(animation.frame2, a)
@@ -119,6 +120,6 @@ class TextureAnimationTest {
         assertEquals(animation.progress, 0.5f)
     }
 
-    fun TextureAnimation.update(seconds: Float) = update(seconds.toDouble().seconds)
+    private fun TextureAnimation.update(seconds: Float) = update(seconds.toDouble().seconds)
 }
 

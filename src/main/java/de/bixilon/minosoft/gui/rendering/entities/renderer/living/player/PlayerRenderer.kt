@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.SkinManager.Companion.isReallyWide
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
     var model: PlayerModel? = null
@@ -62,9 +63,9 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
 
-    override fun update(millis: Long) {
+    override fun update(time: ValueTimeMark) {
         if (refresh) updateModel()
-        super.update(millis)
+        super.update(time)
     }
 
     private fun setSkin(): SkinModel? {

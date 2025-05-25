@@ -15,6 +15,9 @@ package de.bixilon.minosoft.gui.rendering.stats
 
 import de.bixilon.kutil.avg._long.LongAverage
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.minosoft.util.KUtil
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class RenderStats : AbstractRenderStats {
@@ -25,12 +28,12 @@ class RenderStats : AbstractRenderStats {
 
     private var lastFrameStartTime = -1L
 
-    private var lastSmoothFPSCalculationTime = 0L
+    private var lastSmoothFPSCalculationTime = KUtil.TIME_ZERO
 
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = millis()
-            if (time - lastSmoothFPSCalculationTime > 100) {
+            val time = now()
+            if (time - lastSmoothFPSCalculationTime > 100.milliseconds) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time
             }

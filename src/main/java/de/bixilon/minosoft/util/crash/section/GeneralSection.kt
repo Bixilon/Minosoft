@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.util.crash.section
 
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.util.KUtil.format1
 import java.text.SimpleDateFormat
+import java.time.Instant
 
 class GeneralSection(notes: String) : CrashSection(
     "General information", arrayOf(
-        "Time" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(millis()) + "(${millis() / 1000L})",
+        "Time" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format1(Instant.now()) + "(${millis() / 1000L})",
         "Thread" to Thread.currentThread().name,
         "Notes" to notes,
     )

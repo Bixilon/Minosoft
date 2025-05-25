@@ -12,32 +12,28 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces
-import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.milliseconds
+import de.bixilon.minosoft.data.entities.EntityRotation
+import java.util.regex.Pattern
+import kotlin.time.Duration.Companion.seconds
 
-internal class ProtocolDefinitionTest {
+object ProtocolDefinition {
+    const val STRING_MAX_LENGTH = 32767
+    const val DEFAULT_PORT = 25565
+    val SOCKET_TIMEOUT = 30.seconds
+    const val STATUS_PROTOCOL_PACKET_MAX_SIZE = 1 shl 16
+    const val ROTATION_ANGLE_DIVIDER = EntityRotation.CIRCLE_DEGREE / 256.0f
+    const val SOUND_PITCH_DIVIDER = 100.0f / 63.0f
 
-    @Test
-    fun testTickTime() {
-        assertEquals(TickUtil.INTERVAL, 50.milliseconds)
-    }
 
-    @Test
-    fun testTicksPerSecond() {
-        assertEquals(TickUtil.TICKS_PER_SECOND, 20)
-    }
+    const val FLATTENING_VERSION = ProtocolVersions.V_17W47A
+    const val QUERY_PROTOCOL_VERSION_ID = -1
 
-    @Test
-    fun testDefaultNamespace() {
-        assertEquals(Namespaces.DEFAULT, "minecraft")
-    }
+    const val TEXT_COMPONENT_FORMATTING_PREFIX = '§'
 
-    @Test
-    fun testSectionSize() {
-        assertEquals(ChunkSize.BLOCKS_PER_SECTION, 4096)
-    }
+    const val AIR_BLOCK_ID = 0
+
+
+    val MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}")
+
+    const val VELOCITY_NETWORK_DIVIDER = 8000.0f
 }

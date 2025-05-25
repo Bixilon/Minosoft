@@ -512,7 +512,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
-    kotlinOptions.languageVersion = "2.0"
+    kotlinOptions.languageVersion = "2.1"
     kotlinOptions { freeCompilerArgs += "-Xskip-prerelease-check"; freeCompilerArgs += "-Xallow-unstable-dependencies" }
 }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,20 +17,23 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Initializable
+import de.bixilon.minosoft.util.KUtil
 
 class PopperManager(
     private val guiRenderer: GUIRenderer,
 ) : Initializable, InputHandler, AsyncDrawable, Drawable {
     private val poppers: MutableList<PopperGUIElement> = mutableListOf()
-    private var lastTickTime: Long = -1L
+    private var lastTickTime = KUtil.TIME_ZERO
 
 
     fun onScreenChange() {
@@ -41,8 +44,8 @@ class PopperManager(
 
     override fun drawAsync() {
         val toRemove: MutableSet<PopperGUIElement> = mutableSetOf()
-        val time = millis()
-        val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
+        val time = now()
+        val tick = time - lastTickTime > TickUtil.INTERVAL
         if (tick) {
             lastTickTime = time
         }

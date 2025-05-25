@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
@@ -203,7 +204,7 @@ class LevitationIT {
     companion object {
 
         fun LocalPlayerEntity.applyLevitation(level: Int) {
-            effects += StatusEffectInstance(MovementEffect.Levitation, level, 1000000)
+            effects += StatusEffectInstance(MovementEffect.Levitation, level, 1000000.ticks)
         }
     }
 }

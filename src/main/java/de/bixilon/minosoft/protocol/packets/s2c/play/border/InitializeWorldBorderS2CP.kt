@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,29 +14,31 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.border
 
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import kotlin.time.Duration.Companion.milliseconds
 
 class InitializeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     val center = buffer.readVec2d()
     val oldRadius = buffer.readDouble() / 2.0
     val newRadius = buffer.readDouble() / 2.0
-    val millis = buffer.readVarLong()
+    val duration = buffer.readVarLong().milliseconds // TODO: verify unit
     val portalBound = buffer.readVarInt()
     val warningTime = buffer.readVarInt()
     val warningBlocks = buffer.readVarInt()
 
     override fun handle(session: PlaySession) {
         session.world.border.center = center
-        session.world.border.interpolate(oldRadius, newRadius, millis)
+        session.world.border.interpolate(oldRadius, newRadius, duration)
         session.world.border.portalBound = portalBound
         session.world.border.warningTime = warningTime
         session.world.border.warningBlocks = warningBlocks
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldRadius=$oldRadius, newRadius=$newRadius, speed=$millis, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldRadius=$oldRadius, newRadius=$newRadius, speed=$duration, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
     }
 }

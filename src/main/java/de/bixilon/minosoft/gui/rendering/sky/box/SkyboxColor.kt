@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -27,14 +28,17 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.util.KUtil
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class SkyboxColor(
     val sky: SkyRenderer,
 ) {
-    private var lastStrike = -1L
-    private var strikeDuration = -1
+    private var lastStrike = KUtil.TIME_ZERO
+    private var strikeDuration = Duration.ZERO
 
     private var baseColor: RGBColor? = null
 
@@ -101,13 +105,13 @@ class SkyboxColor(
 
     fun lightning(original: Vec3): Vec3 {
         val duration = this.strikeDuration
-        val delta = millis() - lastStrike
+        val delta = now() - lastStrike
         if (delta > duration) {
             return original
         }
-        val progress = delta / duration.toFloat()
+        val progress = (delta / duration).toFloat()
 
-        val sine = abs(sin(progress * PIf * (duration / 80).toInt()))
+        val sine = abs(sin(progress * PIf * (duration / 80.milliseconds).toInt()))
         return interpolateLinear(sine, original, Vec3(1.0f))
     }
 
@@ -226,8 +230,8 @@ class SkyboxColor(
         return color
     }
 
-    fun onStrike(duration: Int) {
-        lastStrike = millis()
+    fun onStrike(duration: Duration) {
+        lastStrike = now()
         strikeDuration = duration
     }
 

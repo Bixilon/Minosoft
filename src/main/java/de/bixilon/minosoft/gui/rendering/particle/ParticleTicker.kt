@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration.Companion.milliseconds
 
 class ParticleTicker(val renderer: ParticleRenderer) {
     private val particles = renderer.particles
@@ -34,7 +36,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
         return true
     }
 
-    private fun Particle.tick(viewDistance: Int, cameraPosition: ChunkPosition, millis: Long) {
+    private fun Particle.tick(viewDistance: Int, cameraPosition: ChunkPosition, millis: ValueTimeMark) {
         if (!chunkPosition.isInViewDistance(viewDistance, cameraPosition)) { // ToDo: Check fog distance
             dead = true
         }
@@ -48,7 +50,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
         val camera = context.session.camera.entity.physics.positionInfo
         val cameraPosition = camera.chunkPosition
         val viewDistance = context.session.world.view.particleViewDistance
-        val start = millis()
+        val start = now()
         var time = start
 
 
@@ -68,7 +70,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
                 particle.addVertex(renderer.mesh, renderer.translucentMesh, time)
             }
             if (index % 1000 == 0) { // don't spam the os with time calls
-                time = millis()
+                time = now()
                 if (time - start > MAX_TICK_TIME) {
                     break
                 }
@@ -84,6 +86,6 @@ class ParticleTicker(val renderer: ParticleRenderer) {
     }
 
     companion object {
-        const val MAX_TICK_TIME = 5
+        val MAX_TICK_TIME = 5.milliseconds
     }
 }

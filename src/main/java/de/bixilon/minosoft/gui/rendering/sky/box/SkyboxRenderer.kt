@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import java.util.*
 
 class SkyboxRenderer(
@@ -61,7 +62,7 @@ class SkyboxRenderer(
         sky.context.session.world.entities::entities.observeSet(this) {
             val lightnings = it.adds.filterIsInstance<LightningBolt>()
             if (lightnings.isEmpty()) return@observeSet
-            color.onStrike(lightnings.maxOf(LightningBolt::duration))
+            color.onStrike(lightnings.maxOf { it.duration.ticks }.ticks.duration)
         }
 
         sky.context.session.events.listen<WorldUpdateEvent> {

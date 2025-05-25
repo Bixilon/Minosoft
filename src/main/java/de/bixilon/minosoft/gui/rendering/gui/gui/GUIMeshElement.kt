@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -152,7 +152,7 @@ open class GUIMeshElement<T : Element>(
 
         val mouseAction = MouseActions[change] ?: return false
 
-        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, millis()))
+        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, now()))
     }
 
     override fun onScroll(scrollOffset: Vec2): Boolean {
@@ -175,7 +175,7 @@ open class GUIMeshElement<T : Element>(
 
         val mouseAction = MouseActions[type] ?: return null
 
-        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, millis()), dragged)
+        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, now()), dragged)
     }
 
     override fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? {

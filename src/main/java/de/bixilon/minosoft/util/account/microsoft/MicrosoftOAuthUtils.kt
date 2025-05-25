@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftTokens
@@ -36,6 +37,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.concurrent.TimeoutException
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 object MicrosoftOAuthUtils {
@@ -47,7 +49,7 @@ object MicrosoftOAuthUtils {
     const val XBOX_LIVE_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate"
     const val XSTS_URL = "https://xsts.auth.xboxlive.com/xsts/authorize"
     const val LOGIN_WITH_XBOX_URL = "https://api.minecraftservices.com/authentication/login_with_xbox"
-    const val MAX_CHECK_TIME = 900
+    val MAX_CHECK_TIME = 15.minutes
 
     fun obtainDeviceCodeAsync(
         deviceCodeCallback: (MicrosoftDeviceCode) -> Unit,
@@ -58,12 +60,12 @@ object MicrosoftOAuthUtils {
             val deviceCode = obtainDeviceCode()
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Obtained device code: ${deviceCode.userCode}" }
             deviceCodeCallback(deviceCode)
-            val start = millis() / 1000
+            val start = now()
 
             fun checkToken() {
                 try {
                     val response = checkDeviceCode(deviceCode)
-                    val time = millis() / 1000
+                    val time = now()
                     if (time > start + MAX_CHECK_TIME || time > deviceCode.expires) {
                         throw TimeoutException("Could not obtain access for device code: ${deviceCode.userCode}")
                     }

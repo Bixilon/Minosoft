@@ -85,7 +85,7 @@ object FreezeDumpUtil {
             val crashReportFolder = RunConfiguration.HOME_DIRECTORY.resolve("dumps").resolve("freeze").toFile()
             crashReportFolder.mkdirs()
 
-            path = "${crashReportFolder.slashPath}/freeze-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.millis())}.txt"
+            path = "${crashReportFolder.slashPath}/freeze-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.now())}.txt"
 
             val stream = FileOutputStream(path)
 

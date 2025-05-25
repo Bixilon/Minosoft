@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.enums.BitEnumSet
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
@@ -34,6 +34,9 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import it.unimi.dsi.fastutil.objects.Object2LongMap
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class InputManager(
     val context: RenderContext,
@@ -46,7 +49,7 @@ class InputManager(
 
 
     private val pressed: BitEnumSet<KeyCodes> = KeyCodes.set()
-    private val times: Object2LongMap<KeyCodes> = Object2LongOpenHashMap<KeyCodes>().apply { defaultReturnValue(-1L) }
+    private val times: EnumMap<KeyCodes, ValueTimeMark> = EnumMap(KeyCodes::class.java)
 
     var mousePosition: Vec2d = Vec2d.EMPTY
         private set
@@ -85,7 +88,7 @@ class InputManager(
             KeyChangeTypes.REPEAT -> return
         }
 
-        val millis = millis()
+        val time = now()
 
 
         if (pressed) {
@@ -94,10 +97,10 @@ class InputManager(
             this.pressed -= code
         }
 
-        bindings.onKey(code, pressed, handler, millis)
+        bindings.onKey(code, pressed, handler, time)
 
         if (pressed) {
-            times[code] = millis
+            times[code] = time
         }
 
         this.handler.checkSkip(code, pressed, handler)
@@ -148,7 +151,5 @@ class InputManager(
         interaction.draw()
     }
 
-    fun getLastPressed(key: KeyCodes): Long {
-        return this.times.getLong(key)
-    }
+    fun getLastPressed(key: KeyCodes) = times[key]
 }

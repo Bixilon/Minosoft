@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFe
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class VisibilityManager(val renderer: EntitiesRenderer) {
     private var update = false
@@ -65,10 +65,10 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         return renderDistance < 0 || distance <= renderDistance
     }
 
-    fun update(renderer: EntityRenderer<*>, millis: Long) {
+    fun update(renderer: EntityRenderer<*>, time: ValueTimeMark) {
         if (!renderer.isInRenderDistance()) {
             // distance is only updated if the renderer is visible, so force update
-            renderer.updateRenderInfo(millis)
+            renderer.updateRenderInfo(time)
         }
         if (!renderer.isInRenderDistance()) {
             return renderer.updateVisibility(true, false)

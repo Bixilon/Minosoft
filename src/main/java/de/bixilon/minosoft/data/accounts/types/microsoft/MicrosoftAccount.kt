@@ -11,6 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+@file:OptIn(ExperimentalTime::class)
+
 package de.bixilon.minosoft.data.accounts.types.microsoft
 
 import com.fasterxml.jackson.annotation.JacksonInject
@@ -20,7 +22,6 @@ import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.accounts.Account
@@ -38,6 +39,8 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.ConnectException
 import java.util.*
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class MicrosoftAccount(
     override val uuid: UUID,
@@ -89,7 +92,7 @@ class MicrosoftAccount(
             // already checking
             return
         }
-        if (minecraft.expires >= millis() / 1000) {
+        if (minecraft.expires >= Clock.System.now()) {
             return check(latch)
         }
         if (state == AccountStates.WORKING) {
@@ -108,7 +111,7 @@ class MicrosoftAccount(
 
     private fun refreshMinecraftToken(latch: AbstractLatch?) {
         state = AccountStates.REFRESHING
-        val time = millis() / 1000
+        val time = Clock.System.now()
         if (time >= msa.expires) {
             // token expired
             refreshMicrosoftToken(latch)
@@ -132,7 +135,7 @@ class MicrosoftAccount(
 
     private fun checkMinecraftToken(latch: AbstractLatch?) {
         state = AccountStates.CHECKING
-        val time = millis() / 1000
+        val time = Clock.System.now()
         if (time >= minecraft.expires) {
             // token expired
             refreshMinecraftToken(latch)

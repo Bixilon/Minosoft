@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.util.account.microsoft.code
 
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.URLProtocols
 import java.net.URL
+import kotlin.time.Duration.Companion.seconds
 
 data class MicrosoftDeviceCode(
     val deviceCode: String,
@@ -25,7 +27,7 @@ data class MicrosoftDeviceCode(
     val interval: Int,
     val message: String,
 ) {
-    val expires = (millis() / 1000) + expiresIn
+    val expires = now() + expiresIn.seconds
 
     init {
         check(verificationURI.protocol == URLProtocols.HTTPS.protocol) { "Insecure url: $verificationURI" }

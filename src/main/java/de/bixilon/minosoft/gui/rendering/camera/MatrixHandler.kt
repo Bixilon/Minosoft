@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -67,7 +68,7 @@ class MatrixHandler(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
-    private var dynamicFOV = FloatAverage((3 * ProtocolDefinition.TICK_TIME).milliseconds, 1.0f)
+    private var dynamicFOV = FloatAverage(3.ticks.duration, 1.0f)
 
     private fun calculateFOV(): Float {
         var fov = profile.fov

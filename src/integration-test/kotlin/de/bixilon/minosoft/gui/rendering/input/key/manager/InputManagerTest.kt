@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -23,9 +24,9 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.simulat
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import org.testng.Assert
-import org.testng.Assert.assertFalse
-import org.testng.Assert.assertTrue
+import org.testng.Assert.*
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @Test(groups = ["input"])
 class InputManagerTest {
@@ -72,14 +73,14 @@ class InputManagerTest {
 
     fun `getLastPressed but not pressed at all`() {
         val input = create()
-        assertTrue(input.getLastPressed(KeyCodes.KEY_1) < 0)
+        assertNull(input.getLastPressed(KeyCodes.KEY_1))
     }
 
     fun `getLastPressed just now`() {
         val input = create()
-        val time = millis()
+        val time = now()
         input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
-        assertTrue(input.getLastPressed(KeyCodes.KEY_1) - time < 10)
+        assertTrue(input.getLastPressed(KeyCodes.KEY_1)!! - time < 10.milliseconds)
     }
 
     fun `check char invoke`() {
@@ -93,7 +94,7 @@ class InputManagerTest {
             }
         }
         input.simulate(123)
-        Assert.assertEquals(pressed, 123)
+        assertEquals(pressed, 123)
     }
 
     fun `don't skip next char if just pushed and popped`() {
@@ -116,7 +117,7 @@ class InputManagerTest {
         input.handler.handler = null
         input.handler.handler = handler2
         input.simulate(123)
-        Assert.assertEquals(pressed, 5123)
+        assertEquals(pressed, 5123)
     }
 
     fun `don't skip next char if just pushed and popped and opened via key binding`() {
@@ -140,7 +141,7 @@ class InputManagerTest {
         input.handler.handler = null
         input.handler.handler = handler2
         input.simulate(123)
-        Assert.assertEquals(pressed, 5123)
+        assertEquals(pressed, 5123)
     }
 
     fun `check correct set of cursor mode`() {
@@ -148,8 +149,8 @@ class InputManagerTest {
 
         input.context.window.cursorMode = CursorModes.DISABLED
         input.handler.handler = InputTestUtil.Handler
-        Assert.assertEquals(input.context.window.cursorMode, CursorModes.NORMAL)
+        assertEquals(input.context.window.cursorMode, CursorModes.NORMAL)
         input.handler.handler = null
-        Assert.assertEquals(input.context.window.cursorMode, CursorModes.DISABLED)
+        assertEquals(input.context.window.cursorMode, CursorModes.DISABLED)
     }
 }

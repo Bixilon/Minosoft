@@ -18,7 +18,10 @@ import de.bixilon.kutil.avg._long.LongAverage
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.minosoft.util.KUtil
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class ExperimentalRenderStats : AbstractRenderStats {
@@ -31,11 +34,11 @@ class ExperimentalRenderStats : AbstractRenderStats {
     override val avgFrameTime = LongAverage(1.seconds)
     override val avgDrawTime = LongAverage(1.seconds)
 
-    private var lastSmoothFPSCalculationTime = 0L
+    private var lastSmoothFPSCalculationTime = KUtil.TIME_ZERO
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = millis()
-            if (time - lastSmoothFPSCalculationTime > 100) {
+            val time = now()
+            if (time - lastSmoothFPSCalculationTime > 100.milliseconds) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time
             }

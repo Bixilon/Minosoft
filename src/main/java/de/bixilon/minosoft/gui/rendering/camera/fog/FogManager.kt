@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera.fog
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
@@ -25,6 +26,9 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FogManager(
     private val context: RenderContext,
@@ -40,7 +44,7 @@ class FogManager(
 
     fun draw() {
         update()
-        if (interpolation.change >= 0L) {
+        if (interpolation.change != KUtil.TIME_ZERO) {
             interpolate()
         }
         updateShaders()
@@ -84,7 +88,7 @@ class FogManager(
     }
 
     private fun save() {
-        val time = millis()
+        val time = now()
         interpolate(time)
         interpolation.change = time
         interpolation.start = state.start
@@ -92,9 +96,9 @@ class FogManager(
         interpolation.color = state.color
     }
 
-    private fun interpolate(time: Long = millis()) {
+    private fun interpolate(time: ValueTimeMark = now()) {
         val delta = time - interpolation.change
-        val progress = delta / INTERPOLATE_DURATION.toFloat()
+        val progress = (delta / INTERPOLATE_DURATION).toFloat()
         state.start = interpolateLinear(progress, interpolation.start, options?.start ?: 0.0f)
         state.end = interpolateLinear(progress, interpolation.end, options?.end ?: 0.0f)
 
@@ -106,7 +110,7 @@ class FogManager(
         }
         state.color = color
         if (progress >= 1.0f) {
-            interpolation.change = -1L // this avoid further interpolations with the same data
+            interpolation.change = KUtil.TIME_ZERO // this avoid further interpolations with the same data
             interpolation.color = options?.color?.rgba()
         }
 
@@ -160,6 +164,6 @@ class FogManager(
 
 
     companion object {
-        private const val INTERPOLATE_DURATION = 300
+        private val INTERPOLATE_DURATION = 300.milliseconds
     }
 }

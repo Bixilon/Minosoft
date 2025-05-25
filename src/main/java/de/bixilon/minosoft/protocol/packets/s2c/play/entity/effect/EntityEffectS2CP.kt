@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -66,17 +67,10 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun PlayInByteBuffer.readStatusEffectInstance(): StatusEffectInstance {
-        val effectId = if (versionId < V_1_18_2_PRE1) {
-            readUnsignedByte()
-        } else {
-            readVarInt()
-        }
+        val effectId = if (versionId < V_1_18_2_PRE1) readUnsignedByte() else readVarInt()
         val amplifier = readUnsignedByte()
-        val duration = if (versionId < V_14W04A) {
-            readUnsignedShort()
-        } else {
-            readVarInt()
-        }
+        val duration = Ticks(if (versionId < V_14W04A) readUnsignedShort() else readVarInt())
+
         return StatusEffectInstance(session.registries.statusEffect[effectId], amplifier, duration)
     }
 

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBloc
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition

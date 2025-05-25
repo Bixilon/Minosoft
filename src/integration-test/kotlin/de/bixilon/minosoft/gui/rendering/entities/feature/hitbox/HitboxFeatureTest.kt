@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
@@ -27,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert.*
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["entities", "rendering"])
 class HitboxFeatureTest {
@@ -38,7 +41,7 @@ class HitboxFeatureTest {
         val renderer = create().create(entity)
         renderer::hitbox.forceSet(null) // remove
         renderer.entity.startInit()
-        renderer.entity.draw(0L)
+        renderer.entity.draw(now())
         renderer.renderer.context::input.forceSet(InputManager(renderer.renderer.context))
         renderer.renderer.features.hitbox.init() // register listeners
 
@@ -47,49 +50,50 @@ class HitboxFeatureTest {
 
     fun `create simple hitbox`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(0, 0.0f)
+        hitbox.update(now(), 0.0f)
         assertNotNull(hitbox.mesh)
     }
 
     fun `unload if entity is invisible`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(0, 0.0f)
+        hitbox.update(now(), 0.0f)
         hitbox.renderer.entity.isInvisible(true)
-        hitbox.update(0, 0.0f)
+        hitbox.update(now(), 0.0f)
         assertNull(hitbox.mesh)
     }
 
     fun `entity is invisible but invisibles are shown`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(0, 0.0f)
+        hitbox.update(now(), 0.0f)
         hitbox.renderer.entity.isInvisible(true)
         hitbox.renderer.renderer.profile.features.hitbox.showInvisible = true
-        hitbox.update(0, 0.0f)
+        hitbox.update(now(), 0.0f)
         assertNotNull(hitbox.mesh)
     }
 
     fun `profile disabled`() {
         val hitbox = create(RemotePlayerEntity)
         hitbox.renderer.renderer.profile.features.hitbox.enabled = false
-        hitbox.update(0, 0.0f)
+        hitbox.update(now(), 0.0f)
         assertNull(hitbox.mesh)
     }
 
     fun `don't update hitbox if unchanged`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(100, 1.0f)
+        hitbox.update(now(), 1.0f)
         val mesh = hitbox.mesh
-        hitbox.update(100, 1.0f)
+        hitbox.update(now(), 1.0f)
         assertSame(mesh, hitbox.mesh)
     }
 
     fun `update hitbox if entity moved`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(0, 0.0f)
+        val start = now()
+        hitbox.update(start, 0.0f)
         val mesh = hitbox.mesh
         hitbox.renderer.entity.physics.forceMove(Vec3d(0.5))
-        hitbox.renderer.entity.draw(1000)
-        hitbox.update(1000, 1.0f)
+        hitbox.renderer.entity.draw(start + 1.seconds)
+        hitbox.update(start + 1.seconds, 1.0f)
         assertNotSame(mesh, hitbox.mesh)
     }
 

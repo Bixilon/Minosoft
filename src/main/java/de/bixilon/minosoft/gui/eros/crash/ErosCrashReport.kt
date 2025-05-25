@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -120,7 +120,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 val crashReportFolder = RunConfiguration.HOME_DIRECTORY.resolve("crash-reports").toFile()
                 crashReportFolder.mkdirs()
 
-                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(millis())}.txt"
+                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(System.currentTimeMillis())}.txt"
 
                 val stream = FileOutputStream(crashReportPath)
 

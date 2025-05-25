@@ -20,12 +20,13 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class TextureParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : RenderParticle(session, position, velocity, data) {
     abstract val texture: Texture?
 
 
-    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: Long) {
+    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) {
         val light = light
 
         val texture = texture ?: return

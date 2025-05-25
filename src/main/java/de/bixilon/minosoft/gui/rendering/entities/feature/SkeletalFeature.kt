@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRe
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class SkeletalFeature(
     renderer: EntityRenderer<*>,
@@ -61,7 +62,7 @@ open class SkeletalFeature(
         instance.update(rotation, renderer.matrix)
     }
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         instance.transform.reset()
         updatePosition()
         instance.animation.draw(delta)

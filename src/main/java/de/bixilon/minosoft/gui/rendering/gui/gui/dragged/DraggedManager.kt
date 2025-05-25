@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
@@ -25,7 +25,8 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
+import de.bixilon.minosoft.util.KUtil
 
 class DraggedManager(
     private val guiRenderer: GUIRenderer,
@@ -49,7 +50,7 @@ class DraggedManager(
             }
             applyCursor()
         }
-    private var lastTickTime: Long = -1L
+    private var lastTickTime = KUtil.TIME_ZERO
 
     fun onScreenChange() {
         element?.element?.forceSilentApply()
@@ -65,8 +66,8 @@ class DraggedManager(
 
     override fun drawAsync() {
         val element = element ?: return
-        val time = millis()
-        val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
+        val time = now()
+        val tick = time - lastTickTime > TickUtil.INTERVAL
         if (tick) {
             lastTickTime = time
         }
@@ -75,8 +76,6 @@ class DraggedManager(
         }
         if (tick) {
             element.tick()
-
-            lastTickTime = time
         }
 
         if (!element.skipDraw) {
@@ -123,7 +122,7 @@ class DraggedManager(
 
         val mouseAction = MouseActions[change] ?: return false
 
-        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, millis()), target)
+        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, now()), target)
         return true
     }
 

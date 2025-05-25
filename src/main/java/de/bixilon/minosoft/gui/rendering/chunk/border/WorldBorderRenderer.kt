@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
@@ -36,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import kotlin.time.Duration.Companion.seconds
 
 class WorldBorderRenderer(
     override val context: RenderContext,
@@ -46,7 +48,7 @@ class WorldBorderRenderer(
     private var borderMesh: WorldBorderMesh? = null
     private val border = context.session.world.border
     private lateinit var texture: Texture
-    private var offsetReset = millis()
+    private var offsetReset = now()
     override val skipAll: Boolean
         get() = border.getDistanceTo(context.session.player.physics.position) > MAX_DISTANCE
     private var reload = false
@@ -82,11 +84,11 @@ class WorldBorderRenderer(
     private fun update() {
         if (this.borderMesh == null) return
 
-        val time = millis()
+        val time = now()
         if (offsetReset - time > ANIMATION_SPEED) {
             offsetReset = time
         }
-        val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
+        val textureOffset = ((offsetReset - time) / ANIMATION_SPEED).toFloat()
         shader.textureOffset = 1.0f - textureOffset
 
         shader.tint = calculateColor()
@@ -142,7 +144,7 @@ class WorldBorderRenderer(
         val GROWING_COLOR = "#40FF80".rgba()
         val SHRINKING_COLOR = "#FF3030".rgba()
         val STATIC_COLOR = "#20A0FF".rgba()
-        const val ANIMATION_SPEED = 2000
+        val ANIMATION_SPEED = 2.seconds
         const val MAX_DISTANCE = 100.0f
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()

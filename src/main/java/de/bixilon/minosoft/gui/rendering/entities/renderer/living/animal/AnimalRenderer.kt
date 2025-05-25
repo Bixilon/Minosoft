@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class AnimalRenderer<E : AgeableMob>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity) {
     protected abstract var model: AnimalModel<*>?
@@ -31,11 +32,11 @@ abstract class AnimalRenderer<E : AgeableMob>(renderer: EntitiesRenderer, entity
         entity.data.observe<Boolean>(AgeableMob.BABY) { unload() }
     }
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         if (model == null) {
             updateModel()
         }
-        super.update(millis, delta)
+        super.update(time, delta)
     }
 
     protected abstract fun getModel(): ResourceLocation

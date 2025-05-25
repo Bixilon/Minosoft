@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.sprite
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -36,7 +38,7 @@ class SpriteAnimator(val context: RenderContext) {
     private val animations: MutableList<TextureAnimation> = ArrayList()
     private var buffer: IntUniformBuffer? = null
     private var enabled = true
-    private var previous = TimeSource.Monotonic.markNow()
+    private var previous = KUtil.TIME_ZERO
     val size get() = animations.size
 
     fun init() {
@@ -60,7 +62,7 @@ class SpriteAnimator(val context: RenderContext) {
     }
 
     fun update() {
-        val now = TimeSource.Monotonic.markNow()
+        val now = now()
         val delta = now - previous
         update(delta)
         previous = now

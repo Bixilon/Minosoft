@@ -19,6 +19,7 @@ import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -41,8 +42,10 @@ import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Initializable
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GUIManager(
@@ -52,7 +55,7 @@ class GUIManager(
     private var orderLock = ReentrantRWLock()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val context = guiRenderer.context
-    private var lastTickTime: Long = -1L
+    private var lastTickTime = KUtil.TIME_ZERO
 
     private var order: Collection<GUIElement> = emptyList()
 
@@ -113,8 +116,8 @@ class GUIManager(
         this.order = elementOrder.reversed()
         orderLock.release()
 
-        val time = millis()
-        val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
+        val time = now()
+        val tick = time - lastTickTime > TickUtil.INTERVAL
         if (tick) {
             lastTickTime = time
         }

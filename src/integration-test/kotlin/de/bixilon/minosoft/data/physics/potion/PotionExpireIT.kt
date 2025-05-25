@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.test.IT
 import org.testng.annotations.Test
 
@@ -39,7 +40,7 @@ class PotionExpireIT {
     fun expiredSpeedWalk1() {
         val player = createPlayer(session)
         player.forceTeleport(Vec3d(-10.0, 1.0, -11.0))
-        player.applySpeed(1, 10)
+        player.applySpeed(1, 10.ticks)
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(20)
         player.assertPosition(-10.0, 1.0, -5.79171533780526)
@@ -50,7 +51,7 @@ class PotionExpireIT {
     fun expiredSpeedWalk5() {
         val player = createPlayer(session)
         player.forceTeleport(Vec3d(-10.0, 1.0, -11.0))
-        player.applySpeed(5, 10)
+        player.applySpeed(5, 10.ticks)
         player.input = PlayerMovementInput(forward = true)
         player.runTicks(20)
         player.assertPosition(-10.0, 1.0, -2.891022199200774)

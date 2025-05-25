@@ -64,7 +64,7 @@ interface NativeShader {
     }
 
     operator fun set(uniformName: String, data: Any?) {
-        data ?: return
+        if (data == null) return
         when (data) {
             is Array<*> -> setArray(uniformName, data)
             is IntArray -> setIntArray(uniformName, data)
@@ -83,6 +83,12 @@ interface NativeShader {
             else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
         }
     }
+
+    operator fun set(uniformName: String, data: Boolean) = setBoolean(uniformName, data)
+    operator fun set(uniformName: String, data: Int) = setInt(uniformName, data)
+    operator fun set(uniformName: String, data: Float) = setFloat(uniformName, data)
+    operator fun set(uniformName: String, data: RGBColor) = setRGBColor(uniformName, data)
+    operator fun set(uniformName: String, data: RGBAColor) = setRGBAColor(uniformName, data)
 
     companion object {
         val DEFAULT_DEFINES: Map<String, (context: RenderContext) -> Any?> = mapOf(

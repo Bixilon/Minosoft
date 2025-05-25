@@ -55,7 +55,7 @@ abstract class AbstractRidingTest<T : Entity> {
     }
 
     protected fun tick(entity: Entity) {
-        entity.forceTick(0L)
+        entity.forceTick()
         val passengers = entity.attachment.passengers.toSet()
 
         for (passenger in passengers) {

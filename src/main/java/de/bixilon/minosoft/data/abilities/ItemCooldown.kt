@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.data.abilities
 
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import kotlin.time.ComparableTimeMark
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 data class ItemCooldown(
-    val start: ComparableTimeMark,
-    val ticks: Int,
+    val start: ValueTimeMark,
+    val ticks: Ticks,
 ) {
-    val end = start + (TickUtil.INTERVAL * ticks)
+    val end = start + ticks.duration
 
     val ended: Boolean
         get() = end.hasPassedNow()

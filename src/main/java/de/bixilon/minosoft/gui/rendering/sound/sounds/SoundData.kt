@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,12 +24,14 @@ import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.ByteBuffer
 import java.nio.ShortBuffer
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class SoundData(
     val vorbis: Long,
     val format: Int,
     val buffer: ByteBuffer,
-    val length: Long,
+    val length: Duration,
     val channels: Int,
     val sampleRate: Int,
     val samplesLength: Int,
@@ -80,7 +82,7 @@ class SoundData(
 
             val samplesLength = stb_vorbis_stream_length_in_samples(vorbis)
             val sampleSeconds = stb_vorbis_stream_length_in_seconds(vorbis)
-            val length = (sampleSeconds * 1000).toLong()
+            val length = sampleSeconds.toDouble().seconds
 
             return SoundData(
                 vorbis = vorbis,
