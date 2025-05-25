@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,7 +42,7 @@ object Jackson {
                 .configure(KotlinFeature.NullToEmptyMap, false)
                 .configure(KotlinFeature.NullIsSameAsDefault, false)
                 .configure(KotlinFeature.SingletonSupport, false)
-                .configure(KotlinFeature.StrictNullChecks, false)
+                .configure(KotlinFeature.NewStrictNullChecks, false)
                 .build()
         )
         .registerModule(JavaTimeModule())
@@ -55,6 +55,7 @@ object Jackson {
         .registerModule(Vec2iSerializer)
         .registerModule(Vec3Serializer)
         .registerModule(Vec4Serializer)
+        .registerModule(InstantSerializer)
         .setDefaultMergeable(true)
         .apply {
             propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
