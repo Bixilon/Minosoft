@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import kotlin.math.abs
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 
 open class FlashingBlockFeature(
@@ -35,8 +36,8 @@ open class FlashingBlockFeature(
     private var progress = 0.0f
 
 
-    override fun update(millis: Long, delta: Float) {
-        super.update(millis, delta)
+    override fun update(time: ValueTimeMark, delta: Float) {
+        super.update(time, delta)
         updateFlashing(delta)
     }
 

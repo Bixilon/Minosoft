@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -27,10 +28,12 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration
 
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
-    var messageExpireTime: Long,
+    var messageExpireTime: Duration,
     val properties: TextRenderProperties = TextRenderProperties(),
 ) : Element(guiRenderer), AbstractLayout<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
@@ -102,7 +105,7 @@ open class TextFlowElement(
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
         val maxLines = (maxSize.y / (properties.lineHeight + properties.lineSpacing)).toInt()
-        val currentTime = millis()
+        val currentTime = now()
         var textSize = Vec2.EMPTY
         val active = this.active
 
@@ -171,7 +174,7 @@ open class TextFlowElement(
         if (active) {
             return
         }
-        val currentTime = millis()
+        val currentTime = now()
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
@@ -204,7 +207,7 @@ open class TextFlowElement(
 
     private data class TextFlowTextElement(
         val text: ChatComponent,
-        val addTime: Long = millis(),
+        val addTime: ValueTimeMark = now(),
     )
 
     private data class TextFlowLineElement(

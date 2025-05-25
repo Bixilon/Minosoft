@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.primitive.IntUtil.thousands
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.SelectedProfiles
@@ -437,7 +438,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "§cunknown\nPlease force a specific version!" },
             "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.status?.serverBrand },
             "minosoft:server_info.players_online".toResourceLocation() to { it.ping.status?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
-            "minosoft:server_info.ping".toResourceLocation() to { it.ping.pong?.latency?.formatNanos() },
+            "minosoft:server_info.ping".toResourceLocation() to { it.ping.pong?.latency?.format() },
 
 
             TranslatableComponents.GENERAL_EMPTY to { " " },

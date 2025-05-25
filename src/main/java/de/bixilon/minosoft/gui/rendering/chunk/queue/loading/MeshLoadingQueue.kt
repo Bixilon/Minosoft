@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -41,7 +42,7 @@ class MeshLoadingQueue(
         }
 
         var count = 0
-        val start = TimeSource.Monotonic.markNow()
+        val start = now()
         val maxTime = renderer.maxBusyTime
 
         var meshes: Int2ObjectOpenHashMap<ChunkMeshes> = unsafeNull()
@@ -51,7 +52,7 @@ class MeshLoadingQueue(
         var index = 0
         while (true) {
             if (this.meshes.isEmpty()) break
-            if (index++ % BATCH_SIZE == 0 && TimeSource.Monotonic.markNow() - start >= maxTime) break
+            if (index++ % BATCH_SIZE == 0 && now() - start >= maxTime) break
 
             val mesh = this.meshes.removeAt(0)
             this.positions -= QueuePosition(mesh)

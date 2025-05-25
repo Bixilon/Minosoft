@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,19 +20,21 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W03A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import kotlin.time.Duration
 
 // TODO: respect minimum
-class TimeParser(val minimum: Int = 0) : ArgumentParser<Int> {
+class TimeParser(val minimum: Duration = Duration.ZERO) : ArgumentParser<Duration> {
     override val examples: List<Any> = listOf(2400, "3d", "10s")
 
-    override fun parse(reader: CommandReader): Int {
+    override fun parse(reader: CommandReader): Duration {
         reader.readResult { reader.readTime() }.let { return it.result }
     }
 
-    fun CommandReader.readTime(): Int {
+    fun CommandReader.readTime(): Duration {
         val time = FloatParser.DEFAULT.parse(this)
 
         val unit: TimeUnit
@@ -43,7 +45,7 @@ class TimeParser(val minimum: Int = 0) : ArgumentParser<Int> {
         } catch (error: IllegalArgumentException) {
             throw InvalidTimeUnitError(this, this.pointer, peek)
         }
-        return (time * unit.multiplier).toInt()
+        return unit.convert(time)
     }
 
     override fun getSuggestions(reader: CommandReader): List<Suggestion> {
@@ -66,7 +68,7 @@ class TimeParser(val minimum: Int = 0) : ArgumentParser<Int> {
             if (buffer.versionId < V_23W03A) {
                 return TimeParser()
             }
-            return TimeParser(buffer.readInt())
+            return TimeParser(buffer.readInt().ticks.duration)
         }
     }
 }

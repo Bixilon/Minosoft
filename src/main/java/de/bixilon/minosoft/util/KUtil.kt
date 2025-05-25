@@ -39,6 +39,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -71,10 +72,14 @@ import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
 import java.io.FileOutputStream
 import java.security.SecureRandom
+import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 import javax.net.ssl.SSLContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 
 object KUtil {
@@ -340,6 +345,8 @@ object KUtil {
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
 
+    @Deprecated("kutil 1.27.2")
+    val TIME_ZERO = now() // TODO
 
     @Deprecated("kutil 1.27.2")
     operator fun Duration.rem(rem: Duration): Duration {
@@ -347,4 +354,11 @@ object KUtil {
 
         return (inWholeNanoseconds % rem.inWholeNanoseconds).nanoseconds
     }
+
+    @Deprecated("kutil 1.27.2")
+    fun SimpleDateFormat.format1(instant: Instant) = format(instant.toEpochMilli())
+
+    @OptIn(ExperimentalTime::class)
+    @Deprecated("kutil 1.27.2")
+    fun SimpleDateFormat.format1(instant: kotlin.time.Instant) = format(instant.toEpochMilliseconds())
 }

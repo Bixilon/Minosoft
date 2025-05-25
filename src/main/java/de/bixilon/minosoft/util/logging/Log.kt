@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.kutil.ansi.ANSI.RESET
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -24,16 +24,19 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.format1
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.concurrent.LinkedBlockingQueue
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 
 object Log {
     var ASYNC_LOGGING = true
-    private val MINOSOFT_START_TIME = millis()
+    private val MINOSOFT_START_TIME = now()
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     private val QUEUE = LinkedBlockingQueue<QueuedMessage>()
     private val SYSTEM_ERR_STREAM = System.err
@@ -58,42 +61,25 @@ object Log {
         ShutdownManager.addHook { ASYNC_LOGGING = false; catchAll { await() } }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun QueuedMessage.print() {
         try {
             val message = BaseComponent()
             val color = this.type.colorMap[this.level] ?: this.type.defaultColor
             message += if (RunConfiguration.LOG_RELATIVE_TIME) {
-                TextComponent("[${millis() - MINOSOFT_START_TIME}] ")
+                TextComponent("[${now() - MINOSOFT_START_TIME}] ")
             } else {
-                TextComponent("[${TIME_FORMAT.format(this.time)}] ")
+                TextComponent("[${TIME_FORMAT.format1(this.time)}] ")
             }
             message += TextComponent("[${this.thread.name}] ")
-            message += TextComponent("[${this.type}] ").let {
-                if (RunConfiguration.LOG_COLOR_TYPE) {
-                    it.color(color)
-                } else {
-                    it
-                }
-            }
-            message += TextComponent("[${this.level}] ").let {
-                if (RunConfiguration.LOG_COLOR_LEVEL) {
-                    it.color(this.level.levelColors)
-                } else {
-                    it
-                }
-            }
-            this.prefix?.let {
-                message += it
-            }
+            message += TextComponent("[${this.type}] ").let { if (RunConfiguration.LOG_COLOR_TYPE) it.color(color) else it }
+            message += TextComponent("[${this.level}] ").let { if (RunConfiguration.LOG_COLOR_LEVEL) it.color(this.level.levelColors) else it }
+            this.prefix?.let { message += it }
             if (RunConfiguration.LOG_COLOR_MESSAGE) {
                 this.message.setFallbackColor(color)
             }
 
-            val stream = if (this.level.error) {
-                SYSTEM_ERR_STREAM
-            } else {
-                SYSTEM_OUT_STREAM
-            }
+            val stream = if (this.level.error) SYSTEM_ERR_STREAM else SYSTEM_OUT_STREAM
 
             val prefix = message.ansi.removeSuffix(RESET) // reset suffix
             for (line in this.message.ansi.lineSequence()) {
@@ -102,7 +88,7 @@ object Log {
             stream.flush()
 
         } catch (exception: Throwable) {
-            SYSTEM_ERR_STREAM.println("Can not send log message $this!")
+            SYSTEM_ERR_STREAM.println("Can not send log message $this: $exception!")
         }
     }
 
@@ -134,11 +120,12 @@ object Log {
     }
 
     @JvmStatic
+    @OptIn(ExperimentalTime::class)
     fun logInternal(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, message: Any?, vararg formatting: Any) {
         val formatted = formatMessage(message, *formatting)
         if (formatted.length <= 0) return
 
-        QueuedMessage(message = formatted, time = millis(), type = type, level = level, thread = Thread.currentThread(), prefix = prefix).queue()
+        QueuedMessage(message = formatted, time = Clock.System.now(), type = type, level = level, thread = Thread.currentThread(), prefix = prefix).queue()
     }
 
     @JvmStatic
@@ -158,7 +145,6 @@ object Log {
         if (skipLogging(type, level)) return
         logInternal(type, level, null, message)
     }
-
 
     inline fun log(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, builder: () -> Any?, vararg formatting: Any) {
         if (skipLogging(type, level)) return

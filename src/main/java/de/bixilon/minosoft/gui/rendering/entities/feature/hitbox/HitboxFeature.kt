@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.Interpolator
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -27,7 +28,10 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(renderer) {
     private val manager = renderer.renderer.features.hitbox
@@ -39,7 +43,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
     private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorInterpolation::interpolateRGBA)
     private var velocity = Interpolator(Vec3.EMPTY, Vec3Util::interpolateLinear)
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         if (!manager.enabled) return unload()
         if (!_enabled) return unload()
         if (renderer.entity.isInvisible(renderer.renderer.session.camera.entity) && !manager.profile.showInvisible) return unload()
@@ -86,7 +90,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
         if (velocity.delta >= 1.0f) {
             this.velocity.push(Vec3(renderer.entity.physics.velocity))
         }
-        this.velocity.add(delta, ProtocolDefinition.TICK_TIME / 1000.0f)
+        this.velocity.add(delta, (TickUtil.TIME_PER_TICK / 1.seconds).toFloat())
 
 
         return !this.color.identical || !this.velocity.identical

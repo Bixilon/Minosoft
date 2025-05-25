@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
@@ -53,7 +54,7 @@ class Camera(
             error.printStackTrace()
         }
         if (entity is LocalPlayerEntity) {
-            entity._draw(millis())
+            entity._draw(now()) // TODO: force draw if entity is camera entity?
         }
         view.draw()
         matrix.draw()

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,12 +15,16 @@ package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.util.KUtil
 import org.lwjgl.openal.AL10.*
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration
 
 class SoundSource {
-    private var playTime = -1L
+    private var playTime: ValueTimeMark = now()
     private val source: Int = alGenSources()
 
     var loop: Boolean = false
@@ -78,10 +82,10 @@ class SoundSource {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = !isPlaying || millis() - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
+        get() = !isPlaying || now() - playTime > (sound?.data?.length ?: Duration.ZERO)    // ToDo: Allow pause
 
     fun play() {
-        playTime = millis()
+        playTime = now()
         alSourcePlay(source)
     }
 
@@ -90,7 +94,7 @@ class SoundSource {
     }
 
     fun stop() {
-        playTime = -1L
+        playTime = KUtil.TIME_ZERO
         alSourceStop(source)
     }
 

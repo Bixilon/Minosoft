@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
@@ -33,6 +33,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Updates the lightmap similar to vanilla
@@ -53,7 +55,7 @@ class NormalLightmapUpdater(
     override fun update(force: Boolean, buffer: LightmapBuffer) {
         val dimension = session.world.dimension
         val skylight = dimension.skyLight && dimension.effects.daylightCycle
-        val millis = millis()
+        val time = now()
 
         if (!force || !this.force) {
             if (!skylight) {
@@ -62,15 +64,15 @@ class NormalLightmapUpdater(
             }
         }
         if (skylight) {
-            updateBlockSky(dimension, buffer, millis)
+            updateBlockSky(dimension, buffer, time)
         } else {
-            updateBlock(dimension, buffer, millis)
+            updateBlock(dimension, buffer, time)
         }
 
         this.force = false
     }
 
-    private fun updateBlock(dimension: DimensionProperties, buffer: LightmapBuffer, millis: Long) {
+    private fun updateBlock(dimension: DimensionProperties, buffer: LightmapBuffer, millis: ValueTimeMark) {
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
@@ -81,7 +83,7 @@ class NormalLightmapUpdater(
         }
     }
 
-    private fun updateBlockSky(dimension: DimensionProperties, buffer: LightmapBuffer, millis: Long) {
+    private fun updateBlockSky(dimension: DimensionProperties, buffer: LightmapBuffer, millis: ValueTimeMark) {
         val time = session.world.time
         val weather = session.world.weather
 
@@ -208,18 +210,18 @@ class NormalLightmapUpdater(
         return interpolateLinear(gamma, color, color modify { 1.0f - (1.0f - it).pow(4) })
     }
 
-    private fun getNightVisionStrength(millis: Long): Float {
+    private fun getNightVisionStrength(time: ValueTimeMark): Float {
         val nightVision = session.player.effects[VisionEffect.NightVision] ?: return 0.0f
         val end = nightVision.end
-        if (millis > end) {
+        if (time > end) {
             return 0.0f
         }
-        val remaining = end - millis
-        if (remaining > 8000) {
+        val remaining = end - time
+        if (remaining > 8.seconds) {
             return 1.0f
         }
 
-        return 0.3f + sin(remaining / 8000.0f * PIf * 0.2f) * 0.7f
+        return 0.3f + sin((remaining / 8.seconds).toFloat() * PIf * 0.2f) * 0.7f
     }
 
     private fun Vec3.brighten(value: Float): Vec3 {

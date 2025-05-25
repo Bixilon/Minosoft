@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,6 +20,7 @@ import de.bixilon.kutil.random.RandomUtil.nextDouble
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
@@ -35,6 +36,7 @@ import de.bixilon.minosoft.util.KUtil.startInit
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 import kotlin.math.cbrt
+import kotlin.time.Duration.Companion.seconds
 
 object BenchmarkCommand : SessionCommand {
     override var node = LiteralNode("benchmark").addChild(

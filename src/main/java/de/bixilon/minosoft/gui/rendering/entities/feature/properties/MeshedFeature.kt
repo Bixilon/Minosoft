@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.properties
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class MeshedFeature<M : Mesh>(
     renderer: EntityRenderer<*>,
@@ -27,7 +28,7 @@ abstract class MeshedFeature<M : Mesh>(
             super.enabled = value
         }
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         if (!super.enabled) return unload()
     }
 

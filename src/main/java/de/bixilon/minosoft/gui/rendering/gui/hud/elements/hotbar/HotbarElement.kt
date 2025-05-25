@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,9 +39,11 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
+import kotlin.time.Duration.Companion.milliseconds
 
 class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     val core = HotbarCoreElement(guiRenderer)
@@ -49,10 +51,10 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     val offhand = HotbarOffhandElement(guiRenderer)
     private var renderOffhand = false
 
-    val hoverText = FadingTextElement(guiRenderer, text = "", FadingTimes(300, 3000, 500), background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
+    val hoverText = FadingTextElement(guiRenderer, text = "", FadingTimes(300.milliseconds, 3000.milliseconds, 500.milliseconds), background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
     private var hoverTextSize: Vec2? = null
 
-    private val itemText = FadingTextElement(guiRenderer, text = "", FadingTimes(300, 1500, 500), background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
+    private val itemText = FadingTextElement(guiRenderer, text = "", FadingTimes(300.milliseconds, 1500.milliseconds, 500.milliseconds), background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
     private var itemTextSize: Vec2? = null

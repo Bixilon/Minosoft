@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
@@ -33,13 +34,13 @@ class MeshUnloadingQueue(
             return
         }
 
-        val start = TimeSource.Monotonic.markNow()
+        val start = now()
         val maxTime = renderer.maxBusyTime
 
         var index = 0
         while (true) {
             if (meshes.isEmpty()) break
-            if (index++ % MeshLoadingQueue.BATCH_SIZE == 0 && TimeSource.Monotonic.markNow() - start >= maxTime) break
+            if (index++ % MeshLoadingQueue.BATCH_SIZE == 0 && now() - start >= maxTime) break
 
             val mesh = meshes.removeAt(0)
             this.positions -= QueuePosition(mesh)

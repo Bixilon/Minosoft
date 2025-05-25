@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,16 +18,19 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.abs
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
+import de.bixilon.minosoft.util.KUtil
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration
 
 class SingleClickCounter(
-    val maxDelay: Int = ClickCounter.MAX_DELAY,
-    val minDelayBetween: Int = ClickCounter.MIN_DELAY_BETWEEN,
+    val maxDelay: Duration = ClickCounter.MAX_DELAY,
+    val minDelayBetween: Duration = ClickCounter.MIN_DELAY_BETWEEN,
 ) : ClickCounter {
     private var lastPosition = Vec2(-1, -1)
-    private var lastChange = -1L
-    private var lastDoubleChange = -1L
+    private var lastChange = KUtil.TIME_ZERO
+    private var lastDoubleChange = KUtil.TIME_ZERO
 
-    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: Long): Int {
+    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: ValueTimeMark): Int {
         val lastPosition = lastPosition
         this.lastPosition = position
         val lastMousePress = lastChange

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,6 +30,8 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.test.IT
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
+import java.util.*
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 object InputTestUtil {
     private val profile = BindingsManager::class.java.getFieldOrNull("profile")!!
@@ -56,7 +58,7 @@ object InputTestUtil {
 
         manager::bindings.forceSet(bindings)
         manager::handler.forceSet(handler)
-        this.times.forceSet(manager, Object2LongOpenHashMap<KeyCodes>().apply { defaultReturnValue(-1L) })
+        this.times.forceSet(manager, EnumMap<KeyCodes, ValueTimeMark>(KeyCodes::class.java))
         keysPressed[manager] = KeyCodes.set()
 
         return manager

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,17 +34,20 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.format1
 import java.io.File
 import java.nio.file.Path
 import java.text.SimpleDateFormat
+import java.time.Instant
+import kotlin.time.Duration.Companion.seconds
 
 
 class ScreenshotTaker(
     private val context: RenderContext,
 ) {
 
-    private fun getDestinationFolder(base: Path, time: Long): File {
-        val timestamp = DATE_FORMATTER.format(time)
+    private fun getDestinationFolder(base: Path, time: Instant): File {
+        val timestamp = DATE_FORMATTER.format1(time)
         var filename = "$timestamp.png"
         var i = 1
 
@@ -90,7 +93,7 @@ class ScreenshotTaker(
         return component
     }
 
-    private fun store(buffer: TextureBuffer, base: Path, time: Long) {
+    private fun store(buffer: TextureBuffer, base: Path, time: Instant) {
         try {
             val file = getDestinationFolder(base, time)
             TextureUtil.dump(file, buffer, false, true)
@@ -108,7 +111,7 @@ class ScreenshotTaker(
             val buffer = context.system.readPixels(Vec2i.EMPTY_INSTANCE, size)
 
             val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.session.connection.identifier)
-            val time = millis()
+            val time = Instant.now()
             DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.HIGHER) { store(buffer, path, time) }
         } catch (exception: Exception) {
             exception.fail()

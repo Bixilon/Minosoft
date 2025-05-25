@@ -74,7 +74,8 @@ class SignatureKeyManagement(
             private = key.pair.private,
             public = key.pair.public,
         )
-        registerRefresh(maxOf((key.refreshedAfter.toEpochMilli() - millis()).milliseconds, 100.milliseconds))
+        val refreshInterval = maxOf((key.refreshedAfter.toEpochMilli() - System.currentTimeMillis()).milliseconds, 100.milliseconds) // TODO: kotlin instant
+        registerRefresh(refreshInterval)
         sendSession()
     }
 

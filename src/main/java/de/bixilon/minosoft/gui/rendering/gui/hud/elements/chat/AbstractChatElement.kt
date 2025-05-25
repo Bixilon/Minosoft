@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,11 +23,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.Initializable
+import kotlin.time.Duration.Companion.seconds
 
 abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Initializable, Drawable, AbstractLayout<Element> {
     protected val session = context.session
     protected val profile = session.profiles.gui
-    protected val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@AbstractChatElement }
+    protected val messages = TextFlowElement(guiRenderer, 20.seconds).apply { parent = this@AbstractChatElement }
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.data.world.border.area
 
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.world.border.WorldBorderState
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 interface BorderArea : Tickable {
     val radius: Double
@@ -23,5 +25,5 @@ interface BorderArea : Tickable {
     val state: WorldBorderState
 
 
-    fun radius(time: Long = millis()): Double = radius
+    fun radius(time: ValueTimeMark = now()): Double = radius
 }

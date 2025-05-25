@@ -37,6 +37,7 @@ import de.bixilon.minosoft.physics.ItemUsing
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class LocalPlayerEntity(
     account: Account,
@@ -98,9 +99,9 @@ class LocalPlayerEntity(
         super.tick()
     }
 
-    override fun draw(time: Long) = Unit
+    override fun draw(time: ValueTimeMark) = Unit
 
-    fun _draw(time: Long) {
+    fun _draw(time: ValueTimeMark) {
         super.draw(time)
     }
 

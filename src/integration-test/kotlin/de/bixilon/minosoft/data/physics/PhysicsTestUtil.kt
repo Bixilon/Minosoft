@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.FloatUtil
 import de.bixilon.kutil.primitive.FloatUtil.matches
 import de.bixilon.kutil.reflection.ReflectionUtil.field
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.camera.SessionCamera
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -32,10 +33,13 @@ import de.bixilon.minosoft.data.registries.effects.attributes.container.Attribut
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.KUtil.matches
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert
 import java.util.*
+import kotlin.time.Duration
 
 object PhysicsTestUtil {
     const val MATCH_EXACTLY = true
@@ -62,13 +66,13 @@ object PhysicsTestUtil {
         this.attributes.add(type, AttributeModifier(null, UUID.randomUUID(), amount * (amplifier + 1), operation))
     }
 
-    fun LocalPlayerEntity.applySpeed(level: Int, duration: Int = 10000) {
+    fun LocalPlayerEntity.applySpeed(level: Int, duration: Ticks = 10000.ticks) {
         this.effects += StatusEffectInstance(MovementEffect.Speed, level, duration)
         addModifier(MinecraftAttributes.MOVEMENT_SPEED, 0.20000000298023224, level)
     }
 
     fun LocalPlayerEntity.applySlowness(level: Int) {
-        this.effects += StatusEffectInstance(MovementEffect.Slowness, level, 10000)
+        this.effects += StatusEffectInstance(MovementEffect.Slowness, level, 10000.ticks)
         addModifier(MinecraftAttributes.MOVEMENT_SPEED, -0.15000000596046448, level)
     }
 
@@ -119,8 +123,9 @@ object PhysicsTestUtil {
     }
 
     fun Entity.runTicks(count: Int) {
+        val time = now()
         for (tick in 0 until count) {
-            this.forceTick(0L)
+            this.forceTick(time)
         }
     }
 

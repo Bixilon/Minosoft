@@ -15,13 +15,18 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
+import de.bixilon.minosoft.util.KUtil
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class AnimationManager(val instance: SkeletalInstance) {
     private val playing: MutableMap<String, AbstractAnimation> = mutableMapOf()
     private val lock = Lock.lock()
-    private var lastDraw = -1L
+    private var lastDraw = KUtil.TIME_ZERO
 
 
     fun play(animation: AbstractAnimation) {
@@ -46,10 +51,10 @@ class AnimationManager(val instance: SkeletalInstance) {
     }
 
 
-    fun draw(millis: Long = millis()) {
-        val delta = if (lastDraw < 0) 0L else millis - lastDraw
+    fun draw(millis: ValueTimeMark = now()) {
+        val delta = if (lastDraw == KUtil.TIME_ZERO) Duration.ZERO else millis - lastDraw
         this.lastDraw = millis
-        draw(delta / 1000.0f)
+        draw((delta / 1000.milliseconds).toFloat())
     }
 
     fun reset() {

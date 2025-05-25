@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.Initializable
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HUDManager(
@@ -48,7 +49,7 @@ class HUDManager(
     val context = guiRenderer.context
     private val hudElements: LockMap<ResourceLocation, HUDElement> = lockMapOf()
 
-    override var lastTickTime = 0L
+    override var lastTickTime = KUtil.TIME_ZERO
 
     var enabled: Boolean = true
 

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
@@ -37,7 +37,6 @@ class EntitiesRenderer(
     override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     val profile = session.profiles.entity
-    val visibilityGraph = context.camera.occlusion
     val features = EntityRenderFeatures(this)
     val renderers = EntityRendererManager(this)
     val visibility = VisibilityManager(this)
@@ -47,8 +46,8 @@ class EntitiesRenderer(
     private var reset = false
 
     override fun registerLayers() {
-        layers.register(EntityLayer.Opaque, null, { visibility.opaque.draw() }) { visibility.opaque.size <= 0 }
-        layers.register(EntityLayer.Translucent, null, { visibility.translucent.draw() }) { visibility.translucent.size <= 0 }
+        layers.register(EntityLayer.Opaque, null, { visibility.opaque.draw() }) { visibility.opaque.isEmpty() }
+        layers.register(EntityLayer.Translucent, null, { visibility.translucent.draw() }) { visibility.translucent.isEmpty() }
     }
 
     override fun prePrepareDraw() {
@@ -57,14 +56,14 @@ class EntitiesRenderer(
 
     override fun prepareDrawAsync() {
         this.features.update()
-        val millis = millis()
+        val time = now()
         this.visibility.reset()
         renderers.iterate {
             try {
                 if (reset) it.reset()
-                visibility.update(it, millis)
+                visibility.update(it, time)
                 if (!it.visible) return@iterate
-                it.update(millis)
+                it.update(time)
                 it.prepare()
                 visibility.collect(it)
             } catch (error: Throwable) {

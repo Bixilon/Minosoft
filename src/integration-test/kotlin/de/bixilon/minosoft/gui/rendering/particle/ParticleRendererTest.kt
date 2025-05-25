@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,6 +33,7 @@ import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.annotations.Test
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 @Test(groups = ["particle"])
 class ParticleRendererTest {
@@ -134,11 +135,11 @@ class ParticleRendererTest {
             maxAge = 10
         }
 
-        override fun tryTick(time: Long) {
+        override fun tryTick(time: ValueTimeMark) {
             tryTicks++
         }
 
-        override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: Long) {
+        override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) {
             vertices++
         }
 

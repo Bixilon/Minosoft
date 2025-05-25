@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+@file:OptIn(ExperimentalTime::class)
+
 package de.bixilon.minosoft.util.account.microsoft
 
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftTokens
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 class AuthenticationResponse(
     val tokenType: TokenTypes,
@@ -24,7 +28,7 @@ class AuthenticationResponse(
     val idToken: String?,
     val refreshToken: String,
 ) {
-    val expires: Long = (millis() / 1000L) + expiresIn
+    val expires = Clock.System.now() + expiresIn.seconds
     val scope = scope.split(' ')
 
     fun saveTokens(): MicrosoftTokens {

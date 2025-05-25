@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null), InvisibleFeature {
     private var delta = 0.0f
@@ -40,13 +41,13 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         renderer.entity::customName.observe(this) { delta = 0.0f }
     }
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         this.delta += delta
         if (this.delta >= UPDATE_INTERVAL) {
             updateName()
             this.delta = 0.0f
         }
-        super.update(millis, delta)
+        super.update(time, delta)
     }
 
     private fun updateName() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ class NetworkPipeline(private val client: NettyClient) : ChannelInitializer<Sock
     override fun initChannel(channel: SocketChannel) {
         val pipeline = channel.pipeline()
 
-        pipeline.addLast("timeout", ReadTimeoutHandler(ProtocolDefinition.SOCKET_TIMEOUT / 1000))
+        pipeline.addLast("timeout", ReadTimeoutHandler(ProtocolDefinition.SOCKET_TIMEOUT.inWholeSeconds.toInt()))
 
 
         pipeline.addLast(LengthDecoder.NAME, LengthDecoder(maxLength))

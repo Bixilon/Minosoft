@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,15 +19,17 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration.Companion.milliseconds
 
 interface KeyActionFilter {
 
-    fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long)
+    fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark)
 
 
     object Press : KeyActionFilter {
 
-        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
+        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (!pressed || code !in codes) {
                 filter.satisfied = false
                 return
@@ -39,7 +41,7 @@ interface KeyActionFilter {
 
     object Release : KeyActionFilter {
 
-        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
+        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (pressed || code !in codes) {
                 filter.satisfied = false
                 return
@@ -52,7 +54,7 @@ interface KeyActionFilter {
 
     object Change : KeyActionFilter {
 
-        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
+        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (code in codes) return
 
             filter.satisfied = false
@@ -61,7 +63,7 @@ interface KeyActionFilter {
 
     object Modifier : KeyActionFilter {
 
-        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
+        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (!pressed) {
                 filter.satisfied = false
                 return
@@ -75,7 +77,7 @@ interface KeyActionFilter {
 
     object Sticky : KeyActionFilter {
 
-        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
+        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (!pressed) {
                 // sticky keys are invoked on press and not on release
                 filter.satisfied = false
@@ -93,11 +95,11 @@ interface KeyActionFilter {
 
 
     object DoublePress : KeyActionFilter {
-        const val PRESS_MAX_DELAY = 300
-        const val DELAY_BETWEEN_PRESSED = 500
+        val PRESS_MAX_DELAY = 300.milliseconds
+        val DELAY_BETWEEN_PRESSED = 500.milliseconds
 
 
-        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
+        override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (!pressed) {
                 filter.satisfied = false
                 return
@@ -107,16 +109,16 @@ interface KeyActionFilter {
                 return
             }
             val previous = input.getLastPressed(code)
-            if (previous < 0L) {
+            if (previous == null) {
                 filter.satisfied = false
                 return
             }
 
-            if (millis - previous > PRESS_MAX_DELAY) {
+            if (time - previous > PRESS_MAX_DELAY) {
                 filter.satisfied = false
                 return
             }
-            if (millis - state.lastChange <= DELAY_BETWEEN_PRESSED) {
+            if (time - state.lastChange <= DELAY_BETWEEN_PRESSED) {
                 filter.satisfied = false
                 return
             }

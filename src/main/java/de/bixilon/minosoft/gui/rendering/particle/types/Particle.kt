@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.particle.types
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
@@ -31,10 +31,13 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import java.util.*
 import kotlin.math.abs
 import kotlin.reflect.full.companionObjectInstance
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class Particle(
     protected val session: PlaySession,
@@ -51,7 +54,7 @@ abstract class Particle(
     var chunkPosition = position.blockPosition.chunkPosition
         private set
     protected val random = Random()
-    private var lastTickTime = -1L
+    private var lastTickTime = KUtil.TIME_ZERO
 
     private var chunk: Chunk? = null
     private var chunkRevision = -1
@@ -66,7 +69,7 @@ abstract class Particle(
 
     // moving
     val cameraPosition: Vec3d
-        get() = getCameraPosition(millis())
+        get() = getCameraPosition(now())
 
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position
@@ -122,8 +125,8 @@ abstract class Particle(
         spacing = DEFAULT_SPACING
     }
 
-    fun getCameraPosition(time: Long): Vec3d {
-        return interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+    fun getCameraPosition(time: ValueTimeMark): Vec3d {
+        return interpolateLinear((time - lastTickTime) / TickUtil.TIME_PER_TICK, previousPosition, position)
     }
 
     open fun forceMove(delta: Vec3d) {
@@ -180,18 +183,16 @@ abstract class Particle(
         forceMove(velocity)
     }
 
-    open fun tryTick(time: Long) {
+    open fun tryTick(time: ValueTimeMark) {
         if (dead) {
             return
         }
 
-        if (lastTickTime == -1L) {
+        if (lastTickTime == KUtil.TIME_ZERO) {
             lastTickTime = time
             return
         }
-        if (time - lastTickTime < ProtocolDefinition.TICK_TIME) {
-            return
-        }
+        if (time - lastTickTime < TickUtil.INTERVAL) return
         tick()
         chunkPosition = position.blockPosition.chunkPosition
 
@@ -236,7 +237,7 @@ abstract class Particle(
         }
     }
 
-    abstract fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: Long)
+    abstract fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark)
 
     companion object {
         private const val MAGIC_VELOCITY_CONSTANT = 0.4

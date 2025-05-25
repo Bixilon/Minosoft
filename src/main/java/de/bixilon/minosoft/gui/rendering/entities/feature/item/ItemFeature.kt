@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
 import java.util.*
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class ItemFeature(
     renderer: EntityRenderer<*>,
@@ -50,7 +51,7 @@ open class ItemFeature(
 
     override val layer get() = EntityLayer.Translucent // TODO
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         if (!_enabled) return unload()
         updateDistance()
         if (this.mesh == null) {

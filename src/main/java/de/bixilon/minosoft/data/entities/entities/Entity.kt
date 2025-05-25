@@ -23,7 +23,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRenderInfo
@@ -42,11 +42,12 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
+import de.bixilon.minosoft.util.KUtil
 import java.util.*
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class Entity(
     val session: PlaySession,
@@ -100,7 +101,7 @@ abstract class Entity(
 
     val renderInfo: EntityRenderInfo = unsafeNull()
 
-    var lastTickTime = -1L
+    var lastTickTime = KUtil.TIME_ZERO
 
     open var renderer: EntityRenderer<*>? = null
 
@@ -198,7 +199,7 @@ abstract class Entity(
         get() = ChatColors.WHITE
 
 
-    fun forceTick(time: Long = millis()) {
+    fun forceTick(time: ValueTimeMark = now()) {
         try {
             lock.lock()
             preTick()
@@ -211,13 +212,13 @@ abstract class Entity(
     }
 
     fun tryTick(): Boolean {
-        val time = millis()
+        val time = now()
 
-        if (time - lastTickTime < ProtocolDefinition.TICK_TIME) return false
-        if (!lock.lock((ProtocolDefinition.TICK_TIME / 2).milliseconds)) return false
+        if (time - lastTickTime < TickUtil.INTERVAL) return false
+        if (!lock.lock(TickUtil.INTERVAL / 2)) return false
 
         try {
-            if (time - lastTickTime < ProtocolDefinition.TICK_TIME) return false
+            if (time - lastTickTime < TickUtil.INTERVAL) return false
             forceTick(time)
             return true
         } finally {
@@ -225,7 +226,7 @@ abstract class Entity(
         }
     }
 
-    open fun draw(time: Long) {
+    open fun draw(time: ValueTimeMark) {
         renderInfo.draw(time)
     }
 

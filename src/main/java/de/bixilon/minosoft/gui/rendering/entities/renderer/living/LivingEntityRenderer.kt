@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DamageListener {
     val damage = Interpolator(ChatColors.WHITE, ColorInterpolation::interpolateRGBA) // TODO delta^2 or no interpolation at all?
@@ -36,12 +37,12 @@ abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer
         }
     }
 
-    override fun update(millis: Long, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Float) {
         if (damage.delta >= 1.0f) {
             damage.push(ChatColors.WHITE)
         }
         damage.add(delta, 0.1f)
-        super.update(millis, delta)
+        super.update(time, delta)
     }
 
     override fun onDamage(type: DamageEvent) {

@@ -50,6 +50,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNo
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.test.ITUtil.todo
@@ -88,8 +89,8 @@ class BreakHandlerTest {
             }
             player.items.inventory[EquipmentSlots.MAIN_HAND] = stack
         }
-        if (haste > 0) player.effects += StatusEffectInstance(MiningEffect.Haste, haste, 100000)
-        if (miningFatigue > 0) player.effects += StatusEffectInstance(MiningEffect.MiningFatigue, miningFatigue, 100000)
+        if (haste > 0) player.effects += StatusEffectInstance(MiningEffect.Haste, haste, 100000.ticks)
+        if (miningFatigue > 0) player.effects += StatusEffectInstance(MiningEffect.MiningFatigue, miningFatigue, 100000.ticks)
         if (aquaAffinity > 0) {
             player.items.inventory[EquipmentSlots.HEAD] = ItemStack(session.registries.item["minecraft:iron_helmet"]!!, 1).apply { enchanting.enchantments[ArmorEnchantment.AquaAffinity] = 1 }
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,8 +18,9 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class NoRenderParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData?) : Particle(session, position, velocity, data) {
 
-    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: Long) = Unit
+    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) = Unit
 }

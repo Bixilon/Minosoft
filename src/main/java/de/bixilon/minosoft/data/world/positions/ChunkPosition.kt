@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class ChunkPosition(
-    inline val raw: Long,
+    val raw: Long,
 ) : TextFormattable {
 
     constructor() : this(0, 0)

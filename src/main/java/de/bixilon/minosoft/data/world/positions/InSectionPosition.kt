@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class InSectionPosition(
-    inline val index: Int,
+    val index: Int,
 ) : TextFormattable {
 
     constructor() : this(0, 0, 0)

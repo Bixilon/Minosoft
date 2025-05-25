@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class InChunkPosition(
-    inline val raw: Int,
+    val raw: Int,
 ) : TextFormattable {
 
     constructor() : this(0, 0, 0)

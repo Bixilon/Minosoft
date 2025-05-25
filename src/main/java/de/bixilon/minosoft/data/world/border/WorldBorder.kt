@@ -21,8 +21,10 @@ import de.bixilon.minosoft.data.world.border.area.StaticBorderArea
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import kotlin.math.abs
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.Duration
 
 class WorldBorder {
     var center = Vec2d.EMPTY
@@ -66,12 +68,12 @@ class WorldBorder {
         )
     }
 
-    fun interpolate(oldRadius: Double, newRadius: Double, millis: Long) {
-        if (millis <= 0L || oldRadius == newRadius) {
+    fun interpolate(oldRadius: Double, newRadius: Double, time: Duration) {
+        if (time <= Duration.ZERO || oldRadius == newRadius) {
             area = StaticBorderArea(newRadius)
             return
         }
-        area = DynamicBorderArea(this, oldRadius, newRadius, millis)
+        area = DynamicBorderArea(this, oldRadius, newRadius, time)
     }
 
     fun tick() {
