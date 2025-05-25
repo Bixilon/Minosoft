@@ -36,6 +36,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -74,10 +75,14 @@ import java.io.InputStream
 import java.nio.ByteOrder
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 import javax.net.ssl.SSLContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 
 object KUtil {
