@@ -27,8 +27,6 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManag
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
 import de.bixilon.minosoft.test.IT.OBJENESIS
-import it.unimi.dsi.fastutil.objects.Object2LongMap
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -444,20 +442,23 @@ class DoublePress {
     }
 
     fun `delay between`() {
-        val state = KeyBindingFilterState(false)
+        val filter = KeyBindingFilterState(false)
         val input = input()
         val start = now()
 
         input.times[KeyCodes.KEY_0] = start
+        val state = KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0))))
+        state.lastChange = start + 10.milliseconds
+
 
         KeyActionFilter.DoublePress.check(
-            state, setOf(KeyCodes.KEY_0), input, name,
-            KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0)))),
+            filter, setOf(KeyCodes.KEY_0), input, name,
+            state,
             KeyCodes.KEY_0,
             pressed = true,
-            start + 90.milliseconds,
+            start + 100.milliseconds,
         )
 
-        assertFalse(state.satisfied)
+        assertFalse(filter.satisfied)
     }
 }
