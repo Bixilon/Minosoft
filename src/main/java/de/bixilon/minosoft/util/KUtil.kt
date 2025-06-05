@@ -30,12 +30,14 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.isIntSafe
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -78,7 +80,6 @@ import java.util.*
 import javax.net.ssl.SSLContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 
@@ -361,4 +362,9 @@ object KUtil {
     @OptIn(ExperimentalTime::class)
     @Deprecated("kutil 1.27.2")
     fun SimpleDateFormat.format1(instant: kotlin.time.Instant) = format(instant.toEpochMilliseconds())
+
+    @Deprecated("Kutil 1.27.2")
+    fun RepeatedTask.skip(count: Int = 1) {
+        this::next.forceSet(now() + this.interval * count)
+    }
 }
