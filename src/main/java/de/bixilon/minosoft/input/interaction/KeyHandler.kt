@@ -17,8 +17,10 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.skip
 import kotlin.time.Duration.Companion.milliseconds
 
 abstract class KeyHandler {
@@ -28,6 +30,7 @@ abstract class KeyHandler {
 
     private fun queueTick() {
         val task = RepeatedTask(TickUtil.INTERVAL, priority = ThreadPool.HIGH) { onTick() }
+        task.skip(1)
         this.task = task
         TaskScheduler += task
     }
