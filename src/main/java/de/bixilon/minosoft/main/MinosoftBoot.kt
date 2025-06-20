@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,8 +36,8 @@ object MinosoftBoot {
     val LATCH = CallbackLatch(1)
 
     fun register(worker: TaskWorker) {
-        worker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
-        worker += WorkerTask(identifier = BootTasks.PROFILES, dependencies = arrayOf(BootTasks.VERSIONS), priority = ThreadPool.HIGHEST, executor = ProfileManagers::load) // servers might have a version set
+        worker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.Priorities.HIGHER, executor = VersionLoader::load)
+        worker += WorkerTask(identifier = BootTasks.PROFILES, dependencies = arrayOf(BootTasks.VERSIONS), priority = ThreadPool.Priorities.HIGHEST, executor = ProfileManagers::load) // servers might have a version set
 
         worker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
         worker += WorkerTask(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })
@@ -50,6 +50,6 @@ object MinosoftBoot {
         worker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
         worker += WorkerTask(identifier = BootTasks.MODS, executor = { DefaultModPhases.BOOT.load(it) })
         worker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
-        worker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.LOW, executor = CLI::startThread)
+        worker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.Priorities.LOW, executor = CLI::startThread)
     }
 }

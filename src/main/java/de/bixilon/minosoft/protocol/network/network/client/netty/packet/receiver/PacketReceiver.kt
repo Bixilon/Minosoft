@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -76,7 +76,7 @@ class PacketReceiver(
 
     private fun tryHandle2(type: PacketType, packet: S2CPacket) {
         if (type.handleAsync()) {
-            DefaultThreadPool += ForcePooledRunnable(priority = if (type.lowPriority) ThreadPool.NORMAL else ThreadPool.HIGH) { tryHandle(type, packet) }
+            DefaultThreadPool += ForcePooledRunnable(priority = if (type.lowPriority) ThreadPool.Priorities.NORMAL else ThreadPool.Priorities.HIGH) { tryHandle(type, packet) }
         } else {
             tryHandle(type, packet)
         }

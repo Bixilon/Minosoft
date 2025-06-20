@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -124,7 +124,7 @@ object Minosoft {
     }
 
     private fun javafx(taskWorker: TaskWorker) {
-        taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
+        taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.Priorities.HIGHER) { javafx.scene.text.Font.getDefault() } })
 
         taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(MinosoftBoot.LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
         taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
@@ -185,7 +185,7 @@ object Minosoft {
     fun checkForUpdates() {
         if (!MinosoftProperties.canUpdate()) return
         if (!OtherProfileManager.selected.updater.check) return
-        DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.LOW) {
+        DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.Priorities.LOW) {
             enableUpdates()
             if (!OtherProfileManager.selected.updater.check) return@ForcePooledRunnable
             val update = MinosoftUpdater.check() ?: return@ForcePooledRunnable

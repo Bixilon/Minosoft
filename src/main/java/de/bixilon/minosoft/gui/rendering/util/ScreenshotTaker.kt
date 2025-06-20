@@ -112,7 +112,7 @@ class ScreenshotTaker(
 
             val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.session.connection.identifier)
             val time = Instant.now()
-            DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.HIGHER) { store(buffer, path, time) }
+            DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.Priorities.HIGHER) { store(buffer, path, time) }
         } catch (exception: Exception) {
             exception.fail()
         }

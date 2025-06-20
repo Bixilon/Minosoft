@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -71,7 +71,7 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: AbstractLatch?) {
-        loader.context.session.registries.block.async(priority = ThreadPool.HIGH) {
+        loader.context.session.registries.block.async(priority = ThreadPool.Priorities.HIGH) {
             if (it.model != null) return@async // model already set
             val prototype: BlockModelPrototype
             try {
@@ -88,7 +88,7 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         val context = loader.context
-        loader.context.session.registries.block.async(priority = ThreadPool.HIGH) {
+        loader.context.session.registries.block.async(priority = ThreadPool.Priorities.HIGH) {
             val prototype = it.model.nullCast<BlockModelPrototype>() ?: return@async
             it.model = null
 

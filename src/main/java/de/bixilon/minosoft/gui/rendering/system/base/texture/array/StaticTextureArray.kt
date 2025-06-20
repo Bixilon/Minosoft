@@ -89,7 +89,7 @@ abstract class StaticTextureArray(
             if (texture.state != TextureStates.DECLARED) continue
 
             latch.inc()
-            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context); latch.dec() }
+            DefaultThreadPool += SimplePoolRunnable(ThreadPool.Priorities.HIGH) { texture.load(context); latch.dec() }
         }
     }
 
