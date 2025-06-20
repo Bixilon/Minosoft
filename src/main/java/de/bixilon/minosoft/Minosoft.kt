@@ -16,6 +16,7 @@ package de.bixilon.minosoft
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
@@ -185,7 +186,7 @@ object Minosoft {
     fun checkForUpdates() {
         if (!MinosoftProperties.canUpdate()) return
         if (!OtherProfileManager.selected.updater.check) return
-        DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.Priorities.LOW) {
+        DefaultIOPool += ForcePooledRunnable(priority = ThreadPool.Priorities.LOW) {
             enableUpdates()
             if (!OtherProfileManager.selected.updater.check) return@ForcePooledRunnable
             val update = MinosoftUpdater.check() ?: return@ForcePooledRunnable

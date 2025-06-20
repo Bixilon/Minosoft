@@ -15,6 +15,7 @@ package de.bixilon.minosoft.assets.minecraft.index
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
@@ -98,7 +99,7 @@ class IndexAssetsManager(
 
         assets["objects"].let { assets = it.asJsonObject() }
 
-        val worker = UnconditionalWorker()
+        val worker = UnconditionalWorker(pool = DefaultIOPool)
 
         val hashes: MutableSet<String> = ObjectOpenHashSet()
 
