@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.array.font
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
+import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
@@ -38,7 +39,7 @@ abstract class FontTextureArray(
     fun push(texture: Texture) {
         if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
         if (texture.state != TextureStates.LOADED) {
-            DefaultThreadPool += ForcePooledRunnable(priority = HIGH) { texture.load(context) }
+            DefaultIOPool += ForcePooledRunnable(priority = HIGH) { texture.load(context) }
         }
         lock.lock()
         textures += texture

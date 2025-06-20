@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
@@ -133,7 +134,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val latch = CallbackLatch(2)
         val dialog = CheckingDialog(latch)
         dialog.show()
-        DefaultThreadPool += ForcePooledRunnable {
+        DefaultIOPool += ForcePooledRunnable {
             latch.dec()
             try {
                 account.tryCheck(latch) // ToDo: Show error
