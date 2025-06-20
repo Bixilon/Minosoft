@@ -362,9 +362,4 @@ object KUtil {
     @OptIn(ExperimentalTime::class)
     @Deprecated("kutil 1.27.2")
     fun SimpleDateFormat.format1(instant: kotlin.time.Instant) = format(instant.toEpochMilliseconds())
-
-    @Deprecated("Kutil 1.27.2")
-    fun RepeatedTask.skip(count: Int = 1) {
-        this::next.forceSet(now() + this.interval * count)
-    }
 }
