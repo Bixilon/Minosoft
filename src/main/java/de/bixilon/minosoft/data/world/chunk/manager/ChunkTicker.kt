@@ -24,7 +24,7 @@ class ChunkTicker(val manager: ChunkManager) {
 
 
     fun tick(simulationDistance: Int, cameraPosition: ChunkPosition) {
-        manager.chunks.unsafe.entries.async(priority = ThreadPool.HIGH) {
+        manager.chunks.unsafe.entries.async(priority = ThreadPool.Priorities.HIGH) {
             if (!it.key.isInViewDistance(simulationDistance, cameraPosition)) {
                 return@async
             }

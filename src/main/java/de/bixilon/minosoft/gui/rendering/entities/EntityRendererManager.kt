@@ -97,7 +97,7 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
 
     fun iterate(executor: ((EntityRenderer<*>) -> Unit)) {
         lock.acquire()
-        ConcurrentSpliterator(renderers.unsafe.values.spliterator(), priority = ThreadPool.HIGHER).iterate(executor)
+        ConcurrentSpliterator(renderers.unsafe.values.spliterator(), priority = ThreadPool.Priorities.HIGHER).iterate(executor)
         lock.release()
     }
 }
