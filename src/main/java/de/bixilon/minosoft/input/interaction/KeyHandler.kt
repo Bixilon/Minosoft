@@ -17,20 +17,18 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.skip
-import kotlin.time.Duration.Companion.milliseconds
+import de.bixilon.minosoft.util.KUtil
 
 abstract class KeyHandler {
     private var task: RepeatedTask? = null
     var isPressed: Boolean = false
         private set
+    private var previousTick = KUtil.TIME_ZERO
 
     private fun queueTick() {
-        val task = RepeatedTask(TickUtil.INTERVAL, priority = ThreadPool.HIGH) { onTick() }
-        task.skip(1)
+        val task = RepeatedTask(TickUtil.INTERVAL, priority = ThreadPool.Priorities.HIGH) { if (now() - previousTick >= TickUtil.INTERVAL) onTick() } // first tick is scheduled instantly, avoid double ticking
         this.task = task
         TaskScheduler += task
     }
@@ -39,6 +37,7 @@ abstract class KeyHandler {
         if (isPressed) return
         this.isPressed = true
         onPress()
+        this.previousTick = now()
         queueTick()
     }
 
@@ -48,6 +47,7 @@ abstract class KeyHandler {
         TaskScheduler -= task
         this.task = null
         this.isPressed = false
+        this.previousTick = KUtil.TIME_ZERO
         this.onRelease()
     }
 
