@@ -31,6 +31,8 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.div
+import de.bixilon.minosoft.util.KUtil.toPath
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,7 +50,7 @@ internal object MinosoftSIT {
         if (Environment.isInCI()) {
             RunConfiguration::HOME_DIRECTORY.forceSet(Path.of("./it"))
         }
-        RunConfiguration::CONFIG_DIRECTORY.forceSet(Path.of(System.getProperty("java.io.tmpdir"), "minosoft").resolve("conf"))
+        RunConfiguration::CONFIG_DIRECTORY.forceSet(System.getProperty("java.io.tmpdir").toPath() / "minosoft" / "conf")
         RunConfiguration.PROFILES_HOT_RELOADING = false
 
         WindowFactory.factory = DummyWindow

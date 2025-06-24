@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,14 +20,15 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import org.testng.Assert.*
 import org.testng.annotations.Test
 import java.io.FileOutputStream
+import kotlin.io.path.div
 
 @Test(groups = ["profiles"])
 class StorageProfileManagerTest {
-    private val base by lazy { RunConfiguration.CONFIG_DIRECTORY.resolve("minosoft").resolve("test") }
+    private val base by lazy { RunConfiguration.CONFIG_DIRECTORY / "minosoft" / "test" }
 
 
     private fun dump(name: String, data: String) {
-        val path = base.resolve("$name.json")
+        val path = base / "$name.json"
         path.parent.toFile().mkdirs()
         val stream = FileOutputStream(path.toFile())
         stream.write(data.encodeNetwork())

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,6 +36,7 @@ import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.div
 import java.nio.file.Files
 
 object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
@@ -55,7 +56,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
 
 
     private fun migrateLegacyProfiles() {
-        val legacy = RunConfiguration.CONFIG_DIRECTORY.resolve("selected_profiles.json").toFile()
+        val legacy = (RunConfiguration.CONFIG_DIRECTORY / "selected_profiles.json").toFile()
         if (!legacy.isFile) return
         legacy.delete()
 
@@ -64,7 +65,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
             for (profileName in namespace.listFiles() ?: continue) {
                 if (!profileName.isDirectory) continue
                 for (type in profileName.listFiles() ?: continue) {
-                    val target = RunConfiguration.CONFIG_DIRECTORY.resolve(namespace.name).resolve(type.name.removeSuffix(".json")).resolve(profileName.name + ".json").toFile()
+                    val target = (RunConfiguration.CONFIG_DIRECTORY / namespace.name / type.name.removeSuffix(".json") / profileName.name + ".json").toFile()
                     target.mkdirParent()
                     ignoreAll { Files.move(type.toPath(), target.toPath()) }
                 }
