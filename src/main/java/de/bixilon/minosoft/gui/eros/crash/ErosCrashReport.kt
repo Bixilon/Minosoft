@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.div
 import de.bixilon.minosoft.util.crash.CrashReportUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -117,7 +118,7 @@ class ErosCrashReport : JavaFXWindowController() {
 
             var crashReportPath: String?
             try {
-                val crashReportFolder = RunConfiguration.HOME_DIRECTORY.resolve("crash-reports").toFile()
+                val crashReportFolder = (RunConfiguration.HOME_DIRECTORY / "crash-reports").toFile()
                 crashReportFolder.mkdirs()
 
                 crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(System.currentTimeMillis())}.txt"

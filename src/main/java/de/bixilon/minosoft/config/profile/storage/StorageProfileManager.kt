@@ -34,6 +34,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.div
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -93,14 +94,14 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     }
 
     private fun loadSelected(root: File): String? {
-        val file = root.resolve(SELECTED)
+        val file = root / SELECTED
         if (!file.isFile) return null
         val stream = FileInputStream(file)
         return stream.readAsString()
     }
 
     fun saveSelected(name: String? = this.selected.storage?.nullCast<FileStorage>()?.name) {
-        val file = root.resolve(SELECTED)
+        val file = root / SELECTED
         file.mkdirParent()
         val stream = FileOutputStream(file)
         if (name != null) {
@@ -110,7 +111,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     }
 
     open fun load() {
-        root = RunConfiguration.CONFIG_DIRECTORY.resolve(identifier.namespace).resolve(identifier.path).toFile()
+        root = (RunConfiguration.CONFIG_DIRECTORY / identifier.namespace / identifier.path).toFile()
         if (!root.exists()) {
             root.mkdirs()
             return createDefault()
@@ -199,7 +200,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     fun create(name: String): P {
         if (!name.isValidName()) throw IllegalArgumentException("Invalid profile name!")
-        val path = RunConfiguration.CONFIG_DIRECTORY.resolve(identifier.namespace).resolve(identifier.path).resolve("$name.json")
+        val path = RunConfiguration.CONFIG_DIRECTORY / identifier.namespace / identifier.path / "$name.json"
         val storage = FileStorage(name, this, path.toFile())
         val profile = type.create(storage)
         storage.profile = profile

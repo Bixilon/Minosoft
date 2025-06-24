@@ -25,6 +25,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.div
 import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
@@ -82,7 +83,7 @@ object FreezeDumpUtil {
 
         var path: String?
         try {
-            val crashReportFolder = RunConfiguration.HOME_DIRECTORY.resolve("dumps").resolve("freeze").toFile()
+            val crashReportFolder = (RunConfiguration.HOME_DIRECTORY / "dumps" / "freeze").toFile()
             crashReportFolder.mkdirs()
 
             path = "${crashReportFolder.slashPath}/freeze-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.now())}.txt"

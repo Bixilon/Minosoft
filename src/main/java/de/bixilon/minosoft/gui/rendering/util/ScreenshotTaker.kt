@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.div
 import de.bixilon.minosoft.util.KUtil.format1
 import java.io.File
 import java.nio.file.Path
@@ -52,14 +53,14 @@ class ScreenshotTaker(
         var filename = "$timestamp.png"
         var i = 1
 
-        while (base.resolve(filename).toFile().exists()) {
+        while ((base / filename).toFile().exists()) {
             filename = "${timestamp}_${i++}.png"
             if (i > AssetsOptions.MAX_FILE_CHECKING) {
                 throw StackOverflowError("There are already > ${AssetsOptions.MAX_FILE_CHECKING} screenshots with this date! Please try again later!")
             }
         }
 
-        return base.resolve(filename).toFile()
+        return (base / filename).toFile()
     }
 
     private fun createMessage(file: File): ChatComponent {
@@ -111,7 +112,7 @@ class ScreenshotTaker(
             val size = Vec2i(context.window.size)
             val buffer = context.system.readPixels(Vec2i.EMPTY_INSTANCE, size)
 
-            val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.session.connection.identifier)
+            val path = RunConfiguration.HOME_DIRECTORY / "screenshots" / context.session.connection.identifier
             val time = Instant.now()
             DefaultIOPool += ForcePooledRunnable(priority = ThreadPool.Priorities.HIGHER) { store(buffer, path, time) }
         } catch (exception: Exception) {

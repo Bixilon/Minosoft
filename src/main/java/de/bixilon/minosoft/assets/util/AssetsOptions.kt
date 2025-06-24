@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.assets.util
 
 import de.bixilon.minosoft.terminal.RunConfiguration
+import kotlin.io.path.div
 
 object AssetsOptions {
     const val MAX_FILE_CHECKING = 10
     const val SEPARATOR = '/'
-    var PATH = RunConfiguration.HOME_DIRECTORY.resolve("assets/")
+    var PATH = RunConfiguration.HOME_DIRECTORY / "assets"
     var COMPRESS_ASSETS = true
 }

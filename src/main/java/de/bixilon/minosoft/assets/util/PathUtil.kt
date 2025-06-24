@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.assets.util
 
 import de.bixilon.kutil.hex.HexUtil.isHexString
+import de.bixilon.minosoft.util.KUtil.div
 import java.nio.file.Path
 
 object PathUtil {
@@ -25,6 +26,6 @@ object PathUtil {
         if (!hash.isHexString) {
             throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
         }
-        return AssetsOptions.PATH.resolve(type).resolve(hash.substring(0, 2)).resolve(hash)
+        return AssetsOptions.PATH / type / hash.substring(0, 2) / hash
     }
 }
