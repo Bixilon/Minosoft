@@ -26,10 +26,16 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.div
+import de.bixilon.minosoft.util.KUtil.format1
+import java.io.File
 import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
 import java.text.SimpleDateFormat
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 
 object FreezeDumpUtil {
@@ -41,6 +47,7 @@ object FreezeDumpUtil {
         thread.start()
     }
 
+    @OptIn(ExperimentalTime::class)
     fun catch(callback: (FreezeDump) -> Unit) {
         val builder = StringBuilder()
 
@@ -81,12 +88,12 @@ object FreezeDumpUtil {
         val dump = builder.toString()
 
 
-        var path: String?
+        var path: File?
         try {
             val crashReportFolder = (RunConfiguration.HOME_DIRECTORY / "dumps" / "freeze").toFile()
             crashReportFolder.mkdirs()
 
-            path = "${crashReportFolder.slashPath}/freeze-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.now())}.txt"
+            path = crashReportFolder / "freeze-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format1(Clock.System.now())}.txt"
 
             val stream = FileOutputStream(path)
 
