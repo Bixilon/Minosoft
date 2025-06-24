@@ -71,7 +71,7 @@ class ScreenshotTaker(
         component += TextComponent(file.name).apply {
             color = ChatColors.WHITE
             underline()
-            clickEvent = OpenFileClickEvent(file.slashPath)
+            clickEvent = OpenFileClickEvent(file)
             hoverEvent = TextHoverEvent("Click to open")
         }
         component += " "
