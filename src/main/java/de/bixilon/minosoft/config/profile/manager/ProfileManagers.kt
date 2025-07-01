@@ -65,7 +65,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
             for (profileName in namespace.listFiles() ?: continue) {
                 if (!profileName.isDirectory) continue
                 for (type in profileName.listFiles() ?: continue) {
-                    val target = (RunConfiguration.CONFIG_DIRECTORY / namespace.name / type.name.removeSuffix(".json") / profileName.name + ".json").toFile()
+                    val target = (RunConfiguration.CONFIG_DIRECTORY / namespace.name / type.name.removeSuffix(".json") / "${profileName.name}.json").toFile()
                     target.mkdirParent()
                     ignoreAll { Files.move(type.toPath(), target.toPath()) }
                 }
