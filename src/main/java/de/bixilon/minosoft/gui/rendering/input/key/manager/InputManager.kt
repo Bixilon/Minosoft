@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
 import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes

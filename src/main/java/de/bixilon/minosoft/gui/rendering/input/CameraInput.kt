@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.vec2.Vec2d
+import glm_.vec2.Vec2d
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.glm
 
 class CameraInput(
     private val context: RenderContext,
@@ -122,7 +122,7 @@ class CameraInput(
             yaw += CIRCLE_DEGREE
         }
         yaw %= HALF_CIRCLE_DEGREE
-        val pitch = GLM.clamp(delta.y + rotation.pitch, -89.9, 89.9)
+        val pitch = glm.clamp(delta.y + rotation.pitch, -89.9, 89.9)
         return EntityRotation(yaw.toFloat(), pitch.toFloat())
     }
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound

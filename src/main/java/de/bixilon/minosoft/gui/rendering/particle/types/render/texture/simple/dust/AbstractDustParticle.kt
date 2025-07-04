@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust
 
-import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.func.common.clamp
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle

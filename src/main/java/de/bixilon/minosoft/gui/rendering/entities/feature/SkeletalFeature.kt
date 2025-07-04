@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.func.rad
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer

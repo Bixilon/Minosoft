@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.util
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity

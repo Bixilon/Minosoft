@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.shaking
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.swizzle.xz
+import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
+import glm_.vec3.swizzle.xz
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
+import glm_.vec4.Vec4
 import de.bixilon.kutil.concurrent.Reference
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.math.simple.FloatMath.rounded10

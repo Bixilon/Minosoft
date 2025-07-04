@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkSize

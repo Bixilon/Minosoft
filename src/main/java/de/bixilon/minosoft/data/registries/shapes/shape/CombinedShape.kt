@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.shapes.shape
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.Axes

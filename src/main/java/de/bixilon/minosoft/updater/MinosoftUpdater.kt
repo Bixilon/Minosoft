@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,8 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.div
+import de.bixilon.minosoft.util.KUtil.toPath
 import de.bixilon.minosoft.util.http.HTTP2.get
 import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.http.exceptions.HTTPException
@@ -41,6 +43,7 @@ import java.io.FileOutputStream
 import java.net.URL
 import java.security.MessageDigest
 import java.security.SignatureException
+import kotlin.io.path.absolutePathString
 
 object MinosoftUpdater {
     var update: MinosoftUpdate? by observed(null)
@@ -159,7 +162,7 @@ object MinosoftUpdater {
 
     fun start(jar: File) {
         val arguments: MutableList<String> = mutableListOf()
-        arguments += System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"
+        arguments += (System.getProperty("java.home").toPath() / "bin" / "java").absolutePathString()
         arguments += "-jar"
         arguments += jar.absolutePath.toString()
         arguments += CommandLineArguments.ARGUMENTS

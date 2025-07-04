@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.light.updater
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import java.util.*

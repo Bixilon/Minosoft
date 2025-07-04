@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kotlinglm.vec3.Vec3t
+import glm_.func.common.clamp
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
+import glm_.vec3.Vec3t
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.world.positions.BlockPosition

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
+import glm_.mat4x4.Mat4
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed

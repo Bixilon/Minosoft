@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.func.rad
+import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.AbstractLatch
@@ -40,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import glm_.glm
 
 class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
     private var perspective = Mat4()
@@ -53,7 +53,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        context.session.events.listen<ResizeWindowEvent> { perspective = GLM.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE) }
+        context.session.events.listen<ResizeWindowEvent> { perspective = glm.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE) }
     }
 
     private fun registerModels() {

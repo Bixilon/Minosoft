@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import glm_.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.random.RandomUtil.nextFloat

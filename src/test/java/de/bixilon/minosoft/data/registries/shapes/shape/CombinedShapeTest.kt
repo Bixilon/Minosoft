@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.shapes.shape
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals

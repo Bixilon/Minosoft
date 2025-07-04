@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import de.bixilon.kotlinglm.func.common.clamp
+import glm_.func.common.clamp
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeContainer

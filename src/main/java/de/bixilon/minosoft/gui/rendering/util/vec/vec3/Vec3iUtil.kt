@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector

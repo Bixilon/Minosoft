@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.chunk
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding

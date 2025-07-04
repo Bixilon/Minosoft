@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import de.bixilon.kotlinglm.func.common.clamp
+import glm_.func.common.clamp
 import de.bixilon.kutil.avg._long.LongAverage
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt

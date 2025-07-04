@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.entities.Entity

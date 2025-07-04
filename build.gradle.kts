@@ -218,7 +218,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:$glmVersion")
+                implementation("io.github.kotlin-graphics:glm:$glmVersion")
                 implementation("it.unimi.dsi:fastutil-core:8.5.15")
 
                 implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
@@ -276,7 +276,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:$glmVersion")
+                implementation("io.github.kotlin-graphics:glm:$glmVersion")
             }
 
             targets {
@@ -367,6 +367,7 @@ dependencies {
     implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.15")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
+    implementation("io.github.kotlin-graphics", "glm", glmVersion)
 
 
     // ikonli
@@ -383,7 +384,6 @@ dependencies {
     // de.bixilon
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
-    implementation("de.bixilon", "kotlin-glm", glmVersion)
     implementation("de.bixilon", "mbf-kotlin", "1.0.3") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3.1") { exclude("org.openjfx", "javafx-controls") }
 

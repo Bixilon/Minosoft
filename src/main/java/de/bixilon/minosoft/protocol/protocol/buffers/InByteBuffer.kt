@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import glm_.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.config.DebugOptions

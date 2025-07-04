@@ -18,11 +18,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.vec2.Vec2t
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3t
-import de.bixilon.kotlinglm.vec4.Vec4t
+import glm_.vec2.Vec2t
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3t
+import glm_.vec4.Vec4t
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -67,6 +66,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
+import glm_.glm
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
@@ -270,7 +270,7 @@ object KUtil {
 
     fun initPlayClasses() {
         DefaultThreadPool += { PlaySession::class.java.forceInit() }
-        DefaultThreadPool += { GLM::class.java.forceInit() } // whole glm
+        DefaultThreadPool += { glm::class.java.forceInit() } // whole glm
         DefaultThreadPool += { ItemFactories::class.java.forceInit() }
         DefaultThreadPool += { BlockFactories::class.java.forceInit() }
         DefaultThreadPool += { RecipeFactories::class.java.forceInit() }

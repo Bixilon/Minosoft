@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import glm_.vec2.Vec2i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.file.FileUtil.mkdirParent
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

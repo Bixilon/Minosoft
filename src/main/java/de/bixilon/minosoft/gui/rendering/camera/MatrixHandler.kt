@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.func.common.clamp
+import glm_.func.rad
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -36,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.glm
 import kotlin.time.Duration.Companion.milliseconds
 
 class MatrixHandler(
@@ -88,7 +88,7 @@ class MatrixHandler(
         if (camera.view.view.shaking) {
             shaking.transform()?.let { matrix *= it }
         }
-        matrix *= GLM.lookAt(position, position + front, CAMERA_UP_VEC3)
+        matrix *= glm.lookAt(position, position + front, CAMERA_UP_VEC3)
 
         this.viewMatrix = matrix
     }
@@ -99,7 +99,7 @@ class MatrixHandler(
         if (fog.enabled) {
             far = fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
         }
-        projectionMatrix = GLM.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, maxOf(far, 5.0f))
+        projectionMatrix = glm.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, maxOf(far, 5.0f))
     }
 
     fun init() {
