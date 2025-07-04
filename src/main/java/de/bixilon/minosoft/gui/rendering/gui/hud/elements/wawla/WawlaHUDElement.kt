@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import glm_.vec2.Vec2
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

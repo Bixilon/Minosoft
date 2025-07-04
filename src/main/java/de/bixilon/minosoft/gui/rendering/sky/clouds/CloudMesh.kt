@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext

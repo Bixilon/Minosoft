@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast

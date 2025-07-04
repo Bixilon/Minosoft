@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe

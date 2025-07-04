@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.world.audio
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center

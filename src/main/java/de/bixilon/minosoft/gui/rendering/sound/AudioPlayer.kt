@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.queue.Queue

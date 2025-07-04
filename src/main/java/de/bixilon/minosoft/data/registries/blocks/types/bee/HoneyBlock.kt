@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.bee
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler

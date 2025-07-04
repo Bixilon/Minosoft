@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import glm_.vec2.Vec2i
 
 data class WorldSize(
     var min: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),

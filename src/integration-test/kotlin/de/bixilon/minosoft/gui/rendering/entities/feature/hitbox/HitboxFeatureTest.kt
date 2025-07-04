@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull

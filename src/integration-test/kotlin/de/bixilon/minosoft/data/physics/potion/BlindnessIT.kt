@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics.potion
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround

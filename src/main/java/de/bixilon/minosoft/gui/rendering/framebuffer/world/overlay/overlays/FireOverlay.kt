@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor

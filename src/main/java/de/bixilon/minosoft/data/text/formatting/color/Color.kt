@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import de.bixilon.kotlinglm.func.common.clamp
+import glm_.func.common.clamp
 import de.bixilon.kutil.ansi.ANSI
 
 interface Color {

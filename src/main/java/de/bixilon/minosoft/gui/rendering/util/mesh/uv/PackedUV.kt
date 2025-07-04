@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.uv
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import glm_.vec2.Vec2
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 

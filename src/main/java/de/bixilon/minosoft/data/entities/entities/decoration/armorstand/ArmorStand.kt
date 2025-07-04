@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.IntUtil.toInt

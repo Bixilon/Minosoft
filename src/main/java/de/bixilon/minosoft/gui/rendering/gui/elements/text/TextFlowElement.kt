@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import glm_.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.time.TimeUtil.millis

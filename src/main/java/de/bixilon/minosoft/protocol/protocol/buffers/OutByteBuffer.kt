@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent

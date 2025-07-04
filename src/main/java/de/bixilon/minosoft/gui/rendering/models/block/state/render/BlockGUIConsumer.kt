@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
@@ -29,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import glm_.glm
 
 class BlockGUIConsumer(
     val gui: GUIRenderer,
@@ -68,6 +68,6 @@ class BlockGUIConsumer(
     }
 
     companion object {
-        val VIEW_MATRIX = GLM.lookAt(Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
+        val VIEW_MATRIX = glm.lookAt(Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
     }
 }

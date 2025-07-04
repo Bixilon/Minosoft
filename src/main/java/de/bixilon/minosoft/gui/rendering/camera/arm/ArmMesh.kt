@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerModelMesh

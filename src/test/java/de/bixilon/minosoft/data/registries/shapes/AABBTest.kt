@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.shapes
 
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import glm_.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes

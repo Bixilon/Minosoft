@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.entities.EntityRotation

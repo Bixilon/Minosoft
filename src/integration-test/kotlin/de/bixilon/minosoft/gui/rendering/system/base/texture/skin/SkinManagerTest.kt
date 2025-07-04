@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.skin
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import glm_.vec2.Vec2i
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible

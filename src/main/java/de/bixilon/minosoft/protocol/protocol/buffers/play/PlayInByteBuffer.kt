@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject

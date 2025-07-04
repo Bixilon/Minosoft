@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe

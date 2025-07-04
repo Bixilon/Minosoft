@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY

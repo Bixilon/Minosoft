@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions

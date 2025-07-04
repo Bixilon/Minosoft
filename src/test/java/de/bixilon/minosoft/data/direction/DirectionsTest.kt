@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kotlinglm.vec3.Vec3i
+import glm_.vec3.Vec3i
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

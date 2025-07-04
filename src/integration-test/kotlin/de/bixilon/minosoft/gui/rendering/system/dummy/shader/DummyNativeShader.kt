@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.shader
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext

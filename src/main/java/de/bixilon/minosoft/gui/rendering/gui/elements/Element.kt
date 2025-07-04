@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.vec2.Vec2
+import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget

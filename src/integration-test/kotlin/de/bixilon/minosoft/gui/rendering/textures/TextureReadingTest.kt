@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import glm_.vec2.Vec2i
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor

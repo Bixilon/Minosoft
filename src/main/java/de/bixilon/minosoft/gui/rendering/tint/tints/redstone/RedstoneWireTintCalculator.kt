@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.redstone
 
-import de.bixilon.kotlinglm.func.common.clamp
+import glm_.func.common.clamp
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
-import de.bixilon.kotlinglm.func.common.clamp
+import glm_.func.common.clamp
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable

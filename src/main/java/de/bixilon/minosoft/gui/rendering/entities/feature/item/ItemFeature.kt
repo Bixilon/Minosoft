@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.item
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
+import glm_.mat4x4.Mat4
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh

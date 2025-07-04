@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import de.bixilon.kotlinglm.GLM.PIf
+import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation
 

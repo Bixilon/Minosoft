@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.func.rad
+import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign

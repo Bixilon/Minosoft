@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.entities
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.minosoft.data.direction.Directions

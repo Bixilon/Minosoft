@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle

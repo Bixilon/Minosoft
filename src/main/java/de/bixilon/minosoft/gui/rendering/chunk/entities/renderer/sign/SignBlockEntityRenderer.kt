@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign
 
-import de.bixilon.kotlinglm.GLM.PIf
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.MathConstants.PIf
+import glm_.func.rad
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.container.stack.ItemStack

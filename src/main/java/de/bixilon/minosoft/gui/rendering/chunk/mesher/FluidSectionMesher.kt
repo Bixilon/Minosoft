@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import de.bixilon.kotlinglm.func.cos
-import de.bixilon.kotlinglm.func.sin
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.func.cos
+import glm_.func.sin
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState

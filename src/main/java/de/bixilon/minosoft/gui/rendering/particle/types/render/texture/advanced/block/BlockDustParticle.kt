@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData

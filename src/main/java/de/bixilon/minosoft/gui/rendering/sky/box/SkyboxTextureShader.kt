@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
+import glm_.mat4x4.Mat4
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader

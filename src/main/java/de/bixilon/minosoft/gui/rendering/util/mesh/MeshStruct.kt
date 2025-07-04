@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV

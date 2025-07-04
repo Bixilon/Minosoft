@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
-import de.bixilon.kotlinglm.pow
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.pow
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor

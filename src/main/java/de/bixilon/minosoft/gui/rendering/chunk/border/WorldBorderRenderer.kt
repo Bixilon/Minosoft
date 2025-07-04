@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
-import de.bixilon.kotlinglm.func.common.clamp
+import glm_.func.common.clamp
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis

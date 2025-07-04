@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import glm_.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.LivingEntity

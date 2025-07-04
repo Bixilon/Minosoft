@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.physics.entities.living.player.local
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses

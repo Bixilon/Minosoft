@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.background
 
-import de.bixilon.kotlinglm.vec4.Vec4
+import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf

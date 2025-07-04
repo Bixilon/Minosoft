@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.terminal.commands.session
 
-import de.bixilon.kotlinglm.GLM.PIf
-import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.math.MathConstants.PIf
+import glm_.vec3.Vec3d
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.random.RandomUtil.nextDouble
 import de.bixilon.kutil.random.RandomUtil.nextFloat

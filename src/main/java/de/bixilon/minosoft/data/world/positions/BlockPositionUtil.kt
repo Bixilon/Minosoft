@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import glm_.vec3.Vec3d
 import de.bixilon.minosoft.config.DebugOptions
 
 object BlockPositionUtil {
