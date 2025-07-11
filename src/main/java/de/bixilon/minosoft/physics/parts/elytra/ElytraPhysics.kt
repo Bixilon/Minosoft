@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.parts.elytra
 
 import glm_.func.rad
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import glm_.vec3.swizzle.xz
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots

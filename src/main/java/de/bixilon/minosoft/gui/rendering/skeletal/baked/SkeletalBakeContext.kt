@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalBakeContext(
-    val offset: Vec3 = Vec3.EMPTY,
+    val offset: Vec3f = Vec3f.EMPTY,
     val inflate: Float = 0.0f,
     val texture: ResourceLocation? = null,
     val transform: BakedSkeletalTransform,

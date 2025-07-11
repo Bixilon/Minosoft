@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -160,7 +160,7 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
         writeString(resourceLocation.toString())
     }
 
-    fun writeVec3d(vec3: Vec3) {
+    fun writeVec3d(vec3: Vec3f) {
         writeVec3d(Vec3d(vec3))
     }
 
@@ -170,7 +170,7 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
         writeDouble(vec3.z)
     }
 
-    fun writeVec3f(vec3: Vec3) {
+    fun writeVec3f(vec3: Vec3f) {
         writeFloat(vec3.x)
         writeFloat(vec3.y)
         writeFloat(vec3.z)

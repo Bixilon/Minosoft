@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -38,15 +38,15 @@ class WorldBorderMesh(
         return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
     }
 
-    private fun positions(width: Float, center: Double): Array<Vec2> {
+    private fun positions(width: Float, center: Double): Array<Vec2f> {
         val left = (center - width).toFloat()
         val right = (center + width).toFloat()
 
         return arrayOf(
-            Vec2(left, -1.0f),
-            Vec2(left, +1.0f),
-            Vec2(right, +1.0f),
-            Vec2(right, -1.0f),
+            Vec2f(left, -1.0f),
+            Vec2f(left, +1.0f),
+            Vec2f(right, +1.0f),
+            Vec2f(right, -1.0f),
         )
     }
 
@@ -59,7 +59,7 @@ class WorldBorderMesh(
         }
     }
 
-    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2>, rotated: Boolean) {
+    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
         order.iterate { position, uv -> // TODO: fucked up
             val (z, y) = positions[position]
             val texture = if (rotated) textureIndex(uv + 1) else uv + 1
@@ -73,7 +73,7 @@ class WorldBorderMesh(
         addVertexX((minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat(), width, positions, true)
     }
 
-    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2>, rotated: Boolean) {
+    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
         order.iterate { position, uv -> // TODO: fucked up
             val (x, y) = positions[position]
             val texture = if (rotated) textureIndex(uv + 1) else uv + 1
@@ -104,7 +104,7 @@ class WorldBorderMesh(
 
 
     data class WorldBorderMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uvIndex: Int,
         val width: Float,
     ) {

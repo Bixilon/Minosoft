@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
@@ -32,7 +32,7 @@ abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
         when (entity.pose) {
-            Poses.SLEEPING -> matrix.rotateDegreesAssign(Vec3(90, 0, 0)) // TODO
+            Poses.SLEEPING -> matrix.rotateDegreesAssign(Vec3f(90, 0, 0)) // TODO
             else -> Unit
         }
     }

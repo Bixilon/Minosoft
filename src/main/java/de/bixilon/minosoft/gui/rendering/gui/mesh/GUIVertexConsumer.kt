@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
@@ -26,11 +26,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 interface GUIVertexConsumer {
     val order: RenderOrder
 
-    fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBAColor, options: GUIVertexOptions?) = addVertex(position.x, position.y, texture, uv.x, uv.y, tint, options)
+    fun addVertex(position: Vec2f, texture: ShaderTexture?, uv: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) = addVertex(position.x, position.y, texture, uv.x, uv.y, tint, options)
     fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?)
     fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?)
 
-    fun addQuad(start: Vec2, end: Vec2, texture: ShaderTexture?, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBAColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f = UV_START, uvEnd: Vec2f = UV_END, tint: RGBAColor, options: GUIVertexOptions?) {
         val start = start.array
         val end = end.array
         val uvStart = (texture?.transformUV(uvStart) ?: uvStart).array
@@ -46,16 +46,16 @@ interface GUIVertexConsumer {
         }
     }
 
-    fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBAColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2f, end: Vec2f, texture: TexturePart, tint: RGBAColor, options: GUIVertexOptions?) {
         addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
     }
 
-    fun addQuad(start: Vec2, end: Vec2, tint: RGBAColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
         addQuad(start, end, null, tint = tint, options = options)
     }
 
 
-    fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+    fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
         val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
 
 
@@ -86,7 +86,7 @@ interface GUIVertexConsumer {
     fun ensureSize(size: Int)
 
     companion object {
-        val UV_START = Vec2(0.0f, 0.0f)
-        val UV_END = Vec2(1.0f, 1.0f)
+        val UV_START = Vec2f(0.0f, 0.0f)
+        val UV_END = Vec2f(1.0f, 1.0f)
     }
 }

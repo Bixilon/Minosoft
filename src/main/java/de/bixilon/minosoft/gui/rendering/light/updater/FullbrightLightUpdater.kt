@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.light.updater
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 
@@ -26,7 +26,7 @@ object FullbrightLightUpdater : LightmapUpdater {
 
         for (sky in 0 until LightLevel.LEVELS) {
             for (block in 0 until LightLevel.LEVELS) {
-                buffer[sky, block] = Vec3(1.0f)
+                buffer[sky, block] = Vec3f(1.0f)
             }
         }
     }

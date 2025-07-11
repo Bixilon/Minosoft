@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.world.border
 
-import glm_.vec2.Vec2d
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.border.area.BorderArea
 import de.bixilon.minosoft.data.world.border.area.DynamicBorderArea
 import de.bixilon.minosoft.data.world.border.area.StaticBorderArea

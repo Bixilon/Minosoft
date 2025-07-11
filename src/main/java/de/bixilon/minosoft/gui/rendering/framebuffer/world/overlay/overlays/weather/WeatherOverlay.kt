@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
@@ -26,8 +28,6 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 import java.util.*
 
 class WeatherOverlay(private val context: RenderContext) : Overlay {
@@ -51,10 +51,10 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
 
     private val shader = context.system.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
     private var mesh = WeatherOverlayMesh(context)
-    private var windowSize = Vec2.EMPTY
+    private var windowSize = Vec2f.EMPTY
 
 
-    private fun updateMesh(windowSize: Vec2) {
+    private fun updateMesh(windowSize: Vec2f) {
         if (mesh.state == Mesh.MeshStates.LOADED) {
             mesh.unload()
         }
@@ -70,12 +70,12 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             val offsetMultiplicator = random.nextFloat(0.8f, 1.2f)
             val alpha = random.nextFloat(0.8f, 1.0f)
             mesh.addZQuad(
-                Vec2(offset, 0), OVERLAY_Z, Vec2(offset + step, windowSize.y), Vec2(0.0f), texture.array.uvEnd ?: Vec2(1.0f)
+                Vec2f(offset, 0), OVERLAY_Z, Vec2f(offset + step, windowSize.y), Vec2f(0.0f), texture.array.uvEnd ?: Vec2f(1.0f)
             ) { position, uv ->
-                val transformed = Vec2()
+                val transformed = Vec2f()
                 transformed.x = position.x / (windowSize.x / 2) - 1.0f
                 transformed.y = position.y / (windowSize.y / 2) - 1.0f
-                mesh.addVertex(Vec3(transformed.x, transformed.y, OVERLAY_Z), uv, timeOffset, offsetMultiplicator, alpha)
+                mesh.addVertex(Vec3f(transformed.x, transformed.y, OVERLAY_Z), uv, timeOffset, offsetMultiplicator, alpha)
             }
             offset += step
             if (offset > windowSize.x) {

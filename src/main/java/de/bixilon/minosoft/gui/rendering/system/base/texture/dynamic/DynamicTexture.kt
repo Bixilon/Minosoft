@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
@@ -47,8 +47,8 @@ abstract class DynamicTexture(
         return identifier.toString()
     }
 
-    override fun transformUV(end: Vec2?): Vec2 {
-        return end ?: Vec2(1.0f)  // TODO: memory
+    override fun transformUV(end: Vec2f?): Vec2f {
+        return end ?: Vec2f(1.0f)  // TODO: memory
     }
 
     override fun transformUV(end: FloatArray?): FloatArray {

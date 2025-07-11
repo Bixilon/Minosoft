@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.uv
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 
@@ -28,7 +28,7 @@ value class PackedUV(val raw: FloatArray) {
         const val BITS = 12
         const val MASK = (1 shl BITS) - 1
 
-        const val COMPONENTS = Vec2.length
+        const val COMPONENTS = Vec2f.length
         const val SIZE = 4
 
 

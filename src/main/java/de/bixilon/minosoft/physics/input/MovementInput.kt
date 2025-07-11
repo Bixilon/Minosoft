@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.input
 
 import glm_.func.rad
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.PhysicsConstants

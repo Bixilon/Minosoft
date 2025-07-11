@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 
 data class BakedSkeletalTransform(
     val id: Int,
-    val pivot: Vec3,
+    val pivot: Vec3f,
     val children: Map<String, BakedSkeletalTransform>,
 ) {
 

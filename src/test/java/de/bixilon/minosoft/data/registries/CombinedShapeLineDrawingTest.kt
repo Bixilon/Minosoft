@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.data.registries
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB.Companion.test
 import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
 
@@ -25,49 +27,49 @@ internal class CombinedShapeLineDrawingTest {
 
     @Test
     fun test1() {
-        val shape = AABB(Vec3.EMPTY, Vec3.ONE)
-        assertTrue { shape.shouldDrawLine(Vec3.EMPTY, Vec3(1, 0, 0)) }
+        val shape = AABB(Vec3f.EMPTY, Vec3f.ONE)
+        assertTrue { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(1, 0, 0)) }
     }
 
     @Test
     fun test2() {
-        val shape = AABB(Vec3.EMPTY, Vec3.ONE)
-        assertTrue { shape.shouldDrawLine(Vec3.EMPTY, Vec3(2, 0, 0)) }
+        val shape = AABB(Vec3f.EMPTY, Vec3f.ONE)
+        assertTrue { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(2, 0, 0)) }
     }
 
     @Test
     fun test3() {
-        val shape = AABB(Vec3.EMPTY, Vec3.ONE)
-        // ToDo assertFalse { shape.shouldDrawLine(Vec3.EMPTY, Vec3(1, 1, 0)) }
+        val shape = AABB(Vec3f.EMPTY, Vec3f.ONE)
+        // ToDo assertFalse { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(1, 1, 0)) }
     }
 
     @Test
     fun test4() {
-        val shape = AABB(Vec3.EMPTY, Vec3(1, 0.5, 1))
-        // ToDo assertFalse { shape.shouldDrawLine(Vec3.EMPTY, Vec3(1, 0.5, 0)) }
+        val shape = AABB(Vec3f.EMPTY, Vec3f(1, 0.5, 1))
+        // ToDo assertFalse { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(1, 0.5, 0)) }
     }
 
     @Test
     fun test5() {
-        val shape = AABB(Vec3.EMPTY, Vec3(1, 0.5, 1))
-        assertTrue { shape.shouldDrawLine(Vec3.EMPTY, Vec3(1, 0, 0)) }
+        val shape = AABB(Vec3f.EMPTY, Vec3f(1, 0.5, 1))
+        assertTrue { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(1, 0, 0)) }
     }
 
     @Test
     fun test6() {
-        val shape = CombinedShape(AABB(Vec3.EMPTY, Vec3(1, 0.5, 1)), AABB(Vec3(0, 0.5, 0), Vec3(1, 1, 1)))
-        // assertFalse { shape.shouldDrawLine(Vec3.EMPTY, Vec3(1, 0, 0)) }
+        val shape = CombinedShape(AABB(Vec3f.EMPTY, Vec3f(1, 0.5, 1)), AABB(Vec3f(0, 0.5, 0), Vec3f(1, 1, 1)))
+        // assertFalse { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(1, 0, 0)) }
     }
 
     @Test
     fun test7() {
-        val shape = CombinedShape(AABB(Vec3.EMPTY, Vec3(1, 0.5, 1)), AABB(Vec3(0, 0.5, 0), Vec3(1, 1, 1)))
-        // ToDo    assertFalse { shape.shouldDrawLine(Vec3.EMPTY, Vec3(1, 1, 0)) }
+        val shape = CombinedShape(AABB(Vec3f.EMPTY, Vec3f(1, 0.5, 1)), AABB(Vec3f(0, 0.5, 0), Vec3f(1, 1, 1)))
+        // ToDo    assertFalse { shape.shouldDrawLine(Vec3f.EMPTY, Vec3f(1, 1, 0)) }
     }
 
     @Test
     fun test8() {
-        val shape = CombinedShape(AABB(Vec3.EMPTY, Vec3(1, 0.5, 1)), AABB(Vec3(0, 0.5, 0), Vec3(0.5, 1, 1)))
-        // assertFalse { shape.shouldDrawLine(Vec3(0, 0.5, 0), Vec3(0, 0.5, 1)) }
+        val shape = CombinedShape(AABB(Vec3f.EMPTY, Vec3f(1, 0.5, 1)), AABB(Vec3f(0, 0.5, 0), Vec3f(0.5, 1, 1)))
+        // assertFalse { shape.shouldDrawLine(Vec3f(0, 0.5, 0), Vec3f(0, 0.5, 1)) }
     }
 }

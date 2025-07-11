@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.buffer.ByteBufferUtil.readRemaining
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
@@ -95,8 +95,8 @@ class UnihexFontTypeTest {
         val code = rasterizer.add(pixels) as UnicodeCodeRenderer
 
         assertEquals(code.width, 1.5f)
-        assertEquals(code.uvStart, Vec2(0.0f, 0.0f))
-        assertEquals(code.uvEnd, Vec2(0.18749f, 1.0f))
+        assertEquals(code.uvStart, Vec2f(0.0f, 0.0f))
+        assertEquals(code.uvEnd, Vec2f(0.18749f, 1.0f))
 
         assertEquals(remaining, intArrayOf(13))
         val data = texture.data.buffer.data.readRemaining()

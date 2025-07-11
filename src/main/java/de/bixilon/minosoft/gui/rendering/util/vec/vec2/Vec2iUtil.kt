@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
 import glm_.func.rad
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
@@ -73,8 +73,8 @@ object Vec2iUtil {
         return this.x >= other.x || this.y >= other.y
     }
 
-    val Vec2i.rad: Vec2
-        get() = Vec2(x.rad, y.rad)
+    val Vec2i.rad: Vec2f
+        get() = Vec2f(x.rad, y.rad)
 
     val Vec2i.abs: Vec2i
         get() = Vec2i(x, y).absAssign()

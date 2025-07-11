@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.Arms.Companion.opposite
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -42,7 +42,7 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.session.player.items.inventory, frame?.slots ?: Int2ObjectOpenHashMap())
 
     init {
-        _size = Vec2(frame?.size ?: Vec2i.EMPTY)
+        _size = Vec2f(frame?.size ?: Vec2i.EMPTY)
         val margin = if (offArm == Arms.LEFT) {
             marginOf(right = 5.0f)
         } else {
@@ -53,7 +53,7 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     }
 
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         frameImage.render(offset, consumer, options)
         containerElement.render(offset, consumer, options)
     }

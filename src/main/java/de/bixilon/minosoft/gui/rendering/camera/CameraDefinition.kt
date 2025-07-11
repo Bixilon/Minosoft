@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 
 object CameraDefinition {
     const val NEAR_PLANE = 0.01f
     const val FALLBACK_FAR_PLANE = 100.0f
-    val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
+    val CAMERA_UP_VEC3 = Vec3f(0.0f, 1.0f, 0.0f)
 }

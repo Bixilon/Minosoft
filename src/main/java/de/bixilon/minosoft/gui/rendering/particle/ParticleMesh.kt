@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -56,9 +56,9 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
     }
 
     data class ParticleMeshStruct(
-        val position: Vec3,
-        val minUVCoordinates: Vec2,
-        val maxUVCoordinates: Vec2,
+        val position: Vec3f,
+        val minUVCoordinates: Vec2f,
+        val maxUVCoordinates: Vec2f,
         val indexLayerAnimation: Int,
         val scale: Float,
         val tintColor: RGBColor,

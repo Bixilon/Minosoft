@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
 import glm_.func.rad
 import glm_.func.sin
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
@@ -69,7 +69,7 @@ class ArmAnimator(
             val x = sin * -1.4f
 
 
-            transform.value.rotateRadAssign(Vec3(x, y, if (arm == Arms.RIGHT) z else -z))
+            transform.value.rotateRadAssign(Vec3f(x, y, if (arm == Arms.RIGHT) z else -z))
         }
         transform.value
             .translateAssign(right.nPivot)

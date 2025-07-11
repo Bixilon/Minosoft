@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class TextOffset(
-    val initial: Vec2 = Vec2.EMPTY,
+    val initial: Vec2f = Vec2f.EMPTY,
 ) {
-    var offset = Vec2(initial)
+    var offset = Vec2f(initial)
 
 
-    fun align(alignment: HorizontalAlignments, width: Float, size: Vec2) {
+    fun align(alignment: HorizontalAlignments, width: Float, size: Vec2f) {
         this.offset.x = initial.x + alignment.getOffset(size.x, width)
     }
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.FLATTENING
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.colors.DyeColors.Companion.name
@@ -70,12 +70,12 @@ class ShulkerBoxRenderer(
         private val texture = minecraft("entity/shulker/shulker").texture()
 
         private val ROTATIONS = arrayOf(
-            Vec3(180, 0, 0).rad,
-            Vec3(0, 0, 0).rad,
-            Vec3(270, 180, 0).rad,
-            Vec3(90, 0, 0).rad,
-            Vec3(90, 0, 90).rad,
-            Vec3(90, 0, 270).rad,
+            Vec3f(180, 0, 0).rad,
+            Vec3f(0, 0, 0).rad,
+            Vec3f(270, 180, 0).rad,
+            Vec3f(90, 0, 0).rad,
+            Vec3f(90, 0, 90).rad,
+            Vec3f(90, 0, 270).rad,
         )
 
         override fun register(loader: ModelLoader) {

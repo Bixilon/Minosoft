@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class GUIMesh(
     context: RenderContext,
-    val halfSize: Vec2,
+    val halfSize: Vec2f,
     data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 32768, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
@@ -49,7 +49,7 @@ class GUIMesh(
     }
 
     data class GUIMeshStruct(
-        val position: Vec2,
+        val position: Vec2f,
         val uv: UnpackedUV,
         val indexLayerAnimation: Int,
         val tintColor: RGBColor,
@@ -59,19 +59,19 @@ class GUIMesh(
 
     companion object {
 
-        fun transformPosition(position: Vec2, halfSize: Vec2): Vec2 {
-            val res = Vec2(position)
+        fun transformPosition(position: Vec2f, halfSize: Vec2f): Vec2f {
+            val res = Vec2f(position)
             res /= halfSize
             res.x -= 1.0f
             res.y = 1.0f - res.y
             return res
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2f, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
             addVertex(data, halfSize, x, y, texture.shaderId.buffer(), u, v, tint, options)
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2f, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
             val x = x / halfSize.x - 1.0f
             val y = 1.0f - y / halfSize.y
 

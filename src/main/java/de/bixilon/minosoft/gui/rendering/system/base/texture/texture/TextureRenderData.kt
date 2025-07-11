@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 
 interface TextureRenderData {
     val shaderTextureId: Int
     val animationData: Int
 
-    fun transformUV(end: Vec2?): Vec2
+    fun transformUV(end: Vec2f?): Vec2f
     fun transformUV(end: FloatArray?): FloatArray
 }

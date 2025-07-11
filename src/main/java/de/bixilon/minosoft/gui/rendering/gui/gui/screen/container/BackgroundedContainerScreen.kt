@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
@@ -35,14 +35,14 @@ abstract class BackgroundedContainerScreen<C : Container>(
     protected val containerBackground = AtlasImageElement(guiRenderer, atlasElement)
     override val customRenderer: Boolean get() = true
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = offset + (size - containerBackground.size) / 2
         super.forceRender(centerOffset, consumer, options)
         containerBackground.render(centerOffset, consumer, options)
         forceRenderContainerScreen(centerOffset, consumer, options)
     }
 
-    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
+    override fun getAt(position: Vec2f): Pair<Element, Vec2f>? {
         val centerOffset = (size - containerBackground.size) / 2
         if (position isSmaller centerOffset) {
             return null
@@ -52,5 +52,5 @@ abstract class BackgroundedContainerScreen<C : Container>(
         return getContainerAt(start) ?: super.getAt(position - centerOffset)
     }
 
-    protected open fun getContainerAt(position: Vec2): Pair<Element, Vec2>? = null
+    protected open fun getContainerAt(position: Vec2f): Pair<Element, Vec2f>? = null
 }

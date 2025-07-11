@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -30,17 +30,17 @@ class RasterizedCodePointRendererTest {
 
     fun verifySimpleSetup() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 this.char++
                 assertEquals(tint, ChatColors.BLUE)
-                assertEquals(uvStart, Vec2(0.1, 0.2))
-                assertEquals(uvEnd, Vec2(0.6, 0.7))
+                assertEquals(uvStart, Vec2f(0.1, 0.2))
+                assertEquals(uvEnd, Vec2f(0.6, 0.7))
                 assertNull(options)
             }
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
 
         assertEquals(1, consumer.char)
     }
@@ -48,83 +48,83 @@ class RasterizedCodePointRendererTest {
     fun verifyComplexSetup() {
         var chars = 0
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 chars++
             }
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, true, true, false, 1.0f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, true, true, false, 1.0f, consumer, null)
 
         assertEquals(4, chars)
     }
 
     fun unformatted() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, index: Int) {
-                assertEquals(start, Vec2(10.0f, 13.0f)) // top spacing
-                assertEquals(end, Vec2(15.0f, 21.0f)) // start + width | start + height
+            override fun addChar(start: Vec2f, end: Vec2f, index: Int) {
+                assertEquals(start, Vec2f(10.0f, 13.0f)) // top spacing
+                assertEquals(end, Vec2f(15.0f, 21.0f)) // start + width | start + height
             }
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
     }
 
     fun `12px height`() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, index: Int) {
-                assertEquals(start, Vec2(10.0f, 9.2f)) // whatever
-                assertEquals(end, Vec2(15.0f, 21.2f))
+            override fun addChar(start: Vec2f, end: Vec2f, index: Int) {
+                assertEquals(start, Vec2f(10.0f, 9.2f)) // whatever
+                assertEquals(end, Vec2f(15.0f, 21.2f))
             }
         }
         val char = DummyCodePointRenderer(ascent = 10.0f, height = 12.0f)
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
     }
 
     fun scaled() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
-                assertEquals(start, Vec2(10.0f, 13.5f)) // top spacing
-                assertEquals(end, Vec2(17.5f, 25.5f)) // start + width | start + height
+            override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+                assertEquals(start, Vec2f(10.0f, 13.5f)) // top spacing
+                assertEquals(end, Vec2f(17.5f, 25.5f)) // start + width | start + height
 
                 // uv stays the same
-                assertEquals(uvStart, Vec2(0.1, 0.2))
-                assertEquals(uvEnd, Vec2(0.6, 0.7))
+                assertEquals(uvStart, Vec2f(0.1, 0.2))
+                assertEquals(uvEnd, Vec2f(0.6, 0.7))
             }
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.5f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.5f, consumer, null)
     }
 
     fun shadow() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, index: Int) {
+            override fun addChar(start: Vec2f, end: Vec2f, index: Int) {
                 if (index == 1) return
-                assertEquals(start, Vec2(11.0f, 14.0f))
-                assertEquals(end, Vec2(16.0f, 22.0f))
+                assertEquals(start, Vec2f(11.0f, 14.0f))
+                assertEquals(end, Vec2f(16.0f, 22.0f))
             }
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, true, false, false, 1.0f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, true, false, false, 1.0f, consumer, null)
 
         assertEquals(consumer.char, 2)
     }
 
     fun bold() {
         val consumer = object : DummyGUIVertexConsumer() {
-            override fun addChar(start: Vec2, end: Vec2, index: Int) {
+            override fun addChar(start: Vec2f, end: Vec2f, index: Int) {
                 if (index == 0) return
-                assertEquals(start, Vec2(10.5f, 13.0f))
-                assertEquals(end, Vec2(15.5f, 21.0f))
+                assertEquals(start, Vec2f(10.5f, 13.0f))
+                assertEquals(end, Vec2f(15.5f, 21.0f))
             }
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, true, false, 1.0f, consumer, null)
+        char.render(Vec2f(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, true, false, 1.0f, consumer, null)
 
         assertEquals(consumer.char, 2)
     }

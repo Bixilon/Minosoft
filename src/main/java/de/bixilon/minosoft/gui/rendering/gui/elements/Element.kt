@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
@@ -28,8 +30,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
-import glm_.vec2.Vec2
-import glm_.vec4.Vec4
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
@@ -68,31 +68,31 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
     @Deprecated("Warning: Should not be directly accessed!")
     open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.quadOrder, context, initialCacheSize)
 
-    private var previousMaxSize = Vec2.EMPTY
+    private var previousMaxSize = Vec2f.EMPTY
 
-    protected open var _prefSize: Vec2 = Vec2.EMPTY
+    protected open var _prefSize: Vec2f = Vec2f.EMPTY
 
     open val canFocus: Boolean get() = false
 
     /**
      * If maxSize was infinity, what size would the element have? (Excluded margin!)
      */
-    open var prefSize: Vec2
+    open var prefSize: Vec2f
         get() = _prefSize
         set(value) {
             _prefSize = value
             apply()
         }
 
-    protected open var _prefMaxSize: Vec2 = Vec2(-1, -1)
-    open var prefMaxSize: Vec2
+    protected open var _prefMaxSize: Vec2f = Vec2f(-1, -1)
+    open var prefMaxSize: Vec2f
         get() = _prefMaxSize
         set(value) {
             _prefMaxSize = value
             apply()
         }
 
-    protected open fun applyMaxSize(max: Vec2) {
+    protected open fun applyMaxSize(max: Vec2f) {
         if (parent == null && !ignoreDisplaySize) {
             if (max.x < 0) max.x = guiRenderer.scaledSize.x
             if (max.y < 0) max.y = guiRenderer.scaledSize.y
@@ -113,11 +113,11 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         max.y = maxOf(0.0f, max.y - margin.vertical)
     }
 
-    val maxSize: Vec2
-        get() = Vec2.MAX.apply { applyMaxSize(this) }
+    val maxSize: Vec2f
+        get() = Vec2f.MAX.apply { applyMaxSize(this) }
 
-    protected open var _size: Vec2 = Vec2.EMPTY
-    open var size: Vec2
+    protected open var _size: Vec2f = Vec2f.EMPTY
+    open var size: Vec2f
         get() {
             return _size.min(maxSize)
         }
@@ -146,8 +146,8 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      *
      * @return The number of z layers used
      */
-    open fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val offset = Vec2(offset)
+    open fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val offset = Vec2f(offset)
         var directRendering = false
         if (consumer is GUIMesh && consumer.data == cache.data) {
             directRendering = true
@@ -165,7 +165,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize !== guiRenderer.halfSize) {
             this.cache.clear()
             cache.halfSize = guiRenderer.halfSize
-            cache.offset = Vec2(offset)
+            cache.offset = Vec2f(offset)
             cache.options = options
             forceRender(offset, cache, options)
             cacheUpToDate = true
@@ -180,7 +180,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      *
      * @return The number of z layers used
      */
-    abstract fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
+    abstract fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change

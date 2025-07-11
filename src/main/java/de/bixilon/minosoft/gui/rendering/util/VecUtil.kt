@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.util
 
 import glm_.func.common.clamp
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
-import glm_.vec3.Vec3t
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3ft
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -37,16 +37,16 @@ object VecUtil {
         )
     }
 
-    infix operator fun Vec3.times(lambda: () -> Float): Vec3 {
-        return Vec3(
+    infix operator fun Vec3f.times(lambda: () -> Float): Vec3f {
+        return Vec3f(
             x = x * lambda(),
             y = y * lambda(),
             z = z * lambda(),
         )
     }
 
-    infix fun Vec3.modify(lambda: (Float) -> Float): Vec3 {
-        return Vec3(
+    infix fun Vec3f.modify(lambda: (Float) -> Float): Vec3f {
+        return Vec3f(
             x = lambda(x),
             y = lambda(y),
             z = lambda(z),
@@ -97,7 +97,7 @@ object VecUtil {
     val Float.sqr: Float
         get() = this * this
 
-    fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
+    fun Vec3f.rotate(axis: Vec3f, sin: Float, cos: Float): Vec3f {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
 
@@ -107,8 +107,8 @@ object VecUtil {
     inline val Int.sectionHeight: Int
         get() = this shr 4
 
-    val Vec3i.centerf: Vec3
-        get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f)
+    val Vec3i.centerf: Vec3f
+        get() = Vec3f(x + 0.5f, y + 0.5f, z + 0.5f)
 
     val Vec3i.center: Vec3d
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
@@ -122,10 +122,10 @@ object VecUtil {
     }
 
     inline infix operator fun Vec3i.plus(vec2: Vec2i?): Vec3i {
-        if (vec2 == null) {
+        if (Vec2f == null) {
             return this
         }
-        return Vec3i((x + vec2.x), y, (z + vec2.y))
+        return Vec3i((x + Vec2f.x), y, (z + Vec2f.y))
     }
 
     inline infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
@@ -136,8 +136,8 @@ object VecUtil {
         this += direction?.vectori ?: return
     }
 
-    inline infix operator fun Vec3i.plus(input: Vec3): Vec3 {
-        return Vec3(input.x + x, input.y + y, input.z + z)
+    inline infix operator fun Vec3i.plus(input: Vec3f): Vec3f {
+        return Vec3f(input.x + x, input.y + y, input.z + z)
     }
 
     inline infix operator fun Vec2i.plus(vec3: Vec3i): Vec2i {
@@ -148,7 +148,7 @@ object VecUtil {
         return this + direction.vectori
     }
 
-    fun BlockPosition.getWorldOffset(offsetType: RandomOffsetTypes): Vec3 {
+    fun BlockPosition.getWorldOffset(offsetType: RandomOffsetTypes): Vec3f {
         val positionHash = hash
         val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
 
@@ -156,7 +156,7 @@ object VecUtil {
             return (((axisHash and 0xF) / 15.0f) - 0.5f) / 2.0f
         }
 
-        val offset = Vec3(
+        val offset = Vec3f(
             x = horizontal(positionHash),
             y = if (offsetType === RandomOffsetTypes.XYZ) {
                 (((positionHash shr 4 and 0xF) / 15.0f) - 1.0f) / 5.0f
@@ -169,14 +169,14 @@ object VecUtil {
         return offset
     }
 
-    fun Vec3.clampAssign(min: Float, max: Float) {
+    fun Vec3f.clampAssign(min: Float, max: Float) {
         this.x = x.clamp(min, max)
         this.y = y.clamp(min, max)
         this.z = z.clamp(min, max)
     }
 
-    fun Vec3.clamp(min: Float, max: Float): Vec3 {
-        return Vec3(
+    fun Vec3f.clamp(min: Float, max: Float): Vec3f {
+        return Vec3f(
             x = x.clamp(min, max),
             y = y.clamp(min, max),
             z = z.clamp(min, max),
@@ -191,14 +191,10 @@ object VecUtil {
         )
     }
 
-    val <T : Number> Vec3t<T>.toVec3: Vec3
-        get() = Vec3(this)
-    val Vec3d.toVec3: Vec3
-        get() = Vec3(this)
+    val Vec3d.toVec3: Vec3f
+        get() = Vec3f(this)
 
-    val <T : Number> Vec3t<T>.toVec3d: Vec3d
-        get() = Vec3d(this)
-    val Vec3.toVec3d: Vec3d
+    val Vec3f.toVec3d: Vec3d
         get() = Vec3d(this)
 
 

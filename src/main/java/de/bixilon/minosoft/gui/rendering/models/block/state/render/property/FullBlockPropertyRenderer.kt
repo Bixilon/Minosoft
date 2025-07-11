@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render.property
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 object FullBlockPropertyRenderer : PropertyOnlyBlockRender {
-    private val properties = SideProperties(arrayOf(FaceProperties(Vec2.EMPTY, Vec2(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)
+    private val properties = SideProperties(arrayOf(FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)
 
     override fun getProperties(direction: Directions) = this.properties
 }

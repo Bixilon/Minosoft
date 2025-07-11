@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenCloseAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
@@ -45,10 +45,10 @@ class ShulkerAnimation(
         const val TRANSFORM = "lid"
         const val NAME = "shulker"
 
-        private val ROTATION_CLOSED = Vec3(0.0f, 0.0f, 0.0f).rad
-        private val ROTATION_OPENED = Vec3(0.0f, -270.0f, 0.0f).rad
+        private val ROTATION_CLOSED = Vec3f(0.0f, 0.0f, 0.0f).rad
+        private val ROTATION_OPENED = Vec3f(0.0f, -270.0f, 0.0f).rad
 
-        private val TRANSLATION_CLOSED = Vec3(0.0f, 0.0f, 0.0f)
-        private val TRANSLATION_OPENED = Vec3(0.0f, 0.5f, 0.0f)
+        private val TRANSLATION_CLOSED = Vec3f(0.0f, 0.0f, 0.0f)
+        private val TRANSLATION_OPENED = Vec3f(0.0f, 0.5f, 0.0f)
     }
 }

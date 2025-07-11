@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -45,7 +45,7 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
     override fun addCache(cache: GUIMeshCache) = Broken("This is not a text only consumer!")
 
     data class BillboardTextMeshStruct(
-        val position: Vec2,
+        val position: Vec2f,
         val uv: UnpackedUV,
         val indexLayerAnimation: Int,
         val tint: RGBColor,

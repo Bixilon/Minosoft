@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
@@ -53,15 +53,15 @@ class NodeTextInputElement(
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, properties, cutAtSize, parent) {
     private var showError = false
-    private val errorElement = NodeErrorElement(guiRenderer, Vec2.EMPTY)
-    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2.EMPTY, this)
+    private val errorElement = NodeErrorElement(guiRenderer, Vec2f.EMPTY)
+    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2f.EMPTY, this)
 
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         errorElement.position = offset
-        suggestions.position = offset + Vec2(cursorOffset.x, 0)
+        suggestions.position = offset + Vec2f(cursorOffset.x, 0)
     }
 
 

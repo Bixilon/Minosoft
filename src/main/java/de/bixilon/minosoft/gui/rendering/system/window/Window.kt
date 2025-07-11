@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
@@ -20,11 +22,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.system.SystemUtil
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.matthiasmann.twl.utils.PNGDecoder
+import org.lwjgl.BufferUtils
+import java.nio.ByteBuffer
 
 interface Window {
-    val systemScale: Vec2
+    val systemScale: Vec2f
 
     var size: Vec2i
     var minSize: Vec2i

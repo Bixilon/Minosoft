@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
@@ -257,7 +257,7 @@ class KeyframeInstanceTest {
         }
 
         fun transform(time: Float): Boolean {
-            return transform(time, TransformInstance(0, Vec3.EMPTY, emptyMap()))
+            return transform(time, TransformInstance(0, Vec3f.EMPTY, emptyMap()))
         }
     }
 }

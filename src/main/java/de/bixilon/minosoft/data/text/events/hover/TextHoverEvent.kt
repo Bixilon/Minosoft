@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.events.hover
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -30,7 +30,7 @@ class TextHoverEvent(
         text.accessibleText = this.text.message
     }
 
-    override fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2f, absolute: Vec2f): Boolean {
         val popper = TextPopper(guiRenderer, absolute, text)
         popper.show()
         this.popper = popper

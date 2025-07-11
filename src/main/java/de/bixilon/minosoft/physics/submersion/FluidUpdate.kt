@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.submersion
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 
 data class FluidUpdate(
     val height: Double,

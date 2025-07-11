@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
@@ -37,7 +37,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     override var totalHealth = 0.0f
     override var totalMaxHealth = 0.0f
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (!shown) {
             return
         }
@@ -57,7 +57,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
             val halfHeart = healthLeft < 1.5f
             val image = atlas?.getHeart(halfHeart)?.let { AtlasImageElement(guiRenderer, it) }
 
-            image?.render(offset + Vec2(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
+            image?.render(offset + Vec2f(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 
             heart++
             healthLeft -= if(halfHeart) 1.0f else 2.0f

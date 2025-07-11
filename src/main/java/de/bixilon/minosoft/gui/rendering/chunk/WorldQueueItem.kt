@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -24,7 +24,7 @@ class WorldQueueItem(
     val position: SectionPosition,
     val chunk: Chunk,
     val section: ChunkSection,
-    val center: Vec3,
+    val center: Vec3f,
 ) {
     var mesh: ChunkMeshes? = null
 

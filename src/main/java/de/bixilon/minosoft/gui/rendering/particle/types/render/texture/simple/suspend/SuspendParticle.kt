@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
@@ -24,7 +24,7 @@ abstract class SuspendParticle(session: PlaySession, position: Vec3d, velocity: 
 
     init {
         this.color = (random.nextFloat() * 0.1f + 0.2f).asGray().rgba()
-        spacing = Vec3(0.2f)
+        spacing = Vec3f(0.2f)
         super.scale *= random.nextFloat() * 0.6f + 0.5f
         this.velocity *= 0.019999999552965164
         maxAge = (20 / (random.nextFloat() * 0.8f + 0.2f)).toInt()

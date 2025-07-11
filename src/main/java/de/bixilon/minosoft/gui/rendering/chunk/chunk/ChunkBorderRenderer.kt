@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.chunk
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -113,23 +113,23 @@ class ChunkBorderRenderer(
                     continue
                 }
                 val chunkBase = (chunkPosition + ChunkPosition(x, z)) * ChunkSize.SECTION_WIDTH_X - ChunkPosition(offset.x, offset.z)
-                drawLine(Vec3(chunkBase.x + 0, dimension.minY - offset.y, chunkBase.z), Vec3(chunkBase.x + 0, dimension.maxY - offset.y + 1, chunkBase.z), OUTER_CHUNK_LINE_WIDTH, OUTER_CHUNK_COLOR)
+                drawLine(Vec3f(chunkBase.x + 0, dimension.minY - offset.y, chunkBase.z), Vec3f(chunkBase.x + 0, dimension.maxY - offset.y + 1, chunkBase.z), OUTER_CHUNK_LINE_WIDTH, OUTER_CHUNK_COLOR)
             }
         }
     }
 
     private fun LineMesh.drawInnerChunkLines(basePosition: Vec3i, dimension: DimensionProperties) {
-        drawLine(Vec3(basePosition.x + 0, basePosition.y + dimension.minY, basePosition.z), Vec3(basePosition.x + 0, basePosition.y + dimension.maxY + 1, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
-        drawLine(Vec3(basePosition.x, basePosition.y + dimension.minY, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x, basePosition.y + dimension.maxY + 1, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
-        drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.minY, basePosition.z + 0), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.maxY + 1, basePosition.z + 0), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
-        drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.minY, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.maxY + 1, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+        drawLine(Vec3f(basePosition.x + 0, basePosition.y + dimension.minY, basePosition.z), Vec3f(basePosition.x + 0, basePosition.y + dimension.maxY + 1, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+        drawLine(Vec3f(basePosition.x, basePosition.y + dimension.minY, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x, basePosition.y + dimension.maxY + 1, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+        drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.minY, basePosition.z + 0), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.maxY + 1, basePosition.z + 0), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+        drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.minY, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.maxY + 1, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
 
         for (sectionHeight in dimension.minSection..dimension.maxSection) {
             val y = basePosition.y + sectionHeight * ChunkSize.SECTION_HEIGHT_Y
-            drawLine(Vec3(basePosition.x, y, basePosition.z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
-            drawLine(Vec3(basePosition.x, y, basePosition.z), Vec3(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
-            drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
-            drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+            drawLine(Vec3f(basePosition.x, y, basePosition.z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+            drawLine(Vec3f(basePosition.x, y, basePosition.z), Vec3f(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+            drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
+            drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
         }
     }
 
@@ -141,8 +141,8 @@ class ChunkBorderRenderer(
                 else -> SECTION_COLOR_2
             }
 
-            drawLine(Vec3(basePosition.x + x, basePosition.y, basePosition.z), Vec3(basePosition.x + x, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z), SECTION_LINE_WIDTH, color)
-            drawLine(Vec3(basePosition.x + x, basePosition.y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x + x, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, color)
+            drawLine(Vec3f(basePosition.x + x, basePosition.y, basePosition.z), Vec3f(basePosition.x + x, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z), SECTION_LINE_WIDTH, color)
+            drawLine(Vec3f(basePosition.x + x, basePosition.y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x + x, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, color)
         }
 
         for (z in 1..ChunkSize.SECTION_MAX_Z) {
@@ -151,8 +151,8 @@ class ChunkBorderRenderer(
                 else -> SECTION_COLOR_2
             }
 
-            drawLine(Vec3(basePosition.x, basePosition.y, basePosition.z + z), Vec3(basePosition.x, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z + z), SECTION_LINE_WIDTH, color)
-            drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y, basePosition.z + z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z + z), SECTION_LINE_WIDTH, color)
+            drawLine(Vec3f(basePosition.x, basePosition.y, basePosition.z + z), Vec3f(basePosition.x, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z + z), SECTION_LINE_WIDTH, color)
+            drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y, basePosition.z + z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + ChunkSize.SECTION_HEIGHT_Y, basePosition.z + z), SECTION_LINE_WIDTH, color)
         }
 
         // horizontal lines
@@ -164,10 +164,10 @@ class ChunkBorderRenderer(
 
             // x/z border
             if (y != basePosition.y && y != basePosition.y + ChunkSize.SECTION_HEIGHT_Y) {
-                drawLine(Vec3(basePosition.x, y, basePosition.z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), SECTION_LINE_WIDTH, borderColor)
-                drawLine(Vec3(basePosition.x, y, basePosition.z), Vec3(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, borderColor)
-                drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), SECTION_LINE_WIDTH, borderColor)
-                drawLine(Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, borderColor)
+                drawLine(Vec3f(basePosition.x, y, basePosition.z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), SECTION_LINE_WIDTH, borderColor)
+                drawLine(Vec3f(basePosition.x, y, basePosition.z), Vec3f(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, borderColor)
+                drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z), SECTION_LINE_WIDTH, borderColor)
+                drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, borderColor)
             }
 
             if (y % ChunkSize.SECTION_HEIGHT_Y != 0) {
@@ -180,14 +180,14 @@ class ChunkBorderRenderer(
                     x % 2 == 0 -> SECTION_COLOR_1
                     else -> SECTION_COLOR_2
                 }
-                drawLine(Vec3(basePosition.x + x, y, basePosition.z), Vec3(basePosition.x + x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, color)
+                drawLine(Vec3f(basePosition.x + x, y, basePosition.z), Vec3f(basePosition.x + x, y, basePosition.z + ChunkSize.SECTION_WIDTH_Z), SECTION_LINE_WIDTH, color)
             }
             for (z in 1..ChunkSize.SECTION_MAX_Z) {
                 val color = when {
                     z % 2 == 0 -> SECTION_COLOR_1
                     else -> SECTION_COLOR_2
                 }
-                drawLine(Vec3(basePosition.x, y, basePosition.z + z), Vec3(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + z), SECTION_LINE_WIDTH, color)
+                drawLine(Vec3f(basePosition.x, y, basePosition.z + z), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, y, basePosition.z + z), SECTION_LINE_WIDTH, color)
             }
         }
     }

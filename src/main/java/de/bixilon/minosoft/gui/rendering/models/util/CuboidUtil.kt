@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.util
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 
 object CuboidUtil {
 
-    fun positions(direction: Directions, from: Vec3, to: Vec3): FaceVertexData {
+    fun positions(direction: Directions, from: Vec3f, to: Vec3f): FaceVertexData {
         return when (direction) {
             // @formatter:off
             Directions.DOWN ->  floatArrayOf(from.x, from.y, from.z,   from.x, from.y, to  .z,   to  .x, from.y, to  .z,   to  .x, from.y, from.z)
@@ -37,7 +37,7 @@ object CuboidUtil {
         }
     }
 
-    fun cubeUV(offset: Vec2i, from: Vec3, to: Vec3, direction: Directions): FaceUV {
+    fun cubeUV(offset: Vec2i, from: Vec3f, to: Vec3f, direction: Directions): FaceUV {
         val cube = Vec3i(to - from)
 
         val uv = Vec2i(offset)
@@ -80,6 +80,6 @@ object CuboidUtil {
         }
 
 
-        return FaceUV(Vec2(uv.x, uv.y), Vec2(uv.x + size.x, uv.y + size.y))
+        return FaceUV(Vec2f(uv.x, uv.y), Vec2f(uv.x + size.x, uv.y + size.y))
     }
 }

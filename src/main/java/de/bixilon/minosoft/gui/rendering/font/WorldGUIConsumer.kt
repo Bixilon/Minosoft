@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 class WorldGUIConsumer(val mesh: ChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
     override val order: RenderOrder get() = mesh.order
-    private val uv = Vec2()
+    private val uv = Vec2f()
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)

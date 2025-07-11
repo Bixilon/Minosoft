@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -70,7 +70,7 @@ data class SkeletalModel(
         for ((name, transform) in this.transforms) {
             transforms[name] = transform.bake(transformId)
         }
-        val baseTransform = BakedSkeletalTransform(0, Vec3.EMPTY, transforms)
+        val baseTransform = BakedSkeletalTransform(0, Vec3f.EMPTY, transforms)
 
         return Pair(baseTransform, transformId.get())
     }

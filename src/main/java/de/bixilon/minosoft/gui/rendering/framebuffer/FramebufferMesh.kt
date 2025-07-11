@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -24,21 +24,21 @@ class FramebufferMesh(context: RenderContext) : Mesh(context, DefaultFramebuffer
 
     init {
         val vertices = arrayOf(
-            Vec2(-1.0f, -1.0f) to Vec2(0.0f, 1.0f),
-            Vec2(-1.0f, +1.0f) to Vec2(0.0f, 0.0f),
-            Vec2(+1.0f, +1.0f) to Vec2(1.0f, 0.0f),
-            Vec2(+1.0f, -1.0f) to Vec2(1.0f, 1.0f),
+            Vec2f(-1.0f, -1.0f) to Vec2f(0.0f, 1.0f),
+            Vec2f(-1.0f, +1.0f) to Vec2f(0.0f, 0.0f),
+            Vec2f(+1.0f, +1.0f) to Vec2f(1.0f, 0.0f),
+            Vec2f(+1.0f, -1.0f) to Vec2f(1.0f, 1.0f),
         )
         order.iterate { position, uv -> addVertex(vertices[position].first, vertices[uv].second) }
     }
 
-    private fun addVertex(position: Vec2, uv: Vec2) {
+    private fun addVertex(position: Vec2f, uv: Vec2f) {
         data.add(position.array)
         data.add(uv.array)
     }
 
     data class DefaultFramebufferMeshStruct(
-        val position: Vec2,
+        val position: Vec2f,
         val uv: UnpackedUV,
     ) {
         companion object : MeshStruct(DefaultFramebufferMeshStruct::class)

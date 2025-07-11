@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
@@ -49,7 +49,7 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
     }
 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AABB {
-        return AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(state), 1.0f))
+        return AABB(Vec3f.EMPTY, Vec3f(1.0f, fluid.getHeight(state), 1.0f))
     }
 
     override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES

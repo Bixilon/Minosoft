@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -24,7 +24,7 @@ class ExplosionEvent(
     val position: Vec3d,
     val power: Float,
     val explodedBlocks: Array<BlockPosition>,
-    val velocity: Vec3,
+    val velocity: Vec3f,
 ) : PlaySessionEvent(session) {
 
     constructor(session: PlaySession, packet: ExplosionS2CP) : this(session, packet.position, packet.power, packet.explodedBlocks, packet.velocity)

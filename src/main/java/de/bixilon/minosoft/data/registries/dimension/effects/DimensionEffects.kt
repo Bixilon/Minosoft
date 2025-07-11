@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.dimension.effects
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -31,7 +31,7 @@ interface DimensionEffects : Identified {
     val clouds: Boolean
     fun getCloudHeight(session: PlaySession): IntRange
 
-    val brighten: Vec3? get() = null
+    val brighten: Vec3f? get() = null
 
     val fog: FogEffects?
 }

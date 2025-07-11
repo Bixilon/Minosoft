@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIMeshElement
 
 class DraggedGUIElement<T : Dragged>(element: T) : GUIMeshElement<T>(element) {
@@ -22,7 +22,7 @@ class DraggedGUIElement<T : Dragged>(element: T) : GUIMeshElement<T>(element) {
         prepareAsync(guiRenderer.currentMousePosition - (element.size / 2))
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         val element = guiRenderer.gui.onDragMove(position, element)
         this.element.onDragMove(position, element)
         return element != null

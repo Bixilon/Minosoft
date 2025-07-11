@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.element.face
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
@@ -40,7 +40,7 @@ data class ModelFace(
     }
 
 
-    fun getUV(uvLock: Boolean, from: Vec3, to: Vec3, direction: Directions, rotatedDirection: Directions, positions: FloatArray, x: Int, y: Int): FaceUV {
+    fun getUV(uvLock: Boolean, from: Vec3f, to: Vec3f, direction: Directions, rotatedDirection: Directions, positions: FloatArray, x: Int, y: Int): FaceUV {
         if (!uvLock) {
             return this.uv ?: fallbackUV(direction, from, to)
         }
@@ -68,8 +68,8 @@ data class ModelFace(
             val uv = data["uv"]?.listCast<Number>()?.let {
                 // auto transform (flip) y coordinate (in minosoft 0|0 is left up, not like in minecraft/opengl where it is left down)
                 FaceUV(
-                    start = Vec2(it[0].toFloat(), it[3].toFloat()) / BLOCK_SIZE,
-                    end = Vec2(it[2].toFloat(), it[1].toFloat()) / BLOCK_SIZE,
+                    start = Vec2f(it[0].toFloat(), it[3].toFloat()) / BLOCK_SIZE,
+                    end = Vec2f(it[2].toFloat(), it[1].toFloat()) / BLOCK_SIZE,
                 )
             }
 
@@ -94,7 +94,7 @@ data class ModelFace(
             return map
         }
 
-        fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
+        fun fallbackUV(direction: Directions, from: Vec3f, to: Vec3f): FaceUV {
             return when (direction) {
                 // @formatter:off
                 Directions.DOWN ->  FaceUV(from.x,      1.0f - from.z,   to.x,             1.0f - to.z)
@@ -107,17 +107,17 @@ data class ModelFace(
             }
         }
 
-        private fun FloatArray.start(): Vec3 {
-            return Vec3(this[0], this[1], this[2])
+        private fun FloatArray.start(): Vec3f {
+            return Vec3f(this[0], this[1], this[2])
         }
 
-        private fun FloatArray.end(): Vec3 {
-            return Vec3(this[6], this[7], this[8])
+        private fun FloatArray.end(): Vec3f {
+            return Vec3f(this[6], this[7], this[8])
         }
 
 
         private fun FaceUV.rotateLeft(): FaceUV {
-            return FaceUV(Vec2(-start.y + 1.0f, end.x), Vec2(-end.y + 1.0f, start.x))
+            return FaceUV(Vec2f(-start.y + 1.0f, end.x), Vec2f(-end.y + 1.0f, start.x))
         }
     }
 }

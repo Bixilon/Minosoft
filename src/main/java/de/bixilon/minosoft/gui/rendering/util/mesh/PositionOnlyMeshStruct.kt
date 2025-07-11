@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 
 
 data class PositionOnlyMeshStruct(
-    val position: Vec3,
+    val position: Vec3f,
 ) {
     companion object : MeshStruct(PositionOnlyMeshStruct::class)
 }

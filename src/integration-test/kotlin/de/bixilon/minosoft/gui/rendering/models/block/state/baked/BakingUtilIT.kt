@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
@@ -25,32 +25,32 @@ import org.testng.annotations.Test
 class BakingUtilIT {
 
     fun `combine single properties`() {
-        val raw = arrayOf(mutableListOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
+        val raw = arrayOf(mutableListOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
     }
 
     fun `combine multiple identical properties`() {
-        val raw = arrayOf(mutableListOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
+        val raw = arrayOf(mutableListOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
     }
 
     fun `combine 2 half block properties`() {
-        val raw = arrayOf(mutableListOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE), FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
+        val raw = arrayOf(mutableListOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE), FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
     }
 
     fun `combine same size but different transparency types`() {
-        val raw = arrayOf(mutableListOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)))
-        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
+        val raw = arrayOf(mutableListOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)))
+        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)))
     }
 
     fun `combine same size and transparent types`() {
-        val raw = arrayOf(mutableListOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.TRANSPARENT), FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)))
-        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)), TextureTransparencies.TRANSPARENT)))
+        val raw = arrayOf(mutableListOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.TRANSPARENT), FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)))
+        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)), TextureTransparencies.TRANSPARENT)))
     }
 
     fun `combine not matching size and and transparency types`() {
-        val raw = arrayOf(mutableListOf(FaceProperties(Vec2(0.1f, 0.3f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)))
-        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2(0.1f, 0.3f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)), TextureTransparencies.TRANSPARENT)), null)
+        val raw = arrayOf(mutableListOf(FaceProperties(Vec2f(0.1f, 0.3f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)))
+        assertEquals(raw.compactProperties(), arrayOf(SideProperties(arrayOf(FaceProperties(Vec2f(0.1f, 0.3f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE), FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.TRANSPARENT)), TextureTransparencies.TRANSPARENT)), null)
     }
 }

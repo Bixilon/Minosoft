@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
-import glm_.vec2.Vec2i
 
 abstract class StaticTextureArray(
     val context: RenderContext,

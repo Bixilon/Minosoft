@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid

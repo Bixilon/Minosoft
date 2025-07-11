@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -27,7 +27,7 @@ class WorldBorderShader(
 ) : Shader(), TextureShader, ViewProjectionShader, FogShader, CameraPositionShader, TintedShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
-    override var cameraPosition: Vec3 by cameraPosition()
+    override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()
 
     override var tint by uniform("uTintColor", ChatColors.BLACK)

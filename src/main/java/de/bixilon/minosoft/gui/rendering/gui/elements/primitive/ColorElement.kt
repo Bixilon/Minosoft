@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
 class ColorElement(
     guiRenderer: GUIRenderer,
-    size: Vec2,
+    size: Vec2f,
     color: RGBAColor = ChatColors.WHITE,
 ) : AtlasImageElement(guiRenderer, guiRenderer.context.textures.whiteTexture, size, color) {
     var color by this::tint

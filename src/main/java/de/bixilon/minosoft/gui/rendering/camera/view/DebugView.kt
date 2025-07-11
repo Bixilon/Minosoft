@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view
 
-import glm_.vec2.Vec2d
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -33,7 +33,7 @@ class DebugView(private val camera: Camera) : CameraView {
     override var eyePosition = Vec3d.EMPTY
 
     override var rotation = EntityRotation.EMPTY
-    override var front = Vec3.EMPTY
+    override var front = Vec3f.EMPTY
 
 
     override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
@@ -79,6 +79,6 @@ class DebugView(private val camera: Camera) : CameraView {
     override fun onAttach(previous: CameraView?) {
         this.eyePosition = previous?.eyePosition ?: Vec3d.EMPTY
         this.rotation = previous?.rotation ?: EntityRotation.EMPTY
-        this.front = previous?.front ?: Vec3.EMPTY
+        this.front = previous?.front ?: Vec3f.EMPTY
     }
 }

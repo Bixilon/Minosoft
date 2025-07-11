@@ -16,32 +16,32 @@ package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 import glm_.func.rad
 import glm_.glm
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 
 object Mat4Util {
     private val empty = Mat4()
 
     val Mat4.Companion.EMPTY_INSTANCE get() = empty
 
-    fun Mat4.rotateDegreesAssign(rotation: Vec3): Mat4 {
+    fun Mat4.rotateDegreesAssign(rotation: Vec3f): Mat4 {
         if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
         if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
         if (rotation.z != 0.0f) rotateZ(this, rotation.z.rad)
         return this
     }
 
-    fun Mat4.rotateRadAssign(rotation: Vec3): Mat4 {
+    fun Mat4.rotateRadAssign(rotation: Vec3f): Mat4 {
         if (rotation.x != 0.0f) rotateX(this, rotation.x)
         if (rotation.y != 0.0f) rotateY(this, rotation.y)
         if (rotation.z != 0.0f) rotateZ(this, rotation.z)
         return this
     }
 
-    operator fun Mat4.times(vec3: Vec3): Vec3 {
-        return this.times(vec3, vec3)
+    operator fun Mat4.times(vec3: Vec3f): Vec3f {
+        return this.times(Vec3f, vec3)
     }
 
-    fun Mat4.times(vec3: Vec3, res: Vec3): Vec3 {
+    fun Mat4.times(vec3: Vec3f, res: Vec3f): Vec3f {
         val array = vec3.array
         res[0] = this[0, 0] * array[0] + this[1, 0] * array[1] + this[2, 0] * array[2] + this[3, 0]
         res[1] = this[0, 1] * array[0] + this[1, 1] * array[1] + this[2, 1] * array[2] + this[3, 1]

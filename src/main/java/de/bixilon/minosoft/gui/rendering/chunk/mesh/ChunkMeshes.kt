@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -34,7 +34,7 @@ class ChunkMeshes(
     val position: SectionPosition,
     smallMesh: Boolean = false,
 ) : BlockVertexConsumer {
-    val center: Vec3 = Vec3(BlockPosition.of(position, InSectionPosition(8, 8, 8)))
+    val center: Vec3f = Vec3f(BlockPosition.of(position, InSectionPosition(8, 8, 8)))
     var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 8192 else 65536)
     var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 4096 else 16384)
     var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 1024 else 4096)
@@ -133,7 +133,7 @@ class ChunkMeshes(
 
     override val order get() = Broken()
     override fun ensureSize(floats: Int) = Unit
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken()
+    override fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken()
 

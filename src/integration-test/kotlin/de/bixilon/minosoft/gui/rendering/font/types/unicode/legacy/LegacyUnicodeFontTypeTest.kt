@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -61,8 +61,8 @@ class LegacyUnicodeFontTypeTest {
         val chars = load(sizes)
 
         val char = chars[0]!!
-        assertEquals(char.uvStart, Vec2(0, 0))
-        assertEquals(char.uvEnd, Vec2(0.0390625f, 0.0625f))
+        assertEquals(char.uvStart, Vec2f(0, 0))
+        assertEquals(char.uvEnd, Vec2f(0.0390625f, 0.0625f))
         assertEquals(char.width, 5.0f)
     }
 
@@ -71,8 +71,8 @@ class LegacyUnicodeFontTypeTest {
         val chars = load(sizes)
 
         val char = chars[0]!!
-        assertEquals(char.uvStart, Vec2(0, 0))
-        assertEquals(char.uvEnd, Vec2(0.00390625, 0.0625))
+        assertEquals(char.uvStart, Vec2f(0, 0))
+        assertEquals(char.uvEnd, Vec2f(0.00390625, 0.0625))
         assertEquals(char.width, 0.5f)
     }
 
@@ -81,8 +81,8 @@ class LegacyUnicodeFontTypeTest {
         val chars = load(sizes)
 
         val char = chars[1]!!
-        assertEquals(char.uvStart, Vec2(0.06640625, 0))
-        assertEquals(char.uvEnd, Vec2(0.09765625, 0.0625f))
+        assertEquals(char.uvStart, Vec2f(0.06640625, 0))
+        assertEquals(char.uvEnd, Vec2f(0.09765625, 0.0625f))
         assertEquals(char.width, 4.0f)
     }
 
@@ -92,8 +92,8 @@ class LegacyUnicodeFontTypeTest {
         val chars = load(sizes)
 
         val char = chars[18]!!
-        assertEquals(char.uvStart, Vec2(0.15625, 0.0625))
-        assertEquals(char.uvEnd, Vec2(0.18359375, 0.125))
+        assertEquals(char.uvStart, Vec2f(0.15625, 0.0625))
+        assertEquals(char.uvEnd, Vec2f(0.18359375, 0.125))
         assertEquals(char.width, 3.5f)
     }
 }

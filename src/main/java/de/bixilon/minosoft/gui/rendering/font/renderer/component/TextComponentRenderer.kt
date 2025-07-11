@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -53,21 +53,21 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return false
     }
 
-    private fun renderStrikethrough(offset: Vec2, width: Float, italic: Boolean, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    private fun renderStrikethrough(offset: Vec2f, width: Float, italic: Boolean, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val y = offset.y + properties.charSpacing.top + properties.charBaseHeight / 2.0f - 1.0f
 
         // TODO: italic
-        consumer.addQuad(Vec2(offset.x, y), Vec2(offset.x + width, y + 1.0f), color, options)
+        consumer.addQuad(Vec2f(offset.x, y), Vec2f(offset.x + width, y + 1.0f), color, options)
     }
 
-    private fun renderUnderline(offset: Vec2, width: Float, italic: Boolean, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    private fun renderUnderline(offset: Vec2f, width: Float, italic: Boolean, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val y = offset.y + properties.charSpacing.top + properties.charBaseHeight
 
         // TODO: italic
-        consumer.addQuad(Vec2(offset.x, y), Vec2(offset.x + width, y + 1.0f), color, options)
+        consumer.addQuad(Vec2f(offset.x, y), Vec2f(offset.x + width, y + 1.0f), color, options)
     }
 
-    private fun renderFormatting(offset: Vec2, text: TextComponent, width: Float, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    private fun renderFormatting(offset: Vec2f, text: TextComponent, width: Float, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (width <= 0.0f) return
         val italic = FormattingCodes.ITALIC in text.formatting
         if (FormattingCodes.UNDERLINED in text.formatting) {
@@ -79,7 +79,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
     }
 
 
-    private fun LineRenderInfo.pushAndRender(offset: Vec2, text: TextComponent, line: StringBuilder, width: Float, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer?, options: GUIVertexOptions?) {
+    private fun LineRenderInfo.pushAndRender(offset: Vec2f, text: TextComponent, line: StringBuilder, width: Float, color: RGBAColor, properties: TextRenderProperties, consumer: GUIVertexConsumer?, options: GUIVertexOptions?) {
         if (consumer == null) {
             push(text, line)
         } else {
@@ -105,7 +105,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val line = StringBuilder(text.message.length)
         var update = false
         var filled = false
-        val lineStart = Vec2(offset.offset)
+        val lineStart = Vec2f(offset.offset)
 
 
         val stream = text.message.codePoints().iterator()

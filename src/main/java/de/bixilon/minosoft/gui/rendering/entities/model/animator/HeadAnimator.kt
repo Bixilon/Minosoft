@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities.model.animator
 
 import glm_.func.rad
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
@@ -25,7 +25,7 @@ class HeadAnimator(
     val renderer: EntityRenderer<*>,
     val transform: TransformInstance,
 ) {
-    private var rotation = Vec3.EMPTY
+    private var rotation = Vec3f.EMPTY
 
     fun update() {
         val info = renderer.info

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 
 enum class VerticalAlignments {
     TOP,
@@ -30,8 +30,8 @@ enum class VerticalAlignments {
             }
         }
 
-        fun VerticalAlignments.getOffset(size: Vec2, childSize: Vec2): Vec2 {
-            return Vec2(0, getOffset(size.y, childSize.y))
+        fun VerticalAlignments.getOffset(size: Vec2f, childSize: Vec2f): Vec2f {
+            return Vec2f(0, getOffset(size.y, childSize.y))
         }
     }
 }

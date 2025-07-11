@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
@@ -29,8 +29,8 @@ abstract class SimpleOverlay(
     protected open val shader = context.shaders.genericTexture2dShader
     private var mesh = SimpleTextureMesh(context)
     protected var tintColor: RGBAColor? = null
-    protected open var uvStart = Vec2(0.0f, 0.0f)
-    protected open var uvEnd = Vec2(1.0f, 1.0f)
+    protected open var uvStart = Vec2f(0.0f, 0.0f)
+    protected open var uvEnd = Vec2f(1.0f, 1.0f)
 
 
     protected fun updateMesh() {
@@ -39,7 +39,7 @@ abstract class SimpleOverlay(
         }
         mesh = SimpleTextureMesh(context)
 
-        mesh.addZQuad(Vec2(-1.0f, -1.0f), OverlayManager.OVERLAY_Z, Vec2(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
+        mesh.addZQuad(Vec2f(-1.0f, -1.0f), OverlayManager.OVERLAY_Z, Vec2f(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
         mesh.load()
     }
 

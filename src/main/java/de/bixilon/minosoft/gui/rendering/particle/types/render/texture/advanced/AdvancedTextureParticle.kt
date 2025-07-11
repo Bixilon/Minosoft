@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
@@ -23,8 +23,8 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class AdvancedTextureParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, velocity, data) {
-    var minUV: Vec2 = Vec2(0.0f, 0.0f)
-    var maxUV: Vec2 = Vec2(1.0f, 1.0f)
+    var minUV: Vec2f = Vec2f(0.0f, 0.0f)
+    var maxUV: Vec2f = Vec2f(1.0f, 1.0f)
 
     override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) {
         val light = light

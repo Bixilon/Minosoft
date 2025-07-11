@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
@@ -21,8 +21,8 @@ object DummyTextureRenderData : TextureRenderData {
     override val shaderTextureId: Int = 0
     override val animationData: Int = -1
 
-    override fun transformUV(end: Vec2?): Vec2 {
-        return end ?: Vec2.EMPTY
+    override fun transformUV(end: Vec2f?): Vec2f {
+        return end ?: Vec2f.EMPTY
     }
 
     override fun transformUV(end: FloatArray?): FloatArray {

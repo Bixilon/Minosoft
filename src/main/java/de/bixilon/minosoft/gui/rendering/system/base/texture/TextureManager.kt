@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.CodeTexturePart
@@ -45,7 +45,7 @@ abstract class TextureManager {
             throw IllegalStateException("Already initialized!")
         }
         debugTexture = static.create(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
-        whiteTexture = CodeTexturePart(texture = static.create(minosoft("white").texture(), mipmaps = false), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
+        whiteTexture = CodeTexturePart(texture = static.create(minosoft("white").texture(), mipmaps = false), uvStart = Vec2f(0.0f, 0.0f), uvEnd = Vec2f(0.001f, 0.001f), size = Vec2i(16, 16))
     }
 
     fun initializeSkins(session: PlaySession) {

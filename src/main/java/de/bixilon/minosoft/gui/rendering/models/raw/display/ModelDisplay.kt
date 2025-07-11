@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.raw.display
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
@@ -24,9 +24,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ModelDisplay(
-    val rotation: Vec3 = Vec3.EMPTY_INSTANCE,
-    val translation: Vec3 = Vec3.EMPTY_INSTANCE,
-    val scale: Vec3 = Vec3.ONE,
+    val rotation: Vec3f = Vec3f.EMPTY_INSTANCE,
+    val translation: Vec3f = Vec3f.EMPTY_INSTANCE,
+    val scale: Vec3f = Vec3f.ONE,
 ) {
     val matrix = Mat4()
         .scaleAssign(scale)
@@ -36,15 +36,15 @@ data class ModelDisplay(
         .translateAssign(N_CENTER)
 
     companion object {
-        val CENTER = Vec3(0.5f)
+        val CENTER = Vec3f(0.5f)
         val N_CENTER = -CENTER
         val DEFAULT = ModelDisplay()
 
         fun deserialize(data: JsonObject): ModelDisplay {
             return ModelDisplay(
-                rotation = data["rotation"]?.toVec3()?.rad ?: Vec3.EMPTY_INSTANCE,
-                translation = data["translation"]?.toVec3()?.apply { this /= BLOCK_SIZE } ?: Vec3.EMPTY_INSTANCE,
-                scale = data["scale"]?.toVec3() ?: Vec3.ONE,
+                rotation = data["rotation"]?.toVec3f()?.rad ?: Vec3f.EMPTY_INSTANCE,
+                translation = data["translation"]?.toVec3f()?.apply { this /= BLOCK_SIZE } ?: Vec3f.EMPTY_INSTANCE,
+                scale = data["scale"]?.toVec3f() ?: Vec3f.ONE,
             )
         }
     }

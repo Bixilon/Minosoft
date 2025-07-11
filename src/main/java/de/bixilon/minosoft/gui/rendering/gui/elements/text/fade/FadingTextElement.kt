@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.fade
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -62,7 +62,7 @@ class FadingTextElement(
     }
 
     private fun updateSize(phase: FadePhase?) {
-        this._size = if (phase == null) Vec2.EMPTY else info.size.withBackgroundSize()
+        this._size = if (phase == null) Vec2f.EMPTY else info.size.withBackgroundSize()
     }
 
     fun show() {
@@ -81,7 +81,7 @@ class FadingTextElement(
         parent?.onChildChange(this)
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (phase == null) return
         val millis = now()
         this.updatePhase(millis)

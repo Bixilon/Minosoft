@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.events.input
 
-import glm_.vec2.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 import de.bixilon.minosoft.modding.event.events.CancelableEvent

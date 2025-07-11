@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 data class FaceProperties(
-    val start: Vec2,
-    val end: Vec2,
+    val start: Vec2f,
+    val end: Vec2f,
     val transparency: TextureTransparencies,
 ) {
     val surface = (end.x - start.x) * (end.y - start.y)

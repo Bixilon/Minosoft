@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.light
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -33,7 +33,7 @@ class LightmapBuffer(renderSystem: RenderSystem) {
         buffer.upload()
     }
 
-    operator fun set(sky: Int, block: Int, color: Vec3) {
+    operator fun set(sky: Int, block: Int, color: Vec3f) {
         val index = ((sky shl 4) or block) * 4
 
         if (upload || buffer.buffer.get(index + 0) != color.r) {

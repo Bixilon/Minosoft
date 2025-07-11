@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-open class SpacerElement(guiRenderer: GUIRenderer, override var size: Vec2) : Element(guiRenderer) {
+open class SpacerElement(guiRenderer: GUIRenderer, override var size: Vec2f) : Element(guiRenderer) {
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
 
     override fun silentApply(): Boolean = false
     override fun forceSilentApply() = Unit

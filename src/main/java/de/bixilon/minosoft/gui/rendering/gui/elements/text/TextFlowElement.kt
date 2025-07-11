@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -75,13 +75,13 @@ open class TextFlowElement(
         }
 
 
-    override var prefSize: Vec2
+    override var prefSize: Vec2f
         get() = maxSize
         set(value) = Unit
 
-    private var textSize = Vec2.EMPTY
+    private var textSize = Vec2f.EMPTY
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
             return
@@ -90,12 +90,12 @@ open class TextFlowElement(
 
         var yOffset = 0.0f
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2(0, yOffset), consumer, options)
+            message.textElement.render(offset + Vec2f(0, yOffset), consumer, options)
             yOffset += properties.lineHeight + properties.lineSpacing
         }
     }
 
-    override fun onScroll(position: Vec2, scrollOffset: Vec2): Boolean {
+    override fun onScroll(position: Vec2f, scrollOffset: Vec2f): Boolean {
         this.scrollOffset += scrollOffset.y.toInt()
         return true
     }
@@ -106,7 +106,7 @@ open class TextFlowElement(
         val maxSize = maxSize
         val maxLines = (maxSize.y / (properties.lineHeight + properties.lineSpacing)).toInt()
         val currentTime = now()
-        var textSize = Vec2.EMPTY
+        var textSize = Vec2f.EMPTY
         val active = this.active
 
 
@@ -153,7 +153,7 @@ open class TextFlowElement(
 
 
         this.textSize = textSize
-        _size = Vec2(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
+        _size = Vec2f(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
         background.size = size
         this.visibleLines = visibleLines
         cacheUpToDate = false
@@ -184,18 +184,18 @@ open class TextFlowElement(
         }
     }
 
-    override fun getAt(position: Vec2): Pair<TextElement, Vec2>? {
+    override fun getAt(position: Vec2f): Pair<TextElement, Vec2f>? {
         val line = getLineAt(position) ?: return null
         return Pair(line.first.textElement, line.second)
     }
 
-    private fun getLineAt(position: Vec2): Pair<TextFlowLineElement, Vec2>? {
+    private fun getLineAt(position: Vec2f): Pair<TextFlowLineElement, Vec2f>? {
         val reversedY = size.y - position.y
         val line = visibleLines.getOrNull((reversedY / (properties.lineHeight + properties.lineSpacing)).toInt()) ?: return null
         if (position.x > line.textElement.size.x) {
             return null
         }
-        val offset = Vec2(position.x, reversedY % (properties.lineHeight + properties.lineSpacing))
+        val offset = Vec2f(position.x, reversedY % (properties.lineHeight + properties.lineSpacing))
         return Pair(line, offset)
     }
 

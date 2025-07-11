@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.light.updater.normal
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -93,7 +93,7 @@ class NormalLightmapUpdater(
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
-        var color = Vec3()
+        var color = Vec3f()
         for (sky in 0 until LightLevel.LEVELS) {
             for (block in 0 until LightLevel.LEVELS) {
                 combine(skyColors[sky], blockColors[block], color)
@@ -103,38 +103,38 @@ class NormalLightmapUpdater(
         }
     }
 
-    private fun calculateBlock(brightness: Float): Vec3 {
-        val base = Vec3(brightness, brightness * ((brightness * 0.6f + 0.4f) * 0.6f + 0.4f), brightness * (brightness * brightness * 0.6f + 0.4f))
+    private fun calculateBlock(brightness: Float): Vec3f {
+        val base = Vec3f(brightness, brightness * ((brightness * 0.6f + 0.4f) * 0.6f + 0.4f), brightness * (brightness * brightness * 0.6f + 0.4f))
         return base
     }
 
-    private fun calculateDayBase(brightness: Float, progress: Float): Vec3 {
+    private fun calculateDayBase(brightness: Float, progress: Float): Vec3f {
         val base = DAY_BASE
 
         return interpolateLinear((abs(progress - 0.5f) * 2.0f), base, base * 0.9f) * brightness
     }
 
-    private fun calculateSunset(brightness: Float, progress: Float, time: WorldTime): Vec3 {
+    private fun calculateSunset(brightness: Float, progress: Float, time: WorldTime): Vec3f {
         val day = calculateDayBase(brightness, 1.0f)
         val night = calculateNightBase(brightness, 0.0f, time)
 
         return interpolateLinear(progress, day, night)
     }
 
-    private fun calculateNightBase(brightness: Float, progress: Float, time: WorldTime): Vec3 {
+    private fun calculateNightBase(brightness: Float, progress: Float, time: WorldTime): Vec3f {
         val max = NIGHT_MAX
 
         return interpolateLinear((abs(progress - 0.6f) + 0.4f), max * 0.1f, max) * brightness * time.moonPhase.light
     }
 
-    private fun calculateSunrise(brightness: Float, progress: Float, time: WorldTime): Vec3 {
+    private fun calculateSunrise(brightness: Float, progress: Float, time: WorldTime): Vec3f {
         val night = calculateNightBase(brightness, 1.0f, time)
         val day = calculateDayBase(brightness, 0.0f)
 
         return interpolateLinear(progress, night, day)
     }
 
-    private fun calculateThunder(base: Vec3, brightness: Float, thunder: Float): Vec3 {
+    private fun calculateThunder(base: Vec3f, brightness: Float, thunder: Float): Vec3f {
         val baseBrightness = base.length()
 
         var color = interpolateLinear(baseBrightness, THUNDER_BASE, THUNDER_BRIGHT) * baseBrightness * brightness * 0.3f
@@ -143,7 +143,7 @@ class NormalLightmapUpdater(
         return interpolateLinear(thunder, base, color)
     }
 
-    private fun calculateRain(base: Vec3, brightness: Float, rain: Float): Vec3 {
+    private fun calculateRain(base: Vec3f, brightness: Float, rain: Float): Vec3f {
         val baseBrightness = base.length()
 
         val color = interpolateLinear(baseBrightness, RAIN_BASE, RAIN_BRIGHT) * baseBrightness * brightness * 0.4f
@@ -151,7 +151,7 @@ class NormalLightmapUpdater(
         return interpolateLinear(rain, base, color)
     }
 
-    private fun calculateSky(brightness: Float, weather: WorldWeather, time: WorldTime): Vec3 {
+    private fun calculateSky(brightness: Float, weather: WorldWeather, time: WorldTime): Vec3f {
         var color = when (time.phase) {
             DayPhases.DAY -> calculateDayBase(brightness, time.progress)
             DayPhases.NIGHT -> calculateNightBase(brightness, time.progress, time)
@@ -168,18 +168,18 @@ class NormalLightmapUpdater(
     }
 
 
-    private fun combine(sky: Vec3, block: Vec3, output: Vec3) {
-        Vec3.plus(output, sky, block.x, block.y, block.z)
+    private fun combine(sky: Vec3f, block: Vec3f, output: Vec3f) {
+        Vec3f.plus(output, sky, block.x, block.y, block.z)
 
         output.clampAssign()
     }
 
     private fun tweak(
-        color: Vec3,
+        color: Vec3f,
         gamma: Float,
-        brighten: Vec3?,
+        brighten: Vec3f?,
         nightVision: Float,
-    ): Vec3 {
+    ): Vec3f {
         var output = color
         output = applyGamma(output, gamma)
 
@@ -191,7 +191,7 @@ class NormalLightmapUpdater(
         return output
     }
 
-    private fun applyNightVision(color: Vec3, strength: Float): Vec3 {
+    private fun applyNightVision(color: Vec3f, strength: Float): Vec3f {
         if (strength <= 0.0f) {
             return color
         }
@@ -202,11 +202,11 @@ class NormalLightmapUpdater(
         return interpolateLinear(strength, color, color * (1.0f / max))
     }
 
-    private fun applyBrighten(color: Vec3, brighten: Vec3): Vec3 {
+    private fun applyBrighten(color: Vec3f, brighten: Vec3f): Vec3f {
         return interpolateLinear(0.25f, color, brighten).apply { clampAssign() }
     }
 
-    private fun applyGamma(color: Vec3, gamma: Float): Vec3 {
+    private fun applyGamma(color: Vec3f, gamma: Float): Vec3f {
         return interpolateLinear(gamma, color, color modify { 1.0f - (1.0f - it).pow(4) })
     }
 
@@ -224,20 +224,20 @@ class NormalLightmapUpdater(
         return 0.3f + sin((remaining / 8.seconds).toFloat() * PIf * 0.2f) * 0.7f
     }
 
-    private fun Vec3.brighten(value: Float): Vec3 {
+    private fun Vec3f.brighten(value: Float): Vec3f {
         return this * (1.0f - value) + value
     }
 
-    private fun Vec3.clampAssign() {
+    private fun Vec3f.clampAssign() {
         this.clampAssign(0.0f, 1.0f)
     }
 
     private companion object {
-        val DAY_BASE = Vec3(0.98f)
-        val NIGHT_MAX = Vec3(0.10f, 0.10f, 0.30f)
-        val THUNDER_BASE = Vec3(0.55f, 0.35f, 0.58f)
-        val THUNDER_BRIGHT = Vec3(0.65f, 0.4f, 0.7f)
-        val RAIN_BASE = Vec3(0.4f, 0.4f, 0.8f)
-        val RAIN_BRIGHT = Vec3(0.5f, 0.5f, 0.9f)
+        val DAY_BASE = Vec3f(0.98f)
+        val NIGHT_MAX = Vec3f(0.10f, 0.10f, 0.30f)
+        val THUNDER_BASE = Vec3f(0.55f, 0.35f, 0.58f)
+        val THUNDER_BRIGHT = Vec3f(0.65f, 0.4f, 0.7f)
+        val RAIN_BASE = Vec3f(0.4f, 0.4f, 0.8f)
+        val RAIN_BRIGHT = Vec3f(0.5f, 0.5f, 0.9f)
     }
 }

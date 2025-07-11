@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -31,13 +31,13 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (status == null) {
             return
         }
         val maxWidth = parent?.size?.x ?: 0.0f
         if (status.productivity == BlockBreakProductivity.USELESS) {
-            ColorElement(guiRenderer, Vec2(maxWidth, size.y), color = ChatColors.RED).forceRender(offset, consumer, options)
+            ColorElement(guiRenderer, Vec2f(maxWidth, size.y), color = ChatColors.RED).forceRender(offset, consumer, options)
             return
         }
         val width = (status.progress * (maxWidth - 1)).toInt() + 1 // bar is always 1 pixel wide
@@ -47,10 +47,10 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
             else -> ChatColors.GREEN
         }
 
-        ColorElement(guiRenderer, Vec2(width, size.y), color).render(offset, consumer, options)
+        ColorElement(guiRenderer, Vec2f(width, size.y), color).render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
-        this.size = if (status == null) Vec2.EMPTY else Vec2(-1, 3)
+        this.size = if (status == null) Vec2f.EMPTY else Vec2f(-1, 3)
     }
 }

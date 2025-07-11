@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics.potion
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.applySpeed
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition

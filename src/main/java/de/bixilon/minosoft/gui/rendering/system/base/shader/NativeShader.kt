@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader
 
+import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import kotlin.math.max
 
 interface NativeShader {
@@ -49,9 +50,9 @@ interface NativeShader {
 
     fun setMat4(uniform: String, mat4: Mat4)
 
-    fun setVec2(uniform: String, vec2: Vec2)
-    fun setVec3(uniform: String, vec3: Vec3)
-    fun setVec4(uniform: String, vec4: Vec4)
+    fun setVec2(uniform: String, vec2: Vec2f)
+    fun setVec3(uniform: String, vec3: Vec3f)
+    fun setVec4(uniform: String, vec4: Vec4f)
 
     fun setRGBColor(uniform: String, color: RGBColor)
     fun setRGBAColor(uniform: String, color: RGBAColor)

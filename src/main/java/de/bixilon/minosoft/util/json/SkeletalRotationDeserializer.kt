@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
 
 object SkeletalRotationDeserializer : StdDeserializer<SkeletalRotation>(SkeletalRotation::class.java) {
@@ -28,7 +28,7 @@ object SkeletalRotationDeserializer : StdDeserializer<SkeletalRotation>(Skeletal
             JsonToken.START_ARRAY -> {
                 val rotation = parser.readValueAs(FloatArray::class.java)
                 if (rotation.size != 3) throw IllegalArgumentException("Invalid count of components: ${rotation.size}")
-                SkeletalRotation(Vec3(0, rotation))
+                SkeletalRotation(Vec3f(0, rotation))
             }
 
             else -> throw IllegalArgumentException("Can not skeletal rotation: $parser")

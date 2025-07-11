@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -85,7 +86,7 @@ class ChunkRenderer(
 
     private var previousViewDistance = session.world.view.viewDistance
 
-    private var cameraPosition = Vec3.EMPTY
+    private var cameraPosition = Vec3f.EMPTY
     var cameraSectionPosition = SectionPosition.EMPTY
 
     var limitChunkTransferTime = true
@@ -245,7 +246,7 @@ class ChunkRenderer(
 
     private fun onVisibilityChange() {
         var sort = false
-        val cameraPosition = Vec3(session.player.renderInfo.eyePosition - context.camera.offset.offset)
+        val cameraPosition = Vec3f(session.player.renderInfo.eyePosition - context.camera.offset.offset)
         val sectionPosition = cameraPosition.blockPosition.sectionPosition
         if (this.cameraPosition != cameraPosition) {
             if (this.cameraSectionPosition != sectionPosition) {

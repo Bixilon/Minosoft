@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.entities.living.player
 
 import glm_.func.common.clamp
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity

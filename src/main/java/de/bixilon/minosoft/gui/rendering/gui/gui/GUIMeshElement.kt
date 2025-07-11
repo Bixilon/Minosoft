@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -46,8 +46,8 @@ open class GUIMeshElement<T : Element>(
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
     protected var lastRevision = 0L
-    protected var lastPosition: Vec2? = null
-    protected var lastDragPosition: Vec2? = null
+    protected var lastPosition: Vec2f? = null
+    protected var lastDragPosition: Vec2f? = null
     protected var dragged = false
     override var enabled = true
         set(value) {
@@ -96,7 +96,7 @@ open class GUIMeshElement<T : Element>(
 
     fun prepare() = Unit
 
-    fun prepareAsync(offset: Vec2) {
+    fun prepareAsync(offset: Vec2f) {
         element.render(offset, mesh, null)
         val revision = element.cache.revision
         if (revision != lastRevision) {
@@ -118,7 +118,7 @@ open class GUIMeshElement<T : Element>(
     }
 
     open fun prepareAsync() {
-        prepareAsync(Vec2.EMPTY)
+        prepareAsync(Vec2f.EMPTY)
     }
 
     override fun draw() {
@@ -141,27 +141,27 @@ open class GUIMeshElement<T : Element>(
         return element.onCharPress(char)
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
-        lastPosition = Vec2(position)
+    override fun onMouseMove(position: Vec2f): Boolean {
+        lastPosition = Vec2f(position)
         return element.onMouseMove(position, position)
     }
 
     override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
         val mouseButton = MouseButtons[code] ?: return element.onKey(code, change)
-        val position = Vec2(lastPosition ?: return false)
+        val position = Vec2f(lastPosition ?: return false)
 
         val mouseAction = MouseActions[change] ?: return false
 
         return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, now()))
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
-        val position = Vec2(lastPosition ?: return false)
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
+        val position = Vec2f(lastPosition ?: return false)
         return element.onScroll(position, scrollOffset)
     }
 
-    override fun onDragMove(position: Vec2, dragged: Dragged): Element? {
-        lastDragPosition = Vec2(position)
+    override fun onDragMove(position: Vec2f, dragged: Dragged): Element? {
+        lastDragPosition = Vec2f(position)
         if (!this.dragged) {
             this.dragged = true
             return element.onDragEnter(position, position, dragged)
@@ -171,15 +171,15 @@ open class GUIMeshElement<T : Element>(
 
     override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
         val mouseButton = MouseButtons[key] ?: return element.onDragKey(key, type, dragged)
-        val position = Vec2(lastDragPosition ?: return null)
+        val position = Vec2f(lastDragPosition ?: return null)
 
         val mouseAction = MouseActions[type] ?: return null
 
         return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, now()), dragged)
     }
 
-    override fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? {
-        return element.onDragScroll(Vec2(lastDragPosition ?: return null), scrollOffset, dragged)
+    override fun onDragScroll(scrollOffset: Vec2f, dragged: Dragged): Element? {
+        return element.onDragScroll(Vec2f(lastDragPosition ?: return null), scrollOffset, dragged)
     }
 
     override fun onDragChar(char: Int, dragged: Dragged): Element? {

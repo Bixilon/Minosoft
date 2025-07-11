@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -71,7 +71,7 @@ class SkyboxTextureMesh(context: RenderContext) : Mesh(context, SkyboxTextureMes
     }
 
     data class SkyboxTextureMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uvIndex: Int,
     ) {
         companion object : MeshStruct(SkyboxTextureMeshStruct::class)

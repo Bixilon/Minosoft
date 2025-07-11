@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.entities.entities.player
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
@@ -55,10 +55,10 @@ abstract class PlayerEntity(
     val additional: PlayerAdditional,
 ) : LivingEntity(session, entityType, data, position, rotation) {
 
-    override val dimensions: Vec2
-        get() = pose?.let { getDimensions(it) } ?: Vec2(type.width, type.height)
+    override val dimensions: Vec2f
+        get() = pose?.let { getDimensions(it) } ?: Vec2f(type.width, type.height)
 
-    override fun getDimensions(pose: Poses): Vec2? {
+    override fun getDimensions(pose: Poses): Vec2f? {
         if (pose == Poses.SNEAKING) {
             return if (session.version < V_19W12A) SNEAKING_LEGACY else SNEAKING
         }
@@ -175,16 +175,16 @@ abstract class PlayerEntity(
         private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
         private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
 
-        private val SNEAKING = Vec2(0.6f, 1.5f)
-        private val SNEAKING_LEGACY = Vec2(0.6f, 1.65f)
+        private val SNEAKING = Vec2f(0.6f, 1.5f)
+        private val SNEAKING_LEGACY = Vec2f(0.6f, 1.65f)
 
-        private val DIMENSIONS: Map<Poses, Vec2> = EnumMap(mapOf(
-            Poses.STANDING to Vec2(0.6f, 1.8f),
-            Poses.SLEEPING to Vec2(0.2f, 0.2f),
-            Poses.ELYTRA_FLYING to Vec2(0.6f, 0.6f),
-            Poses.SWIMMING to Vec2(0.6f, 0.6f),
-            Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
-            Poses.DYING to Vec2(0.2f, 0.2f),
+        private val DIMENSIONS: Map<Poses, Vec2f> = EnumMap(mapOf(
+            Poses.STANDING to Vec2f(0.6f, 1.8f),
+            Poses.SLEEPING to Vec2f(0.2f, 0.2f),
+            Poses.ELYTRA_FLYING to Vec2f(0.6f, 0.6f),
+            Poses.SWIMMING to Vec2f(0.6f, 0.6f),
+            Poses.SPIN_ATTACK to Vec2f(0.6f, 0.6f),
+            Poses.DYING to Vec2f(0.2f, 0.2f),
         ))
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.world.time.DayPhases
@@ -29,7 +29,7 @@ class CloudColor(
     val sky: SkyRenderer,
 ) {
 
-    private fun normal(time: WorldTime): Vec3 {
+    private fun normal(time: WorldTime): Vec3f {
         return when (time.phase) {
             DayPhases.DAY -> day(time.progress)
             DayPhases.NIGHT -> night(time.progress, time.moonPhase)
@@ -38,7 +38,7 @@ class CloudColor(
         }
     }
 
-    private fun rain(time: WorldTime, rain: Float, thunder: Float): Vec3 {
+    private fun rain(time: WorldTime, rain: Float, thunder: Float): Vec3f {
         val normal = normal(time)
         val brightness = normal.length()
         var color = RAIN_COLOR
@@ -48,20 +48,20 @@ class CloudColor(
     }
 
 
-    private fun day(progress: Float): Vec3 {
+    private fun day(progress: Float): Vec3f {
         return interpolateLinear((abs(progress - 0.5f) * 2).pow(2), DAY_COLOR, DAY_COLOR * 0.8f)
     }
 
-    private fun night(progress: Float, moon: MoonPhases): Vec3 {
+    private fun night(progress: Float, moon: MoonPhases): Vec3f {
         return interpolateLinear((abs(progress - 0.5f) * 2).pow(2), NIGHT_COLOR, DAY_COLOR * 0.2f) * moon.light
     }
 
-    private fun sunrise(progress: Float, moon: MoonPhases): Vec3 {
+    private fun sunrise(progress: Float, moon: MoonPhases): Vec3f {
         val night = night(1.0f, moon)
         val day = day(0.0f)
 
         val base = interpolateLinear(progress, night, day)
-        var color = Vec3(base)
+        var color = Vec3f(base)
         val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(2) * PIf / 2.0f), 0.4f)
 
         color = interpolateLinear(sine, SUNRISE_COLOR, color)
@@ -70,12 +70,12 @@ class CloudColor(
         return color
     }
 
-    private fun sunset(progress: Float, moon: MoonPhases): Vec3 {
+    private fun sunset(progress: Float, moon: MoonPhases): Vec3f {
         val day = day(1.0f)
         val night = night(0.0f, moon)
 
         val base = interpolateLinear(progress, day, night)
-        var color = Vec3(base)
+        var color = Vec3f(base)
 
 
         val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(3) * PIf / 2.0f), 0.1f)
@@ -87,7 +87,7 @@ class CloudColor(
     }
 
 
-    private fun calculate(weather: WorldWeather, time: WorldTime): Vec3 {
+    private fun calculate(weather: WorldWeather, time: WorldTime): Vec3f {
         if (sky.effects.weather && (weather.rain > 0.0f || weather.thunder > 0.0f)) {
             return rain(time, weather.rain, weather.thunder)
         }
@@ -95,15 +95,15 @@ class CloudColor(
     }
 
 
-    fun calculate(): Vec3 {
+    fun calculate(): Vec3f {
         return calculate(sky.session.world.weather, sky.time)
     }
 
     companion object {
-        private val RAIN_COLOR = Vec3(0.31f, 0.35f, 0.40f)
-        private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.36f)
-        private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)
-        private val SUNSET_COLOR = Vec3(1.0f, 0.75f, 0.55f)
-        private val NIGHT_COLOR = Vec3(0.08f, 0.13f, 0.18f)
+        private val RAIN_COLOR = Vec3f(0.31f, 0.35f, 0.40f)
+        private val SUNRISE_COLOR = Vec3f(0.85f, 0.68f, 0.36f)
+        private val DAY_COLOR = Vec3f(0.95f, 0.97f, 0.97f)
+        private val SUNSET_COLOR = Vec3f(1.0f, 0.75f, 0.55f)
+        private val NIGHT_COLOR = Vec3f(0.08f, 0.13f, 0.18f)
     }
 }

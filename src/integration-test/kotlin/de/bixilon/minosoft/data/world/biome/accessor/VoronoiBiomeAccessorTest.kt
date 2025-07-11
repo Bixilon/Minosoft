@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.test.ITUtil.allocate

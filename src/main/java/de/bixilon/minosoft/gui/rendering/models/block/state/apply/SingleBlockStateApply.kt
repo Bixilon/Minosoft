@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
@@ -43,7 +43,7 @@ data class SingleBlockStateApply(
     val uvLock: Boolean = false,
     val x: Int = 0,
     val y: Int = 0,
-    val rotation: Vec2? = null,
+    val rotation: Vec2f? = null,
 ) : BlockStateApply {
     private var particle: Texture? = null
 
@@ -140,7 +140,7 @@ data class SingleBlockStateApply(
         return BakedModel(bakedFaces.compact(), properties.compactProperties(), model.display, this.particle)
     }
 
-    private fun Vec2.applyRotation(axis: Axes, data: FaceVertexData) {
+    private fun Vec2f.applyRotation(axis: Axes, data: FaceVertexData) {
         val value = this[axis.ordinal]
         if (value == 0.0f) return
         ElementRotation(axis = axis, angle = value).apply(data)
@@ -169,7 +169,7 @@ data class SingleBlockStateApply(
                 uv = uv.pushRight(2, getTextureRotation(direction, rotatedX))
             }
 
-            val vec = Vec2(0, uv)
+            val vec = Vec2f(0, uv)
             for (ofs in 0 until 4) {
                 vec.ofs = ofs * 2
                 val transformed = texture.transformUV(vec)
@@ -195,16 +195,16 @@ data class SingleBlockStateApply(
         if (!direction.negative && value != 1.0f) return null
 
         return FaceProperties(
-            start = getVec2(0, axis),
-            end = getVec2(6, axis),
+            start = getVec2f(0, axis),
+            end = getVec2f(6, axis),
             transparency = texture.transparency,
         )
     }
 
-    private fun FaceVertexData.getVec2(offset: Int, axis: Axes) = when (axis) {
-        Axes.X -> Vec2(this[offset + 1], this[offset + 2])
-        Axes.Y -> Vec2(this[offset + 0], this[offset + 2])
-        Axes.Z -> Vec2(this[offset + 0], this[offset + 1])
+    private fun FaceVertexData.getVec2f(offset: Int, axis: Axes) = when (axis) {
+        Axes.X -> Vec2f(this[offset + 1], this[offset + 2])
+        Axes.Y -> Vec2f(this[offset + 0], this[offset + 2])
+        Axes.Z -> Vec2f(this[offset + 0], this[offset + 1])
     }
 
     companion object {
@@ -223,7 +223,7 @@ data class SingleBlockStateApply(
             val x = data["x"]?.toFloat() ?: 0.0f
             val y = data["y"]?.toFloat() ?: 0.0f
 
-            val rotation = Vec2(x % ROTATION_STEP, y % ROTATION_STEP)
+            val rotation = Vec2f(x % ROTATION_STEP, y % ROTATION_STEP)
 
             return SingleBlockStateApply(model, uvLock, x.toInt().rotation(), y.toInt().rotation(), rotation = if (rotation.x == 0.0f && rotation.y == 0.0f) null else rotation)
         }

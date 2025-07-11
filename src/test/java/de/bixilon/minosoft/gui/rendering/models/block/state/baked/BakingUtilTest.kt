@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
@@ -21,8 +21,8 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
 class CuboidUtilTest {
-    val from = Vec3(1, 2, 3)
-    val to = Vec3(6, 5, 4)
+    val from = Vec3f(1, 2, 3)
+    val to = Vec3f(6, 5, 4)
 
 
     @Test

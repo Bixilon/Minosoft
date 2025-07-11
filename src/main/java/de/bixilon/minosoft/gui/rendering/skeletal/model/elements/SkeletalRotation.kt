@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalRotation(
-    val value: Vec3,
-    val origin: Vec3? = null,
+    val value: Vec3f,
+    val origin: Vec3f? = null,
     val rescale: Boolean = false,
 ) {
 
     companion object {
-        val EMPTY = SkeletalRotation(Vec3.EMPTY, Vec3.EMPTY, false)
+        val EMPTY = SkeletalRotation(Vec3f.EMPTY, Vec3f.EMPTY, false)
     }
 }

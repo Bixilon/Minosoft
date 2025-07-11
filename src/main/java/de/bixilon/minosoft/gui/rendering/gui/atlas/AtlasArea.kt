@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2
 
 class AtlasArea(
-    val start: Vec2,
-    val end: Vec2,
+    val start: Vec2f,
+    val end: Vec2f,
 ) {
     val size = end - start
 
@@ -27,8 +27,8 @@ class AtlasArea(
     companion object {
 
         fun deserialize(data: JsonObject) = AtlasArea(
-            start = data["start"].toVec2(),
-            end = data["end"].toVec2(),
+            start = data["start"].toVec2f(),
+            end = data["end"].toVec2f(),
         )
     }
 }

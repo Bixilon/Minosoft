@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.dummy
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -22,11 +24,9 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 
 class DummyWindow : Window {
-    override val systemScale by observed(Vec2(1.0f))
+    override val systemScale by observed(Vec2f(1.0f))
     override var size by observed(Vec2i(1, 1))
     override var minSize: Vec2i = Vec2i.EMPTY
     override var maxSize: Vec2i = Vec2i.EMPTY

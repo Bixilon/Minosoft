@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.Vec3KeyframeInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
@@ -25,7 +25,7 @@ import java.util.*
 data class RotateKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
     override val loop: AnimationLoops,
-    val data: TreeMap<Float, Vec3>,
+    val data: TreeMap<Float, Vec3f>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
@@ -34,7 +34,7 @@ data class RotateKeyframe(
     }
 
     override fun instance() = object : Vec3KeyframeInstance(data, loop, interpolation) {
-        override fun apply(value: Vec3, transform: TransformInstance) {
+        override fun apply(value: Vec3f, transform: TransformInstance) {
             transform.value
                 .translateAssign(transform.nPivot)
                 .rotateRadAssign(value)

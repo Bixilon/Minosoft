@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -28,7 +28,7 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 open class FlashingBlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
-    scale: Vec3 = DEFAULT_SCALE,
+    scale: Vec3f = DEFAULT_SCALE,
     var flashColor: RGBAColor = ChatColors.WHITE,
     var flashInterval: Float = 0.2f,
     var maxFlash: Float = 0.5f

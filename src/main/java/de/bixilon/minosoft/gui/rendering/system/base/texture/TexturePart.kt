@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 interface TexturePart {
     val texture: Texture
-    val uvStart: Vec2
-    val uvEnd: Vec2
+    val uvStart: Vec2f
+    val uvEnd: Vec2f
     val size: Vec2i
 }

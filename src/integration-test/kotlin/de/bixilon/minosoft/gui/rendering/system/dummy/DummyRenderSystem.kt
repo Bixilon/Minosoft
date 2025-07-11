@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy
 
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManage
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import glm_.vec2.Vec2i
 import java.nio.FloatBuffer
 
 class DummyRenderSystem(

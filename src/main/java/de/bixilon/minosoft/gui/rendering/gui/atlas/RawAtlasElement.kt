@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class BubbleParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
 
     init {
-        this.spacing = Vec3(0.02f)
+        this.spacing = Vec3f(0.02f)
 
         this.scale *= random.nextFloat() * 0.6f + 0.2f
 

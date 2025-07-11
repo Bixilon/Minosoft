@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
@@ -38,10 +38,10 @@ class BlockGUIConsumerTest {
         val gui = GUIRenderer::class.java.allocate()
         val consumer = GUIConsumer()
 
-        return BlockGUIConsumer(gui, Vec2(11, 12), consumer, null, ModelDisplay.DEFAULT, Vec2(45))
+        return BlockGUIConsumer(gui, Vec2f(11, 12), consumer, null, ModelDisplay.DEFAULT, Vec2f(45))
     }
 
-    private fun BlockGUIConsumer.assertVertices(vararg expected: Vec2) {
+    private fun BlockGUIConsumer.assertVertices(vararg expected: Vec2f) {
         val consumer = this.consumer.unsafeCast<GUIConsumer>()
 
         if (consumer.vertices.size != expected.size) throw AssertionError("Size mismatch")
@@ -57,16 +57,16 @@ class BlockGUIConsumerTest {
     @Test(enabled = false)
     fun `south quad with offset and specific size`() {
         val consumer = create()
-        val position = CuboidUtil.positions(Directions.SOUTH, Vec3(0, 0, 0), Vec3(1, 1, 1))
+        val position = CuboidUtil.positions(Directions.SOUTH, Vec3f(0, 0, 0), Vec3f(1, 1, 1))
         val uv = UnpackedUV(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f))
         consumer.addQuad(position, uv, 0f, 0f)
 
-        consumer.assertVertices(Vec2()) // TODO
+        consumer.assertVertices(Vec2f()) // TODO
     }
 
     private class GUIConsumer : GUIVertexConsumer {
         override val order = MeshOrder.QUAD
-        val vertices: MutableList<Vec2> = mutableListOf()
+        val vertices: MutableList<Vec2f> = mutableListOf()
 
         override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
         override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()

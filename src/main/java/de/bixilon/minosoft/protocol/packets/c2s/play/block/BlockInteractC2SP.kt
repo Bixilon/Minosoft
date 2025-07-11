@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.block
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 data class BlockInteractC2SP(
     val position: BlockPosition?,
     val direction: Directions?,
-    val cursorPosition: Vec3?,
+    val cursorPosition: Vec3f?,
     val item: ItemStack?,
     val hand: Hands,
     val insideBlock: Boolean,

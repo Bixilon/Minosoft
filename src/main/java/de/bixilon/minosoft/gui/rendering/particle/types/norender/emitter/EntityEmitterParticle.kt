@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
@@ -45,7 +45,7 @@ class EntityEmitterParticle(
         val particle = session.world.particle ?: return
         val position = entity.physics.position
         for (i in 0 until 16) {
-            val scale = Vec3(random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f))
+            val scale = Vec3f(random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f))
 
             if (scale.length2() < 1.0f) {
                 continue

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.input.interaction.short
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
@@ -52,7 +52,7 @@ class BlockPlaceIT {
         use.unsafePress()
         use.unsafeRelease()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.UP, Vec3.EMPTY, ItemStack(item, 2), Hands.MAIN, false, 1))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.UP, Vec3f.EMPTY, ItemStack(item, 2), Hands.MAIN, false, 1))
         session.assertPacket(SwingArmC2SP(Hands.MAIN))
         // TODO: check placed fire?
         session.assertNoPacket()

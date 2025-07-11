@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
@@ -33,8 +33,8 @@ class CuboidBakeTest {
 
 
     fun noRotation() {
-        val from = Vec3(6, 0, 6) / BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / BLOCK_SIZE
 
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
@@ -50,8 +50,8 @@ class CuboidBakeTest {
     }
 
     fun cuboidY90_1() {
-        val from = Vec3(1, 0, 0) / BLOCK_SIZE
-        val to = Vec3(16, 16, 16) / BLOCK_SIZE
+        val from = Vec3f(1, 0, 0) / BLOCK_SIZE
+        val to = Vec3f(16, 16, 16) / BLOCK_SIZE
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
@@ -66,8 +66,8 @@ class CuboidBakeTest {
     }
 
     fun cuboidY90() {
-        val from = Vec3(1, 2, 3) / BLOCK_SIZE
-        val to = Vec3(16, 15, 14) / BLOCK_SIZE
+        val from = Vec3f(1, 2, 3) / BLOCK_SIZE
+        val to = Vec3f(16, 15, 14) / BLOCK_SIZE
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
@@ -82,8 +82,8 @@ class CuboidBakeTest {
     }
 
     fun x90y90() {
-        val from = Vec3(1, 2, 3) / BLOCK_SIZE
-        val to = Vec3(16, 15, 14) / BLOCK_SIZE
+        val from = Vec3f(1, 2, 3) / BLOCK_SIZE
+        val to = Vec3f(16, 15, 14) / BLOCK_SIZE
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!

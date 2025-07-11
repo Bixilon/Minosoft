@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.entities
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 
 abstract class BasicPhysicsEntity {

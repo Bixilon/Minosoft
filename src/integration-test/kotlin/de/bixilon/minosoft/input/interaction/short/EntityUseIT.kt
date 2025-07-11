@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.input.interaction.short
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
@@ -55,9 +55,9 @@ class EntityUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.MAIN, false))
         session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.OFF, false))
         session.assertOnlyPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
     }
 
@@ -71,11 +71,11 @@ class EntityUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.MAIN, false))
         session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.OFF, false))
         session.assertOnlyPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
     }
 
@@ -89,9 +89,9 @@ class EntityUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.MAIN, false))
         session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.OFF, false))
         session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertOnlyPacket(UseItemC2SP(Hands.OFF))
@@ -108,11 +108,11 @@ class EntityUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.MAIN, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.MAIN, false))
         session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
-        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3.EMPTY, Hands.OFF, false))
+        session.assertPacket(EntityInteractPositionC2SP(session, entity, Vec3f.EMPTY, Hands.OFF, false))
         session.assertPacket(EntityEmptyInteractC2SP(session, entity, Hands.OFF, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertOnlyPacket(UseItemC2SP(Hands.OFF, 2))

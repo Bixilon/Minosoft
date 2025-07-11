@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenCloseAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
@@ -44,7 +44,7 @@ class ChestAnimation(
         const val TRANSFORM = "lid"
         const val NAME = "chest"
 
-        private val BASE = Vec3(0.0f, 0.0f, 0.0f).rad
-        private val OPEN = Vec3(90.0f, 0.0f, 0.0f).rad
+        private val BASE = Vec3f(0.0f, 0.0f, 0.0f).rad
+        private val OPEN = Vec3f(90.0f, 0.0f, 0.0f).rad
     }
 }

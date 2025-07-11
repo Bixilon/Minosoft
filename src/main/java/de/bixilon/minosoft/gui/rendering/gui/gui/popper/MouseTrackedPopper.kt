@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
 
 abstract class MouseTrackedPopper(
     guiRenderer: GUIRenderer,
-    position: Vec2,
+    position: Vec2f,
     background: Boolean = true,
     trackMouse: Boolean = true,
 ) : Popper(guiRenderer, position, background) {
@@ -31,7 +31,7 @@ abstract class MouseTrackedPopper(
             }
         }
 
-    override fun onMouseMove(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
         if (trackMouse) {
             this.position = position
         }

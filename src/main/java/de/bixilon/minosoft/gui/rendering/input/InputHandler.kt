@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 interface InputHandler {
 
-    fun onMouseMove(position: Vec2) = false
+    fun onMouseMove(position: Vec2f) = false
     fun onKey(code: KeyCodes, change: KeyChangeTypes) = false
-    fun onScroll(scrollOffset: Vec2) = false
+    fun onScroll(scrollOffset: Vec2f) = false
     fun onCharPress(char: Int) = false
 }

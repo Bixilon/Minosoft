@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import glm_.func.cos
 import glm_.func.sin
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -121,20 +121,20 @@ class FluidSectionMesher(
                         getCornerHeight(chunk, position + Directions.SOUTH, fluid),
                     )
 
-                    val offsetPosition = Vec3(position - cameraOffset)
+                    val offsetPosition = Vec3f(position - cameraOffset)
 
                     if (cornerHeights[0] <= 1.0f && !skip[Directions.O_UP]) {
                         val velocity = fluid.getVelocity(state, position, chunk)
                         val still = velocity.x == 0.0 && velocity.z == 0.0
                         val texture: Texture
-                        val minUV = Vec2.EMPTY
-                        val maxUV = Vec2(if (still) 1.0f else 0.5f) // Minecraft just uses half of the sprite
+                        val minUV = Vec2f.EMPTY
+                        val maxUV = Vec2f(if (still) 1.0f else 0.5f) // Minecraft just uses half of the sprite
 
                         val texturePositions = arrayOf(
                             minUV,
-                            Vec2(maxUV.x, minUV.y),
+                            Vec2f(maxUV.x, minUV.y),
                             maxUV,
-                            Vec2(minUV.x, maxUV.y),
+                            Vec2f(minUV.x, maxUV.y),
                         )
 
 
@@ -156,10 +156,10 @@ class FluidSectionMesher(
                         val meshToUse = mesh[texture.transparency]
 
                         val positions = arrayOf(
-                            Vec3(offsetPosition.x, offsetPosition.y + cornerHeights[0], offsetPosition.z),
-                            Vec3(offsetPosition.x + 1, offsetPosition.y + cornerHeights[1], offsetPosition.z),
-                            Vec3(offsetPosition.x + 1, offsetPosition.y + cornerHeights[2], offsetPosition.z + 1),
-                            Vec3(offsetPosition.x, offsetPosition.y + cornerHeights[3], offsetPosition.z + 1),
+                            Vec3f(offsetPosition.x, offsetPosition.y + cornerHeights[0], offsetPosition.z),
+                            Vec3f(offsetPosition.x + 1, offsetPosition.y + cornerHeights[1], offsetPosition.z),
+                            Vec3f(offsetPosition.x + 1, offsetPosition.y + cornerHeights[2], offsetPosition.z + 1),
+                            Vec3f(offsetPosition.x, offsetPosition.y + cornerHeights[3], offsetPosition.z + 1),
                         )
 
 
@@ -214,16 +214,16 @@ class FluidSectionMesher(
 
 
                         val positions = arrayOf(
-                            Vec3(faceX, offsetPosition.y + v1, faceZ),
-                            Vec3(faceX, offsetPosition.y, faceZ),
-                            Vec3(faceXEnd, offsetPosition.y, faceZEnd),
-                            Vec3(faceXEnd, offsetPosition.y + v2, faceZEnd),
+                            Vec3f(faceX, offsetPosition.y + v1, faceZ),
+                            Vec3f(faceX, offsetPosition.y, faceZ),
+                            Vec3f(faceXEnd, offsetPosition.y, faceZEnd),
+                            Vec3f(faceXEnd, offsetPosition.y + v2, faceZEnd),
                         )
                         val texturePositions = arrayOf(
-                            Vec2(0.0f, (1 - v1) / 2),
+                            Vec2f(0.0f, (1 - v1) / 2),
                             TEXTURE_1,
                             TEXTURE_2,
-                            Vec2(0.5f, (1 - v2) / 2),
+                            Vec2f(0.5f, (1 - v2) / 2),
                         )
 
                         val meshToUse = mesh[model.flowing.transparency]
@@ -242,7 +242,7 @@ class FluidSectionMesher(
         }
     }
 
-    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: RGBColor, fluidLight: LightLevel) {
+    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3f>, texturePositions: Array<Vec2f>, flowingTexture: Texture, fluidTint: RGBColor, fluidLight: LightLevel) {
         val lightIndex = fluidLight.index
         mesh.order.iterate { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
@@ -297,7 +297,7 @@ class FluidSectionMesher(
     private companion object {
         private const val TEXTURE_CENTER = 1.0f / 2.0f
 
-        private val TEXTURE_1 = Vec2(0.0f, 0.5f)
-        private val TEXTURE_2 = Vec2(0.5f, 0.5f)
+        private val TEXTURE_1 = Vec2f(0.0f, 0.5f)
+        private val TEXTURE_2 = Vec2f(0.5f, 0.5f)
     }
 }

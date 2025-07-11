@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.sky.planet.scatter
 
 import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
 import glm_.vec4.swizzle.xyz
 import de.bixilon.kutil.math.MathConstants.PIf
@@ -44,7 +44,7 @@ class SunScatterRenderer(
     private fun calculateMatrix(skyMatrix: Mat4) {
         val matrix = Mat4(skyMatrix)
 
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3.Z)
+        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
 
         this.matrix = matrix
     }
@@ -63,9 +63,9 @@ class SunScatterRenderer(
         return maxOf(sin(delta * PIf / 2.0f), 0.5f)
     }
 
-    private fun calculateSunPosition(): Vec3 {
+    private fun calculateSunPosition(): Vec3f {
         val matrix = Mat4()
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3.Z)
+        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
 
         val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f)
 

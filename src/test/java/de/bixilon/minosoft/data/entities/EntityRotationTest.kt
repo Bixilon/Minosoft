@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.interpolateYaw
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -58,18 +58,18 @@ class EntityRotationTest {
     @Test
     fun front1() {
         val front = EntityRotation(10.0f, 20.0f).front
-        assertEquals(front, Vec3(-0.16317593, -0.34202015, 0.92541665))
+        assertEquals(front, Vec3f(-0.16317593, -0.34202015, 0.92541665))
     }
 
     @Test
     fun front2() {
         val front = EntityRotation(-10.0f, -20.0f).front
-        assertEquals(front, Vec3(0.16317593, 0.34202015, 0.92541665))
+        assertEquals(front, Vec3f(0.16317593, 0.34202015, 0.92541665))
     }
 
     @Test
     fun front3() {
         val front = EntityRotation(-80.0f, 80.0f).front
-        assertEquals(front, Vec3(0.1710101, -0.9848077, 0.030153705))
+        assertEquals(front, Vec3f(0.1710101, -0.9848077, 0.030153705))
     }
 }

@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
@@ -65,11 +65,11 @@ abstract class MeshStruct(struct: KClass<*>) {
                     Mat4::class -> 4 * 4 * Float.SIZE_BYTES
 
                     Vec3d::class -> 3 * Double.SIZE_BYTES
-                    Vec3::class -> 3 * Float.SIZE_BYTES
+                    Vec3f::class -> 3 * Float.SIZE_BYTES
                     Vec3i::class -> 2 * Int.SIZE_BYTES
 
                     Vec2d::class -> 2 * Double.SIZE_BYTES
-                    Vec2::class -> 2 * Float.SIZE_BYTES
+                    Vec2f::class -> 2 * Float.SIZE_BYTES
                     Vec2i::class -> 2 * Int.SIZE_BYTES
 
                     Float::class -> Float.SIZE_BYTES

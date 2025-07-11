@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.camera.target
 
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.camera.SessionCamera
@@ -33,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.terminal.RunConfiguration
 
 class TargetHandler(
     private val camera: SessionCamera,

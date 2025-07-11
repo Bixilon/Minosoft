@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
@@ -36,12 +36,12 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun addCache(cache: GUIMeshCache) = Broken()
     override fun ensureSize(size: Int) = Unit
 
-    override fun addQuad(start: Vec2, end: Vec2, texture: ShaderTexture?, uvStart: Vec2, uvEnd: Vec2, tint: RGBAColor, options: GUIVertexOptions?) {
-        quads += RendererdQuad(Vec2(start), Vec2(end))
+    override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
+        quads += RendererdQuad(Vec2f(start), Vec2f(end))
     }
 
-    data class RendererdCodePoint(val start: Vec2)
-    data class RendererdQuad(val start: Vec2, val end: Vec2)
+    data class RendererdCodePoint(val start: Vec2f)
+    data class RendererdQuad(val start: Vec2f, val end: Vec2f)
 
 
     inner class ConsumerCodePointRenderer(val width: Float) : CodePointRenderer {
@@ -49,8 +49,8 @@ class DummyComponentConsumer : GUIVertexConsumer {
             return width * scale
         }
 
-        override fun render(position: Vec2, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-            chars += RendererdCodePoint(Vec2(position))
+        override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+            chars += RendererdCodePoint(Vec2f(position))
         }
     }
 

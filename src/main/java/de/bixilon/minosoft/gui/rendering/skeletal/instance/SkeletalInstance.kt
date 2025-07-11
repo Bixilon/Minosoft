@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -66,7 +66,7 @@ class SkeletalInstance(
         transform.pack(matrix)
     }
 
-    fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE, matrix: Mat4? = null) {
+    fun update(position: Vec3f, rotation: Vec3f, pivot: Vec3f = Vec3f.EMPTY_INSTANCE, matrix: Mat4? = null) {
         this.matrix.reset()
         this.matrix
             .translateAssign(position)
@@ -79,17 +79,17 @@ class SkeletalInstance(
         }
     }
 
-    fun update(rotation: Vec3, matrix: Mat4? = null) {
-        update(Vec3.EMPTY_INSTANCE, rotation, matrix = matrix)
+    fun update(rotation: Vec3f, matrix: Mat4? = null) {
+        update(Vec3f.EMPTY_INSTANCE, rotation, matrix = matrix)
     }
 
-    fun update(position: BlockPosition, rotation: Vec3) {
-        val position = Vec3(position - context.camera.offset.offset)
+    fun update(position: BlockPosition, rotation: Vec3f) {
+        val position = Vec3f(position - context.camera.offset.offset)
         position.x += 0.5f; position.z += 0.5f // models origin is the center of block origin
         update(position, rotation, BLOCK_PIVOT)
     }
 
     private companion object {
-        val BLOCK_PIVOT = Vec3(0.0f, 0.5f, 0.0f)
+        val BLOCK_PIVOT = Vec3f(0.0f, 0.5f, 0.0f)
     }
 }

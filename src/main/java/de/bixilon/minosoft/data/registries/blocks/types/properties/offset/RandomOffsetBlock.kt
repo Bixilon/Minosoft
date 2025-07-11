@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
@@ -22,10 +22,10 @@ interface RandomOffsetBlock : OffsetBlock {
     val randomOffset: RandomOffsetTypes? // TODO: make non nullable
 
 
-    override fun offsetShape(position: BlockPosition): Vec3 {
-        val offset = this.randomOffset ?: return Vec3.EMPTY_INSTANCE
+    override fun offsetShape(position: BlockPosition): Vec3f {
+        val offset = this.randomOffset ?: return Vec3f.EMPTY_INSTANCE
         return position.getWorldOffset(offset)
     }
 
-    override fun offsetModel(position: BlockPosition): Vec3 = offsetShape(position)
+    override fun offsetModel(position: BlockPosition): Vec3f = offsetShape(position)
 }

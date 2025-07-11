@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.block
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
@@ -26,13 +26,13 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockVertexConsumer {
     override val order = context.system.quadOrder
-    val offset = Vec3()
+    val offset = Vec3f()
 
     override fun ensureSize(size: Int) {
         data.ensureSize(size)
     }
 
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
+    override fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
         data.ensureSize(BlockMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.transformUV(uv).array
         data.add(position[0] + offset.x, position[1] + offset.y, position[2] + offset.z)
@@ -60,7 +60,7 @@ class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockV
 
 
     data class BlockMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uv: UnpackedUV,
         val indexLayerAnimation: Int,
         val tint: RGBColor,

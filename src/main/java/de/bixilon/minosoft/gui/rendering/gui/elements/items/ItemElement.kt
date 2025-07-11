@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.actions.types.*
@@ -36,7 +36,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 class ItemElement(
     guiRenderer: GUIRenderer,
-    size: Vec2 = RawItemElement.DEFAULT_SIZE,
+    size: Vec2f = RawItemElement.DEFAULT_SIZE,
     item: ItemStack?,
     val slotId: Int = 0,
     val itemsElement: ContainerItemsElement,
@@ -55,7 +55,7 @@ class ItemElement(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (raw.stack == null) {
             if (hovered) {
                 ImageElement(guiRenderer, context.textures.whiteTexture.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
@@ -72,7 +72,7 @@ class ItemElement(
         raw.silentApply()
     }
 
-    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseEnter(position: Vec2f, absolute: Vec2f): Boolean {
         context.window.cursorShape = CursorShapes.HAND
         val stack = this.stack
         if (stack != null) {
@@ -92,7 +92,7 @@ class ItemElement(
         return true
     }
 
-    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (action != MouseActions.PRESS) {
             return true
         }
@@ -120,7 +120,7 @@ class ItemElement(
         return true
     }
 
-    override fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element {
+    override fun onDragMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element {
         if (action != MouseActions.PRESS) {
             return this
         }
@@ -166,7 +166,7 @@ class ItemElement(
         return true
     }
 
-    override fun onDragEnter(position: Vec2, absolute: Vec2, draggable: Dragged): Element {
+    override fun onDragEnter(position: Vec2f, absolute: Vec2f, draggable: Dragged): Element {
         if (draggable !is FloatingItem) {
             return this
         }

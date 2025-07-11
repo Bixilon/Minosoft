@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
@@ -49,9 +49,9 @@ open class TextInputElement(
     val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    protected val cursor = ColorElement(guiRenderer, size = Vec2(minOf(1.0f, properties.scale), properties.lineHeight))
+    protected val cursor = ColorElement(guiRenderer, size = Vec2f(minOf(1.0f, properties.scale), properties.lineHeight))
     protected val textElement = MarkTextElement(guiRenderer, "", background = null, parent = this, properties = properties)
-    protected val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
+    protected val backgroundElement = ColorElement(guiRenderer, Vec2f.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     protected var cursorOffset: Vec2i = Vec2i.EMPTY
     val _value = StringBuffer(256)
     var value: String
@@ -75,7 +75,7 @@ open class TextInputElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (background != null) {
             backgroundElement.render(offset, consumer, options)
         }
@@ -135,7 +135,7 @@ open class TextInputElement(
             textUpToDate = true
             cutOffText()
         }
-        _size = Vec2(textElement.size)
+        _size = Vec2f(textElement.size)
         backgroundElement.size = prefMaxSize
 
         cursorOffset = if (_pointer == 0) {
@@ -320,7 +320,7 @@ open class TextInputElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseEnter(position: Vec2f, absolute: Vec2f): Boolean {
         context.window.cursorShape = CursorShapes.IBEAM
         return true
     }
@@ -330,12 +330,12 @@ open class TextInputElement(
         return true
     }
 
-    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (action != MouseActions.PRESS) {
             return true
         }
         val leftText = TextElement(guiRenderer, value, background = null)
-        leftText.prefMaxSize = Vec2(position.x, size.y)
+        leftText.prefMaxSize = Vec2f(position.x, size.y)
         var pointer = 0
         var heightLeft = position.y
         for (line in leftText.info.lines) {

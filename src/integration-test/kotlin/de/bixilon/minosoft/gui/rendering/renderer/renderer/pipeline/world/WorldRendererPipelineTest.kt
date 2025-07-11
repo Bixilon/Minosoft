@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world
 
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -39,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.test.IT
-import glm_.vec2.Vec2i
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 

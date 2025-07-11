@@ -22,7 +22,7 @@ vec3 decodeNormal(uint normal) {
     uint x = normal & 0x0Fu;
     uint y = normal >> 8u & 0x0Fu;
     uint z = normal >> 4u & 0x0Fu;
-    return vec3(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z));
+    return Vec3f(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z));
 }
 
 vec3 transformNormal(vec3 normal, mat4 transform) {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
@@ -24,7 +24,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 interface ClickCounter {
 
-    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: ValueTimeMark = now()): Int
+    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2f, time: ValueTimeMark = now()): Int
 
 
     companion object {

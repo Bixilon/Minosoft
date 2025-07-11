@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
@@ -35,8 +35,8 @@ enum class HorizontalAlignments {
             }
         }
 
-        fun HorizontalAlignments.getOffset(size: Vec2, childSize: Vec2): Vec2 {
-            return Vec2(getOffset(size.x, childSize.x), 0)
+        fun HorizontalAlignments.getOffset(size: Vec2f, childSize: Vec2f): Vec2f {
+            return Vec2f(getOffset(size.x, childSize.x), 0)
         }
     }
 }

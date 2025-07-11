@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
@@ -27,9 +27,9 @@ import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
 import de.bixilon.minosoft.util.json.SkeletalRotationDeserializer
 
 data class SkeletalElement(
-    val from: Vec3,
-    val to: Vec3,
-    val offset: Vec3 = Vec3.EMPTY,
+    val from: Vec3f,
+    val to: Vec3f,
+    val offset: Vec3f = Vec3f.EMPTY,
     @JsonDeserialize(using = SkeletalRotationDeserializer::class) val rotation: SkeletalRotation? = null,
     val inflate: Float = 0.0f,
     val texture: ResourceLocation? = null,

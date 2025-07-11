@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -41,7 +41,7 @@ open class RowLayout(
 ) : Element(guiRenderer), ChildAlignable {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override var prefSize: Vec2
+    override var prefSize: Vec2f
         get() = _prefSize
         set(value) = Unit
 
@@ -62,7 +62,7 @@ open class RowLayout(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         var childYOffset = 0.0f
 
         fun exceedsY(y: Float): Boolean {

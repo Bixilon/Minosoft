@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.items.armor.DefendingArmorItem.Companion.getProtection
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -36,7 +36,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     private var protection = 0.0f
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (protection <= 0.0f) {
             return
         }
@@ -73,7 +73,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     override fun forceSilentApply() {
         _size = if (protection <= 0.0f) {
-            Vec2.EMPTY
+            Vec2f.EMPTY
         } else {
             SIZE
         }
@@ -94,6 +94,6 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
     companion object {
         val ATLAS = minecraft("hud/hotbar/protection")
         private val ARMOR_SIZE = Vec2i(8, 9)
-        private val SIZE = Vec2(10 * ARMOR_SIZE.x, ARMOR_SIZE.y)
+        private val SIZE = Vec2f(10 * ARMOR_SIZE.x, ARMOR_SIZE.y)
     }
 }

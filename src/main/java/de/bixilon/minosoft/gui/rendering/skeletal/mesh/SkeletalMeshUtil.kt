@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 
 object SkeletalMeshUtil {
     private const val ADD = +1.001f
@@ -26,7 +26,7 @@ object SkeletalMeshUtil {
         return 8 + (value * 7.0f).toInt()
     }
 
-    fun encodeNormal(normal: Vec3): Int {
+    fun encodeNormal(normal: Vec3f): Int {
         val x = encode(normal.x) and 0x0F
         val y = encode(normal.y * ADD) and 0x0F
         val z = encode(normal.z) and 0x0F

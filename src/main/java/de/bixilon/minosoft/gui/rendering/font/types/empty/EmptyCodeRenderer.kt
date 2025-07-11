@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.empty
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -31,5 +31,5 @@ data class EmptyCodeRenderer(
     }
 
     override fun calculateWidth(scale: Float, shadow: Boolean): Float = width * scale
-    override fun render(position: Vec2, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
+    override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
 }

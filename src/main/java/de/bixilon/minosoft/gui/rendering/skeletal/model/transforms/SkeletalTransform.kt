@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.transforms
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import java.util.concurrent.atomic.AtomicInteger
 
 data class SkeletalTransform(
-    val pivot: Vec3,
+    val pivot: Vec3f,
     val children: Map<String, SkeletalTransform> = emptyMap(),
 ) {
 
