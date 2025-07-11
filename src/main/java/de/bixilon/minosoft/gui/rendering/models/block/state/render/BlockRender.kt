@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -38,7 +38,7 @@ interface BlockRender : ItemRender {
     fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?)
 
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) {
+    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) {
         val consumer = BlockGUIConsumer(gui, offset, consumer, options, getDisplay(DisplayPositions.GUI) ?: ModelDisplay.DEFAULT, size)
 
         render(consumer, stack, tints)

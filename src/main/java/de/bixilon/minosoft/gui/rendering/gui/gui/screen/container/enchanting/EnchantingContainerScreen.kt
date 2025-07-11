@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -39,7 +39,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
         container::revision.observe(this) { forceApply() }
     }
 
-    override fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
         for ((index, card) in cards.withIndex()) {
@@ -48,7 +48,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
         }
     }
 
-    override fun getContainerAt(position: Vec2): Pair<Element, Vec2>? {
+    override fun getContainerAt(position: Vec2f): Pair<Element, Vec2f>? {
         for ((index, area) in cardAreas.withIndex()) {
             if (area == null) {
                 continue

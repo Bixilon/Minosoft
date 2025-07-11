@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -122,7 +122,7 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
         }
 
 
-        _size = Vec2(width.sum(), 0.0f)
+        _size = Vec2f(width.sum(), 0.0f)
 
         // apply the size changes to all children
         applyOnlyChildren()
@@ -141,11 +141,11 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
     }
 
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                child.render(offset + margin.offset + Vec2(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), consumer, options)
+                child.render(offset + margin.offset + Vec2f(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), consumer, options)
             }
         }
     }

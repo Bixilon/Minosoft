@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import glm_.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.enums.ValuesEnum
@@ -85,16 +85,16 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
         return EntityRotation(readAngle(), readAngle())
     }
 
-    fun readVec2f(): Vec2 {
-        return Vec2(readFloat(), readFloat())
+    fun readVec2f(): Vec2f {
+        return Vec2f(readFloat(), readFloat())
     }
 
     fun readVec2d(): Vec2d {
         return Vec2d(readDouble(), readDouble())
     }
 
-    fun readVec3f(): Vec3 {
-        return Vec3(readFloat(), readFloat(), readFloat())
+    fun readVec3f(): Vec3f {
+        return Vec3f(readFloat(), readFloat(), readFloat())
     }
 
     open fun readVec3d(): Vec3d {

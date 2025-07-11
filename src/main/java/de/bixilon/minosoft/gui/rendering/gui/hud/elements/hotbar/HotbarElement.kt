@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
@@ -52,16 +52,16 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     private var renderOffhand = false
 
     val hoverText = FadingTextElement(guiRenderer, text = "", FadingTimes(300.milliseconds, 3000.milliseconds, 500.milliseconds), background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
-    private var hoverTextSize: Vec2? = null
+    private var hoverTextSize: Vec2f? = null
 
     private val itemText = FadingTextElement(guiRenderer, text = "", FadingTimes(300.milliseconds, 1500.milliseconds, 500.milliseconds), background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
-    private var itemTextSize: Vec2? = null
+    private var itemTextSize: Vec2f? = null
 
 
-    override val layoutOffset: Vec2
-        get() = size.let { Vec2((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
+    override val layoutOffset: Vec2f
+        get() = size.let { Vec2f((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
 
     private var renderElements = setOf(
         itemText,
@@ -76,24 +76,24 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
 
         val hoverTextSize = hoverTextSize
         if (hoverTextSize != null) {
-            hoverText.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, hoverTextSize.x), 0), consumer, options)
+            hoverText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, hoverTextSize.x), 0), consumer, options)
             offset.y += hoverTextSize.y + HOVER_TEXT_OFFSET
         }
         val itemTextSize = itemTextSize
         if (itemTextSize != null) {
-            itemText.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, itemTextSize.x), 0), consumer, options)
+            itemText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, itemTextSize.x), 0), consumer, options)
             offset.y += itemTextSize.y + ITEM_NAME_OFFSET
         }
 
-        val coreOffset = offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0)
+        val coreOffset = offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0)
 
         if (renderOffhand) {
-            val offhandOffset = Vec2.EMPTY
+            val offhandOffset = Vec2f.EMPTY
             if (offhand.offArm == Arms.LEFT) {
                 offhandOffset.x = -offhand.size.x - offhand.margin.right
             } else {
@@ -111,7 +111,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             element.silentApply()
         }
 
-        val size = Vec2(core.size)
+        val size = Vec2f(core.size)
 
         renderOffhand = guiRenderer.context.session.player.items.inventory[EquipmentSlots.OFF_HAND] != null
 
@@ -177,7 +177,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
 
     override fun postInit() {
-        prefMaxSize = Vec2(-1, -1)
+        prefMaxSize = Vec2f(-1, -1)
 
         val session = context.session
         val player = session.player

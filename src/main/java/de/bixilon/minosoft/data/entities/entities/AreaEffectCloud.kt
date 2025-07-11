@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class AreaEffectCloud(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
-    override var dimensions = Vec2.EMPTY
+    override var dimensions = Vec2f.EMPTY
         private set
 
     @get:SynchronizedEntityData
@@ -51,7 +51,7 @@ class AreaEffectCloud(session: PlaySession, entityType: EntityType, data: Entity
 
 
     init {
-        this::radius.observe(this, true) { this.dimensions = Vec2(radius * 2, super.dimensions.y) }
+        this::radius.observe(this, true) { this.dimensions = Vec2f(radius * 2, super.dimensions.y) }
     }
 
     companion object : EntityFactory<AreaEffectCloud> {

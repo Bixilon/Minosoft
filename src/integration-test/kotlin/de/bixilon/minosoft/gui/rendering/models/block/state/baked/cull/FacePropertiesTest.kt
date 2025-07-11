@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
@@ -41,24 +41,24 @@ class FacePropertiesTest {
     }
 
     fun `full cube`() {
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
+        val from = Vec3f(0.0f)
+        val to = Vec3f(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
 
-        baked.assertProperties(Directions.DOWN, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.UP, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.NORTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.SOUTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.WEST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.EAST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.DOWN, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.UP, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.NORTH, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.SOUTH, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.WEST, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.EAST, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
     }
 
     fun `smaller cube`() {
-        val from = Vec3(0.1f)
-        val to = Vec3(0.9f)
+        val from = Vec3f(0.1f)
+        val to = Vec3f(0.9f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
@@ -73,117 +73,117 @@ class FacePropertiesTest {
     }
 
     fun fullBlock() {
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
+        val from = Vec3f(0.0f)
+        val to = Vec3f(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
-        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
     }
 
     fun lowerSlab() {
-        val from = Vec3(0.0f, 0.0f, 0.0f)
-        val to = Vec3(1.0f, 0.5f, 1.0f)
+        val from = Vec3f(0.0f, 0.0f, 0.0f)
+        val to = Vec3f(1.0f, 0.5f, 1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
-        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
         assertNull(baked.getProperties(Directions.UP)?.faces)
-        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
     }
 
     fun upperSlab() {
-        val from = Vec3(0.0f, 0.5f, 0.0f)
-        val to = Vec3(1.0f, 1.0f, 1.0f)
+        val from = Vec3f(0.0f, 0.5f, 0.0f)
+        val to = Vec3f(1.0f, 1.0f, 1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
         assertNull(baked.getProperties(Directions.DOWN)?.faces)
-        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2(0.5f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2(0.5f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2f(0.5f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2f(0.5f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
     }
 
     fun northSlab() {
-        val from = Vec3(0.0f, 0.0f, 0.0f)
-        val to = Vec3(1.0f, 1.0f, 0.5f)
+        val from = Vec3f(0.0f, 0.0f, 0.0f)
+        val to = Vec3f(1.0f, 1.0f, 0.5f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
-        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
         assertNull(baked.getProperties(Directions.SOUTH)?.faces)
 
-        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
     }
 
     fun southSlab() {
-        val from = Vec3(0.0f, 0.0f, 0.5f)
-        val to = Vec3(1.0f, 1.0f, 1.0f)
+        val from = Vec3f(0.0f, 0.0f, 0.5f)
+        val to = Vec3f(1.0f, 1.0f, 1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
-        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
         assertNull(baked.getProperties(Directions.NORTH)?.faces)
 
-        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.5f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
     }
 
     fun westSlab() {
-        val from = Vec3(0.0f, 0.0f, 0.0f)
-        val to = Vec3(0.5f, 1.0f, 1.0f)
+        val from = Vec3f(0.0f, 0.0f, 0.0f)
+        val to = Vec3f(0.5f, 1.0f, 1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
-        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.WEST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
         assertNull(baked.getProperties(Directions.EAST)?.faces)
 
-        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(0.5f, 1.0f), TextureTransparencies.OPAQUE)))
     }
 
     fun eastSlab() {
-        val from = Vec3(0.5f, 0.0f, 0.0f)
-        val to = Vec3(1.0f, 1.0f, 1.0f)
+        val from = Vec3f(0.5f, 0.0f, 0.0f)
+        val to = Vec3f(1.0f, 1.0f, 1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
-        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.EAST)?.faces, arrayOf(FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
         assertNull(baked.getProperties(Directions.WEST)?.faces)
 
-        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2(0.5f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2(0.5f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2(0.5f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
-        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2(0.5f, 0.0f), Vec2(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.DOWN)?.faces, arrayOf(FaceProperties(Vec2f(0.5f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.UP)?.faces, arrayOf(FaceProperties(Vec2f(0.5f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.NORTH)?.faces, arrayOf(FaceProperties(Vec2f(0.5f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
+        assertEquals(baked.getProperties(Directions.SOUTH)?.faces, arrayOf(FaceProperties(Vec2f(0.5f, 0.0f), Vec2f(1.0f, 1.0f), TextureTransparencies.OPAQUE)))
     }
 
     fun `mini cube`() {
-        val from = Vec3(0.1f, 0.2f, 0.3f)
-        val to = Vec3(0.7f, 0.8f, 0.9f)
+        val from = Vec3f(0.1f, 0.2f, 0.3f)
+        val to = Vec3f(0.7f, 0.8f, 0.9f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
@@ -197,8 +197,8 @@ class FacePropertiesTest {
     }
 
     fun `full cube weighted model`() { // TODO: still wrong, grass block is failing
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
+        val from = Vec3f(0.0f)
+        val to = Vec3f(1.0f)
 
         val weighted = WeightedBlockStateApply(listOf(
             WeightedBlockStateApply.WeightedApply(1, SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 0)),
@@ -210,11 +210,11 @@ class FacePropertiesTest {
         weighted.load(BakedModelTestUtil.createTextureManager("block/test"))
         val baked = weighted.bake()!!
 
-        baked.assertProperties(Directions.DOWN, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.UP, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.NORTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.SOUTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.WEST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
-        baked.assertProperties(Directions.EAST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.DOWN, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.UP, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.NORTH, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.SOUTH, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.WEST, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.EAST, FaceProperties(Vec2f(0, 0), Vec2f(1, 1), TextureTransparencies.OPAQUE))
     }
 }

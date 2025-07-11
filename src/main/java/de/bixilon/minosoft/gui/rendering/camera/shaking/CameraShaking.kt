@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.shaking
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec3.swizzle.xz
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.Trigonometry.sin
@@ -61,6 +61,6 @@ class CameraShaking(
     fun transform(): Mat4? {
         if (rotation == 0.0f) return null
         return Mat4()
-            .rotateAssign(rotation, Vec3.Z)
+            .rotateAssign(rotation, Vec3f.Z)
     }
 }

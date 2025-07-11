@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.direction
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
@@ -22,7 +22,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.SVec3
+import de.bixilon.minosoft.data.world.vec.vec3.i.SVec3i
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
@@ -31,21 +31,21 @@ import kotlin.collections.set
 
 enum class Directions(
     val axis: Axes,
-    val index: SVec3,
+    val index: SVec3i,
 ) {
-    DOWN(Axes.Y, SVec3(1, -1, 1)),  // y-
-    UP(Axes.Y, SVec3(3, -1, 3)),    // y+
-    NORTH(Axes.Z, SVec3(0, 0, -1)), // z-
-    SOUTH(Axes.Z, SVec3(2, 2, -1)), // z+
-    WEST(Axes.X, SVec3(-1, 3, 2)),  // x-
-    EAST(Axes.X, SVec3(-1, 1, 0)),  // x+
+    DOWN(Axes.Y, SVec3i(1, -1, 1)),  // y-
+    UP(Axes.Y, SVec3i(3, -1, 3)),    // y+
+    NORTH(Axes.Z, SVec3i(0, 0, -1)), // z-
+    SOUTH(Axes.Z, SVec3i(2, 2, -1)), // z+
+    WEST(Axes.X, SVec3i(-1, 3, 2)),  // x-
+    EAST(Axes.X, SVec3i(-1, 1, 0)),  // x+
     ;
 
     val negative = ordinal % 2 == 0
 
     val vector = DirectionVector().with(this)
     val vectori = Vec3i(vector)
-    val vectorf = Vec3(vector)
+    val vectorf = Vec3f(vector)
     val vectord = Vec3d(vector)
 
     val inverted: Directions = unsafeNull()
@@ -89,7 +89,7 @@ enum class Directions(
         private const val MIN_ERROR = 0.0001f
 
         @Deprecated("outsource")
-        fun byDirection(direction: Vec3): Directions {
+        fun byDirection(direction: Vec3f): Directions {
             var minDirection = VALUES[0]
             var minError = 2.0f * 2.0f
             for (testDirection in VALUES) {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import glm_.vec4.Vec4
 
 object Vec4Util {
@@ -46,11 +46,11 @@ object Vec4Util {
     val Vec4.vertical: Float
         get() = top + bottom
 
-    val Vec4.spaceSize: Vec2
-        get() = Vec2(horizontal, vertical)
+    val Vec4.spaceSize: Vec2f
+        get() = Vec2f(horizontal, vertical)
 
-    val Vec4.offset: Vec2
-        get() = Vec2(left, top)
+    val Vec4.offset: Vec2f
+        get() = Vec2f(left, top)
 
     fun FloatArray.dot(x: Float, y: Float, z: Float) = this[0] * x + this[1] * y + this[2] * z + this[3]
 

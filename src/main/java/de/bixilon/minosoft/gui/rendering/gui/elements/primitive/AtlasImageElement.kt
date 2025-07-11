@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 open class AtlasImageElement(
     guiRenderer: GUIRenderer,
     texturePart: TexturePart?,
-    size: Vec2 = texturePart?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
+    size: Vec2f = texturePart?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: Texture? = texturePart?.texture
@@ -37,25 +37,25 @@ open class AtlasImageElement(
             field = value
             cacheUpToDate = false
         }
-    var uvStart: Vec2? = null
+    var uvStart: Vec2f? = null
         set(value) {
             field = value
             cacheUpToDate = false
         }
-    var uvEnd: Vec2? = null
+    var uvEnd: Vec2f? = null
         set(value) {
             field = value
             cacheUpToDate = false
         }
 
-    override var size: Vec2
+    override var size: Vec2f
         get() = super.size
         set(value) {
             super.size = value
             cacheUpToDate = false
         }
 
-    override var prefSize: Vec2
+    override var prefSize: Vec2f
         get() = size
         set(value) {
             size = value
@@ -90,10 +90,10 @@ open class AtlasImageElement(
         texturePart: TexturePart?,
         size: Vec2i,
         tint: RGBAColor = ChatColors.WHITE,
-    ) : this(guiRenderer, texturePart, Vec2(size), tint)
+    ) : this(guiRenderer, texturePart, Vec2f(size), tint)
 
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = texture ?: return
         val textureLike = texturePart ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)

@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import java.nio.FloatBuffer
 
 class TransformInstance(
     val id: Int,
-    val pivot: Vec3,
+    val pivot: Vec3f,
     val children: Map<String, TransformInstance>,
 ) {
     private val array = children.values.toTypedArray()

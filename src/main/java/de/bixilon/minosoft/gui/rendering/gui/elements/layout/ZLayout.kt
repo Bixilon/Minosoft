@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -27,14 +27,14 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 class ZLayout(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (child in children.toSynchronizedList()) {
             child.render(margin.offset + offset, consumer, options)
         }
     }
 
     override fun forceSilentApply() {
-        var size = Vec2.EMPTY
+        var size = Vec2f.EMPTY
         for (child in children.toSynchronizedList()) {
             child.silentApply()
             size = size.max(child.size)

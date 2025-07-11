@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.buffer
 
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
-import glm_.vec2.Vec2i
 
 class DummyFramebuffer(
     override val size: Vec2i = Vec2i(1, 1),

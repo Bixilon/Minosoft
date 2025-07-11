@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.container.types.generic.GenericContainer
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -57,9 +57,9 @@ open class GenericContainerScreen(
     private val inventoryTitle = ContainerText.createInventoryTitle(guiRenderer, footerAtlas?.areas?.get("text"))
 
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = (size - containerSize) / 2
-        val initialOffset = Vec2(centerOffset)
+        val initialOffset = Vec2f(centerOffset)
 
         super.forceRender(centerOffset, consumer, options)
 
@@ -78,7 +78,7 @@ open class GenericContainerScreen(
         forceRenderContainerScreen(initialOffset, consumer, options)
     }
 
-    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
+    override fun getAt(position: Vec2f): Pair<Element, Vec2f>? {
         val centerOffset = (size - containerSize) / 2
         if (position isSmaller centerOffset) {
             return null

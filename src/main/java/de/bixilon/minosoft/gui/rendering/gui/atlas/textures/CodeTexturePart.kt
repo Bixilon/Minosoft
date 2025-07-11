@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 data class CodeTexturePart(
     override val texture: Texture,
-    override val uvStart: Vec2 = Vec2(0.0f),
-    override val uvEnd: Vec2 = Vec2(1.0f),
+    override val uvStart: Vec2f = Vec2f(0.0f),
+    override val uvEnd: Vec2f = Vec2f(1.0f),
     override val size: Vec2i,
 ) : TexturePart

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
@@ -38,12 +38,12 @@ open class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000)
         )
     }
 
-    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
         val part = path.getSkinPart()?.ordinal?.inc() ?: 0x00
         val partTransformNormal = ((part shl 19) or (transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
 
         order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3.length, uv, uvIndex * Vec2.length, partTransformNormal)
+            addVertex(positions, position * Vec3f.length, uv, uvIndex * Vec2f.length, partTransformNormal)
         }
     }
 
@@ -59,7 +59,7 @@ open class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000)
 
 
     data class PlayerMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uv: UnpackedUV,
         val partTransformNormal: Int,
     ) {

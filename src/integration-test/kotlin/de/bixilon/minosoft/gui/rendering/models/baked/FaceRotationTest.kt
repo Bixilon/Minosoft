@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
@@ -35,8 +35,8 @@ import org.testng.annotations.Test
 class FaceRotationTest {
 
     fun rotation1() {
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
+        val from = Vec3f(0.0f)
+        val to = Vec3f(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(createTextureManager("block/test"))!!
@@ -52,8 +52,8 @@ class FaceRotationTest {
     }
 
     fun rotation1Y90() {
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
+        val from = Vec3f(0.0f)
+        val to = Vec3f(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
@@ -69,8 +69,8 @@ class FaceRotationTest {
     }
 
     fun rotation3() {
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
+        val from = Vec3f(0.0f)
+        val to = Vec3f(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 3))), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(createTextureManager("block/test"))!!

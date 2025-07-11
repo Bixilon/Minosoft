@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -37,11 +37,11 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
     private val manager = renderer.renderer.features.hitbox
 
     private var aabb = AABB.EMPTY
-    private var eyePosition = Vec3.EMPTY
+    private var eyePosition = Vec3f.EMPTY
     private var rotation = EntityRotation.EMPTY
 
     private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorInterpolation::interpolateRGBA)
-    private var velocity = Interpolator(Vec3.EMPTY, Vec3Util::interpolateLinear)
+    private var velocity = Interpolator(Vec3f.EMPTY, Vec3Util::interpolateLinear)
 
     override fun update(time: ValueTimeMark, delta: Float) {
         if (!manager.enabled) return unload()
@@ -65,7 +65,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
 
         val renderInfo = renderer.entity.renderInfo
         val aabb = renderInfo.cameraAABB
-        val eyePosition = Vec3(renderInfo.eyePosition - offset)
+        val eyePosition = Vec3f(renderInfo.eyePosition - offset)
         val rotation = renderInfo.rotation
 
         if (aabb != this.aabb) {
@@ -88,7 +88,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
         this.color.add(delta, 0.3f)
 
         if (velocity.delta >= 1.0f) {
-            this.velocity.push(Vec3(renderer.entity.physics.velocity))
+            this.velocity.push(Vec3f(renderer.entity.physics.velocity))
         }
         this.velocity.add(delta, (TickUtil.TIME_PER_TICK / 1.seconds).toFloat())
 
@@ -106,7 +106,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
             mesh.drawAABB(aabb, color = color)
         }
 
-        val center = Vec3(aabb.center)
+        val center = Vec3f(aabb.center)
         val velocity = velocity.value
         if (velocity.length2() > 0.003f) {
             mesh.drawLine(center, center + velocity * 5.0f, color = ChatColors.YELLOW)

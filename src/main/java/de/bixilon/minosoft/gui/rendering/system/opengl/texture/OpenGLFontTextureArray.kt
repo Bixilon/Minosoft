@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec2.Vec2
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL33.GL_TEXTURE_SWIZZLE_RGBA
 import java.nio.ByteBuffer
@@ -93,7 +93,7 @@ class OpenGLFontTextureArray(
         val pixel = 1.0f / resolution
         val size = texture.size
 
-        val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2(size) / resolution
+        val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
         val array = TextureArrayProperties(uvEnd, resolution, pixel)
 
         texture.renderData = OpenGLTextureData(this.index, textureIndex++, uvEnd, -1)

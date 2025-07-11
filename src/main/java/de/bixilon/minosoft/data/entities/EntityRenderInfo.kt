@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.interpolateYaw
@@ -57,7 +57,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
         val position1 = this.position1
         val eyeHeight1 = this.eyeHeight1
 
-        if (position.isEqual(position1) && eyeHeight0 == eyeHeight1) {
+        if (position == position1 && eyeHeight0 == eyeHeight1) {
             interpolateAABB(false)
             return
         }
@@ -94,7 +94,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun tickPosition() {
         val entityPosition = entity.physics.position
-        if (position0.isEqual(entityPosition) && position1.isEqual(entityPosition)) return
+        if (position0 == entityPosition && position1 == entityPosition) return
 
         position0 = position1
         position1 = entityPosition
@@ -120,11 +120,5 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
         tickPosition()
         tickEyeHeight()
         tickRotation()
-    }
-
-    private fun Vec3d.isEqual(other: Vec3d): Boolean {
-        val ta = this.array
-        val oa = other.array
-        return ta[0] == oa[0] && ta[1] == oa[1] && oa[2] == ta[2]
     }
 }

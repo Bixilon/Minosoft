@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -46,7 +46,7 @@ abstract class Menu(
         var totalHeight = 0.0f
         for (element in elements) {
             val currentElementSize = element.size
-            val elementSize = Vec2(elementWidth, currentElementSize.y)
+            val elementSize = Vec2f(elementWidth, currentElementSize.y)
             element.size = elementSize
             maxElementWidth = maxOf(maxElementWidth, element.size.x) // width may not be changeable
             totalHeight += currentElementSize.y
@@ -66,23 +66,23 @@ abstract class Menu(
 
     operator fun plusAssign(element: Element) = add(element)
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         super.forceRender(offset, consumer, options)
         val maxElementWidth = maxElementWidth
         val startOffset = (size - Vec2i(maxElementWidth, totalHeight)) / 2
         for (element in elements) {
-            element.render(offset + startOffset + Vec2((maxElementWidth - element.size.x) / 2, 0), consumer, options)
+            element.render(offset + startOffset + Vec2f((maxElementWidth - element.size.x) / 2, 0), consumer, options)
             startOffset.y += BUTTON_Y_MARGIN + element.size.y
         }
     }
 
-    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseEnter(position: Vec2f, absolute: Vec2f): Boolean {
         super<AbstractLayout>.onMouseEnter(position, absolute)
         return true
     }
 
-    override fun onMouseMove(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
         super<AbstractLayout>.onMouseMove(position, absolute)
         return true
     }
@@ -92,7 +92,7 @@ abstract class Menu(
         return true
     }
 
-    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action, count)
         return true
@@ -102,9 +102,9 @@ abstract class Menu(
         forceSilentApply()
     }
 
-    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
+    override fun getAt(position: Vec2f): Pair<Element, Vec2f>? {
         var element: Element? = null
-        val delta = Vec2(position)
+        val delta = Vec2f(position)
         val elementWidth = maxElementWidth
         val size = size
         val xStart = (size.x - elementWidth) / 2
@@ -176,7 +176,7 @@ abstract class Menu(
             }
 
             activeElement?.onMouseLeave()
-            element.onMouseEnter(Vec2.EMPTY, Vec2.EMPTY)
+            element.onMouseEnter(Vec2f.EMPTY, Vec2f.EMPTY)
             activeElement = element
             return true // no passthrough the key to current active element
         }
@@ -190,7 +190,7 @@ abstract class Menu(
         return true
     }
 
-    override fun onScroll(position: Vec2, scrollOffset: Vec2): Boolean {
+    override fun onScroll(position: Vec2f, scrollOffset: Vec2f): Boolean {
         val (element, delta) = getAt(position) ?: return true
         element.onScroll(delta, scrollOffset)
         return true

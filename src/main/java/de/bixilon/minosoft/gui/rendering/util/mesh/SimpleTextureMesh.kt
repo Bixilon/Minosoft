@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, texture: Texture, uv: Vec2, tintColor: RGBAColor?) {
+    fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f, tintColor: RGBAColor?) {
         data.add(position.array)
         data.add(uv.array)
         data.add(texture.renderData.shaderTextureId.buffer())
@@ -35,7 +35,7 @@ open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTyp
 
 
     data class SimpleTextureMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uv: UnpackedUV,
         val indexLayerAnimation: Int,
         val tint: RGBColor,

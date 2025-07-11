@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -33,7 +33,7 @@ class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     init {
         background.tint = RGBAColor(0xFF, 0x00, 0x00, 0x7F)
         add(TextElement(guiRenderer, "You died!", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 3.0f)))
-        add(SpacerElement(guiRenderer, Vec2(0, 20)))
+        add(SpacerElement(guiRenderer, Vec2f(0, 20)))
         if (guiRenderer.session.world.hardcore) {
             add(TextElement(guiRenderer, "This world is hardcore, you cannot respawn!"))
         } else {

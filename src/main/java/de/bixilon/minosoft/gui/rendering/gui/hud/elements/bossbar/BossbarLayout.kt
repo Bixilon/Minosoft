@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -33,8 +33,8 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
     private val session = context.session
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
-    override val layoutOffset: Vec2
-        get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
+    override val layoutOffset: Vec2f
+        get() = Vec2f((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
 
 
     val atlas = guiRenderer.atlas[ATLAS]?.let { BossbarAtlas(it) }

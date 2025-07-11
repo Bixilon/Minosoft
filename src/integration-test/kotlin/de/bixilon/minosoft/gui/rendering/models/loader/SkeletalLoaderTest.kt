@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -87,6 +87,6 @@ class SkeletalLoaderTest {
         val baked = loader[dummyModel]!!
 
 
-        assertEquals(baked.transform.children, mapOf("body" to BakedSkeletalTransform(1, Vec3(0.0, 0.5, 0.0), mapOf("head" to BakedSkeletalTransform(2, Vec3(0.0, 1.0, 0.0), emptyMap())))))
+        assertEquals(baked.transform.children, mapOf("body" to BakedSkeletalTransform(1, Vec3f(0.0, 0.5, 0.0), mapOf("head" to BakedSkeletalTransform(2, Vec3f(0.0, 1.0, 0.0), emptyMap())))))
     }
 }

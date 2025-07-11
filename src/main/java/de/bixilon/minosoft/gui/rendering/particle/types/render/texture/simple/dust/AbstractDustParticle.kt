@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust
 
 import glm_.func.common.clamp
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle

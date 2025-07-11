@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
@@ -119,7 +119,7 @@ open class BillboardTextFeature(
 
     companion object {
         val PROPERTIES = TextRenderProperties(allowNewLine = false, shadow = false, charSpacing = CharSpacing(top = 1.0f, bottom = 1.0f))
-        val MAX_SIZE = Vec2(300.0f, PROPERTIES.lineHeight)
+        val MAX_SIZE = Vec2f(300.0f, PROPERTIES.lineHeight)
         const val DEFAULT_OFFSET = 0.25f
         const val RENDER_DISTANCE = 48
     }

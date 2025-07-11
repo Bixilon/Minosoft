@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
@@ -46,9 +46,9 @@ object Vec3iUtil {
         get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
 
-    fun Vec3i.toVec3(): Vec3 {
+    fun Vec3i.toVec3f(): Vec3f {
         val array = array
-        return Vec3(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+        return Vec3f(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
     }
 
     fun Any?.toVec3i(default: Vec3i? = null): Vec3i {

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -27,7 +27,7 @@ class WarpedSporeParticle(session: PlaySession, position: Vec3d, data: ParticleD
 
     init {
         color = RGBAColor(0.1f, 0.1f, 0.3f)
-        spacing = Vec3(0.001f)
+        spacing = Vec3f(0.001f)
     }
 
 

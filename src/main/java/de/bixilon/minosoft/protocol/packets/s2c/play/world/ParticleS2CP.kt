@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.world
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -32,7 +32,7 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         buffer.readVec3d()
     }
-    val offset: Vec3 = buffer.readVec3f()
+    val offset: Vec3f = buffer.readVec3f()
     val speed: Float = buffer.readFloat()
     val count: Int = buffer.readInt()
     val data: ParticleData = buffer.readParticleData(type)

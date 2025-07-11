@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
@@ -51,10 +51,10 @@ abstract class ChestRenderer(
 
     private companion object {
         val ROTATION = arrayOf(
-            Vec3(0, 0, 0).rad,
-            Vec3(0, 180, 0).rad,
-            Vec3(0, 90, 0).rad,
-            Vec3(0, 270, 0).rad,
+            Vec3f(0, 0, 0).rad,
+            Vec3f(0, 180, 0).rad,
+            Vec3f(0, 90, 0).rad,
+            Vec3f(0, 270, 0).rad,
         )
     }
 }

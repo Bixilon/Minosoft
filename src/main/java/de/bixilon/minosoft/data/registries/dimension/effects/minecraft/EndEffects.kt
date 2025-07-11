@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.dimension.effects.minecraft
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
@@ -37,7 +37,7 @@ object EndEffects : DimensionEffects {
     override val clouds: Boolean get() = false
     override fun getCloudHeight(session: PlaySession): IntRange = Broken()
 
-    override val brighten = Vec3(0.99f, 1.12f, 1.0f) // bit more green
+    override val brighten = Vec3f(0.99f, 1.12f, 1.0f) // bit more green
 
     override val fog: FogEffects? get() = null
 }

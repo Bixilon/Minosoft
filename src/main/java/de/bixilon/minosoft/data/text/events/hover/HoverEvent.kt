@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.text.events.hover
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.events.ChatEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
 interface HoverEvent : ChatEvent {
 
-    fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2, absolute: Vec2) = false
-    fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2, absolute: Vec2) = false
+    fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2f, absolute: Vec2f) = false
+    fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2f, absolute: Vec2f) = false
     fun onMouseLeave(guiRenderer: GUIRenderer) = false
 }

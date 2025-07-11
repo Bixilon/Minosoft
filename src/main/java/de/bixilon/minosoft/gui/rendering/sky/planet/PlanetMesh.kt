@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class PlanetMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SunMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SunMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, texture: Texture, uv: Vec2) {
+    fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f) {
         data.add(position.array)
         data.add(uv.array)
         data.add(texture.renderData.shaderTextureId.buffer())
@@ -33,7 +33,7 @@ open class PlanetMesh(context: RenderContext, primitiveType: PrimitiveTypes = co
 
 
     data class SunMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uv: UnpackedUV,
         val indexLayerAnimation: Int,
     ) {

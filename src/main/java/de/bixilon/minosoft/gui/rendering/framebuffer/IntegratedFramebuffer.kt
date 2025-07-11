@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import glm_.vec2.Vec2i
 
 interface IntegratedFramebuffer : Drawable {
     val context: RenderContext

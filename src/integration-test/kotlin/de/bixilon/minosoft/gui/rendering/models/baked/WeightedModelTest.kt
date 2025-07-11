@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -88,9 +88,9 @@ class WeightedModelTest {
     }
 
 
-    private val A = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(1), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
-    private val B = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(2), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
-    private val C = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(3), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
-    private val D = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(4), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val A = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3f(1), Vec3f(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val B = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3f(2), Vec3f(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val C = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3f(3), Vec3f(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val D = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3f(4), Vec3f(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
 }

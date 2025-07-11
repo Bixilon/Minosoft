@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.primitive.FloatUtil.matches
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -33,7 +33,7 @@ class OpenCloseAnimationTest {
     private fun create(): Animation {
         val mesh = IT.OBJENESIS.newInstance(SkeletalMesh::class.java)
         val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
-        val model = BakedSkeletalModel(mesh, BakedSkeletalTransform(0, Vec3.EMPTY, emptyMap()), 1, emptyMap())
+        val model = BakedSkeletalModel(mesh, BakedSkeletalTransform(0, Vec3f.EMPTY, emptyMap()), 1, emptyMap())
         val instance = model.createInstance(context)
 
         return Animation(instance)

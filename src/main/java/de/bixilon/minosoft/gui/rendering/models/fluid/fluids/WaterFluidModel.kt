@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.fluid.fluids
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -37,7 +37,7 @@ class WaterFluidModel : FluidModel {
     override fun load(context: RenderContext) {
         still = context.textures.static.create(context.models.block.fixTexturePath(STILL).texture())
         flowing = context.textures.static.create(context.models.block.fixTexturePath(FLOWING).texture())
-        properties = FaceProperties(Vec2.EMPTY, Vec2(1.0f), transparency)
+        properties = FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), transparency)
     }
 
     companion object {

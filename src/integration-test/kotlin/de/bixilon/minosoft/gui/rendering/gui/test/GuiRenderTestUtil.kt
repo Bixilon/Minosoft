@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.test
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -42,7 +42,7 @@ object GuiRenderTestUtil {
         return context
     }
 
-    fun create(size: Vec2 = Vec2(1920.0f, 1080.0f)): GUIRenderer {
+    fun create(size: Vec2f = Vec2f(1920.0f, 1080.0f)): GUIRenderer {
         val renderer = OBJENESIS.newInstance(GUIRenderer::class.java)
         renderer::scaledSize.forceSet(DataObserver(size))
         renderer::halfSize.forceSet(size / 2.0f)
@@ -53,11 +53,11 @@ object GuiRenderTestUtil {
     }
 
 
-    fun Element.assetSize(size: Vec2) {
+    fun Element.assetSize(size: Vec2f) {
         assertEquals(this.size, size)
     }
 
-    fun Element.assetPrefSize(size: Vec2) {
+    fun Element.assetPrefSize(size: Vec2f) {
         assertEquals(this.prefSize, size)
     }
 }

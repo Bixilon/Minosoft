@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.EntityRotation

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.fluid.water
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions

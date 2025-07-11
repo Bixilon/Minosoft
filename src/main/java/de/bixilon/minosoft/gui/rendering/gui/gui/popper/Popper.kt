@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -26,12 +26,12 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 
 abstract class Popper(
     guiRenderer: GUIRenderer,
-    position: Vec2,
+    position: Vec2f,
     val background: Boolean = true,
 ) : Element(guiRenderer), LayoutedElement {
-    private val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBAColor(10, 10, 20, 230))
+    private val backgroundElement = ColorElement(guiRenderer, Vec2f.EMPTY, color = RGBAColor(10, 10, 20, 230))
     open var dead = false
-    override var layoutOffset: Vec2 = EMPTY
+    override var layoutOffset: Vec2f = EMPTY
         protected set
     var position = position
         set(value) {
@@ -42,7 +42,7 @@ abstract class Popper(
             forceApply()
         }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (background) {
             backgroundElement.render(offset, consumer, options)
         }
@@ -65,10 +65,10 @@ abstract class Popper(
         // ToDo: if not possible, try: left -> right -> below
         // if nothing is possible use (0|0)
 
-        val layoutOffset: Vec2
+        val layoutOffset: Vec2f
 
         // top
-        layoutOffset = position - Vec2(0, size.y + POSITION_OFFSET)
+        layoutOffset = position - Vec2f(0, size.y + POSITION_OFFSET)
         if (!(layoutOffset isSmaller EMPTY)) {
             layoutOffset.x = minOf(maxOf(layoutOffset.x - size.x / 2 - POSITION_OFFSET, 0.0f), windowSize.x - size.x) // try to center element, but clamp on edges (try not to make the popper go out of the window)
             this.layoutOffset = layoutOffset
@@ -88,7 +88,7 @@ abstract class Popper(
     }
 
     companion object {
-        private val EMPTY = Vec2.EMPTY
+        private val EMPTY = Vec2f.EMPTY
         private const val POSITION_OFFSET = 10.0f
     }
 }

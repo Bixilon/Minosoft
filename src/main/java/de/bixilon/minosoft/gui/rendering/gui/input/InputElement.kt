@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 interface InputElement : MouseInputElement {
 
-    fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int) = false
-    fun onScroll(position: Vec2, scrollOffset: Vec2) = false
+    fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int) = false
+    fun onScroll(position: Vec2f, scrollOffset: Vec2f) = false
 
     fun onKey(key: KeyCodes, type: KeyChangeTypes) = false
     fun onCharPress(char: Int) = false

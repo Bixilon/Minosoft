@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.RasterizedCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class UnicodeCodeRenderer(
     override val texture: Texture,
-    override val uvStart: Vec2,
-    override val uvEnd: Vec2,
+    override val uvStart: Vec2f,
+    override val uvEnd: Vec2f,
     override val width: Float,
 ) : RasterizedCodePointRenderer {
 

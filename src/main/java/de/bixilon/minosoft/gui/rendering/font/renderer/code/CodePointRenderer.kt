@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -30,7 +30,7 @@ interface CodePointRenderer {
 
     fun calculateWidth(scale: Float, shadow: Boolean): Float
 
-    fun render(position: Vec2, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
+    fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
     private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties, info: TextRenderInfo, align: Boolean): Float {
         var lineStart = offset.initial.x

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -32,17 +32,17 @@ import glm_.glm
 
 class BlockGUIConsumer(
     val gui: GUIRenderer,
-    val offset: Vec2,
+    val offset: Vec2f,
     val consumer: GUIVertexConsumer,
     val options: GUIVertexOptions?,
     val display: ModelDisplay,
-    val size: Vec2,
+    val size: Vec2f,
 ) : BlockVertexConsumer {
     private val matrix = VIEW_MATRIX * display.matrix
     override val order = consumer.order
 
 
-    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken("Not chunk rendering")
+    override fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken("Not chunk rendering")
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 
@@ -52,8 +52,8 @@ class BlockGUIConsumer(
         val tint = RGBColor(lightTint.toBits()).rgba()
 
         order.iterateReverse { p, uv ->
-            val vertexOffset = p * Vec3.length
-            val uvOffset = uv * Vec2.length
+            val vertexOffset = p * Vec3f.length
+            val uvOffset = uv * Vec2f.length
 
             val xyz = Vec4(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
 
@@ -68,6 +68,6 @@ class BlockGUIConsumer(
     }
 
     companion object {
-        val VIEW_MATRIX = glm.lookAt(Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
+        val VIEW_MATRIX = glm.lookAt(Vec3f(0.0f, 0.0f, -1.0f), Vec3f(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
     }
 }

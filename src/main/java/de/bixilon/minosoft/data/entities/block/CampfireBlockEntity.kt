@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
