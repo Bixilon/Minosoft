@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.data.world.vec.SVec3
+import de.bixilon.minosoft.data.world.vec.vec3.i.SVec3i
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 
 class OcclusionTracer(
@@ -48,7 +48,7 @@ class OcclusionTracer(
         return true
     }
 
-    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions, vector: SVec3) {
+    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions, vector: SVec3i) {
         // TODO: keep track of direction and don't allow going of the axis too far (we can not bend our look direction). This will hide caves and reveans too if they are occluded
         if (!isInViewDistance(chunk)) return
         if (height < minSection || height > maxSection) return
@@ -82,13 +82,13 @@ class OcclusionTracer(
         if (vector.y >= 0) trace(occlusion, chunk, height, inverted, Directions.UP, vector)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3) {
+    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
         if (occlusion != null && occlusion.isOccluded(source, destination)) return
         val next = neighbours[destination] ?: return
         trace(next, height, destination, vector + destination)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3) {
+    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
         if (occlusion != null && occlusion.isOccluded(source, destination)) return
         trace(chunk, height + destination.vector.y, destination, vector + destination)
     }
@@ -96,7 +96,7 @@ class OcclusionTracer(
     fun trace(chunk: Chunk): OcclusionGraph {
         for (direction in Directions) {
             val neighbour = if (direction.axis == Axes.Y) chunk else chunk.neighbours[direction] ?: continue
-            trace(neighbour, position.y + direction.vector.y, direction, SVec3(direction.vector))
+            trace(neighbour, position.y + direction.vector.y, direction, SVec3i(direction.vector))
         }
 
         visible += position

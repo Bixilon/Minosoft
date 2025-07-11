@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -33,7 +33,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
         this += TextElement(guiRenderer, "Debug options", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER))
-        this += SpacerElement(guiRenderer, Vec2(0, 10))
+        this += SpacerElement(guiRenderer, Vec2f(0, 10))
 
         this += ButtonElement(guiRenderer, "Switch to next gamemode") { session.util.typeChat("/gamemode ${session.player.gamemode.next().name.lowercase()}") }
         this += ButtonElement(guiRenderer, "Hack to next gamemode") { session.player.additional.apply { gamemode = gamemode.next() } }

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
@@ -75,7 +75,7 @@ class BitmapFontTypeTest {
         return fontType
     }
 
-    private fun BitmapFontType.assert(char: Char, width: Int, uvStart: Vec2, uvEnd: Vec2, height: Int? = null) {
+    private fun BitmapFontType.assert(char: Char, width: Int, uvStart: Vec2f, uvEnd: Vec2f, height: Int? = null) {
         val char = this[char.code]
         assertNotNull(char)
         char as BitmapCodeRenderer
@@ -96,25 +96,25 @@ class BitmapFontTypeTest {
     fun `load basic with default options`() {
         val font = load(intArrayOf(1, 2, 3), intArrayOf(7, 4, 6), chars = arrayOf(intArrayOf('a'.code, 'b'.code, 'c'.code)))
 
-        font.assert('a', 7, Vec2(0.0078225f, 0), Vec2(0.0546775f, 1.0f))
-        font.assert('b', 3, Vec2(0.078135f, 0), Vec2(0.0859275f, 1.0f))
-        font.assert('c', 4, Vec2(0.1484475f, 0.0), Vec2(0.15624f, 1.0f))
+        font.assert('a', 7, Vec2f(0.0078225f, 0), Vec2f(0.0546775f, 1.0f))
+        font.assert('b', 3, Vec2f(0.078135f, 0), Vec2f(0.0859275f, 1.0f))
+        font.assert('c', 4, Vec2f(0.1484475f, 0.0), Vec2f(0.15624f, 1.0f))
     }
 
     fun `multiple rows`() {
         val font = load(IntArray(64) { it % 3 }, IntArray(64) { (it + 2) % 4 }, chars = arrayOf(IntArray(16) { 'A'.code + it }, IntArray(16) { 'A'.code + 16 + it }, IntArray(16) { 'A'.code + 32 + it }, IntArray(16) { 'A'.code + 48 + it }))
 
-        font.assert('A', 3, Vec2(0.0f, 0), Vec2(0.0234275f, 0.24999f))
-        font.assert('P', 2, Vec2(0.93751f, 0.0), Vec2(0.953115f, 0.24999f))
+        font.assert('A', 3, Vec2f(0.0f, 0), Vec2f(0.0234275f, 0.24999f))
+        font.assert('P', 2, Vec2f(0.93751f, 0.0), Vec2f(0.953115f, 0.24999f))
 
-        font.assert('Q', 2, Vec2(0.0078225f, 0.25001f), Vec2(0.015615f, 0.49999f))
-        font.assert('a', 1, Vec2(0.015635f, 0.50001f), Vec2(0.0078025f, 0.74999f))
-        font.assert('q', 3, Vec2(0.0f, 0.75001f), Vec2(0.0234275f, 1.0f))
+        font.assert('Q', 2, Vec2f(0.0078225f, 0.25001f), Vec2f(0.015615f, 0.49999f))
+        font.assert('a', 1, Vec2f(0.015635f, 0.50001f), Vec2f(0.0078025f, 0.74999f))
+        font.assert('q', 3, Vec2f(0.0f, 0.75001f), Vec2f(0.0234275f, 1.0f))
     }
 
     fun `12 px height`() {
         val font = load(intArrayOf(1, 2), intArrayOf(6, 7), width = 8, height = 12, ascent = 10, arrayOf(intArrayOf('ä'.code, 'ö'.code), intArrayOf(), intArrayOf()))
 
-        font.assert('ä', 6, Vec2(0.0078225f, 0.0f), Vec2(0.046865f, 0.33332333f), height = 12)
+        font.assert('ä', 6, Vec2f(0.0078225f, 0.0f), Vec2f(0.046865f, 0.33332333f), height = 12)
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -52,7 +52,7 @@ class ContainerItemsElement(
     init {
         silentApply()
 
-        val size = Vec2.EMPTY
+        val size = Vec2f.EMPTY
         for ((slotId, binding) in slots) {
             val item = container[slotId]
             itemElements[slotId] = ItemElementData(
@@ -78,7 +78,7 @@ class ContainerItemsElement(
         }
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (update) {
             forceSilentApply()
         }
@@ -107,7 +107,7 @@ class ContainerItemsElement(
         update = false
     }
 
-    override fun getAt(position: Vec2): Pair<ItemElement, Vec2>? {
+    override fun getAt(position: Vec2f): Pair<ItemElement, Vec2f>? {
         for (item in itemElements.values) {
             if (position isSmaller item.offset) {
                 continue
@@ -123,6 +123,6 @@ class ContainerItemsElement(
 
     private data class ItemElementData(
         val element: ItemElement,
-        val offset: Vec2,
+        val offset: Vec2f,
     )
 }

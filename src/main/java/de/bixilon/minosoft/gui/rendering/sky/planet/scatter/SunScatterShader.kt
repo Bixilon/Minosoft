@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky.planet.scatter
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
@@ -22,6 +22,6 @@ class SunScatterShader(
     override val native: NativeShader,
 ) : Shader() {
     var scatterMatrix by uniform("uScatterMatrix", Mat4())
-    var sunPosition by uniform("uSunPosition", Vec3())
+    var sunPosition by uniform("uSunPosition", Vec3f())
     var intensity by uniform("uIntensity", 0.0f)
 }

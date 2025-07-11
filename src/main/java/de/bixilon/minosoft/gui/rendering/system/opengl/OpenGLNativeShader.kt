@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
+import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import glm_.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
@@ -28,10 +32,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShader
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.lwjgl.opengl.GL11.GL_FALSE
@@ -160,19 +160,19 @@ class OpenGLNativeShader(
         setInt(uniform, if (boolean) 1 else 0)
     }
 
-    override fun setMat4(uniform: String, mat4: Mat4) {
+    override fun setMat4(uniform: String, mat4: Mat4f) {
         glUniformMatrix4fv(getUniformLocation(uniform), false, mat4.array)
     }
 
-    override fun setVec2(uniform: String, vec2: Vec2) {
+    override fun setVec2(uniform: String, vec2: Vec2f) {
         glUniform2f(getUniformLocation(uniform), vec2.x, vec2.y)
     }
 
-    override fun setVec3(uniform: String, vec3: Vec3) {
+    override fun setVec3(uniform: String, vec3: Vec3f) {
         glUniform3f(getUniformLocation(uniform), vec3.x, vec3.y, vec3.z)
     }
 
-    override fun setVec4(uniform: String, vec4: Vec4) {
+    override fun setVec4(uniform: String, vec4: Vec4f) {
         glUniform4f(getUniformLocation(uniform), vec4.x, vec4.y, vec4.z, vec4.w)
     }
 

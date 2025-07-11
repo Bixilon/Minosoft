@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.vec
+package de.bixilon.minosoft.data.world.vec.vec3.i
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.vec.VecUtil.assertVec
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
-value class SVec3(val raw: Int) : TextFormattable {
+value class SVec3i(val raw: Int) : TextFormattable {
 
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y) shl SHIFT_Y) or ((z and MASK_Z) shl SHIFT_Z) or ((x and MASK_X) shl SHIFT_X)) {
@@ -37,66 +37,66 @@ value class SVec3(val raw: Int) : TextFormattable {
     inline val z: Int get() = (((raw ushr SHIFT_Z) and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
 
-    inline fun plusX(): SVec3 {
+    inline fun plusX(): SVec3i {
         assertVec(this.x < MAX_X)
-        return SVec3(raw + X * 1)
+        return SVec3i(raw + X * 1)
     }
 
-    inline fun plusX(x: Int): SVec3 {
+    inline fun plusX(x: Int): SVec3i {
         assertVec(this.x + x, -MAX_X, MAX_X)
-        return SVec3(raw + X * x)
+        return SVec3i(raw + X * x)
     }
 
-    inline fun minusX(): SVec3 {
+    inline fun minusX(): SVec3i {
         assertVec(this.x > -MAX_X)
-        return SVec3(raw - X * 1)
+        return SVec3i(raw - X * 1)
     }
 
-    inline fun plusY(): SVec3 {
+    inline fun plusY(): SVec3i {
         assertVec(this.y < MAX_Y)
-        return SVec3(raw + Y * 1)
+        return SVec3i(raw + Y * 1)
     }
 
-    inline fun plusY(y: Int): SVec3 {
+    inline fun plusY(y: Int): SVec3i {
         assertVec(this.y + y, -MAX_Y, MAX_Y)
-        return SVec3(raw + Y * y)
+        return SVec3i(raw + Y * y)
     }
 
-    inline fun minusY(): SVec3 {
+    inline fun minusY(): SVec3i {
         assertVec(this.y > -MAX_Y)
-        return SVec3(raw - Y * 1)
+        return SVec3i(raw - Y * 1)
     }
 
-    inline fun plusZ(): SVec3 {
+    inline fun plusZ(): SVec3i {
         assertVec(this.z < MAX_Y)
-        return SVec3(raw + Z * 1)
+        return SVec3i(raw + Z * 1)
     }
 
-    inline fun plusZ(z: Int): SVec3 {
+    inline fun plusZ(z: Int): SVec3i {
         assertVec(this.z + z, -MAX_Z, MAX_Z)
-        return SVec3(raw + Z * z)
+        return SVec3i(raw + Z * z)
     }
 
-    inline fun minusZ(): SVec3 {
+    inline fun minusZ(): SVec3i {
         assertVec(this.z > -MAX_Z)
-        return SVec3(raw - Z * 1)
+        return SVec3i(raw - Z * 1)
     }
 
-    inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = SVec3(x, y, z)
+    inline fun with(x: Int = this.x, y: Int = this.y, z: Int = this.z) = SVec3i(x, y, z)
 
-    inline operator fun plus(value: Int) = SVec3(this.x + value, this.y + value, this.z + value)
-    inline operator fun minus(value: Int) = SVec3(this.x - value, this.y - value, this.z - value)
-    inline operator fun times(value: Int) = SVec3(this.x * value, this.y * value, this.z * value)
-    inline operator fun div(value: Int) = SVec3(this.x / value, this.y / value, this.z / value)
+    inline operator fun plus(value: Int) = SVec3i(this.x + value, this.y + value, this.z + value)
+    inline operator fun minus(value: Int) = SVec3i(this.x - value, this.y - value, this.z - value)
+    inline operator fun times(value: Int) = SVec3i(this.x * value, this.y * value, this.z * value)
+    inline operator fun div(value: Int) = SVec3i(this.x / value, this.y / value, this.z / value)
 
 
-    inline operator fun unaryMinus() = SVec3(-this.x, -this.y, -this.z)
+    inline operator fun unaryMinus() = SVec3i(-this.x, -this.y, -this.z)
     inline operator fun unaryPlus() = this
 
-    inline operator fun plus(direction: Directions) = SVec3(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
-    inline operator fun minus(direction: Directions) = SVec3(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+    inline operator fun plus(direction: Directions) = SVec3i(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
+    inline operator fun minus(direction: Directions) = SVec3i(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
 
-    inline infix fun and(mask: Int) = SVec3(x and mask, y and mask, z and mask)
+    inline infix fun and(mask: Int) = SVec3i(x and mask, y and mask, z and mask)
 
     inline operator fun get(axis: Axes) = when (axis) {
         Axes.X -> x
@@ -138,9 +138,9 @@ value class SVec3(val raw: Int) : TextFormattable {
         const val MAX_Z = (1 shl BITS_Z - 1) - 1
 
 
-        val EMPTY = SVec3(0, 0, 0)
+        val EMPTY = SVec3i(0, 0, 0)
 
 
-        operator fun invoke(vector: DirectionVector) = SVec3(vector.x, vector.y, vector.z)
+        operator fun invoke(vector: DirectionVector) = SVec3i(vector.x, vector.y, vector.z)
     }
 }

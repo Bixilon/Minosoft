@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.entities.item
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics

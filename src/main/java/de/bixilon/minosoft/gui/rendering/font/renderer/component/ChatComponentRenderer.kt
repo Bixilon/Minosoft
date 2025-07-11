@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
@@ -54,11 +54,11 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        fun render3d(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
+        fun render3d(context: RenderContext, position: Vec3f, properties: TextRenderProperties, rotation: Vec3f, maxSize: Vec2f, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = Mat4()
                 .translateAssign(position)
                 .rotateRadAssign(rotation)
-                .translateAssign(Vec3(0, 0, -1))
+                .translateAssign(Vec3f(0, 0, -1))
 
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
@@ -67,7 +67,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             return render3d(context, properties, maxSize, consumer, text, null)
         }
 
-        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBAColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
+        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2f, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBAColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives)
 
@@ -75,7 +75,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
             if (background != null) {
-                mesh.addQuad(Vec2(-1, 0), info.size + Vec2(1, 0), background, null)
+                mesh.addQuad(Vec2f(-1, 0), info.size + Vec2f(1, 0), background, null)
             }
             val size = info.size.x
             info.size.x = maxSize.x // this allows font aligning

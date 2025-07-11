@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
@@ -27,7 +27,7 @@ class CampfireSmokeParticle(session: PlaySession, position: Vec3d, velocity: Vec
 
     init {
         scale *= 3.0f
-        spacing = Vec3(0.25f)
+        spacing = Vec3f(0.25f)
         maxAge = random.nextInt(50)
         if (signal) {
             maxAge += 280

@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -51,7 +51,7 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
     override val canRaycast: Boolean get() = !isMarker && super.canRaycast
     override val hitboxColor: RGBAColor? get() = if (isMarker) null else super.hitboxColor
     override var defaultAABB: AABB = AABB.EMPTY
-    override var dimensions: Vec2 = DIMENSIONS
+    override var dimensions: Vec2f = DIMENSIONS
         private set
 
     @get:SynchronizedEntityData
@@ -71,22 +71,22 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
         get() = getArmorStandFlag(0x10)
 
     @get:SynchronizedEntityData
-    val headRotation: Vec3 by data(HEAD_ROTATION_DATA, HEAD_ROTATION)
+    val headRotation: Vec3f by data(HEAD_ROTATION_DATA, HEAD_ROTATION)
 
     @get:SynchronizedEntityData
-    val bodyRotation: Vec3 by data(BODY_ROTATION_DATA, BODY_ROTATION)
+    val bodyRotation: Vec3f by data(BODY_ROTATION_DATA, BODY_ROTATION)
 
     @get:SynchronizedEntityData
-    val leftArmRotation: Vec3 by data(LEFT_ARM_ROTATION_DATA, LEFT_ARM_ROTATION)
+    val leftArmRotation: Vec3f by data(LEFT_ARM_ROTATION_DATA, LEFT_ARM_ROTATION)
 
     @get:SynchronizedEntityData
-    val rightArmRotation: Vec3 by data(RIGHT_ARM_ROTATION_DATA, RIGHT_ARM_ROTATION)
+    val rightArmRotation: Vec3f by data(RIGHT_ARM_ROTATION_DATA, RIGHT_ARM_ROTATION)
 
     @get:SynchronizedEntityData
-    val leftLegRotation: Vec3 by data(LEFT_LEG_ROTATION_DATA, LEFT_LEG_ROTATION)
+    val leftLegRotation: Vec3f by data(LEFT_LEG_ROTATION_DATA, LEFT_LEG_ROTATION)
 
     @get:SynchronizedEntityData
-    val rightLegRotation: Vec3 by data(RIGHT_LEG_ROTATION_DATA, RIGHT_LEG_ROTATION)
+    val rightLegRotation: Vec3f by data(RIGHT_LEG_ROTATION_DATA, RIGHT_LEG_ROTATION)
 
 
     override fun tick() {
@@ -110,16 +110,16 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
         private val LEFT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_LEFT_LAG_ROTATION")
         private val RIGHT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_LEG_ROTATION", "ARMOR_STAND_RIGHT_LAG_ROTATION")
 
-        private val DIMENSIONS = Vec2(0.5f, 1.975f)
-        private val DIMENSIONS_MARKER = Vec2(0.0f)
+        private val DIMENSIONS = Vec2f(0.5f, 1.975f)
+        private val DIMENSIONS_MARKER = Vec2f(0.0f)
         private val DIMENSIONS_SMALL = DIMENSIONS * 0.5f
 
-        private val HEAD_ROTATION = Vec3(0.0f, 0.0f, 0.0f)
-        private val BODY_ROTATION = Vec3(0.0f, 0.0f, 0.0f)
-        private val LEFT_ARM_ROTATION = Vec3(-10.0f, 0.0f, -10.0f)
-        private val RIGHT_ARM_ROTATION = Vec3(-15.0f, 0.0f, 10.0f)
-        private val LEFT_LEG_ROTATION = Vec3(-1.0f, 0.0f, -1.0f)
-        private val RIGHT_LEG_ROTATION = Vec3(1.0f, 0.0f, 1.0f)
+        private val HEAD_ROTATION = Vec3f(0.0f, 0.0f, 0.0f)
+        private val BODY_ROTATION = Vec3f(0.0f, 0.0f, 0.0f)
+        private val LEFT_ARM_ROTATION = Vec3f(-10.0f, 0.0f, -10.0f)
+        private val RIGHT_ARM_ROTATION = Vec3f(-15.0f, 0.0f, 10.0f)
+        private val LEFT_LEG_ROTATION = Vec3f(-1.0f, 0.0f, -1.0f)
+        private val RIGHT_LEG_ROTATION = Vec3f(1.0f, 0.0f, 1.0f)
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
             return ArmorStand(session, entityType, data, position, rotation)

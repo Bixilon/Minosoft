@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.input.interaction.short
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
@@ -90,7 +90,7 @@ class ItemUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
         session.assertOnlyPacket(SwingArmC2SP(Hands.MAIN))
@@ -104,8 +104,8 @@ class ItemUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3.EMPTY, null, Hands.MAIN, false))
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3.EMPTY, ItemStack(EggTest0.item), Hands.OFF, false, 2))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, null, Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(EggTest0.item), Hands.OFF, false, 2))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.OFF)
         session.assertOnlyPacket(SwingArmC2SP(Hands.OFF))
@@ -120,7 +120,7 @@ class ItemUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
         session.assertOnlyPacket(SwingArmC2SP(Hands.MAIN))

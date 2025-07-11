@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.BOLD_OFFSET
@@ -26,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 interface RasterizedCodePointRenderer : CodePointRenderer {
     val texture: Texture
 
-    val uvStart: Vec2
-    val uvEnd: Vec2
+    val uvStart: Vec2f
+    val uvEnd: Vec2f
 
     val width: Float
 
@@ -41,29 +41,29 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
         return width * scale
     }
 
-    override fun render(position: Vec2, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (shadow) {
             render(position + (SHADOW_OFFSET * scale), properties, color * SHADOW_COLOR, bold, italic, scale, consumer, options)
         }
         render(position, properties, color, bold, italic, scale, consumer, options)
     }
 
-    fun calculateStart(properties: TextRenderProperties, base: Vec2, scale: Float): Vec2 {
-        val position = Vec2(base)
+    fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): Vec2f {
+        val position = Vec2f(base)
         position.y += properties.charSpacing.top * scale
 
         return position
     }
 
-    fun calculateEnd(properties: TextRenderProperties, start: Vec2, scale: Float): Vec2 {
-        val position = Vec2(start)
+    fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): Vec2f {
+        val position = Vec2f(start)
         position.y += (properties.charBaseHeight * scale)
         position.x += width * scale
 
         return position
     }
 
-    private fun render(position: Vec2, properties: TextRenderProperties, color: RGBAColor, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    private fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val startPosition = calculateStart(properties, position, scale)
         val endPosition = calculateEnd(properties, startPosition, scale)
 

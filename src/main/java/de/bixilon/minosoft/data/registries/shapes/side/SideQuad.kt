@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.data.registries.shapes.side
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 data class SideQuad(
-    val min: Vec2,
-    val max: Vec2,
+    val min: Vec2f,
+    val max: Vec2f,
 ) {
     private var hashCode = 0 // lazy
 
-    constructor(minX: Float, minZ: Float, maxX: Float, maxZ: Float) : this(Vec2(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2(maxOf(minX, maxX), maxOf(minZ, maxZ)))
-    constructor(minX: Double, minZ: Double, maxX: Double, maxZ: Double) : this(Vec2(minOf(minX, maxX).toFloat(), minOf(minZ, maxZ).toFloat()), Vec2(maxOf(minX, maxX).toFloat(), maxOf(minZ, maxZ).toFloat()))
+    constructor(minX: Float, minZ: Float, maxX: Float, maxZ: Float) : this(Vec2f(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2f(maxOf(minX, maxX), maxOf(minZ, maxZ)))
+    constructor(minX: Double, minZ: Double, maxX: Double, maxZ: Double) : this(Vec2f(minOf(minX, maxX).toFloat(), minOf(minZ, maxZ).toFloat()), Vec2f(maxOf(minX, maxX).toFloat(), maxOf(minZ, maxZ).toFloat()))
 
 
     fun touches(other: SideQuad): Boolean {

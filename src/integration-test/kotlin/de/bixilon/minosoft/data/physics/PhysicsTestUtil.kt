@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.physics
 
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.FloatUtil
@@ -36,7 +37,6 @@ import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.KUtil.matches
 import de.bixilon.minosoft.util.KUtil.startInit
-import glm_.vec3.Vec3d
 import org.testng.Assert
 import java.util.*
 

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 
 data class TextureArrayProperties(
-    val uvEnd: Vec2?,
+    val uvEnd: Vec2f?,
     val size: Int,
     val pixel: Float,
 )

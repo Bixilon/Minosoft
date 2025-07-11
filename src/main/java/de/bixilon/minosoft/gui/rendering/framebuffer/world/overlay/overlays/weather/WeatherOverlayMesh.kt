@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class WeatherOverlayMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, uv: Vec2, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
+    fun addVertex(position: Vec3f, uv: Vec2f, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
         data.add(position.array)
         data.add(uv.array)
         data.add(offset)
@@ -33,7 +33,7 @@ open class WeatherOverlayMesh(context: RenderContext, primitiveType: PrimitiveTy
 
 
     data class WeatherOverlayMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val uv: UnpackedUV,
         val offset: Float,
         val vinOffsetMultiplier: Float,

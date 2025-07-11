@@ -22,28 +22,28 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 
 object Vec2Serializer : SimpleModule() {
 
     init {
-        addDeserializer(Vec2::class.java, Deserializer)
-        addSerializer(Vec2::class.java, Serializer)
+        addDeserializer(Vec2f::class.java, Deserializer)
+        addSerializer(Vec2f::class.java, Serializer)
     }
 
-    object Deserializer : StdDeserializer<Vec2>(Vec2::class.java) {
+    object Deserializer : StdDeserializer<Vec2f>(Vec2f::class.java) {
 
-        override fun deserialize(parser: JsonParser, context: DeserializationContext?): Vec2 {
+        override fun deserialize(parser: JsonParser, context: DeserializationContext?): Vec2f {
             when (val tree = parser.readValueAsTree<JsonNode>()) {
-                is ArrayNode -> return Vec2(tree[0].asDouble(), tree[1].asDouble())
+                is ArrayNode -> return Vec2f(tree[0].asDouble(), tree[1].asDouble())
                 else -> TODO("Can not convert $tree to Vec2!")
             }
         }
     }
 
-    object Serializer : StdSerializer<Vec2>(Vec2::class.java) {
+    object Serializer : StdSerializer<Vec2f>(Vec2f::class.java) {
 
-        override fun serialize(value: Vec2?, generator: JsonGenerator, provider: SerializerProvider?) {
+        override fun serialize(value: Vec2f?, generator: JsonGenerator, provider: SerializerProvider?) {
             if (value == null) {
                 generator.writeNull()
                 return

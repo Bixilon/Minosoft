@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.block
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
@@ -28,7 +28,7 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 open class BlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
-    var scale: Vec3 = DEFAULT_SCALE,
+    var scale: Vec3f = DEFAULT_SCALE,
 ) : MeshedFeature<BlockMesh>(renderer) {
     private var matrix = Mat4()
     var state: BlockState? = state
@@ -86,6 +86,6 @@ open class BlockFeature(
     }
 
     companion object {
-        val DEFAULT_SCALE = Vec3(0.99f)
+        val DEFAULT_SCALE = Vec3f(0.99f)
     }
 }

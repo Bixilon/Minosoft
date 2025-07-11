@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.input.interaction.use
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.camera.target.targets.GenericTarget
@@ -84,7 +84,7 @@ class ShortUseHandler(
         session.connection.send(BlockInteractC2SP(
             position = target.blockPosition,
             direction = target.direction,
-            cursorPosition = Vec3(target.cursor),
+            cursorPosition = Vec3f(target.cursor),
             item = copy,
             hand = hand,
             insideBlock = target.inside,
@@ -105,7 +105,7 @@ class ShortUseHandler(
         val entityId = session.world.entities.getId(target.entity) ?: return InteractionResults.IGNORED
         // used in armor stands
         val player = session.player
-        session.connection.send(EntityInteractPositionC2SP(entityId, Vec3(target.position), hand, player.isSneaking))
+        session.connection.send(EntityInteractPositionC2SP(entityId, Vec3f(target.position), hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.IGNORED

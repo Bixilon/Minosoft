@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.shapes.shape
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
@@ -42,7 +42,7 @@ interface Shape : Iterable<AABB> {
     }
 
     operator fun plus(offset: Vec3d) = modify { it + offset }
-    operator fun plus(offset: Vec3) = modify { it + offset }
+    operator fun plus(offset: Vec3f) = modify { it + offset }
     operator fun plus(offset: Vec3i) = modify { it + offset }
 
     operator fun plus(offset: BlockPosition) = modify { it + offset }
@@ -77,7 +77,7 @@ interface Shape : Iterable<AABB> {
         return true
     }
 
-    fun shouldDrawLine(start: Vec3, end: Vec3): Boolean {
+    fun shouldDrawLine(start: Vec3f, end: Vec3f): Boolean {
         return shouldDrawLine(start.toVec3d, end.toVec3d)
     }
 

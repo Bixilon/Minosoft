@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity

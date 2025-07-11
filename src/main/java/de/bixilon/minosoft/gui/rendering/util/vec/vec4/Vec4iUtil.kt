@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import glm_.vec4.Vec4i
 
 object Vec4iUtil {

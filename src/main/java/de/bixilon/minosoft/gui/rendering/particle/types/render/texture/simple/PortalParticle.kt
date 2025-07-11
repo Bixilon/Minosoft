@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
 import glm_.pow
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor

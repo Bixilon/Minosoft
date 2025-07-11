@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -25,12 +25,12 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityInteractPositionC2SP(
     entityId: Int,
-    val position: Vec3,
+    val position: Vec3f,
     val hand: Hands,
     override val sneaking: Boolean,
 ) : EntityInteractC2SP(entityId, EntityInteractionActions.POSITION) {
 
-    constructor(session: PlaySession, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(session.world.entities.getId(entity)!!, position, hand, sneaking)
+    constructor(session: PlaySession, entity: Entity, position: Vec3f, hand: Hands, sneaking: Boolean) : this(session.world.entities.getId(entity)!!, position, hand, sneaking)
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -36,16 +36,16 @@ class ScoreboardScoreElement(
     private val scoreElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
-        nameElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
-        scoreElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
+        nameElement.prefMaxSize = Vec2f(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
+        scoreElement.prefMaxSize = Vec2f(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         forceSilentApply()
         _parent = parent
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         nameElement.render(offset, consumer, options)
 
-        scoreElement.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0), consumer, options)
+        scoreElement.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0), consumer, options)
     }
 
     override fun silentApply(): Boolean {
@@ -59,12 +59,12 @@ class ScoreboardScoreElement(
 
         scoreElement.text = TextComponent(score.value).color(ChatColors.RED)
 
-        _prefSize = Vec2(nameElement.size.x + scoreElement.size.x + SCORE_MIN_MARGIN, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
+        _prefSize = Vec2f(nameElement.size.x + scoreElement.size.x + SCORE_MIN_MARGIN, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         cacheUpToDate = false
     }
 
     fun applySize() {
-        _size = parent?.size?.let { return@let Vec2(it.x, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight) } ?: _prefSize
+        _size = parent?.size?.let { return@let Vec2f(it.x, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight) } ?: _prefSize
     }
 
     override fun onChildChange(child: Element) = Unit

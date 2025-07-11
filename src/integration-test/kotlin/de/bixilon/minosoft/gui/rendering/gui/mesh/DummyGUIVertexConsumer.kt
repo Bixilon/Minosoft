@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
@@ -33,9 +33,9 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
 
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 
-    override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+    override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
         addChar(start, end, this.char++)
     }
 
-    open fun addChar(start: Vec2, end: Vec2, index: Int): Unit = Broken()
+    open fun addChar(start: Vec2f, end: Vec2f, index: Int): Unit = Broken()
 }

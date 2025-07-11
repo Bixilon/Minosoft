@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.camera.target
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.BlockTarget

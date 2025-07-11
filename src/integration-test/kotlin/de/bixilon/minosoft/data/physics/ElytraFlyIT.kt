@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.physics
 
 import de.bixilon.kutil.math.MathConstants.PIf
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation

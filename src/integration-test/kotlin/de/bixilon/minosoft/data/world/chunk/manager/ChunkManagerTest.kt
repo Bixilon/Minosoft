@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager
 
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState

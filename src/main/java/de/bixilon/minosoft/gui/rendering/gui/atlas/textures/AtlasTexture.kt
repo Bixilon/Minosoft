@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
@@ -33,7 +33,7 @@ class AtlasTexture(
 ) : Texture {
     override val transparency: TextureTransparencies = TextureTransparencies.TRANSLUCENT
     override val mipmaps: Int get() = 0
-    private val pixel = Vec2(1.0f) / size
+    private val pixel = Vec2f(1.0f) / size
 
     override lateinit var array: TextureArrayProperties
     override lateinit var renderData: TextureRenderData

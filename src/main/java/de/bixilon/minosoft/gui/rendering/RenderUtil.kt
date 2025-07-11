@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
@@ -42,14 +42,14 @@ object RenderUtil {
         }
     }
 
-    fun Vec2.fixUVStart(): Vec2 {
+    fun Vec2f.fixUVStart(): Vec2f {
         if (x < 1.0f - UV_ADD && x > 0.0f) x += UV_ADD
         if (y < 1.0f - UV_ADD && y > 0.0f) y += UV_ADD
 
         return this
     }
 
-    fun Vec2.fixUVEnd(): Vec2 {
+    fun Vec2f.fixUVEnd(): Vec2f {
         if (x < 1.0f && x > UV_ADD) x -= UV_ADD
         if (y < 1.0f && y > UV_ADD) y -= UV_ADD
 

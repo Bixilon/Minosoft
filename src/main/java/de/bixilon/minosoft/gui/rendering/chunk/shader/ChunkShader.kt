@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.shader
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -28,6 +28,6 @@ class ChunkShader(
     override var textures: TextureManager by textureManager()
     override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
-    override var cameraPosition: Vec3 by cameraPosition()
+    override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()
 }

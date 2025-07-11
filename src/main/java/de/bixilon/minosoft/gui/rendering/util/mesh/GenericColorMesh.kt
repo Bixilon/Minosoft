@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -24,12 +24,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 
 open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType, initialCacheSize: Int = 1000) : Mesh(context, GenericColorMeshStruct, primitiveType, initialCacheSize) {
 
-    fun addVertex(position: Vec3, color: RGBAColor?) {
+    fun addVertex(position: Vec3f, color: RGBAColor?) {
         data.add(position.array)
         data.add((color ?: ChatColors.WHITE).rgba.buffer())
     }
 
-    fun addVertex(position: Vec3, color: Float) {
+    fun addVertex(position: Vec3f, color: Float) {
         data.add(position.array)
         data.add(color)
     }
@@ -46,7 +46,7 @@ open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveType
     }
 
     data class GenericColorMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val color: RGBColor,
     ) {
         companion object : MeshStruct(GenericColorMeshStruct::class)

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.queue
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -109,6 +109,6 @@ class ChunkQueueMaster(
 
     private companion object {
         private val CHUNK_SIZE = Vec3i(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
-        private val CHUNK_CENTER = Vec3(CHUNK_SIZE) / 2.0f
+        private val CHUNK_CENTER = Vec3f(CHUNK_SIZE) / 2.0f
     }
 }

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -42,14 +42,14 @@ abstract class PlanetRenderer(
     protected var intensity = -1.0f
     protected var meshInvalid = false
 
-    open var uvStart = Vec2(0.0f, 0.0f)
-    open var uvEnd = Vec2(1.0f, 1.0f)
+    open var uvStart = Vec2f(0.0f, 0.0f)
+    open var uvEnd = Vec2f(1.0f, 1.0f)
 
     private fun prepareMesh() {
         mesh.addYQuad(
-            start = Vec2(-0.2f, -0.2f),
+            start = Vec2f(-0.2f, -0.2f),
             y = 1f,
-            end = Vec2(+0.2f, +0.2f),
+            end = Vec2f(+0.2f, +0.2f),
             uvStart = uvStart,
             uvEnd = uvEnd,
             vertexConsumer = { position, uv ->
@@ -79,7 +79,7 @@ abstract class PlanetRenderer(
         val matrix = Mat4(base)
 
 
-        matrix.rotateAssign(calculateAngle().rad, Vec3.Z)
+        matrix.rotateAssign(calculateAngle().rad, Vec3f.Z)
 
         matrix.translateYAssign(-modifier) // moves the planet closer to the player (appears bigger)
 

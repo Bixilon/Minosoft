@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
-import glm_.vec2.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes

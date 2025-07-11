@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.element
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
@@ -26,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ModelElement(
-    val from: Vec3,
-    val to: Vec3,
+    val from: Vec3f,
+    val to: Vec3f,
     val faces: Map<Directions, ModelFace>,
     val shade: Boolean = true,
     val rotation: ElementRotation? = null,
@@ -52,8 +52,8 @@ data class ModelElement(
 
         fun deserialize(data: JsonObject): ModelElement? {
             val faces = ModelFace.deserialize(data["faces"].unsafeCast()) ?: return null
-            val from = data["from"].toVec3() / BLOCK_SIZE
-            val to = data["to"].toVec3() / BLOCK_SIZE
+            val from = data["from"].toVec3f() / BLOCK_SIZE
+            val to = data["to"].toVec3f() / BLOCK_SIZE
 
             val shade = data["shade"]?.toBoolean() ?: true
             val rotation = data["rotation"]?.toJsonObject()?.let { ElementRotation.deserialize(it) }

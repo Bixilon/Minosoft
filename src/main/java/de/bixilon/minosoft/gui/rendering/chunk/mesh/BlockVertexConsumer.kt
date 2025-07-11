@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 interface BlockVertexConsumer : AbstractVertexConsumer {
 
-    fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int)
+    fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int)
     fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float)
     fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float)
 
@@ -34,7 +34,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
-            val vertexOffset = position * Vec3.length
+            val vertexOffset = position * Vec3f.length
 
 
             val aUV = Float.fromBits(uvData.raw[uv].toBits() or (ao[position] shl 24))
@@ -51,8 +51,8 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
-            val vertexOffset = position * Vec3.length
-            val uvOffset = uv * Vec2.length
+            val vertexOffset = position * Vec3f.length
+            val uvOffset = uv * Vec2f.length
             addVertex(
                 x = positions[vertexOffset], y = positions[vertexOffset + 1], z = positions[vertexOffset + 2],
                 u = uvData.raw[uvOffset],

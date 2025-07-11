@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -51,9 +51,9 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2(8, 8), parent = this)
+    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2f(0.125), uvEnd = Vec2f(0.25), size = Vec2f(8, 8), parent = this)
 
-    // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
+    // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2f(0.125), uvEnd = Vec2f(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(allowNewLine = false), parent = this)
     private lateinit var pingElement: AtlasImageElement
 
@@ -63,11 +63,11 @@ class TabListEntryElement(
     private var name: String = item.name
     private var teamName = item.team?.name
 
-    override var prefSize: Vec2 = Vec2.EMPTY
-    override var prefMaxSize: Vec2
-        get() = Vec2(width, HEIGHT)
+    override var prefSize: Vec2f = Vec2f.EMPTY
+    override var prefMaxSize: Vec2f
+        get() = Vec2f(width, HEIGHT)
         set(value) = Unit
-    override var size: Vec2
+    override var size: Vec2f
         get() = maxSize
         set(value) = Unit
 
@@ -86,21 +86,21 @@ class TabListEntryElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
-        skinElement.render(offset + Vec2(PADDING, PADDING), consumer, options)
-        nameElement.render(offset + Vec2(skinElement.size.x + PADDING * 3, PADDING), consumer, options)
-        pingElement.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
+        skinElement.render(offset + Vec2f(PADDING, PADDING), consumer, options)
+        nameElement.render(offset + Vec2f(skinElement.size.x + PADDING * 3, PADDING), consumer, options)
+        pingElement.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }
 
     override fun forceSilentApply() {
         // ToDo (Performance): If something changed, should we just prepare the changed
         pingElement = AtlasImageElement(guiRenderer, tabList.atlas.getPing(ping))
-        nameElement.prefMaxSize = Vec2(maxOf(0.0f, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
+        nameElement.prefMaxSize = Vec2f(maxOf(0.0f, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
 
         nameElement.text = displayName
 
-        this.prefSize = Vec2((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
+        this.prefSize = Vec2f((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
         cacheUpToDate = false
     }

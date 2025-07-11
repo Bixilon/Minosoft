@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -49,9 +52,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.logging.LogOptions
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -304,7 +304,7 @@ class GlfwWindow(
     }
 
 
-    override var systemScale by observed(Vec2(1.0f))
+    override var systemScale by observed(Vec2f(1.0f))
 
 
     private fun getWindowScale(): Vec2 {

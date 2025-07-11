@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.item
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
@@ -26,7 +26,7 @@ class ItemModelPrototype(
     private var layers: Array<Texture>,
     override val particle: Texture?,
 ) : ItemRender {
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = prototype()
+    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = prototype()
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = prototype()
 
 

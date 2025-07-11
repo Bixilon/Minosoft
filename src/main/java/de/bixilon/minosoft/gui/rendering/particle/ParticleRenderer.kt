@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -133,8 +133,8 @@ class ParticleRenderer(
 
     private fun updateShader() {
         val matrix = context.camera.matrix.viewProjectionMatrix
-        val cameraRight = Vec3(matrix[0][0], matrix[1][0], matrix[2][0])
-        val cameraUp = Vec3(matrix[0][1], matrix[1][1], matrix[2][1])
+        val cameraRight = Vec3f(matrix[0][0], matrix[1][0], matrix[2][0])
+        val cameraUp = Vec3f(matrix[0][1], matrix[1][1], matrix[2][1])
 
         shader.cameraRight = cameraRight
         shader.cameraUp = cameraUp

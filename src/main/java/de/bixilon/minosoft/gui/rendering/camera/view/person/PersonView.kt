@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view.person
 
-import glm_.vec2.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.camera.Camera

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 
 @Deprecated("merge with new physics")

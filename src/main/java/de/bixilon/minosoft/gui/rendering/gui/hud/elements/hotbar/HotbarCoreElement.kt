@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -77,11 +77,11 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)
-            topLeft.render(offset + Vec2(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
-            topRight.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
+            topLeft.render(offset + Vec2f(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
+            topRight.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
             experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), consumer, options)
@@ -98,7 +98,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             element.silentApply()
         }
 
-        val size = Vec2.EMPTY
+        val size = Vec2f.EMPTY
 
         gamemode = guiRenderer.context.session.player.additional.gamemode
         if (gamemode != Gamemodes.SPECTATOR) {

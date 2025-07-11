@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.language.IntegratedLanguage
@@ -75,7 +75,7 @@ open class TextElement(
             forceApply()
         }
 
-    override var size: Vec2
+    override var size: Vec2f
         get() = super.size
         set(value) {}
 
@@ -111,9 +111,9 @@ open class TextElement(
     }
 
     private fun updatePrefSize(text: ChatComponent) {
-        var prefSize = Vec2.EMPTY
+        var prefSize = Vec2f.EMPTY
         if (!empty) {
-            val info = TextRenderInfo(Vec2.MAX)
+            val info = TextRenderInfo(Vec2f.MAX)
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             prefSize = info.size
         }
@@ -137,9 +137,9 @@ open class TextElement(
 
     override fun onChildChange(child: Element) = Broken("A TextElement can not have a child!")
 
-    private fun GUIVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2, options: GUIVertexOptions?) {
-        val start = Vec2()
-        val end = Vec2()
+    private fun GUIVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2f, options: GUIVertexOptions?) {
+        val start = Vec2f()
+        val end = Vec2f()
 
         val lineHeight = properties.lineHeight
 
@@ -155,12 +155,12 @@ open class TextElement(
         }
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (empty) return
         val info = this.info
         val properties = this.properties
-        val initialOffset = Vec2(offset + margin.offset)
-        val textOffset = Vec2(initialOffset)
+        val initialOffset = Vec2f(offset + margin.offset)
+        val textOffset = Vec2f(initialOffset)
 
         this.background?.let {
             consumer.renderBackground(it, properties, info, initialOffset, options)
@@ -177,7 +177,7 @@ open class TextElement(
         info.rewind()
     }
 
-    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
             return true
         }
@@ -186,7 +186,7 @@ open class TextElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseEnter(position: Vec2f, absolute: Vec2f): Boolean {
         val pair = getTextComponentAt(position) ?: return false
         activeElement = pair.first
         pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute)
@@ -196,8 +196,8 @@ open class TextElement(
         return true
     }
 
-    override fun onMouseMove(position: Vec2, absolute: Vec2): Boolean {
-        val pair = getTextComponentAt(Vec2(position))
+    override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
+        val pair = getTextComponentAt(Vec2f(position))
 
         if (activeElement != pair?.first) {
             val activeElement = activeElement
@@ -243,15 +243,15 @@ open class TextElement(
         return null
     }
 
-    private fun getTextComponentAt(position: Vec2): Pair<TextComponent, Vec2>? {
-        val offset = Vec2(position)
+    private fun getTextComponentAt(position: Vec2f): Pair<TextComponent, Vec2f>? {
+        val offset = Vec2f(position)
         val info = this.info
         val properties = this.properties
         val (line, yOffset) = info.getLineAt(properties.lineHeight, properties.lineSpacing, offset.y) ?: return null
         offset.y = yOffset
 
 
-        val cutInfo = TextRenderInfo(Vec2(offset.x, properties.lineHeight))
+        val cutInfo = TextRenderInfo(Vec2f(offset.x, properties.lineHeight))
         val cut = ChatComponentRenderer.render(TextOffset(), context.font, properties, cutInfo, null, null, line.text)
 
         val line0 = cutInfo.lines.getOrNull(0) ?: return null
@@ -273,8 +273,8 @@ open class TextElement(
         return chatComponent.toString()
     }
 
-    protected fun Vec2.withBackgroundSize(sign: Float = 1.0f): Vec2 {
-        val size = Vec2(this)
+    protected fun Vec2f.withBackgroundSize(sign: Float = 1.0f): Vec2f {
+        val size = Vec2f(this)
         val background = this@TextElement.background
         if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
             size += background.size.spaceSize * sign

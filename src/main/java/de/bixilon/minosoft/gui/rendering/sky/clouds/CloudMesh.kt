@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -25,39 +25,39 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class CloudMesh(context: RenderContext) : Mesh(context, CloudMeshStruct, context.system.quadType) {
 
-    fun addVertex(start: Vec3, side: Directions) {
+    fun addVertex(start: Vec3f, side: Directions) {
         data.add(start.array)
         data.add(side.ordinal.buffer())
     }
 
 
     fun createCloud(start: Vec2i, end: Vec2i, offset: BlockPosition, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
-        val start = Vec3(start.x - offset.x, yStart - offset.y, start.y - offset.z) + CLOUD_OFFSET
-        val end = Vec3(end.x - offset.x, yEnd - offset.y, end.y - offset.z) + CLOUD_OFFSET
+        val start = Vec3f(start.x - offset.x, yStart - offset.y, start.y - offset.z) + CLOUD_OFFSET
+        val end = Vec3f(end.x - offset.x, yEnd - offset.y, end.y - offset.z) + CLOUD_OFFSET
 
-        addYQuad(Vec2(start.x, start.z), start.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }
+        addYQuad(Vec2f(start.x, start.z), start.y, Vec2f(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }
         if (!flat) {
-            addYQuad(Vec2(start.x, start.z), end.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
+            addYQuad(Vec2f(start.x, start.z), end.y, Vec2f(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
 
 
             if (!culling[Directions.O_NORTH - Directions.SIDE_OFFSET]) {
-                addZQuad(Vec2(start.x, start.y), start.z, Vec2(end.x, end.y)) { position, _ -> addVertex(position, Directions.NORTH) }
+                addZQuad(Vec2f(start.x, start.y), start.z, Vec2f(end.x, end.y)) { position, _ -> addVertex(position, Directions.NORTH) }
             }
             if (!culling[Directions.O_SOUTH - Directions.SIDE_OFFSET]) {
-                addZQuad(Vec2(start.x, start.y), end.z, Vec2(end.x, end.y)) { position, _ -> addVertex(position, Directions.SOUTH) }
+                addZQuad(Vec2f(start.x, start.y), end.z, Vec2f(end.x, end.y)) { position, _ -> addVertex(position, Directions.SOUTH) }
             }
 
             if (!culling[Directions.O_WEST - Directions.SIDE_OFFSET]) {
-                addXQuad(Vec2(start.y, start.z), start.x, Vec2(end.y, end.z)) { position, _ -> addVertex(position, Directions.WEST) }
+                addXQuad(Vec2f(start.y, start.z), start.x, Vec2f(end.y, end.z)) { position, _ -> addVertex(position, Directions.WEST) }
             }
             if (!culling[Directions.O_EAST - Directions.SIDE_OFFSET]) {
-                addXQuad(Vec2(start.y, start.z), end.x, Vec2(end.y, end.z)) { position, _ -> addVertex(position, Directions.EAST) }
+                addXQuad(Vec2f(start.y, start.z), end.x, Vec2f(end.y, end.z)) { position, _ -> addVertex(position, Directions.EAST) }
             }
         }
     }
 
     data class CloudMeshStruct(
-        val position: Vec3,
+        val position: Vec3f,
         val side: Int,
     ) {
         companion object : MeshStruct(CloudMeshStruct::class)

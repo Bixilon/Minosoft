@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
+import glm_.func.rad
+import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.AbstractLatch
@@ -98,11 +101,11 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
         shader.texture = renderer.skin?.shaderId ?: context.textures.debugTexture.shaderId
         shader.tint = ChatColors.WHITE
 
-        val pivot = Vec3((if (arm == Arms.RIGHT) 6 else -6) / 16f, 24 / 16f, 0)
+        val pivot = Vec3f((if (arm == Arms.RIGHT) 6 else -6) / 16f, 24 / 16f, 0)
 
         // TODO: arm animation
         val matrix = Mat4()
-            .translateAssign(Vec3((if (arm == Arms.RIGHT) 23f / 16f else -23f / 16f), -17 / 16f, -0.7f))
+            .translateAssign(Vec3f((if (arm == Arms.RIGHT) 23f / 16f else -23f / 16f), -17 / 16f, -0.7f))
             .rotateXassign(120.0f.rad)
             .rotateYassign((if (arm == Arms.RIGHT) -20.0f else 20.0f).rad)
 

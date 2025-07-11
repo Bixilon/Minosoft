@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.world.audio
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center
@@ -26,7 +26,7 @@ interface AbstractAudioPlayer {
 
     fun playSoundEvent(sound: ResourceLocation, position: BlockPosition? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.center, volume, pitch)
     fun playSoundEvent(sound: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.center, volume, pitch)
-    fun playSoundEvent(sound: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.toVec3d, volume, pitch)
+    fun playSoundEvent(sound: ResourceLocation, position: Vec3f? = null, volume: Float = 1.0f, pitch: Float = 1.0f) = playSound(sound, position?.toVec3d, volume, pitch)
 
     fun playSound(sound: ResourceLocation, position: Vec3d? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
 

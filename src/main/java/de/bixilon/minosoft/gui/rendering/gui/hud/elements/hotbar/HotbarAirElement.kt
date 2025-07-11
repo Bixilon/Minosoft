@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -40,7 +40,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     private var bubbles = 0
     private var poppingCount = 0
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (bubbles + poppingCount <= 0) {
             return
         }
@@ -93,9 +93,9 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
 
     override fun forceSilentApply() {
         _size = if (bubbles + poppingCount <= 0) {
-            Vec2.EMPTY
+            Vec2f.EMPTY
         } else {
-            Vec2(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
+            Vec2f(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
         }
         cacheUpToDate = false
     }

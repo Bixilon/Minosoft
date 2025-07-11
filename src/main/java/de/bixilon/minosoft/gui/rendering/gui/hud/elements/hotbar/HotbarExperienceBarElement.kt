@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
@@ -57,7 +57,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
     private var progress = 0.0f
     private var level = 0
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val bars = atlasElements[barIndex]
 
         val progress = ProgressElement(guiRenderer, bars, progress)
@@ -94,7 +94,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
     companion object {
         val ATLAS = minecraft("hud/hotbar/experience")
         private val TEXT_PROPERTIES = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false)
-        private val SIZE = Vec2(182, 5)
+        private val SIZE = Vec2f(182, 5)
         val LEVEL_COLOR = "#80ff20".rgba()
     }
 }

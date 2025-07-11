@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render.property
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderPr
 interface PropertyOnlyBlockRender : BlockRender {
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?) = false
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Unit
+    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Unit
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Unit
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Unit
 }

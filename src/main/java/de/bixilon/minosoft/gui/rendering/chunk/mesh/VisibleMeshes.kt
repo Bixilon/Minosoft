@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.format
 
-class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMeshes? = null) {
+class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMeshes? = null) {
     val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
     val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
     val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)

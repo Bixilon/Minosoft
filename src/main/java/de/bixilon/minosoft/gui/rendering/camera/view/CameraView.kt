@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view
 
-import glm_.vec2.Vec2d
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -34,7 +34,7 @@ interface CameraView {
     val eyePosition: Vec3d
 
     val rotation: EntityRotation
-    val front: Vec3
+    val front: Vec3f
 
     val fovMultiplier: Float get() = 1.0f
 

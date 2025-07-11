@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
@@ -26,7 +26,7 @@ class KeyClickCounter(
     val press = SingleClickCounter(maxDelay, minDelayBetween)
     val release = SingleClickCounter(maxDelay, minDelayBetween)
 
-    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: ValueTimeMark): Int {
+    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2f, time: ValueTimeMark): Int {
         return if (action == MouseActions.PRESS) {
             press.getClicks(buttons, action, position, time)
         } else {

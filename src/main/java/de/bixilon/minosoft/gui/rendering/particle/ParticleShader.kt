@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -30,8 +30,8 @@ class ParticleShader(
     override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
     override var fog: FogManager by fog()
-    override var cameraPosition: Vec3 by cameraPosition()
+    override var cameraPosition: Vec3f by cameraPosition()
 
-    var cameraRight by uniform(ShaderUniforms.CAMERA_RIGHT, Vec3(), NativeShader::setVec3)
-    var cameraUp by uniform(ShaderUniforms.CAMERA_UP, Vec3(), NativeShader::setVec3)
+    var cameraRight by uniform(ShaderUniforms.CAMERA_RIGHT, Vec3f(), NativeShader::setVec3f)
+    var cameraUp by uniform(ShaderUniforms.CAMERA_UP, Vec3f(), NativeShader::setVec3f)
 }

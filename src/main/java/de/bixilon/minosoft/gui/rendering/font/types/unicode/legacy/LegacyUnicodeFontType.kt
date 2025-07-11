@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toHex
@@ -110,12 +110,12 @@ class LegacyUnicodeFontType(
 
                     val xOffset = ((CHAR_SIZE * x) + xStart) * PIXEL
 
-                    val uvStart = Vec2(
+                    val uvStart = Vec2f(
                         x = xOffset,
                         y = yStart,
                     )
 
-                    val uvEnd = Vec2(
+                    val uvEnd = Vec2f(
                         x = xOffset + (width * PIXEL),
                         y = yEnd,
                     )

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -56,9 +56,9 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
             super.cacheEnabled = value
         }
 
-    override val layoutOffset: Vec2
+    override val layoutOffset: Vec2f
         get() {
-            val layoutOffset = Vec2.EMPTY
+            val layoutOffset = Vec2f.EMPTY
 
             val scaledSize = guiRenderer.scaledSize
 
@@ -72,10 +72,10 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         times = DEFAULT_TIMES
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        title.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
-        subtitle.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
+        title.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
+        subtitle.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
     }
 
     override fun forceSilentApply() {

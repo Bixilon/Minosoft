@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import org.junit.jupiter.api.Test
 
@@ -25,15 +25,15 @@ class SkeletalMeshUtilTest {
         return (data - 8) / 7.0f
     }
 
-    private fun decodeNormal(normal: Int): Vec3 {
+    private fun decodeNormal(normal: Int): Vec3f {
         val x = normal and 0x0F
         val y = normal shr 8 and 0x0F
         val z = normal shr 4 and 0x0F
-        return Vec3(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z))
+        return Vec3f(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z))
     }
 
 
-    private fun assertEquals(actual: Vec3, expected: Vec3) {
+    private fun assertEquals(actual: Vec3f, expected: Vec3f) {
         val delta = expected - actual
         if (delta.length2() < 0.1f) return
         throw AssertionError("Mismatch. Expected $expected, actual $actual")
@@ -46,15 +46,15 @@ class SkeletalMeshUtilTest {
 
     @Test
     fun `encode max negative normal`() {
-        val normal = Vec3(-1, -1, -1)
+        val normal = Vec3f(-1, -1, -1)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0x00)
-        assertEquals(decodeNormal(encoded), Vec3(-1, -1, -1))
+        assertEquals(decodeNormal(encoded), Vec3f(-1, -1, -1))
     }
 
     @Test
     fun `encode max positive normal`() {
-        val normal = Vec3(1, 1, 1)
+        val normal = Vec3f(1, 1, 1)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0xFFF)
         assertEquals(decodeNormal(encoded), normal)
@@ -62,23 +62,23 @@ class SkeletalMeshUtilTest {
 
     @Test
     fun `correct positive clamping`() {
-        val normal = Vec3(2, 2, 2)
+        val normal = Vec3f(2, 2, 2)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0xFFF)
-        assertEquals(decodeNormal(encoded), Vec3(1, 1, 1))
+        assertEquals(decodeNormal(encoded), Vec3f(1, 1, 1))
     }
 
     @Test
     fun `correct negative clamping`() {
-        val normal = Vec3(-2, -2, -2)
+        val normal = Vec3f(-2, -2, -2)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0x00)
-        assertEquals(decodeNormal(encoded), Vec3(-1, -1, -1))
+        assertEquals(decodeNormal(encoded), Vec3f(-1, -1, -1))
     }
 
     @Test
     fun `zero`() {
-        val normal = Vec3(0, 0, 0)
+        val normal = Vec3f(0, 0, 0)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0x888)
         assertEquals(decodeNormal(encoded), normal)
@@ -86,7 +86,7 @@ class SkeletalMeshUtilTest {
 
     @Test
     fun `zero dot one`() {
-        val normal = Vec3(0.15f, 0.15f, 0.15f)
+        val normal = Vec3f(0.15f, 0.15f, 0.15f)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0x999)
         assertEquals(decodeNormal(encoded), normal)
@@ -94,7 +94,7 @@ class SkeletalMeshUtilTest {
 
     @Test
     fun `minus zero dot one`() {
-        val normal = Vec3(-0.1f, -0.1f, -0.1f)
+        val normal = Vec3f(-0.1f, -0.1f, -0.1f)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
         assertEquals(encoded, 0x777)
         assertEquals(decodeNormal(encoded), normal)

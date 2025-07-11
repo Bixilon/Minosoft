@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import glm_.mat3x3.Mat3
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
@@ -58,15 +58,15 @@ class Frustum(
             matrix[3] + matrix[2],
             matrix[3] - matrix[2],
         )
-        val planesVec3 = arrayOf(
-            Vec3(planes[0]),
-            Vec3(planes[1]),
+        val planesVec3f = arrayOf(
+            Vec3f(planes[0]),
+            Vec3f(planes[1]),
 
-            Vec3(planes[2]),
-            Vec3(planes[3]),
+            Vec3f(planes[2]),
+            Vec3f(planes[3]),
 
-            Vec3(planes[4]),
-            Vec3(planes[5]),
+            Vec3f(planes[4]),
+            Vec3f(planes[5]),
         )
 
         val crosses = arrayOf(
@@ -95,9 +95,9 @@ class Frustum(
             return i.ordinal * (9 - i.ordinal) / 2 + j.ordinal - 1
         }
 
-        fun intersections(a: Planes, b: Planes, c: Planes): Vec3 {
+        fun intersections(a: Planes, b: Planes, c: Planes): Vec3f {
             val d = planesVec3[a] dot crosses[ij2k(b, c)]
-            val res = Mat3(crosses[ij2k(b, c)], -crosses[ij2k(a, c)], crosses[ij2k(a, b)]) * Vec3(planes[a].w, planes[b].w, planes[c].w)
+            val res = Mat3(crosses[ij2k(b, c)], -crosses[ij2k(a, c)], crosses[ij2k(a, b)]) * Vec3f(planes[a].w, planes[b].w, planes[c].w)
             return res * (-1.0f / d)
         }
 
@@ -156,7 +156,7 @@ class Frustum(
         return false
     }
 
-    private fun containsRegion(min: Vec3, max: Vec3): Boolean {
+    private fun containsRegion(min: Vec3f, max: Vec3f): Boolean {
         return containsRegion(min.x, min.y, min.z, max.x, max.y, max.z)
     }
 
@@ -164,8 +164,8 @@ class Frustum(
 
     fun containsChunkSection(position: SectionPosition, minPosition: InSectionPosition = SECTION_MIN_POSITION, maxPosition: InSectionPosition = SECTION_MAX_POSITION): Boolean {
         val base = BlockPosition.of(position) - camera.offset.offset
-        val min = Vec3(base + minPosition)
-        val max = Vec3(base + maxPosition + 1)
+        val min = Vec3f(base + minPosition)
+        val max = Vec3f(base + maxPosition + 1)
         return containsRegion(min, max)
     }
 
@@ -187,7 +187,7 @@ class Frustum(
 
     fun containsRegion(min: BlockPosition, max: BlockPosition): Boolean {
         val offset = camera.offset.offset
-        return containsRegion(Vec3(min - offset), Vec3(max - offset))
+        return containsRegion(Vec3f(min - offset), Vec3f(max - offset))
     }
 
     fun containsAABB(aabb: AABB): Boolean {
@@ -203,7 +203,7 @@ class Frustum(
     operator fun contains(position: ChunkPosition) = containsChunk(position)
     operator fun contains(section: ChunkSection) = containsChunkSection(section)
 
-    private data class FrustumData(val normals: Array<Vec3>, val planes: Array<Vec4>)
+    private data class FrustumData(val normals: Array<Vec3f>, val planes: Array<Vec4>)
 
     private enum class Planes {
         LEFT,

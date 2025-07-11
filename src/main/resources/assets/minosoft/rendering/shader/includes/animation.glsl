@@ -62,7 +62,7 @@ in lowp float finAnimationInterpolation;
 #include "minosoft:alpha"
 
 vec4 getAnimationTexture() {
-    vec4 texel1 = getTexture(finAnimationArray1, vec3(finAnimationUV, finAnimationLayer1));
+    vec4 texel1 = getTexture(finAnimationArray1, Vec3f(finAnimationUV, finAnimationLayer1));
     discard_if_0(texel1.a);
 
     float interpolation = finAnimationInterpolation;
@@ -70,7 +70,7 @@ vec4 getAnimationTexture() {
     if (interpolation == 0.0f) { // no animation
         return texel1;
     }
-    vec4 texel2 = getTexture(finAnimationArray2, vec3(finAnimationUV, finAnimationLayer2));
+    vec4 texel2 = getTexture(finAnimationArray2, Vec3f(finAnimationUV, finAnimationLayer2));
     discard_if_0(texel2.a);
 
     return mix(texel1, texel2, interpolation);

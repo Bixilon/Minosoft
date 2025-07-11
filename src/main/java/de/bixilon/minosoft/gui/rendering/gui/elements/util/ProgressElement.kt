@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.util
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -46,11 +46,11 @@ open class ProgressElement(
     constructor(guiRenderer: GUIRenderer, atlasElements: Array<AtlasElement?>, progress: Float = 0.0f) : this(guiRenderer, atlasElements.getOrNull(0), atlasElements.getOrNull(1), progress)
 
     init {
-        _size = emptyAtlasElement?.size?.let { Vec2(it) } ?: Vec2.EMPTY
+        _size = emptyAtlasElement?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         emptyImage.render(offset, consumer, options)
         progressImage?.render(offset, consumer, options)
     }
@@ -58,9 +58,9 @@ open class ProgressElement(
     override fun forceSilentApply() {
         val full = fullAtlasElement ?: return
 
-        val uvEnd = Vec2(interpolateLinear(progress, full.uvStart.x, full.uvEnd.x), full.uvEnd.y)
+        val uvEnd = Vec2f(interpolateLinear(progress, full.uvStart.x, full.uvEnd.x), full.uvEnd.y)
         val size = this.size
-        progressImage = ImageElement(guiRenderer, full.texture, uvStart = full.uvStart, uvEnd = uvEnd, size = Vec2((size.x * progress), size.y))
+        progressImage = ImageElement(guiRenderer, full.texture, uvStart = full.uvStart, uvEnd = uvEnd, size = Vec2f((size.x * progress), size.y))
 
         cacheUpToDate = false
     }

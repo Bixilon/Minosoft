@@ -32,17 +32,17 @@ uniform mat4 uViewProjectionMatrix;
 
 #ifdef DEBUG
 const vec3 AMBIENT_OCCLUSION[4] = vec3[4](
-vec3(1.0f),
-vec3(2.0f, 0.0f, 0.0f),
-vec3(0.0f, 2.0f, 0.0f),
-vec3(0.0f, 0.0f, 2.0f)
+Vec3f(1.0f),
+Vec3f(2.0f, 0.0f, 0.0f),
+Vec3f(0.0f, 2.0f, 0.0f),
+Vec3f(0.0f, 0.0f, 2.0f)
 );
 #else
 const vec3 AMBIENT_OCCLUSION[4] = vec3[4](
-vec3(1.0f),
-vec3(0.85f),
-vec3(0.75f),
-vec3(0.60f)
+Vec3f(1.0f),
+Vec3f(0.85f),
+Vec3f(0.75f),
+Vec3f(0.60f)
 );
 #endif
 

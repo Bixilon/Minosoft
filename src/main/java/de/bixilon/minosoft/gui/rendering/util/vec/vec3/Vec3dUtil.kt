@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import glm_.func.common.clamp
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
@@ -55,9 +55,9 @@ object Vec3dUtil {
     val Vec3d.blockPosition: BlockPosition
         get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)
 
-    fun Vec3d.toVec3(): Vec3 {
+    fun Vec3d.toVec3f(): Vec3f {
         val array = array
-        return Vec3(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+        return Vec3f(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
     }
 
     private fun Double.clamp(min: Int, max: Int) = clamp(min.toDouble(), max.toDouble())
@@ -225,7 +225,7 @@ object Vec3dUtil {
         return x * x + y * y + z * z
     }
 
-    fun distance2(a: Vec3d, b: Vec3): Double {
+    fun distance2(a: Vec3d, b: Vec3f): Double {
         val x = a.x - b.x
         val y = a.y - b.y
         val z = a.z - b.z

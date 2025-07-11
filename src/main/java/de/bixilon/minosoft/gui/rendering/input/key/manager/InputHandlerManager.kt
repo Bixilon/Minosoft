@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.key.KeyCodes.Companion.isPrintable
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2
 
 class InputHandlerManager(
     val input: InputManager,
@@ -48,7 +48,7 @@ class InputHandlerManager(
     private var skipKey = false
 
 
-    fun onMouse(position: Vec2): Boolean {
+    fun onMouse(position: Vec2f): Boolean {
         if (skipMouse) {
             skipMouse = false
             return true
@@ -77,7 +77,7 @@ class InputHandlerManager(
         handler.onCharPress(char)
     }
 
-    fun onScroll(delta: Vec2): Boolean {
+    fun onScroll(delta: Vec2f): Boolean {
         val handler = this.handler ?: return false
         handler.onScroll(delta)
 
