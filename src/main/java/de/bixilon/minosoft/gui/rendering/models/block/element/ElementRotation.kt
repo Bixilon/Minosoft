@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.element
 
 import glm_.func.rad
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ElementRotation(
-    val origin: Vec3 = ORIGIN,
+    val origin: Vec3f = ORIGIN,
     val axis: Axes,
     val angle: Float,
     val rescale: Boolean = false,
@@ -34,7 +34,7 @@ data class ElementRotation(
     fun apply(positions: FaceVertexData) {
         val angle = -angle.rad
 
-        val vec = Vec3(0, positions)
+        val vec = Vec3f(0, positions)
 
         for (index in 0 until VERTEX_DATA_COMPONENTS) {
             val offset = index * 3
@@ -46,7 +46,7 @@ data class ElementRotation(
 
 
     companion object {
-        private val ORIGIN = Vec3(0.5f)
+        private val ORIGIN = Vec3f(0.5f)
 
         fun deserialize(data: JsonObject): ElementRotation? {
             val angle = data["angle"]?.toFloat()?.mod(CIRCLE_DEGREE.toFloat()) ?: return null
@@ -54,7 +54,7 @@ data class ElementRotation(
 
             val rescale = data["rescale"]?.toBoolean() ?: false
 
-            val origin = data["origin"]?.toVec3()?.apply { this /= BLOCK_SIZE } ?: ORIGIN
+            val origin = data["origin"]?.toVec3f()?.apply { this /= BLOCK_SIZE } ?: ORIGIN
             val axis = Axes[data["axis"].toString()]
 
 

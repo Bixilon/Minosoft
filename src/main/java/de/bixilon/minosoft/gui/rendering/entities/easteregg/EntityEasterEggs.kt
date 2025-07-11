@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.entities.easteregg
 
 import glm_.func.rad
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 
 object EntityEasterEggs {
-    val FLIP_ROTATION = Vec3(180.0f.rad, 0.0f, 0.0f)
+    val FLIP_ROTATION = Vec3f(180.0f.rad, 0.0f, 0.0f)
     const val FLIP_ENABLED = true
 
     fun Entity.isFlipped(): Boolean {

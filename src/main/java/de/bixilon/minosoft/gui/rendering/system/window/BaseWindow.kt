@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -25,11 +25,11 @@ import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
 interface BaseWindow {
-    val systemScale: Vec2
+    val systemScale: Vec2f
 
     var size: Vec2i
-    val sizef: Vec2
-        get() = Vec2(size)
+    val sizef: Vec2f
+        get() = Vec2f(size)
     var minSize: Vec2i
     var maxSize: Vec2i
 

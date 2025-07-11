@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerModelMesh
@@ -27,7 +27,7 @@ class ArmMesh(
 ) : PlayerModelMesh(context) {
 
 
-    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
         val arm = path.getArm() ?: return
         if (arm != this.arm) return
         super.addQuad(positions, uv, 0, normal, texture, path)

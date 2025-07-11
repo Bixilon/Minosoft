@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.advancements
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -24,5 +24,5 @@ data class AdvancementDisplay(
     val icon: ItemStack?,
     val frame: AdvancementFrames,
     val background: ResourceLocation?,
-    val position: Vec2,
+    val position: Vec2f,
 )

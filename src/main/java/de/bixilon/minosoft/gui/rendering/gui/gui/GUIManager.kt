@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
@@ -202,7 +202,7 @@ class GUIManager(
         return runForEach { it.onCharPress(char) }
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         return runForEach { it.onMouseMove(position) }
     }
 
@@ -210,7 +210,7 @@ class GUIManager(
         return runForEach { it.onKey(code, change) }
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
         return runForEach { it.onScroll(scrollOffset) }
     }
 
@@ -228,7 +228,7 @@ class GUIManager(
         return null
     }
 
-    override fun onDragMove(position: Vec2, dragged: Dragged): Element? {
+    override fun onDragMove(position: Vec2f, dragged: Dragged): Element? {
         return runForEachDrag { it.onDragMove(position, dragged) }
     }
 
@@ -236,7 +236,7 @@ class GUIManager(
         return runForEachDrag { it.onDragKey(type, key, dragged) }
     }
 
-    override fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? {
+    override fun onDragScroll(scrollOffset: Vec2f, dragged: Dragged): Element? {
         return runForEachDrag { it.onDragScroll(scrollOffset, dragged) }
     }
 

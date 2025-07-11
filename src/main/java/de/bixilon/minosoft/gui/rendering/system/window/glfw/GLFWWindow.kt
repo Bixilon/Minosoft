@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -288,7 +288,7 @@ class GLFWWindow(
     }
 
 
-    override var systemScale by observed(Vec2(1.0f))
+    override var systemScale by observed(Vec2f(1.0f))
 
     private fun scalePosition(position: Vec2i): Vec2i {
         if (!PlatformInfo.OS.needsWindowScaling) return position
@@ -317,7 +317,7 @@ class GLFWWindow(
         if (window != this.window) {
             return
         }
-        val scale = Vec2(x, y)
+        val scale = Vec2f(x, y)
         this.systemScale = scale
     }
 

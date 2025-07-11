@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked.rotation
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
@@ -33,8 +33,8 @@ class XRotationTest {
 
 
     fun rotatedDown() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
             val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.DOWN to createFaces()[Directions.DOWN]!!))), textures = mapOf("test" to minecraft("block/test").texture())), x = rotation)
@@ -47,8 +47,8 @@ class XRotationTest {
     }
 
     fun rotatedUp() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
             val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to createFaces()[Directions.UP]!!))), textures = mapOf("test" to minecraft("block/test").texture())), x = rotation)
@@ -61,8 +61,8 @@ class XRotationTest {
     }
 
     fun rotatedNorth() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
             val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.NORTH to createFaces()[Directions.NORTH]!!))), textures = mapOf("test" to minecraft("block/test").texture())), x = rotation)
@@ -75,8 +75,8 @@ class XRotationTest {
     }
 
     fun rotatedSouth() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
             val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.SOUTH to createFaces()[Directions.SOUTH]!!))), textures = mapOf("test" to minecraft("block/test").texture())), x = rotation)
@@ -89,8 +89,8 @@ class XRotationTest {
     }
 
     fun rotatedWest() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
             val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.WEST to createFaces()[Directions.WEST]!!))), textures = mapOf("test" to minecraft("block/test").texture())), x = rotation)
@@ -105,8 +105,8 @@ class XRotationTest {
     }
 
     fun rotatedEast() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
             val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.EAST to createFaces()[Directions.EAST]!!))), textures = mapOf("test" to minecraft("block/test").texture())), x = rotation)

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -72,7 +72,7 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
     fun mix(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
 
 
-    fun toVec3() = Vec3(redf, greenf, bluef)
+    fun toVec3f() = Vec3f(redf, greenf, bluef)
     fun toVec4() = Vec4(redf, greenf, bluef, alphaf)
 
     override fun toString(): String {

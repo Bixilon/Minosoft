@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.abs
@@ -26,11 +26,11 @@ class SingleClickCounter(
     val maxDelay: Duration = ClickCounter.MAX_DELAY,
     val minDelayBetween: Duration = ClickCounter.MIN_DELAY_BETWEEN,
 ) : ClickCounter {
-    private var lastPosition = Vec2(-1, -1)
+    private var lastPosition = Vec2f(-1, -1)
     private var lastChange = KUtil.TIME_ZERO
     private var lastDoubleChange = KUtil.TIME_ZERO
 
-    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: ValueTimeMark): Int {
+    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2f, time: ValueTimeMark): Int {
         val lastPosition = lastPosition
         this.lastPosition = position
         val lastMousePress = lastChange
@@ -50,6 +50,6 @@ class SingleClickCounter(
     }
 
     companion object {
-        val MAX_MOUSE_MOVE = Vec2(10, 10)
+        val MAX_MOUSE_MOVE = Vec2f(10, 10)
     }
 }

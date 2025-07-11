@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.mark
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -72,7 +72,7 @@ class MarkTextElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (markStartPosition >= 0) {
             val message = chatComponent.message // ToDo: This does not include formatting
             val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), properties = properties, parent = _parent)
@@ -83,7 +83,7 @@ class MarkTextElement(
             }
 
             for (line in mark.info.lines) {
-                ColorElement(guiRenderer, size = Vec2(line.width, (properties.lineHeight).toInt()), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
+                ColorElement(guiRenderer, size = Vec2f(line.width, (properties.lineHeight).toInt()), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
                 markOffset.x = 0
                 markOffset.y += (properties.lineHeight).toInt()
             }

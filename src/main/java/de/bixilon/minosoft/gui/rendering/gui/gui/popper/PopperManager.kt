@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -101,7 +101,7 @@ class PopperManager(
         return false
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
@@ -125,7 +125,7 @@ class PopperManager(
         return false
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue

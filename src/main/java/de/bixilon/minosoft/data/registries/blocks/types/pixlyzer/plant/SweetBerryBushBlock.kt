@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
@@ -36,7 +36,7 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
         this += TextElement(guiRenderer, RunConfiguration.APPLICATION_NAME, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 3.0f))
-        this += SpacerElement(guiRenderer, Vec2(0, 20))
+        this += SpacerElement(guiRenderer, Vec2f(0, 20))
 
         this += ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.popOrPause() }
         this += ButtonElement(guiRenderer, "menu.pause.options.debug".i18n()) { guiRenderer.gui.push(DebugMenu) }

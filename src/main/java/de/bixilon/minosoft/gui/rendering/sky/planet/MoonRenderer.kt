@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -34,8 +34,8 @@ class MoonRenderer(
     private fun updateUV(phases: MoonPhases) {
         val coordinates = PHASE_UV[phases.ordinal]
         val end = texture.array.uvEnd ?: Vec2i(1.0f)
-        uvStart = Vec2(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * end
-        uvEnd = Vec2(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * end
+        uvStart = Vec2f(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * end
+        uvEnd = Vec2f(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * end
         meshInvalid = true
     }
 

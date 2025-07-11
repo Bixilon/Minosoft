@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -389,7 +389,7 @@ class SolidSectionMesherTest {
 
     fun TestQueue.fullOpaque(index: Int = 0): BlockState {
         val state = BlockState(block(index), 0)
-        state.model = TestModel(this, SideProperties(arrayOf(FaceProperties(Vec2.EMPTY, Vec2(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE))
+        state.model = TestModel(this, SideProperties(arrayOf(FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE))
 
         return state
     }
@@ -484,7 +484,7 @@ class SolidSectionMesherTest {
                         return true
                     }
 
-                    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Broken()
+                    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
                     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
                     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
                 }
@@ -498,7 +498,7 @@ class SolidSectionMesherTest {
 
     private open class TestModel(val queue: TestQueue, val properties: SideProperties?) : BlockRender {
 
-        override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) = Broken()
+        override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
         override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
         override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
         override fun getProperties(direction: Directions): SideProperties? {

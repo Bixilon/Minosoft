@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -100,16 +100,16 @@ class BitmapFontType(
             }
         }
 
-        private fun createRenderer(texture: Texture, offset: Vec2, pixel: Vec2, start: Int, end: Int, height: Int, ascent: Int): CodePointRenderer {
+        private fun createRenderer(texture: Texture, offset: Vec2f, pixel: Vec2f, start: Int, end: Int, height: Int, ascent: Int): CodePointRenderer {
             if (end < start) return EmptyCodeRenderer()
 
             val width = end - start + 1
 
-            val uvStart = Vec2(offset)
+            val uvStart = Vec2f(offset)
             uvStart.x += start * pixel.x
             uvStart.fixUVStart()
 
-            val uvEnd = Vec2(offset)
+            val uvEnd = Vec2f(offset)
             uvEnd.x += width * pixel.x
             uvEnd.y += height * pixel.y
             uvEnd.fixUVEnd()
@@ -129,8 +129,8 @@ class BitmapFontType(
 
             val renderer = Int2ObjectOpenHashMap<CodePointRenderer>()
 
-            val pixel = Vec2(1.0f / texture.size.x, 1.0f / texture.size.y)
-            val offset = Vec2()
+            val pixel = Vec2f(1.0f / texture.size.x, 1.0f / texture.size.y)
+            val offset = Vec2f()
             for (row in 0 until rows) {
                 val iterator = chars[row].iterator()
 

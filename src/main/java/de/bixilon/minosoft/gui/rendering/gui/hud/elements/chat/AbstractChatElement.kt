@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
@@ -32,11 +32,11 @@ abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRender
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         messages.render(offset + Vec2i(ChatElement.CHAT_INPUT_MARGIN, 0), consumer, options)
     }
 
-    override fun onScroll(position: Vec2, scrollOffset: Vec2): Boolean {
+    override fun onScroll(position: Vec2f, scrollOffset: Vec2f): Boolean {
         val size = messages.size
         if (position.y > size.y || position.x > messages.size.x) {
             return false

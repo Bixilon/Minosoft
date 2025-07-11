@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.submersion
 
 import glm_.func.common.clamp
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions

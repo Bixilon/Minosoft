@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
@@ -47,8 +47,8 @@ class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, 
         val randomU = random.nextFloat() * 3.0f
         val randomV = random.nextFloat() * 3.0f
 
-        minUV = Vec2(randomU + 1.0f, randomV) / 4.0f
-        maxUV = Vec2(randomU, randomV + 1.0f) / 4.0f
+        minUV = Vec2f(randomU + 1.0f, randomV) / 4.0f
+        maxUV = Vec2f(randomU, randomV + 1.0f) / 4.0f
     }
 
 

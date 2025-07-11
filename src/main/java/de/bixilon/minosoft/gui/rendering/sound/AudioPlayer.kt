@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.queue.Queue
@@ -99,7 +99,7 @@ class AudioPlayer(
 
         session.events.listen<CameraPositionChangeEvent> {
             queue += {
-                listener.position = Vec3(it.newPosition)
+                listener.position = Vec3f(it.newPosition)
                 listener.setOrientation(it.context.camera.view.view.front, CAMERA_UP_VEC3)
             }
         }
@@ -211,7 +211,7 @@ class AudioPlayer(
                 source.relative = false
                 source.position = it.toVec3
             } ?: let {
-                source.position = Vec3.EMPTY
+                source.position = Vec3f.EMPTY
                 source.relative = true
             }
             source.sound = sound

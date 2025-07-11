@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
@@ -21,13 +21,13 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 import java.util.*
 
 abstract class Vec3KeyframeInstance(
-    data: TreeMap<Float, Vec3>,
+    data: TreeMap<Float, Vec3f>,
     loop: AnimationLoops,
     val interpolation: KeyframeInterpolation,
-) : KeyframeInstance<Vec3>(data, loop) {
+) : KeyframeInstance<Vec3f>(data, loop) {
 
 
-    override fun interpolate(delta: Float, previous: Vec3, next: Vec3) = when (interpolation) {
+    override fun interpolate(delta: Float, previous: Vec3f, next: Vec3f) = when (interpolation) {
         KeyframeInterpolation.NONE -> if (delta >= 1.0f) next else previous
         KeyframeInterpolation.LINEAR -> interpolateLinear(delta, previous, next)
         KeyframeInterpolation.SINE -> interpolateSine(delta, previous, next)

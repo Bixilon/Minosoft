@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -26,13 +26,13 @@ abstract class Dragged(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         get() = guiRenderer.dragged.element?.element === this
 
 
-    open fun onDragStart(position: Vec2, target: Element?) = Unit
-    open fun onDragMove(position: Vec2, target: Element?) = Unit
-    open fun onDragEnd(position: Vec2, target: Element?) = Unit
+    open fun onDragStart(position: Vec2f, target: Element?) = Unit
+    open fun onDragMove(position: Vec2f, target: Element?) = Unit
+    open fun onDragEnd(position: Vec2f, target: Element?) = Unit
 
-    open fun onDragScroll(position: Vec2, scrollOffset: Vec2, target: Element?) = Unit
+    open fun onDragScroll(position: Vec2f, scrollOffset: Vec2f, target: Element?) = Unit
 
-    open fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, target: Element?) = Unit
+    open fun onDragMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int, target: Element?) = Unit
     open fun onDragKey(key: KeyCodes, type: KeyChangeTypes, target: Element?) = Unit
     open fun onDragChar(char: Char, target: Element?) = Unit
 

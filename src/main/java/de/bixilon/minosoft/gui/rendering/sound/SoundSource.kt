@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
@@ -39,13 +39,13 @@ class SoundSource {
             field = value
         }
 
-    var position: Vec3 = Vec3.EMPTY
+    var position: Vec3f = Vec3f.EMPTY
         set(value) {
             alSource3f(source, AL_POSITION, value.x, value.y, value.z)
             field = value
         }
 
-    var velocity: Vec3 = Vec3.EMPTY
+    var velocity: Vec3f = Vec3f.EMPTY
         set(value) {
             alSource3f(source, AL_VELOCITY, value.x, value.y, value.z)
             field = value

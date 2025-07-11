@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.camera
 import glm_.func.common.clamp
 import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -46,12 +46,12 @@ class MatrixHandler(
     private val profile = context.session.profiles.rendering.camera
     val shaking = CameraShaking(camera, profile.shaking)
 
-    private var matrixPosition = Vec3.EMPTY
+    private var matrixPosition = Vec3f.EMPTY
     private var previousFOV = 0.0f
 
-    private var front = Vec3.EMPTY
-    private var right = Vec3(0.0, 0.0, -1.0)
-    private var up = Vec3(0.0, 1.0, 0.0)
+    private var front = Vec3f.EMPTY
+    private var right = Vec3f(0.0, 0.0, -1.0)
+    private var up = Vec3f(0.0, 1.0, 0.0)
 
     var zoom = 0.0f
         set(value) {
@@ -83,7 +83,7 @@ class MatrixHandler(
     }
 
 
-    private fun updateViewMatrix(position: Vec3, front: Vec3) {
+    private fun updateViewMatrix(position: Vec3f, front: Vec3f) {
         val matrix = Mat4()
         if (camera.view.view.shaking) {
             shaking.transform()?.let { matrix *= it }
@@ -93,7 +93,7 @@ class MatrixHandler(
         this.viewMatrix = matrix
     }
 
-    private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2 = context.window.sizef) {
+    private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2f = context.window.sizef) {
         val fog = camera.fog.state
         var far = (session.world.view.viewDistance + 1) * ChunkSize.SECTION_LENGTH.toFloat()
         if (fog.enabled) {
@@ -104,7 +104,7 @@ class MatrixHandler(
 
     fun init() {
         session.events.listen<ResizeWindowEvent> {
-            calculateProjectionMatrix(calculateFOV(), Vec2(it.size))
+            calculateProjectionMatrix(calculateFOV(), Vec2f(it.size))
             invalidate()
         }
         draw() // set initial values
@@ -118,7 +118,7 @@ class MatrixHandler(
         val view = camera.view.view
         val eyePosition = view.eyePosition
         context.camera.offset.draw()
-        val matrixPosition = Vec3(eyePosition - context.camera.offset.offset)
+        val matrixPosition = Vec3f(eyePosition - context.camera.offset.offset)
         val front = view.front
         if (!invalid && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
             return
@@ -133,7 +133,7 @@ class MatrixHandler(
         updateViewMatrix(matrixPosition, front)
         updateViewProjectionMatrix()
 
-        val useMatrixPosition = if (view.updateFrustum) matrixPosition else Vec3(session.camera.entity.renderInfo.eyePosition - camera.offset.offset)
+        val useMatrixPosition = if (view.updateFrustum) matrixPosition else Vec3f(session.camera.entity.renderInfo.eyePosition - camera.offset.offset)
         val useEyePosition = if (view.updateFrustum) eyePosition else session.camera.entity.renderInfo.eyePosition
 
         if (view.updateFrustum) {
@@ -160,13 +160,13 @@ class MatrixHandler(
         viewProjectionMatrix = projectionMatrix * viewMatrix
     }
 
-    private fun updateFront(front: Vec3) {
+    private fun updateFront(front: Vec3f) {
         this.front = front
         this.right = (front cross CAMERA_UP_VEC3).normalizeAssign()
         this.up = (this.right cross front).normalizeAssign()
     }
 
-    private fun updateShaders(cameraPosition: Vec3) {
+    private fun updateShaders(cameraPosition: Vec3f) {
         for (shader in context.system.shaders) {
             if (shader is ViewProjectionShader) {
                 shader.viewProjectionMatrix = viewProjectionMatrix

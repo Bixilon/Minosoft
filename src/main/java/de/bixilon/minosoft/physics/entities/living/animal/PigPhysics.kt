@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.entities.living.animal
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes

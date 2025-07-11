@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.item
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -35,7 +35,7 @@ class FlatItemRender(
     override val particle: Texture?,
 ) : ItemRender {
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: RGBArray?) {
+    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) {
         for ((index, layer) in layers.withIndex()) {
             val tint = tints?.get(index)?.rgba() ?: ChatColors.WHITE
             ImageElement(gui, layer, size = size, tint = tint).render(offset, consumer, options)
@@ -52,7 +52,7 @@ class FlatItemRender(
 
 
     private companion object {
-        val POSITIONS = CuboidUtil.positions(Directions.NORTH, Vec3(0.3f, 0.0f, 0.5f), Vec3(0.6f, 0.3f, 0.5f))
-        val UV = FaceUV(Vec2(0.0f), Vec2(1.0f)).toArray(Directions.NORTH, 2)
+        val POSITIONS = CuboidUtil.positions(Directions.NORTH, Vec3f(0.3f, 0.0f, 0.5f), Vec3f(0.6f, 0.3f, 0.5f))
+        val UV = FaceUV(Vec2f(0.0f), Vec2f(1.0f)).toArray(Directions.NORTH, 2)
     }
 }

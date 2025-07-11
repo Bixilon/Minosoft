@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 abstract class WaterSuspendParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position - Vec3d(0.0, -0.125, 0.0), velocity, data) {
 
     init {
-        spacing = Vec3(0.01f)
+        spacing = Vec3f(0.01f)
         super.scale *= random.nextFloat() * 0.6f + 0.6f
         maxAge = (16.0f / ((random.nextFloat() * 0.8f + 0.2f))).toInt()
         physics = false

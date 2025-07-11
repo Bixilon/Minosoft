@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view.person
 
-import glm_.vec2.Vec2d
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -42,7 +42,7 @@ class FirstPersonView(override val camera: Camera) : PersonView {
     override var eyePosition: Vec3d = Vec3d.EMPTY
 
     override var rotation = EntityRotation.EMPTY
-    override var front = Vec3.EMPTY
+    override var front = Vec3f.EMPTY
 
 
     override fun onMouse(delta: Vec2d) {

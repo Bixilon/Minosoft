@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -45,19 +45,19 @@ class GUIRenderer(
 ) : AsyncRenderer, InputHandler, Drawable {
     private val profile = session.profiles.gui
     override val renderSystem = context.system
-    var scaledSize: Vec2 by observed(Vec2(context.window.size))
+    var scaledSize: Vec2f by observed(Vec2f(context.window.size))
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
     val dragged = DraggedManager(this)
-    var halfSize: Vec2 = Vec2()
+    var halfSize: Vec2f = Vec2f()
         private set
     var resolutionUpdate = true
     override val framebuffer: IntegratedFramebuffer get() = context.framebuffer.gui
     val shader = context.system.createShader(minosoft("gui")) { GUIShader(it) }
     val atlas = AtlasManager(context)
 
-    var currentMousePosition: Vec2 by observed(Vec2.EMPTY)
+    var currentMousePosition: Vec2f by observed(Vec2f.EMPTY)
         private set
 
     override fun init(latch: AbstractLatch) {
@@ -69,7 +69,7 @@ class GUIRenderer(
     override fun postInit(latch: AbstractLatch) {
         shader.load()
 
-        session.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
+        session.events.listen<ResizeWindowEvent> { updateResolution(Vec2f(it.size)) }
         context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
         profile::scale.observeRendering(this) { updateResolution(scale = it) }
 
@@ -78,8 +78,8 @@ class GUIRenderer(
         popper.postInit()
     }
 
-    private fun updateResolution(windowSize: Vec2 = Vec2(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
-        scaledSize = Vec2(windowSize.scale(systemScale, scale)) + 0.01f
+    private fun updateResolution(windowSize: Vec2f = Vec2f(context.window.size), scale: Float = profile.scale, systemScale: Vec2f = context.window.systemScale) {
+        scaledSize = Vec2f(windowSize.scale(systemScale, scale)) + 0.01f
         halfSize = scaledSize / 2.0f
         resolutionUpdate = true
 
@@ -101,7 +101,7 @@ class GUIRenderer(
         shader.use()
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         val scaledPosition = position.scale()
         currentMousePosition = scaledPosition
         return popper.onMouseMove(scaledPosition) || dragged.onMouseMove(scaledPosition) || gui.onMouseMove(scaledPosition)
@@ -115,7 +115,7 @@ class GUIRenderer(
         return popper.onKey(code, change) || dragged.onKey(code, change) || gui.onKey(code, change)
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
         return popper.onScroll(scrollOffset) || dragged.onScroll(scrollOffset) || gui.onScroll(scrollOffset)
     }
 
@@ -136,7 +136,7 @@ class GUIRenderer(
         }
     }
 
-    fun Vec2.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2 {
+    fun Vec2f.scale(systemScale: Vec2f = context.window.systemScale, scale: Float = profile.scale): Vec2f {
         val totalScale = systemScale * scale
         return this / totalScale
     }

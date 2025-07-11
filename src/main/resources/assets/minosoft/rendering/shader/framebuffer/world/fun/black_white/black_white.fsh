@@ -21,8 +21,8 @@ uniform sampler2D uTexture;
 
 #include "minosoft:alpha"
 
-const vec3 BLACK = vec3(0.0f);
-const vec3 WHITE = vec3(1.0f);
+const vec3 BLACK = Vec3f(0.0f);
+const vec3 WHITE = Vec3f(1.0f);
 
 void main() {
     foutColor = texture(uTexture, finUV);

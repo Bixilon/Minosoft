@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class GUIMeshCache(
-    var halfSize: Vec2,
+    var halfSize: Vec2f,
     override val order: RenderOrder,
     val context: RenderContext,
     initialCacheSize: Int = 1000,
@@ -32,7 +32,7 @@ class GUIMeshCache(
     private val whiteTexture = context.textures.whiteTexture
 
     var revision: Long = 0
-    var offset: Vec2 = Vec2.EMPTY
+    var offset: Vec2f = Vec2f.EMPTY
     var options: GUIVertexOptions? = null
 
     fun clear() {

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
@@ -83,7 +83,7 @@ abstract class Particle(
     var alreadyCollided = false
     var accelerateIfYBlocked = false
     override var aabb: AABB = AABB.EMPTY
-    var spacing: Vec3 = Vec3.EMPTY
+    var spacing: Vec3f = Vec3f.EMPTY
         set(value) {
             if (field == value) {
                 return
@@ -243,6 +243,6 @@ abstract class Particle(
         private const val MAGIC_VELOCITY_CONSTANT = 0.4
         private const val MAGIC_VELOCITY_CONSTANTf = MAGIC_VELOCITY_CONSTANT.toFloat()
         private const val Y_VELOCITY_TO_CHECK = 9.999999747378752E-6f
-        private val DEFAULT_SPACING = Vec3(0.2)
+        private val DEFAULT_SPACING = Vec3f(0.2)
     }
 }

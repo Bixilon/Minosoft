@@ -13,76 +13,76 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 
 object Vec2Util {
-    val EMPTY = Vec2.EMPTY
-    val ONE = Vec2(1.0f)
+    val EMPTY = Vec2f.EMPTY
+    val ONE = Vec2f(1.0f)
 
-    val Vec2.Companion.MIN: Vec2
-        get() = Vec2(Float.MIN_VALUE, Float.MIN_VALUE)
+    val Vec2f.Companion.MIN: Vec2f
+        get() = Vec2f(Float.MIN_VALUE, Float.MIN_VALUE)
 
-    val Vec2.Companion.EMPTY: Vec2
-        get() = Vec2(0.0f, 0.0f)
+    val Vec2f.Companion.EMPTY: Vec2f
+        get() = Vec2f(0.0f, 0.0f)
 
-    val Vec2.Companion.MAX: Vec2
-        get() = Vec2(Float.MAX_VALUE, Float.MAX_VALUE)
+    val Vec2f.Companion.MAX: Vec2f
+        get() = Vec2f(Float.MAX_VALUE, Float.MAX_VALUE)
 
 
-    fun Any?.toVec2(default: Vec2? = null): Vec2 {
+    fun Any?.toVec2f(default: Vec2f? = null): Vec2f {
         return toVec2N() ?: default ?: throw IllegalArgumentException("Not a Vec2: $this")
     }
 
-    fun Any?.toVec2N(): Vec2? {
+    fun Any?.toVec2N(): Vec2f? {
         return when (this) {
-            is List<*> -> Vec2(this[0].toFloat(), this[1].toFloat())
-            is Map<*, *> -> Vec2(this["x"]?.toFloat() ?: 0.0f, this["y"]?.toFloat() ?: 0.0f)
-            is Number -> Vec2(this.toFloat())
+            is List<*> -> Vec2f(this[0].toFloat(), this[1].toFloat())
+            is Map<*, *> -> Vec2f(this["x"]?.toFloat() ?: 0.0f, this["y"]?.toFloat() ?: 0.0f)
+            is Number -> Vec2f(this.toFloat())
             else -> null
         }
     }
 
 
-    fun interpolateLinear(delta: Float, start: Vec2, end: Vec2): Vec2 {
+    fun interpolateLinear(delta: Float, start: Vec2f, end: Vec2f): Vec2f {
         if (delta <= 0.0f) {
             return start
         }
         if (delta >= 1.0f) {
             return end
         }
-        return Vec2(interpolateLinear(delta, start.x, end.x), interpolateLinear(delta, start.y, end.y))
+        return Vec2f(interpolateLinear(delta, start.x, end.x), interpolateLinear(delta, start.y, end.y))
     }
 
-    fun interpolateSine(delta: Float, start: Vec2, end: Vec2): Vec2 {
+    fun interpolateSine(delta: Float, start: Vec2f, end: Vec2f): Vec2f {
         if (delta <= 0.0f) {
             return start
         }
         if (delta >= 1.0f) {
             return end
         }
-        return Vec2(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y))
+        return Vec2f(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y))
     }
 
-    infix fun Vec2.isSmaller(other: Vec2): Boolean {
+    infix fun Vec2f.isSmaller(other: Vec2f): Boolean {
         return this.x < other.x || this.y < other.y
     }
 
-    infix fun Vec2.isSmallerEquals(other: Vec2): Boolean {
+    infix fun Vec2f.isSmallerEquals(other: Vec2f): Boolean {
         return this.x <= other.x || this.y <= other.y
     }
 
-    infix fun Vec2.isGreater(other: Vec2): Boolean {
+    infix fun Vec2f.isGreater(other: Vec2f): Boolean {
         return this.x > other.x || this.y > other.y
     }
 
-    infix fun Vec2.isGreaterEquals(other: Vec2): Boolean {
+    infix fun Vec2f.isGreaterEquals(other: Vec2f): Boolean {
         return this.x >= other.x || this.y >= other.y
     }
 
-    fun Vec2.absAssign(): Vec2 {
+    fun Vec2f.absAssign(): Vec2f {
         if (x < 0) {
             x = -x
         }
@@ -92,6 +92,6 @@ object Vec2Util {
         return this
     }
 
-    val Vec2.abs: Vec2
-        get() = Vec2(x, y).absAssign()
+    val Vec2f.abs: Vec2f
+        get() = Vec2f(x, y).absAssign()
 }

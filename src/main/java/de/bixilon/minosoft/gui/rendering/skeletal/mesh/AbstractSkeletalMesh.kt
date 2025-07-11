@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -24,5 +24,5 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 abstract class AbstractSkeletalMesh(context: RenderContext, struct: MeshStruct, initialCacheSize: Int) : Mesh(context, struct, initialCacheSize = initialCacheSize) {
     override val order = context.system.quadOrder
 
-    abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3, texture: ShaderTexture, path: String)
+    abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String)
 }

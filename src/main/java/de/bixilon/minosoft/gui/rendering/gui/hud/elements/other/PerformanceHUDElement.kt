@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -31,12 +31,12 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Pollable {
     private val text = TextElement(guiRenderer, "", parent = this)
-    override val layoutOffset: Vec2 = Vec2(2, 2)
+    override val layoutOffset: Vec2f = Vec2f(2, 2)
     private var fps = -1.0
     private var hide: Boolean = false
 
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (hide) {
             return
         }

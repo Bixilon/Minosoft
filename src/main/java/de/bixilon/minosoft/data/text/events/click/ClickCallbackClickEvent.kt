@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.text.events.click
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 
 class ClickCallbackClickEvent(val callback: () -> Unit) : ClickEvent {
 
-    override fun onClick(guiRenderer: GUIRenderer, position: Vec2, button: MouseButtons, action: MouseActions) {
+    override fun onClick(guiRenderer: GUIRenderer, position: Vec2f, button: MouseButtons, action: MouseActions) {
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
             return
         }

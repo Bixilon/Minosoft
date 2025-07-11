@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -61,7 +61,7 @@ abstract class EntityRenderer<E : Entity>(
         // TODO: update on demand
         val offset = renderer.context.camera.offset.offset
         val original = entity.renderInfo.position
-        val position = Vec3((original.x - offset.x).toFloat(), (original.y - offset.y).toFloat(), (original.z - offset.z).toFloat())
+        val position = Vec3f((original.x - offset.x).toFloat(), (original.y - offset.y).toFloat(), (original.z - offset.z).toFloat())
         matrix.reset()
         matrix.translateAssign(position)
 

@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
@@ -81,7 +81,7 @@ abstract class Entity(
     open val primaryPassenger: Entity? = null
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
-    open val dimensions = Vec2(type.width, type.height)
+    open val dimensions = Vec2f(type.width, type.height)
     open val defaultAABB: AABB = AABB.EMPTY
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
@@ -90,10 +90,10 @@ abstract class Entity(
 
     protected fun createDefaultAABB(): AABB {
         val halfWidth = dimensions.x / 2
-        return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
+        return AABB(Vec3f(-halfWidth, 0.0f, -halfWidth), Vec3f(halfWidth, dimensions.y, halfWidth))
     }
 
-    open fun getDimensions(pose: Poses): Vec2? {
+    open fun getDimensions(pose: Poses): Vec2f? {
         return dimensions
     }
 

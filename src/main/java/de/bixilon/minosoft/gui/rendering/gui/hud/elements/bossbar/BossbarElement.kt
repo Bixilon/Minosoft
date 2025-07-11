@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
@@ -44,7 +44,7 @@ class BossbarElement(
         setStyle()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         val titleSize = titleElement.size
         titleElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, titleSize.x), 0), consumer, options)
@@ -93,7 +93,7 @@ class BossbarElement(
     }
 
     override fun forceSilentApply() {
-        val size = Vec2(BAR_SIZE)
+        val size = Vec2f(BAR_SIZE)
         size.x = maxOf(size.x, titleElement.size.x)
         size.y += titleElement.size.y
         _size = size

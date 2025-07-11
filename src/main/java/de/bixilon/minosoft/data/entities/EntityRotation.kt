@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import kotlin.math.abs
 
@@ -23,17 +23,17 @@ data class EntityRotation(
     val yaw: Float,
     val pitch: Float,
 ) {
-    val front: Vec3
+    val front: Vec3f
         get() {
             val pitchRad = pitch.rad
             val pitchCos = pitchRad.cos
             val yawRad = -yaw.rad
 
-            return Vec3(
+            return Vec3f(
                 yawRad.sin * pitchCos,
                 -pitchRad.sin,
                 yawRad.cos * pitchCos
-            ).normalizeAssign()
+            ).normalize() // TODO: memory
         }
 
     override fun toString(): String {

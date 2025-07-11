@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
@@ -40,22 +40,22 @@ data class SkeletalFace(
         val uv = this.uv ?: CuboidUtil.cubeUV(element.uv!!, element.from, element.to, direction)
 
         val uvData = FaceUV(
-            texture.texture.transformUV(Vec2(uv.start.x, uv.end.y) / texture.properties.resolution),
-            texture.texture.transformUV(Vec2(uv.end.x, uv.start.y) / texture.properties.resolution),
+            texture.texture.transformUV(Vec2f(uv.start.x, uv.end.y) / texture.properties.resolution),
+            texture.texture.transformUV(Vec2f(uv.end.x, uv.start.y) / texture.properties.resolution),
         ).toArray(direction, 0)
 
 
-        val normal = Vec3(direction.vectorf)
+        val normal = Vec3f(direction.vectorf)
 
         if (context.rotation != null) {
             val origin = context.rotation.origin?.div(BLOCK_SIZE) ?: ((to + from) / 2.0f)
 
             val rad = -context.rotation.value.rad
-            val vec = Vec3(0, positions)
+            val vec = Vec3f(0, positions)
             normal.rotateAssign(rad)
 
             for (i in 0 until 4) {
-                vec.ofs = i * Vec3.length
+                vec.ofs = i * Vec3f.length
                 vec.rotateAssign(rad, origin, false)
             }
         }

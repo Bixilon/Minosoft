@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.system.base.shader
 
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -46,8 +46,8 @@ interface NativeShader {
     fun setInt(uniformName: String, value: Int)
     fun setUInt(uniformName: String, value: Int)
     fun setMat4(uniformName: String, mat4: Mat4)
-    fun setVec2(uniformName: String, vec2: Vec2)
-    fun setVec3(uniformName: String, vec3: Vec3)
+    fun setVec2f(uniformName: String, vec2: Vec2f)
+    fun setVec3f(uniformName: String, vec3: Vec3f)
     fun setVec4(uniformName: String, vec4: Vec4)
     fun setArray(uniformName: String, array: Array<*>)
     fun setIntArray(uniformName: String, array: IntArray)
@@ -59,8 +59,8 @@ interface NativeShader {
     fun setTexture(uniformName: String, textureId: Int)
     fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer)
 
-    fun setVec3(uniformName: String, vec3: Vec3d) {
-        setVec3(uniformName, Vec3(vec3))
+    fun setVec3f(uniformName: String, vec3: Vec3d) {
+        setVec3f(uniformName, Vec3f(vec3))
     }
 
     operator fun set(uniformName: String, data: Any?) {
@@ -73,8 +73,8 @@ interface NativeShader {
             is Float -> setFloat(uniformName, data)
             is Mat4 -> setMat4(uniformName, data)
             is Vec4 -> setVec4(uniformName, data)
-            is Vec3 -> setVec3(uniformName, data)
-            is Vec2 -> setVec2(uniformName, data)
+            is Vec3f -> setVec3f(uniformName, data)
+            is Vec2f -> setVec2f(uniformName, data)
             is RGBColor -> setRGBColor(uniformName, data)
             is RGBAColor -> setRGBAColor(uniformName, data)
             is UniformBuffer -> setUniformBuffer(uniformName, data)

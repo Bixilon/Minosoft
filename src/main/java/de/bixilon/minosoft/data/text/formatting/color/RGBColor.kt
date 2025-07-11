@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.text.formatting.color
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -28,7 +28,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
     constructor(red: Int, green: Int, blue: Int) : this(((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
 
     constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
-    constructor(rgb: Vec3) : this(rgb.r, rgb.g, rgb.b)
+    constructor(rgb: Vec3f) : this(rgb.r, rgb.g, rgb.b)
 
     override inline val red: Int get() = (rgb ushr RED_SHIFT) and MASK
     override inline val green: Int get() = (rgb ushr GREEN_SHIFT) and MASK
@@ -72,7 +72,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
         return TextComponent(this).color(this.rgba())
     }
 
-    fun toVec3() = Vec3(redf, greenf, bluef)
+    fun toVec3f() = Vec3f(redf, greenf, bluef)
 
     companion object {
         const val RED_SHIFT = 2 * BITS
@@ -80,7 +80,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
         const val BLUE_SHIFT = 0 * BITS
 
 
-        fun Vec3.color() = RGBColor(r, g, b)
+        fun Vec3f.color() = RGBColor(r, g, b)
         fun Int.rgb() = RGBColor(this)
 
         fun String.rgb(): RGBColor {

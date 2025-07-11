@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -30,9 +30,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 open class DynamicImageElement(
     guiRenderer: GUIRenderer,
     texture: DynamicTexture?,
-    uvStart: Vec2 = Vec2.EMPTY,
-    uvEnd: Vec2 = Vec2(1.0f, 1.0f),
-    size: Vec2 = Vec2.EMPTY,
+    uvStart: Vec2f = Vec2f.EMPTY,
+    uvEnd: Vec2f = Vec2f(1.0f, 1.0f),
+    size: Vec2f = Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
     parent: Element? = null,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicTextureListener {
@@ -44,25 +44,25 @@ open class DynamicImageElement(
             field = value
             cacheUpToDate = false
         }
-    var uvStart: Vec2 = uvStart
+    var uvStart: Vec2f = uvStart
         set(value) {
             field = value
             cacheUpToDate = false
         }
-    var uvEnd: Vec2 = uvEnd
+    var uvEnd: Vec2f = uvEnd
         set(value) {
             field = value
             cacheUpToDate = false
         }
 
-    override var size: Vec2
+    override var size: Vec2f
         get() = super.size
         set(value) {
             super.size = value
             cacheUpToDate = false
         }
 
-    override var prefSize: Vec2
+    override var prefSize: Vec2f
         get() = size
         set(value) {
             size = value
@@ -88,7 +88,7 @@ open class DynamicImageElement(
         return texture
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, getAvailableTexture(), uvStart, uvEnd, tint, options)
     }
 

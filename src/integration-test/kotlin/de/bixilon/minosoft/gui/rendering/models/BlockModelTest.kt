@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.block
@@ -67,8 +67,8 @@ class BlockModelTest {
     }
 
     fun fallbackUV1() {
-        val start = Vec3(0)
-        val end = Vec3(1)
+        val start = Vec3f(0)
+        val end = Vec3f(1)
 
         assertEquals(fallbackUV(Directions.DOWN, start, end), FaceUV(0, 16, 16, 0))
         assertEquals(fallbackUV(Directions.UP, start, end), FaceUV(0, 16, 16, 0))
@@ -79,8 +79,8 @@ class BlockModelTest {
     }
 
     fun fallbackUV2() {
-        val start = Vec3(block(1, 2, 3))
-        val end = Vec3(block(13, 14, 15))
+        val start = Vec3f(block(1, 2, 3))
+        val end = Vec3f(block(13, 14, 15))
 
         assertEquals(fallbackUV(Directions.DOWN, start, end), FaceUV(1, 13, 13, 1))
         assertEquals(fallbackUV(Directions.UP, start, end), FaceUV(1, 15, 13, 3))
@@ -91,8 +91,8 @@ class BlockModelTest {
     }
 
     fun fallbackUV3() {
-        val start = Vec3(block(5, 3, 1))
-        val end = Vec3(block(15, 13, 11))
+        val start = Vec3f(block(5, 3, 1))
+        val end = Vec3f(block(15, 13, 11))
 
         assertEquals(fallbackUV(Directions.DOWN, start, end), FaceUV(5, 15, 15, 5))
         assertEquals(fallbackUV(Directions.UP, start, end), FaceUV(5, 11, 15, 1))
@@ -129,39 +129,39 @@ class BlockModelTest {
             GUILights.SIDE,
             display = mapOf(
                 DisplayPositions.GUI to ModelDisplay(
-                    rotation = Vec3(30, 225, 0).rad,
-                    translation = Vec3(0, 0, 0),
-                    scale = Vec3(0.625, 0.625, 0.625),
+                    rotation = Vec3f(30, 225, 0).rad,
+                    translation = Vec3f(0, 0, 0),
+                    scale = Vec3f(0.625, 0.625, 0.625),
                 ),
                 DisplayPositions.GROUND to ModelDisplay(
-                    rotation = Vec3(0, 0, 0),
-                    translation = Vec3(0, 3 / 16.0f, 0),
-                    scale = Vec3(0.25, 0.25, 0.25),
+                    rotation = Vec3f(0, 0, 0),
+                    translation = Vec3f(0, 3 / 16.0f, 0),
+                    scale = Vec3f(0.25, 0.25, 0.25),
                 ),
                 DisplayPositions.FIXED to ModelDisplay(
-                    rotation = Vec3(0, 0, 0),
-                    translation = Vec3(0, 0, 0),
-                    scale = Vec3(0.5, 0.5, 0.5),
+                    rotation = Vec3f(0, 0, 0),
+                    translation = Vec3f(0, 0, 0),
+                    scale = Vec3f(0.5, 0.5, 0.5),
                 ),
                 DisplayPositions.THIRD_PERSON_RIGHT_HAND to ModelDisplay(
-                    rotation = Vec3(75, 45, 0).rad,
-                    translation = Vec3(0, 2.5 / 16.0f, 0),
-                    scale = Vec3(0.375, 0.375, 0.375),
+                    rotation = Vec3f(75, 45, 0).rad,
+                    translation = Vec3f(0, 2.5 / 16.0f, 0),
+                    scale = Vec3f(0.375, 0.375, 0.375),
                 ),
                 DisplayPositions.FIRST_PERSON_RIGHT_HAND to ModelDisplay(
-                    rotation = Vec3(0, 45, 0).rad,
-                    translation = Vec3(0, 0, 0),
-                    scale = Vec3(0.40, 0.40, 0.40),
+                    rotation = Vec3f(0, 45, 0).rad,
+                    translation = Vec3f(0, 0, 0),
+                    scale = Vec3f(0.40, 0.40, 0.40),
                 ),
                 DisplayPositions.FIRST_PERSON_LEFT_HAND to ModelDisplay(
-                    rotation = Vec3(0, 225, 0).rad,
-                    translation = Vec3(0, 0, 0),
-                    scale = Vec3(0.40, 0.40, 0.40),
+                    rotation = Vec3f(0, 225, 0).rad,
+                    translation = Vec3f(0, 0, 0),
+                    scale = Vec3f(0.40, 0.40, 0.40),
                 )
             ),
             elements = listOf(ModelElement(
-                from = Vec3(0, 0, 0),
-                to = Vec3(1, 1, 1),
+                from = Vec3f(0, 0, 0),
+                to = Vec3f(1, 1, 1),
                 faces = mapOf(
                     Directions.DOWN to ModelFace("#down", null, 0, -1),
                     Directions.UP to ModelFace("#up", null, 0, -1),

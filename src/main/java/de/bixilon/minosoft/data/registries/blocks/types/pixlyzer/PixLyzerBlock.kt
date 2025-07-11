@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
@@ -114,12 +114,12 @@ open class PixLyzerBlock(
         return identifier.toString()
     }
 
-    override fun offsetShape(position: BlockPosition): Vec3 {
-        val offset = randomOffset ?: return Vec3.EMPTY
+    override fun offsetShape(position: BlockPosition): Vec3f {
+        val offset = randomOffset ?: return Vec3f.EMPTY
         return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
     }
 
-    override fun offsetModel(position: BlockPosition): Vec3 {
+    override fun offsetModel(position: BlockPosition): Vec3f {
         return super.offsetShape(position)
     }
 

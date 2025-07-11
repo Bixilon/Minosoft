@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 
 class AtlasElement(
     override val texture: Texture,
-    override val uvStart: Vec2,
-    override val uvEnd: Vec2,
+    override val uvStart: Vec2f,
+    override val uvEnd: Vec2f,
     override val size: Vec2i,
     val slots: Int2ObjectMap<AtlasArea>?,
     val areas: Map<String, AtlasArea>?,

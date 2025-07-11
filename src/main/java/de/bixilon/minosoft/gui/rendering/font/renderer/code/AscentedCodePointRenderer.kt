@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 
 /**
@@ -25,8 +25,8 @@ interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
     val height: Float
 
 
-    override fun calculateStart(properties: TextRenderProperties, base: Vec2, scale: Float): Vec2 {
-        val position = Vec2(base)
+    override fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): Vec2f {
+        val position = Vec2f(base)
         var diff = ascent - DEFAULT_ASCENT
         if (diff > 2.0f) {
             diff += 0.8f // TODO: dirty hack
@@ -37,8 +37,8 @@ interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
         return position
     }
 
-    override fun calculateEnd(properties: TextRenderProperties, start: Vec2, scale: Float): Vec2 {
-        val position = Vec2(start)
+    override fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): Vec2f {
+        val position = Vec2f(start)
         position.y += (height * scale)
         position.x += width * scale
 

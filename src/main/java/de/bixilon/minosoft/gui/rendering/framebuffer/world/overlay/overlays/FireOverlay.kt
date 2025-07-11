@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -55,17 +55,17 @@ class FireOverlay(
 
         // ToDo: Minecraft does this completely different...
         mesh.addQuad(arrayOf(
-            Vec3(-2.0f, -2.4f, +0.0f),
-            Vec3(-2.0f, +0.4f, +0.0f),
-            Vec3(+0.0f, +0.4f, +0.0f),
-            Vec3(+0.0f, -2.4f, +0.0f),
+            Vec3f(-2.0f, -2.4f, +0.0f),
+            Vec3f(-2.0f, +0.4f, +0.0f),
+            Vec3f(+0.0f, +0.4f, +0.0f),
+            Vec3f(+0.0f, -2.4f, +0.0f),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
 
         mesh.addQuad(arrayOf(
-            Vec3(-0.0f, -2.4f, +0.0f),
-            Vec3(-0.0f, +0.4f, +0.0f),
-            Vec3(+2.0f, +0.4f, +0.0f),
-            Vec3(+2.0f, -2.4f, +0.0f),
+            Vec3f(-0.0f, -2.4f, +0.0f),
+            Vec3f(-0.0f, +0.4f, +0.0f),
+            Vec3f(+2.0f, +0.4f, +0.0f),
+            Vec3f(+2.0f, -2.4f, +0.0f),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
 
 

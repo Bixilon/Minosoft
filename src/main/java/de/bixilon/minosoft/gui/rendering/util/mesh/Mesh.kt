@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
@@ -93,42 +93,42 @@ abstract class Mesh(
     }
 
 
-    inline fun addXQuad(start: Vec2, x: Float, end: Vec2, uvStart: Vec2 = Vec2Util.EMPTY, uvEnd: Vec2 = Vec2Util.ONE, vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
-            Vec3(x, start.x, start.y),
-            Vec3(x, start.x, end.y),
-            Vec3(x, end.x, end.y),
-            Vec3(x, end.x, start.y),
+            Vec3f(x, start.x, start.y),
+            Vec3f(x, start.x, end.y),
+            Vec3f(x, end.x, end.y),
+            Vec3f(x, end.x, start.y),
         )
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addYQuad(start: Vec2, y: Float, end: Vec2, uvStart: Vec2 = Vec2Util.EMPTY, uvEnd: Vec2 = Vec2Util.ONE, vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addYQuad(start: Vec2f, y: Float, end: Vec2f, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
-            Vec3(start.x, y, end.y),
-            Vec3(end.x, y, end.y),
-            Vec3(end.x, y, start.y),
-            Vec3(start.x, y, start.y),
+            Vec3f(start.x, y, end.y),
+            Vec3f(end.x, y, end.y),
+            Vec3f(end.x, y, start.y),
+            Vec3f(start.x, y, start.y),
         )
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addZQuad(start: Vec2, z: Float, end: Vec2, uvStart: Vec2 = Vec2Util.EMPTY, uvEnd: Vec2 = Vec2Util.ONE, vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addZQuad(start: Vec2f, z: Float, end: Vec2f, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
-            Vec3(start.x, start.y, z),
-            Vec3(start.x, end.y, z),
-            Vec3(end.x, end.y, z),
-            Vec3(end.x, start.y, z),
+            Vec3f(start.x, start.y, z),
+            Vec3f(start.x, end.y, z),
+            Vec3f(end.x, end.y, z),
+            Vec3f(end.x, start.y, z),
         )
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addQuad(positions: Array<Vec3>, uvStart: Vec2 = Vec2Util.EMPTY, uvEnd: Vec2 = Vec2Util.ONE, vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val texturePositions = arrayOf(
             uvStart,
-            Vec2(uvStart.x, uvEnd.y),
+            Vec2f(uvStart.x, uvEnd.y),
             uvEnd,
-            Vec2(uvEnd.x, uvStart.y),
+            Vec2f(uvEnd.x, uvStart.y),
         )
         order.iterate { position, uv -> vertexConsumer.invoke(positions[position], texturePositions[uv]) }
     }

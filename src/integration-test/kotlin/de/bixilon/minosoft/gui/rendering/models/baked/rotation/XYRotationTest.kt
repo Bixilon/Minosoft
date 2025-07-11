@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked.rotation
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
@@ -31,8 +31,8 @@ import org.testng.annotations.Test
 class XYRotationTest {
 
     fun `x=90_y=90`() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
 
@@ -46,8 +46,8 @@ class XYRotationTest {
     }
 
     fun `x=90_y=270`() {
-        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
-        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+        val from = Vec3f(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3f(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 3)
 

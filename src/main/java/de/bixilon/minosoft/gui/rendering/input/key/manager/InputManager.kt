@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -74,7 +74,7 @@ class InputManager(
 
     private fun onMouse(delta: Vec2d, position: Vec2d) {
         this.mousePosition = position
-        if (handler.onMouse(Vec2(position))) return
+        if (handler.onMouse(Vec2f(position))) return
         cameraInput.updateMouse(delta)
     }
 
@@ -111,7 +111,7 @@ class InputManager(
     }
 
     private fun scroll(scrollOffset: Vec2d, event: MouseScrollEvent) {
-        if (!handler.onScroll(Vec2(scrollOffset))) return
+        if (!handler.onScroll(Vec2f(scrollOffset))) return
         event.cancelled = true
     }
 

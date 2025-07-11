@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -24,13 +24,13 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 interface DragTarget {
 
-    fun onDragEnter(position: Vec2, absolute: Vec2, draggable: Dragged): Element? = this.nullCast()
-    fun onDragMove(position: Vec2, absolute: Vec2, draggable: Dragged): Element? = this.nullCast()
+    fun onDragEnter(position: Vec2f, absolute: Vec2f, draggable: Dragged): Element? = this.nullCast()
+    fun onDragMove(position: Vec2f, absolute: Vec2f, draggable: Dragged): Element? = this.nullCast()
     fun onDragLeave(draggable: Dragged): Element? = this.nullCast()
 
-    fun onDragScroll(position: Vec2, scrollOffset: Vec2, draggable: Dragged): Element? = this.nullCast()
+    fun onDragScroll(position: Vec2f, scrollOffset: Vec2f, draggable: Dragged): Element? = this.nullCast()
 
-    fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? = this.nullCast()
+    fun onDragMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? = this.nullCast()
     fun onDragKey(key: KeyCodes, type: KeyChangeTypes, draggable: Dragged): Element? = this.nullCast()
     fun onDragChar(char: Char, draggable: Dragged): Element? = this.nullCast()
 }

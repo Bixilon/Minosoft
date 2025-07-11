@@ -13,10 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.shapes.aabb
 
-import glm_.func.common.clamp
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
@@ -37,6 +33,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
+import glm_.func.common.clamp
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import kotlin.math.abs
 
 
@@ -44,11 +44,11 @@ class AABB : Shape {
     val min: Vec3d
     val max: Vec3d
 
-    constructor(jsonData: Map<String, Any>) : this(jsonData["from"]!!.toVec3(Vec3.EMPTY), jsonData["to"]!!.toVec3(Vec3.ONE))
+    constructor(jsonData: Map<String, Any>) : this(jsonData["from"]!!.toVec3f(Vec3f.EMPTY), jsonData["to"]!!.toVec3f(Vec3f.ONE))
 
     constructor(aabb: AABB) : this(aabb.min, aabb.max)
 
-    constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))
+    constructor(min: Vec3f, max: Vec3f) : this(Vec3d(min), Vec3d(max))
 
     constructor(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))
     constructor(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))
@@ -74,8 +74,8 @@ class AABB : Shape {
     override operator fun plus(offset: Vec3d): AABB = this.offset(offset)
     fun offset(other: Vec3d) = AABB(true, min + other, max + other)
 
-    override operator fun plus(offset: Vec3): AABB = this.offset(offset)
-    fun offset(other: Vec3) = AABB(true, min + other, max + other)
+    override operator fun plus(offset: Vec3f): AABB = this.offset(offset)
+    fun offset(other: Vec3f) = AABB(true, min + other, max + other)
 
     override operator fun plus(offset: Vec3i): AABB = this.offset(offset)
     fun offset(other: Vec3i) = AABB(true, min + other, max + other)
@@ -213,20 +213,20 @@ class AABB : Shape {
      * If the origin is inside the AABB, it returns the direction where it exists it.
      */
     // this was a test, but credit is needed where credit belongs: https://chat.openai.com/chat (but heavily refactored and improved :D)
-    override fun raycast(position: Vec3d, front: Vec3d): AABBRaycastHit? {
+    override fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit? {
         var minAxis = -1
         var min = Double.NEGATIVE_INFINITY
         var max = Double.POSITIVE_INFINITY
 
         for (axis in Axes.VALUES.indices) {
-            if (abs(front[axis]) < 0.00001) {
+            if (abs(direction[axis]) < 0.00001) {
                 if (position[axis] < this.min[axis] || position[axis] > this.max[axis]) {
                     return null
                 }
                 continue
             }
-            var minDistance = (this.min[axis] - position[axis]) / front[axis]
-            var maxDistance = (this.max[axis] - position[axis]) / front[axis]
+            var minDistance = (this.min[axis] - position[axis]) / direction[axis]
+            var maxDistance = (this.max[axis] - position[axis]) / direction[axis]
 
             if (minDistance > maxDistance) {
                 // swamp values
@@ -252,10 +252,10 @@ class AABB : Shape {
 
         // calculate direction ordinal from axis, depending on positive or negative
         var ordinal = minAxis * 2
-        if (front[minAxis] <= 0) ordinal++
+        if (direction[minAxis] <= 0) ordinal++
 
-        val direction = Directions.XYZ[ordinal]
-        return AABBRaycastHit(min, if (inside) direction.inverted else direction, inside)
+        val target = Directions.XYZ[ordinal]
+        return AABBRaycastHit(min, if (inside) target.inverted else target, inside)
     }
 
     operator fun contains(position: Vec3d): Boolean {
@@ -325,8 +325,8 @@ class AABB : Shape {
     }
 
     companion object {
-        val BLOCK: AABB = AABB(Vec3.EMPTY, Vec3.ONE)
-        val EMPTY: AABB = AABB(Vec3.EMPTY, Vec3.EMPTY)
+        val BLOCK: AABB = AABB(Vec3f.EMPTY, Vec3f.ONE)
+        val EMPTY: AABB = AABB(Vec3f.EMPTY, Vec3f.EMPTY)
 
         inline fun getRange(min: Double, max: Double): IntRange {
             return min.floor until max.ceil

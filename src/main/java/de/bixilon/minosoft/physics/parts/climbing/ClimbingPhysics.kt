@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.parts.climbing
 
-import glm_.vec3.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.Climbable
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock

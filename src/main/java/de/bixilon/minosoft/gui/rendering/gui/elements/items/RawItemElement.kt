@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 
 class RawItemElement(
     guiRenderer: GUIRenderer,
-    size: Vec2 = DEFAULT_SIZE,
+    size: Vec2f = DEFAULT_SIZE,
     stack: ItemStack?,
     parent: Element?,
 ) : Element(guiRenderer) {
@@ -71,7 +71,7 @@ class RawItemElement(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val stack = stack ?: return
         if (!stack._valid) return
         val size = size
@@ -115,6 +115,6 @@ class RawItemElement(
         private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
         private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
 
-        val DEFAULT_SIZE = Vec2(17, 17) // 16x16 for the item and 1px for the count offset
+        val DEFAULT_SIZE = Vec2f(17, 17) // 16x16 for the item and 1px for the count offset
     }
 }

@@ -18,9 +18,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
-import glm_.vec2.Vec2t
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3t
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2ft
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3ft
 import glm_.vec4.Vec4t
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
