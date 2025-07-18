@@ -52,6 +52,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -154,36 +155,45 @@ object KUtil {
         return entities.toSet()
     }
 
-    fun Any?.format(): ChatComponent {
-        return ChatComponent.of(
-            when (this) {
-                is ChatComponent -> return this
-                is CharSequence -> this.toString()
-                null -> TextComponent("null").color(ChatColors.DARK_RED)
-                is TextFormattable -> this.toText()
-                is Boolean -> TextComponent(this.toString()).color(if (this) ChatColors.GREEN else ChatColors.RED)
-                is Enum<*> -> {
-                    val name = this.name
-                    TextComponent(
-                        if (name.length == 1) {
-                            name
-                        } else {
-                            name.lowercase()
-                        }
-                    ).color(ChatColors.YELLOW)
-                }
+    fun ChatComponent.format() = this
+    fun CharSequence.format() = ChatComponent.of(this.toString())
+    fun TextFormattable.format() = ChatComponent.of(this.toText())
+    fun Identified.format() = identifier.format()
+    fun Boolean.format() = if (this) TextFormattable.TRUE else TextFormattable.FALSE
+    inline fun Float.format() = TextComponent("§d%.3f".format(this)).color(ChatColors.LIGHT_PURPLE)
+    inline fun Double.format() = TextComponent("§d%.4f".format(this)).color(ChatColors.LIGHT_PURPLE)
+    inline fun Number.format() = TextComponent(this.toString()).color(ChatColors.LIGHT_PURPLE)
 
-                is Float -> "§d%.3f".format(this)
-                is Double -> "§d%.4f".format(this)
-                is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
-                is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
-                is Identified -> identifier.format()
-                is Vec4t<*> -> "(${this._x.format()} ${this._y.format()} ${this._z.format()} ${this._w.format()})"
-                is Vec3t<*> -> "(${this._x.format()} ${this._y.format()} ${this._z.format()})"
-                is Vec2t<*> -> "(${this._x.format()} ${this._y.format()})"
-                else -> this.toString()
-            }
-        )
+    fun ResourceLocation.format() = TextComponent(this.toString()).color(ChatColors.GOLD)
+
+    fun Any?.format(): ChatComponent {
+        if (this == null) return TextFormattable.NULL
+
+        return this.format()
+    }
+
+    fun Any.format() = when (this) {
+        is ChatComponent -> this.format()
+        is CharSequence -> this.format()
+        is TextFormattable -> this.format()
+        is Float -> this.format()
+        is Double -> this.format()
+        is Number -> this.format()
+        is Boolean -> this.format()
+        is ResourceLocation -> this.format()
+        is Enum<*> -> {
+            val name = this.name
+            TextComponent(
+                if (name.length == 1) {
+                    name
+                } else {
+                    name.lowercase()
+                }
+            ).color(ChatColors.YELLOW)
+        }
+
+        is Identified -> identifier.format()
+        else -> ChatComponent.of(this.toString())
     }
 
     fun Any.toJson(beautiful: Boolean = false): String {
