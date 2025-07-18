@@ -83,6 +83,10 @@ interface ChatComponent {
     companion object {
         val EMPTY = EmptyComponent
 
+        fun of(component: ChatComponent) = component
+        fun of(component: TextFormattable) = component.toText()
+
+
         @JvmOverloads
         fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restricted: Boolean = false): ChatComponent {
             if (raw == null) return EMPTY
@@ -102,24 +106,26 @@ interface ChatComponent {
                     return component.trim() ?: EmptyComponent
                 }
             }
-            val string = raw.toString()
-            if (string.isEmpty()) {
-                return EMPTY
-            }
+            return of(raw.toString(), translator, parent, ignoreJson, restricted)
+        }
+
+        @JvmOverloads
+        fun of(string: String, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restricted: Boolean = false): ChatComponent {
+            if (string.isEmpty()) return EMPTY
+
             if (!ignoreJson) {
                 for (codePoint in string.codePoints()) {
                     if (Character.isWhitespace(codePoint)) {
                         continue
                     }
-                    if (codePoint == '{'.code || codePoint == '['.code) {
-                        try {
-                            val read: Any = Jackson.MAPPER.readValue(string, Any::class.java)
-                            return of(read, translator, parent, ignoreJson = true, restricted).trim() ?: EmptyComponent
-                        } catch (ignored: JacksonException) {
-                            break
-                        }
+                    if (codePoint != '{'.code && codePoint != '['.code) break
+
+                    try {
+                        val read: Any = Jackson.MAPPER.readValue(string, Any::class.java)
+                        return of(read, translator, parent, ignoreJson = true, restricted).trim() ?: EmptyComponent
+                    } catch (ignored: JacksonException) {
+                        break
                     }
-                    break
                 }
             }
 
