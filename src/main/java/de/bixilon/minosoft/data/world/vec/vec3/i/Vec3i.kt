@@ -14,23 +14,23 @@
 package de.bixilon.minosoft.data.world.vec.vec3.i
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.MutableVec
-import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
-import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
-import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.div
+import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
+import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.i.MVec2i
-import glm_.i
+import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
 import kotlin.math.sqrt
 
-data class Vec3i(
-    override val x: Int,
-    override val y: Int = x,
-    override val z: Int = x,
-) : _Vec3i {
 
+@JvmInline
+value class Vec3i(
+    override val unsafe: UnsafeVec3i,
+) : _Vec3i {
+    override val x: Int get() = unsafe.x
+    override val y: Int get() = unsafe.y
+    override val z: Int get() = unsafe.z
+
+    constructor(x: Int, y: Int = x, z: Int = x) : this(UnsafeVec3i(x, y, z))
     constructor(other: Vec3i) : this(other.x, other.y, other.z)
     constructor(other: MVec3i) : this(other.x, other.y, other.z)
 
@@ -55,7 +55,7 @@ data class Vec3i(
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
 
-    override fun toString(): String = "($x, $y, $z)"
+    override fun toString(): String = "($x $y $z)"
 
     inline fun mut() = MVec3i(x, y, z)
 
