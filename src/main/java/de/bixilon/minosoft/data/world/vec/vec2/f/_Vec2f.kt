@@ -13,7 +13,14 @@
 
 package de.bixilon.minosoft.data.world.vec.vec2.f
 
-interface _Vec2f {
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.vec.Vec
+import de.bixilon.minosoft.data.world.vec.vec2.i.UnsafeVec2i
+import de.bixilon.minosoft.util.KUtil.format
+
+interface _Vec2f : Vec {
+    override val unsafe: UnsafeVec2f
     val x: Float
     val y: Float
 
@@ -22,4 +29,5 @@ interface _Vec2f {
     operator fun component2() = y
 
     fun toArray() = floatArrayOf(x, y)
+    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), ")")
 }

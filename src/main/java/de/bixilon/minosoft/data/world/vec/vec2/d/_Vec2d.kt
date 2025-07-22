@@ -13,7 +13,14 @@
 
 package de.bixilon.minosoft.data.world.vec.vec2.d
 
-interface _Vec2d {
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.vec.Vec
+import de.bixilon.minosoft.data.world.vec.vec2.f.UnsafeVec2f
+import de.bixilon.minosoft.util.KUtil.format
+
+interface _Vec2d : Vec {
+    override val unsafe: UnsafeVec2d
     val x: Double
     val y: Double
 
@@ -22,4 +29,5 @@ interface _Vec2d {
     operator fun component2() = y
 
     fun toArray() = doubleArrayOf(x, y)
+    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), ")")
 }

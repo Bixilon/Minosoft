@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.world.vec.vec2.d
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.MutableVec
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.div
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.plus
@@ -23,18 +22,26 @@ import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.times
 import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f._Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import glm_.d
 import kotlin.math.sqrt
 
-data class MVec2d(
-    override var x: Double,
-    override var y: Double = x,
-) : _Vec2d, MutableVec {
+@JvmInline
+value class MVec2d(
+    override val unsafe: UnsafeVec2d,
+) : _Vec2d {
+    override var x: Double
+        get() = unsafe.x
+        set(value) {
+            unsafe.x = value
+        }
+    override var y: Double
+        get() = unsafe.y
+        set(value) {
+            unsafe.y = value
+        }
 
     constructor() : this(0)
+    constructor(x: Double, y: Double = x) : this(UnsafeVec2d(x, y))
     constructor(x: Float, y: Float = x) : this(x.d, y.d)
     constructor(x: Int, y: Int = x) : this(x.d, y.d)
 
@@ -92,7 +99,7 @@ data class MVec2d(
     inline fun normalizeAssign() = let { this *= length() }
 
 
-    override fun toString(): String = "($x, $y)"
+    override fun toString(): String = "($x $y)"
 
     inline fun final() = Vec2d(x, y)
 

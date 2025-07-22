@@ -19,17 +19,23 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import glm_.f
 import kotlin.math.sqrt
 
-data class Vec3f(
-    override val x: Float,
-    override val y: Float = x,
-    override val z: Float = x,
+@JvmInline
+value class Vec3f(
+    override val unsafe: UnsafeVec3f,
 ) : _Vec3f {
+    override val x: Float get() = unsafe.x
+    override val y: Float get() = unsafe.y
+    override val z: Float get() = unsafe.z
 
+    constructor(x: Float, y: Float = x, z: Float = x) : this(UnsafeVec3f(x, y, z))
     constructor(x: Int, y: Int = x, z: Int = x) : this(x.f, y.f, z.f)
+    constructor(array: FloatArray) : this(array[0], array[1], array[2])
 
     constructor(other: MVec3f) : this(other.x, other.y, other.z)
 
@@ -52,10 +58,21 @@ data class Vec3f(
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
+    inline infix fun dot(other: _Vec3f) = this * other
+    inline fun cross(other: _Vec3f) = Vec3f(
+        x = y * other.z - other.y * z,
+        y = z * other.x - other.z * x,
+        z = x * other.y - other.x * y,
+    )
 
-    override fun toString(): String = "($x, $y, $z)"
+    inline val xy get() = Vec2f(x, y)
+    inline val xz get() = Vec2f(x, z)
+    inline val yz get() = Vec2f(y, z)
 
-    inline fun mut() = MVec3f(x, y, z)
+
+    override fun toString(): String = "($x $y $z)"
+
+    inline fun mutable() = MVec3f(x, y, z)
 
 
     inline operator fun get(axis: Axes) = when (axis) {

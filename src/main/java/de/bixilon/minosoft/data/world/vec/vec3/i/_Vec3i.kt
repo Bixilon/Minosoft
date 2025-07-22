@@ -13,7 +13,15 @@
 
 package de.bixilon.minosoft.data.world.vec.vec3.i
 
-interface _Vec3i {
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.vec.Vec
+import de.bixilon.minosoft.data.world.vec.vec3.f.UnsafeVec3f
+import de.bixilon.minosoft.util.KUtil.format
+
+interface _Vec3i : Vec {
+    override val unsafe: UnsafeVec3i
+
     val x: Int
     val y: Int
     val z: Int
@@ -24,4 +32,5 @@ interface _Vec3i {
     operator fun component3() = z
 
     fun toArray() = intArrayOf(x, y, z)
+    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
 }

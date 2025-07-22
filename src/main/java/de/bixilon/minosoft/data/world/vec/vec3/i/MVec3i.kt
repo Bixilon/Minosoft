@@ -14,24 +14,38 @@
 package de.bixilon.minosoft.data.world.vec.vec3.i
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.MutableVec
-import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
-import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
-import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.div
+import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
+import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import glm_.i
+import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
+import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import kotlin.math.sqrt
 
-data class MVec3i(
-    override var x: Int,
-    override var y: Int = x,
-    override var z: Int = x,
-) : _Vec3i, MutableVec {
+
+@JvmInline
+value class MVec3i(
+    override val unsafe: UnsafeVec3i,
+) : _Vec3i {
+    override var x: Int
+        get() = unsafe.x
+        set(value) {
+            unsafe.x = value
+        }
+    override var y: Int
+        get() = unsafe.y
+        set(value) {
+            unsafe.y = value
+        }
+    override var z: Int
+        get() = unsafe.z
+        set(value) {
+            unsafe.z = value
+        }
 
     constructor() : this(0)
 
+    constructor(x: Int, y: Int = x, z: Int = x) : this(UnsafeVec3i(x, y, z))
     constructor(other: Vec3i) : this(other.x, other.y, other.z)
     constructor(other: MVec3i) : this(other.x, other.y, other.z)
 
@@ -72,7 +86,7 @@ data class MVec3i(
     inline fun normalizeAssign() = let { this *= length() }
 
 
-    override fun toString(): String = "($x, $y, $z)"
+    override fun toString(): String = "($x $y $z)"
 
     inline fun final() = Vec3i(x, y, z)
 

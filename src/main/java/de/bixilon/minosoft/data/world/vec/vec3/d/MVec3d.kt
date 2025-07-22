@@ -14,27 +14,37 @@
 package de.bixilon.minosoft.data.world.vec.vec3.d
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.MutableVec
-import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.div
-import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.minus
-import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.plus
-import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.rem
-import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.d.MVec2d
 import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import glm_.d
 import kotlin.math.sqrt
 
-data class MVec3d(
-    override var x: Double,
-    override var y: Double = x,
-    override var z: Double = x,
-) : _Vec3d, MutableVec {
+@JvmInline
+value class MVec3d(
+    override val unsafe: UnsafeVec3d,
+) : _Vec3d {
+    override var x: Double
+        get() = unsafe.x
+        set(value) {
+            unsafe.x = value
+        }
+    override var y: Double
+        get() = unsafe.y
+        set(value) {
+            unsafe.y = value
+        }
+    override var z: Double
+        get() = unsafe.z
+        set(value) {
+            unsafe.z = value
+        }
 
     constructor() : this(0)
+    constructor(x: Double, y: Double, z: Double) : this(UnsafeVec3d(x, y, z))
     constructor(x: Float, y: Float = x, z: Float = x) : this(x.d, y.d, z.d)
     constructor(x: Int, y: Int = x, z: Int = x) : this(x.d, y.d, z.d)
 
@@ -42,6 +52,18 @@ data class MVec3d(
     constructor(other: MVec3f) : this(other.x, other.y, other.z)
     constructor(other: Vec3d) : this(other.x, other.y, other.z)
     constructor(other: MVec3d) : this(other.x, other.y, other.z)
+
+    inline operator fun plus(other: _Vec3i) = MVec3d(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = MVec3d(this.x - other.x, this.y - other.y, this.z - other.z)
+    inline operator fun times(other: _Vec3i) = MVec3d(this.x * other.x, this.y * other.y, this.z * other.z)
+    inline operator fun div(other: _Vec3i) = MVec3d(this.x / other.x, this.y / other.y, this.z / other.z)
+    inline operator fun rem(other: _Vec3i) = MVec3d(this.x % other.x, this.y % other.y, this.z % other.z)
+
+    inline operator fun plusAssign(other: _Vec3i): Unit = let { this.x += other.x; this.y += other.y; this.z += other.z }
+    inline operator fun minusAssign(other: _Vec3i): Unit = let { this.x -= other.x; this.y -= other.y; this.z -= other.z }
+    inline operator fun timesAssign(other: _Vec3i): Unit = let { this.x *= other.x; this.y *= other.y; this.z *= other.z }
+    inline operator fun divAssign(other: _Vec3i): Unit = let { this.x /= other.x; this.y /= other.y; this.z /= other.z }
+    inline operator fun remAssign(other: _Vec3i): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
 
     inline operator fun plus(other: _Vec3f) = MVec3d(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3f) = MVec3d(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -68,17 +90,17 @@ data class MVec3d(
     inline operator fun remAssign(other: _Vec3d): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
 
 
-    inline operator fun plus(other: Number) = MVec3d(this.x + other, this.y + other, this.z + other)
-    inline operator fun minus(other: Number) = MVec3d(this.x - other, this.y - other, this.z - other)
-    inline operator fun times(other: Number) = MVec3d(this.x * other, this.y * other, this.z * other)
-    inline operator fun div(other: Number) = MVec3d(this.x / other, this.y / other, this.z / other)
-    inline operator fun rem(other: Number) = MVec3d(this.x % other, this.y % other, this.z % other)
+    inline operator fun plus(other: Number) = MVec3d(this.x + other.d, this.y + other.d, this.z + other.d)
+    inline operator fun minus(other: Number) = MVec3d(this.x - other.d, this.y - other.d, this.z - other.d)
+    inline operator fun times(other: Number) = MVec3d(this.x * other.d, this.y * other.d, this.z * other.d)
+    inline operator fun div(other: Number) = MVec3d(this.x / other.d, this.y / other.d, this.z / other.d)
+    inline operator fun rem(other: Number) = MVec3d(this.x % other.d, this.y % other.d, this.z % other.d)
 
-    inline operator fun plusAssign(other: Number): Unit = let { this.x += other; this.y += other; this.z += other }
-    inline operator fun minusAssign(other: Number): Unit = let { this.x -= other; this.y -= other; this.z -= other }
-    inline operator fun timesAssign(other: Number): Unit = let { this.x *= other; this.y *= other; this.z *= other }
-    inline operator fun divAssign(other: Number): Unit = let { this.x /= other; this.y /= other; this.z /= other }
-    inline operator fun remAssign(other: Number): Unit = let { this.x %= other; this.y %= other; this.z %= other }
+    inline operator fun plusAssign(other: Number): Unit = let { this.x += other.d; this.y += other.d; this.z += other.d }
+    inline operator fun minusAssign(other: Number): Unit = let { this.x -= other.d; this.y -= other.d; this.z -= other.d }
+    inline operator fun timesAssign(other: Number): Unit = let { this.x *= other.d; this.y *= other.d; this.z *= other.d }
+    inline operator fun divAssign(other: Number): Unit = let { this.x /= other.d; this.y /= other.d; this.z /= other.d }
+    inline operator fun remAssign(other: Number): Unit = let { this.x %= other.d; this.y %= other.d; this.z %= other.d }
 
     inline operator fun unaryPlus() = MVec3d(x, y, z)
     inline operator fun unaryMinus() = MVec3d(-x, -y, -z)
@@ -91,8 +113,42 @@ data class MVec3d(
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
     inline fun normalizeAssign() = let { this *= length() }
 
+    inline fun put(x: Number, y: Number, z: Number) {
+        this.x = x.d
+        this.y = y.d
+        this.z = z.d
+    }
 
-    override fun toString(): String = "($x, $y, $z)"
+    inline fun put(other: _Vec3d) {
+        this.x = other.x
+        this.y = other.y
+        this.z = other.z
+    }
+
+    inline fun invoke(other: _Vec3d) = put(other)
+
+    inline infix fun dot(other: _Vec3d) = this * other
+    inline fun cross(other: _Vec3d) = MVec3d(
+        x = y * other.z - other.y * z,
+        y = z * other.x - other.z * x,
+        z = x * other.y - other.x * y,
+    )
+
+    inline fun crossAssign(other: _Vec3d) {
+        val x = x
+        val y = y
+        val z = z
+        this.x = y * other.z - other.y * z
+        this.y = z * other.x - other.z * x
+        this.z = x * other.y - other.x * y
+    }
+
+    inline val xy get() = MVec2d(x, y)
+    inline val xz get() = MVec2d(x, z)
+    inline val yz get() = MVec2d(y, z)
+
+
+    override fun toString(): String = "($x $y $z)"
 
     inline fun final() = Vec3d(x, y, z)
 

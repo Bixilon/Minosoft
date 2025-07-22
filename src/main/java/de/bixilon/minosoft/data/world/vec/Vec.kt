@@ -13,4 +13,9 @@
 
 package de.bixilon.minosoft.data.world.vec
 
-interface MutableVec
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.vec.vec3.f.UnsafeVec3f
+
+interface Vec : TextFormattable {
+    val unsafe: UnsafeVec
+}

@@ -19,19 +19,24 @@ import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.times
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.MVec2d
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import glm_.d
 import kotlin.math.sqrt
 
-data class Vec3d(
-    override val x: Double,
-    override val y: Double = x,
-    override val z: Double = x,
-) : _Vec3d {
 
+@JvmInline
+value class Vec3d(
+    override val unsafe: UnsafeVec3d,
+) : _Vec3d {
+    override val x get() = unsafe.x
+    override val y get() = unsafe.y
+    override val z get() = unsafe.z
+
+    constructor(x: Double, y: Double = x, z: Double = x) : this(UnsafeVec3d(x, y, z))
     constructor(x: Float, y: Float = x, z: Float = x) : this(x.d, y.d, z.d)
     constructor(x: Int, y: Int = x, z: Int = x) : this(x.d, y.d, z.d)
 
@@ -66,8 +71,18 @@ data class Vec3d(
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
+    inline infix fun dot(other: _Vec3d) = this * other
+    inline fun cross(other: _Vec3d) = Vec3d(
+        x = y * other.z - other.y * z,
+        y = z * other.x - other.z * x,
+        z = x * other.y - other.x * y,
+    )
 
-    override fun toString(): String = "($x, $y, $z)"
+    inline val xy get() = Vec2d(x, y)
+    inline val xz get() = Vec2d(x, z)
+    inline val yz get() = Vec2d(y, z)
+
+    override fun toString(): String = "($x $y $z)"
 
     inline fun mut() = MVec3d(x, y, z)
 
