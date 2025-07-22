@@ -13,7 +13,13 @@
 
 package de.bixilon.minosoft.data.world.vec.vec3.f
 
-interface _Vec3f {
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.world.vec.Vec
+import de.bixilon.minosoft.util.KUtil.format
+
+interface _Vec3f : Vec {
+    override val unsafe: UnsafeVec3f
+
     val x: Float
     val y: Float
     val z: Float
@@ -24,4 +30,16 @@ interface _Vec3f {
     operator fun component3() = z
 
     fun toArray() = floatArrayOf(x, y, z)
+    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
+
+
+    companion object {
+        inline fun _Vec3f.distance2(other: _Vec3f): Float {
+            val x = x - other.x
+            val y = y - other.y
+            val z = z - other.z
+
+            return x * x + y * y + z * z
+        }
+    }
 }

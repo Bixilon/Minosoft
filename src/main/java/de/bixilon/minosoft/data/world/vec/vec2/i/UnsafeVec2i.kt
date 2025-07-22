@@ -11,25 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.vec.vec3.d
+package de.bixilon.minosoft.data.world.vec.vec2.i
 
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.formatting.TextFormattable
-import de.bixilon.minosoft.data.world.vec.Vec
+import de.bixilon.minosoft.data.world.vec.UnsafeVec
 import de.bixilon.minosoft.util.KUtil.format
 
-interface _Vec3d : Vec {
-    override val unsafe: UnsafeVec3d
+data class UnsafeVec2i(
+    var x: Int,
+    var y: Int,
+) : UnsafeVec {
 
-    val x: Double
-    val y: Double
-    val z: Double
+    fun final() = Vec2i(this)
+    fun mutable() = MVec2i(this)
 
-
-    operator fun component1() = x
-    operator fun component2() = y
-    operator fun component3() = z
-
-    fun toArray() = doubleArrayOf(x, y, z)
-    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
+    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), ")")
+    override fun toString() = "($x $y)"
 }

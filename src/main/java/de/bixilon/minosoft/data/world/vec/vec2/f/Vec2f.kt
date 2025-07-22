@@ -22,11 +22,14 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
 import glm_.f
 import kotlin.math.sqrt
 
-data class Vec2f(
-    override val x: Float,
-    override val y: Float = x,
+@JvmInline
+value class Vec2f(
+    override val unsafe: UnsafeVec2f,
 ) : _Vec2f {
+    override val x get() = unsafe.x
+    override val y get() = unsafe.y
 
+    constructor(x: Float, y: Float = x) : this(UnsafeVec2f(x, y))
     constructor(x: Int, y: Int = x) : this(x.f, y.f)
 
     constructor(other: Vec2f) : this(other.x, other.y)
@@ -52,7 +55,7 @@ data class Vec2f(
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
 
-    override fun toString(): String = "($x, $y)"
+    override fun toString(): String = "($x $y)"
 
     inline fun mut() = MVec2f(x, y)
 
