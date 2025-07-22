@@ -14,24 +14,21 @@
 package de.bixilon.minosoft.data.world.vec.vec2.i
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.MutableVec
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.div
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
-import glm_.d
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import kotlin.math.sqrt
 
-data class Vec2i(
-    override val x: Int,
-    override val y: Int = x,
-) : _Vec2i, MutableVec {
+@JvmInline
+value class Vec2i(
+    override val unsafe: UnsafeVec2i,
+) : _Vec2i {
+    override val x get() = unsafe.x
+    override val y get() = unsafe.y
+
+    constructor(x: Int, y: Int = x) : this(UnsafeVec2i(x, y))
 
     constructor(other: _Vec2i) : this(other.x, other.y)
     constructor(other: Vec2i) : this(other.x, other.y)
@@ -57,7 +54,7 @@ data class Vec2i(
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
 
-    override fun toString(): String = "($x, $y)"
+    override fun toString(): String = "($x $y)"
 
     inline fun final() = Vec2i(x, y)
 

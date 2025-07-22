@@ -11,25 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.vec.vec3.d
+package de.bixilon.minosoft.data.world.vec.vec4.f
 
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.vec.Vec
 import de.bixilon.minosoft.util.KUtil.format
 
-interface _Vec3d : Vec {
-    override val unsafe: UnsafeVec3d
+interface _Vec4f : Vec {
+    override val unsafe: UnsafeVec4f
 
-    val x: Double
-    val y: Double
-    val z: Double
+    val x: Float
+    val y: Float
+    val z: Float
+    val w: Float
 
 
     operator fun component1() = x
     operator fun component2() = y
     operator fun component3() = z
+    operator fun component4() = w
 
-    fun toArray() = doubleArrayOf(x, y, z)
-    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
+    fun toArray() = floatArrayOf(x, y, z, w)
+    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), " ", w.format(), ")")
 }

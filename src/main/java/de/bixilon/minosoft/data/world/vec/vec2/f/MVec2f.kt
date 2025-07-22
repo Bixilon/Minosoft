@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.world.vec.vec2.f
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.world.vec.MutableVec
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.div
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
@@ -23,12 +22,23 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
 import glm_.f
 import kotlin.math.sqrt
 
-data class MVec2f(
-    override var x: Float,
-    override var y: Float = x,
-) : _Vec2f, MutableVec {
+@JvmInline
+value class MVec2f(
+    override val unsafe: UnsafeVec2f,
+) : _Vec2f {
+    override var x: Float
+        get() = unsafe.x
+        set(value) {
+            unsafe.x = value
+        }
+    override var y: Float
+        get() = unsafe.y
+        set(value) {
+            unsafe.y = value
+        }
 
     constructor() : this(0)
+    constructor(x: Float, y: Float = x) : this(UnsafeVec2f(x, y))
     constructor(x: Int, y: Int = x) : this(x.f, y.f)
 
     constructor(other: Vec2f) : this(other.x, other.y)
@@ -71,7 +81,7 @@ data class MVec2f(
     inline fun normalizeAssign() = let { this *= length() }
 
 
-    override fun toString(): String = "($x, $y)"
+    override fun toString(): String = "($x $y)"
 
     inline fun final() = Vec2f(x, y)
 

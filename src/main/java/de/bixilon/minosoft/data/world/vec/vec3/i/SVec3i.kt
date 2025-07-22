@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.vec.vec3.i
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
@@ -22,7 +23,9 @@ import de.bixilon.minosoft.data.world.vec.VecUtil.assertVec
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
-value class SVec3i(val raw: Int) : TextFormattable {
+value class SVec3i(val raw: Int) : _Vec3i {
+    @Deprecated("Do not call!", level = DeprecationLevel.HIDDEN)
+    override val unsafe get() = Broken()
 
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y) shl SHIFT_Y) or ((z and MASK_Z) shl SHIFT_Z) or ((x and MASK_X) shl SHIFT_X)) {
@@ -32,9 +35,9 @@ value class SVec3i(val raw: Int) : TextFormattable {
     }
 
 
-    inline val x: Int get() = (((raw ushr SHIFT_X) and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
-    inline val y: Int get() = (((raw ushr SHIFT_Y) and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
-    inline val z: Int get() = (((raw ushr SHIFT_Z) and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
+    override inline val x: Int get() = (((raw ushr SHIFT_X) and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
+    override inline val y: Int get() = (((raw ushr SHIFT_Y) and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
+    override inline val z: Int get() = (((raw ushr SHIFT_Z) and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
 
     inline fun plusX(): SVec3i {
