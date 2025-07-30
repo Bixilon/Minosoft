@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.generic
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
@@ -25,5 +25,5 @@ class GenericTextureShader(
     override val native: NativeShader,
 ) : Shader(), TextureShader, AnimatedShader, ViewProjectionShader {
     override var textures: TextureManager by textureManager()
-    override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
+    override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
 }

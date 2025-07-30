@@ -19,28 +19,30 @@ import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.f._Vec2f
+import glm_.i
 import kotlin.math.sqrt
 
 @JvmInline
 value class MVec2i(
-    override val unsafe: UnsafeVec2i,
+    private val _0: UnsafeVec2i,
 ) : _Vec2i {
     override var x: Int
-        get() = unsafe.x
+        get() = _0.x
         set(value) {
-            unsafe.x = value
+            _0.x = value
         }
     override var y: Int
-        get() = unsafe.y
+        get() = _0.y
         set(value) {
-            unsafe.y = value
+            _0.y = value
         }
 
     constructor() : this(0)
     constructor(x: Int, y: Int = x) : this(UnsafeVec2i(x, y))
 
-    constructor(other: _Vec2i) : this(other.x, other.y)
-    constructor(other: MVec2i) : this(other.x, other.y)
+    val unsafe get() = Vec2i(_0)
+
 
     inline operator fun plus(other: _Vec2i) = MVec2i(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2i) = MVec2i(this.x - other.x, this.y - other.y)
@@ -76,7 +78,7 @@ value class MVec2i(
     inline fun length() = sqrt(length2().toDouble()).toInt()
     inline fun length2() = x * x + y * y
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalizeAssign() = apply { this *= length() }
 
 
     override fun toString(): String = "($x $y)"
@@ -98,5 +100,8 @@ value class MVec2i(
 
     companion object {
         val EMPTY get() = MVec2i(0)
+
+        inline operator fun invoke(other: _Vec2i) = MVec2i(other.x.i, other.y.i)
+        inline operator fun invoke(other: _Vec2f) = MVec2i(other.x.i, other.y.i)
     }
 }

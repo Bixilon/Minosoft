@@ -39,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFA
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
@@ -80,7 +79,7 @@ class GLFWWindow(
             field = value
         }
 
-    private var _size = Vec2i(DEFAULT_WINDOW_SIZE)
+    private var _size = DEFAULT_WINDOW_SIZE
 
     override var size: Vec2i
         get() = _size
@@ -292,12 +291,12 @@ class GLFWWindow(
 
     private fun scalePosition(position: Vec2i): Vec2i {
         if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position / systemScale
+        return Vec2i((position.x / systemScale.x).toInt(), (position.y / systemScale.y).toInt())
     }
 
     private fun unscalePosition(position: Vec2i): Vec2i {
         if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position * systemScale
+        return Vec2i((position.x * systemScale.x).toInt(), (position.y * systemScale.y).toInt())
     }
 
     private fun unscalePosition(position: Vec2d): Vec2d {
@@ -356,7 +355,7 @@ class GLFWWindow(
         }
         val nextSize = unscalePosition(Vec2i(width, height))
         if (nextSize.x <= 0 || nextSize.y <= 0) return  // windows returns size (0,0) if minimized
-        val previousSize = Vec2i(_size)
+        val previousSize = _size
         if (previousSize == nextSize) return
         _size = nextSize
         fireGLFWEvent(ResizeWindowEvent(context, previousSize = previousSize, size = _size))

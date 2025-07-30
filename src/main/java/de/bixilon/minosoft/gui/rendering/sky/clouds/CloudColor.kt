@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -61,7 +61,7 @@ class CloudColor(
         val day = day(0.0f)
 
         val base = interpolateLinear(progress, night, day)
-        var color = Vec3f(base)
+        var color = base
         val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(2) * PIf / 2.0f), 0.4f)
 
         color = interpolateLinear(sine, SUNRISE_COLOR, color)
@@ -75,7 +75,7 @@ class CloudColor(
         val night = night(0.0f, moon)
 
         val base = interpolateLinear(progress, day, night)
-        var color = Vec3f(base)
+        var color = base
 
 
         val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(3) * PIf / 2.0f), 0.1f)

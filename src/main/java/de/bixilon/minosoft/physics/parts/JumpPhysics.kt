@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.physics.parts
 
 import glm_.func.rad
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 
 object JumpPhysics {
@@ -50,7 +50,7 @@ object JumpPhysics {
         return BLOCK_MODIFIER
     }
 
-    fun LivingEntityPhysics<*>.applySprintJump(velocity: Vec3d) {
+    fun LivingEntityPhysics<*>.applySprintJump(velocity: MVec3d) {
         if (!entity.isSprinting) return
 
         val yaw = rotation.yaw.rad
@@ -60,10 +60,10 @@ object JumpPhysics {
 
     fun LivingEntityPhysics<*>.addJumpVelocity() {
         val jumpBoost = getJumpVelocityMultiplier().toDouble() + entity.getJumpBoost()
-        val velocity = Vec3d(velocity.x, jumpBoost, velocity.z)
+        val velocity = MVec3d(velocity.x, jumpBoost, velocity.z)
 
         applySprintJump(velocity)
 
-       this.velocity = velocity
+        this.velocity.put(velocity)
     }
 }

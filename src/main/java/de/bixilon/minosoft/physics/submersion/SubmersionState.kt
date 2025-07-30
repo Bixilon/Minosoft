@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics.submersion
 
 import glm_.func.common.clamp
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions
@@ -33,8 +32,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.VanillaMath.vanillaNormalizeAssign
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.properties.SwimmingVehicle
@@ -65,7 +64,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
 
     private fun getFluidUpdate(fluid: Fluid, aabb: AABB, pushable: Boolean): FluidUpdate? {
         var totalHeight = 0.0
-        val totalVelocity = Vec3d.EMPTY
+        val totalVelocity = MVec3d()
         var count = 0
 
         for ((position, state, chunk) in WorldIterator(aabb, world, physics.positionInfo.chunk)) {
@@ -78,7 +77,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
             totalHeight = maxOf(totalHeight, height - aabb.min.y)
             if (!pushable) continue
 
-            val velocity = fluid.getVelocity(state, position, chunk)
+            val velocity = fluid.getVelocity(state, position, chunk) ?: continue
             if (totalHeight < 0.4) {
                 velocity *= totalHeight
             }
@@ -86,23 +85,24 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         }
         if (count == 0) return null
 
-        return FluidUpdate(totalHeight, totalVelocity, count)
+        return FluidUpdate(totalHeight, totalVelocity.unsafe, count)
     }
 
     private fun updateVelocity(fluid: Fluid, update: FluidUpdate, normalize: Boolean) {
         if (update.velocity.length2() <= 0.0) return
         val speed = fluid.getVelocityMultiplier(physics.entity.session)
-        update.velocity *= 1.0 / update.count
+        val velocity = update.velocity.mut()
+        velocity *= 1.0 / update.count
         if (normalize) {
-            update.velocity.vanillaNormalizeAssign()
+            velocity.vanillaNormalizeAssign()
         }
-        update.velocity *= speed
+        velocity *= speed
 
         if (abs(physics.velocity.x) < Vec3dUtil.MARGIN && abs(physics.velocity.z) < Vec3dUtil.MARGIN && update.velocity.length2() < (FLUID_SPEED * FLUID_SPEED)) {
-            update.velocity.vanillaNormalizeAssign()
-            update.velocity *= FLUID_SPEED
+            velocity.vanillaNormalizeAssign()
+            velocity *= FLUID_SPEED
         }
-        physics.velocity = physics.velocity + update.velocity
+        physics.velocity += update.velocity
     }
 
     private fun update(fluid: Fluid?, aabb: AABB, pushable: Boolean, previousHeight: Double) {

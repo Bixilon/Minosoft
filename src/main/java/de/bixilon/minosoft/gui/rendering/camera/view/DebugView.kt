@@ -17,11 +17,10 @@ import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
@@ -48,7 +47,7 @@ class DebugView(private val camera: Camera) : CameraView {
             speedMultiplier /= 3
         }
 
-        val movement = Vec3d.EMPTY
+        val movement = MVec3d()
 
         if (input.forwards != 0.0f) {
             movement += front * input.forwards
@@ -64,7 +63,7 @@ class DebugView(private val camera: Camera) : CameraView {
         movement *= speedMultiplier
         movement *= delta
 
-        eyePosition = eyePosition + movement
+        eyePosition += movement
     }
 
     override fun onMouse(delta: Vec2d) {

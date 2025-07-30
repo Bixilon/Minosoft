@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class InSectionPosition(
     val index: Int,
-) : TextFormattable {
+) : _Vec3i {
 
     constructor() : this(0, 0, 0)
 
@@ -33,9 +34,9 @@ value class InSectionPosition(
         assertPosition(z, 0, ChunkSize.SECTION_MAX_Z)
     }
 
-    inline val x: Int get() = (index shr SHIFT_X) and MASK_X
-    inline val y: Int get() = (index shr SHIFT_Y) and MASK_Y
-    inline val z: Int get() = (index shr SHIFT_Z) and MASK_Z
+    override inline val x: Int get() = (index shr SHIFT_X) and MASK_X
+    override inline val y: Int get() = (index shr SHIFT_Y) and MASK_Y
+    override inline val z: Int get() = (index shr SHIFT_Z) and MASK_Z
 
     inline val xz: Int get() = index and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
 
@@ -92,11 +93,10 @@ value class InSectionPosition(
     inline operator fun plus(direction: Directions) = InSectionPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
     inline operator fun minus(direction: Directions) = InSectionPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
 
-    inline operator fun component1() = x
-    inline operator fun component2() = y
-    inline operator fun component3() = z
+    override inline operator fun component1() = x
+    override inline operator fun component2() = y
+    override inline operator fun component3() = z
 
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "s($x $y $z)"
 
     companion object {

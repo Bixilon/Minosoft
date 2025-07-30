@@ -19,25 +19,43 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.d.UnsafeVec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
+import glm_.d
 import glm_.f
+import glm_.i
 import kotlin.math.sqrt
 
 @JvmInline
 value class Vec3f(
-    override val unsafe: UnsafeVec3f,
+    private val _0: UnsafeVec3f,
 ) : _Vec3f {
-    override val x: Float get() = unsafe.x
-    override val y: Float get() = unsafe.y
-    override val z: Float get() = unsafe.z
+    override val x: Float get() = _0.x
+    override val y: Float get() = _0.y
+    override val z: Float get() = _0.z
 
-    constructor(x: Float, y: Float = x, z: Float = x) : this(UnsafeVec3f(x, y, z))
-    constructor(x: Int, y: Int = x, z: Int = x) : this(x.f, y.f, z.f)
+
+    constructor(xyz: Float) : this(xyz, xyz, xyz)
+    constructor(x: Float, y: Float, z: Float) : this(UnsafeVec3f(x, y, z))
+
+    constructor(xyz: Int) : this(xyz.f)
+    constructor(x: Int, y: Int, z: Int) : this(x.f, y.f, z.f)
+
     constructor(array: FloatArray) : this(array[0], array[1], array[2])
 
-    constructor(other: MVec3f) : this(other.x, other.y, other.z)
+    val unsafe get() = MVec3f(_0)
+
+
+    inline operator fun plus(other: _Vec3i) = Vec3f(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = Vec3f(this.x - other.x, this.y - other.y, this.z - other.z)
+    inline operator fun times(other: _Vec3i) = Vec3f(this.x * other.x, this.y * other.y, this.z * other.z)
+    inline operator fun div(other: _Vec3i) = Vec3f(this.x / other.x, this.y / other.y, this.z / other.z)
+    inline operator fun rem(other: _Vec3i) = Vec3f(this.x % other.x, this.y % other.y, this.z % other.z)
 
     inline operator fun plus(other: _Vec3f) = Vec3f(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3f) = Vec3f(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -59,7 +77,7 @@ value class Vec3f(
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
     inline infix fun dot(other: _Vec3f) = this * other
-    inline fun cross(other: _Vec3f) = Vec3f(
+    inline infix fun cross(other: _Vec3f) = Vec3f(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,
         z = x * other.y - other.x * y,
@@ -82,8 +100,16 @@ value class Vec3f(
     }
 
     companion object {
+        const val LENGTH = 3
         val EMPTY = Vec3f(0)
+        val ONE = Vec3f(1.0f)
 
         operator fun invoke() = EMPTY
+
+        @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
+        inline operator fun invoke(other: Vec3f) = other
+        inline operator fun invoke(other: _Vec3i) = Vec3f(other.x.f, other.y.f, other.z.f)
+        inline operator fun invoke(other: _Vec3f) = Vec3f(other.x.f, other.y.f, other.z.f)
+        inline operator fun invoke(other: _Vec3d) = Vec3f(other.x.f, other.y.f, other.z.f)
     }
 }

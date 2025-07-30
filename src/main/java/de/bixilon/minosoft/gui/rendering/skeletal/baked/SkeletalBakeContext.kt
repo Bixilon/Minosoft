@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalBakeContext(
     val offset: Vec3f = Vec3f.EMPTY,

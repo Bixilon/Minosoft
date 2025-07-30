@@ -26,7 +26,7 @@ class VelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(session: PlaySession) {
         val entity = session.world.entities[entityId] ?: return
-        entity.physics.velocity = velocity
+        entity.physics.velocity.put(velocity)
     }
 
     override fun log(reducedLog: Boolean) {

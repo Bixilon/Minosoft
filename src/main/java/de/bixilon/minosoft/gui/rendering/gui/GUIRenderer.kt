@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -79,7 +78,7 @@ class GUIRenderer(
     }
 
     private fun updateResolution(windowSize: Vec2f = Vec2f(context.window.size), scale: Float = profile.scale, systemScale: Vec2f = context.window.systemScale) {
-        scaledSize = Vec2f(windowSize.scale(systemScale, scale)) + 0.01f
+        scaledSize = windowSize.scale(systemScale, scale)(windowSize.scale(systemScale, scale)) + 0.01f
         halfSize = scaledSize / 2.0f
         resolutionUpdate = true
 

@@ -52,8 +52,8 @@ class BlockGUIConsumer(
         val tint = RGBColor(lightTint.toBits()).rgba()
 
         order.iterateReverse { p, uv ->
-            val vertexOffset = p * Vec3f.length
-            val uvOffset = uv * Vec2f.length
+            val vertexOffset = p * Vec3f.LENGTH
+            val uvOffset = uv * Vec2f.LENGTH
 
             val xyz = Vec4(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
 

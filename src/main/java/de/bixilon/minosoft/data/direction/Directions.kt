@@ -23,8 +23,8 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.vec.vec3.i.SVec3i
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.invoke
 import kotlin.collections.set
@@ -93,7 +93,7 @@ enum class Directions(
             var minDirection = VALUES[0]
             var minError = 2.0f * 2.0f
             for (testDirection in VALUES) {
-                val error = Vec3Util.distance2(testDirection.vectorf, direction)
+                val error = Vec3fUtil.distance2(testDirection.vectorf, direction)
                 if (error < MIN_ERROR) {
                     return testDirection
                 } else if (error < minError) {

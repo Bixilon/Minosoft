@@ -30,9 +30,9 @@ class ChunkMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, C
 
     override fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
         data.ensureSize(ChunkMeshStruct.FLOATS_PER_VERTEX)
-        val transformedUV = texture.transformUV(uv).array
+        val transformedUV = texture.transformUV(uv)
         data.add(position)
-        data.add(PackedUV.pack(transformedUV[0], transformedUV[1]))
+        data.add(PackedUV.pack(transformedUV.x, transformedUV.y))
         data.add(
             texture.shaderId.buffer(),
             (((lightIndex shl 24) or tintColor.rgb).buffer())

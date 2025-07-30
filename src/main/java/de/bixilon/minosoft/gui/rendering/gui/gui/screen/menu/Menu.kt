@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 abstract class Menu(
     guiRenderer: GUIRenderer,
@@ -104,7 +103,7 @@ abstract class Menu(
 
     override fun getAt(position: Vec2f): Pair<Element, Vec2f>? {
         var element: Element? = null
-        val delta = Vec2f(position)
+        val delta = position(position)
         val elementWidth = maxElementWidth
         val size = size
         val xStart = (size.x - elementWidth) / 2

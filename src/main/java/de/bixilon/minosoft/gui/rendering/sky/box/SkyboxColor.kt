@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -27,7 +26,7 @@ import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
 import de.bixilon.minosoft.util.KUtil
 import kotlin.math.abs
 import kotlin.math.pow
@@ -140,7 +139,7 @@ class SkyboxColor(
         val day = day(0.0f) ?: return null
 
         val baseColor = interpolateLinear(progress, night, day)
-        var color = Vec3f(baseColor)
+        var color = baseColor(baseColor)
 
         // make a bit more red/yellow
         val delta = (abs(progress - 0.5f) * 2.0f)
@@ -164,7 +163,7 @@ class SkyboxColor(
         val day = day(1.0f) ?: return null
 
         val baseColor = interpolateLinear(progress, day, night)
-        var color = Vec3f(baseColor)
+        var color = baseColor(baseColor)
 
         // make a bit more red
         val delta = (abs(progress - 0.5f) * 2.0f)

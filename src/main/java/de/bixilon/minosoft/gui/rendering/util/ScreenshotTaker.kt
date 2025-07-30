@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.DeleteScreenshotDialog
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.div
 import de.bixilon.minosoft.util.KUtil.format1
@@ -109,8 +108,8 @@ class ScreenshotTaker(
 
     fun takeScreenshot() {
         try {
-            val size = Vec2i(context.window.size)
-            val buffer = context.system.readPixels(Vec2i.EMPTY_INSTANCE, size)
+            val size = context.window.size
+            val buffer = context.system.readPixels(Vec2i.EMPTY, size)
 
             val path = RunConfiguration.HOME_DIRECTORY / "screenshots" / context.session.connection.identifier
             val time = Instant.now()

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import java.nio.FloatBuffer
@@ -25,7 +25,7 @@ class TransformInstance(
 ) {
     private val array = children.values.toTypedArray()
     val nPivot = -pivot
-    val value = Mat4()
+    val value = MMat4f()
 
 
     fun reset() {
@@ -36,7 +36,7 @@ class TransformInstance(
         }
     }
 
-    fun pack(parent: Mat4) {
+    fun pack(parent: Mat4f) {
         parent.times(value, value)
 
         for (child in array) {
@@ -47,9 +47,9 @@ class TransformInstance(
     fun pack(buffer: FloatBuffer) {
         val array = value.array
 
-        val offset = this.id * Mat4.length
+        val offset = this.id * Mat4f.LENGTH
         buffer.position(offset)
-        buffer.put(array, 0, Mat4.length)
+        buffer.put(array, 0, Mat4f.LENGTH)
 
         for (child in this.array) {
             child.pack(buffer)

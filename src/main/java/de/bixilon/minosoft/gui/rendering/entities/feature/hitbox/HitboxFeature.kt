@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
-import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -25,11 +24,8 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeatu
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -41,7 +37,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
     private var rotation = EntityRotation.EMPTY
 
     private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorInterpolation::interpolateRGBA)
-    private var velocity = Interpolator(Vec3f.EMPTY, Vec3Util::interpolateLinear)
+    private var velocity = Interpolator(Vec3f.EMPTY, Vec3fUtil::interpolateLinear)
 
     override fun update(time: ValueTimeMark, delta: Float) {
         if (!manager.enabled) return unload()

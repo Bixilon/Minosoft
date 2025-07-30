@@ -31,16 +31,14 @@ interface GUIVertexConsumer {
     fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?)
 
     fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f = UV_START, uvEnd: Vec2f = UV_END, tint: RGBAColor, options: GUIVertexOptions?) {
-        val start = start.array
-        val end = end.array
-        val uvStart = (texture?.transformUV(uvStart) ?: uvStart).array
-        val uvEnd = (texture?.transformUV(uvEnd) ?: uvEnd).array
+        val uvStart = texture?.transformUV(uvStart) ?: uvStart
+        val uvEnd = texture?.transformUV(uvEnd) ?: uvEnd
 
         order.iterate { position, uv ->
             addVertex(
-                if (position == 0 || position == 3) start[0] else end[0], if (position <= 1) start[1] else end[1],
+                if (position == 0 || position == 3) start.x else end.x, if (position <= 1) start.y else end.y,
                 texture,
-                if (uv == 0 || uv == 3) uvStart[0] else uvEnd[0], if (uv <= 1) uvStart[1] else uvEnd[1],
+                if (uv == 0 || uv == 3) uvStart.x else uvEnd.x, if (uv <= 1) uvStart.y else uvEnd.y,
                 tint, options,
             )
         }
@@ -58,24 +56,18 @@ interface GUIVertexConsumer {
     fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
         val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
 
-
-        val start = start.array
-        val end = end.array
-        val uvStart = uvStart.array
-        val uvEnd = uvEnd.array
-
         order.iterate { position, uv ->
             val x = when (position) {
-                0 -> start[0] + topOffset
-                1 -> end[0] + topOffset
-                2 -> end[0]
-                3 -> start[0]
+                0 -> start.x + topOffset
+                1 -> end.x + topOffset
+                2 -> end.x
+                3 -> start.x
                 else -> Broken()
             }
             addVertex(
-                x, if (position <= 1) start[1] else end[1],
+                x, if (position <= 1) start.y else end.y,
                 texture,
-                if (uv == 0 || uv == 3) uvStart[0] else uvEnd[0], if (uv <= 1) uvStart[1] else uvEnd[1],
+                if (uv == 0 || uv == 3) uvStart.x else uvEnd.x, if (uv <= 1) uvStart.y else uvEnd.y,
                 tint, options,
             )
         }

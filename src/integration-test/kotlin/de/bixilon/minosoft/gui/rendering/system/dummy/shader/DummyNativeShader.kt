@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.shader
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
@@ -42,7 +42,7 @@ class DummyNativeShader(
 
     override fun setUInt(uniformName: String, value: Int) = Unit
 
-    override fun setMat4(uniformName: String, mat4: Mat4) = Unit
+    override fun setMat4f(uniformName: String, mat4: Mat4f) = Unit
 
     override fun setVec2f(uniformName: String, vec2: Vec2f) = Unit
 

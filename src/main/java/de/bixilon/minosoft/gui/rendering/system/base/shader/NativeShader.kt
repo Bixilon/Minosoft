@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
@@ -45,7 +45,7 @@ interface NativeShader {
     fun setFloat(uniformName: String, value: Float)
     fun setInt(uniformName: String, value: Int)
     fun setUInt(uniformName: String, value: Int)
-    fun setMat4(uniformName: String, mat4: Mat4)
+    fun setMat4f(uniformName: String, mat4: Mat4f)
     fun setVec2f(uniformName: String, vec2: Vec2f)
     fun setVec3f(uniformName: String, vec3: Vec3f)
     fun setVec4(uniformName: String, vec4: Vec4)
@@ -71,7 +71,7 @@ interface NativeShader {
             is Collection<*> -> setCollection(uniformName, data)
             is Int -> setInt(uniformName, data)
             is Float -> setFloat(uniformName, data)
-            is Mat4 -> setMat4(uniformName, data)
+            is Mat4f -> setMat4f(uniformName, data)
             is Vec4 -> setVec4(uniformName, data)
             is Vec3f -> setVec3f(uniformName, data)
             is Vec2f -> setVec2f(uniformName, data)

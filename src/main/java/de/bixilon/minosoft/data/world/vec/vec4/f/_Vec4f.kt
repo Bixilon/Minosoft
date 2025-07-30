@@ -18,8 +18,6 @@ import de.bixilon.minosoft.data.world.vec.Vec
 import de.bixilon.minosoft.util.KUtil.format
 
 interface _Vec4f : Vec {
-    override val unsafe: UnsafeVec4f
-
     val x: Float
     val y: Float
     val z: Float

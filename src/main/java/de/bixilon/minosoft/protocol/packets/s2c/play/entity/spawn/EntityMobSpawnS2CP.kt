@@ -41,7 +41,7 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             buffer.readVarInt()
         }
-        val position: Vec3d = buffer.readVec3d()
+        val position = buffer.readVec3d()
         val rotation = buffer.readEntityRotation()
         val headYaw = buffer.readAngle()
         val velocity = buffer.readVelocity()
@@ -56,7 +56,7 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         entity = entityType.build(buffer.session, position, rotation, data, entityUUID, buffer.versionId)!!
         entity.startInit()
         entity.setHeadRotation(headYaw)
-        entity.physics.velocity = velocity
+        entity.physics.velocity.put(velocity)
         if (rawData != null) {
             entity.data.merge(rawData)
         }
