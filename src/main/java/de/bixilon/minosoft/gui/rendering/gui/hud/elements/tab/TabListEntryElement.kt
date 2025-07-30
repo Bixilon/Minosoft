@@ -32,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.DynamicImageElem
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.util.KUtil.nullCompare
 import java.util.*

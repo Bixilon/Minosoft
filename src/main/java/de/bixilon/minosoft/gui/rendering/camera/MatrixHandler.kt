@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera
 
 import glm_.func.common.clamp
 import glm_.func.rad
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.avg._float.FloatAverage
@@ -28,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
@@ -48,8 +47,8 @@ class MatrixHandler(
     private var previousFOV = 0.0f
 
     private var front = Vec3f.EMPTY
-    private var right = Vec3f(0.0, 0.0, -1.0)
-    private var up = Vec3f(0.0, 1.0, 0.0)
+    private var right = Vec3f(0.0f, 0.0f, -1.0f)
+    private var up = Vec3f(0.0f, 1.0f, 0.0f)
 
     var zoom = 0.0f
         set(value) {
@@ -59,9 +58,9 @@ class MatrixHandler(
 
     private var invalid = false
 
-    var viewMatrix = Mat4()
+    var viewMatrix = Mat4f()
         private set
-    var projectionMatrix = Mat4()
+    var projectionMatrix = Mat4f()
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
@@ -82,11 +81,11 @@ class MatrixHandler(
 
 
     private fun updateViewMatrix(position: Vec3f, front: Vec3f) {
-        val matrix = Mat4()
+        val matrix = Mat4f()
         if (camera.view.view.shaking) {
             shaking.transform()?.let { matrix *= it }
         }
-        matrix *= glm.lookAt(position, position + front, CAMERA_UP_VEC3)
+        matrix *= CameraUtil.lookAt(position, position + front, CAMERA_UP_VEC3)
 
         this.viewMatrix = matrix
     }
@@ -97,7 +96,7 @@ class MatrixHandler(
         if (fog.enabled) {
             far = fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
         }
-        projectionMatrix = glm.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, maxOf(far, 5.0f))
+        projectionMatrix = CameraUtil.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, maxOf(far, 5.0f))
     }
 
     fun init() {

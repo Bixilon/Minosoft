@@ -15,13 +15,13 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 
 abstract class Popper(
@@ -57,7 +57,7 @@ abstract class Popper(
 
     private fun calculateLayoutOffset() {
         val windowSize = guiRenderer.scaledSize
-        val position = position
+        val position = position.mut()
         val size = size
 
         // must not be at the position
@@ -65,13 +65,13 @@ abstract class Popper(
         // ToDo: if not possible, try: left -> right -> below
         // if nothing is possible use (0|0)
 
-        val layoutOffset: Vec2f
+        val layoutOffset: MVec2f
 
         // top
-        layoutOffset = position - Vec2f(0, size.y + POSITION_OFFSET)
+        layoutOffset = position - Vec2f(0.0f, size.y + POSITION_OFFSET)
         if (!(layoutOffset isSmaller EMPTY)) {
             layoutOffset.x = minOf(maxOf(layoutOffset.x - size.x / 2 - POSITION_OFFSET, 0.0f), windowSize.x - size.x) // try to center element, but clamp on edges (try not to make the popper go out of the window)
-            this.layoutOffset = layoutOffset
+            this.layoutOffset = layoutOffset.unsafe
             return
         }
 

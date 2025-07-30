@@ -19,20 +19,27 @@ import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
+import glm_.f
+import glm_.i
 import kotlin.math.sqrt
 
 
 @JvmInline
 value class Vec3i(
-    override val unsafe: UnsafeVec3i,
+    private val _0: UnsafeVec3i,
 ) : _Vec3i {
-    override val x: Int get() = unsafe.x
-    override val y: Int get() = unsafe.y
-    override val z: Int get() = unsafe.z
+    override val x: Int get() = _0.x
+    override val y: Int get() = _0.y
+    override val z: Int get() = _0.z
 
     constructor(x: Int, y: Int = x, z: Int = x) : this(UnsafeVec3i(x, y, z))
-    constructor(other: Vec3i) : this(other.x, other.y, other.z)
-    constructor(other: MVec3i) : this(other.x, other.y, other.z)
+
+    val unsafe get() = MVec3i(_0)
+
 
     inline operator fun plus(other: _Vec3i) = Vec3i(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3i) = Vec3i(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -46,6 +53,14 @@ value class Vec3i(
     inline operator fun times(other: Number) = Vec3i(this.x * other, this.y * other, this.z * other)
     inline operator fun div(other: Number) = Vec3i(this.x / other, this.y / other, this.z / other)
     inline operator fun rem(other: Number) = Vec3i(this.x % other, this.y % other, this.z % other)
+
+
+    inline infix fun shr(bits: Int) = Vec3i(this.x shr bits, this.y shr bits, this.z shr bits)
+    inline infix fun ushr(bits: Int) = Vec3i(this.x ushr bits, this.y ushr bits, this.z ushr bits)
+    inline infix fun shl(bits: Int) = Vec3i(this.x shl bits, this.y shl bits, this.z shl bits)
+    inline infix fun and(mask: Int) = Vec3i(this.x and mask, this.y and mask, this.z and mask)
+    inline infix fun or(mask: Int) = Vec3i(this.x or mask, this.y or mask, this.z or mask)
+    inline infix fun xor(mask: Int) = Vec3i(this.x xor mask, this.y xor mask, this.z xor mask)
 
     inline operator fun unaryPlus() = Vec3i(x, y, z)
     inline operator fun unaryMinus() = Vec3i(-x, -y, -z)
@@ -67,7 +82,15 @@ value class Vec3i(
     }
 
     companion object {
+        const val LENGTH = 3
         val EMPTY = Vec3i(0)
+
+
+        @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
+        inline operator fun invoke(other: Vec3i) = other
+        inline operator fun invoke(other: _Vec3i) = Vec3i(other.x.i, other.y.i, other.z.i)
+        inline operator fun invoke(other: _Vec3f) = Vec3i(other.x.i, other.y.i, other.z.i)
+        inline operator fun invoke(other: _Vec3d) = Vec3i(other.x.i, other.y.i, other.z.i)
 
         operator fun invoke() = EMPTY
     }

@@ -21,11 +21,10 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
@@ -40,8 +39,8 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class Particle(
     protected val session: PlaySession,
-    final override val position: Vec3d,
-    velocity: Vec3d = Vec3d.EMPTY,
+    override var position: Vec3d,
+    override val velocity: MVec3d = MVec3d(),
     data: ParticleData? = null,
 ) : PhysicsEntity {
     protected val data: ParticleData by lazy {
@@ -70,7 +69,6 @@ abstract class Particle(
     val cameraPosition: Vec3d
         get() = getCameraPosition(now())
 
-    final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position
     var movement: Boolean = true
     var physics: Boolean = true
@@ -128,8 +126,8 @@ abstract class Particle(
         return interpolateLinear((time - lastTickTime) / TickUtil.TIME_PER_TICK, previousPosition, position)
     }
 
-    open fun forceMove(delta: Vec3d) {
-        this.previousPosition = Vec3d(position)
+    open fun forceMove(delta: Vec3d = this.velocity.unsafe) {
+        this.previousPosition = position
         position += delta
     }
 
@@ -159,10 +157,10 @@ abstract class Particle(
 
     open fun move(velocity: Vec3d) {
         if (alreadyCollided) {
-            this.previousPosition = Vec3d(position)
+            this.previousPosition = position(position)
             return
         }
-        var newVelocity = Vec3d(velocity)
+        var newVelocity = velocity(velocity)
         if (this.physics && newVelocity != Vec3d.EMPTY) {
             newVelocity = collide(velocity)
         }

@@ -15,11 +15,12 @@ package de.bixilon.minosoft.data.physics
 
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 
 @Deprecated("merge with new physics")
 interface PhysicsEntity {
-    val position: Vec3d
-    val velocity: Vec3d
+    var position: Vec3d
+    val velocity: MVec3d
     var onGround: Boolean
-    val aabb: AABB
+    var aabb: AABB
 }

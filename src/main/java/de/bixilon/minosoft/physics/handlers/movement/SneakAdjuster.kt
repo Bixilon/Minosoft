@@ -38,7 +38,7 @@ interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
 
     private fun checkAxis(entity: Entity, value: Double, aabb: AABB, axis: Axes): Double {
         var value = value
-        while (value != 0.0 && entity.isSpaceEmpty(aabb, Vec3d(0.0, -stepHeight, 0.0).apply { this[axis] = value })) {
+        while (value != 0.0 && entity.isSpaceEmpty(aabb, Vec3d(0.0, -stepHeight.toDouble(), 0.0).apply { this[axis] = value })) {
             value = checkValue(value)
         }
 
@@ -60,7 +60,7 @@ interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
 
         z = checkAxis(entity, z, aabb, Axes.Z)
 
-        while (x != 0.0 && z != 0.0 && entity.isSpaceEmpty(aabb, Vec3d(Vec3d(x, -stepHeight, z)))) {
+        while (x != 0.0 && z != 0.0 && entity.isSpaceEmpty(aabb, Vec3d(x, -stepHeight.toDouble(), z))) {
             x = checkValue(x)
             z = checkValue(z)
         }

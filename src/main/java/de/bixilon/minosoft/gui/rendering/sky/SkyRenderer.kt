@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -41,7 +41,7 @@ class SkyRenderer(
     override val framebuffer: IntegratedFramebuffer? = null
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
     var effects by observed(session.world.dimension.effects)
-    var matrix by observed(Mat4())
+    var matrix by observed(Mat4f())
     val profile = session.profiles.rendering.sky
     var time = session.world.time
         private set
@@ -69,7 +69,7 @@ class SkyRenderer(
         }
         session.world::time.observe(this) { updateTime = true }
         session.events.listen<CameraMatrixChangeEvent> {
-            matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
+            matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4f()
         }
         session.world::dimension.observe(this) { effects = it.effects }
     }

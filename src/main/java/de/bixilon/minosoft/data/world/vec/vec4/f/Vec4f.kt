@@ -19,23 +19,28 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import glm_.f
 import kotlin.math.sqrt
 
 @JvmInline
 value class Vec4f(
-    override val unsafe: UnsafeVec4f,
+    private val _0: UnsafeVec4f,
 ) : _Vec4f {
-    override val x: Float get() = unsafe.x
-    override val y: Float get() = unsafe.y
-    override val z: Float get() = unsafe.z
-    override val w: Float get() = unsafe.w
+    override val x: Float get() = _0.x
+    override val y: Float get() = _0.y
+    override val z: Float get() = _0.z
+    override val w: Float get() = _0.w
 
-    constructor(x: Float, y: Float = x, z: Float = x, w: Float = x) : this(UnsafeVec4f(x, y, z, w))
-    constructor(x: Int, y: Int = x, z: Int = x, w: Int = x) : this(x.f, y.f, z.f, w.f)
-    constructor(array: FloatArray) : this(array[0], array[1], array[2], array[3])
+    constructor(xyzw: Float) : this(xyzw, xyzw, xyzw, xyzw)
+    constructor(x: Float, y: Float, z: Float, w: Float) : this(UnsafeVec4f(x, y, z, w))
 
-    constructor(other: MVec4f) : this(other.x, other.y, other.z, other.w)
+    constructor(xyzw: Int) : this(xyzw.f)
+    constructor(x: Int, y: Int, z: Int, w: Int) : this(x.f, y.f, z.f, w.f)
 
     inline operator fun plus(other: _Vec4f) = Vec4f(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w)
     inline operator fun minus(other: _Vec4f) = Vec4f(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w)
@@ -70,6 +75,10 @@ value class Vec4f(
 
     companion object {
         val EMPTY = Vec4f(0)
+
+        @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
+        inline operator fun invoke(other: Vec4f) = other
+        inline operator fun invoke(other: _Vec4f) = Vec4f(other.x.f, other.y.f, other.z.f, other.w.f)
 
         operator fun invoke() = EMPTY
     }

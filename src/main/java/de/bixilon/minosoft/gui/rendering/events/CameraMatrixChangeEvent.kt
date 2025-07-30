@@ -13,21 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.events
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 
 class CameraMatrixChangeEvent(
     context: RenderContext,
-    viewMatrix: Mat4,
-    projectionMatrix: Mat4,
-    viewProjectionMatrix: Mat4,
-) : RenderEvent(context) {
-    val viewMatrix: Mat4 = viewMatrix
-        get() = Mat4(field)
-
-    val projectionMatrix: Mat4 = projectionMatrix
-        get() = Mat4(field)
-
-    val viewProjectionMatrix: Mat4 = viewProjectionMatrix
-        get() = Mat4(field)
-}
+    val viewMatrix: Mat4f,
+    val projectionMatrix: Mat4f,
+    val viewProjectionMatrix: Mat4f,
+) : RenderEvent(context)

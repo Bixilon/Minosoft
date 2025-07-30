@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.skeletal.model.transforms.SkeletalTransform
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import java.util.concurrent.atomic.AtomicInteger
 
 data class SkeletalModel(

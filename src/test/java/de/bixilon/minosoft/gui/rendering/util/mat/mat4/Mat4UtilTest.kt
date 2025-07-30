@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
 import glm_.func.rad
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
@@ -26,48 +26,48 @@ class Mat4UtilTest {
 
     @Test
     fun `custom rotateX`() {
-        val expected = Mat4().rotateAssign(12.0f.rad, Vec3f(1, 0, 0))
-        val actual = Mat4().apply { Mat4Util.rotateX(this, 12.0f.rad) }
+        val expected = Mat4f().rotateAssign(12.0f.rad, Vec3f(1, 0, 0))
+        val actual = Mat4f().apply { Mat4Util.rotateX(this, 12.0f.rad) }
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `custom rotateY`() {
-        val expected = Mat4().rotateAssign(12.0f.rad, Vec3f(0, 1, 0))
-        val actual = Mat4().apply { Mat4Util.rotateY(this, 12.0f.rad) }
+        val expected = Mat4f().rotateAssign(12.0f.rad, Vec3f(0, 1, 0))
+        val actual = Mat4f().apply { Mat4Util.rotateY(this, 12.0f.rad) }
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `custom rotateZ`() {
-        val expected = Mat4().rotateAssign(12.0f.rad, Vec3f(0, 0, 1))
-        val actual = Mat4().apply { Mat4Util.rotateZ(this, 12.0f.rad) }
+        val expected = Mat4f().rotateAssign(12.0f.rad, Vec3f(0, 0, 1))
+        val actual = Mat4f().apply { Mat4Util.rotateZ(this, 12.0f.rad) }
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `custom translateXAssign`() {
-        val expected = Mat4().translateAssign(Vec3f(123.0f, 0, 0))
-        val actual = Mat4().translateXAssign(123.0f)
+        val expected = Mat4f().translateAssign(Vec3f(123.0f, 0, 0))
+        val actual = Mat4f().translateXAssign(123.0f)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `custom translateYAssign`() {
-        val expected = Mat4().translateAssign(Vec3f(0, 123.0f, 0))
-        val actual = Mat4().translateYAssign(123.0f)
+        val expected = Mat4f().translateAssign(Vec3f(0, 123.0f, 0))
+        val actual = Mat4f().translateYAssign(123.0f)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `custom translateZAssign`() {
-        val expected = Mat4().translateAssign(Vec3f(0, 0, 123.0f))
-        val actual = Mat4().translateZAssign(123.0f)
+        val expected = Mat4f().translateAssign(Vec3f(0, 0, 123.0f))
+        val actual = Mat4f().translateZAssign(123.0f)
 
         assertEquals(expected, actual)
     }

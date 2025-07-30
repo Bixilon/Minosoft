@@ -24,8 +24,6 @@ import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class SVec3i(val raw: Int) : _Vec3i {
-    @Deprecated("Do not call!", level = DeprecationLevel.HIDDEN)
-    override val unsafe get() = Broken()
 
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y) shl SHIFT_Y) or ((z and MASK_Z) shl SHIFT_Z) or ((x and MASK_X) shl SHIFT_X)) {

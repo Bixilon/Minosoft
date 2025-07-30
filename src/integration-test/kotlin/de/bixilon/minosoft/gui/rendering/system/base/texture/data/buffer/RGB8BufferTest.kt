@@ -15,8 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb_INSTANCE
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 

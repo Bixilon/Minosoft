@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenCloseAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 
 class ShulkerAnimation(
     instance: SkeletalInstance,

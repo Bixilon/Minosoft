@@ -38,7 +38,7 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : Abstr
         val textureShaderId = texture.shaderId.buffer()
 
         order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3f.length, uv, uvIndex * Vec2f.length, transformNormal, textureShaderId)
+            addVertex(positions, position * Vec3f.LENGTH, uv, uvIndex * Vec2f.LENGTH, transformNormal, textureShaderId)
         }
     }
 

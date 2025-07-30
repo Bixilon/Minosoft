@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.Ran
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -36,7 +37,7 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
         val particle = session.world.particle ?: return
         if (portalParticleType == null) return
         for (i in 0 until 4) {
-            val particlePosition = Vec3d(position) + { random.nextDouble() }
+            val particlePosition = MVec3d(position).apply { this += { random.nextDouble() } }
             val velocity = Vec3d.of { (random.nextDouble() - 0.5) * 0.5 }
 
             val factor = (random.nextInt(2) * 2 + 1).toDouble()

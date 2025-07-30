@@ -42,7 +42,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             buffer.readVarInt()
         }
-        val position: Vec3d = buffer.readVec3d()
+        val position = buffer.readVec3d()
         val pitch = buffer.readAngle() // yaw/pitch is swapped
         val yaw = buffer.readAngle()
         val rotation = EntityRotation(yaw, pitch)
@@ -62,7 +62,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         entity.startInit()
         entity.setObjectData(data)
-        velocity?.let { entity.physics.velocity = it }
+        velocity?.let { entity.physics.velocity.put(it) }
     }
 
     override fun handle(session: PlaySession) {

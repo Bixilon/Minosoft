@@ -24,15 +24,15 @@ class PrimedTNTPhysics(entity: PrimedTNT) : EntityPhysics<PrimedTNT>(entity) {
 
     private fun move() {
         if (entity.hasGravity) {
-            this.velocity = this.velocity + GRAVITY
+            this.velocity.y -= GRAVITY
         }
 
-        this.move(this.velocity)
+        this.move()
 
-        this.velocity = this.velocity * PhysicsConstants.AIR_RESISTANCE
+        this.velocity *= PhysicsConstants.AIR_RESISTANCE
 
         if (onGround) {
-            this.velocity = this.velocity * ON_GROUND
+            this.velocity *= ON_GROUND
         }
 
         val fuse = entity.fuseTime
@@ -46,7 +46,7 @@ class PrimedTNTPhysics(entity: PrimedTNT) : EntityPhysics<PrimedTNT>(entity) {
     }
 
     companion object {
-        val GRAVITY = Vec3d(0.0, -0.04, 0.0)
+        const val GRAVITY = -0.04
         val ON_GROUND = Vec3d(0.7, -0.5, 0.7)
     }
 }

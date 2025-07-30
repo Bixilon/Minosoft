@@ -16,6 +16,7 @@ package de.bixilon.minosoft.terminal.commands.session
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry.sin
+import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.random.RandomUtil.nextDouble
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
@@ -69,7 +70,7 @@ object BenchmarkCommand : SessionCommand {
             if (progress > (PIf * 2)) {
                 progress %= (PIf * 2)
             }
-            val sin = sin(progress)
+            val sin = sin(progress).toDouble()
             val delta = Vec3d(sin, if (sin > 0) 0.1 else -0.1, -sin)
 
             for (entity in entities) {

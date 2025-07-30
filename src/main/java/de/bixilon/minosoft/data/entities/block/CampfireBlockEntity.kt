@@ -86,9 +86,9 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
             val direction = HORIZONTAL[Math.floorMod(index + facing, Directions.SIDES.size)]
 
             val position = Vec3d(position) + Vec3d(
-                0.5f - direction.vector.x * DIRECTION_OFFSET + direction.rotateY().vector.x * DIRECTION_OFFSET,
-                0.5f,
-                0.5f - direction.vector.z * DIRECTION_OFFSET + direction.rotateY().vector.z * DIRECTION_OFFSET,
+                0.5 - direction.vector.x * DIRECTION_OFFSET + direction.rotateY().vector.x * DIRECTION_OFFSET,
+                0.5,
+                0.5 - direction.vector.z * DIRECTION_OFFSET + direction.rotateY().vector.z * DIRECTION_OFFSET,
             )
 
             for (i in 0 until 4) {

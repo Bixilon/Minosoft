@@ -24,13 +24,11 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.sound.SoundEventS2CP
 class PlaySoundEvent(
     session: PlaySession,
     val category: SoundCategories?,
-    position: Vec3d,
+    val position: Vec3d,
     val soundEvent: ResourceLocation,
     val volume: Float,
     val pitch: Float,
 ) : PlaySessionEvent(session), CancelableEvent {
-    val position: Vec3d = position
-        get() = Vec3d(field)
 
     constructor(session: PlaySession, packet: SoundEventS2CP) : this(session, packet.category, packet.position, packet.sound, packet.volume, packet.pitch)
 

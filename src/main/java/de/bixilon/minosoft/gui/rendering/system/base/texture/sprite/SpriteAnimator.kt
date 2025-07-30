@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.Memo
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -96,7 +96,7 @@ class SpriteAnimator(val context: RenderContext) {
         val sprites: Array<Texture> = arrayOfNulls<Texture?>(data.textures).cast()
         for (i in 0 until data.textures) {
             val buffer = source.create(data.size)
-            buffer.put(source, Vec2i(0, i * buffer.size.y), Vec2i.EMPTY_INSTANCE, data.size)
+            buffer.put(source, Vec2i(0, i * buffer.size.y), Vec2i.EMPTY, data.size)
 
             sprites[i] = MemoryTexture(size = data.size, texture.properties, texture.mipmaps, buffer)
         }

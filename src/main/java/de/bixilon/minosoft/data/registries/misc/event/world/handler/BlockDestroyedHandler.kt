@@ -13,17 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.misc.event.world.handler
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.misc.event.world.WorldEventHandler
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ceil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.max
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -58,9 +57,11 @@ object BlockDestroyedHandler : WorldEventHandler {
             for (x in 0 until max.x) {
                 for (y in 0 until max.y) {
                     for (z in 0 until max.z) {
-                        val center = (Vec3d(x, y, z) + 0.5) / max
-                        val particlePosition = center * delta + aabb.min
-                        particleRenderer += BlockDustParticle(session, particlePosition + position, particlePosition - 0.5, particleData)
+                        val particlePosition = MVec3d(x, y, z).apply { this += 0.5; this /= max }
+                        particlePosition *= delta
+                        particlePosition += aabb.min
+
+                        particleRenderer += BlockDustParticle(session, particlePosition.unsafe + position, particlePosition.unsafe - 0.5, particleData)
                     }
                 }
             }

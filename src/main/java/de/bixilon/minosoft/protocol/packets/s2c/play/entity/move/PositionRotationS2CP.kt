@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.ConfirmTeleportC2SP
@@ -53,8 +54,8 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(session: PlaySession) {
         val entity = session.player
         // correct position with flags (relative position possible)
-        val position = Vec3d(this.position)
-        val velocity = Vec3d(entity.physics.velocity)
+        val position = MVec3d(this.position)
+        val velocity = MVec3d(entity.physics.velocity)
         if (flags.isBitMask(0x01)) {
             position.x += entity.physics.position.x
         } else {
@@ -81,14 +82,14 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             pitch += entity.physics.rotation.pitch
         }
 
-        entity.physics.velocity = velocity
-        entity.forceTeleport(position)
+        entity.physics.velocity.put(velocity.unsafe)
+        entity.forceTeleport(position.unsafe)
         entity.forceRotate(EntityRotation(yaw, pitch))
 
         if (session.version.versionId >= ProtocolVersions.V_15W42A) {
             session.connection.send(ConfirmTeleportC2SP(teleportId))
         }
-        session.connection.send(PositionRotationC2SP(position, position.y + entity.physics.eyeHeight, rotation, onGround))
+        session.connection.send(PositionRotationC2SP(position.unsafe, position.y + entity.physics.eyeHeight, rotation, onGround))
 
         if (session.state == PlaySessionStates.SPAWNING) {
             session.state = PlaySessionStates.PLAYING

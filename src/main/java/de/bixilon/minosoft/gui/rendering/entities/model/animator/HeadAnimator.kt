@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isF
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 class HeadAnimator(
     val renderer: EntityRenderer<*>,

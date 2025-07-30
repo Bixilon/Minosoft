@@ -60,11 +60,11 @@ class GUIMesh(
     companion object {
 
         fun transformPosition(position: Vec2f, halfSize: Vec2f): Vec2f {
-            val res = Vec2f(position)
+            val res = position.mut()
             res /= halfSize
             res.x -= 1.0f
             res.y = 1.0f - res.y
-            return res
+            return res.unsafe
         }
 
         fun addVertex(data: AbstractFloatList, halfSize: Vec2f, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {

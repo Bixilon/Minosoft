@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -24,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.EMPTY_INSTANCE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class SkeletalInstance(
@@ -34,7 +33,7 @@ class SkeletalInstance(
     val transform: TransformInstance,
 ) {
     val animation = AnimationManager(this)
-    var matrix = Mat4()
+    var matrix = Mat4f()
 
 
     fun draw(light: Int) {
@@ -66,7 +65,7 @@ class SkeletalInstance(
         transform.pack(matrix)
     }
 
-    fun update(position: Vec3f, rotation: Vec3f, pivot: Vec3f = Vec3f.EMPTY_INSTANCE, matrix: Mat4? = null) {
+    fun update(position: Vec3f, rotation: Vec3f, pivot: Vec3f = Vec3f.EMPTY_INSTANCE, matrix: Mat4f? = null) {
         this.matrix.reset()
         this.matrix
             .translateAssign(position)
@@ -79,7 +78,7 @@ class SkeletalInstance(
         }
     }
 
-    fun update(rotation: Vec3f, matrix: Mat4? = null) {
+    fun update(rotation: Vec3f, matrix: Mat4f? = null) {
         update(Vec3f.EMPTY_INSTANCE, rotation, matrix = matrix)
     }
 

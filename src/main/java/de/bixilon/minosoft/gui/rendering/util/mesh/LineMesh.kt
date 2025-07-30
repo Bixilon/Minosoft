@@ -18,14 +18,11 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.minus
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMesh(context, initialCacheSize = initialCacheSize) {
 
@@ -36,8 +33,8 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     fun drawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
         data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
 
-        val direction = Vec3(endX - startX, endY - startY, endZ - startZ).normalizeAssign()
-        val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
+        val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).normalizeAssign()
+        val normal1 = Vec3f(direction.z, direction.z, direction.x - direction.y)
         if (direction.z == 0.0f && direction.x == 0.0f) {
             normal1.x = normal1.z
             normal1.z = direction.z
@@ -108,7 +105,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
             val to = Vec3(aabb.max - offset)
             val positions = CuboidUtil.positions(direction, from, to)
 
-            order.iterate { position, _ -> addVertex(positions, position * Vec3.length, color) }
+            order.iterate { position, _ -> addVertex(positions, position * Vec3f.LENGTH, color) }
         }
     }
 

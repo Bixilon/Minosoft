@@ -17,12 +17,11 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class TextOffset(
     val initial: Vec2f = Vec2f.EMPTY,
 ) {
-    var offset = Vec2f(initial)
+    var offset = initial(initial)
 
 
     fun align(alignment: HorizontalAlignments, width: Float, size: Vec2f) {

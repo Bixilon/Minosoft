@@ -18,8 +18,5 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 
 class CameraPositionChangeEvent(
     context: RenderContext,
-    newPosition: Vec3d,
-) : RenderEvent(context) {
-    val newPosition: Vec3d = newPosition
-        get() = Vec3d(field)
-}
+    val position: Vec3d,
+) : RenderEvent(context)
