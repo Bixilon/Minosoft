@@ -28,7 +28,8 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -50,7 +51,7 @@ plugins {
     kotlin("jvm") version "2.2.0"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.3.0"
+    id("org.ajoberstar.grgit.service") version "5.3.2"
     id("com.github.ben-manes.versions") version "0.52.0"
 }
 
@@ -219,7 +220,7 @@ testing {
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("io.github.kotlin-graphics:glm:$glmVersion")
-                implementation("it.unimi.dsi:fastutil-core:8.5.15")
+                implementation("it.unimi.dsi:fastutil-core:8.5.16")
 
                 implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
 
@@ -358,14 +359,14 @@ dependencies {
     implementation("com.google.guava", "guava", "33.4.8-jre")
     implementation("dnsjava", "dnsjava", "3.6.3")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.30.0")
+    implementation("org.jline", "jline", "3.30.4")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.8.1")
-    implementation("com.github.luben", "zstd-jni", "1.5.7-3", classifier = zstdNatives)
-    implementation("org.apache.commons", "commons-lang3", "3.17.0")
+    implementation("com.github.oshi", "oshi-core", "6.8.2")
+    implementation("com.github.luben", "zstd-jni", "1.5.7-4", classifier = zstdNatives)
+    implementation("org.apache.commons", "commons-lang3", "3.18.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
-    implementation("it.unimi.dsi", "fastutil-core", "8.5.15")
+    implementation("it.unimi.dsi", "fastutil-core", "8.5.16")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
     implementation("io.github.kotlin-graphics", "glm", glmVersion)
 
@@ -510,10 +511,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-    kotlinOptions.languageVersion = "2.1"
-    kotlinOptions { freeCompilerArgs += "-Xskip-prerelease-check"; freeCompilerArgs += "-Xallow-unstable-dependencies" }
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        freeCompilerArgs.add("-Xskip-prerelease-check")
+        freeCompilerArgs.add("-Xallow-unstable-dependencies")
+    }
 }
 
 tasks.withType<JavaCompile> {
