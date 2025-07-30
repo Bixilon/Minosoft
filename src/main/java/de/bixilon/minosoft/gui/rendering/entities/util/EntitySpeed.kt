@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.sqrt

@@ -29,7 +29,6 @@ import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditi
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil

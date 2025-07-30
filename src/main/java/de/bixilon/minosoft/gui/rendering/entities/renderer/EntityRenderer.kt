@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -48,7 +50,7 @@ abstract class EntityRenderer<E : Entity>(
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
     val light = Interpolator(ChatColors.WHITE.rgb(), ColorInterpolation::interpolateRGB)
-    val matrix = Mat4()
+    val matrix = Mat4f()
     var visible = true
         protected set
 

@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT

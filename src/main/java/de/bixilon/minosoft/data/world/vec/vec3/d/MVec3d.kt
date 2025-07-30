@@ -15,9 +15,6 @@ package de.bixilon.minosoft.data.world.vec.vec3.d
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.vec.vec2.d.MVec2d
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
-import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import glm_.d
@@ -25,33 +22,36 @@ import kotlin.math.sqrt
 
 @JvmInline
 value class MVec3d(
-    override val unsafe: UnsafeVec3d,
+    private val _0: UnsafeVec3d,
 ) : _Vec3d {
     override var x: Double
-        get() = unsafe.x
+        get() = _0.x
         set(value) {
-            unsafe.x = value
+            _0.x = value
         }
     override var y: Double
-        get() = unsafe.y
+        get() = _0.y
         set(value) {
-            unsafe.y = value
+            _0.y = value
         }
     override var z: Double
-        get() = unsafe.z
+        get() = _0.z
         set(value) {
-            unsafe.z = value
+            _0.z = value
         }
 
-    constructor() : this(0)
+    constructor() : this(0.0)
+    constructor(xyz: Double) : this(xyz, xyz, xyz)
     constructor(x: Double, y: Double, z: Double) : this(UnsafeVec3d(x, y, z))
-    constructor(x: Float, y: Float = x, z: Float = x) : this(x.d, y.d, z.d)
-    constructor(x: Int, y: Int = x, z: Int = x) : this(x.d, y.d, z.d)
 
-    constructor(other: Vec3f) : this(other.x, other.y, other.z)
-    constructor(other: MVec3f) : this(other.x, other.y, other.z)
-    constructor(other: Vec3d) : this(other.x, other.y, other.z)
-    constructor(other: MVec3d) : this(other.x, other.y, other.z)
+    constructor(xyz: Float) : this(xyz.d)
+    constructor(x: Float, y: Float, z: Float) : this(x.d, y.d, z.d)
+
+    constructor(xyz: Int) : this(xyz.d)
+    constructor(x: Int, y: Int, z: Int) : this(x.d, y.d, z.d)
+
+    val unsafe get() = Vec3d(_0)
+
 
     inline operator fun plus(other: _Vec3i) = MVec3d(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3i) = MVec3d(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -108,10 +108,11 @@ value class MVec3d(
     inline operator fun inc() = this + 1
     inline operator fun dec() = this - 1
 
+    inline fun isEmpty() = x == 0.0 && y == 0.0 && z == 0.0
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalizeAssign() = apply { this *= length() }
 
     inline fun put(x: Number, y: Number, z: Number) {
         this.x = x.d
@@ -125,10 +126,10 @@ value class MVec3d(
         this.z = other.z
     }
 
-    inline fun invoke(other: _Vec3d) = put(other)
+    inline operator fun invoke(other: _Vec3d) = put(other)
 
     inline infix fun dot(other: _Vec3d) = this * other
-    inline fun cross(other: _Vec3d) = MVec3d(
+    inline infix fun cross(other: _Vec3d) = MVec3d(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,
         z = x * other.y - other.x * y,
@@ -147,6 +148,12 @@ value class MVec3d(
     inline val xz get() = MVec2d(x, z)
     inline val yz get() = MVec2d(y, z)
 
+
+    inline fun clear() {
+        x = 0.0
+        y = 0.0
+        z = 0.0
+    }
 
     override fun toString(): String = "($x $y $z)"
 
@@ -167,5 +174,9 @@ value class MVec3d(
 
     companion object {
         val EMPTY get() = MVec3d(0)
+
+        inline operator fun invoke(other: _Vec3i) = MVec3d(other.x.d, other.y.d, other.z.d)
+        inline operator fun invoke(other: _Vec3f) = MVec3d(other.x.d, other.y.d, other.z.d)
+        inline operator fun invoke(other: _Vec3d) = MVec3d(other.x.d, other.y.d, other.z.d)
     }
 }

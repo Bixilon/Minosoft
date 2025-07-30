@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalRotation(
     val value: Vec3f,

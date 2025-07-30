@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import glm_.func.rad
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -39,7 +39,7 @@ open class BillboardTextFeature(
 ) : MeshedFeature<BillboardTextMesh>(renderer) {
     override val priority: Int get() = 10000
     private var info: TextRenderInfo? = null
-    private var matrix = Mat4()
+    private var matrix = Mat4f()
     var text: ChatComponent? = text
         set(value) {
             if (field == value) return

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class DamageParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {

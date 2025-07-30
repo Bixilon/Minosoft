@@ -18,16 +18,6 @@ import glm_.vec4.Vec4
 
 object Vec4Util {
 
-    val Vec4.Companion.MIN: Vec4
-        get() = Vec4(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
-
-    val Vec4.Companion.EMPTY: Vec4
-        get() = Vec4(0.0f, 0.0f, 0.0f, 0.0f)
-
-    val Vec4.Companion.MAX: Vec4
-        get() = Vec4(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-
-
     val Vec4.top: Float
         get() = this.x
 

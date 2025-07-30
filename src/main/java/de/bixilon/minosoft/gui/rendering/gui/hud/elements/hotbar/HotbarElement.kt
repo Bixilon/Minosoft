@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HeartAtlas
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
@@ -111,7 +110,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             element.silentApply()
         }
 
-        val size = Vec2f(core.size)
+        val size = core.size(core.size)
 
         renderOffhand = guiRenderer.context.session.player.items.inventory[EquipmentSlots.OFF_HAND] != null
 

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.util.KUtil.format
 @JvmInline
 value class InChunkPosition(
     val raw: Int,
-) : TextFormattable {
+) : _Vec3i {
 
     constructor() : this(0, 0, 0)
 
@@ -35,9 +36,9 @@ value class InChunkPosition(
         assertPosition(z, 0, ChunkSize.SECTION_MAX_Z)
     }
 
-    inline val x: Int get() = (raw ushr SHIFT_X) and MASK_X
-    inline val y: Int get() = (((raw ushr SHIFT_Y) and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
-    inline val z: Int get() = (raw ushr SHIFT_Z) and MASK_Z
+    override inline val x: Int get() = (raw ushr SHIFT_X) and MASK_X
+    override inline val y: Int get() = (((raw ushr SHIFT_Y) and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
+    override inline val z: Int get() = (raw ushr SHIFT_Z) and MASK_Z
     inline val xz: Int get() = raw and ((MASK_X shl SHIFT_X) or (MASK_Z shl SHIFT_Z))
 
     inline fun modify(other: Int, component: Int, add: Int): InChunkPosition {
@@ -102,11 +103,10 @@ value class InChunkPosition(
     inline operator fun plus(direction: Directions) = InChunkPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
     inline operator fun minus(direction: Directions) = InChunkPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
 
-    inline operator fun component1() = x
-    inline operator fun component2() = y
-    inline operator fun component3() = z
+    override inline operator fun component1() = x
+    override inline operator fun component2() = y
+    override inline operator fun component3() = z
 
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "c($x $y $z)"
 
     inline val inSectionPosition get() = InSectionPosition(x, y.inSectionHeight, z)

@@ -46,10 +46,6 @@ interface Texture : ShaderTexture {
         get() = renderData.shaderTextureId
 
 
-    override fun transformUV(end: FloatArray?): FloatArray {
-        return renderData.transformUV(end)
-    }
-
     override fun transformUV(end: Vec2f?): Vec2f {
         return renderData.transformUV(end)
     }

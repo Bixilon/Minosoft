@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
@@ -164,15 +164,15 @@ class OpenGLNativeShader(
         glUniformMatrix4fv(getUniformLocation(uniform), false, mat4.array)
     }
 
-    override fun setVec2(uniform: String, vec2: Vec2f) {
+    override fun setVec2f(uniform: String, vec2: Vec2f) {
         glUniform2f(getUniformLocation(uniform), vec2.x, vec2.y)
     }
 
-    override fun setVec3(uniform: String, vec3: Vec3f) {
+    override fun setVec3f(uniform: String, vec3: Vec3f) {
         glUniform3f(getUniformLocation(uniform), vec3.x, vec3.y, vec3.z)
     }
 
-    override fun setVec4(uniform: String, vec4: Vec4f) {
+    override fun setVec4f(uniform: String, vec4: Vec4f) {
         glUniform4f(getUniformLocation(uniform), vec4.x, vec4.y, vec4.z, vec4.w)
     }
 

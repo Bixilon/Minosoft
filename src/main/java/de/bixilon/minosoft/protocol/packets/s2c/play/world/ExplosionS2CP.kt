@@ -88,7 +88,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (destruct == DestructionTypes.DESTROY) { // TODO: handle DECAY, TRIGGER
             session.world.clearBlocks(position.blockPosition, this.explodedBlocks)
         }
-        session.player.physics.velocity = session.player.physics.velocity + velocity
+        session.player.physics.velocity += velocity
 
         session.events.fire(ExplosionEvent(session, this))
     }

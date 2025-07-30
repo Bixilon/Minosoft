@@ -15,11 +15,8 @@ package de.bixilon.minosoft.data.registries
 
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB.Companion.test
 import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.ONE
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
 

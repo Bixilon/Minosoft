@@ -49,7 +49,8 @@ open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, sett
         if (abs(velocity.y) >= 0.1) return
 
         val friction = 0.4 + velocity.y * 0.2
-        physics.velocity = Vec3d(velocity.x * friction, velocity.y, velocity.z * friction)
+        physics.velocity.x *= friction
+        physics.velocity.z *= friction
     }
 
     override fun getLightProperties(blockState: BlockState) = FilteringTransparentProperty

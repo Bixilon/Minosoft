@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val atlas = ProtectionAtlas(guiRenderer.atlas[ATLAS])

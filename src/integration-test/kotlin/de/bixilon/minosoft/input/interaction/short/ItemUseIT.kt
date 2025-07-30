@@ -24,8 +24,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.assertUseItem
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.createSession
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.tick

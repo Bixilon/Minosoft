@@ -30,30 +30,22 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
 
     override fun clear() = Unit
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
-        val minTransformedUV = if (uvMin == null) {
-            EMPTY_UV_ARRAY
-        } else {
-            texture.renderData.transformUV(uvMin)
-        }
+    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
+        val minTransformedUV = if (uvMin == null) Vec2f.EMPTY else texture.renderData.transformUV(uvMin)
         val maxTransformedUV = texture.renderData.transformUV(uvMax)
         val data = data
         val offset = context.camera.offset.offset
         data.add((position.x - offset.x).toFloat())
         data.add((position.y - offset.y).toFloat())
         data.add((position.z - offset.z).toFloat())
-        data.add(minTransformedUV)
-        data.add(maxTransformedUV)
+        data.add(minTransformedUV.x, minTransformedUV.y)
+        data.add(maxTransformedUV.x, maxTransformedUV.y)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add(scale)
         data.add(tintColor.rgba.buffer())
         data.add(light.buffer())
     }
 
-
-    companion object {
-        private val EMPTY_UV_ARRAY = floatArrayOf(0.0f, 0.0f)
-    }
 
     data class ParticleMeshStruct(
         val position: Vec3f,

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 
-class WorldGUIConsumer(val mesh: ChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
+class WorldGUIConsumer(val mesh: ChunkMesh, val transform: Mat4f, val light: Int) : GUIVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
     override val order: RenderOrder get() = mesh.order
     private val uv = Vec2f()

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
@@ -42,7 +43,7 @@ abstract class FileTexture(
 ) : Texture {
     override lateinit var renderData: TextureRenderData
     override lateinit var array: TextureArrayProperties
-    override lateinit var size: Vec2i
+    override var size: Vec2i = unsafeNull()
     override lateinit var transparency: TextureTransparencies
     override lateinit var data: TextureData
 

@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.generatePositionHash
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.util.KUtil.format
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.format
 @JvmInline
 value class BlockPosition(
     val raw: Long,
-) : TextFormattable {
+) : _Vec3i {
 
     constructor() : this(0, 0, 0)
     constructor(x: Int, y: Int, z: Int) : this(((y and MASK_Y).toLong() shl SHIFT_Y) or ((z and MASK_Z).toLong() shl SHIFT_Z) or ((x and MASK_X).toLong() shl SHIFT_X)) {
@@ -37,9 +38,9 @@ value class BlockPosition(
 
     constructor(position: InChunkPosition) : this(position.x, position.y, position.z)
 
-    inline val x: Int get() = (((raw ushr SHIFT_X).toInt() and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
-    inline val y: Int get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
-    inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
+    override inline val x: Int get() = (((raw ushr SHIFT_X).toInt() and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
+    override inline val y: Int get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
+    override inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
     inline fun modify(other: Long, component: Long, add: Long): BlockPosition {
         val bc = raw and other
@@ -139,11 +140,10 @@ value class BlockPosition(
     inline val inChunkPosition get() = InChunkPosition(x and 0x0F, y, this.z and 0x0F)
     inline val inSectionPosition get() = InSectionPosition(x and 0x0F, y.inSectionHeight, z and 0x0F)
 
-    inline operator fun component1() = x
-    inline operator fun component2() = y
-    inline operator fun component3() = z
+    override inline operator fun component1() = x
+    override inline operator fun component2() = y
+    override inline operator fun component3() = z
 
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "b($x $y $z)"
 
     companion object {

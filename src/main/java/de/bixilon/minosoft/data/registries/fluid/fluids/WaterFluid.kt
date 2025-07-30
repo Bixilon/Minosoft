@@ -115,21 +115,20 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
         }
 
         physics.applyMovementInput(input, speed)
-        physics.move(physics.velocity)
+        physics.move(physics.velocity.unsafe)
 
         physics.floatUp()
 
         physics.applyFriction(friction.toDouble())
 
-        physics.applyFluidMovingSpeed(gravity, falling, physics.velocity)
+        physics.applyFluidMovingSpeed(gravity, falling, physics.velocity.unsafe)
 
         physics.applyBouncing(y)
     }
 
     private fun LivingEntityPhysics<*>.floatUp() {
         if (!horizontalCollision || !isClimbing()) return
-        val velocity = velocity
-        this.velocity = Vec3d(velocity.x, ClimbingPhysics.UPWARDS, velocity.z)
+        this.velocity.y = ClimbingPhysics.UPWARDS
     }
 
     override fun onCollision(physics: EntityPhysics<*>, height: Double) {

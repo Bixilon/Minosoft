@@ -43,7 +43,7 @@ open class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000)
         val partTransformNormal = ((part shl 19) or (transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
 
         order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3f.length, uv, uvIndex * Vec2f.length, partTransformNormal)
+            addVertex(positions, position * Vec3f.LENGTH, uv, uvIndex * Vec2f.LENGTH, partTransformNormal)
         }
     }
 

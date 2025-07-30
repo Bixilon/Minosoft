@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManage
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 

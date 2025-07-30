@@ -19,21 +19,28 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
 import glm_.f
 import kotlin.math.sqrt
 
 @JvmInline
 value class Vec2f(
-    override val unsafe: UnsafeVec2f,
+    private val _0: UnsafeVec2f,
 ) : _Vec2f {
-    override val x get() = unsafe.x
-    override val y get() = unsafe.y
+    override val x get() = _0.x
+    override val y get() = _0.y
 
     constructor(x: Float, y: Float = x) : this(UnsafeVec2f(x, y))
     constructor(x: Int, y: Int = x) : this(x.f, y.f)
 
-    constructor(other: Vec2f) : this(other.x, other.y)
-    constructor(other: MVec2f) : this(other.x, other.y)
+    val unsafe get() = MVec2f(_0)
+
+
+    inline operator fun plus(other: _Vec2i) = Vec2f(this.x + other.x, this.y + other.y)
+    inline operator fun minus(other: _Vec2i) = Vec2f(this.x - other.x, this.y - other.y)
+    inline operator fun times(other: _Vec2i) = Vec2f(this.x * other.x, this.y * other.y)
+    inline operator fun div(other: _Vec2i) = Vec2f(this.x / other.x, this.y / other.y)
+    inline operator fun rem(other: _Vec2i) = Vec2f(this.x % other.x, this.y % other.y)
 
     inline operator fun plus(other: _Vec2f) = Vec2f(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2f) = Vec2f(this.x - other.x, this.y - other.y)
@@ -59,6 +66,9 @@ value class Vec2f(
 
     inline fun mut() = MVec2f(x, y)
 
+    inline fun max(other: _Vec2f) = Vec2f(maxOf(x, other.x), maxOf(y, other.y))
+    inline fun min(other: _Vec2f) = Vec2f(minOf(x, other.x), minOf(y, other.y))
+
 
     inline operator fun get(axis: Axes) = when (axis) {
         Axes.X -> x
@@ -68,7 +78,14 @@ value class Vec2f(
 
 
     companion object {
-        val EMPTY = Vec2f(0)
+        val EMPTY = Vec2f(0.0f)
+        val ONE = Vec2f(1.0f)
+        const val LENGTH = 3
+
+        @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
+        inline operator fun invoke(other: Vec2f) = other
+        inline operator fun invoke(other: _Vec2f) = Vec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2i) = Vec2f(other.x.f, other.y.f)
 
         operator fun invoke() = EMPTY
     }

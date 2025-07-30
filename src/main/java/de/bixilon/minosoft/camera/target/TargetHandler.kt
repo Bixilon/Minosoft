@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
@@ -47,7 +48,7 @@ class TargetHandler(
 
     fun update() {
         val entity = camera.entity
-        val position = if (RenderingOptions.disabled) entity.physics.position + Vec3d(0.0f, entity.eyeHeight, 0.0f) else entity.renderInfo.eyePosition.toVec3d
+        val position = if (RenderingOptions.disabled) entity.physics.position + Vec3d(0.0f, entity.eyeHeight, 0.0f) else entity.renderInfo.eyePosition
         val front = (if (entity is LocalPlayerEntity || RenderingOptions.disabled) entity.physics.rotation else entity.renderInfo.rotation).front.toVec3d
 
         val (target, fluid) = this.raycast(position, front)
@@ -107,7 +108,7 @@ class TargetHandler(
     }
 
     fun raycastBlock(origin: Vec3d, front: Vec3d): Pair<BlockTarget?, FluidTarget?> {
-        val position = Vec3d(origin)
+        val position = MVec3d(origin)
         var chunk: Chunk? = null
 
         var fluid: FluidTarget? = null
@@ -132,7 +133,7 @@ class TargetHandler(
                 if (fluid == null) {
                     val hit = raycast(origin, front, state, blockPosition)
                     if (hit != null) {
-                        fluid = FluidTarget(position + front * hit.distance, hit.distance, hit.direction, state, blockPosition, state.block.fluid)
+                        fluid = FluidTarget(origin + front * hit.distance, hit.distance, hit.direction, state, blockPosition, state.block.fluid)
                     }
                 }
                 continue

@@ -18,5 +18,4 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 interface ShaderTexture : ShaderIdentifiable {
 
     fun transformUV(end: Vec2f?): Vec2f
-    fun transformUV(end: FloatArray?): FloatArray
 }

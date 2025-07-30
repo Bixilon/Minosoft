@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.sound
 
+import de.bixilon.kutil.cast.CastUtil
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -31,7 +33,7 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val soundEvent: ResourceLocation?
     val volume: Float
     val pitch: Float
-    lateinit var position: Vec3d
+    var position: Vec3d = unsafeNull()
         private set
     var category: SoundCategories? = null
         private set

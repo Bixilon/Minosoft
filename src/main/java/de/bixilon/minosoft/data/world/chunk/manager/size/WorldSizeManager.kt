@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.chunk.manager.size
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.data.world.vec.vec2.i.MVec2i
 
 class WorldSizeManager(private val world: World) {
     val size = WorldSize()
@@ -63,7 +63,7 @@ class WorldSizeManager(private val world: World) {
     }
 
 
-    private fun addExtreme(position: ChunkPosition, min: Vec2i, max: Vec2i): Boolean {
+    private fun addExtreme(position: ChunkPosition, min: MVec2i, max: MVec2i): Boolean {
         var changes = 0
         if (position.x < min.x) {
             min.x = position.x
@@ -86,7 +86,7 @@ class WorldSizeManager(private val world: World) {
 
     private fun calculateSize(min: Vec2i, max: Vec2i, empty: Boolean = world.chunks.chunks.unsafe.isEmpty()): Vec2i {
         if (empty) return Vec2i.EMPTY
-        val size = Vec2i((max - min) + 1)
+        val size = ((max - min) + 1)((max - min) + 1)
         
         if (size.x > World.MAX_CHUNKS_SIZE) {
             size.x = World.MAX_CHUNKS_SIZE
