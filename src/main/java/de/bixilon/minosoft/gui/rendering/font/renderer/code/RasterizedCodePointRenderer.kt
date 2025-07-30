@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.BOLD_OFFSET
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_COLOR
@@ -49,14 +50,14 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
     }
 
     fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): Vec2f {
-        val position = Vec2f(base)
+        val position = MVec2f(base)
         position.y += properties.charSpacing.top * scale
 
         return position
     }
 
     fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): Vec2f {
-        val position = Vec2f(start)
+        val position = MVec2f(start)
         position.y += (properties.charBaseHeight * scale)
         position.x += width * scale
 

@@ -26,38 +26,25 @@ import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import glm_.f
 import kotlin.math.abs
 
 object Vec3dUtil {
     const val MARGIN = 0.003
-    private val empty = Vec3d()
 
-    val Vec3d.Companion.EMPTY_INSTANCE get() = empty
-
-    val Vec3d.Companion.MIN: Vec3d
-        get() = Vec3d(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
-
-    val Vec3d.Companion.EMPTY: Vec3d
-        get() = Vec3d(0.0, 0.0, 0.0)
-
-    val Vec3d.Companion.ONE: Vec3d
-        get() = Vec3d(1.0, 1.0, 1.0)
-
-    val Vec3d.Companion.MAX: Vec3d
-        get() = Vec3d(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
-
-    val Vec3d.floor: BlockPosition
+    inline val _Vec3d.floor: BlockPosition
         get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)
 
-    val Vec3d.ceil: BlockPosition
+    inline val _Vec3d.ceil: BlockPosition
         get() = BlockPosition(this.x.ceil, this.y.ceil, this.z.ceil)
 
-    val Vec3d.blockPosition: BlockPosition
+    inline val _Vec3d.blockPosition: BlockPosition
         get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)
 
     fun Vec3d.toVec3f(): Vec3f {
-        val array = array
-        return Vec3f(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+        return Vec3f(x.f, y.f, z.f)
     }
 
     private fun Double.clamp(min: Int, max: Int) = clamp(min.toDouble(), max.toDouble())
@@ -126,26 +113,24 @@ object Vec3dUtil {
         return length2() < MARGIN
     }
 
-    fun Vec3d.flatten0(): Vec3d {
-        val result = Vec3d(this)
+    fun MVec3d.flatten0() {
         if (abs(x) < 0.003) {
-            result.x = 0.0
+            this.x = 0.0
         }
         if (abs(y) < 0.003) {
-            result.y = 0.0
+            this.y = 0.0
         }
         if (abs(z) < 0.003) {
-            result.z = 0.0
+            this.z = 0.0
         }
-        return result
     }
 
-    private fun Vec3d.raycastDistance(direction: Vec3d, axis: Axes): Double {
+    private fun MVec3d.raycastDistance(direction: Vec3d, axis: Axes): Double {
         val target = if (direction[axis] > 0) this[axis].floor + 1 else this[axis].ceil - 1
         return (target - this[axis]) / direction[axis]
     }
 
-    fun Vec3d.raycastDistance(front: Vec3d): Double {
+    fun MVec3d.raycastDistance(front: Vec3d): Double {
         return minOf(
             raycastDistance(front, Axes.X),
             raycastDistance(front, Axes.Y),
@@ -175,7 +160,7 @@ object Vec3dUtil {
     }
 
     fun Vec3d.addedY(y: Double): Vec3d {
-        val res = Vec3d(this)
+        val res = this(this)
         res.y += y
 
         return res

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
@@ -26,7 +26,7 @@ class SkyboxTextureShader(
 ) : Shader(), TextureShader, TintedShader {
     override var textures: TextureManager by textureManager()
 
-    var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4())
+    var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())
     var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
     override var tint by uniform("uTintColor", RGBAColor(0.15f, 0.15f, 0.15f))
 }

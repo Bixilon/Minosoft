@@ -33,7 +33,7 @@ abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRender
     override var activeDragElement: Element? = null
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        messages.render(offset + Vec2i(ChatElement.CHAT_INPUT_MARGIN, 0), consumer, options)
+        messages.render(offset + Vec2f(ChatElement.CHAT_INPUT_MARGIN, 0), consumer, options)
     }
 
     override fun onScroll(position: Vec2f, scrollOffset: Vec2f): Boolean {

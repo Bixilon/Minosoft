@@ -69,7 +69,9 @@ open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, setti
     private fun slide(physics: EntityPhysics<*>) {
         val velocity = physics.velocity
         val speed = if (velocity.y < -0.13) (-SLIDE_GRAVITY) / velocity.y else 1.0
-        physics.velocity = Vec3d(velocity.x * speed, -SLIDE_GRAVITY, velocity.z * speed)
+        physics.velocity.x *= speed
+        physics.velocity.y = -SLIDE_GRAVITY
+        physics.velocity.z *= speed
         physics.fallDistance = 0.0f
     }
 

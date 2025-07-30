@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -99,7 +98,7 @@ class AudioPlayer(
 
         session.events.listen<CameraPositionChangeEvent> {
             queue += {
-                listener.position = Vec3f(it.newPosition)
+                listener.position = Vec3f(it.position)
                 listener.setOrientation(it.context.camera.view.view.front, CAMERA_UP_VEC3)
             }
         }

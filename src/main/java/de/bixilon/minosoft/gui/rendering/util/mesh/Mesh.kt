@@ -93,7 +93,7 @@ abstract class Mesh(
     }
 
 
-    inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
+    inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
             Vec3f(x, start.x, start.y),
             Vec3f(x, start.x, end.y),
@@ -103,7 +103,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addYQuad(start: Vec2f, y: Float, end: Vec2f, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
+    inline fun addYQuad(start: Vec2f, y: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
             Vec3f(start.x, y, end.y),
             Vec3f(end.x, y, end.y),
@@ -113,7 +113,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addZQuad(start: Vec2f, z: Float, end: Vec2f, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
+    inline fun addZQuad(start: Vec2f, z: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
             Vec3f(start.x, start.y, z),
             Vec3f(start.x, end.y, z),
@@ -123,7 +123,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2Util.EMPTY, uvEnd: Vec2f = Vec2Util.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
+    inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val texturePositions = arrayOf(
             uvStart,
             Vec2f(uvStart.x, uvEnd.y),

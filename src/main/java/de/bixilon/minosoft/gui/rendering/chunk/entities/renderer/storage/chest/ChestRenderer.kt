@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 
 abstract class ChestRenderer(
     state: BlockState,

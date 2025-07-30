@@ -15,7 +15,6 @@ package de.bixilon.minosoft.physics.parts.elytra
 
 import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import glm_.vec3.swizzle.xz
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.item.items.armor.extra.ElytraItem
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics.isClimbing
@@ -92,7 +92,7 @@ object ElytraPhysics {
         limitFallDistance()
 
         val initialVelocity = velocity
-        val velocity = Vec3d(initialVelocity)
+        val velocity = MVec3d(initialVelocity)
         val rotation = rotation
         val front = rotation.elytra()
         val pitch = rotation.pitch.rad
@@ -125,8 +125,8 @@ object ElytraPhysics {
         }
 
 
-        this.velocity = velocity * FRICTION
+        this.velocity *= FRICTION
 
-        move(this.velocity)
+        move()
     }
 }

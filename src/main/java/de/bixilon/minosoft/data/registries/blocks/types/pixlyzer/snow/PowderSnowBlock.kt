@@ -71,8 +71,8 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
 
     companion object : BlockFactory<PowderSnowBlock> {
         override val identifier = minecraft("powder_snow")
-        private val SLOW = Vec3d(0.9f, 1.5, 0.9f)
-        private val FALLING_SHAPE = AABB(Vec3d(0.0, 0.0, 0.0), Vec3d(1.0, 0.9f, 1.0))
+        private val SLOW = Vec3d(0.9, 1.5, 0.9)
+        private val FALLING_SHAPE = AABB(Vec3d(0.0, 0.0, 0.0), Vec3d(1.0, 0.9, 1.0))
         private val TAG = minecraft("powder_snow_walkable_mobs")
 
 

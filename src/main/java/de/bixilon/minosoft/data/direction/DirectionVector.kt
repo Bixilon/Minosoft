@@ -15,15 +15,16 @@ package de.bixilon.minosoft.data.direction
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
-value class DirectionVector private constructor(val value: Int) : TextFormattable {
+value class DirectionVector private constructor(val value: Int) : _Vec3i {
     constructor() : this(0)
 
-    inline val x: Int get() = Integer.signum((value and (MASK shl SHIFT_X)) shl (Int.SIZE_BITS - SHIFT_X - BITS))
-    inline val y: Int get() = Integer.signum((value and (MASK shl SHIFT_Y)) shl (Int.SIZE_BITS - SHIFT_Y - BITS))
-    inline val z: Int get() = Integer.signum((value and (MASK shl SHIFT_Z)) shl (Int.SIZE_BITS - SHIFT_Z - BITS))
+    override inline val x: Int get() = Integer.signum((value and (MASK shl SHIFT_X)) shl (Int.SIZE_BITS - SHIFT_X - BITS))
+    override inline val y: Int get() = Integer.signum((value and (MASK shl SHIFT_Y)) shl (Int.SIZE_BITS - SHIFT_Y - BITS))
+    override inline val z: Int get() = Integer.signum((value and (MASK shl SHIFT_Z)) shl (Int.SIZE_BITS - SHIFT_Z - BITS))
 
     operator fun get(axis: Axes) = when (axis) {
         Axes.X -> x
@@ -43,11 +44,10 @@ value class DirectionVector private constructor(val value: Int) : TextFormattabl
         return DirectionVector(without or (value shl shift))
     }
 
-    inline operator fun component1() = x
-    inline operator fun component2() = y
-    inline operator fun component3() = z
+    override inline operator fun component1() = x
+    override inline operator fun component2() = y
+    override inline operator fun component3() = z
 
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "v($x $y $z)"
 
     companion object {

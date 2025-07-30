@@ -17,20 +17,9 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 
 object Vec2Util {
-    val EMPTY = Vec2f.EMPTY
-    val ONE = Vec2f(1.0f)
-
-    val Vec2f.Companion.MIN: Vec2f
-        get() = Vec2f(Float.MIN_VALUE, Float.MIN_VALUE)
-
-    val Vec2f.Companion.EMPTY: Vec2f
-        get() = Vec2f(0.0f, 0.0f)
-
-    val Vec2f.Companion.MAX: Vec2f
-        get() = Vec2f(Float.MAX_VALUE, Float.MAX_VALUE)
-
 
     fun Any?.toVec2f(default: Vec2f? = null): Vec2f {
         return toVec2N() ?: default ?: throw IllegalArgumentException("Not a Vec2: $this")
@@ -82,7 +71,7 @@ object Vec2Util {
         return this.x >= other.x || this.y >= other.y
     }
 
-    fun Vec2f.absAssign(): Vec2f {
+    fun MVec2f.absAssign(): MVec2f {
         if (x < 0) {
             x = -x
         }
@@ -93,5 +82,5 @@ object Vec2Util {
     }
 
     val Vec2f.abs: Vec2f
-        get() = Vec2f(x, y).absAssign()
+        get() = MVec2f(x, y).absAssign().unsafe
 }

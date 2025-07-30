@@ -18,8 +18,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.util.KUtil.format
 
 class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMeshes? = null) {
@@ -33,7 +32,7 @@ class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMe
 
 
     fun addMesh(mesh: ChunkMeshes) {
-        val distance = Vec3Util.distance2(cameraPosition, mesh.center)
+        val distance = Vec3fUtil.distance2(cameraPosition, mesh.center)
         mesh.opaqueMesh?.let {
             it.distance = distance
             opaque += it

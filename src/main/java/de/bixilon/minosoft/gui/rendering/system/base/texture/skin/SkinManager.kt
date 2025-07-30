@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.vanilla.DefaultSkinProvider
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.isBlack
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import java.io.ByteArrayInputStream
 import java.util.*
 
@@ -82,7 +81,7 @@ class SkinManager(private val textures: TextureManager) {
             32 -> {
                 // <1.8 legacy skin
                 val next = RGBA8Buffer(Vec2i(64))
-                next.put(data, Vec2i.EMPTY_INSTANCE, Vec2i.EMPTY_INSTANCE, data.size)
+                next.put(data, Vec2i.EMPTY, Vec2i.EMPTY, data.size)
 
                 next.put(next, Vec2i(0, 16), Vec2i(16, 48), Vec2i(16, 16))// leg [0, 16][16,16] to left leg [16, 48]
                 next.put(next, Vec2i(40, 16), Vec2i(32, 48), Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]

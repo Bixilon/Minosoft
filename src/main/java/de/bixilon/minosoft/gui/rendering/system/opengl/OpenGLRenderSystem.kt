@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureMana
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGLVendor
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -317,7 +317,7 @@ class OpenGLRenderSystem(
     override var viewport: Vec2i = Vec2i.EMPTY
         set(value) {
             if (field == value) return
-            field = Vec2i(value)
+            field = value
             glViewport(0, 0, viewport.x, viewport.y)
         }
 

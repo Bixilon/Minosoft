@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
@@ -159,8 +158,8 @@ open class TextElement(
         if (empty) return
         val info = this.info
         val properties = this.properties
-        val initialOffset = Vec2f(offset + margin.offset)
-        val textOffset = Vec2f(initialOffset)
+        val initialOffset = (offset + margin.offset)(offset + margin.offset)
+        val textOffset = initialOffset(initialOffset)
 
         this.background?.let {
             consumer.renderBackground(it, properties, info, initialOffset, options)
@@ -197,7 +196,7 @@ open class TextElement(
     }
 
     override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
-        val pair = getTextComponentAt(Vec2f(position))
+        val pair = getTextComponentAt(position(position))
 
         if (activeElement != pair?.first) {
             val activeElement = activeElement
@@ -244,7 +243,7 @@ open class TextElement(
     }
 
     private fun getTextComponentAt(position: Vec2f): Pair<TextComponent, Vec2f>? {
-        val offset = Vec2f(position)
+        val offset = position(position)
         val info = this.info
         val properties = this.properties
         val (line, yOffset) = info.getLineAt(properties.lineHeight, properties.lineSpacing, offset.y) ?: return null
@@ -274,7 +273,7 @@ open class TextElement(
     }
 
     protected fun Vec2f.withBackgroundSize(sign: Float = 1.0f): Vec2f {
-        val size = Vec2f(this)
+        val size = this(this)
         val background = this@TextElement.background
         if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
             size += background.size.spaceSize * sign

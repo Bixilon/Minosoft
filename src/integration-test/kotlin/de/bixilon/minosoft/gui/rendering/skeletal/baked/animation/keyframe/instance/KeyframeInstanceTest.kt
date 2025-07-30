@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.insta
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import it.unimi.dsi.fastutil.floats.FloatArrayList
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse

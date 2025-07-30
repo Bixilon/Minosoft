@@ -18,16 +18,6 @@ import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 
 object Vec2dUtil {
 
-    val Vec2d.Companion.MIN: Vec2d
-        get() = Vec2d(Double.MIN_VALUE, Double.MIN_VALUE)
-
-    val Vec2d.Companion.EMPTY: Vec2d
-        get() = Vec2d(0.0, 0.0)
-
-    val Vec2d.Companion.MAX: Vec2d
-        get() = Vec2d(Double.MAX_VALUE, Double.MAX_VALUE)
-
-
     fun Any?.toVec2d(default: Vec2d? = null): Vec2d {
         return toVec2dN() ?: default ?: throw IllegalArgumentException("Not a Vec2d: $this")
     }

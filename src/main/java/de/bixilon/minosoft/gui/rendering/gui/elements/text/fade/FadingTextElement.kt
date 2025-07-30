@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadePhase.Compan
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FadingTextElement(

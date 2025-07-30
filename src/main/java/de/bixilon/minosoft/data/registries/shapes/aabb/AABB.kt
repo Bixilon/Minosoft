@@ -26,17 +26,14 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
 import glm_.func.common.clamp
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3d
 import kotlin.math.abs
 
 
@@ -44,7 +41,7 @@ class AABB : Shape {
     val min: Vec3d
     val max: Vec3d
 
-    constructor(jsonData: Map<String, Any>) : this(jsonData["from"]!!.toVec3f(Vec3f.EMPTY), jsonData["to"]!!.toVec3f(Vec3f.ONE))
+    constructor(jsonData: Map<String, Any>) : this(jsonData["from"]!!.toVec3d(Vec3d.EMPTY), jsonData["to"]!!.toVec3d(Vec3d.ONE))
 
     constructor(aabb: AABB) : this(aabb.min, aabb.max)
 
@@ -122,8 +119,8 @@ class AABB : Shape {
     }
 
     fun extend(vec3: Vec3d): AABB {
-        val newMin = Vec3d(min)
-        val newMax = Vec3d(max)
+        val newMin = MVec3d(min)
+        val newMax = MVec3d(max)
 
         if (vec3.x < 0) {
             newMin.x += vec3.x
@@ -143,7 +140,7 @@ class AABB : Shape {
             newMax.z += vec3.z
         }
 
-        return AABB(true, newMin, newMax)
+        return AABB(true, newMin.unsafe, newMax.unsafe)
     }
 
     fun extend(direction: Directions): AABB {
@@ -198,8 +195,8 @@ class AABB : Shape {
 
     @Deprecated("mutable")
     fun unsafePlus(axis: Axes, value: Double) {
-        min.array[axis.ordinal] += value
-        max.array[axis.ordinal] += value
+        min.unsafe[axis] += value
+        max.unsafe[axis] += value
     }
 
     fun offset(axis: Axes, offset: Double) = when (axis) {
@@ -218,7 +215,7 @@ class AABB : Shape {
         var min = Double.NEGATIVE_INFINITY
         var max = Double.POSITIVE_INFINITY
 
-        for (axis in Axes.VALUES.indices) {
+        for (axis in Axes.VALUES) {
             if (abs(direction[axis]) < 0.00001) {
                 if (position[axis] < this.min[axis] || position[axis] > this.max[axis]) {
                     return null
@@ -236,7 +233,7 @@ class AABB : Shape {
             }
 
             if (minDistance > min) {
-                minAxis = axis
+                minAxis = axis.ordinal
                 min = minDistance
             }
             if (maxDistance < max) max = maxDistance
@@ -252,7 +249,7 @@ class AABB : Shape {
 
         // calculate direction ordinal from axis, depending on positive or negative
         var ordinal = minAxis * 2
-        if (direction[minAxis] <= 0) ordinal++
+        if (direction[Axes[minAxis]] <= 0) ordinal++
 
         val target = Directions.XYZ[ordinal]
         return AABBRaycastHit(min, if (inside) target.inverted else target, inside)

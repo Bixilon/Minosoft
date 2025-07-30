@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.outline
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
@@ -39,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -131,17 +130,17 @@ class BlockOutlineRenderer(
 
         val mesh = LineMesh(context)
 
-        val blockOffset = Vec3d(target.blockPosition)
+        val blockOffset = MVec3d(target.blockPosition)
         if (target.state.block is OffsetBlock) {
             blockOffset += target.state.block.offsetShape(target.blockPosition)
         }
 
 
-        target.state.block.getOutlineShape(session, target.blockPosition, target.state)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
+        target.state.block.getOutlineShape(session, target.blockPosition, target.state)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
 
 
         if (target.state.block is CollidableBlock && profile.collisions) { // TODO: block entity
-            target.state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
+            target.state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
         }
 
         this.nextMesh = mesh

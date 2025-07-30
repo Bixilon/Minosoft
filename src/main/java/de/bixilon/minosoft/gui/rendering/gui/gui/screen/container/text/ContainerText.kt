@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class ContainerText(
     var text: TextElement,
@@ -45,7 +44,7 @@ class ContainerText(
             val textElement = TextElement(guiRenderer, text, background = null, properties = TextRenderProperties(shadow = false))
             textElement.prefMaxSize = area.size
 
-            return ContainerText(textElement, Vec2f(area.start))
+            return ContainerText(textElement, area.start(area.start))
         }
 
         fun createInventoryTitle(guiRenderer: GUIRenderer, area: AtlasArea?): ContainerText? {

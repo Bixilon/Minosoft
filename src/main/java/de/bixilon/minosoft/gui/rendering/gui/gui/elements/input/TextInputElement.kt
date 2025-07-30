@@ -34,8 +34,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 open class TextInputElement(
     guiRenderer: GUIRenderer,
@@ -52,7 +50,7 @@ open class TextInputElement(
     protected val cursor = ColorElement(guiRenderer, size = Vec2f(minOf(1.0f, properties.scale), properties.lineHeight))
     protected val textElement = MarkTextElement(guiRenderer, "", background = null, parent = this, properties = properties)
     protected val backgroundElement = ColorElement(guiRenderer, Vec2f.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
-    protected var cursorOffset: Vec2i = Vec2i.EMPTY
+    protected var cursorOffset: Vec2f = Vec2f.EMPTY
     val _value = StringBuffer(256)
     var value: String
         get() = _value.toString()
@@ -135,18 +133,18 @@ open class TextInputElement(
             textUpToDate = true
             cutOffText()
         }
-        _size = Vec2f(textElement.size)
+        _size = textElement.size(textElement.size)
         backgroundElement.size = prefMaxSize
 
         cursorOffset = if (_pointer == 0) {
-            Vec2i.EMPTY
+            Vec2f.EMPTY
         } else {
             val preCursorText = if (_pointer == value.length) {
                 textElement
             } else {
                 TextElement(guiRenderer, value.substring(0, _pointer), properties = textElement.properties, parent = this)
             }
-            Vec2i(preCursorText.info.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.info.lines.size - 1, 0) * preCursorText.properties.lineHeight)
+            Vec2f(preCursorText.info.lines.lastOrNull()?.width ?: 0.0f, maxOf(preCursorText.info.lines.size - 1.0f, 0.0f) * preCursorText.properties.lineHeight)
         }
         cacheUpToDate = false
     }

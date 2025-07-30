@@ -28,7 +28,7 @@ object InputPhysics {
     const val FRICTION_MULTIPLIER = 0.91f
 
     fun LivingEntityPhysics<*>.applyMovementInput(input: MovementInput, speed: Float) {
-        this.velocity = this.velocity + input.getVelocity(speed, rotation.yaw)
+        this.velocity += input.getVelocity(speed, rotation.yaw)
     }
 
 
@@ -63,11 +63,13 @@ object InputPhysics {
         val slowdown: Float = if (onGround) travelGround(input) else travelAir(input)
 
         limitClimbingSpeed()
-        move(this.velocity)
+        move()
         applyClimbingSpeed()
 
         val velocity = this.velocity
 
-        this.velocity = Vec3d(velocity.x * slowdown, applyLevitation(velocity.y, gravity) * PhysicsConstants.AIR_RESISTANCEf, velocity.z * slowdown)
+        this.velocity.x *= slowdown
+        this.velocity.y = applyLevitation(velocity.y, gravity) * PhysicsConstants.AIR_RESISTANCEf
+        this.velocity.z *= slowdown
     }
 }

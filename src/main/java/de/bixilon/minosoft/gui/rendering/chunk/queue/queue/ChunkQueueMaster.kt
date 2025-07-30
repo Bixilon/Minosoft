@@ -26,8 +26,6 @@ import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.plus
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkQueueMaster(
     private val renderer: ChunkRenderer,

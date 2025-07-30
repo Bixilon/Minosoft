@@ -84,7 +84,7 @@ class ShortUseHandler(
         session.connection.send(BlockInteractC2SP(
             position = target.blockPosition,
             direction = target.direction,
-            cursorPosition = Vec3f(target.cursor),
+            cursorPosition = target.cursor,
             item = copy,
             hand = hand,
             insideBlock = target.inside,

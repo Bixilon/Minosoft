@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.shader
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -30,7 +30,7 @@ abstract class BaseSkeletalShader(
     buffer: FloatUniformBuffer,
 ) : Shader(), TextureShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
-    override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
+    override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
     override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()
 

@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace.Com
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 

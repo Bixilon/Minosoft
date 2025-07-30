@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HotbarHe
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HotbarVehicleHealthElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.copy
 
 class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
@@ -80,7 +79,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)
-            topLeft.render(offset + Vec2f(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
+            topLeft.render(offset + Vec2f(0.0f, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
             topRight.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 

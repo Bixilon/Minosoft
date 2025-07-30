@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -47,7 +46,7 @@ class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = 
         val particle = session.world.particle ?: return
 
         if (random.nextFloat() > (floatAge / maxAge)) {
-            particle += SmokeParticle(session, Vec3d(position), Vec3d(velocity))
+            particle += SmokeParticle(session, position(position), Vec3d(velocity))
         }
     }
 

@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f, tintColor: RGBAColor?) {
-        data.add(position.array)
-        data.add(uv.array)
+        data.add(position.x, position.y, position.z)
+        data.add(uv.x, uv.y)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add((tintColor ?: Colors.WHITE_RGBA).rgba.buffer())
     }

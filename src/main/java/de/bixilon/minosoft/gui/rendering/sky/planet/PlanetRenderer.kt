@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import glm_.func.rad
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
 
 abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
@@ -36,7 +36,7 @@ abstract class PlanetRenderer(
     protected val shader = sky.context.system.createShader(minosoft("sky/planet")) { PlanetShader(it) }
     private var mesh = PlanetMesh(sky.context)
     protected var day = -1L
-    protected var matrix = Mat4()
+    protected var matrix = Mat4f()
     private var matrixUpdate = true
     protected var modifier = 0.0f
     protected var intensity = -1.0f
@@ -75,8 +75,8 @@ abstract class PlanetRenderer(
     protected abstract fun calculateIntensity(): Float
 
 
-    private fun calculateMatrix(base: Mat4) {
-        val matrix = Mat4(base)
+    private fun calculateMatrix(base: Mat4f) {
+        val matrix = Mat4f(base)
 
 
         matrix.rotateAssign(calculateAngle().rad, Vec3f.Z)

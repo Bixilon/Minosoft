@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -55,7 +55,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
         }
 
         fun render3d(context: RenderContext, position: Vec3f, properties: TextRenderProperties, rotation: Vec3f, maxSize: Vec2f, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
-            val matrix = Mat4()
+            val matrix = Mat4f()
                 .translateAssign(position)
                 .rotateRadAssign(rotation)
                 .translateAssign(Vec3f(0, 0, -1))

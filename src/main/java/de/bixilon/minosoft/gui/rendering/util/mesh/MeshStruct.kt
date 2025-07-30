@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
@@ -62,15 +62,15 @@ abstract class MeshStruct(struct: KClass<*>) {
         val KClass<*>.BYTES: Int
             get() {
                 return when (this) {
-                    Mat4::class -> 4 * 4 * Float.SIZE_BYTES
+                    Mat4f::class -> Mat4f.LENGTH * Float.SIZE_BYTES
 
-                    Vec3d::class -> 3 * Double.SIZE_BYTES
-                    Vec3f::class -> 3 * Float.SIZE_BYTES
-                    Vec3i::class -> 2 * Int.SIZE_BYTES
+                    Vec3d::class -> Vec3d.LENGTH * Double.SIZE_BYTES
+                    Vec3f::class -> Vec3f.LENGTH * Float.SIZE_BYTES
+                    Vec3i::class -> Vec3i.LENGTH * Int.SIZE_BYTES
 
-                    Vec2d::class -> 2 * Double.SIZE_BYTES
-                    Vec2f::class -> 2 * Float.SIZE_BYTES
-                    Vec2i::class -> 2 * Int.SIZE_BYTES
+                    Vec2d::class -> Vec2d.LENGTH * Double.SIZE_BYTES
+                    Vec2f::class -> Vec2f.LENGTH * Float.SIZE_BYTES
+                    Vec2i::class -> Vec2i.LENGTH * Int.SIZE_BYTES
 
                     Float::class -> Float.SIZE_BYTES
                     Int::class -> Int.SIZE_BYTES

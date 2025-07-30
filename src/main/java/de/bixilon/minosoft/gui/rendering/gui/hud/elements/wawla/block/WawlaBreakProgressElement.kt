@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.input.interaction.breaking.survival.BlockBreakProductivity
 
 class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRenderer) {
@@ -40,7 +39,7 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
             ColorElement(guiRenderer, Vec2f(maxWidth, size.y), color = ChatColors.RED).forceRender(offset, consumer, options)
             return
         }
-        val width = (status.progress * (maxWidth - 1)).toInt() + 1 // bar is always 1 pixel wide
+        val width = (status.progress * (maxWidth - 1.0f)) + 1.0f // bar is always 1 pixel wide
 
         val color = when (status.productivity) {
             BlockBreakProductivity.INEFFECTIVE -> ChatColors.YELLOW

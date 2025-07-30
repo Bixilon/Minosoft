@@ -28,7 +28,7 @@ value class PackedUV(val raw: FloatArray) {
         const val BITS = 12
         const val MASK = (1 shl BITS) - 1
 
-        const val COMPONENTS = Vec2f.length
+        const val COMPONENTS = Vec2f.LENGTH
         const val SIZE = 4
 
 

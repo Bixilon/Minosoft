@@ -33,8 +33,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.plus
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*

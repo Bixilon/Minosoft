@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
 import glm_.func.rad
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.FALLBACK_FAR_PLANE
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
+import de.bixilon.minosoft.gui.rendering.camera.CameraUtil
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.SKIN
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.SLIM
@@ -38,13 +39,10 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import glm_.func.rad
 import glm_.glm
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 
 class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
-    private var perspective = Mat4()
+    private var perspective = Mat4f()
     override val renderSystem = context.system
     override val framebuffer get() = context.framebuffer.gui
     val shader = context.system.createShader(minosoft("entities/player/arm")) { ArmShader(it) }
@@ -56,7 +54,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         context.window::size.observe(this, true) {
-            perspective = glm.perspective(60.0f.rad, it.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE)
+            perspective = CameraUtil.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE)
         }
     }
 
@@ -101,10 +99,10 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
         shader.texture = renderer.skin?.shaderId ?: context.textures.debugTexture.shaderId
         shader.tint = ChatColors.WHITE
 
-        val pivot = Vec3f((if (arm == Arms.RIGHT) 6 else -6) / 16f, 24 / 16f, 0)
+        val pivot = Vec3f((if (arm == Arms.RIGHT) 6f else -6f) / 16f, 24 / 16f, 0f)
 
         // TODO: arm animation
-        val matrix = Mat4()
+        val matrix = Mat4f()
             .translateAssign(Vec3f((if (arm == Arms.RIGHT) 23f / 16f else -23f / 16f), -17 / 16f, -0.7f))
             .rotateXassign(120.0f.rad)
             .rotateYassign((if (arm == Arms.RIGHT) -20.0f else 20.0f).rad)

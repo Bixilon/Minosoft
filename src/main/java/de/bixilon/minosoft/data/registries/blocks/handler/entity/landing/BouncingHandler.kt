@@ -28,6 +28,6 @@ interface BouncingHandler : LandingHandler {
         if (velocity.y >= 0.0) return
 
         val strength = if (entity is LivingEntity) 1.0 else 0.8
-        physics.velocity = Vec3d(velocity.x, -velocity.y * bounceStrength * strength, velocity.z)
+        physics.velocity.y = -velocity.y * bounceStrength * strength
     }
 }

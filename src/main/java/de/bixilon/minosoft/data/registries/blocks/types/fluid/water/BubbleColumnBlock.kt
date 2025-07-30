@@ -59,15 +59,13 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
 
     private fun onCollision(physics: EntityPhysics<*>, drag: Boolean) {
         val velocity = physics.velocity
-        val y = if (drag) maxOf(-0.3, velocity.y - 0.03) else minOf(0.7, velocity.y + 0.06)
-        physics.velocity = Vec3d(velocity.x, y, velocity.z)
+        physics.velocity.y = if (drag) maxOf(-0.3, velocity.y - 0.03) else minOf(0.7, velocity.y + 0.06)
         physics.fallDistance = 0.0f
     }
 
     private fun surfaceCollision(physics: EntityPhysics<*>, drag: Boolean) {
         val velocity = physics.velocity
-        val y = if (drag) maxOf(-0.9, velocity.y - 0.03) else minOf(1.8, velocity.y + 0.1)
-        physics.velocity = Vec3d(velocity.x, y, velocity.z)
+        physics.velocity.y = if (drag) maxOf(-0.9, velocity.y - 0.03) else minOf(1.8, velocity.y + 0.1)
     }
 
 

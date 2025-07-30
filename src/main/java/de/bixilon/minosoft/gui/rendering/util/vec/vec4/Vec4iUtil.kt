@@ -18,16 +18,6 @@ import glm_.vec4.Vec4i
 
 object Vec4iUtil {
 
-    val Vec4i.Companion.MIN: Vec4i
-        get() = Vec4i(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
-
-    val Vec4i.Companion.EMPTY: Vec4i
-        get() = Vec4i(0, 0, 0, 0)
-
-    val Vec4i.Companion.MAX: Vec4i
-        get() = Vec4i(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
-
-
     val Vec4i.top: Int
         get() = this.x
 

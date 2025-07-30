@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 
 class ShulkerBoxRenderer(
     val entity: ShulkerBoxBlockEntity,

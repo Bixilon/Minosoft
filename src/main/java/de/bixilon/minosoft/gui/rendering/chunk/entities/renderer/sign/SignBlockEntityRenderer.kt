@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Wal
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -45,8 +46,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotateAssign
 
 class SignBlockEntityRenderer(
     val context: RenderContext,
@@ -109,20 +109,20 @@ class SignBlockEntityRenderer(
     }
 
     private fun renderStandingText(rotation: Float, sign: SignBlockEntity, offset: FloatArray, mesh: ChunkMesh, light: Int) {
-        val frontOffset = Vec3f(STANDING_FRONT_OFFSET).apply { signRotate(rotation) }
+        val frontOffset = STANDING_FRONT_OFFSET(STANDING_FRONT_OFFSET).apply { signRotate(rotation) }
         renderText(offset, sign.front, frontOffset, rotation, mesh, light)
-        val backOffset = Vec3f(STANDING_BACK_OFFSET).apply { signRotate(rotation) }
+        val backOffset = STANDING_BACK_OFFSET(STANDING_BACK_OFFSET).apply { signRotate(rotation) }
         renderText(offset, sign.back, backOffset, rotation - 180.0f.rad, mesh, light)
     }
 
     private fun renderWallText(facing: Directions, sign: SignBlockEntity, offset: FloatArray, mesh: ChunkMesh, light: Int) {
         val rotation = WALL_ROTATIONS[facing.ordinal - Directions.SIDE_OFFSET]
-        val blockOffset = Vec3f(WALL_OFFSET).apply { signRotate(rotation) }
+        val blockOffset = WALL_OFFSET(WALL_OFFSET).apply { signRotate(rotation) }
 
         renderText(offset, sign.front, blockOffset, rotation, mesh, light)
     }
 
-    private fun Vec3f.signRotate(yRotation: Float) {
+    private fun MVec3f.signRotate(yRotation: Float) {
         this -= 0.5f
         rotateAssign(yRotation, Axes.Y)
         this += 0.5f

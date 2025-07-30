@@ -19,35 +19,40 @@ import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
+import glm_.i
 import kotlin.math.sqrt
 
 
 @JvmInline
 value class MVec3i(
-    override val unsafe: UnsafeVec3i,
+    private val _0: UnsafeVec3i,
 ) : _Vec3i {
     override var x: Int
-        get() = unsafe.x
+        get() = _0.x
         set(value) {
-            unsafe.x = value
+            _0.x = value
         }
     override var y: Int
-        get() = unsafe.y
+        get() = _0.y
         set(value) {
-            unsafe.y = value
+            _0.y = value
         }
     override var z: Int
-        get() = unsafe.z
+        get() = _0.z
         set(value) {
-            unsafe.z = value
+            _0.z = value
         }
 
     constructor() : this(0)
 
-    constructor(x: Int, y: Int = x, z: Int = x) : this(UnsafeVec3i(x, y, z))
-    constructor(other: Vec3i) : this(other.x, other.y, other.z)
-    constructor(other: MVec3i) : this(other.x, other.y, other.z)
+    constructor(xyz: Int) : this(xyz, xyz, xyz)
+    constructor(x: Int, y: Int, z: Int) : this(UnsafeVec3i(x, y, z))
+
+    val unsafe get() = Vec3i(_0)
+
 
     inline operator fun plus(other: _Vec3i) = MVec3i(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3i) = MVec3i(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -83,7 +88,7 @@ value class MVec3i(
     inline fun length() = sqrt(length2().toDouble()).toInt()
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalizeAssign() = apply { this *= length() }
 
 
     override fun toString(): String = "($x $y $z)"
@@ -105,5 +110,10 @@ value class MVec3i(
 
     companion object {
         val EMPTY get() = MVec3i(0)
+
+        inline operator fun invoke(other: _Vec3i) = MVec3i(other.x.i, other.y.i, other.z.i)
+        inline operator fun invoke(other: _Vec3f) = MVec3i(other.x.i, other.y.i, other.z.i)
+        inline operator fun invoke(other: _Vec3d) = MVec3i(other.x.i, other.y.i, other.z.i)
+
     }
 }

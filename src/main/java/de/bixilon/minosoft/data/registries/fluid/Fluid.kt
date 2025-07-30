@@ -22,9 +22,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -37,18 +36,16 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
     abstract fun getVelocityMultiplier(session: PlaySession): Double
 
-    fun getVelocity(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition): Vec3d {
-        val chunk = session.world.chunks[blockPosition.chunkPosition] ?: return Vec3d.EMPTY
+    fun getVelocity(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition): MVec3d? {
+        val chunk = session.world.chunks[blockPosition.chunkPosition] ?: return null
         return getVelocity(blockState, blockPosition, chunk)
     }
 
-    open fun getVelocity(blockState: BlockState, blockPosition: BlockPosition, chunk: Chunk): Vec3d {
-        if (!this.matches(blockState)) {
-            return Vec3d.EMPTY
-        }
+    open fun getVelocity(blockState: BlockState, blockPosition: BlockPosition, chunk: Chunk): MVec3d? {
+        if (!this.matches(blockState)) return null
         val fluidHeight = getHeight(blockState)
 
-        val velocity = Vec3d.EMPTY
+        val velocity = MVec3d.EMPTY
 
         val offset = blockPosition.inChunkPosition
         for (direction in Directions.SIDES) {
@@ -73,11 +70,11 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
         // ToDo: Falling fluid
 
-        if (velocity == Vec3d.EMPTY_INSTANCE) {
-            return velocity
-        }
+        if (velocity.isEmpty()) return null
 
-        return velocity.normalize()
+        velocity.normalizeAssign()
+
+        return velocity
     }
 
 
@@ -94,18 +91,20 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
             motion.y - gravity / 16.0
         }
 
-        this.velocity = Vec3d(motion.x, up, motion.z)
+        this.velocity.x = motion.x
+        this.velocity.y = up
+        this.velocity.z = motion.z
     }
 
 
     protected fun LivingEntityPhysics<*>.applyBouncing(y: Double) {
         val velocity = this.velocity
         if (!horizontalCollision || !doesNotCollide(Vec3d(velocity.x, velocity.y + 0.6f - position.y + y, velocity.z))) return
-        this.velocity = Vec3d(velocity.x, 0.3, velocity.z)
+        this.velocity.y = 0.3
     }
 
     protected fun LivingEntityPhysics<*>.applyFriction(horizontal: Double, vertical: Double = 0.8f.toDouble()) {
-        this.velocity = velocity * Vec3d(horizontal, vertical, horizontal)
+        this.velocity *= Vec3d(horizontal, vertical, horizontal)
     }
 
     override fun toString(): String {

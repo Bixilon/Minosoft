@@ -30,7 +30,7 @@ interface LandingHandler {
         fun EntityPhysics<*>.handleLanding() {
             val velocity = velocity
             if (velocity.y == 0.0) return
-            this.velocity = Vec3d(velocity.x, 0.0, velocity.z)
+            this.velocity.y = 0.0
         }
     }
 }

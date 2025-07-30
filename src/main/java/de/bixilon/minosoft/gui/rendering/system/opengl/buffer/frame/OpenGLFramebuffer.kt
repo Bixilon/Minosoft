@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
@@ -54,7 +55,7 @@ class OpenGLFramebuffer(
         id = glGenFramebuffers()
         unsafeBind()
 
-        this.scaled = if (scale == 1.0f) size else Vec2i(size.x * scale, size.y * scale)
+        this.scaled = if (scale == 1.0f) size else Vec2i((size.x * scale).toInt(), (size.y * scale).toInt())
 
         if (color) {
             val colorTexture = OpenGLFramebufferColorTexture(scaled)

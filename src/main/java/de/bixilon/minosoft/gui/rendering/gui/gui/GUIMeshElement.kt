@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
@@ -142,13 +141,13 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onMouseMove(position: Vec2f): Boolean {
-        lastPosition = Vec2f(position)
+        lastPosition = position(position)
         return element.onMouseMove(position, position)
     }
 
     override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
         val mouseButton = MouseButtons[code] ?: return element.onKey(code, change)
-        val position = Vec2f(lastPosition ?: return false)
+        val position = (lastPosition ?: return false)(lastPosition ?: return false)
 
         val mouseAction = MouseActions[change] ?: return false
 
@@ -156,12 +155,12 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onScroll(scrollOffset: Vec2f): Boolean {
-        val position = Vec2f(lastPosition ?: return false)
+        val position = (lastPosition ?: return false)(lastPosition ?: return false)
         return element.onScroll(position, scrollOffset)
     }
 
     override fun onDragMove(position: Vec2f, dragged: Dragged): Element? {
-        lastDragPosition = Vec2f(position)
+        lastDragPosition = position(position)
         if (!this.dragged) {
             this.dragged = true
             return element.onDragEnter(position, position, dragged)
@@ -171,7 +170,7 @@ open class GUIMeshElement<T : Element>(
 
     override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
         val mouseButton = MouseButtons[key] ?: return element.onDragKey(key, type, dragged)
-        val position = Vec2f(lastDragPosition ?: return null)
+        val position = (lastDragPosition ?: return null)(lastDragPosition ?: return null)
 
         val mouseAction = MouseActions[type] ?: return null
 
@@ -179,7 +178,7 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onDragScroll(scrollOffset: Vec2f, dragged: Dragged): Element? {
-        return element.onDragScroll(Vec2f(lastDragPosition ?: return null), scrollOffset, dragged)
+        return element.onDragScroll((lastDragPosition ?: return null)(lastDragPosition ?: return null), scrollOffset, dragged)
     }
 
     override fun onDragChar(char: Int, dragged: Dragged): Element? {

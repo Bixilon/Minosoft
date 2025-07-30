@@ -20,41 +20,31 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.vec.vec2.i.MVec2i
+import kotlin.math.abs
 
 object Vec2iUtil {
-    private val empty = Vec2i.EMPTY
-
-    val Vec2i.Companion.MIN: Vec2i
-        get() = Vec2i(Int.MIN_VALUE, Int.MIN_VALUE)
-
-    val Vec2i.Companion.EMPTY: Vec2i
-        get() = Vec2i(0, 0)
-    val Vec2i.Companion.EMPTY_INSTANCE: Vec2i
-        get() = empty
-
-    val Vec2i.Companion.MAX: Vec2i
-        get() = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE)
 
     fun Vec2i.min(other: Vec2i): Vec2i {
-        val min = Vec2i(this)
+        val min = MVec2i(this)
         if (other.x < min.x) {
             min.x = other.x
         }
         if (other.y < min.y) {
             min.y = other.y
         }
-        return min
+        return min.unsafe
     }
 
     fun Vec2i.max(other: Vec2i): Vec2i {
-        val max = Vec2i(this)
+        val max = MVec2i(this)
         if (other.x > max.x) {
             max.x = other.x
         }
         if (other.y > max.y) {
             max.y = other.y
         }
-        return max
+        return max.unsafe
     }
 
     infix fun Vec2i.isSmaller(other: Vec2i): Boolean {
@@ -77,16 +67,15 @@ object Vec2iUtil {
         get() = Vec2f(x.rad, y.rad)
 
     val Vec2i.abs: Vec2i
-        get() = Vec2i(x, y).absAssign()
+        get() = Vec2i(abs(x), abs(y))
 
-    fun Vec2i.absAssign(): Vec2i {
+    fun MVec2i.absAssign() {
         if (x < 0) {
             x = -x
         }
         if (y < 0) {
             y = -y
         }
-        return this
     }
 
     operator fun Vec2i.get(axis: Axes): Int {
@@ -115,7 +104,7 @@ object Vec2iUtil {
     }
 
     operator fun Vec2i.plus(direction: Directions): Vec2i {
-        val ret = Vec2i(this)
+        val ret = this(this)
         ret.x += direction.vector.x
         ret.y += direction.vector.z
         return ret

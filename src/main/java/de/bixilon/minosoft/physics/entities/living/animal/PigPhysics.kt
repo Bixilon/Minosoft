@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
 
@@ -47,7 +46,7 @@ class PigPhysics(entity: Pig) : LivingEntityPhysics<Pig>(entity) {
             this.input.forwards = saddledSpeed
             super.travel(MovementInput(forwards = 1.0f))
         } else {
-           this.velocity = Vec3d.EMPTY
+            this.velocity.clear()
         }
         checkBlockCollisions()
     }

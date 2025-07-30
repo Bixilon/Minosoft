@@ -181,7 +181,7 @@ abstract class AbstractButtonElement(
     override fun onChildChange(child: Element) {
         if (child == textElement) {
             if (dynamicSized) {
-                size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+                size = textElement.size + Vec2f(TEXT_PADDING * 2, TEXT_PADDING * 2)
             }
             cacheUpToDate = false
         }

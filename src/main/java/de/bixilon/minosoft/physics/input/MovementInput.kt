@@ -16,7 +16,7 @@ package de.bixilon.minosoft.physics.input
 import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.PhysicsConstants
 import kotlin.math.sqrt
 
@@ -42,17 +42,17 @@ data class MovementInput(
     }
 
     fun getVelocity(speed: Float, yaw: Float): Vec3d {
-        val velocity = Vec3d(forwards, upwards, sideways)
+        val velocity = MVec3d(forwards, upwards, sideways)
         val length = velocity.length2()
         if (length < 1.0E-7) return Vec3d.EMPTY
 
         velocity.normalizeAssign(length)
-        velocity *= speed
+        velocity *= speed.toDouble()
         return velocity.rotate(yaw)
     }
 
 
-    private fun Vec3d.normalizeAssign(length2: Double) {
+    private fun MVec3d.normalizeAssign(length2: Double) {
         if (length2 <= 1.0) return
         val length = sqrt(length2)
 
@@ -62,7 +62,7 @@ data class MovementInput(
     }
 
 
-    private fun Vec3d.rotate(yaw: Float): Vec3d {
+    private fun MVec3d.rotate(yaw: Float): Vec3d {
         val rad = yaw.rad
         val sin = Trigonometry.sin(rad)
         val cos = Trigonometry.cos(rad)

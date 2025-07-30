@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import glm_.f
 
 object Vec2Serializer : SimpleModule() {
 
@@ -35,7 +36,7 @@ object Vec2Serializer : SimpleModule() {
 
         override fun deserialize(parser: JsonParser, context: DeserializationContext?): Vec2f {
             when (val tree = parser.readValueAsTree<JsonNode>()) {
-                is ArrayNode -> return Vec2f(tree[0].asDouble(), tree[1].asDouble())
+                is ArrayNode -> return Vec2f(tree[0].asDouble().f, tree[1].asDouble().f)
                 else -> TODO("Can not convert $tree to Vec2!")
             }
         }

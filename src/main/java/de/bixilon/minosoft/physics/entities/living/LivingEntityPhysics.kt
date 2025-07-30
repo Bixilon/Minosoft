@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.flatten0
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -66,7 +65,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
             tickMovement()
         } else {
             input.reset()
-            velocity = Vec3d.EMPTY
+            velocity.clear()
         }
     }
 
@@ -83,7 +82,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     fun swimUpwards(fluid: Identified) {
-        this.velocity = velocity + SWIM_UPWARDS
+        this.velocity += SWIM_UPWARDS
     }
 
     fun doesNotCollide(offset: Vec3d): Boolean {
@@ -149,10 +148,10 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
 
     open fun tickMovement() {
         if (this !is LocalPlayerPhysics) {
-            this.velocity = velocity * PhysicsConstants.AIR_RESISTANCE
+            this.velocity *= PhysicsConstants.AIR_RESISTANCE
         }
 
-        this.velocity = velocity.flatten0()
+        velocity.flatten0()
 
         tryJump()
 
@@ -175,6 +174,6 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     private companion object {
-        val SWIM_UPWARDS = Vec3d(0.0, 0.04f, 0.0)
+        val SWIM_UPWARDS = Vec3d(0.0, 0.04, 0.0)
     }
 }

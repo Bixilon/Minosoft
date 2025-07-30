@@ -15,33 +15,29 @@ package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
 import glm_.func.rad
 import glm_.glm
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 
 object Mat4Util {
-    private val empty = Mat4()
-
-    val Mat4.Companion.EMPTY_INSTANCE get() = empty
-
-    fun Mat4.rotateDegreesAssign(rotation: Vec3f): Mat4 {
+    fun Mat4f.rotateDegreesAssign(rotation: Vec3f): Mat4f {
         if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
         if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
         if (rotation.z != 0.0f) rotateZ(this, rotation.z.rad)
         return this
     }
 
-    fun Mat4.rotateRadAssign(rotation: Vec3f): Mat4 {
+    fun Mat4f.rotateRadAssign(rotation: Vec3f): Mat4f {
         if (rotation.x != 0.0f) rotateX(this, rotation.x)
         if (rotation.y != 0.0f) rotateY(this, rotation.y)
         if (rotation.z != 0.0f) rotateZ(this, rotation.z)
         return this
     }
 
-    operator fun Mat4.times(vec3: Vec3f): Vec3f {
-        return this.times(Vec3f, vec3)
+    operator fun Mat4f.times(vec3: Vec3f): Vec3f {
+        return this.times(vec3, vec3)
     }
 
-    fun Mat4.times(vec3: Vec3f, res: Vec3f): Vec3f {
+    fun Mat4f.times(vec3: Vec3f, res: Vec3f): Vec3f {
         val array = vec3.array
         res[0] = this[0, 0] * array[0] + this[1, 0] * array[1] + this[2, 0] * array[2] + this[3, 0]
         res[1] = this[0, 1] * array[0] + this[1, 1] * array[1] + this[2, 1] * array[2] + this[3, 1]
@@ -49,18 +45,18 @@ object Mat4Util {
         return res
     }
 
-    fun Mat4.reset() {
+    fun Mat4f.reset() {
         val array = this.array
         System.arraycopy(empty.array, 0, array, 0, Mat4.length)
     }
 
-    fun Mat4.rotateXAssign(rad: Float): Mat4 {
+    fun Mat4f.rotateXAssign(rad: Float): Mat4f {
         rotateX(this, rad)
 
         return this
     }
 
-    fun rotateX(m: Mat4, angle: Float) {
+    fun rotateX(m: Mat4f, angle: Float) {
         val c = glm.cos(angle)
         val s = glm.sin(angle)
 
@@ -90,7 +86,7 @@ object Mat4Util {
         m[1, 3] = res1w
     }
 
-    fun rotateY(m: Mat4, angle: Float) {
+    fun rotateY(m: Mat4f, angle: Float) {
         val c = glm.cos(angle)
         val s = glm.sin(angle)
 
@@ -121,7 +117,7 @@ object Mat4Util {
         m[0, 3] = res0w
     }
 
-    fun rotateZ(m: Mat4, angle: Float) {
+    fun rotateZ(m: Mat4f, angle: Float) {
         val c = glm.cos(angle)
         val s = glm.sin(angle)
 
@@ -151,14 +147,15 @@ object Mat4Util {
         m[0, 3] = res0w
     }
 
-    fun Mat4.translateXAssign(vX: Float): Mat4 {
+    fun Mat4f.translateXAssign(vX: Float): Mat4f {
         this[3, 0] += this[0, 0] * vX
         this[3, 1] += this[0, 1] * vX
         this[3, 2] += this[0, 2] * vX
         this[3, 3] += this[0, 3] * vX
         return this
     }
-    fun Mat4.translateYAssign(vY: Float): Mat4 {
+
+    fun Mat4f.translateYAssign(vY: Float): Mat4f {
         this[3, 0] += this[1, 0] * vY
         this[3, 1] += this[1, 1] * vY
         this[3, 2] += this[1, 2] * vY
@@ -166,7 +163,7 @@ object Mat4Util {
         return this
     }
 
-    fun Mat4.translateZAssign(vX: Float): Mat4 {
+    fun Mat4f.translateZAssign(vX: Float): Mat4f {
         this[3, 0] += this[2, 0] * vX
         this[3, 1] += this[2, 1] * vX
         this[3, 2] += this[2, 2] * vX

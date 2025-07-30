@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 object FullBlockPropertyRenderer : PropertyOnlyBlockRender {
     private val properties = SideProperties(arrayOf(FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE)

@@ -21,8 +21,7 @@ import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotateAssign
 
 data class ElementRotation(
     val origin: Vec3f = ORIGIN,
@@ -34,7 +33,7 @@ data class ElementRotation(
     fun apply(positions: FaceVertexData) {
         val angle = -angle.rad
 
-        val vec = Vec3f(0, positions)
+        val vec = Vec3f(0, positions) // TODO: vec offset
 
         for (index in 0 until VERTEX_DATA_COMPONENTS) {
             val offset = index * 3

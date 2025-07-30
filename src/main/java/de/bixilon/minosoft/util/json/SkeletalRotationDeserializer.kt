@@ -28,7 +28,7 @@ object SkeletalRotationDeserializer : StdDeserializer<SkeletalRotation>(Skeletal
             JsonToken.START_ARRAY -> {
                 val rotation = parser.readValueAs(FloatArray::class.java)
                 if (rotation.size != 3) throw IllegalArgumentException("Invalid count of components: ${rotation.size}")
-                SkeletalRotation(Vec3f(0, rotation))
+                SkeletalRotation(Vec3f(rotation))
             }
 
             else -> throw IllegalArgumentException("Can not skeletal rotation: $parser")

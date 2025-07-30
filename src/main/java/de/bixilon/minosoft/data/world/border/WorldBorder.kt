@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.world.border.area.DynamicBorderArea
 import de.bixilon.minosoft.data.world.border.area.StaticBorderArea
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil
 import kotlin.math.abs
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark

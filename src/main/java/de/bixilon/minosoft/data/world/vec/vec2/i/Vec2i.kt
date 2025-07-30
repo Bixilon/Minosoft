@@ -19,19 +19,21 @@ import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.f._Vec2f
+import glm_.i
 import kotlin.math.sqrt
 
 @JvmInline
 value class Vec2i(
-    override val unsafe: UnsafeVec2i,
+    private val _0: UnsafeVec2i,
 ) : _Vec2i {
-    override val x get() = unsafe.x
-    override val y get() = unsafe.y
+    override val x get() = _0.x
+    override val y get() = _0.y
 
     constructor(x: Int, y: Int = x) : this(UnsafeVec2i(x, y))
 
-    constructor(other: _Vec2i) : this(other.x, other.y)
-    constructor(other: Vec2i) : this(other.x, other.y)
+
+    val unsafe get() = MVec2i(_0)
 
     inline operator fun plus(other: _Vec2i) = Vec2i(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2i) = Vec2i(this.x - other.x, this.y - other.y)
@@ -44,6 +46,13 @@ value class Vec2i(
     inline operator fun times(other: Number) = Vec2i(this.x * other, this.y * other)
     inline operator fun div(other: Number) = Vec2i(this.x / other, this.y / other)
     inline operator fun rem(other: Number) = Vec2i(this.x % other, this.y % other)
+
+    inline infix fun shr(bits: Int) = Vec2i(this.x shr bits, this.y shr bits)
+    inline infix fun ushr(bits: Int) = Vec2i(this.x ushr bits, this.y ushr bits)
+    inline infix fun shl(bits: Int) = Vec2i(this.x shl bits, this.y shl bits)
+    inline infix fun and(mask: Int) = Vec2i(this.x and mask, this.y and mask)
+    inline infix fun or(mask: Int) = Vec2i(this.x or mask, this.y or mask)
+    inline infix fun xor(mask: Int) = Vec2i(this.x xor mask, this.y xor mask)
 
 
     inline operator fun unaryPlus() = Vec2i(x, y)
@@ -66,7 +75,13 @@ value class Vec2i(
     }
 
     companion object {
+        const val LENGTH = 2
         val EMPTY = Vec2i(0)
+
+        @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
+        inline operator fun invoke(other: Vec2i) = other
+        inline operator fun invoke(other: _Vec2i) = Vec2i(other.x.i, other.y.i)
+        inline operator fun invoke(other: _Vec2f) = Vec2i(other.x.i, other.y.i)
 
         operator fun invoke() = EMPTY
     }

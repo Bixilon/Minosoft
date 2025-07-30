@@ -36,16 +36,16 @@ class LightmapBuffer(renderSystem: RenderSystem) {
     operator fun set(sky: Int, block: Int, color: Vec3f) {
         val index = ((sky shl 4) or block) * 4
 
-        if (upload || buffer.buffer.get(index + 0) != color.r) {
-            buffer.buffer.put(index + 0, color.r)
+        if (upload || buffer.buffer.get(index + 0) != color.x) {
+            buffer.buffer.put(index + 0, color.x)
             upload = true
         }
-        if (upload || buffer.buffer.get(index + 1) != color.g) {
-            buffer.buffer.put(index + 1, color.g)
+        if (upload || buffer.buffer.get(index + 1) != color.y) {
+            buffer.buffer.put(index + 1, color.y)
             upload = true
         }
-        if (upload || buffer.buffer.get(index + 2) != color.b) {
-            buffer.buffer.put(index + 2, color.b)
+        if (upload || buffer.buffer.get(index + 2) != color.z) {
+            buffer.buffer.put(index + 2, color.z)
             upload = true
         }
     }

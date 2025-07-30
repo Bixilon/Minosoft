@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.block
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -30,7 +30,7 @@ open class BlockFeature(
     state: BlockState?,
     var scale: Vec3f = DEFAULT_SCALE,
 ) : MeshedFeature<BlockMesh>(renderer) {
-    private var matrix = Mat4()
+    private var matrix = Mat4f()
     var state: BlockState? = state
         set(value) {
             if (field == value) return

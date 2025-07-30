@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.physics.parts
 
+import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import glm_.vec3.swizzle.xz
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 
@@ -48,7 +48,7 @@ object CollisionMovementPhysics {
         if (movement.length2() < 1.0E-7) return movement
 
         val adjustedAABB = AABB(aabb)
-        val adjusted = Vec3d(movement)
+        val adjusted = MVec3d(movement)
 
         adjusted.y = checkMovement(Axes.Y, adjusted.y, true, adjustedAABB, collisions)
 
@@ -69,7 +69,7 @@ object CollisionMovementPhysics {
             return Vec3d.EMPTY // movement exceeds expected, some value gets invalid
         }
 
-        return adjusted
+        return adjusted.unsafe
     }
 
     fun EntityPhysics<*>.collide(movement: Vec3d): Vec3d {
@@ -90,11 +90,13 @@ object CollisionMovementPhysics {
     }
 
     private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: Vec3d, collisions: Shape): Vec3d {
-        val collided = movement.equal(collision)
+        val collidedX = movement.x.matches(collision.x) // TODO: currently not collided
+        val collidedY = movement.y.matches(collision.y)
+        val collidedZ = movement.z.matches(collision.z)
 
-        val grounded = this.onGround || collided.y && movement.y < 0.0
+        val grounded = this.onGround || collidedY && movement.y < 0.0
 
-        if (!grounded || !(collided.x || collided.z)) return collision
+        if (!grounded || !(collidedX || collidedZ)) return collision
 
         val stepHeight = stepHeight.toDouble()
 

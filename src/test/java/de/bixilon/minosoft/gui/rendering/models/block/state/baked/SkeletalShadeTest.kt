@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import glm_.func.rad
 import glm_.mat3x3.Mat3
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
@@ -52,7 +52,7 @@ class SkeletalShadeTest {
         return x + y + z
     }
 
-    fun transformNormal(normal: Vec3f, transform: Mat4): Vec3f {
+    fun transformNormal(normal: Vec3f, transform: Mat4f): Vec3f {
         //  return normalize(mat3(transpose(inverse(transform))) * normal);
         return (Mat3(transform) * normal).normalizeAssign()
     }
@@ -121,14 +121,14 @@ class SkeletalShadeTest {
 
     @Test
     fun `transform rotate Y 90deg`() {
-        val transform = Mat4().rotateYassign(90.0f.rad)
+        val transform = Mat4f().rotateYassign(90.0f.rad)
         val normal = Vec3f(0.0f, 1.0f, 0.0f)
         assertEquals(transformNormal(normal, transform), Vec3f(0.0f, 1.0f, 0.0f))
     }
 
     @Test
     fun `transform rotate Y 180deg`() {
-        val transform = Mat4().rotateYassign(180.0f.rad)
+        val transform = Mat4f().rotateYassign(180.0f.rad)
         val normal = Vec3f(0.0f, -1.0f, 0.0f)
         assertEquals(transformNormal(normal, transform), Vec3f(0.0f, -1.0f, 0.0f))
     }
@@ -136,21 +136,21 @@ class SkeletalShadeTest {
 
     @Test
     fun `transform rotate Y 90deg 2`() {
-        val transform = Mat4().rotateYassign(90.0f.rad)
+        val transform = Mat4f().rotateYassign(90.0f.rad)
         val normal = Vec3f(1.0f, 0.0f, 0.0f)
         assertEquals(transformNormal(normal, transform), Vec3f(0.0f, 0.0f, -1.0f))
     }
 
     @Test
     fun `transform rotate Y 180deg 2`() {
-        val transform = Mat4().rotateYassign(180.0f.rad)
+        val transform = Mat4f().rotateYassign(180.0f.rad)
         val normal = Vec3f(1.0f, 0.0f, 0.0f)
         assertEquals(transformNormal(normal, transform), Vec3f(-1.0f, 0.0f, 0.0f))
     }
 
     @Test
     fun `transform translated`() {
-        val transform = Mat4()
+        val transform = Mat4f()
             .translateAssign(Vec3f(123, 456, 789))
             .rotateYassign(180.0f.rad)
         val normal = Vec3f(1.0f, 0.0f, 0.0f)
@@ -159,7 +159,7 @@ class SkeletalShadeTest {
 
     @Test
     fun `transform translated scaled`() {
-        val transform = Mat4()
+        val transform = Mat4f()
             .scaleAssign(0.4f)
             .translateAssign(Vec3f(123, 456, 789))
             .rotateYassign(180.0f.rad)
@@ -169,7 +169,7 @@ class SkeletalShadeTest {
 
     @Test
     fun `somehow broken in the shader`() {
-        val transform = Mat4(-0.93298566, 0.0, 0.09189103, 0.0, -0.09186335, 0.023007425, -0.9327047, 0.0, -0.0022551212, -0.9372176, -0.02289664, 0.0, -455.2743, 95.37174, 618.4536, 1.0)
+        val transform = Mat4f(-0.93298566, 0.0, 0.09189103, 0.0, -0.09186335, 0.023007425, -0.9327047, 0.0, -0.0022551212, -0.9372176, -0.02289664, 0.0, -455.2743, 95.37174, 618.4536, 1.0)
         val expected = Vec3f(1.0f, 0.0f, 0.0f)
         val normal = transformNormal(expected, transform)
         assertEquals(normal, Vec3f(-1.0f, 0.0f, 0.0f))

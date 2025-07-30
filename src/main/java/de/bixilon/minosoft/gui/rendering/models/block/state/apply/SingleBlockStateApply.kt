@@ -141,7 +141,7 @@ data class SingleBlockStateApply(
     }
 
     private fun Vec2f.applyRotation(axis: Axes, data: FaceVertexData) {
-        val value = this[axis.ordinal]
+        val value = this[axis]
         if (value == 0.0f) return
         ElementRotation(axis = axis, angle = value).apply(data)
     }
@@ -169,7 +169,8 @@ data class SingleBlockStateApply(
                 uv = uv.pushRight(2, getTextureRotation(direction, rotatedX))
             }
 
-            val vec = Vec2f(0, uv)
+            val vec = Vec2f(0, uv) // TODO: vec offset
+
             for (ofs in 0 until 4) {
                 vec.ofs = ofs * 2
                 val transformed = texture.transformUV(vec)

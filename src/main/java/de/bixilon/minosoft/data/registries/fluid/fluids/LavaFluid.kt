@@ -59,17 +59,17 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         val y = physics.position.y
 
         physics.applyMovementInput(input, 0.02f)
-        physics.move(physics.velocity)
+        physics.move(physics.velocity.unsafe)
 
         if (physics.submersion[LavaFluid] > physics.swimHeight) {
             physics.applyFriction(FRICTION, FRICTION)
         } else {
             physics.applyFriction(FRICTION)
-            physics.applyFluidMovingSpeed(gravity, falling, physics.velocity)
+            physics.applyFluidMovingSpeed(gravity, falling, physics.velocity.unsafe)
         }
 
         if (physics.entity.hasGravity) {
-            physics.velocity = physics.velocity + Vec3d(0.0, -gravity / 4.0, 0.0)
+            physics.velocity.y += -gravity / 4.0
         }
 
         physics.applyBouncing(y)

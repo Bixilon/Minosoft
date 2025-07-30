@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 data class BlockInteractC2SP(
     val position: BlockPosition?,
     val direction: Directions?,
-    val cursorPosition: Vec3f?,
+    val cursorPosition: Vec3d?,
     val item: ItemStack?,
     val hand: Hands,
     val insideBlock: Boolean,
@@ -66,7 +67,7 @@ data class BlockInteractC2SP(
                 buffer.writeByte((cursorPosition.z * 15.0f).toInt())
             }
         } else {
-            buffer.writeVec3f(cursorPosition!!)
+            buffer.writeVec3f(Vec3f(cursorPosition!!))
         }
 
         if (buffer.versionId >= ProtocolVersions.V_19W03A) {

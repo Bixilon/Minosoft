@@ -24,12 +24,12 @@ class FallingBlockPhysics(entity: FallingBlockEntity) : EntityPhysics<FallingBlo
 
     private fun move() {
         if (entity.hasGravity) {
-            this.velocity = this.velocity + GRAVITY
+            this.velocity.y += GRAVITY
         }
 
-        this.move(this.velocity)
+        this.move()
 
-        this.velocity = this.velocity * PhysicsConstants.AIR_RESISTANCE
+        this.velocity *= PhysicsConstants.AIR_RESISTANCE
     }
 
     override fun tick() {
@@ -39,6 +39,6 @@ class FallingBlockPhysics(entity: FallingBlockEntity) : EntityPhysics<FallingBlo
     }
 
     companion object {
-        val GRAVITY = Vec3d(0.0, -0.04, 0.0)
+        const val GRAVITY = -0.04
     }
 }

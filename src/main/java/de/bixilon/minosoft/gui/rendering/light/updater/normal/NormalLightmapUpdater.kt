@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clampAssign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 import kotlin.math.pow
@@ -195,7 +195,7 @@ class NormalLightmapUpdater(
         if (strength <= 0.0f) {
             return color
         }
-        val max = maxOf(color.r, color.g, color.b)
+        val max = maxOf(color.x, color.y, color.z)
         if (max >= 1.0f) {
             return color
         }

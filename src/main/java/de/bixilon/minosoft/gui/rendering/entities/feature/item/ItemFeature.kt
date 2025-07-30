@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.item
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.EMPTY_INSTANCE
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
@@ -37,8 +36,8 @@ open class ItemFeature(
     val display: DisplayPositions,
     val many: Boolean = true,
 ) : MeshedFeature<BlockMesh>(renderer) {
-    private var matrix = Mat4()
-    private var displayMatrix: Mat4 = Mat4.EMPTY_INSTANCE
+    private var matrix = Mat4f()
+    private var displayMatrix = Mat4f.EMPTY
     private var distance: ItemRenderDistance? = null
     var stack: ItemStack? = stack
         set(value) {
@@ -72,7 +71,7 @@ open class ItemFeature(
         val distance = this.distance ?: return
         val model = stack.item.item.getModel(renderer.renderer.session) ?: return
         val display = model.getDisplay(display)
-        this.displayMatrix = display?.matrix ?: Mat4.EMPTY_INSTANCE
+        this.displayMatrix = display?.matrix ?: Mat4f.EMPTY
         val mesh = BlockMesh(renderer.renderer.context)
 
         val tint = renderer.renderer.context.tints.getItemTint(stack)
@@ -103,7 +102,7 @@ open class ItemFeature(
             .translateXAssign(-0.5f)
             .translateZAssign(-0.5f)
 
-        val next = Mat4(renderer.matrix)
+        val next = Mat4f(renderer.matrix)
         next *= displayMatrix
         next *= matrix
 
@@ -126,7 +125,7 @@ open class ItemFeature(
     }
 
     override fun unload() {
-        this.displayMatrix = Mat4.EMPTY_INSTANCE
+        this.displayMatrix = Mat4f.EMPTY
         super.unload()
     }
 

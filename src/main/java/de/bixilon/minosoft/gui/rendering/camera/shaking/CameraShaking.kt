@@ -13,19 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.shaking
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec3.swizzle.xz
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.time.Duration.Companion.milliseconds
 
 class CameraShaking(
     private val camera: Camera,
@@ -58,9 +55,9 @@ class CameraShaking(
         speed += 0.05f
     }
 
-    fun transform(): Mat4? {
+    fun transform(): Mat4f? {
         if (rotation == 0.0f) return null
-        return Mat4()
+        return Mat4f()
             .rotateAssign(rotation, Vec3f.Z)
     }
 }

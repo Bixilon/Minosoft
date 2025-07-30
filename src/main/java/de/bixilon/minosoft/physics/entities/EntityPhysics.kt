@@ -16,6 +16,7 @@ package de.bixilon.minosoft.physics.entities
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
+import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 import de.bixilon.minosoft.physics.handlers.movement.SneakAdjuster
@@ -100,7 +100,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     }
 
     open fun reset() {
-        this.velocity = Vec3d.EMPTY
+        this.velocity.clear()
     }
 
     fun getLandingPosition(): BlockPosition {
@@ -140,25 +140,27 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         if (multiplier.length2() <= 1.0E-7) return movement
 
         this.movementMultiplier = Vec3d.EMPTY
-        this.velocity = Vec3d.EMPTY
+        this.velocity.clear()
 
         return movement * multiplier
     }
 
     private fun updateCollision(movement: Vec3d, collision: Vec3d): Boolean {
-        val collided = !movement.equal(collision, DoubleUtil.DEFAULT_MARGIN)
-        this.horizontalCollision = collided.x || collided.z
+        val collidedX = !movement.x.matches(collision.x, DoubleUtil.DEFAULT_MARGIN)
+        val collidedY = !movement.y.matches(collision.y, DoubleUtil.DEFAULT_MARGIN)
+        val collidedZ = !movement.z.matches(collision.z, DoubleUtil.DEFAULT_MARGIN)
+        this.horizontalCollision = collidedX || collidedZ
 
-        this.onGround = collided.y && movement.y < 0.0
+        this.onGround = collidedY && movement.y < 0.0
 
         if (this.horizontalCollision) {
-            this.velocity = Vec3d(if (collided.x) 0.0 else velocity.x, velocity.y, if (collided.z) 0.0 else velocity.z)
+            this.velocity = Vec3d(if (collidedX) 0.0 else velocity.x, velocity.y, if (collidedZ) 0.0 else velocity.z)
         }
 
-        return collided.y
+        return collidedY
     }
 
-    open fun move(movement: Vec3d, pushed: Boolean = false) {
+    open fun move(movement: Vec3d = this.velocity.unsafe, pushed: Boolean = false) {
         var adjusted = movement
 
         adjusted = applyMovementMultiplier(adjusted)
@@ -205,8 +207,9 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     private fun applyVelocityMultiplier() {
         val multiplier = getVelocityMultiplier()
         if (multiplier == 1.0f) return
-        val velocity = velocity
-        this.velocity = Vec3d(velocity.x * multiplier, velocity.y, velocity.z * multiplier)
+
+        this.velocity.x *= multiplier
+        this.velocity.z *= multiplier
     }
 
     open fun slowMovement(state: BlockState, multiplier: Vec3d) {
@@ -223,7 +226,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     }
 
     open fun tickRiding() {
-        this.velocity = Vec3d.EMPTY
+        this.velocity.clear()
         entity.forceTick()
         val vehicle = entity.attachment.vehicle ?: return
 

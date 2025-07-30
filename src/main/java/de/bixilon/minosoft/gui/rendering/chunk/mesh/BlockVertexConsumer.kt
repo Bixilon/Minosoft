@@ -34,7 +34,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
-            val vertexOffset = position * Vec3f.length
+            val vertexOffset = position * Vec3f.LENGTH
 
 
             val aUV = Float.fromBits(uvData.raw[uv].toBits() or (ao[position] shl 24))
@@ -51,8 +51,8 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
-            val vertexOffset = position * Vec3f.length
-            val uvOffset = uv * Vec2f.length
+            val vertexOffset = position * Vec3f.LENGTH
+            val uvOffset = uv * Vec2f.LENGTH
             addVertex(
                 x = positions[vertexOffset], y = positions[vertexOffset + 1], z = positions[vertexOffset + 2],
                 u = uvData.raw[uvOffset],

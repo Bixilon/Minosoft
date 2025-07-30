@@ -55,9 +55,9 @@ object OutOfBlockPusher {
 
         val velocity = this.velocity
         if (pushed.axis == Axes.X) {
-            this.velocity = Vec3d(0.1 * pushed.vectord.x, velocity.y, velocity.z)
-        } else { // z
-            this.velocity = Vec3d(velocity.x, velocity.y, 0.1 * pushed.vectord.z)
+            this.velocity.x = 0.1 * pushed.vectord.x
+        } else {
+            this.velocity.z = 0.1 * pushed.vectord.z
         }
     }
 

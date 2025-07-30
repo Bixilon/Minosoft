@@ -57,7 +57,7 @@ open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, sett
 
     companion object : BlockFactory<CobwebBlock> {
         override val identifier = minecraft("cobweb")
-        val SLOW = Vec3d(0.25, 0.05f, 0.25)
+        val SLOW = Vec3d(0.25, 0.05, 0.25)
 
         override fun build(registries: Registries, settings: BlockSettings) = CobwebBlock(settings = settings)
     }

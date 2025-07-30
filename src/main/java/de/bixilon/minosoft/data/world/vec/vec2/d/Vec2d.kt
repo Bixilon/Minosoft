@@ -22,24 +22,24 @@ import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.times
 import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f._Vec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
 import glm_.d
+import glm_.f
 import kotlin.math.sqrt
 
 @JvmInline
 value class Vec2d(
-    override val unsafe: UnsafeVec2d,
+    private val _0: UnsafeVec2d,
 ) : _Vec2d {
-    override val x get() = unsafe.x
-    override val y get() = unsafe.y
+    override val x get() = _0.x
+    override val y get() = _0.y
 
     constructor(x: Double, y: Double = x) : this(UnsafeVec2d(x, y))
     constructor(x: Float, y: Float = x) : this(x.d, y.d)
     constructor(x: Int, y: Int = x) : this(x.d, y.d)
 
-    constructor(other: Vec2f) : this(other.x, other.y)
-    constructor(other: MVec2f) : this(other.x, other.y)
-    constructor(other: Vec2d) : this(other.x, other.y)
-    constructor(other: MVec2d) : this(other.x, other.y)
+    val unsafe get() = MVec2d(_0)
+
 
     inline operator fun plus(other: _Vec2f) = Vec2d(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2f) = Vec2d(this.x - other.x, this.y - other.y)
@@ -79,7 +79,15 @@ value class Vec2d(
     }
 
     companion object {
+        const val LENGTH = 2
         val EMPTY = Vec2d(0)
+
+
+        @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
+        inline operator fun invoke(other: Vec2d) = other
+        inline operator fun invoke(other: _Vec2d) = Vec2d(other.x.d, other.y.d)
+        inline operator fun invoke(other: _Vec2f) = Vec2d(other.x.d, other.y.d)
+        inline operator fun invoke(other: _Vec2i) = Vec2d(other.x.d, other.y.d)
 
         operator fun invoke() = EMPTY
     }

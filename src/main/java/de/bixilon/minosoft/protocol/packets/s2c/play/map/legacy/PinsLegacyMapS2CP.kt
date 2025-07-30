@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.map.legacy
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
 import de.bixilon.minosoft.data.world.map.MapPinTypes
@@ -31,7 +32,7 @@ class PinsLegacyMapS2CP(
         val pins: MutableMap<Vec2i, MapPin> = mutableMapOf()
         for (i in 0 until buffer.size / 3) {
             val rawDirection = buffer.readUnsignedByte()
-            val position = Vec2i(buffer.readByte(), buffer.readByte())
+            val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
 
             val direction = rawDirection shr 4
             val type = MapPinTypes[rawDirection and 0x0F]

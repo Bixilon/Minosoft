@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class LineSpacerElement(
     guiRenderer: GUIRenderer,

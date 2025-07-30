@@ -40,10 +40,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.invoke
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotate
 import de.bixilon.minosoft.util.KUtil.isTrue
 import kotlin.math.atan2
 
@@ -125,7 +123,7 @@ class FluidSectionMesher(
 
                     if (cornerHeights[0] <= 1.0f && !skip[Directions.O_UP]) {
                         val velocity = fluid.getVelocity(state, position, chunk)
-                        val still = velocity.x == 0.0 && velocity.z == 0.0
+                        val still = velocity == null || velocity.x == 0.0 && velocity.z == 0.0
                         val texture: Texture
                         val minUV = Vec2f.EMPTY
                         val maxUV = Vec2f(if (still) 1.0f else 0.5f) // Minecraft just uses half of the sprite
@@ -144,7 +142,7 @@ class FluidSectionMesher(
                             texture = model.flowing
                             maxUV.x = 0.5f
 
-                            val atan = atan2(velocity.x, velocity.z).toFloat()
+                            val atan = atan2(velocity!!.x, velocity.z).toFloat()
                             val sin = atan.sin
                             val cos = atan.cos
 

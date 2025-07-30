@@ -27,28 +27,27 @@ import kotlin.math.sqrt
 
 @JvmInline
 value class MVec2d(
-    override val unsafe: UnsafeVec2d,
+    private val _0: UnsafeVec2d,
 ) : _Vec2d {
     override var x: Double
-        get() = unsafe.x
+        get() = _0.x
         set(value) {
-            unsafe.x = value
+            _0.x = value
         }
     override var y: Double
-        get() = unsafe.y
+        get() = _0.y
         set(value) {
-            unsafe.y = value
+            _0.y = value
         }
+
 
     constructor() : this(0)
     constructor(x: Double, y: Double = x) : this(UnsafeVec2d(x, y))
     constructor(x: Float, y: Float = x) : this(x.d, y.d)
     constructor(x: Int, y: Int = x) : this(x.d, y.d)
 
-    constructor(other: Vec2f) : this(other.x, other.y)
-    constructor(other: MVec2f) : this(other.x, other.y)
-    constructor(other: Vec2d) : this(other.x, other.y)
-    constructor(other: MVec2d) : this(other.x, other.y)
+
+    val unsafe get() = Vec2d(_0)
 
     inline operator fun plus(other: _Vec2f) = MVec2d(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2f) = MVec2d(this.x - other.x, this.y - other.y)
@@ -96,7 +95,7 @@ value class MVec2d(
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalizeAssign() = apply { this *= length() }
 
 
     override fun toString(): String = "($x $y)"

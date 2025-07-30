@@ -13,22 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet.scatter
 
-import glm_.func.rad
-import glm_.mat4x4.Mat4
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
-import glm_.vec4.swizzle.xyz
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
+import glm_.func.rad
+import glm_.vec4.Vec4
+import glm_.vec4.swizzle.xyz
 import kotlin.math.abs
 
 class SunScatterRenderer(
@@ -37,16 +37,14 @@ class SunScatterRenderer(
 ) : SkyChildRenderer {
     private val shader = sky.renderSystem.createShader(minosoft("sky/scatter/sun")) { SunScatterShader(it) }
     private val mesh = SunScatterMesh(sky.context)
-    private var matrix = Mat4()
+    private var matrix = Mat4f()
     private var timeUpdate = true
-    private var skyMatrix = Mat4()
+    private var skyMatrix = Mat4f()
 
-    private fun calculateMatrix(skyMatrix: Mat4) {
-        val matrix = Mat4(skyMatrix)
+    private fun calculateMatrix(skyMatrix: Mat4f) {
 
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
-
-        this.matrix = matrix
+        this.matrix = skyMatrix
+            .rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
     }
 
     override fun init() {
@@ -64,7 +62,7 @@ class SunScatterRenderer(
     }
 
     private fun calculateSunPosition(): Vec3f {
-        val matrix = Mat4()
+        val matrix = Mat4f()
         matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
 
         val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f)

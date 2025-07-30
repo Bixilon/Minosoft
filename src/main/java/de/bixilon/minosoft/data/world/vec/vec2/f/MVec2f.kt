@@ -19,36 +19,51 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
 import glm_.f
+import glm_.i
 import kotlin.math.sqrt
 
 @JvmInline
 value class MVec2f(
-    override val unsafe: UnsafeVec2f,
+    private val _0: UnsafeVec2f,
 ) : _Vec2f {
     override var x: Float
-        get() = unsafe.x
+        get() = _0.x
         set(value) {
-            unsafe.x = value
+            _0.x = value
         }
     override var y: Float
-        get() = unsafe.y
+        get() = _0.y
         set(value) {
-            unsafe.y = value
+            _0.y = value
         }
 
     constructor() : this(0)
     constructor(x: Float, y: Float = x) : this(UnsafeVec2f(x, y))
     constructor(x: Int, y: Int = x) : this(x.f, y.f)
 
-    constructor(other: Vec2f) : this(other.x, other.y)
-    constructor(other: MVec2f) : this(other.x, other.y)
+    val unsafe get() = Vec2f(_0)
+
+
+    inline operator fun plus(other: _Vec2i) = MVec2f(this.x + other.x, this.y + other.y)
+    inline operator fun minus(other: _Vec2i) = MVec2f(this.x - other.x, this.y - other.y)
+    inline operator fun times(other: _Vec2i) = MVec2f(this.x * other.x, this.y * other.y)
+    inline operator fun div(other: _Vec2i) = MVec2f(this.x / other.x, this.y / other.y)
+    inline operator fun rem(other: _Vec2i) = MVec2f(this.x % other.x, this.y % other.y)
 
     inline operator fun plus(other: _Vec2f) = MVec2f(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2f) = MVec2f(this.x - other.x, this.y - other.y)
     inline operator fun times(other: _Vec2f) = MVec2f(this.x * other.x, this.y * other.y)
     inline operator fun div(other: _Vec2f) = MVec2f(this.x / other.x, this.y / other.y)
     inline operator fun rem(other: _Vec2f) = MVec2f(this.x % other.x, this.y % other.y)
+
+    inline operator fun plusAssign(other: _Vec2i): Unit = let { this.x += other.x; this.y += other.y }
+    inline operator fun minusAssign(other: _Vec2i): Unit = let { this.x -= other.x; this.y -= other.y }
+    inline operator fun timesAssign(other: _Vec2i): Unit = let { this.x *= other.x; this.y *= other.y }
+    inline operator fun divAssign(other: _Vec2i): Unit = let { this.x /= other.x; this.y /= other.y }
+    inline operator fun remAssign(other: _Vec2i): Unit = let { this.x %= other.x; this.y %= other.y }
 
     inline operator fun plusAssign(other: _Vec2f): Unit = let { this.x += other.x; this.y += other.y }
     inline operator fun minusAssign(other: _Vec2f): Unit = let { this.x -= other.x; this.y -= other.y }
@@ -78,7 +93,7 @@ value class MVec2f(
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalizeAssign() = apply { this *= length() }
 
 
     override fun toString(): String = "($x $y)"
@@ -100,5 +115,8 @@ value class MVec2f(
 
     companion object {
         val EMPTY get() = MVec2f(0)
+
+        inline operator fun Companion.invoke(other: _Vec2i) = MVec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2f) = MVec2f(other.x.i, other.y.i)
     }
 }

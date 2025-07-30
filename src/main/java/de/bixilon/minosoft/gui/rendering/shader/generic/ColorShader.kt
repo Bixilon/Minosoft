@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.generic
 
-import glm_.mat4x4.Mat4
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -21,5 +21,5 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 class ColorShader(
     override val native: NativeShader,
 ) : Shader(), ViewProjectionShader {
-    override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
+    override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
 }

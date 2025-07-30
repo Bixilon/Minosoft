@@ -19,6 +19,7 @@ import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2f, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
-    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2f(300, TextRenderProperties.DEFAULT.lineHeight) } }
+    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2f(300.0f, TextRenderProperties.DEFAULT.lineHeight) } }
     private var textCount = 0
     private var offset = 0
     var suggestions: List<Suggestion>? = null
@@ -73,12 +74,12 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2f, val inpu
                 break
             }
 
-            suggestion.render(offset + Vec2f(0, index * TextRenderProperties.DEFAULT.lineHeight), consumer, options)
+            suggestion.render(offset + Vec2f(0.0f, index * TextRenderProperties.DEFAULT.lineHeight), consumer, options)
         }
     }
 
     private fun updateSuggestions(suggestions: List<Suggestion>) {
-        val size = Vec2f()
+        val size = MVec2f()
         var textCount = 0
         val offset = offset
 
@@ -103,7 +104,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2f, val inpu
             textCount++
         }
         this.textCount = textCount
-        this._size = size
+        this._size = size.unsafe
         forceSilentApply()
     }
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.map
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
 import de.bixilon.minosoft.data.world.map.MapPinTypes
@@ -44,7 +45,7 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         for (i in 0 until pinCount) {
             if (buffer.versionId < V_18W19A) {
                 val rawDirection = buffer.readUnsignedByte()
-                val position = Vec2i(buffer.readByte(), buffer.readByte())
+                val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
 
                 val direction: Int
                 val type: MapPinTypes
@@ -60,7 +61,7 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 continue
             }
             val type = MapPinTypes[buffer.readVarInt()]
-            val position = Vec2i(buffer.readByte(), buffer.readByte())
+            val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
             val direction = buffer.readUnsignedByte()
             val displayName = buffer.readOptional { buffer.readChatComponent() }
             pins[position] = MapPin(direction, type, displayName)

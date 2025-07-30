@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Compa
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotateAssign
 
 data class SkeletalFace(
     val uv: FaceUV? = null,
@@ -45,17 +45,17 @@ data class SkeletalFace(
         ).toArray(direction, 0)
 
 
-        val normal = Vec3f(direction.vectorf)
+        val normal = direction.vectorf
 
         if (context.rotation != null) {
             val origin = context.rotation.origin?.div(BLOCK_SIZE) ?: ((to + from) / 2.0f)
 
             val rad = -context.rotation.value.rad
-            val vec = Vec3f(0, positions)
+            val vec = Vec3f(0, positions)  // TODO: vec offset
             normal.rotateAssign(rad)
 
             for (i in 0 until 4) {
-                vec.ofs = i * Vec3f.length
+                vec.ofs = i * Vec3f.LENGTH
                 vec.rotateAssign(rad, origin, false)
             }
         }

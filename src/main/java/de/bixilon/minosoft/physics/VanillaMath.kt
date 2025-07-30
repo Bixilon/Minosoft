@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.physics
 
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 
 object VanillaMath {
 
-    fun Vec3d.vanillaNormalizeAssign() {
+    fun MVec3d.vanillaNormalizeAssign() {
         val length = this.length()
         x /= length
         y /= length

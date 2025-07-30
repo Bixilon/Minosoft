@@ -18,11 +18,9 @@ import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3ft
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 @Deprecated(message = "Use VecXUtil instead")
@@ -122,10 +120,10 @@ object VecUtil {
     }
 
     inline infix operator fun Vec3i.plus(vec2: Vec2i?): Vec3i {
-        if (Vec2f == null) {
+        if (vec2 == null) {
             return this
         }
-        return Vec3i((x + Vec2f.x), y, (z + Vec2f.y))
+        return Vec3i((x + vec2.x), y, (z + vec2.y))
     }
 
     inline infix operator fun Vec3i.plus(direction: Directions?): Vec3i {

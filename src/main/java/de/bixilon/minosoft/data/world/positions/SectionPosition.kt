@@ -16,12 +16,13 @@ package de.bixilon.minosoft.data.world.positions
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class SectionPosition(
     val raw: Long,
-) : TextFormattable {
+) : _Vec3i {
 
     constructor() : this(0, 0, 0)
 
@@ -31,9 +32,9 @@ value class SectionPosition(
         assertPosition(z, -MAX_Z, MAX_Z)
     }
 
-    inline val x: Int get() = (((raw ushr SHIFT_X).toInt() and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
-    inline val y: SectionHeight get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
-    inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
+    override inline val x: Int get() = (((raw ushr SHIFT_X).toInt() and MASK_X) shl (Int.SIZE_BITS - BITS_X)) shr (Int.SIZE_BITS - BITS_X)
+    override inline val y: SectionHeight get() = (((raw ushr SHIFT_Y).toInt() and MASK_Y) shl (Int.SIZE_BITS - BITS_Y)) shr (Int.SIZE_BITS - BITS_Y)
+    override inline val z: Int get() = (((raw ushr SHIFT_Z).toInt() and MASK_Z) shl (Int.SIZE_BITS - BITS_Z)) shr (Int.SIZE_BITS - BITS_Z)
 
 
     inline fun modify(other: Long, component: Long, add: Long): SectionPosition {
@@ -119,16 +120,15 @@ value class SectionPosition(
     inline operator fun unaryPlus() = this
 
 
-    inline operator fun component1() = x
-    inline operator fun component2() = y
-    inline operator fun component3() = z
+    override inline operator fun component1() = x
+    override inline operator fun component2() = y
+    override inline operator fun component3() = z
 
     inline fun length2() = (x * x + y * y + z * z)
 
     inline fun sectionIndex(minSection: SectionHeight): SectionIndex = this.y - minSection
     inline val chunkPosition get() = ChunkPosition(x, z)
 
-    override fun toText() = "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
     override fun toString() = "c($x $y $z)"
 
 

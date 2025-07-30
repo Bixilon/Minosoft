@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.inst
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateSine
 import java.util.*
 
 abstract class Vec3KeyframeInstance(

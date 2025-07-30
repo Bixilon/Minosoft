@@ -27,7 +27,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
     constructor(red: Int, green: Int, blue: Int) : this(((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
 
     constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
-    constructor(rgb: Vec3f) : this(rgb.r, rgb.g, rgb.b)
+    constructor(rgb: Vec3f) : this(rgb.x, rgb.y, rgb.z)
 
     override inline val red: Int get() = (rgb ushr RED_SHIFT) and MASK
     override inline val green: Int get() = (rgb ushr GREEN_SHIFT) and MASK
@@ -79,7 +79,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
         const val BLUE_SHIFT = 0 * BITS
 
 
-        fun Vec3f.color() = RGBColor(r, g, b)
+        fun Vec3f.color() = RGBColor(this)
         fun Int.rgb() = RGBColor(this)
 
         fun String.rgb(): RGBColor {

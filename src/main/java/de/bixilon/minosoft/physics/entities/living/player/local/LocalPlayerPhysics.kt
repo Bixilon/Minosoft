@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.physics.handlers.movement.SneakAdjuster
 import de.bixilon.minosoft.physics.input.MovementInput
@@ -101,7 +101,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         if (entity.abilities.flying) return false
         if (!onGround) return false
 
-        return (fallDistance < stepHeight && !entity.session.world.isSpaceEmpty(entity, aabb.offset(Vec3d(0.0, fallDistance - stepHeight, 0.0)), positionInfo.chunk))
+        return (fallDistance < stepHeight && !entity.session.world.isSpaceEmpty(entity, aabb.offset(Vec3d(0.0, fallDistance.toDouble() - stepHeight, 0.0)), positionInfo.chunk))
     }
 
     fun wouldCollideAt(position: BlockPosition, predicate: CollisionPredicate? = null): Boolean {
@@ -210,12 +210,12 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         val movement = entity.input.upwards
 
         if (movement == 0.0f) return
-       this.velocity = velocity + Vec3d(0.0, movement * entity.abilities.flyingSpeed * 3.0f, 0.0)
+        this.velocity += Vec3d(0.0, movement * entity.abilities.flyingSpeed * 3.0, 0.0)
     }
 
     private fun sink() {
         if (submersion[WaterFluid] <= 0.0 || !entity.input.sneak || !canJumpOrSwim) return
-        this.velocity = velocity + Vec3d(0.0, -0.04f, 0.0)
+        this.velocity += Vec3d(0.0, -0.04, 0.0)
     }
 
     override fun tickMovement() {
@@ -257,9 +257,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
 
         if (pitch <= 0.0 || input.jumping || (fluid != null && fluid.block is FluidHolder)) {
             val speed = if (pitch < -0.2) 0.085 else 0.06
-            val velocity = Vec3d(velocity)
-            velocity.y += (pitch - velocity.y) * speed
-            this.velocity = velocity
+            this.velocity.y += (pitch - velocity.y) * speed
         }
 
         super.travel(input)
@@ -275,8 +273,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         }
 
         super.travel(input)
-        val velocity = velocity
-        this.velocity = Vec3d(velocity.x, upwards, velocity.z)
+        this.velocity.y = upwards
 
 
         this.airSpeed = previousAirSpeed

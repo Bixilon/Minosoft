@@ -19,40 +19,42 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
+import de.bixilon.minosoft.data.world.vec.vec3.f.UnsafeVec3f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import glm_.f
 import kotlin.math.sqrt
 
 @JvmInline
 value class MVec4f(
-    override val unsafe: UnsafeVec4f,
+    private val _0: UnsafeVec4f,
 ) : _Vec4f {
     override var x: Float
-        get() = unsafe.x
+        get() = _0.x
         set(value) {
-            unsafe.x = value
+            _0.x = value
         }
     override var y: Float
-        get() = unsafe.y
+        get() = _0.y
         set(value) {
-            unsafe.y = value
+            _0.y = value
         }
     override var z: Float
-        get() = unsafe.z
+        get() = _0.z
         set(value) {
-            unsafe.z = value
+            _0.z = value
         }
     override var w: Float
-        get() = unsafe.w
+        get() = _0.w
         set(value) {
-            unsafe.w = value
+            _0.w = value
         }
 
     constructor() : this(0)
-    constructor(x: Float, y: Float = x, z: Float = x, w: Float = x) : this(UnsafeVec4f(x, y, z, w))
-    constructor(x: Int, y: Int = x, z: Int = x, w: Int = x) : this(x.f, y.f, z.f, w.f)
+    constructor(xyzw: Float) : this(xyzw, xyzw, xyzw, xyzw)
+    constructor(x: Float, y: Float, z: Float, w: Float) : this(UnsafeVec4f(x, y, z, w))
 
-    constructor(other: Vec4f) : this(other.x, other.y, other.z, other.w)
-    constructor(other: MVec4f) : this(other.x, other.y, other.z, other.w)
+    constructor(xyzw: Int) : this(xyzw.f)
+    constructor(x: Int, y: Int, z: Int, w: Int) : this(x.f, y.f, z.f, w.f)
 
 
     inline operator fun plus(other: _Vec4f) = MVec4f(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w)
@@ -89,7 +91,7 @@ value class MVec4f(
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y + z * z + w * w
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalizeAssign() = apply { this *= length() }
 
     inline fun put(other: _Vec4f) {
         this.x = other.x
@@ -99,6 +101,9 @@ value class MVec4f(
     }
 
     inline fun invoke(other: _Vec4f) = put(other)
+
+
+    val xyz get() = Vec3f(x, y, z)
 
 
     override fun toString(): String = "($x $y $z $w)"
@@ -120,5 +125,7 @@ value class MVec4f(
 
     companion object {
         val EMPTY get() = MVec4f(0)
+
+        inline operator fun invoke(other: _Vec4f) = MVec4f(other.x.f, other.y.f, other.z.f, other.w.f)
     }
 }

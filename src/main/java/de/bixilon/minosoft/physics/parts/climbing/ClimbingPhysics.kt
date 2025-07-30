@@ -46,16 +46,14 @@ object ClimbingPhysics {
             velocity.y = 0.0
         }
 
-       this.velocity = velocity
+        this.velocity = velocity.unsafe
     }
 
     fun LivingEntityPhysics<*>.applyClimbingSpeed() {
         if (!horizontalCollision && !input.jumping) return
         if (!isClimbing() && (positionInfo.block?.block !is PowderSnowBlock || !entity.canWalkOnPowderSnow())) return
 
-        val velocity = this.velocity
-
-        this.velocity = Vec3d(velocity.x, UPWARDS, velocity.z)
+        this.velocity.y = UPWARDS
     }
 
     fun LivingEntityPhysics<*>.isClimbing(): Boolean {

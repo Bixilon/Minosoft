@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.physics.entities
 
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 
 abstract class BasicPhysicsEntity {
     var position = Vec3d.EMPTY
         protected set
-    open var velocity = Vec3d.EMPTY
+    val velocity = MVec3d.EMPTY
 
     open fun preTick() {}
     open fun tick() {}

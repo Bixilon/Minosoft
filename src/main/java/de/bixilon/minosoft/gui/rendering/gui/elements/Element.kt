@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
@@ -147,7 +146,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      * @return The number of z layers used
      */
     open fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val offset = Vec2f(offset)
+        val offset = offset(offset)
         var directRendering = false
         if (consumer is GUIMesh && consumer.data == cache.data) {
             directRendering = true
@@ -165,7 +164,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize !== guiRenderer.halfSize) {
             this.cache.clear()
             cache.halfSize = guiRenderer.halfSize
-            cache.offset = Vec2f(offset)
+            cache.offset = offset(offset)
             cache.options = options
             forceRender(offset, cache, options)
             cacheUpToDate = true
