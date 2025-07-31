@@ -70,7 +70,6 @@ val ikonliVersion = getProperty("ikonli.version")
 val nettyVersion = getProperty("netty.version")
 val jacksonVersion = getProperty("jackson.version")
 val kutilVersion = getProperty("kutil.version")
-val glmVersion = getProperty("glm.version")
 
 val updates = properties["minosoft.updates"]?.toBoolean() ?: false
 
@@ -218,7 +217,6 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("io.github.kotlin-graphics:glm:$glmVersion")
                 implementation("it.unimi.dsi:fastutil-core:8.5.16")
 
                 implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
@@ -276,7 +274,6 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("io.github.kotlin-graphics:glm:$glmVersion")
             }
 
             targets {
@@ -374,7 +371,6 @@ dependencies {
     implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.16")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
-    implementation("io.github.kotlin-graphics", "glm", glmVersion)
 
 
     // ikonli
