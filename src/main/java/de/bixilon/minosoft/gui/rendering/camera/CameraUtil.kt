@@ -14,8 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.math.tan
@@ -36,7 +35,7 @@ object CameraUtil {
         return res
     }
 
-    fun lookAt(eye: Vec3, center: Vec3, up: Vec3): Mat4f {
+    fun lookAt(eye: Vec3f, center: Vec3f, up: Vec3f): Mat4f {
         // f = normalize(center - eye)
         var fX = center.x - eye.x
         var fY = center.y - eye.y

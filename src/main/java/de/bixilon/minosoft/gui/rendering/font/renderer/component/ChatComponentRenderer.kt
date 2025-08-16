@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -55,15 +56,16 @@ interface ChatComponentRenderer<T : ChatComponent> {
         }
 
         fun render3d(context: RenderContext, position: Vec3f, properties: TextRenderProperties, rotation: Vec3f, maxSize: Vec2f, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
-            val matrix = Mat4f()
-                .translateAssign(position)
-                .rotateRadAssign(rotation)
-                .translateAssign(Vec3f(0, 0, -1))
+            val matrix = MMat4f().apply {
+                translateAssign(position)
+                rotateRadAssign(rotation)
+                translateAssign(Vec3f(0, 0, -1))
+            }
 
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
 
-            val consumer = WorldGUIConsumer(mesh, matrix, light)
+            val consumer = WorldGUIConsumer(mesh, matrix.unsafe, light)
             return render3d(context, properties, maxSize, consumer, text, null)
         }
 

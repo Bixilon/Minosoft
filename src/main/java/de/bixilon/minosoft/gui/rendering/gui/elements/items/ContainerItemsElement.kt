@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -51,7 +52,7 @@ class ContainerItemsElement(
     init {
         silentApply()
 
-        val size = Vec2f.EMPTY
+        val size = MVec2f.EMPTY
         for ((slotId, binding) in slots) {
             val item = container[slotId]
             itemElements[slotId] = ItemElementData(
@@ -67,7 +68,7 @@ class ContainerItemsElement(
             size.x = maxOf(binding.end.x, size.x)
             size.y = maxOf(binding.end.y, size.y)
         }
-        this._size = size
+        this._size = size.unsafe
 
         container::revision.observe(this) { update = true; }
         container::floatingItem.observe(this) {

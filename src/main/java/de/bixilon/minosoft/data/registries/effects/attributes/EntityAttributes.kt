@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import glm_.func.common.clamp
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeContainer
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeContainerUpdate
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeModifier

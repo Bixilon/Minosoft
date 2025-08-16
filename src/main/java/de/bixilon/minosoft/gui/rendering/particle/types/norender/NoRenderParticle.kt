@@ -15,12 +15,13 @@ package de.bixilon.minosoft.gui.rendering.particle.types.norender
 
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-abstract class NoRenderParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData?) : Particle(session, position, velocity, data) {
+abstract class NoRenderParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData?) : Particle(session, position, velocity, data) {
 
     override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) = Unit
 }

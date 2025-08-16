@@ -87,7 +87,7 @@ class RawItemElement(
         }
 
         val countSize = countText.size
-        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
+        countText.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
     }
 
     override fun forceSilentApply() {

@@ -73,7 +73,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        title.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
+        title.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0.0f), consumer, options)
         subtitle.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
     }
 

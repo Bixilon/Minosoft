@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -30,7 +31,7 @@ class EntityEffectParticle(session: PlaySession, position: Vec3d, color: RGBACol
     companion object : ParticleFactory<EntityEffectParticle> {
         override val identifier: ResourceLocation = "minecraft:entity_effect".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): EntityEffectParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): EntityEffectParticle {
             return EntityEffectParticle(session, position, color = RGBAColor(velocity.x.toFloat(), velocity.y.toFloat(), velocity.z.toFloat()), data)
         }
     }

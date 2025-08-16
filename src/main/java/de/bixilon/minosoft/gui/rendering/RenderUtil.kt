@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderConstants.UV_ADD
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -42,17 +43,13 @@ object RenderUtil {
         }
     }
 
-    fun Vec2f.fixUVStart(): Vec2f {
+    fun MVec2f.fixUVStart() {
         if (x < 1.0f - UV_ADD && x > 0.0f) x += UV_ADD
         if (y < 1.0f - UV_ADD && y > 0.0f) y += UV_ADD
-
-        return this
     }
 
-    fun Vec2f.fixUVEnd(): Vec2f {
+    fun MVec2f.fixUVEnd() {
         if (x < 1.0f && x > UV_ADD) x -= UV_ADD
         if (y < 1.0f && y > UV_ADD) y -= UV_ADD
-
-        return this
     }
 }

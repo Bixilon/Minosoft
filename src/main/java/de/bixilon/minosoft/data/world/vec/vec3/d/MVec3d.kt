@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.data.world.vec.vec3.d
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.vec2.d.MVec2d
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
-import glm_.d
+import de.bixilon.minosoft.util.d
 import kotlin.math.sqrt
 
 @JvmInline
@@ -89,6 +90,14 @@ value class MVec3d(
     inline operator fun divAssign(other: _Vec3d): Unit = let { this.x /= other.x; this.y /= other.y; this.z /= other.z }
     inline operator fun remAssign(other: _Vec3d): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
 
+    inline operator fun plus(direction: Directions) = this + direction.vector
+    inline operator fun minus(direction: Directions) = this - direction.vector
+    inline operator fun times(direction: Directions) = this * direction.vector
+
+    inline operator fun plusAssign(direction: Directions) = let { this += direction.vector }
+    inline operator fun minusAssign(direction: Directions) = let { this -= direction.vector }
+    inline operator fun timesAssign(direction: Directions) = let { this *= direction.vector }
+
 
     inline operator fun plus(other: Number) = MVec3d(this.x + other.d, this.y + other.d, this.z + other.d)
     inline operator fun minus(other: Number) = MVec3d(this.x - other.d, this.y - other.d, this.z - other.d)
@@ -128,7 +137,7 @@ value class MVec3d(
 
     inline operator fun invoke(other: _Vec3d) = put(other)
 
-    inline infix fun dot(other: _Vec3d) = this * other
+    inline infix fun dot(other: _Vec3d) = this.x * other.x + this.y * other.y + this.z + other.z
     inline infix fun cross(other: _Vec3d) = MVec3d(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,

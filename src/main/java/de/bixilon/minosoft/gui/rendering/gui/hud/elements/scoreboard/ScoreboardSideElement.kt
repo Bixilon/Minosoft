@@ -71,7 +71,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         backgroundElement.render(offset, consumer, options)
         nameBackgroundElement.render(offset, consumer, options)
 
-        nameElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), consumer, options)
+        nameElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0.0f), consumer, options)
         offset.y += TEXT_PROPERTIES.lineHeight
 
         this.scores.lock.acquire()
@@ -215,8 +215,8 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         override val identifier: ResourceLocation = "minosoft:scoreboard".toResourceLocation()
         val TEXT_PROPERTIES = TextRenderProperties()
         const val MAX_SCORES = 15
-        const val MIN_WIDTH = 30
-        const val MAX_SCOREBOARD_WIDTH = 200
+        const val MIN_WIDTH = 30.0f
+        const val MAX_SCOREBOARD_WIDTH = 200.0f
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ScoreboardSideElement> {
             return LayoutedGUIElement(ScoreboardSideElement(guiRenderer))

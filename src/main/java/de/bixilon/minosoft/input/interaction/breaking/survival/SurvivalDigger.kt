@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.input.interaction.breaking.survival
 
-import glm_.pow
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
@@ -76,7 +75,7 @@ class SurvivalDigger(
 
         if (toolSpeed > 1.0f) {
             stack?._enchanting?.enchantments?.get(MiningEnchantment.Efficiency)?.let {
-                speed += it.pow(2) + 1.0f
+                speed += it * it + 1.0f
             }
         }
 

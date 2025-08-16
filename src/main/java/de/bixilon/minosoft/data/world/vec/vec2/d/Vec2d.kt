@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f._Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
-import glm_.d
-import glm_.f
+import de.bixilon.minosoft.util.d
+import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
@@ -69,7 +69,7 @@ value class Vec2d(
 
     override fun toString(): String = "($x $y)"
 
-    inline fun mut() = MVec2d(x, y)
+    inline fun mutable() = MVec2d(x, y)
 
 
     inline operator fun get(axis: Axes) = when (axis) {

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.physics.submersion
 
-import glm_.func.common.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -91,7 +91,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
     private fun updateVelocity(fluid: Fluid, update: FluidUpdate, normalize: Boolean) {
         if (update.velocity.length2() <= 0.0) return
         val speed = fluid.getVelocityMultiplier(physics.entity.session)
-        val velocity = update.velocity.mut()
+        val velocity = update.velocity.mutable()
         velocity *= 1.0 / update.count
         if (normalize) {
             velocity.vanillaNormalizeAssign()

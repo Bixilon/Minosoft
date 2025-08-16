@@ -141,13 +141,13 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onMouseMove(position: Vec2f): Boolean {
-        lastPosition = position(position)
+        lastPosition = position
         return element.onMouseMove(position, position)
     }
 
     override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
         val mouseButton = MouseButtons[code] ?: return element.onKey(code, change)
-        val position = (lastPosition ?: return false)(lastPosition ?: return false)
+        val position = (lastPosition ?: return false)
 
         val mouseAction = MouseActions[change] ?: return false
 
@@ -155,12 +155,12 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onScroll(scrollOffset: Vec2f): Boolean {
-        val position = (lastPosition ?: return false)(lastPosition ?: return false)
+        val position = (lastPosition ?: return false)
         return element.onScroll(position, scrollOffset)
     }
 
     override fun onDragMove(position: Vec2f, dragged: Dragged): Element? {
-        lastDragPosition = position(position)
+        lastDragPosition = position
         if (!this.dragged) {
             this.dragged = true
             return element.onDragEnter(position, position, dragged)
@@ -170,7 +170,7 @@ open class GUIMeshElement<T : Element>(
 
     override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
         val mouseButton = MouseButtons[key] ?: return element.onDragKey(key, type, dragged)
-        val position = (lastDragPosition ?: return null)(lastDragPosition ?: return null)
+        val position = (lastDragPosition ?: return null)
 
         val mouseAction = MouseActions[type] ?: return null
 
@@ -178,7 +178,7 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onDragScroll(scrollOffset: Vec2f, dragged: Dragged): Element? {
-        return element.onDragScroll((lastDragPosition ?: return null)(lastDragPosition ?: return null), scrollOffset, dragged)
+        return element.onDragScroll(lastDragPosition ?: return null, scrollOffset, dragged)
     }
 
     override fun onDragChar(char: Int, dragged: Dragged): Element? {

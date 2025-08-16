@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
-import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
@@ -27,9 +27,9 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
+import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BillboardTextFeature(
@@ -39,7 +39,7 @@ open class BillboardTextFeature(
 ) : MeshedFeature<BillboardTextMesh>(renderer) {
     override val priority: Int get() = 10000
     private var info: TextRenderInfo? = null
-    private var matrix = Mat4f()
+    private var matrix = MMat4f()
     var text: ChatComponent? = text
         set(value) {
             if (field == value) return
@@ -81,12 +81,13 @@ open class BillboardTextFeature(
         // TODO: update matrix only on demand (and maybe do the camera rotation somewhere else and cached)
         val width = this.info?.size?.x ?: return
         val mat = renderer.renderer.context.camera.view.view.rotation
-        this.matrix.reset()
-        this.matrix
-            .translateYAssign(renderer.entity.dimensions.y + offset)
-            .rotateYassign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
-            .rotateXassign((180.0f - mat.pitch).rad)
-            .translateXAssign(width / -2.0f * BillboardTextMesh.SCALE).translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
+        this.matrix.clearAssign()
+        this.matrix.apply {
+            translateYAssign(renderer.entity.dimensions.y + offset)
+            rotateYassign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
+            rotateXassign((180.0f - mat.pitch).rad)
+            translateXAssign(width / -2.0f * BillboardTextMesh.SCALE).translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
+        }
 
         this.matrix = renderer.matrix * matrix
     }

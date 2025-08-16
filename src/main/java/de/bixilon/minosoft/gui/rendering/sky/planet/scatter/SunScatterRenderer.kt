@@ -18,17 +18,17 @@ import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
-import glm_.func.rad
-import glm_.vec4.Vec4
-import glm_.vec4.swizzle.xyz
+import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.math.abs
 
 class SunScatterRenderer(
@@ -37,14 +37,11 @@ class SunScatterRenderer(
 ) : SkyChildRenderer {
     private val shader = sky.renderSystem.createShader(minosoft("sky/scatter/sun")) { SunScatterShader(it) }
     private val mesh = SunScatterMesh(sky.context)
-    private var matrix = Mat4f()
     private var timeUpdate = true
     private var skyMatrix = Mat4f()
 
-    private fun calculateMatrix(skyMatrix: Mat4f) {
-
-        this.matrix = skyMatrix
-            .rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
+    private fun calculateMatrix(skyMatrix: Mat4f) = MMat4f(skyMatrix).apply {
+        rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
     }
 
     override fun init() {
@@ -65,7 +62,7 @@ class SunScatterRenderer(
         val matrix = Mat4f()
         matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
 
-        val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f)
+        val barePosition = Vec4f(1.0f, 0.128f, 0.0f, 1.0f)
 
         return (matrix * barePosition).xyz
     }
@@ -94,9 +91,8 @@ class SunScatterRenderer(
             shader.intensity = (1.0f - weatherLevel) * calculateIntensity(sky.time.progress)
         }
         val skyMatrix = sky.matrix
-        if (this.skyMatrix !== skyMatrix) {
-            calculateMatrix(skyMatrix)
-            shader.scatterMatrix = matrix
+        if (this.skyMatrix != skyMatrix) {
+            shader.scatterMatrix = calculateMatrix(skyMatrix)
             this.skyMatrix = skyMatrix
         }
 

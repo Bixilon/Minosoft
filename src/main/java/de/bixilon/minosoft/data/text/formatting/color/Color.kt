@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text.formatting.color
 
 import de.bixilon.kutil.ansi.ANSI
-import glm_.func.common.clamp
+import de.bixilon.kutil.math.simple.IntMath.clamp
 
 interface Color {
     val ansi: String get() = ANSI.rgb(red, green, blue)

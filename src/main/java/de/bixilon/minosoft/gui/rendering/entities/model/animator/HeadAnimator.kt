@@ -13,18 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.animator
 
-import glm_.func.rad
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
+import de.bixilon.minosoft.util.KUtil.rad
 
 class HeadAnimator(
     val renderer: EntityRenderer<*>,
     val transform: TransformInstance,
 ) {
-    private var rotation = Vec3f.EMPTY
+    private var rotation = MVec3f.EMPTY
 
     fun update() {
         val info = renderer.info
@@ -34,9 +36,10 @@ class HeadAnimator(
         if (renderer.entity.isFlipped()) {
             this.rotation.x = -this.rotation.x // TODO: not 100% correct
         }
-        transform.value
-            .translateAssign(transform.pivot)
-            .rotateRadAssign(this.rotation)
-            .translateAssign(transform.nPivot)
+        transform.value.apply {
+            translateAssign(transform.pivot)
+            rotateRadAssign(rotation)
+            translateAssign(transform.nPivot)
+        }
     }
 }

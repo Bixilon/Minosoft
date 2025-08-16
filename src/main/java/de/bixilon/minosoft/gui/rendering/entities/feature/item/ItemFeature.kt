@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.item
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature.ItemRenderDistance.Companion.getCount
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
 import java.util.*
@@ -36,7 +36,7 @@ open class ItemFeature(
     val display: DisplayPositions,
     val many: Boolean = true,
 ) : MeshedFeature<BlockMesh>(renderer) {
-    private var matrix = Mat4f()
+    private var matrix = MMat4f()
     private var displayMatrix = Mat4f.EMPTY
     private var distance: ItemRenderDistance? = null
     var stack: ItemStack? = stack
@@ -97,12 +97,13 @@ open class ItemFeature(
     }
 
     private fun updateMatrix() {
-        this.matrix.reset()
-        this.matrix
-            .translateXAssign(-0.5f)
-            .translateZAssign(-0.5f)
+        this.matrix.apply {
+            clearAssign()
+            translateXAssign(-0.5f)
+            translateZAssign(-0.5f)
+        }
 
-        val next = Mat4f(renderer.matrix)
+        val next = MMat4f(renderer.matrix)
         next *= displayMatrix
         next *= matrix
 

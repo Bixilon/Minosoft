@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import glm_.func.cos
-import glm_.func.sin
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
@@ -40,9 +38,10 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotate
+import de.bixilon.minosoft.util.KUtil.cos
 import de.bixilon.minosoft.util.KUtil.isTrue
+import de.bixilon.minosoft.util.KUtil.sin
 import kotlin.math.atan2
 
 class FluidSectionMesher(
@@ -242,8 +241,8 @@ class FluidSectionMesher(
 
     private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3f>, texturePositions: Array<Vec2f>, flowingTexture: Texture, fluidTint: RGBColor, fluidLight: LightLevel) {
         val lightIndex = fluidLight.index
-        mesh.order.iterate { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
-        mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
+        mesh.order.iterate { position, uv -> mesh.addVertex(positions[position], texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
+        mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position], texturePositions[uv], flowingTexture, fluidTint, lightIndex) }
     }
 
     private fun getCornerHeight(providedChunk: Chunk, position: BlockPosition, fluid: Fluid): Float {

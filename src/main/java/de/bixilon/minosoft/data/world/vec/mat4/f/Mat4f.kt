@@ -13,18 +13,19 @@
 
 package de.bixilon.minosoft.data.world.vec.mat4.f
 
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
+import de.bixilon.minosoft.data.world.vec.vec4.f.MVec4f
 import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.data.world.vec.vec4.f._Vec4f
-import glm_.f
+import de.bixilon.minosoft.util.f
 
 @JvmInline
-value class Mat4f(private val _0: UnsafeMat4f) : _Mat4f {
+value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
 
 
-    constructor() : this(1.0f) // TODO: remove
     constructor(s: Float) : this(s, s, s, s)
     constructor(x: Float, y: Float, z: Float, w: Float) : this(
         x, 0.0f, 0.0f, 0.0f,
@@ -45,38 +46,21 @@ value class Mat4f(private val _0: UnsafeMat4f) : _Mat4f {
         x3, y3, z3, w3,
     )))
 
-    val unsafe get() = MMat4(_0)
+    val unsafe get() = MMat4f(_0)
 
-    override inline fun get(x: Int) = Vec4f(this[x, 0], this[x, 1], this[x, 2], this[x, 3])
-    override inline fun get(x: Int, y: Int) = _0[x, y]
+    override inline operator fun get(x: Int) = Vec4f(this[x, 0], this[x, 1], this[x, 2], this[x, 3])
+    override inline operator fun get(x: Int, y: Int) = _0[x, y]
 
+    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@Mat4f, number, this) }.unsafe
+    inline operator fun plus(other: _Mat4f) = MMat4f().apply { Mat4Operations.plus(this@Mat4f, other, this) }.unsafe
 
-    inline operator fun times(number: Number) = Mat4f(
-        this[0, 0] * number.f, this[0, 1] * number.f, this[0, 2] * number.f, this[0, 3] * number.f,
-        this[1, 0] * number.f, this[1, 1] * number.f, this[1, 2] * number.f, this[1, 3] * number.f,
-        this[2, 0] * number.f, this[2, 1] * number.f, this[2, 2] * number.f, this[2, 3] * number.f,
-        this[3, 0] * number.f, this[3, 1] * number.f, this[3, 2] * number.f, this[3, 3] * number.f,
-    )
+    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@Mat4f, number, this) }.unsafe
+    inline operator fun times(other: _Mat4f) = MMat4f().apply { Mat4Operations.times(this@Mat4f, other, this) }.unsafe
 
-    inline operator fun plus(number: Number) = Mat4f(
-        this[0, 0] + number.f, this[0, 1] + number.f, this[0, 2] + number.f, this[0, 3] + number.f,
-        this[1, 0] + number.f, this[1, 1] + number.f, this[1, 2] + number.f, this[1, 3] + number.f,
-        this[2, 0] + number.f, this[2, 1] + number.f, this[2, 2] + number.f, this[2, 3] + number.f,
-        this[3, 0] + number.f, this[3, 1] + number.f, this[3, 2] + number.f, this[3, 3] + number.f,
-    )
-
-    inline operator fun plus(other: _Mat4f) = Mat4f(
-        this[0, 0] + other[0, 0], this[0, 1] + other[0, 1], this[0, 2] + other[0, 2], this[0, 3] + other[0, 3],
-        this[1, 0] + other[1, 0], this[1, 1] + other[1, 1], this[1, 2] + other[1, 2], this[1, 3] + other[1, 3],
-        this[2, 0] + other[2, 0], this[2, 1] + other[2, 1], this[2, 2] + other[2, 2], this[2, 3] + other[2, 3],
-        this[3, 0] + other[3, 0], this[3, 1] + other[3, 1], this[3, 2] + other[3, 2], this[3, 3] + other[3, 3],
-    )
-
-    inline operator fun times(other: _Mat4f): Mat4f = TODO()
-    inline operator fun times(other: _Vec4f): Vec4f = TODO()
+    inline operator fun times(other: _Vec4f) = MVec4f().apply { Mat4Operations.times(this@Mat4f, other, this) }.unsafe
 
     // mathematically wrong, just a performance hack
-    inline operator fun times(other: _Vec3f): Vec3f = TODO()
+    inline operator fun times(other: _Vec3f) = MVec3f().apply { Mat4Operations.times(this@Mat4f, other, this) }.unsafe
 
 
     inline fun transpose() = Mat4f(
@@ -87,25 +71,22 @@ value class Mat4f(private val _0: UnsafeMat4f) : _Mat4f {
     )
 
     // TODO: inline fun inverse(): Mat4f = TODO()
-    // TODO: inline fun normalize(): Mat4f = TODO()
-    inline fun clear(): Mat4f = TODO()
+    // TODO: inline fun normalize(): Mat4f = TODO(
 
+    inline fun translate(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, x, y, z, this) }.unsafe
+    inline fun translate(offset: _Vec3f) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x, offset.y, offset.z, this) }.unsafe
+    inline fun translate(offset: _Vec3i) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x.f, offset.y.f, offset.z.f, this) }.unsafe
 
-    inline fun translate(offset: Float): Mat4f
-    inline fun translate(x: Float, x: Float, z: Float): Mat4f
-    inline fun translate(offset: _Vec3f): Mat4f
-    inline fun translate(offset: _Vec3i): Mat4f
-
-    inline fun scale(scale: Float): Mat4f
-    inline fun scale(x: Float, x: Float, z: Float): Mat4f
-    inline fun scale(scale: _Vec3f): Mat4f
-    inline fun scale(scale: _Vec3i): Mat4f
+    inline fun scale(scale: Float) = scale(scale, scale, scale)
+    inline fun scale(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, x, y, z, this) }.unsafe
+    inline fun scale(scale: _Vec3f) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x, scale.y, scale.z, this) }.unsafe
+    inline fun scale(scale: _Vec3i) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x.f, scale.y.f, scale.z.f, this) }.unsafe
 
 
     // TODO: rotate
 
     companion object {
-        val EMPTY = Mat4f()
+        val EMPTY = Mat4f(1.0f)
         const val LENGTH = 4 * 4
 
         inline operator fun invoke() = EMPTY

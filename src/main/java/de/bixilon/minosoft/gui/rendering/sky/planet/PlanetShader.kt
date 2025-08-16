@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import glm_.vec4.Vec4
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -24,6 +24,6 @@ class PlanetShader(
     override val native: NativeShader,
 ) : Shader(), TextureShader {
     var matrix: Mat4f by uniform("uMatrix", Mat4f())
-    var tintColor: Vec4 by uniform("uTintColor", Vec4(1.0f))
+    var tintColor: Vec4f by uniform("uTintColor", Vec4f(1.0f))
     override var textures: TextureManager by textureManager(animated = false)
 }

@@ -25,12 +25,12 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 interface BlockVertexConsumer : AbstractVertexConsumer {
 
-    fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int)
+    fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int)
     fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float)
     fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float)
 
 
-    fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
+    fun addQuad(offset: Vec3f, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
         ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
 
         order.iterate { position, uv ->
@@ -39,7 +39,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
 
             val aUV = Float.fromBits(uvData.raw[uv].toBits() or (ao[position] shl 24))
             addVertex(
-                x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
+                x = offset.x + positions[vertexOffset], y = offset.y + positions[vertexOffset + 1], z = offset.z + positions[vertexOffset + 2],
                 uv = aUV,
                 textureId = textureId,
                 lightTint = lightTint,

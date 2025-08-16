@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -34,11 +35,10 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HeartAtlas
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.right
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.left
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -80,16 +80,16 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
         val hoverTextSize = hoverTextSize
         if (hoverTextSize != null) {
-            hoverText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, hoverTextSize.x), 0), consumer, options)
+            hoverText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, hoverTextSize.x), 0.0f), consumer, options)
             offset.y += hoverTextSize.y + HOVER_TEXT_OFFSET
         }
         val itemTextSize = itemTextSize
         if (itemTextSize != null) {
-            itemText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, itemTextSize.x), 0), consumer, options)
+            itemText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, itemTextSize.x), 0.0f), consumer, options)
             offset.y += itemTextSize.y + ITEM_NAME_OFFSET
         }
 
-        val coreOffset = offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0)
+        val coreOffset = offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0.0f)
 
         if (renderOffhand) {
             val offhandOffset = Vec2f.EMPTY
@@ -110,7 +110,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             element.silentApply()
         }
 
-        val size = core.size(core.size)
+        val size = MVec2f(core.size)
 
         renderOffhand = guiRenderer.context.session.player.items.inventory[EquipmentSlots.OFF_HAND] != null
 
@@ -199,8 +199,8 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
     companion object : HUDBuilder<LayoutedGUIElement<HotbarElement>> {
         override val identifier: ResourceLocation = "minosoft:hotbar".toResourceLocation()
-        private const val HOVER_TEXT_OFFSET = 15
-        private const val ITEM_NAME_OFFSET = 5
+        private const val HOVER_TEXT_OFFSET = 15.0f
+        private const val ITEM_NAME_OFFSET = 5.0f
 
 
         override fun register(gui: GUIRenderer) {

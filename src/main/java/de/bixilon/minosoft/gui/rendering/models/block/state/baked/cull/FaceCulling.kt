@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -80,13 +80,11 @@ object FaceCulling {
     }
 
     private fun FaceProperties.getSideArea(target: FaceProperties): Float {
-        val start = start.array
-        val targetStart = target.start.array
-        val end = end.array
-        val targetEnd = target.end.array
+        val targetStart = target.start
+        val targetEnd = target.end
 
-        val width = minOf(targetEnd[0], end[0]) - maxOf(start[0], targetStart[0])
-        val height = minOf(targetEnd[1], end[1]) - maxOf(start[1], targetStart[1])
+        val width = minOf(targetEnd.x, end.x) - maxOf(start.x, targetStart.x)
+        val height = minOf(targetEnd.y, end.y) - maxOf(start.y, targetStart.y)
 
         return width * height
     }

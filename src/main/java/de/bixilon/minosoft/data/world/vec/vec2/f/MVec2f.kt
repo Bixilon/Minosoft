@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
-import glm_.f
-import glm_.i
+import de.bixilon.minosoft.util.f
+import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 @JvmInline
@@ -116,7 +116,7 @@ value class MVec2f(
     companion object {
         val EMPTY get() = MVec2f(0)
 
-        inline operator fun Companion.invoke(other: _Vec2i) = MVec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2i) = MVec2f(other.x.f, other.y.f)
         inline operator fun invoke(other: _Vec2f) = MVec2f(other.x.i, other.y.i)
     }
 }

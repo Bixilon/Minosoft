@@ -22,28 +22,29 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import glm_.vec4.Vec4
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.minosoft.util.f
 
 object Vec4Serializer : SimpleModule() {
 
     init {
-        addDeserializer(Vec4::class.java, Deserializer)
-        addSerializer(Vec4::class.java, Serializer)
+        addDeserializer(Vec4f::class.java, Deserializer)
+        addSerializer(Vec4f::class.java, Serializer)
     }
 
-    object Deserializer : StdDeserializer<Vec4>(Vec4::class.java) {
+    object Deserializer : StdDeserializer<Vec4f>(Vec4f::class.java) {
 
-        override fun deserialize(parser: JsonParser, context: DeserializationContext?): Vec4 {
+        override fun deserialize(parser: JsonParser, context: DeserializationContext?): Vec4f {
             when (val tree = parser.readValueAsTree<JsonNode>()) {
-                is ArrayNode -> return Vec4(tree[0].asDouble(), tree[1].asDouble(), tree[2].asDouble(), tree[3].asDouble())
+                is ArrayNode -> return Vec4f(tree[0].asDouble().f, tree[1].asDouble().f, tree[2].asDouble().f, tree[3].asDouble().f)
                 else -> TODO("Can not convert $tree to Vec4!")
             }
         }
     }
 
-    object Serializer : StdSerializer<Vec4>(Vec4::class.java) {
+    object Serializer : StdSerializer<Vec4f>(Vec4f::class.java) {
 
-        override fun serialize(value: Vec4?, generator: JsonGenerator, provider: SerializerProvider?) {
+        override fun serialize(value: Vec4f?, generator: JsonGenerator, provider: SerializerProvider?) {
             if (value == null) {
                 generator.writeNull()
                 return
