@@ -26,6 +26,8 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.isIntSafe
@@ -63,7 +65,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
-import glm_.glm
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
@@ -276,7 +277,6 @@ object KUtil {
 
     fun initPlayClasses() {
         DefaultThreadPool += { PlaySession::class.java.forceInit() }
-        DefaultThreadPool += { glm::class.java.forceInit() } // whole glm
         DefaultThreadPool += { ItemFactories::class.java.forceInit() }
         DefaultThreadPool += { BlockFactories::class.java.forceInit() }
         DefaultThreadPool += { RecipeFactories::class.java.forceInit() }
@@ -384,4 +384,18 @@ object KUtil {
 
     @Deprecated("kutil 1.27.2")
     operator fun File.div(file: File) = this.resolve(file)
+
+
+    @Deprecated("kutil 1.27.3")
+    val Float.rad get() = this * (PIf / 180.0f)
+
+    @Deprecated("kutil 1.27.3")
+    val Float.deg get() = this * (180.0f / PIf)
+
+
+    @Deprecated("kutil 1.27.3")
+    val Float.sin get() = Trigonometry.sin(this)
+
+    @Deprecated("kutil 1.27.3")
+    val Float.cos get() = Trigonometry.cos(this)
 }

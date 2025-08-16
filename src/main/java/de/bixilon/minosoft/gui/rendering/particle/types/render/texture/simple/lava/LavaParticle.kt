@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.l
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
@@ -23,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
+class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d.EMPTY, data) {
 
     override var scale: Float
         get() = super.scale * (1.0f - (floatAge / maxAge).sqr)
@@ -46,14 +47,14 @@ class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = 
         val particle = session.world.particle ?: return
 
         if (random.nextFloat() > (floatAge / maxAge)) {
-            particle += SmokeParticle(session, position(position), Vec3d(velocity))
+            particle += SmokeParticle(session, position, MVec3d(velocity))
         }
     }
 
     companion object : ParticleFactory<LavaParticle> {
         override val identifier: ResourceLocation = "minecraft:lava".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): LavaParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): LavaParticle {
             return LavaParticle(session, position, data)
         }
     }

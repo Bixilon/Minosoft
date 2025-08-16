@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
-import glm_.func.rad
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateXAssign
+import de.bixilon.minosoft.util.KUtil.rad
 
 class LegAnimator(
     val model: HumanModel<*>,
@@ -31,14 +31,16 @@ class LegAnimator(
     private fun apply() {
         val angle = model.speedAnimator.getAngle(MAX_ANGLE).rad
 
-        left.value
-            .translateAssign(left.pivot)
-            .rotateXAssign(-angle)
-            .translateAssign(left.nPivot)
-        right.value
-            .translateAssign(left.pivot)
-            .rotateXAssign(angle)
-            .translateAssign(left.nPivot)
+        left.value.apply {
+            translateAssign(left.pivot)
+            rotateXAssign(-angle)
+            translateAssign(left.nPivot)
+        }
+        right.value.apply {
+            translateAssign(left.pivot)
+            rotateXAssign(angle)
+            translateAssign(left.nPivot)
+        }
     }
 
     private companion object {

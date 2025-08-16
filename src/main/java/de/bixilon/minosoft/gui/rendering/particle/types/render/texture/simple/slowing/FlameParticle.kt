@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.s
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.math.pow
 
-open class FlameParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SlowingParticle(session, position, velocity, data) {
+open class FlameParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SlowingParticle(session, position, velocity, data) {
 
     override val emittingLight: Int get() = 14 // non vanilla
 
@@ -38,7 +39,7 @@ open class FlameParticle(session: PlaySession, position: Vec3d, velocity: Vec3d,
     companion object : ParticleFactory<FlameParticle> {
         override val identifier: ResourceLocation = "minecraft:flame".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): FlameParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): FlameParticle {
             return FlameParticle(session, position, velocity, data)
         }
     }

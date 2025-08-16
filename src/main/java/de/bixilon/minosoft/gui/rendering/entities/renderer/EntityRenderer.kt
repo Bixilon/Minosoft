@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
@@ -48,7 +49,7 @@ abstract class EntityRenderer<E : Entity>(
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
     val light = Interpolator(ChatColors.WHITE.rgb(), ColorInterpolation::interpolateRGB)
-    val matrix = Mat4f()
+    val matrix = MMat4f()
     var visible = true
         protected set
 
@@ -62,8 +63,10 @@ abstract class EntityRenderer<E : Entity>(
         val offset = renderer.context.camera.offset.offset
         val original = entity.renderInfo.position
         val position = Vec3f((original.x - offset.x).toFloat(), (original.y - offset.y).toFloat(), (original.z - offset.z).toFloat())
-        matrix.reset()
-        matrix.translateAssign(position)
+        matrix.apply {
+            clearAssign()
+            translateAssign(position)
+        }
 
         if (entity.isFlipped()) {
             matrix

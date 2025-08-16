@@ -156,7 +156,7 @@ abstract class Particle(
         return adjusted
     }
 
-    open fun move(velocity: Vec3d) {
+    open fun move(velocity: Vec3d = this.velocity.unsafe) {
         if (alreadyCollided) {
             this.previousPosition = position(position)
             return
@@ -173,12 +173,12 @@ abstract class Particle(
         }
     }
 
-    private fun move() {
+    private fun tryMove() {
         if (!movement) {
             return
         }
 
-        forceMove(velocity)
+        forceMove()
     }
 
     open fun tryTick(time: ValueTimeMark) {
@@ -198,7 +198,7 @@ abstract class Particle(
             return
         }
 
-        move()
+        tryMove()
         postTick()
         lastTickTime = time
     }

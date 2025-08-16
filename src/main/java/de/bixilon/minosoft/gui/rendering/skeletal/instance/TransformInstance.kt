@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import java.nio.FloatBuffer
 
 class TransformInstance(
@@ -29,7 +29,7 @@ class TransformInstance(
 
 
     fun reset() {
-        this.value.reset()
+        this.value.clearAssign()
 
         for (child in array) {
             child.reset()
@@ -45,7 +45,7 @@ class TransformInstance(
     }
 
     fun pack(buffer: FloatBuffer) {
-        val array = value.array
+        val array = value._0.array
 
         val offset = this.id * Mat4f.LENGTH
         buffer.position(offset)

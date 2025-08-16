@@ -20,7 +20,8 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
 import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
-import glm_.f
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
@@ -64,7 +65,7 @@ value class Vec2f(
 
     override fun toString(): String = "($x $y)"
 
-    inline fun mut() = MVec2f(x, y)
+    inline fun mutable() = MVec2f(x, y)
 
     inline fun max(other: _Vec2f) = Vec2f(maxOf(x, other.x), maxOf(y, other.y))
     inline fun min(other: _Vec2f) = Vec2f(minOf(x, other.x), minOf(y, other.y))
@@ -80,12 +81,15 @@ value class Vec2f(
     companion object {
         val EMPTY = Vec2f(0.0f)
         val ONE = Vec2f(1.0f)
+        val MIN = Vec2f(Float.MIN_VALUE)
+        val MAX = Vec2f(Float.MAX_VALUE)
         const val LENGTH = 3
 
         @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
         inline operator fun invoke(other: Vec2f) = other
         inline operator fun invoke(other: _Vec2f) = Vec2f(other.x.f, other.y.f)
         inline operator fun invoke(other: _Vec2i) = Vec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec3d) = Vec2f(other.x.f, other.y.f)
 
         operator fun invoke() = EMPTY
     }

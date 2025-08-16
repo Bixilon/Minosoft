@@ -23,7 +23,7 @@ interface ViewProjectionShader : AbstractShader {
     var viewProjectionMatrix: Mat4f
 
 
-    fun viewProjectionMatrix(): ShaderUniform<Mat4> {
-        return uniform(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4f(), NativeShader::setMat4)
+    fun viewProjectionMatrix(): ShaderUniform<Mat4f> {
+        return uniform(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4f(), NativeShader::setMat4f)
     }
 }

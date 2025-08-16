@@ -19,13 +19,14 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.data.world.entities.WorldEntities
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.lang.Float.max
 
-open class CloudParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
+open class CloudParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d(), data) {
 
     init {
         friction = 0.96f
@@ -52,7 +53,9 @@ open class CloudParticle(session: PlaySession, position: Vec3d, velocity: Vec3d,
             if (this.position.y <= y) {
                 return@let
             }
-            this.position.y += (y - this.position.y) * 0.2
+            val next = this.position.mutable()
+            next.y += (y - this.position.y) * 0.2
+            this.position = next.unsafe
             this.velocity.y += (it.physics.velocity.y - this.velocity.y) * 0.2
         }
     }
@@ -61,7 +64,7 @@ open class CloudParticle(session: PlaySession, position: Vec3d, velocity: Vec3d,
     companion object : ParticleFactory<CloudParticle> {
         override val identifier: ResourceLocation = "minecraft:cloud".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): CloudParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): CloudParticle {
             return CloudParticle(session, position, velocity, data)
         }
     }

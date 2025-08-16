@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import glm_.func.common.clamp
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d

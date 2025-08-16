@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.view
 
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.minus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 

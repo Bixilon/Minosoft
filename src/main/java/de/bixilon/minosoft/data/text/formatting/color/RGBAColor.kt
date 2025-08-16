@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.text.formatting.color
 
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 
 
 @JvmInline
@@ -73,7 +73,7 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
 
 
     fun toVec3f() = Vec3f(redf, greenf, bluef)
-    fun toVec4() = Vec4(redf, greenf, bluef, alphaf)
+    fun toVec4f() = Vec4f(redf, greenf, bluef, alphaf)
 
     override fun toString(): String {
         val builder = StringBuilder(9)
@@ -98,7 +98,7 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
         const val BLUE_SHIFT = 1 * BITS
         const val ALPHA_SHIFT = 0 * BITS
 
-        fun Vec4.color() = RGBAColor(r, g, b, a)
+        fun Vec4f.color() = RGBAColor(x, y, z, w)
 
         inline fun Int.rgba() = RGBAColor(this)
 

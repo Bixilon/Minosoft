@@ -19,11 +19,12 @@ import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class NoteParticle(session: PlaySession, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
+class NoteParticle(session: PlaySession, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d.EMPTY, data) {
 
     init {
         this.friction = 0.66f
@@ -51,7 +52,7 @@ class NoteParticle(session: PlaySession, position: Vec3d, colorModifier: Float, 
         private const val ONE_THIRD = 1.0f / 3
         private const val TWO_THIRD = ONE_THIRD * 2
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): NoteParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): NoteParticle {
             return NoteParticle(session, position, velocity.x.toFloat(), data)
         }
     }

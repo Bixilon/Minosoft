@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
@@ -63,14 +62,14 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
         val particleType = if (isSignal) signalSmokeParticle else cosySmokeParticle
 
-        particle += CampfireSmokeParticle(session, position, SMOKE_VELOCITY, particleType.default(), isSignal)
+        particle += CampfireSmokeParticle(session, position, SMOKE_VELOCITY.mutable(), particleType.default(), isSignal)
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(
                 { 0.5 + 4.0.noised(random) },
                 0.5
             )
-            particle += SmokeParticle(session, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
+            particle += SmokeParticle(session, position, EXTINGUISHED_VELOCITY.mutable(), smokeParticle.default())
         }
     }
 

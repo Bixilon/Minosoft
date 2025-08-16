@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.now
@@ -24,6 +22,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec3.i.MVec3i
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
@@ -57,7 +57,7 @@ class SkyboxColor(
         var blue = 0
         var count = 0
 
-        val offset = Vec3i(eyePosition.x - (chunk.position.x shl 4), eyePosition.y, eyePosition.z - (chunk.position.z shl 4))
+        val offset = MVec3i(eyePosition.x.toInt() - (chunk.position.x shl 4), eyePosition.y.toInt(), eyePosition.z.toInt() - (chunk.position.z shl 4))
 
         val dimension = sky.session.world.dimension
         val yRange: IntRange
@@ -118,20 +118,20 @@ class SkyboxColor(
         val rainColor = rain(time, rain) ?: return null
         val brightness = minOf(rainColor.length() * 2, 1.0f)
 
-        val thunderColor = interpolateLinear(brightness / 8, THUNDER_BASE_COLOR, rainColor)
+        val thunderColor = interpolateLinear(brightness / 8, THUNDER_BASE_COLOR, rainColor).unsafe
         thunderColor *= brightness
 
-        return lightning(interpolateLinear(thunder, rainColor, thunderColor))
+        return lightning(interpolateLinear(thunder, rainColor, thunderColor.unsafe))
     }
 
     private fun rain(time: WorldTime, rain: Float): Vec3f? {
         val clearColor = clear(time) ?: return null
         val brightness = minOf(clearColor.length(), 1.0f)
 
-        val rainColor = interpolateLinear(brightness / 8, RAIN_BASE_COLOR, clearColor)
+        val rainColor = interpolateLinear(brightness / 8, RAIN_BASE_COLOR, clearColor).unsafe
         rainColor *= brightness
 
-        return interpolateLinear(rain, clearColor, rainColor)
+        return interpolateLinear(rain, clearColor, rainColor.unsafe)
     }
 
     private fun sunrise(progress: Float, moon: MoonPhases): Vec3f? {
@@ -139,7 +139,7 @@ class SkyboxColor(
         val day = day(0.0f) ?: return null
 
         val baseColor = interpolateLinear(progress, night, day)
-        var color = baseColor(baseColor)
+        var color = baseColor
 
         // make a bit more red/yellow
         val delta = (abs(progress - 0.5f) * 2.0f)
@@ -163,7 +163,7 @@ class SkyboxColor(
         val day = day(1.0f) ?: return null
 
         val baseColor = interpolateLinear(progress, day, night)
-        var color = baseColor(baseColor)
+        var color = baseColor
 
         // make a bit more red
         val delta = (abs(progress - 0.5f) * 2.0f)
@@ -176,19 +176,17 @@ class SkyboxColor(
     }
 
     private fun night(progress: Float, moon: MoonPhases): Vec3f? {
-        val base = this.baseColor?.toVec3f() ?: return null
+        val base = this.baseColor?.toVec3f()?.unsafe ?: return null
         base *= 0.1
 
-        return interpolateLinear((abs(progress - 0.5f) * 2.0f), NIGHT_BASE_COLOR, base) * moon.light
+        return interpolateLinear((abs(progress - 0.5f) * 2.0f), NIGHT_BASE_COLOR, base.unsafe) * moon.light
     }
 
-    private fun clear(time: WorldTime): Vec3f? {
-        return when (time.phase) {
-            DayPhases.SUNRISE -> sunrise(time.progress, time.moonPhase)
-            DayPhases.DAY -> day(time.progress)
-            DayPhases.SUNSET -> sunset(time.progress, time.moonPhase)
-            DayPhases.NIGHT -> night(time.progress, time.moonPhase)
-        }
+    private fun clear(time: WorldTime) = when (time.phase) {
+        DayPhases.SUNRISE -> sunrise(time.progress, time.moonPhase)
+        DayPhases.DAY -> day(time.progress)
+        DayPhases.SUNSET -> sunset(time.progress, time.moonPhase)
+        DayPhases.NIGHT -> night(time.progress, time.moonPhase)
     }
 
     fun calculate(weather: WorldWeather, time: WorldTime): RGBColor? {

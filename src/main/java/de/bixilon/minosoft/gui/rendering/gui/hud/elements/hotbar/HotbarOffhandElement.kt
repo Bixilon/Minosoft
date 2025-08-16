@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.marginOf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {

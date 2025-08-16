@@ -24,9 +24,6 @@ import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.vec.vec3.i.SVec3i
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.invoke
 import kotlin.collections.set
 
 enum class Directions(

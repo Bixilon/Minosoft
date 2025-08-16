@@ -16,11 +16,12 @@ package de.bixilon.minosoft.gui.rendering.particle
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface ParticleFactory<T : Particle> : Identified {
 
-    fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData = session.registries.particleType[identifier]!!.default()): T?
+    fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData = session.registries.particleType[identifier]!!.default()): T?
 
 }

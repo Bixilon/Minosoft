@@ -38,7 +38,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     private var selectedSlot = 0
 
     init {
-        size = HOTBAR_BASE_SIZE + Vec2f(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
+        size = HOTBAR_BASE_SIZE + Vec2f(HORIZONTAL_MARGIN * 2, 1.0f) // offset left and right; offset for the frame is just on top, not on the bottom
         cacheUpToDate = false // ToDo: Check changes
 
         base.parent = this

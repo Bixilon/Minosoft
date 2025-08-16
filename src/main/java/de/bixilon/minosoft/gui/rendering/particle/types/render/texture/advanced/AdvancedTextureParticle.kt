@@ -16,13 +16,14 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-abstract class AdvancedTextureParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, velocity, data) {
+abstract class AdvancedTextureParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, velocity, data) {
     var minUV: Vec2f = Vec2f(0.0f, 0.0f)
     var maxUV: Vec2f = Vec2f(1.0f, 1.0f)
 

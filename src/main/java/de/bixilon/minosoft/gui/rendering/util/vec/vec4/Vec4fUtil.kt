@@ -14,41 +14,42 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import glm_.vec4.Vec4
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.minosoft.data.world.vec.vec4.f._Vec4f
 
-object Vec4Util {
+object Vec4fUtil {
 
-    val Vec4.top: Float
+    inline val _Vec4f.top: Float
         get() = this.x
 
-    val Vec4.right: Float
+    inline val _Vec4f.right: Float
         get() = this.y
 
-    val Vec4.bottom: Float
+    inline val _Vec4f.bottom: Float
         get() = this.z
 
-    val Vec4.left: Float
+    inline val _Vec4f.left: Float
         get() = this.w
 
-    val Vec4.horizontal: Float
+    inline val _Vec4f.horizontal: Float
         get() = right + left
 
-    val Vec4.vertical: Float
+    inline val _Vec4f.vertical: Float
         get() = top + bottom
 
-    val Vec4.spaceSize: Vec2f
+    inline val _Vec4f.spaceSize: Vec2f
         get() = Vec2f(horizontal, vertical)
 
-    val Vec4.offset: Vec2f
+    inline val _Vec4f.offset: Vec2f
         get() = Vec2f(left, top)
 
     fun FloatArray.dot(x: Float, y: Float, z: Float) = this[0] * x + this[1] * y + this[2] * z + this[3]
 
-    fun Vec4.copy(top: Float = this.top, right: Float = this.right, bottom: Float = this.bottom, left: Float = this.left): Vec4 {
-        return Vec4(top, right, bottom, left)
+    fun _Vec4f.copy(top: Float = this.top, right: Float = this.right, bottom: Float = this.bottom, left: Float = this.left): Vec4f {
+        return Vec4f(top, right, bottom, left)
     }
 
-    fun marginOf(top: Float = 0.0f, right: Float = 0.0f, bottom: Float = 0.0f, left: Float = 0.0f): Vec4 {
-        return Vec4(top, right, bottom, left)
+    fun marginOf(top: Float = 0.0f, right: Float = 0.0f, bottom: Float = 0.0f, left: Float = 0.0f): Vec4f {
+        return Vec4f(top, right, bottom, left)
     }
 }

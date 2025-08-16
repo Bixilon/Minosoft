@@ -16,13 +16,14 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.vec.vec4.f.MVec4f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLinkingException
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
@@ -161,7 +162,7 @@ class OpenGLNativeShader(
     }
 
     override fun setMat4f(uniformName: String, mat4: Mat4f) {
-        glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4.unsafe.array)
+        glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4._0.array)
     }
 
     override fun setVec2f(uniformName: String, vec2: Vec2f) {
@@ -172,7 +173,11 @@ class OpenGLNativeShader(
         glUniform3f(getUniformLocation(uniformName), vec3.x, vec3.y, vec3.z)
     }
 
-    override fun setVec4(uniformName: String, vec4: Vec4) {
+    override fun setVec4f(uniformName: String, vec4: Vec4f) {
+        glUniform4f(getUniformLocation(uniformName), vec4.x, vec4.y, vec4.z, vec4.w)
+    }
+
+    override fun setVec4f(uniformName: String, vec4: MVec4f) {
         glUniform4f(getUniformLocation(uniformName), vec4.x, vec4.y, vec4.z, vec4.w)
     }
 
@@ -201,11 +206,11 @@ class OpenGLNativeShader(
     }
 
     override fun setRGBColor(uniformName: String, color: RGBColor) {
-        setVec4(uniformName, Vec4(color.redf, color.greenf, color.bluef, 1.0f))
+        setVec4f(uniformName, Vec4f(color.redf, color.greenf, color.bluef, 1.0f))
     }
 
     override fun setRGBAColor(uniformName: String, color: RGBAColor) {
-        setVec4(uniformName, Vec4(color.redf, color.greenf, color.bluef, color.alphaf))
+        setVec4f(uniformName, Vec4f(color.redf, color.greenf, color.bluef, color.alphaf))
     }
 
     override fun setTexture(uniformName: String, textureId: Int) {

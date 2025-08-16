@@ -48,7 +48,7 @@ class DummyNativeShader(
 
     override fun setVec3f(uniformName: String, vec3: Vec3f) = Unit
 
-    override fun setVec4(uniformName: String, vec4: Vec4) = Unit
+    override fun setVec4f(uniformName: String, vec4: Vec4) = Unit
 
     override fun setArray(uniformName: String, array: Array<*>) = Unit
 

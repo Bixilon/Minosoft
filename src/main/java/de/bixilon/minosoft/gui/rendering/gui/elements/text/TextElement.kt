@@ -36,10 +36,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.vertical
 import de.bixilon.minosoft.util.KUtil.charCount
 
 /**
@@ -243,7 +243,7 @@ open class TextElement(
     }
 
     private fun getTextComponentAt(position: Vec2f): Pair<TextComponent, Vec2f>? {
-        val offset = position(position)
+        val offset = position.mutable()
         val info = this.info
         val properties = this.properties
         val (line, yOffset) = info.getLineAt(properties.lineHeight, properties.lineSpacing, offset.y) ?: return null
@@ -265,7 +265,7 @@ open class TextElement(
 
 
         offset.x += properties.alignment.getOffset(info.size.x, line.width)
-        return Pair(text, offset)
+        return Pair(text, offset.unsafe)
     }
 
     override fun toString(): String {
@@ -273,12 +273,12 @@ open class TextElement(
     }
 
     protected fun Vec2f.withBackgroundSize(sign: Float = 1.0f): Vec2f {
-        val size = this(this)
+        val size = this.mutable()
         val background = this@TextElement.background
         if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
             size += background.size.spaceSize * sign
         }
 
-        return size
+        return size.unsafe
     }
 }
