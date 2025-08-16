@@ -89,7 +89,7 @@ open class TextFlowElement(
 
         var yOffset = 0.0f
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2f(0, yOffset), consumer, options)
+            message.textElement.render(offset + Vec2f(0f, yOffset), consumer, options)
             yOffset += properties.lineHeight + properties.lineSpacing
         }
     }

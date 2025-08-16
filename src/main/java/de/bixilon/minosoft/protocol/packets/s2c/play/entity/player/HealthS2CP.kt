@@ -12,7 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.player
 
-import glm_.func.common.clamp
+import de.bixilon.kutil.math.simple.FloatMath.clamp
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates

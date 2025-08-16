@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.plants
 
-import glm_.func.common.clamp
+import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState

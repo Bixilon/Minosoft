@@ -19,6 +19,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
@@ -105,11 +106,11 @@ class BitmapFontType(
 
             val width = end - start + 1
 
-            val uvStart = Vec2f(offset)
+            val uvStart = MVec2f(offset)
             uvStart.x += start * pixel.x
             uvStart.fixUVStart()
 
-            val uvEnd = Vec2f(offset)
+            val uvEnd = MVec2f(offset)
             uvEnd.x += width * pixel.x
             uvEnd.y += height * pixel.y
             uvEnd.fixUVEnd()
@@ -117,7 +118,7 @@ class BitmapFontType(
             val scale = if (height < CHAR_BASE_HEIGHT) 1 else height / CHAR_BASE_HEIGHT
             val scaledWidth = width / scale
 
-            return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth.toFloat(), (height / scale).toFloat(), ascent.toFloat())
+            return BitmapCodeRenderer(texture, uvStart.unsafe, uvEnd.unsafe, scaledWidth.toFloat(), (height / scale).toFloat(), ascent.toFloat())
         }
 
         private fun load(texture: Texture, height: Int, ascent: Int, chars: Array<IntStream>): BitmapFontType? {
@@ -130,7 +131,7 @@ class BitmapFontType(
             val renderer = Int2ObjectOpenHashMap<CodePointRenderer>()
 
             val pixel = Vec2f(1.0f / texture.size.x, 1.0f / texture.size.y)
-            val offset = Vec2f()
+            val offset = MVec2f()
             for (row in 0 until rows) {
                 val iterator = chars[row].iterator()
 
@@ -141,7 +142,7 @@ class BitmapFontType(
                 var column = 0
                 while (iterator.hasNext()) {
                     val codePoint = iterator.nextInt()
-                    renderer[codePoint] = createRenderer(texture, offset, pixel, start[column], end[column], height, ascent)
+                    renderer[codePoint] = createRenderer(texture, offset.unsafe, pixel, start[column], end[column], height, ascent)
                     column++
                     offset.x += pixel.x * width
                 }

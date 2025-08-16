@@ -18,11 +18,12 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : Particle(session, position, velocity, data) {
+abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : Particle(session, position, velocity, data) {
     protected open var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBAColor = ChatColors.WHITE
 

@@ -28,7 +28,7 @@ class BitmapCodeRenderer(
 
     fun updateArray() {
         val end = texture.array.uvEnd ?: return
-        uvStart *= end
-        uvEnd *= end
+        uvStart.unsafe *= end
+        uvEnd.unsafe *= end
     }
 }

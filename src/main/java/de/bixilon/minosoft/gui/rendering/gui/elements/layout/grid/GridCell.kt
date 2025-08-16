@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -32,7 +33,7 @@ class GridCell(
     override var cacheEnabled: Boolean by child::cacheEnabled
     override var prefMaxSize: Vec2f by child::prefMaxSize
     override var size: Vec2f by child::size
-    override var margin: Vec4 by child::margin
+    override var margin: Vec4f by child::margin
     override var prefSize: Vec2f by child::prefSize
     override val cache: GUIMeshCache by child::cache
 

@@ -58,7 +58,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     private var columns = 0
 
     override val layoutOffset: Vec2f
-        get() = Vec2f((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
+        get() = Vec2f((guiRenderer.scaledSize.x - super.size.x) / 2.0f, 20.0f)
 
     val atlas = TabListAtlas(guiRenderer)
 
@@ -74,7 +74,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         val size = size
 
         header.size.let {
-            header.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), consumer, options)
+            header.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
             offset.y += it.y
         }
 
@@ -94,7 +94,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
 
         footer.size.let {
-            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), consumer, options)
+            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
             offset.y += it.y
         }
     }
@@ -241,9 +241,9 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     companion object : HUDBuilder<LayoutedGUIElement<TabListElement>> {
         private const val ENTRIES_PER_COLUMN = 20
-        private const val ENTRY_HORIZONTAL_SPACING = 5
-        private const val ENTRY_VERTICAL_SPACING = 1
-        private const val BACKGROUND_PADDING = 3
+        private const val ENTRY_HORIZONTAL_SPACING = 5.0f
+        private const val ENTRY_VERTICAL_SPACING = 1.0f
+        private const val BACKGROUND_PADDING = 3.0f
         private const val MAX_ENTRIES = 80
         override val identifier: ResourceLocation = "minosoft:tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config.profile.profiles.gui.chat
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
@@ -31,12 +32,12 @@ class ChatC(profile: GUIProfile) {
     /**
      * The width of the chat in scaled pixels
      */
-    var width by IntDelegate(profile, 320, arrayOf(100..500))
+    var width by FloatDelegate(profile, 320f, arrayOf(100f..500f))
 
     /**
      * The height of the chat in scaled pixels
      */
-    var height by IntDelegate(profile, 180, arrayOf(40..500))
+    var height by FloatDelegate(profile, 180f, arrayOf(40f..500f))
 
     /**
      * ToDo: Unknown purpose

@@ -57,7 +57,7 @@ abstract class Popper(
 
     private fun calculateLayoutOffset() {
         val windowSize = guiRenderer.scaledSize
-        val position = position.mut()
+        val position = position.mutable()
         val size = size
 
         // must not be at the position

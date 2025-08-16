@@ -37,9 +37,9 @@ object DefaultParticleBehavior {
                 return@listen
             }
             if (it.power >= 2.0f) {
-                renderer += ExplosionEmitterParticle(this, Vec3d(it.position), emitter.default())
+                renderer += ExplosionEmitterParticle(this, it.position, emitter.default())
             } else {
-                renderer += ExplosionParticle(this, Vec3d(it.position), explosion.default())
+                renderer += ExplosionParticle(this, it.position, explosion.default())
             }
         }
     }

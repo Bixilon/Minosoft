@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
-import glm_.vec4.Vec4
 import de.bixilon.kutil.concurrent.Reference
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
@@ -32,6 +31,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -85,13 +85,13 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 
-        this.prefMaxSize = Vec2f(-1, Float.MAX_VALUE)
+        this.prefMaxSize = Vec2f(-1.0f, Float.MAX_VALUE)
         this.ignoreDisplaySize = true
     }
 
     private fun initLeft(): Element {
         val layout = RowLayout(guiRenderer)
-        layout.margin = Vec4(2)
+        layout.margin = Vec4f(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r; t=§d${context.renderStats.avgDrawTime.avg.formatNanos().replace('µ', 'u')}" } // rendering of µ eventually broken
         context.renderer[ChunkRenderer]?.apply {
@@ -196,7 +196,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
     private fun initRight(): Element {
         val layout = RowLayout(guiRenderer, HorizontalAlignments.RIGHT)
-        layout.margin = Vec4(2)
+        layout.margin = Vec4f(2)
         layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", properties = RIGHT)
         layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", properties = RIGHT)
 

@@ -51,9 +51,10 @@ class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : Entit
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
 
-        this.matrix
-            .translateYAssign(sin(floating * CIRCLE) * 0.1f + 0.1f)
-            .rotateYassign(rotation * CIRCLE)
+        this.matrix.apply {
+            translateYAssign(sin(floating * CIRCLE) * 0.1f + 0.1f)
+            rotateYassign(rotation * CIRCLE)
+        }
     }
 
 
