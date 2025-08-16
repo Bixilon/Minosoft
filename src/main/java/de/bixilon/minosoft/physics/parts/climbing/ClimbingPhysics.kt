@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBloc
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock.Companion.canWalkOnPowderSnow
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.tags.block.MinecraftBlockTags.isIn
@@ -30,23 +31,21 @@ object ClimbingPhysics {
     const val MAX_MOVEMENT = 0.15f.toDouble()
     const val UPWARDS = 0.2
 
-    private fun Vec3d.clamp() = Vec3d(
-        x.clamp(-MAX_MOVEMENT, MAX_MOVEMENT),
-        maxOf(y, -MAX_MOVEMENT),
-        z.clamp(-MAX_MOVEMENT, MAX_MOVEMENT),
-    )
+    private fun MVec3d.clamp() {
+        this.x = this.x.clamp(-MAX_MOVEMENT, MAX_MOVEMENT)
+        this.y = maxOf(this.y, -MAX_MOVEMENT)
+        this.z = this.z.clamp(-MAX_MOVEMENT, MAX_MOVEMENT)
+    }
 
     fun LivingEntityPhysics<*>.limitClimbingSpeed() {
         if (!isClimbing()) return
 
         fallDistance = 0.0f
-        val velocity = velocity.clamp()
+        velocity.clamp()
 
         if (velocity.y < 0.0 && positionInfo.block?.block !is ScaffoldingBlock && (this is ClimbablePhysics && this.isHolding()) && this is PlayerPhysics) {
             velocity.y = 0.0
         }
-
-        this.velocity = velocity.unsafe
     }
 
     fun LivingEntityPhysics<*>.applyClimbingSpeed() {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.vec.vec3.i
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.div
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
@@ -23,8 +24,8 @@ import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
-import glm_.f
-import glm_.i
+import de.bixilon.minosoft.util.f
+import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 
@@ -54,6 +55,11 @@ value class Vec3i(
     inline operator fun div(other: Number) = Vec3i(this.x / other, this.y / other, this.z / other)
     inline operator fun rem(other: Number) = Vec3i(this.x % other, this.y % other, this.z % other)
 
+    inline operator fun plus(direction: Directions) = this + direction.vector
+    inline operator fun minus(direction: Directions) = this - direction.vector
+    inline operator fun times(direction: Directions) = this * direction.vector
+
+
 
     inline infix fun shr(bits: Int) = Vec3i(this.x shr bits, this.y shr bits, this.z shr bits)
     inline infix fun ushr(bits: Int) = Vec3i(this.x ushr bits, this.y ushr bits, this.z ushr bits)
@@ -72,7 +78,7 @@ value class Vec3i(
 
     override fun toString(): String = "($x $y $z)"
 
-    inline fun mut() = MVec3i(x, y, z)
+    inline fun mutable() = MVec3i(x, y, z)
 
 
     inline operator fun get(axis: Axes) = when (axis) {

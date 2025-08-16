@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
-import glm_.func.rad
-import glm_.func.sin
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.minosoft.data.entities.entities.player.Arms
@@ -22,6 +20,8 @@ import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateXAssign
+import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.minosoft.util.KUtil.sin
 
 class ArmAnimator(
     val model: HumanModel<*>,

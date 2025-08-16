@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.physics.parts.elytra
 
-import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics.isClimbing
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
+import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.math.pow
 
 object ElytraPhysics {

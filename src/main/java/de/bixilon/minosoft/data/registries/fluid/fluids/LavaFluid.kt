@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.LavaFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics

@@ -63,7 +63,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         get() = true
 
     override val layoutOffset: Vec2f
-        get() = Vec2f(0, guiRenderer.scaledSize.y - maxOf(messages.size.y, internal.size.y) - (LINES * TEXT_PROPERTIES.lineHeight) - CHAT_INPUT_MARGIN * 2)
+        get() = Vec2f(0.0f, guiRenderer.scaledSize.y - maxOf(messages.size.y, internal.size.y) - (LINES * TEXT_PROPERTIES.lineHeight) - CHAT_INPUT_MARGIN * 2)
 
 
     init {
@@ -119,14 +119,14 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             val internalSize = internal.size
             val internalStart = if (internalSize.y > messagesSize.y) {
                 messagesYStart = internalSize.y - messagesSize.y
-                0
+                0.0f
             } else {
                 messagesSize.y - internalSize.y
             }
 
             internal.render(offset + Vec2f(size.x - internal.size.x, internalStart), consumer, options)
         }
-        super.forceRender(offset + Vec2f(0, messagesYStart), consumer, options)
+        super.forceRender(offset + Vec2f(0f, messagesYStart), consumer, options)
 
         if (active) {
             input.render(offset + Vec2f(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + (LINES * TEXT_PROPERTIES.lineHeight))), consumer, options)
@@ -237,7 +237,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             } else {
                 messagesSize.y - internalSize.y
             }
-            val internalPosition = position - Vec2i(size.x - internalSize.x, internalStart)
+            val internalPosition = position - Vec2f(size.x - internalSize.x, internalStart)
             if (internalPosition.x in 0.0f..internalSize.x && internalPosition.y in 0.0f..internalSize.y) {
                 return Pair(internal, internalPosition)
             }
@@ -246,7 +246,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         if (position.x < CHAT_INPUT_MARGIN) {
             return null
         }
-        val offset = Vec2f(position)
+        val offset = position
         offset.y -= messagesYStart
         offset.x -= CHAT_INPUT_MARGIN
 
@@ -286,7 +286,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         override val identifier: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
         private val TEXT_PROPERTIES = TextRenderProperties()
         const val LINES = 3
-        const val CHAT_INPUT_MARGIN = 2
+        const val CHAT_INPUT_MARGIN = 2.0f
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ChatElement> {
             return LayoutedGUIElement(ChatElement(guiRenderer))

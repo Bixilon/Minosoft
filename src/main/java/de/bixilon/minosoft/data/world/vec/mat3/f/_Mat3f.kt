@@ -11,39 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.vec.vec4
+package de.bixilon.minosoft.data.world.vec.mat3.f
 
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
-import glm_.vec4.Vec4i
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 
-object Vec4iUtil {
+interface _Mat3f {
 
-    val Vec4i.top: Int
-        get() = this.x
-
-    val Vec4i.right: Int
-        get() = this.y
-
-    val Vec4i.bottom: Int
-        get() = this.z
-
-    val Vec4i.left: Int
-        get() = this.w
-
-    val Vec4i.horizontal: Int
-        get() = right + left
-
-    val Vec4i.vertical: Int
-        get() = top + bottom
-
-    val Vec4i.spaceSize: Vec2i
-        get() = Vec2i(horizontal, vertical)
-
-    val Vec4i.offset: Vec2i
-        get() = Vec2i(left, top)
-
-
-    fun Vec4i.copy(top: Int = this.top, right: Int = this.right, bottom: Int = this.bottom, left: Int = this.left): Vec4i {
-        return Vec4i(top, right, bottom, left)
-    }
+    operator fun get(x: Int, y: Int): Float
+    operator fun get(x: Int): Vec3f
 }

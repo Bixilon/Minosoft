@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.NoRenderParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -25,9 +26,9 @@ class EntityEmitterParticle(
     session: PlaySession,
     val entity: Entity,
     val particleFactory: ParticleFactory<*>,
-    velocity: Vec3d = Vec3d.EMPTY,
+    velocity: MVec3d = MVec3d.EMPTY,
     maxAge: Int = 3,
-) : NoRenderParticle(session, entity.physics.velocity, velocity, null) {
+) : NoRenderParticle(session, entity.physics.position, velocity, null) {
     private val particleData = session.registries.particleType[particleFactory.identifier]!!.default()
 
 
@@ -55,7 +56,7 @@ class EntityEmitterParticle(
                 position.y + (entity.type.height * (0.5f + scale.y / 4.0f)),
                 position.z + (entity.type.width * (scale.z / 4.0f)),
             )
-            particle += particleFactory.build(session, particlePosition, Vec3d(scale.x, scale.y, scale.z), particleData) ?: continue// ToDo: Velocity.y is getting added with 0.2
+            particle += particleFactory.build(session, particlePosition, MVec3d(scale.x, scale.y, scale.z), particleData) ?: continue// ToDo: Velocity.y is getting added with 0.2
         }
     }
 

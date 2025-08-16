@@ -23,6 +23,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pro
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.world.entities.WorldEntities
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import java.util.*
 
 class SelectorEntityTarget(
@@ -40,14 +41,14 @@ class SelectorEntityTarget(
 
         val selectorProperties = EntitySelectorProperties(
             entities = selected,
-            center = executor?.physics?.position ?: Vec3d(),
+            center = executor?.physics?.position?.unsafe ?: MVec3d(),
             executor = executor,
         )
 
         properties[XCenterProperty.name]?.updateProperties(selectorProperties)
         properties[YCenterProperty.name]?.updateProperties(selectorProperties)
         properties[ZCenterProperty.name]?.updateProperties(selectorProperties)
-        properties[SortProperty.name]?.updateProperties(selectorProperties) ?: selector.sort(selectorProperties.center, selectorProperties.entities)
+        properties[SortProperty.name]?.updateProperties(selectorProperties) ?: selector.sort(selectorProperties.center.unsafe, selectorProperties.entities)
 
 
         val output: MutableList<Entity> = mutableListOf()

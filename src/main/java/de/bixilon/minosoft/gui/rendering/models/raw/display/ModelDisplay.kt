@@ -16,23 +16,24 @@ package de.bixilon.minosoft.gui.rendering.models.raw.display
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.EMPTY_INSTANCE
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3f
 
 data class ModelDisplay(
-    val rotation: Vec3f = Vec3f.EMPTY_INSTANCE,
-    val translation: Vec3f = Vec3f.EMPTY_INSTANCE,
+    val rotation: Vec3f = Vec3f.EMPTY,
+    val translation: Vec3f = Vec3f.EMPTY,
     val scale: Vec3f = Vec3f.ONE,
 ) {
-    val matrix = Mat4f()
-        .scaleAssign(scale)
-        .translateAssign(translation)
-        .translateAssign(CENTER)
-        .rotateRadAssign(rotation)
-        .translateAssign(N_CENTER)
+    val matrix = MMat4f().apply {
+        scaleAssign(scale)
+        translateAssign(translation)
+        translateAssign(CENTER)
+        rotateRadAssign(rotation)
+        translateAssign(N_CENTER)
+    }.unsafe
 
     companion object {
         val CENTER = Vec3f(0.5f)
@@ -41,8 +42,8 @@ data class ModelDisplay(
 
         fun deserialize(data: JsonObject): ModelDisplay {
             return ModelDisplay(
-                rotation = data["rotation"]?.toVec3f()?.rad ?: Vec3f.EMPTY_INSTANCE,
-                translation = data["translation"]?.toVec3f()?.apply { this /= BLOCK_SIZE } ?: Vec3f.EMPTY_INSTANCE,
+                rotation = data["rotation"]?.toVec3f()?.rad ?: Vec3f.EMPTY,
+                translation = data["translation"]?.toVec3f()?.apply { this /= BLOCK_SIZE } ?: Vec3f.EMPTY,
                 scale = data["scale"]?.toVec3f() ?: Vec3f.ONE,
             )
         }

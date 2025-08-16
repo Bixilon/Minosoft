@@ -16,10 +16,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.w
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class WaterSuspendParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position - Vec3d(0.0, -0.125, 0.0), velocity, data) {
+abstract class WaterSuspendParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position - Vec3d(0.0, -0.125, 0.0), velocity, data) {
 
     init {
         spacing = Vec3f(0.01f)

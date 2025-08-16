@@ -13,32 +13,31 @@
 
 package de.bixilon.minosoft.physics.handlers.movement
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.set
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 
 interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
 
     fun shouldAdjustForSneaking(movement: Vec3d): Boolean
 
-    private fun checkValue(value: Double): Double {
-        return when {
-            value < SNEAK_CHECK && value >= -SNEAK_CHECK -> 0.0
-            value > 0.0 -> value - SNEAK_CHECK
-            else -> value + SNEAK_CHECK
-        }
+    private fun checkValue(value: Double) = when {
+        value < SNEAK_CHECK && value >= -SNEAK_CHECK -> 0.0
+        value > 0.0 -> value - SNEAK_CHECK
+        else -> value + SNEAK_CHECK
     }
 
-    private fun Entity.isSpaceEmpty(aabb: AABB, offset: Vec3d): Boolean {
+    private inline fun Entity.isSpaceEmpty(aabb: AABB, offset: _Vec3d): Boolean {
         return session.world.isSpaceEmpty(this, aabb.offset(offset), positionInfo.chunk)
     }
 
     private fun checkAxis(entity: Entity, value: Double, aabb: AABB, axis: Axes): Double {
         var value = value
-        while (value != 0.0 && entity.isSpaceEmpty(aabb, Vec3d(0.0, -stepHeight.toDouble(), 0.0).apply { this[axis] = value })) {
+        while (value != 0.0 && entity.isSpaceEmpty(aabb, MVec3d(0.0, -stepHeight.toDouble(), 0.0).apply { this[axis] = value })) {
             value = checkValue(value)
         }
 

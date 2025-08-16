@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.e
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.pow
 
-abstract class EnchantedGlyphParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
-    private val startPosition = position(position)
+abstract class EnchantedGlyphParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d(), data) {
+    private val initialPosition = position
 
     init {
         this.velocity(velocity)
@@ -47,7 +48,10 @@ abstract class EnchantedGlyphParticle(session: PlaySession, position: Vec3d, vel
 
         val ageDivisor = 1.0 - floatAge / maxAge
         val ageDivisor2 = (1.0 - ageDivisor).pow(3)
-        this.position(startPosition + velocity * ageDivisor)
-        this.position.y -= ageDivisor2 * 1.2f
+
+        val nextPosition = initialPosition.mutable()
+        nextPosition += velocity * ageDivisor
+        nextPosition.y -= ageDivisor2 * 1.2f
+        this.position = nextPosition.unsafe
     }
 }

@@ -17,10 +17,11 @@ import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class SuspendParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, velocity, data) {
+abstract class SuspendParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, velocity, data) {
 
     init {
         this.color = (random.nextFloat() * 0.1f + 0.2f).asGray().rgba()
@@ -36,7 +37,7 @@ abstract class SuspendParticle(session: PlaySession, position: Vec3d, velocity: 
         if (dead) {
             return
         }
-        forceMove(velocity)
+        forceMove()
 
         velocity *= 0.99f
     }

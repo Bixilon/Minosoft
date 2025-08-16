@@ -154,7 +154,8 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         this.onGround = collidedY && movement.y < 0.0
 
         if (this.horizontalCollision) {
-            this.velocity = Vec3d(if (collidedX) 0.0 else velocity.x, velocity.y, if (collidedZ) 0.0 else velocity.z)
+            if (collidedX) this.velocity.x = 0.0
+            if (collidedZ) this.velocity.z = 0.0
         }
 
         return collidedY

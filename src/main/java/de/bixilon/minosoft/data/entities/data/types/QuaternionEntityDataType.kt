@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.entities.data.types
 
-import glm_.vec4.Vec4
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-object QuaternionEntityDataType : EntityDataType<Vec4> {
+object QuaternionEntityDataType : EntityDataType<Vec4f> {
 
-    override fun read(buffer: PlayInByteBuffer): Vec4 {
+    override fun read(buffer: PlayInByteBuffer): Vec4f {
         return buffer.readVec4f()
     }
 }

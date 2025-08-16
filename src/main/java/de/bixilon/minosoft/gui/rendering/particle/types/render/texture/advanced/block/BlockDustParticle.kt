@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -31,7 +32,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3d
 import java.util.*
 
-class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: BlockParticleData) : AdvancedTextureParticle(session, position, velocity, data) {
+class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: BlockParticleData) : AdvancedTextureParticle(session, position, velocity, data) {
 
     init {
         val blockPosition = position.blockPosition
@@ -58,7 +59,7 @@ class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, 
     companion object : ParticleFactory<BlockDustParticle> {
         override val identifier: ResourceLocation = "minecraft:block".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): BlockDustParticle? {
             check(data is BlockParticleData)
             if (data.blockState == null || data.blockState.block.identifier == MinecraftBlocks.MOVING_PISTON) {
                 return null

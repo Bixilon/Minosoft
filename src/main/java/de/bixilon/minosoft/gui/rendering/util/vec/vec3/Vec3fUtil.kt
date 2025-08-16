@@ -17,21 +17,18 @@ import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.simple.FloatMath.floor
-import de.bixilon.kutil.primitive.DoubleUtil.toDouble
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
-import glm_.func.cos
-import glm_.func.rad
-import glm_.func.sin
+import de.bixilon.minosoft.util.KUtil.cos
+import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.minosoft.util.KUtil.sin
+import kotlin.math.abs
 
 object Vec3fUtil {
     private val X = Vec3f(1, 0, 0)
@@ -65,13 +62,27 @@ object Vec3fUtil {
 
 
     inline fun MVec3f.rotateAssign(angle: Float, axis: Axes, rescale: Boolean = false) {
-        if (angle == 0.0f) {
-            return
-        }
+        if (abs(angle) < 0.003f) return
+
+        val sin = angle.sin
+        val cos = angle.cos
+
+
         when (axis) {
-            Axes.X -> this.yz = rotate(this.y, this.z, angle.sin, angle.cos, rescale)
-            Axes.Y -> this.xz = rotate(this.x, this.z, angle.sin, angle.cos, rescale)
-            Axes.Z -> this.xy = rotate(this.x, this.y, angle.sin, angle.cos, rescale)
+            Axes.X -> {
+                val yz = rotate(this.y, this.z, sin, cos, rescale)
+                this.y = yz.y; this.z = yz.y
+            }
+
+            Axes.Y -> {
+                val xz = rotate(this.x, this.z, sin, cos, rescale)
+                this.x = xz.x; this.z = xz.y
+            }
+
+            Axes.Z -> {
+                val xy = rotate(this.x, this.y, sin, cos, rescale)
+                this.x = xy.x; this.y = xy.y
+            }
         }
     }
 
@@ -89,28 +100,22 @@ object Vec3fUtil {
         this += origin
     }
 
-    inline fun Vec3f.rotateAssign(rad: _Vec3f) {
+    inline fun MVec3f.rotateAssign(rad: _Vec3f) {
         rotateAssign(rad.x, Axes.X, false)
         rotateAssign(rad.y, Axes.Y, false)
         rotateAssign(rad.z, Axes.Z, false)
     }
 
-    inline fun Any?.toVec3d(default: Vec3d? = null): Vec3d {
-        return toVec3N() ?: default ?: throw IllegalArgumentException("Not a Vec3: $this")
+    inline fun Any?.toVec3f(default: Vec3f? = null): Vec3f {
+        return toVec3fN() ?: default ?: throw IllegalArgumentException("Not a Vec3f: $this")
     }
 
 
-    inline fun Any?.toVec3N() = when (this) {
-        is List<*> -> Vec3d(this[0].toDouble(), this[1].toDouble(), this[2].toDouble())
-        is Map<*, *> -> Vec3d(this["x"]?.toDouble() ?: 0.0, this["y"]?.toDouble() ?: 0.0, this["z"]?.toDouble() ?: 0.0)
-        is Number -> Vec3d(this.toDouble())
+    inline fun Any?.toVec3fN() = when (this) {
+        is List<*> -> Vec3f(this[0].toFloat(), this[1].toFloat(), this[2].toFloat())
+        is Map<*, *> -> Vec3f(this["x"]?.toFloat() ?: 0.0f, this["y"]?.toFloat() ?: 0.0f, this["z"]?.toFloat() ?: 0.0f)
+        is Number -> Vec3f(this.toFloat())
         else -> null
-    }
-
-    fun Vec3f.clear() {
-        x = 0.0f
-        y = 0.0f
-        z = 0.0f
     }
 
     fun interpolateLinear(delta: Float, start: Vec3f, end: Vec3f): Vec3f {
@@ -139,40 +144,6 @@ object Vec3fUtil {
 
         return Vec3f(interpolate(start.x, end.x), interpolate(start.y, end.y), interpolate(start.z, end.z))
     }
-
-    fun FloatArray.toVec3d(): Vec3f {
-        return Vec3f(this[0], this[1], this[2])
-    }
-
-    @JvmName("constructorDirectionVector")
-    operator fun Vec3f.Companion.invoke(vector: DirectionVector) = Vec3f(vector.x, vector.y, vector.z)
-
-    @JvmName("constructorBlockPosition")
-    operator fun Vec3f.Companion.invoke(position: BlockPosition) = Vec3f(position.x, position.y, position.z)
-
-    @JvmName("constructorInChunkPosition")
-    operator fun Vec3f.Companion.invoke(position: InChunkPosition) = Vec3f(position.x, position.y, position.z)
-
-    @JvmName("constructorInSectionPosition")
-    operator fun Vec3f.Companion.invoke(position: InSectionPosition) = Vec3f(position.x, position.y, position.z)
-
-    @JvmName("plusBlockPosition")
-    operator fun Vec3f.plus(position: BlockPosition) = Vec3f(x + position.x, y + position.y, z + position.z)
-
-    @JvmName("plusInChunkPosition")
-    operator fun Vec3f.plus(position: InChunkPosition) = Vec3f(x + position.x, y + position.y, z + position.z)
-
-    @JvmName("plusInSectionPosition")
-    operator fun Vec3f.plus(position: InSectionPosition) = Vec3f(x + position.x, y + position.y, z + position.z)
-
-    @JvmName("minusBlockPosition")
-    operator fun Vec3f.minus(position: BlockPosition) = Vec3f(x - position.x, y - position.y, z - position.z)
-
-    @JvmName("minusInChunkPosition")
-    operator fun Vec3f.minus(position: InChunkPosition) = Vec3f(x - position.x, y - position.y, z - position.z)
-
-    @JvmName("minusInSectionPosition")
-    operator fun Vec3f.minus(position: InSectionPosition) = Vec3f(x - position.x, y - position.y, z - position.z)
 
 
     fun distance2(a: Vec3f, b: Vec3f): Float {

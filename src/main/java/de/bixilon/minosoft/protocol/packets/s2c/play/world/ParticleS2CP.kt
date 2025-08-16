@@ -52,7 +52,7 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         fun spawn(position: Vec3d, velocity: Vec3d) {
             val factory = data.type.factory ?: return
-            renderer += factory.build(session, position, velocity, data) ?: return
+            renderer += factory.build(session, position, velocity.mutable(), data) ?: return
         }
 
         if (count <= 1) {

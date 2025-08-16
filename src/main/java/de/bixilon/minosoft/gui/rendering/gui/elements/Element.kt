@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -23,12 +25,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.vertical
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
@@ -91,7 +91,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             apply()
         }
 
-    protected open fun applyMaxSize(max: Vec2f) {
+    protected open fun applyMaxSize(max: MVec2f) {
         if (parent == null && !ignoreDisplaySize) {
             if (max.x < 0) max.x = guiRenderer.scaledSize.x
             if (max.y < 0) max.y = guiRenderer.scaledSize.y
@@ -113,7 +113,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
     }
 
     val maxSize: Vec2f
-        get() = Vec2f.MAX.apply { applyMaxSize(this) }
+        get() = MVec2f(Float.MAX_VALUE).apply { applyMaxSize(this) }.unsafe
 
     protected open var _size: Vec2f = Vec2f.EMPTY
     open var size: Vec2f
@@ -125,7 +125,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             apply()
         }
 
-    protected open var _margin: Vec4 = Vec4.EMPTY
+    protected open var _margin: Vec4f = Vec4f.EMPTY
 
     /**
      * Margin for the element
@@ -133,7 +133,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      * The max size already includes the margin, the size not. To get the actual size of an element, add the margin to the element.
      * For rendering: Every element adds its padding itself
      */
-    open var margin: Vec4
+    open var margin: Vec4f
         get() = _margin
         set(value) {
             _margin = value
@@ -146,7 +146,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      * @return The number of z layers used
      */
     open fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val offset = offset(offset)
+        val offset = offset
         var directRendering = false
         if (consumer is GUIMesh && consumer.data == cache.data) {
             directRendering = true
@@ -161,10 +161,10 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             }
             return
         }
-        if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize !== guiRenderer.halfSize) {
+        if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize != guiRenderer.halfSize) {
             this.cache.clear()
             cache.halfSize = guiRenderer.halfSize
-            cache.offset = offset(offset)
+            cache.offset = offset
             cache.options = options
             forceRender(offset, cache, options)
             cacheUpToDate = true

@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.models.util
 
+import de.bixilon.kutil.json.JsonUtil.asMutableJsonObject
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.minosoft.data.world.vec.vec2.i.MVec2i
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 
@@ -38,13 +42,13 @@ object CuboidUtil {
     }
 
     fun cubeUV(offset: Vec2i, from: Vec3f, to: Vec3f, direction: Directions): FaceUV {
-        val cube = Vec3i(to - from)
+        val cube = MVec3f(to - from)
 
-        val uv = Vec2i(offset)
+        val uv = MVec2f(offset)
         val size = when (direction.axis) {
-            Axes.Y -> Vec2i(cube.x, cube.z)
-            Axes.Z -> Vec2i(cube.x, cube.y)
-            Axes.X -> Vec2i(cube.z, cube.y)
+            Axes.Y -> MVec2f(cube.x, cube.z)
+            Axes.Z -> MVec2f(cube.x, cube.y)
+            Axes.X -> MVec2f(cube.z, cube.y)
         }
 
         when (direction) {
@@ -80,6 +84,6 @@ object CuboidUtil {
         }
 
 
-        return FaceUV(Vec2f(uv.x, uv.y), Vec2f(uv.x + size.x, uv.y + size.y))
+        return FaceUV(uv.unsafe, Vec2f(uv.x + size.x, uv.y + size.y))
     }
 }

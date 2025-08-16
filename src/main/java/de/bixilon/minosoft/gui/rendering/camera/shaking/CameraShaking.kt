@@ -57,7 +57,6 @@ class CameraShaking(
 
     fun transform(): Mat4f? {
         if (rotation == 0.0f) return null
-        return Mat4f()
-            .rotateAssign(rotation, Vec3f.Z)
+        return Mat4f().rotate(rotation, Vec3f.Z)
     }
 }

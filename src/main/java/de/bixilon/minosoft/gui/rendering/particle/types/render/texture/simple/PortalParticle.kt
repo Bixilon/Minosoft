@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
-import glm_.pow
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import kotlin.math.pow
 
-class PortalParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position(position), Vec3d.EMPTY, data) {
-    private val startPosition = position(position)
+class PortalParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d(), data) {
+    private val initialPosition = position
 
     override var scale: Float
         get() = super.scale * (1.0f - (1.0f - (floatAge / maxAge)).pow(2))
@@ -33,7 +34,7 @@ class PortalParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, dat
 
     init {
         this.velocity(velocity)
-        this.position(position)
+        this.position = position
 
         this.scale = 0.1f * (random.nextFloat() * 0.2f + 0.5f)
 
@@ -58,15 +59,18 @@ class PortalParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, dat
         val lifeTime = floatAge / maxAge
         val velocityMultiplier = 1.0f - (-lifeTime + lifeTime * lifeTime * 2.0f)
 
-        this.position(startPosition + velocity * velocityMultiplier)
-        this.position.y += 1.0 - lifeTime
+        val nextPosition = initialPosition.mutable()
+        nextPosition += velocity * velocityMultiplier
+        nextPosition.y += 1.0 - lifeTime
+
+        this.position = nextPosition.unsafe
     }
 
 
     companion object : ParticleFactory<PortalParticle> {
         override val identifier: ResourceLocation = "minecraft:portal".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): PortalParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): PortalParticle {
             return PortalParticle(session, position, velocity, data)
         }
     }

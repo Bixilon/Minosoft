@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.addedY
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
@@ -63,7 +62,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
         position = Vec3dUtil.interpolateLinear(delta.toDouble(), position0, position1)
 
-        eyePosition = position.addedY(interpolateLinear(delta, eyeHeight0, eyeHeight1).toDouble())
+        eyePosition = position.plus(y = interpolateLinear(delta, eyeHeight0, eyeHeight1).toDouble())
 
         interpolateAABB(true)
     }

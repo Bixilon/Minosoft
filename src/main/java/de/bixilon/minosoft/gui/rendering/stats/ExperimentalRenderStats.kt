@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.stats
 
 import de.bixilon.kutil.avg._long.LongAverage
+import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.kutil.time.TimeUtil

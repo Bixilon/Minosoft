@@ -33,10 +33,11 @@ class ChestAnimation(
 
     override fun transform() {
         val rotation = interpolateSine(this.progress, BASE, OPEN)
-        transform.value
-            .translateAssign(transform.pivot)
-            .rotateRadAssign(rotation)
-            .translateAssign(transform.nPivot)
+        transform.value.apply {
+            translateAssign(transform.pivot)
+            rotateRadAssign(rotation)
+            translateAssign(transform.nPivot)
+        }
     }
 
 

@@ -69,7 +69,7 @@ abstract class Menu(
         val size = size
         super.forceRender(offset, consumer, options)
         val maxElementWidth = maxElementWidth
-        val startOffset = (size - Vec2i(maxElementWidth, totalHeight)) / 2
+        val startOffset = (size - Vec2f(maxElementWidth, totalHeight)) / 2
         for (element in elements) {
             element.render(offset + startOffset + Vec2f((maxElementWidth - element.size.x) / 2, 0), consumer, options)
             startOffset.y += BUTTON_Y_MARGIN + element.size.y

@@ -44,7 +44,7 @@ class ContainerText(
             val textElement = TextElement(guiRenderer, text, background = null, properties = TextRenderProperties(shadow = false))
             textElement.prefMaxSize = area.size
 
-            return ContainerText(textElement, area.start(area.start))
+            return ContainerText(textElement, area.start)
         }
 
         fun createInventoryTitle(guiRenderer: GUIRenderer, area: AtlasArea?): ContainerText? {

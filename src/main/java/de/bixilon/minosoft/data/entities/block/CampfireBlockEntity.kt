@@ -29,8 +29,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.Campfire
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
@@ -92,7 +92,7 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
             )
 
             for (i in 0 until 4) {
-                particle += SmokeParticle(session, position, Vec3d(0.0, 5.0E-4, 0.0))
+                particle += SmokeParticle(session, position, MVec3d(0.0, 5.0E-4, 0.0))
             }
         }
     }

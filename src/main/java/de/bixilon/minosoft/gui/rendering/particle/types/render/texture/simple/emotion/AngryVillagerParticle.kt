@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -30,7 +31,7 @@ class AngryVillagerParticle(session: PlaySession, position: Vec3d, data: Particl
     companion object : ParticleFactory<AngryVillagerParticle> {
         override val identifier: ResourceLocation = "minecraft:angry_villager".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): AngryVillagerParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): AngryVillagerParticle {
             return AngryVillagerParticle(session, position, data)
         }
     }

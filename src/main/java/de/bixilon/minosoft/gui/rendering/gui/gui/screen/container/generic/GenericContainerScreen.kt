@@ -51,7 +51,7 @@ open class GenericContainerScreen(
 
     override val containerElement = ContainerItemsElement(guiRenderer, container, calculateSlots()).apply { parent = this@GenericContainerScreen }
     override val customRenderer: Boolean get() = true
-    private val containerSize = Vec2i(maxOf(header.size.x, slotRow.size.x, footer.size.x), header.size.y + slotRow.size.y * container.rows + footer.size.y)
+    private val containerSize = Vec2f(maxOf(header.size.x, slotRow.size.x, footer.size.x), header.size.y + slotRow.size.y * container.rows + footer.size.y)
 
     private val title = ContainerText.of(guiRenderer, headerAtlas?.areas?.get("text"), container.title)
     private val inventoryTitle = ContainerText.createInventoryTitle(guiRenderer, footerAtlas?.areas?.get("text"))
@@ -59,7 +59,7 @@ open class GenericContainerScreen(
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = (size - containerSize) / 2
-        val initialOffset = Vec2f(centerOffset)
+        val initialOffset = centerOffset
 
         super.forceRender(centerOffset, consumer, options)
 

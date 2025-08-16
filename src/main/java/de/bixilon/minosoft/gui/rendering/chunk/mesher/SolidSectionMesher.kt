@@ -37,6 +37,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
@@ -78,11 +79,11 @@ class SolidSectionMesher(
 
         val offset = BlockPosition.of(sectionPosition)
 
-        val floatOffset = FloatArray(3)
+        val floatOffset = MVec3f(3)
 
         val ao = if (ambientOcclusion) AmbientOcclusion(section) else null
 
-        val props = WorldRenderProps(floatOffset, mesh, random, neighbourBlocks, light, ao)
+        val props = WorldRenderProps(floatOffset.unsafe, mesh, random, neighbourBlocks, light, ao) // TODO: really use unsafe?
 
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
@@ -100,9 +101,9 @@ class SolidSectionMesher(
 
                     val position = offset + inSection
                     val inChunk = InChunkPosition(inSection.x, position.y, inSection.z)
-                    floatOffset[0] = (position.x - cameraOffset.x).toFloat()
-                    floatOffset[1] = (position.y - cameraOffset.y).toFloat()
-                    floatOffset[2] = (position.z - cameraOffset.z).toFloat()
+                    floatOffset.x = (position.x - cameraOffset.x).toFloat()
+                    floatOffset.y = (position.y - cameraOffset.y).toFloat()
+                    floatOffset.z = (position.z - cameraOffset.z).toFloat()
 
 
                     setDown(state, fastBedrock, inSection, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
@@ -127,9 +128,9 @@ class SolidSectionMesher(
 
                     if (state.block is OffsetBlock) {
                         val randomOffset = state.block.offsetModel(position)
-                        floatOffset[0] += randomOffset.x
-                        floatOffset[1] += randomOffset.y
-                        floatOffset[2] += randomOffset.z
+                        floatOffset.x += randomOffset.x
+                        floatOffset.y += randomOffset.y
+                        floatOffset.z += randomOffset.z
                     }
 
                     ao?.clear()

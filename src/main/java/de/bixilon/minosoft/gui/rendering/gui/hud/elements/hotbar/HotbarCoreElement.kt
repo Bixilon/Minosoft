@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HotbarHe
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HotbarVehicleHealthElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.copy
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.copy
 
 class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     val base = HotbarBaseElement(guiRenderer)
@@ -83,7 +83,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             topRight.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
-            experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), consumer, options)
+            experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0.0f), consumer, options)
             offset.y += experience.size.y + VERTICAL_SPACING
         }
         if (gamemode != Gamemodes.SPECTATOR) {

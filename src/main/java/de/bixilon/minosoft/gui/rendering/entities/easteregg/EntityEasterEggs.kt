@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.easteregg
 
-import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
+import de.bixilon.minosoft.util.KUtil.rad
 
 object EntityEasterEggs {
     val FLIP_ROTATION = Vec3f(180.0f.rad, 0.0f, 0.0f)

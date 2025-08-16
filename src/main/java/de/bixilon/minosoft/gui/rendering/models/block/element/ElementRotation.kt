@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.element
 
-import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -22,6 +21,8 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotateAssign
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3f
+import de.bixilon.minosoft.util.KUtil.rad
 
 data class ElementRotation(
     val origin: Vec3f = ORIGIN,
@@ -53,7 +54,7 @@ data class ElementRotation(
 
             val rescale = data["rescale"]?.toBoolean() ?: false
 
-            val origin = data["origin"]?.toVec3f()?.apply { this /= BLOCK_SIZE } ?: ORIGIN
+            val origin = data["origin"]?.toVec3f()?.apply { this.unsafe /= BLOCK_SIZE } ?: ORIGIN
             val axis = Axes[data["axis"].toString()]
 
 

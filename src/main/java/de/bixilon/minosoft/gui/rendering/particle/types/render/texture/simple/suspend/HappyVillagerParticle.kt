@@ -17,11 +17,12 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class HappyVillagerParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(session, position, velocity, data) {
+class HappyVillagerParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SuspendParticle(session, position, velocity, data) {
 
     init {
         color = ChatColors.WHITE
@@ -30,7 +31,7 @@ class HappyVillagerParticle(session: PlaySession, position: Vec3d, velocity: Vec
     companion object : ParticleFactory<HappyVillagerParticle> {
         override val identifier: ResourceLocation = "minecraft:happy_villager".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): HappyVillagerParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): HappyVillagerParticle {
             return HappyVillagerParticle(session, position, velocity, data)
         }
     }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
@@ -30,7 +31,7 @@ open class BlockFeature(
     state: BlockState?,
     var scale: Vec3f = DEFAULT_SCALE,
 ) : MeshedFeature<BlockMesh>(renderer) {
-    private var matrix = Mat4f()
+    private var matrix = MMat4f()
     var state: BlockState? = state
         set(value) {
             if (field == value) return
@@ -62,10 +63,11 @@ open class BlockFeature(
     }
 
     private fun updateMatrix() {
-        this.matrix.reset()
-        this.matrix
-            .scaleAssign(this.scale)
-            .translateXAssign(-0.5f).translateZAssign(-0.5f)
+        this.matrix.clearAssign()
+        this.matrix.apply {
+            scaleAssign(scale)
+            translateXAssign(-0.5f); translateZAssign(-0.5f)
+        }
 
         // TODO: rotate?
 
@@ -80,7 +82,7 @@ open class BlockFeature(
 
     protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
         shader.use()
-        shader.matrix = matrix
+        shader.matrix = matrix.unsafe
         shader.tint = renderer.light.value.rgba()
         super.draw(mesh)
     }

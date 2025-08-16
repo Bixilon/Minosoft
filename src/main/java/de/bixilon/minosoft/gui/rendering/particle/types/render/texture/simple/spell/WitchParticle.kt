@@ -17,11 +17,12 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WitchParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SpellParticle(session, position, velocity, data) {
+class WitchParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SpellParticle(session, position, velocity, data) {
 
     init {
         val randomColor = random.nextFloat() * 0.5f + 0.35f
@@ -31,7 +32,7 @@ class WitchParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data
     companion object : ParticleFactory<WitchParticle> {
         override val identifier: ResourceLocation = "minecraft:witch".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): WitchParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): WitchParticle {
             return WitchParticle(session, position, velocity, data)
         }
     }

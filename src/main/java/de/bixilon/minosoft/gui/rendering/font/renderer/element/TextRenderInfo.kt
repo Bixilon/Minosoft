@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 
 class TextRenderInfo(
@@ -21,7 +22,7 @@ class TextRenderInfo(
     val lines: MutableList<LineRenderInfo> = mutableListOf()
     var lineIndex: Int = 0
 
-    var size = Vec2f.EMPTY
+    var size = MVec2f.EMPTY
     var cutOff = false
 
 

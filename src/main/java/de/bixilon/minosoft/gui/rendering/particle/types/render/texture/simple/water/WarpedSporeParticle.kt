@@ -18,12 +18,13 @@ import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class WarpedSporeParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(session, position, Vec3d(0.0, (random.nextDouble() * -1.9 * random.nextDouble() * 0.1), 0.0), data) {
+class WarpedSporeParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(session, position, MVec3d(0.0, (random.nextDouble() * -1.9 * random.nextDouble() * 0.1), 0.0), data) {
 
     init {
         color = RGBAColor(0.1f, 0.1f, 0.3f)
@@ -35,7 +36,7 @@ class WarpedSporeParticle(session: PlaySession, position: Vec3d, data: ParticleD
         override val identifier: ResourceLocation = "minecraft:warped_spore".toResourceLocation()
         private val random = Random()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): WarpedSporeParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): WarpedSporeParticle {
             return WarpedSporeParticle(session, position, data)
         }
     }

@@ -48,6 +48,6 @@ class AtlasTexture(
     fun put(offset: Vec2i, source: TextureBuffer, start: Vec2i, size: Vec2i): CodeTexturePart {
         this.data.buffer.put(source, start, offset, size)
 
-        return CodeTexturePart(this, (pixel * offset).fixUVStart(), (pixel * (offset + size)).fixUVEnd(), size)
+        return CodeTexturePart(this, (pixel * offset).apply { unsafe.fixUVStart() }, (pixel * (offset + size)).apply { unsafe.fixUVEnd() }, size)
     }
 }

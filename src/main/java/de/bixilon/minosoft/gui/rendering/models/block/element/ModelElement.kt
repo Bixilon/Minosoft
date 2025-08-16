@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3f
 
 data class ModelElement(
     val from: Vec3f,

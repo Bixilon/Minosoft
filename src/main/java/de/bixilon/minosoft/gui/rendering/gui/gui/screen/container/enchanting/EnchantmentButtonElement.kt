@@ -50,10 +50,10 @@ class EnchantmentButtonElement(
 
         val level = AtlasImageElement(guiRenderer, if (disabled) disabledLevelAtlas else levelAtlas)
         val size = size
-        level.render(offset + Vec2i(5, VerticalAlignments.CENTER.getOffset(size.y, level.size.y)), consumer, options)
+        level.render(offset + Vec2f(5f, VerticalAlignments.CENTER.getOffset(size.y, level.size.y)), consumer, options)
 
         if (!_disabled) {
-            levelText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, levelText.size.x) - 3, VerticalAlignments.BOTTOM.getOffset(size.y, levelText.size.y) - 2), consumer, options)
+            levelText.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, levelText.size.x) - 3, VerticalAlignments.BOTTOM.getOffset(size.y, levelText.size.y) - 2), consumer, options)
         }
     }
 

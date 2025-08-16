@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
-import glm_.func.common.clamp
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
+import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
-import glm_.f
+import de.bixilon.minosoft.util.f
 import kotlin.math.abs
 
 object Vec3dUtil {
@@ -43,8 +44,15 @@ object Vec3dUtil {
     inline val _Vec3d.blockPosition: BlockPosition
         get() = BlockPosition(this.x.floor, this.y.floor, this.z.floor)
 
-    fun Vec3d.toVec3f(): Vec3f {
-        return Vec3f(x.f, y.f, z.f)
+    inline fun Any?.toVec3d(default: Vec3d? = null): Vec3d {
+        return toVec3dN() ?: default ?: throw IllegalArgumentException("Not a Vec3: $this")
+    }
+
+    inline fun Any?.toVec3dN() = when (this) {
+        is List<*> -> Vec3d(this[0].toDouble(), this[1].toDouble(), this[2].toDouble())
+        is Map<*, *> -> Vec3d(this["x"]?.toDouble() ?: 0.0, this["y"]?.toDouble() ?: 0.0, this["z"]?.toDouble() ?: 0.0)
+        is Number -> Vec3d(this.toDouble())
+        else -> null
     }
 
     private fun Double.clamp(min: Int, max: Int) = clamp(min.toDouble(), max.toDouble())
@@ -137,71 +145,6 @@ object Vec3dUtil {
             raycastDistance(front, Axes.Z),
         ) + 0.00001
     }
-
-    fun Vec3d.length3(): Double {
-        return x + y + z
-    }
-
-
-    operator fun Vec3d.get(axis: Axes): Double {
-        return when (axis) {
-            Axes.X -> x
-            Axes.Y -> y
-            Axes.Z -> z
-        }
-    }
-
-    operator fun Vec3d.set(axis: Axes, value: Double) {
-        when (axis) {
-            Axes.X -> x = value
-            Axes.Y -> y = value
-            Axes.Z -> z = value
-        }
-    }
-
-    fun Vec3d.addedY(y: Double): Vec3d {
-        val res = this(this)
-        res.y += y
-
-        return res
-    }
-
-    fun Vec3d.assign(other: Vec3d) {
-        this.x = other.x
-        this.y = other.y
-        this.z = other.z
-    }
-
-    @JvmName("constructorDirectionVector")
-    operator fun Vec3d.Companion.invoke(vector: DirectionVector) = Vec3d(vector.x, vector.y, vector.z)
-
-    @JvmName("constructorBlockPosition")
-    operator fun Vec3d.Companion.invoke(position: BlockPosition) = Vec3d(position.x, position.y, position.z)
-
-    @JvmName("constructorInChunkPosition")
-    operator fun Vec3d.Companion.invoke(position: InChunkPosition) = Vec3d(position.x, position.y, position.z)
-
-    @JvmName("constructorInSectionPosition")
-    operator fun Vec3d.Companion.invoke(position: InSectionPosition) = Vec3d(position.x, position.y, position.z)
-
-    @JvmName("plusBlockPosition")
-    operator fun Vec3d.plus(position: BlockPosition) = Vec3d(x + position.x, y + position.y, z + position.z)
-
-    @JvmName("plusInChunkPosition")
-    operator fun Vec3d.plus(position: InChunkPosition) = Vec3d(x + position.x, y + position.y, z + position.z)
-
-    @JvmName("plusInSectionPosition")
-    operator fun Vec3d.plus(position: InSectionPosition) = Vec3d(x + position.x, y + position.y, z + position.z)
-
-    @JvmName("minusBlockPosition")
-    operator fun Vec3d.minus(position: BlockPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
-
-    @JvmName("minusInChunkPosition")
-    operator fun Vec3d.minus(position: InChunkPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
-
-    @JvmName("minusInSectionPosition")
-    operator fun Vec3d.minus(position: InSectionPosition) = Vec3d(x - position.x, y - position.y, z - position.z)
-
 
     fun distance2(a: Vec3d, b: Vec3d): Double {
         val x = a.x - b.x

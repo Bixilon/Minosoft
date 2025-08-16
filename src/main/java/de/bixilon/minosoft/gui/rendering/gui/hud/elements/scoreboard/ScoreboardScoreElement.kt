@@ -36,8 +36,8 @@ class ScoreboardScoreElement(
     private val scoreElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
-        nameElement.prefMaxSize = Vec2f(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
-        scoreElement.prefMaxSize = Vec2f(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
+        nameElement.prefMaxSize = Vec2f(-1.0f, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
+        scoreElement.prefMaxSize = Vec2f(-1.0f, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         forceSilentApply()
         _parent = parent
     }
@@ -45,7 +45,7 @@ class ScoreboardScoreElement(
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         nameElement.render(offset, consumer, options)
 
-        scoreElement.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0), consumer, options)
+        scoreElement.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0.0f), consumer, options)
     }
 
     override fun silentApply(): Boolean {

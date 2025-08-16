@@ -19,16 +19,7 @@ import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 
 class MouseMoveEvent(
     context: RenderContext,
-    position: Vec2d,
-    previous: Vec2d,
-    delta: Vec2d,
-) : RenderEvent(context) {
-    val position: Vec2d = position
-        get() = Vec2d(field)
-
-    val previous: Vec2d = previous
-        get() = Vec2d(field)
-
-    val delta: Vec2d = delta
-        get() = Vec2d(field)
-}
+    val position: Vec2d,
+    val previous: Vec2d,
+    val delta: Vec2d,
+) : RenderEvent(context)

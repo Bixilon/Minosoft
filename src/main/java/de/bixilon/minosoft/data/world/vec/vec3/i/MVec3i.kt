@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.vec.vec3.i
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.div
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.IntUtil.plus
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.world.vec.number.IntUtil.times
 import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
-import glm_.i
+import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 
@@ -65,6 +66,16 @@ value class MVec3i(
     inline operator fun timesAssign(other: _Vec3i): Unit = let { this.x *= other.x; this.y *= other.y; this.z *= other.z }
     inline operator fun divAssign(other: _Vec3i): Unit = let { this.x /= other.x; this.y /= other.y; this.z /= other.z }
     inline operator fun remAssign(other: _Vec3i): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
+
+
+    inline operator fun plus(direction: Directions) = this + direction.vector
+    inline operator fun minus(direction: Directions) = this - direction.vector
+    inline operator fun times(direction: Directions) = this * direction.vector
+
+    inline operator fun plusAssign(direction: Directions) = let { this += direction.vector }
+    inline operator fun minusAssign(direction: Directions) = let { this -= direction.vector }
+    inline operator fun timesAssign(direction: Directions) = let { this *= direction.vector }
+
 
 
     inline operator fun plus(other: Number) = MVec3i(this.x + other, this.y + other, this.z + other)

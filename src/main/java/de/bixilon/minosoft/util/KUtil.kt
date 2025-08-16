@@ -63,8 +63,6 @@ import de.bixilon.minosoft.recipes.RecipeFactories
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
-import glm_.glm
-import glm_.vec3.Vec3d
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
@@ -274,7 +272,6 @@ object KUtil {
 
     fun initPlayClasses() {
         DefaultThreadPool += { PlaySession::class.java.forceInit() }
-        DefaultThreadPool += { glm::class.java.forceInit() } // whole glm
         DefaultThreadPool += { ItemFactories::class.java.forceInit() }
         DefaultThreadPool += { BlockFactories::class.java.forceInit() }
         DefaultThreadPool += { RecipeFactories::class.java.forceInit() }

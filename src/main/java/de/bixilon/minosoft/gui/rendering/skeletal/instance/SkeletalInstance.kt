@@ -13,18 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.EMPTY_INSTANCE
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class SkeletalInstance(
@@ -33,7 +32,7 @@ class SkeletalInstance(
     val transform: TransformInstance,
 ) {
     val animation = AnimationManager(this)
-    var matrix = Mat4f()
+    var matrix = MMat4f()
 
 
     fun draw(light: Int) {
@@ -62,16 +61,18 @@ class SkeletalInstance(
     fun update(time: ValueTimeMark = now()) {
         transform.reset()
         animation.draw(time)
-        transform.pack(matrix)
+        transform.pack(matrix.unsafe)
     }
 
-    fun update(position: Vec3f, rotation: Vec3f, pivot: Vec3f = Vec3f.EMPTY_INSTANCE, matrix: Mat4f? = null) {
-        this.matrix.reset()
-        this.matrix
-            .translateAssign(position)
-            .translateAssign(pivot)
-            .rotateRadAssign(rotation)
-            .translateAssign(-pivot)
+    fun update(position: Vec3f, rotation: Vec3f, pivot: Vec3f = Vec3f.EMPTY, matrix: Mat4f? = null) {
+        this.matrix.apply {
+            clearAssign()
+
+            translateAssign(position)
+            translateAssign(pivot)
+            rotateRadAssign(rotation)
+            translateAssign(-pivot)
+        }
 
         if (matrix != null) {
             this.matrix = matrix * this.matrix
@@ -79,13 +80,13 @@ class SkeletalInstance(
     }
 
     fun update(rotation: Vec3f, matrix: Mat4f? = null) {
-        update(Vec3f.EMPTY_INSTANCE, rotation, matrix = matrix)
+        update(Vec3f.EMPTY, rotation, matrix = matrix)
     }
 
     fun update(position: BlockPosition, rotation: Vec3f) {
-        val position = Vec3f(position - context.camera.offset.offset)
+        val position = MVec3f(position - context.camera.offset.offset)
         position.x += 0.5f; position.z += 0.5f // models origin is the center of block origin
-        update(position, rotation, BLOCK_PIVOT)
+        update(position.unsafe, rotation, BLOCK_PIVOT)
     }
 
     private companion object {

@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import glm_.func.rad
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i.MVec2i
+import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.minosoft.util.f
 import kotlin.math.abs
 
 object Vec2iUtil {
@@ -64,55 +62,23 @@ object Vec2iUtil {
     }
 
     val Vec2i.rad: Vec2f
-        get() = Vec2f(x.rad, y.rad)
+        get() = Vec2f(x.f.rad, y.f.rad)
 
     val Vec2i.abs: Vec2i
         get() = Vec2i(abs(x), abs(y))
-
-    fun MVec2i.absAssign() {
-        if (x < 0) {
-            x = -x
-        }
-        if (y < 0) {
-            y = -y
-        }
-    }
-
-    operator fun Vec2i.get(axis: Axes): Int {
-        return when (axis) {
-            Axes.X -> x
-            Axes.Y -> y
-            Axes.Z -> throw IllegalArgumentException("A Vec2i has no Z coordinate!")
-        }
-    }
 
     fun Any?.toVec2i(default: Vec2i? = null): Vec2i {
         return toVec2iN() ?: default ?: throw IllegalArgumentException("Not a Vec2i: $this")
     }
 
-    fun Any?.toVec2iN(): Vec2i? {
-        return when (this) {
-            is List<*> -> Vec2i(this[0].toInt(), this[1].toInt())
-            is Map<*, *> -> Vec2i(this["x"]?.toInt() ?: 0, this["y"]?.toInt() ?: 0)
-            is Number -> Vec2i(this.toInt())
-            else -> null
-        }
+    fun Any?.toVec2iN() = when (this) {
+        is List<*> -> Vec2i(this[0].toInt(), this[1].toInt())
+        is Map<*, *> -> Vec2i(this["x"]?.toInt() ?: 0, this["y"]?.toInt() ?: 0)
+        is Number -> Vec2i(this.toInt())
+        else -> null
     }
 
     fun Vec2i.isOutside(min: Vec2i, max: Vec2i): Boolean {
         return this isSmaller min || this isGreater max
     }
-
-    operator fun Vec2i.plus(direction: Directions): Vec2i {
-        val ret = this(this)
-        ret.x += direction.vector.x
-        ret.y += direction.vector.z
-        return ret
-    }
-
-    @JvmName("constructorChunkPosition")
-    operator fun Vec2i.Companion.invoke(position: ChunkPosition) = Vec2i(position.x, position.z)
-
-    operator fun Vec2i.plus(position: ChunkPosition) = Vec2i(x + position.x, y + position.z)
-    operator fun Vec2i.minus(position: ChunkPosition) = Vec2i(x + position.x, y + position.z)
 }

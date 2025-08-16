@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 class TextOffset(
     val initial: Vec2f = Vec2f.EMPTY,
 ) {
-    var offset = initial(initial)
+    var offset = initial.mutable()
 
 
     fun align(alignment: HorizontalAlignments, width: Float, size: Vec2f) {

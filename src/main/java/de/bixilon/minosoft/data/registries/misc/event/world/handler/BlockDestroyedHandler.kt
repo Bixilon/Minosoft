@@ -61,7 +61,7 @@ object BlockDestroyedHandler : WorldEventHandler {
                         particlePosition *= delta
                         particlePosition += aabb.min
 
-                        particleRenderer += BlockDustParticle(session, particlePosition.unsafe + position, particlePosition.unsafe - 0.5, particleData)
+                        particleRenderer += BlockDustParticle(session, particlePosition.unsafe + position, particlePosition - 0.5, particleData)
                     }
                 }
             }

@@ -133,8 +133,8 @@ class ParticleRenderer(
 
     private fun updateShader() {
         val matrix = context.camera.matrix.viewProjectionMatrix
-        val cameraRight = Vec3f(matrix[0][0], matrix[1][0], matrix[2][0])
-        val cameraUp = Vec3f(matrix[0][1], matrix[1][1], matrix[2][1])
+        val cameraRight = Vec3f(matrix[0, 0], matrix[1, 0], matrix[2, 0])
+        val cameraUp = Vec3f(matrix[0, 1], matrix[1, 1], matrix[2, 1])
 
         shader.cameraRight = cameraRight
         shader.cameraUp = cameraUp

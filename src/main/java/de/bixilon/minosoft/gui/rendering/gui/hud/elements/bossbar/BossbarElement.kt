@@ -47,8 +47,8 @@ class BossbarElement(
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         val titleSize = titleElement.size
-        titleElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, titleSize.x), 0), consumer, options)
-        progress.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, progress.size.x), titleSize.y), consumer, options)
+        titleElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, titleSize.x), 0f), consumer, options)
+        progress.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, progress.size.x), titleSize.y), consumer, options)
     }
 
     override fun poll(): Boolean {

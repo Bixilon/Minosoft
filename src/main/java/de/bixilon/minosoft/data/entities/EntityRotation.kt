@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import glm_.func.cos
-import glm_.func.rad
-import glm_.func.sin
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.minosoft.util.KUtil.cos
+import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.minosoft.util.KUtil.sin
 import kotlin.math.abs
 
 data class EntityRotation(

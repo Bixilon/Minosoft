@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
-import glm_.func.rad
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
@@ -28,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
+import de.bixilon.minosoft.util.KUtil.rad
 
 abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
@@ -76,15 +78,15 @@ abstract class PlanetRenderer(
 
 
     private fun calculateMatrix(base: Mat4f) {
-        val matrix = Mat4f(base)
+        val matrix = MMat4f(base)
+
+        matrix.apply {
+            rotateAssign(calculateAngle().rad, Vec3f.Z)
+            translateYAssign(-modifier) // moves the planet closer to the player (appears bigger)
+        }
 
 
-        matrix.rotateAssign(calculateAngle().rad, Vec3f.Z)
-
-        matrix.translateYAssign(-modifier) // moves the planet closer to the player (appears bigger)
-
-
-        this.matrix = matrix
+        this.matrix = matrix.unsafe
         this.matrixUpdate = true
     }
 
@@ -110,7 +112,7 @@ abstract class PlanetRenderer(
 
             val intensity = calculateIntensity()
             if (this.intensity != intensity) {
-                shader.tintColor = Vec4(1.0f, 1.0f, 1.0f, intensity)
+                shader.tintColor = Vec4f(1.0f, 1.0f, 1.0f, intensity)
                 this.intensity = intensity
             }
             this.matrixUpdate = false

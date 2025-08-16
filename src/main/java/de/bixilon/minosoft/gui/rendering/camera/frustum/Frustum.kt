@@ -14,10 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
-import glm_.mat3x3.Mat3
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
@@ -30,11 +28,12 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.data.world.vec.mat3.f.Mat3f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.invoke
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.dot
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(
@@ -57,15 +56,15 @@ class Frustum(
             matrix[3] + matrix[2],
             matrix[3] - matrix[2],
         )
-        val planesVec3f = arrayOf(
-            Vec3f(planes[0]),
-            Vec3f(planes[1]),
+        val planesVec3 = arrayOf(
+            planes[0].xyz,
+            planes[1].xyz,
 
-            Vec3f(planes[2]),
-            Vec3f(planes[3]),
+            planes[2].xyz,
+            planes[3].xyz,
 
-            Vec3f(planes[4]),
-            Vec3f(planes[5]),
+            planes[4].xyz,
+            planes[5].xyz,
         )
 
         val crosses = arrayOf(
@@ -96,7 +95,7 @@ class Frustum(
 
         fun intersections(a: Planes, b: Planes, c: Planes): Vec3f {
             val d = planesVec3[a] dot crosses[ij2k(b, c)]
-            val res = Mat3(crosses[ij2k(b, c)], -crosses[ij2k(a, c)], crosses[ij2k(a, b)]) * Vec3f(planes[a].w, planes[b].w, planes[c].w)
+            val res = Mat3f(crosses[ij2k(b, c)], -crosses[ij2k(a, c)], crosses[ij2k(a, b)]) * Vec3f(planes[a].w, planes[b].w, planes[c].w)
             return res * (-1.0f / d)
         }
 
@@ -120,13 +119,15 @@ class Frustum(
         recalculate(matrixHandler.viewProjectionMatrix.transpose())
     }
 
+    fun Vec4f.dot(x: Float, y: Float, z: Float) = this.x * x + this.y * y + this.z * z + this.w
+
 
     private fun containsRegion(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
         if (!RenderConstants.FRUSTUM_CULLING_ENABLED) return true
         val (normals, planes) = this.data ?: return true
 
         for (i in 0 until Planes.SIZE) {
-            val plane = planes[i].array
+            val plane = planes[i]
             if (plane.dot(minX, minY, minZ) < 0.0f
                 && plane.dot(maxX, maxY, maxZ) < 0.0f // check max as 2nd, likely to be false
                 && plane.dot(maxX, minY, minZ) < 0.0f
@@ -141,15 +142,15 @@ class Frustum(
         }
 
         for (i in 0 until 8) {
-            val normal = normals[i].array
-            if (normal[0] >= minX) return true
-            if (normal[0] <= maxX) return true
+            val normal = normals[i]
+            if (normal.x >= minX) return true
+            if (normal.x <= maxX) return true
 
-            if (normal[1] >= minY) return true
-            if (normal[1] <= maxY) return true
+            if (normal.y >= minY) return true
+            if (normal.y <= maxY) return true
 
-            if (normal[2] >= minZ) return true
-            if (normal[2] <= maxZ) return true
+            if (normal.z >= minZ) return true
+            if (normal.z <= maxZ) return true
         }
 
         return false
@@ -202,7 +203,7 @@ class Frustum(
     operator fun contains(position: ChunkPosition) = containsChunk(position)
     operator fun contains(section: ChunkSection) = containsChunkSection(section)
 
-    private data class FrustumData(val normals: Array<Vec3f>, val planes: Array<Vec4>)
+    private data class FrustumData(val normals: Array<Vec3f>, val planes: Array<Vec4f>)
 
     private enum class Planes {
         LEFT,

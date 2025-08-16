@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BubbleParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d.EMPTY, data) {
+class BubbleParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d.EMPTY, data) {
 
     init {
         this.spacing = Vec3f(0.02f)
@@ -42,7 +43,7 @@ class BubbleParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, dat
             return
         }
         this.velocity.y += 0.002
-        forceMove(velocity)
+        forceMove()
         velocity *= 0.85
 
         // ToDo: Check if in water: Kill particle
@@ -52,7 +53,7 @@ class BubbleParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, dat
     companion object : ParticleFactory<BubbleParticle> {
         override val identifier: ResourceLocation = "minecraft:bubble".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): BubbleParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): BubbleParticle {
             return BubbleParticle(session, position, velocity, data)
         }
     }

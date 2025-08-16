@@ -20,8 +20,5 @@ import de.bixilon.minosoft.modding.event.events.CancelableEvent
 
 class MouseScrollEvent(
     context: RenderContext,
-    offset: Vec2d,
-) : RenderEvent(context), CancelableEvent {
-    val offset: Vec2d = offset
-        get() = Vec2d(field)
-}
+    val offset: Vec2d,
+) : RenderEvent(context), CancelableEvent

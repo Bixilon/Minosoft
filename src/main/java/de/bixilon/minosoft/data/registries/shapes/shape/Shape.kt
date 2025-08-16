@@ -45,11 +45,11 @@ interface Shape : Iterable<AABB> {
     operator fun plus(offset: Vec3f) = modify { it + offset }
     operator fun plus(offset: Vec3i) = modify { it + offset }
 
-    operator fun plus(offset: BlockPosition) = modify { it + offset }
+    operator fun plus(offset: BlockPosition) = modify { it.offset(offset) }
 
-    operator fun plus(offset: InChunkPosition) = modify { it + offset }
+    operator fun plus(offset: InChunkPosition) = modify { it.offset(offset) }
 
-    operator fun plus(offset: InSectionPosition) = modify { it + offset }
+    operator fun plus(offset: InSectionPosition) = modify { it.offset(offset) }
 
     fun add(other: Shape): Shape {
         val aabbs: MutableSet<AABB> = ObjectOpenHashSet()

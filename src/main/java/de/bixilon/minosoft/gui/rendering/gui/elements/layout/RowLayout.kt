@@ -23,13 +23,13 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.bottom
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.top
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.bottom
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.left
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.top
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.vertical
 
 /**
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other

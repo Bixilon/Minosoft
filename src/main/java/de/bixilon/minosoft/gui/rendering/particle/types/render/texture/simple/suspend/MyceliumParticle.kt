@@ -16,16 +16,17 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.s
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class MyceliumParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(session, position, velocity, data) {
+class MyceliumParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SuspendParticle(session, position, velocity, data) {
 
     companion object : ParticleFactory<MyceliumParticle> {
         override val identifier: ResourceLocation = "minecraft:mycelium".toResourceLocation()
 
-        override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): MyceliumParticle {
+        override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): MyceliumParticle {
             return MyceliumParticle(session, position, velocity, data)
         }
     }

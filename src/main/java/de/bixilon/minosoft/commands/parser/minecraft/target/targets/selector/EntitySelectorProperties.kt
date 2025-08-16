@@ -15,9 +15,10 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
 
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 
 data class EntitySelectorProperties(
     val entities: MutableList<Entity>,
-    val center: Vec3d,
+    val center: MVec3d,
     val executor: Entity?,
 )

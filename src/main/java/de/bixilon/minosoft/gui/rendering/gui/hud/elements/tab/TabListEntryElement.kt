@@ -50,7 +50,7 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2f(0.125), uvEnd = Vec2f(0.25), size = Vec2f(8, 8), parent = this)
+    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2f(0.125f), uvEnd = Vec2f(0.25f), size = Vec2f(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2f(0.125), uvEnd = Vec2f(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(allowNewLine = false), parent = this)
@@ -146,8 +146,8 @@ class TabListEntryElement(
     }
 
     companion object {
-        const val HEIGHT = 11
-        const val INNER_MARGIN = 5
-        const val PADDING = 1
+        const val HEIGHT = 11.0f
+        const val INNER_MARGIN = 5.0f
+        const val PADDING = 1.0f
     }
 }

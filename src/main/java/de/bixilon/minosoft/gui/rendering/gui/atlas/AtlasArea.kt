@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2f
 
 class AtlasArea(
     val start: Vec2f,

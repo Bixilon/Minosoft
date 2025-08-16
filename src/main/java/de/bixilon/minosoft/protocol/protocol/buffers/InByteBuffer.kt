@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import glm_.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.config.DebugOptions
@@ -28,6 +27,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
@@ -101,8 +101,8 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
         return Vec3d(readDouble(), readDouble(), readDouble())
     }
 
-    fun readVec4f(): Vec4 {
-        return Vec4(readFloat(), readFloat(), readFloat(), readFloat())
+    fun readVec4f(): Vec4f {
+        return Vec4f(readFloat(), readFloat(), readFloat(), readFloat())
     }
 
 

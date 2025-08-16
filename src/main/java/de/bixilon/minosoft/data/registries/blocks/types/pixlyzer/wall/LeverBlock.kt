@@ -30,8 +30,8 @@ import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
@@ -47,7 +47,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
 
         val position = (Vec3d(blockPosition) + 0.5).plus((direction.vectord * 0.1) + (mountDirection.vectord * 0.2))
 
-        particle += DustParticle(session, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED.rgba(), scale, dustParticleType))
+        particle += DustParticle(session, position, MVec3d.EMPTY, DustParticleData(Colors.TRUE_RED.rgba(), scale, dustParticleType))
     }
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {

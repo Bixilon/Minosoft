@@ -14,21 +14,16 @@
 package de.bixilon.minosoft.data.world.vec.vec3.f
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.div
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.d.UnsafeVec3d
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
-import glm_.d
-import glm_.f
-import glm_.i
+import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
@@ -69,6 +64,11 @@ value class Vec3f(
     inline operator fun div(other: Number) = Vec3f(this.x / other, this.y / other, this.z / other)
     inline operator fun rem(other: Number) = Vec3f(this.x % other, this.y % other, this.z % other)
 
+    inline operator fun plus(direction: Directions) = this + direction.vector
+    inline operator fun minus(direction: Directions) = this - direction.vector
+    inline operator fun times(direction: Directions) = this * direction.vector
+
+
     inline operator fun unaryPlus() = this
     inline operator fun unaryMinus() = Vec3f(-x, -y, -z)
 
@@ -76,7 +76,7 @@ value class Vec3f(
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
-    inline infix fun dot(other: _Vec3f) = this * other
+    inline infix fun dot(other: _Vec3f) = this.x * other.x + this.y * other.y + this.z + other.z
     inline infix fun cross(other: _Vec3f) = Vec3f(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,

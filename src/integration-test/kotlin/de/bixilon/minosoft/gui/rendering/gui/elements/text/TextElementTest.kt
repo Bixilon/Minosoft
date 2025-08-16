@@ -14,14 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.DummyComponentConsumer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil.assetPrefSize
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil.assetSize
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.marginOf
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -49,35 +48,35 @@ class TextElementTest {
     }
 
     fun `size with background`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bc", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bc", background = TextBackground(size = Vec4f(1)), properties = TextRenderProperties(shadow = false))
         element.assetSize(Vec2f(4.5f, 13.0f))
     }
 
     fun `size with background and newline`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bc\nbc", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bc\nbc", background = TextBackground(size = Vec4f(1)), properties = TextRenderProperties(shadow = false))
         element.assetSize(Vec2f(4.5f, 24.0f))
     }
 
     fun `size with background and newlines`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1)), properties = TextRenderProperties(shadow = false))
         element.assetSize(Vec2f(7.0f, 35.0f))
     }
 
     fun `size if text changed`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bc\nbc", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bc\nbc", background = TextBackground(size = Vec4f(1)), properties = TextRenderProperties(shadow = false))
         element.text = "bcd\nbcd\nbcd"
         element.assetSize(Vec2f(7.0f, 35.0f))
     }
 
     fun `size if background cleared`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1)), properties = TextRenderProperties(shadow = false))
         element.background = null
         element.assetSize(Vec2f(5.0f, 33.0f))
     }
 
     fun `size if background set`() {
         val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", properties = TextRenderProperties(shadow = false))
-        element.background = TextBackground(size = Vec4(2.0f))
+        element.background = TextBackground(size = Vec4f(2.0f))
         element.assetSize(Vec2f(9.0f, 37.0f))
     }
 
@@ -95,14 +94,14 @@ class TextElementTest {
     }
 
     fun `limited size with background`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1.0f)), properties = TextRenderProperties(shadow = false))
         element.prefMaxSize = Vec2f(5.0f, 11.0f)
         element.assetSize(Vec2f(0.0f, 0.0f))
         assertEquals(element.info.size, Vec2f(0.0f, 0.0f))
     }
 
     fun `limited size with background 2`() {
-        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1.0f)), properties = TextRenderProperties(shadow = false))
         element.prefMaxSize = Vec2f(5.0f, 13.0f)
         element.assetSize(Vec2f(4.5f, 13.0f))
         assertEquals(element.info.size, Vec2f(2.5f, 11.0f))
@@ -110,7 +109,7 @@ class TextElementTest {
 
     fun `single line background and text`() {
         val consumer = DummyComponentConsumer()
-        val element = TextElement(GuiRenderTestUtil.create(), "bcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(font = consumer.Font(), shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd", background = TextBackground(size = Vec4f(1.0f)), properties = TextRenderProperties(font = consumer.Font(), shadow = false))
 
         element.forceRender(Vec2f(), consumer, null)
 
@@ -148,7 +147,7 @@ class TextElementTest {
 
     fun `multiple lines background and text`() {
         val consumer = DummyComponentConsumer()
-        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(font = consumer.Font(), shadow = false))
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1.0f)), properties = TextRenderProperties(font = consumer.Font(), shadow = false))
 
         element.forceRender(Vec2f(), consumer, null)
 

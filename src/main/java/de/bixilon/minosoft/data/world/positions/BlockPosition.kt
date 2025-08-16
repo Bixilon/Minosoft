@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.data.world.positions
 
-import glm_.func.common.clamp
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.generatePositionHash
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.util.KUtil.format
 
 @JvmInline
 value class BlockPosition(

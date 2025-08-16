@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
+import de.bixilon.minosoft.gui.rendering.camera.CameraUtil
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -26,9 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
-import glm_.glm
 
 class BlockGUIConsumer(
     val gui: GUIRenderer,
@@ -42,11 +41,15 @@ class BlockGUIConsumer(
     override val order = consumer.order
 
 
-    override fun addVertex(position: FloatArray, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken("Not chunk rendering")
+    @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)
+    override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken("Not chunk rendering")
+
+    @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
+
+    @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 
-    override fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) = Broken("Not chunk rendering")
 
     override fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
         val tint = RGBColor(lightTint.toBits()).rgba()
@@ -55,9 +58,9 @@ class BlockGUIConsumer(
             val vertexOffset = p * Vec3f.LENGTH
             val uvOffset = uv * Vec2f.LENGTH
 
-            val xyz = Vec4(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
+            val xyzw = Vec4f(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
 
-            val out = matrix * xyz
+            val out = matrix * xyzw
 
             val x = ((out.x + 0.8f) * size.x) + offset.x + 1.0f
             val y = ((-out.y + 0.81f) * size.y) + offset.y
@@ -68,6 +71,6 @@ class BlockGUIConsumer(
     }
 
     companion object {
-        val VIEW_MATRIX = glm.lookAt(Vec3f(0.0f, 0.0f, -1.0f), Vec3f(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
+        val VIEW_MATRIX = CameraUtil.lookAt(Vec3f(0.0f, 0.0f, -1.0f), Vec3f(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
     }
 }

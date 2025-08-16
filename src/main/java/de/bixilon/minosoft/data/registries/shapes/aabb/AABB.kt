@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.shapes.aabb
 
 import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
+import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
@@ -29,11 +30,14 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
-import glm_.func.common.clamp
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3d
+import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
+import de.bixilon.minosoft.data.world.vec.vec4.f._Vec4f
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.toVec3d
 import kotlin.math.abs
 
 
@@ -55,7 +59,7 @@ class AABB : Shape {
         this.max = max(max, min)
     }
 
-    private constructor(unsafe: Boolean, min: Vec3d, max: Vec3d) {
+    constructor(unsafe: Boolean, min: Vec3d, max: Vec3d) {
         this.min = min
         this.max = max
     }
@@ -69,27 +73,17 @@ class AABB : Shape {
     }
 
     override operator fun plus(offset: Vec3d): AABB = this.offset(offset)
-    fun offset(other: Vec3d) = AABB(true, min + other, max + other)
+    inline fun offset(offset: _Vec3d): AABB = AABB(true, min + offset, max + offset)
 
     override operator fun plus(offset: Vec3f): AABB = this.offset(offset)
-    fun offset(other: Vec3f) = AABB(true, min + other, max + other)
+    inline fun offset(other: _Vec3f) = AABB(true, min + other, max + other)
 
     override operator fun plus(offset: Vec3i): AABB = this.offset(offset)
-    fun offset(other: Vec3i) = AABB(true, min + other, max + other)
-
-    override operator fun plus(offset: BlockPosition): AABB = this.offset(offset)
-
-    @JvmName("offsetBlockPosition")
-    fun offset(other: BlockPosition) = AABB(true, min + other, max + other)
+    fun offset(other: _Vec3i) = AABB(true, min + other, max + other)
 
     override operator fun plus(offset: InChunkPosition): AABB = offset(offset)
+    inline fun offset(other: InChunkPosition) = AABB(true, min + other, max + other)
 
-    fun offset(other: InChunkPosition) = AABB(true, min + other, max + other)
-
-    override operator fun plus(offset: InSectionPosition): AABB = offset(offset)
-
-    @JvmName("offsetInSectionPosition")
-    fun offset(other: InSectionPosition) = AABB(true, min + other, max + other)
 
     operator fun plus(other: AABB): AABB {
         val newMin = Vec3d(minOf(min.x, other.min.x), minOf(min.y, other.min.y), minOf(min.z, other.min.z))

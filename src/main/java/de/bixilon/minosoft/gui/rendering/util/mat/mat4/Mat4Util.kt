@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
-import glm_.func.rad
-import glm_.glm
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.util.KUtil.rad
 
 object Mat4Util {
+
     fun Mat4f.rotateDegreesAssign(rotation: Vec3f): Mat4f {
         if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
         if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
@@ -33,21 +33,12 @@ object Mat4Util {
         return this
     }
 
-    operator fun Mat4f.times(vec3: Vec3f): Vec3f {
-        return this.times(vec3, vec3)
-    }
-
     fun Mat4f.times(vec3: Vec3f, res: Vec3f): Vec3f {
         val array = vec3.array
         res[0] = this[0, 0] * array[0] + this[1, 0] * array[1] + this[2, 0] * array[2] + this[3, 0]
         res[1] = this[0, 1] * array[0] + this[1, 1] * array[1] + this[2, 1] * array[2] + this[3, 1]
         res[2] = this[0, 2] * array[0] + this[1, 2] * array[1] + this[2, 2] * array[2] + this[3, 2]
         return res
-    }
-
-    fun Mat4f.reset() {
-        val array = this.array
-        System.arraycopy(empty.array, 0, array, 0, Mat4.length)
     }
 
     fun Mat4f.rotateXAssign(rad: Float): Mat4f {

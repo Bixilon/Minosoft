@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome
 
-import glm_.func.common.clamp
+import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World

@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.Ran
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -33,8 +33,8 @@ open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries
     private fun spawnSmokeParticles(session: PlaySession, blockPosition: BlockPosition) {
         val particle = session.world.particle ?: return
         val particlePosition = Vec3d(0.5, 0.7, 0.5) + blockPosition
-        smokeParticle?.let { particle += SmokeParticle(session, particlePosition, Vec3d.EMPTY) }
-        flameParticle?.let { particle += it.factory?.build(session, particlePosition, Vec3d.EMPTY) }
+        smokeParticle?.let { particle += SmokeParticle(session, particlePosition, MVec3d.EMPTY) }
+        flameParticle?.let { particle += it.factory?.build(session, particlePosition, MVec3d.EMPTY) }
     }
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {

@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import glm_.func.common.clamp
-import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.avg._float.FloatAverage
+import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
+import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
@@ -29,10 +29,10 @@ import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.glm
+import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.time.Duration.Companion.milliseconds
 
 class MatrixHandler(
@@ -81,13 +81,13 @@ class MatrixHandler(
 
 
     private fun updateViewMatrix(position: Vec3f, front: Vec3f) {
-        val matrix = Mat4f()
+        val matrix = MMat4f()
         if (camera.view.view.shaking) {
             shaking.transform()?.let { matrix *= it }
         }
         matrix *= CameraUtil.lookAt(position, position + front, CAMERA_UP_VEC3)
 
-        this.viewMatrix = matrix
+        this.viewMatrix = matrix.unsafe
     }
 
     private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2f = Vec2f(context.window.size)) {
@@ -157,8 +157,8 @@ class MatrixHandler(
 
     private fun updateFront(front: Vec3f) {
         this.front = front
-        this.right = (front cross CAMERA_UP_VEC3).normalizeAssign()
-        this.up = (this.right cross front).normalizeAssign()
+        this.right = (front cross CAMERA_UP_VEC3).unsafe.apply { normalizeAssign() }.unsafe
+        this.up = (this.right cross front).unsafe.apply { normalizeAssign() }.unsafe
     }
 
     private fun updateShaders(cameraPosition: Vec3f) {

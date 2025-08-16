@@ -60,7 +60,7 @@ class GUIMesh(
     companion object {
 
         fun transformPosition(position: Vec2f, halfSize: Vec2f): Vec2f {
-            val res = position.mut()
+            val res = position.mutable()
             res /= halfSize
             res.x -= 1.0f
             res.y = 1.0f - res.y

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
 import de.bixilon.minosoft.data.world.vec.vec3.f.UnsafeVec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.f
+import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
@@ -55,6 +55,8 @@ value class MVec4f(
 
     constructor(xyzw: Int) : this(xyzw.f)
     constructor(x: Int, y: Int, z: Int, w: Int) : this(x.f, y.f, z.f, w.f)
+
+    val unsafe get() = Vec4f(_0)
 
 
     inline operator fun plus(other: _Vec4f) = MVec4f(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w)

@@ -14,18 +14,16 @@
 package de.bixilon.minosoft.data.world.vec.vec3.f
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.div
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
-import glm_.f
+import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
@@ -96,6 +94,14 @@ value class MVec3f(
     inline operator fun divAssign(other: Number): Unit = let { this.x /= other; this.y /= other; this.z /= other }
     inline operator fun remAssign(other: Number): Unit = let { this.x %= other; this.y %= other; this.z %= other }
 
+    inline operator fun plus(direction: Directions) = this + direction.vector
+    inline operator fun minus(direction: Directions) = this - direction.vector
+    inline operator fun times(direction: Directions) = this * direction.vector
+
+    inline operator fun plusAssign(direction: Directions) = let { this += direction.vector }
+    inline operator fun minusAssign(direction: Directions) = let { this -= direction.vector }
+    inline operator fun timesAssign(direction: Directions) = let { this *= direction.vector }
+
     inline operator fun unaryPlus() = MVec3f(x, y, z)
     inline operator fun unaryMinus() = MVec3f(-x, -y, -z)
 
@@ -115,7 +121,7 @@ value class MVec3f(
 
     inline fun invoke(other: _Vec3f) = put(other)
 
-    inline infix fun dot(other: _Vec3f) = this * other
+    inline infix fun dot(other: _Vec3f) = this.x * other.x + this.y * other.y + this.z + other.z
     inline infix fun cross(other: _Vec3f) = MVec3f(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,

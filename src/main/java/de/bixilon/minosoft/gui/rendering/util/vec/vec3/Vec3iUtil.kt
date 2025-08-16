@@ -57,14 +57,4 @@ object Vec3iUtil {
     fun Vec3i.max(value: Int): Vec3i {
         return Vec3i(maxOf(value, x), maxOf(value, y), maxOf(value, z))
     }
-
-    fun Vec3i.assignPlus(a: Vec3i, b: Vec3i) {
-        this.x = a.x + b.x
-        this.y = a.y + b.y
-        this.z = a.z + b.z
-    }
-
-
-    @JvmName("constructorDirectionVector")
-    operator fun Vec3i.Companion.invoke(vector: DirectionVector) = Vec3i(vector.x, vector.y, vector.z)
 }

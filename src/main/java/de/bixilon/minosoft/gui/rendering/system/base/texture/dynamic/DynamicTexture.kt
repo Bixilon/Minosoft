@@ -51,10 +51,6 @@ abstract class DynamicTexture(
         return end ?: Vec2f(1.0f)  // TODO: memory
     }
 
-    override fun transformUV(end: FloatArray?): FloatArray {
-        return end ?: floatArrayOf(1.0f, 1.0f) // TODO: memory
-    }
-
     operator fun plusAssign(callback: DynamicTextureListener) = addListener(callback)
     fun addListener(callback: DynamicTextureListener) {
         lock.lock()

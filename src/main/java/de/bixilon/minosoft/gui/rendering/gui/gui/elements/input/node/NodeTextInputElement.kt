@@ -60,7 +60,7 @@ class NodeTextInputElement(
         super.forceRender(offset, consumer, options)
 
         errorElement.position = offset
-        suggestions.position = offset + Vec2f(cursorOffset.x, 0)
+        suggestions.position = offset + Vec2f(cursorOffset.x, 0f)
     }
 
 

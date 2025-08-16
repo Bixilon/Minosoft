@@ -19,12 +19,8 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
-import glm_.f
+import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
@@ -41,6 +37,9 @@ value class Vec4f(
 
     constructor(xyzw: Int) : this(xyzw.f)
     constructor(x: Int, y: Int, z: Int, w: Int) : this(x.f, y.f, z.f, w.f)
+
+    val unsafe get() = MVec4f(_0)
+
 
     inline operator fun plus(other: _Vec4f) = Vec4f(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w)
     inline operator fun minus(other: _Vec4f) = Vec4f(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w)
@@ -66,6 +65,8 @@ value class Vec4f(
 
     inline fun mutable() = MVec4f(x, y, z, w)
 
+
+    val xyz get() = Vec3f(x, y, z)
 
     inline operator fun get(axis: Axes) = when (axis) {
         Axes.X -> x

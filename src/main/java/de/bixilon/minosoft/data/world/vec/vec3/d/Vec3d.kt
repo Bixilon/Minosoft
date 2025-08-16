@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.vec.vec3.d
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.div
 import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.minus
@@ -29,9 +30,9 @@ import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
-import glm_.d
-import glm_.f
-import glm_.i
+import de.bixilon.minosoft.util.d
+import de.bixilon.minosoft.util.f
+import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 
@@ -76,6 +77,8 @@ value class Vec3d(
     inline operator fun div(other: _Vec3d) = Vec3d(this.x / other.x, this.y / other.y, this.z / other.z)
     inline operator fun rem(other: _Vec3d) = Vec3d(this.x % other.x, this.y % other.y, this.z % other.z)
 
+    inline fun plus(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = Vec3d(this.x + x, this.y + y, this.z + z)
+
 
     inline operator fun plus(other: Number) = Vec3d(this.x + other, this.y + other, this.z + other)
     inline operator fun minus(other: Number) = Vec3d(this.x - other, this.y - other, this.z - other)
@@ -83,8 +86,10 @@ value class Vec3d(
     inline operator fun div(other: Number) = Vec3d(this.x / other, this.y / other, this.z / other)
     inline operator fun rem(other: Number) = Vec3d(this.x % other, this.y % other, this.z % other)
 
-    inline operator fun plus(other: BlockPosition) = Vec3d(this.x + other.x, this.y + other.y, this.z + other.z)
 
+    inline operator fun plus(direction: Directions) = this + direction.vector
+    inline operator fun minus(direction: Directions) = this - direction.vector
+    inline operator fun times(direction: Directions) = this * direction.vector
 
     inline operator fun unaryPlus() = Vec3d(x, y, z)
     inline operator fun unaryMinus() = Vec3d(-x, -y, -z)
@@ -93,7 +98,8 @@ value class Vec3d(
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
-    inline infix fun dot(other: _Vec3d) = this * other
+    inline infix fun dot(
+        other: _Vec3fd = this.x * other.x + this.y * other.y + this.z + other.z
     inline infix fun cross(other: _Vec3d) = Vec3d(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,
@@ -106,7 +112,7 @@ value class Vec3d(
 
     override fun toString(): String = "($x $y $z)"
 
-    inline fun mut() = MVec3d(x, y, z)
+    inline fun mutable() = MVec3d(x, y, z)
 
 
     inline operator fun get(axis: Axes) = when (axis) {

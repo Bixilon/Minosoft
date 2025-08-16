@@ -16,10 +16,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.s
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class SpellParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, Vec3d(0.5f - kotlin.random.Random.nextDouble(), velocity.y, 0.5 - kotlin.random.Random.nextDouble()), data) {
+abstract class SpellParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d(0.5f - kotlin.random.Random.nextDouble(), velocity.y, 0.5 - kotlin.random.Random.nextDouble()), data) {
 
     init {
         friction = 0.96f

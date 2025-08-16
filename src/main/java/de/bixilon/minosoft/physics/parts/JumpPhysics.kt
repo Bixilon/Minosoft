@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.physics.parts
 
-import glm_.func.rad
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpB
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
+import de.bixilon.minosoft.util.KUtil.rad
 
 object JumpPhysics {
     const val POTION_MODIFIER = 0.1f

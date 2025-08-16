@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.vec.number.DoubleUtil.times
 import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f._Vec2f
-import glm_.d
+import de.bixilon.minosoft.util.d
 import kotlin.math.sqrt
 
 @JvmInline
