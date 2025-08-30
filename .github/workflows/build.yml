@@ -1,6 +1,7 @@
 name: Gradle CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
     paths-ignore: [ "**.md", "schemas/**", ".editorconfig", ".gitignore", ".gitattributes" ]
