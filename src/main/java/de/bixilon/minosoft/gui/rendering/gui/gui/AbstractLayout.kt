@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -124,7 +125,7 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
 
     companion object {
 
-        fun Element.getAtCheck(position: Vec2f, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false, size: Vec2f = element.size): Pair<Element, Vec2f>? {
+        fun Element.getAtCheck(position: MVec2f, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false, size: Vec2f = element.size): Pair<Element, Vec2f>? {
             if (position.x < 0 || position.y < 0) {
                 return null
             }

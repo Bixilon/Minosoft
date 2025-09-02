@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.registries.misc.event.world.handler.win.WinGameEvent
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -38,11 +39,12 @@ class CreditsScreen(
 
         val size = size
 
-        headerElement.render(offset + HorizontalAlignments.CENTER.getOffset(size, headerElement.size), consumer, options)
+        val offset = MVec2f(offset)
+        headerElement.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, headerElement.size), consumer, options)
         offset.y += headerElement.size.y
 
         offset.y += size.y / 30
-        textElement.render(offset + HorizontalAlignments.CENTER.getOffset(size, textElement.size), consumer, options)
+        textElement.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, textElement.size), consumer, options)
     }
 
     override fun onClose() {

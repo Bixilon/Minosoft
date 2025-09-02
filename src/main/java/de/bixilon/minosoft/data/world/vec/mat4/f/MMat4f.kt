@@ -46,6 +46,8 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         x3, y3, z3, w3,
     )))
 
+    constructor(other: Mat4f) : TODO
+
     val unsafe get() = Mat4f(_0)
 
     override inline operator fun get(x: Int) = Vec4f(this[x, 0], this[x, 1], this[x, 2], this[x, 3])

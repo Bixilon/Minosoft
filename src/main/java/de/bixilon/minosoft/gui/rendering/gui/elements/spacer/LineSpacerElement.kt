@@ -25,7 +25,7 @@ class LineSpacerElement(
     var lines: Int = 0
         set(value) {
             field = value
-            size = Vec2f(0, lines * lineHeight)
+            size = Vec2f(0f, lines * lineHeight)
         }
 
     init {

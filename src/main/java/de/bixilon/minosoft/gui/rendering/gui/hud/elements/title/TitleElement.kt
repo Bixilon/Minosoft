@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -57,14 +58,14 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
 
     override val layoutOffset: Vec2f
         get() {
-            val layoutOffset = Vec2f.EMPTY
+            val layoutOffset = MVec2f.EMPTY
 
             val scaledSize = guiRenderer.scaledSize
 
             layoutOffset.x = (scaledSize.x - super.size.x / 2) / 2
             layoutOffset.y = (scaledSize.y / 2 - title.size.y)
 
-            return layoutOffset
+            return layoutOffset.unsafe
         }
 
     init {
@@ -78,12 +79,12 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     override fun forceSilentApply() {
-        val size = title.size
+        val size = MVec2f(title.size)
 
         size.x = maxOf(size.x, subtitle.size.x)
         size.y += subtitle.size.y
 
-        this._size = size
+        this._size = size.unsafe
     }
 
     fun show() {

@@ -77,7 +77,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
             if (background != null) {
-                mesh.addQuad(Vec2f(-1, 0), info.size + Vec2f(1, 0), background, null)
+                mesh.addQuad(Vec2f(-1, 0), info.size.unsafe + Vec2f(1f, 0f), background, null)
             }
             val size = info.size.x
             info.size.x = maxSize.x // this allows font aligning

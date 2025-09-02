@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -72,6 +73,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         nameBackgroundElement.render(offset, consumer, options)
 
         nameElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0.0f), consumer, options)
+        val offset = MVec2f(offset)
         offset.y += TEXT_PROPERTIES.lineHeight
 
         this.scores.lock.acquire()
@@ -80,7 +82,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
         var index = 0
         for ((_, score) in scores) {
-            score.render(offset, consumer, options)
+            score.render(offset.unsafe, consumer, options)
             offset.y += TEXT_PROPERTIES.lineHeight
 
             if (++index >= MAX_SCORES) {

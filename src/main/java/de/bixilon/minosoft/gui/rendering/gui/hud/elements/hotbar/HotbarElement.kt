@@ -77,32 +77,33 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
+        val offset = MVec2f(offset)
 
         val hoverTextSize = hoverTextSize
         if (hoverTextSize != null) {
-            hoverText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, hoverTextSize.x), 0.0f), consumer, options)
+            hoverText.render(offset.unsafe + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, hoverTextSize.x), 0.0f), consumer, options)
             offset.y += hoverTextSize.y + HOVER_TEXT_OFFSET
         }
         val itemTextSize = itemTextSize
         if (itemTextSize != null) {
-            itemText.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, itemTextSize.x), 0.0f), consumer, options)
+            itemText.render(offset.unsafe + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, itemTextSize.x), 0.0f), consumer, options)
             offset.y += itemTextSize.y + ITEM_NAME_OFFSET
         }
 
         val coreOffset = offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0.0f)
 
         if (renderOffhand) {
-            val offhandOffset = Vec2f.EMPTY
+            val offhandOffset = MVec2f.EMPTY
             if (offhand.offArm == Arms.LEFT) {
                 offhandOffset.x = -offhand.size.x - offhand.margin.right
             } else {
                 offhandOffset.x = core.size.x + offhand.margin.left
             }
             offhandOffset.y = core.size.y - offhand.size.y
-            offhand.render(coreOffset + offhandOffset, consumer, options)
+            offhand.render(coreOffset.unsafe + offhandOffset, consumer, options)
         }
 
-        core.render(coreOffset, consumer, options)
+        core.render(coreOffset.unsafe, consumer, options)
     }
 
     override fun forceSilentApply() {
@@ -138,7 +139,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             this.hoverTextSize = null
         }
 
-        _size = size
+        _size = size.unsafe
         cacheUpToDate = false
     }
 

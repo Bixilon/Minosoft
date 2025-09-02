@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -77,18 +78,19 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     }
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val offset = MVec2f(offset)
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)
-            topLeft.render(offset + Vec2f(0.0f, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
-            topRight.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
+            topLeft.render(offset.unsafe + Vec2f(0.0f, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
+            topRight.render(offset.unsafe + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
-            experience.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0.0f), consumer, options)
+            experience.render(offset.unsafe + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0.0f), consumer, options)
             offset.y += experience.size.y + VERTICAL_SPACING
         }
         if (gamemode != Gamemodes.SPECTATOR) {
             // ToDo: Spectator hotbar
-            base.render(offset, consumer, options)
+            base.render(offset.unsafe, consumer, options)
         }
     }
 
@@ -97,7 +99,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             element.silentApply()
         }
 
-        val size = Vec2f.EMPTY
+        val size = MVec2f.EMPTY
 
         gamemode = guiRenderer.context.session.player.additional.gamemode
         if (gamemode != Gamemodes.SPECTATOR) {
@@ -109,7 +111,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             size.y += experience.size.y + VERTICAL_SPACING
         }
 
-        _size = size
+        _size = size.unsafe
         cacheUpToDate = false
     }
 

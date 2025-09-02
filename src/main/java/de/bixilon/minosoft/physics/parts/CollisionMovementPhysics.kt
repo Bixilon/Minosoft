@@ -72,9 +72,9 @@ object CollisionMovementPhysics {
         return adjusted
     }
 
-    fun EntityPhysics<*>.collide(movement: Vec3d): Vec3d {
+    fun EntityPhysics<*>.collide(movement: Vec3d): MVec3d {
         val aabb = aabb
-        if (aabb.min.y <= BlockPosition.MIN_Y || aabb.max.y >= BlockPosition.MAX_Y) return movement // TODO: also check movement
+        if (aabb.min.y <= BlockPosition.MIN_Y || aabb.max.y >= BlockPosition.MAX_Y) return MVec3d(movement) // TODO: also check movement
 
         val collisions = collectCollisions(movement, aabb)
         try {
@@ -89,14 +89,14 @@ object CollisionMovementPhysics {
         }
     }
 
-    private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: Vec3d, collisions: Shape): Vec3d {
+    private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: Vec3d, collisions: Shape): MVec3d {
         val collidedX = movement.x.matches(collision.x) // TODO: currently not collided
         val collidedY = movement.y.matches(collision.y)
         val collidedZ = movement.z.matches(collision.z)
 
         val grounded = this.onGround || collidedY && movement.y < 0.0
 
-        if (!grounded || !(collidedX || collidedZ)) return collision
+        if (!grounded || !(collidedX || collidedZ)) return MVec3d(collision)
 
         val stepHeight = stepHeight.toDouble()
 
@@ -113,6 +113,6 @@ object CollisionMovementPhysics {
             return total + collide(Vec3d(0.0, -total.y + movement.y, 0.0), aabb.offset(total), collisions)
         }
 
-        return collision
+        return MVec3d(collision)
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
@@ -105,7 +106,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val line = StringBuilder(text.message.length)
         var update = false
         var filled = false
-        val lineStart = Vec2f(offset.offset)
+        val lineStart = MVec2f(offset.offset)
 
 
         val stream = text.message.codePoints().iterator()
@@ -117,9 +118,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 val width = offset.offset.x - lineStart.x
                 filled = renderNewline(properties, offset, info, consumer != null)
                 if (line.isNotEmpty()) {
-                    info.lines[lineIndex].pushAndRender(lineStart, text, line, width, color, properties, consumer, options)
+                    info.lines[lineIndex].pushAndRender(lineStart.unsafe, text, line, width, color, properties, consumer, options)
                 }
-                lineStart(offset.offset)
+                lineStart.put(offset.offset)
                 skipWhitespaces = true
                 update = false
                 if (filled) break else continue
@@ -142,8 +143,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             val lineInfo = renderer.render(offset, color, properties, info, formatting, codePoint, consumer, options)
             if (lineIndex != info.lineIndex && info.lines.isNotEmpty() && consumer != null) {
-                renderFormatting(lineStart, text, width, color, properties, consumer, options)
-                lineStart(offset.offset)
+                renderFormatting(lineStart.unsafe, text, width, color, properties, consumer, options)
+                lineStart.put(offset.offset)
             }
             if (lineInfo == CodePointAddResult.BREAK) {
                 filled = true

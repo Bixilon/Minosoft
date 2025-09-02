@@ -96,6 +96,13 @@ value class MVec2f(
     inline fun normalizeAssign() = apply { this *= length() }
 
 
+    inline fun put(other: _Vec2f) {
+        this.x = other.x
+        this.y = other.y
+    }
+
+    inline fun invoke(other: _Vec2f) = put(other)
+
     override fun toString(): String = "($x $y)"
 
     inline fun final() = Vec2f(x, y)

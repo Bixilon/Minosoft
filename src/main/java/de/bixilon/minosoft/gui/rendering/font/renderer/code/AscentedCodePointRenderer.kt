@@ -26,7 +26,7 @@ interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
     val height: Float
 
 
-    override fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): Vec2f {
+    override fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): MVec2f {
         val position = MVec2f(base)
         var diff = ascent - DEFAULT_ASCENT
         if (diff > 2.0f) {
@@ -35,15 +35,15 @@ interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
         val offset = properties.charSpacing.top - diff
         position.y += offset * scale
 
-        return position.unsafe
+        return position
     }
 
-    override fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): Vec2f {
+    override fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): MVec2f {
         val position = MVec2f(start)
         position.y += (height * scale)
         position.x += width * scale
 
-        return position.unsafe
+        return position
     }
 
     companion object {
