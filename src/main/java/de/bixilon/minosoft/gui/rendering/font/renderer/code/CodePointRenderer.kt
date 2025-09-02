@@ -69,7 +69,7 @@ interface CodePointRenderer {
 
 
         if (consumer != null) {
-            render(offset.offset, properties, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
+            render(offset.offset.unsafe, properties, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
         } else {
             info.update(offset, properties, width, spacing, false) // info should only be updated when we determinate text properties, we know all that already when actually rendering it        }
         }

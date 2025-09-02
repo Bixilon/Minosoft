@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.vec.vec3.f
 
+import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.div
@@ -67,6 +68,8 @@ value class Vec3f(
     inline operator fun plus(direction: Directions) = this + direction.vector
     inline operator fun minus(direction: Directions) = this - direction.vector
     inline operator fun times(direction: Directions) = this * direction.vector
+
+    inline fun clamp(min: Float, max: Float) = Vec3f(x.clamp(min, max), y.clamp(min, max), z.clamp(min, max))
 
 
     inline operator fun unaryPlus() = this

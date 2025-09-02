@@ -86,7 +86,7 @@ open class RowLayout(
             if (exceedsY(childSize.y)) {
                 break
             }
-            child.render(offset + Vec2i(margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), childYOffset), consumer, options)
+            child.render(offset + Vec2f(margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), childYOffset), consumer, options)
             childYOffset += childSize.y
 
             if (addY(child.margin.vertical + spacing)) {

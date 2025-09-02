@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
-import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
@@ -41,7 +41,7 @@ class GridCell(
         _parent = parent
     }
 
-    override fun applyMaxSize(max: Vec2f) {
+    override fun applyMaxSize(max: MVec2f) {
         super.applyMaxSize(max)
 
         if (columnConstraint.width < max.x) {

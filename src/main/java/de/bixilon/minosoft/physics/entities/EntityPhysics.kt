@@ -169,7 +169,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         if (this is SneakAdjuster && !pushed) {
             adjusted = adjustMovementForSneaking(adjusted)
         }
-        val collisionMovement = collide(adjusted)
+        val collisionMovement = if (adjusted.length2() >= 1.0E-7) collide(adjusted) else adjusted
         // TODO: prevent moving into unloaded chunks
 
         forceMove(collisionMovement)

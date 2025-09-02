@@ -32,7 +32,7 @@ abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
         when (entity.pose) {
-            Poses.SLEEPING -> matrix.rotateDegreesAssign(Vec3f(90, 0, 0)) // TODO
+            Poses.SLEEPING -> matrix.apply { rotateDegreesAssign(Vec3f(90, 0, 0)) } // TODO
             else -> Unit
         }
     }
