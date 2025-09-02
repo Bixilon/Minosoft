@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -69,9 +70,9 @@ abstract class Menu(
         val size = size
         super.forceRender(offset, consumer, options)
         val maxElementWidth = maxElementWidth
-        val startOffset = (size - Vec2f(maxElementWidth, totalHeight)) / 2
+        val startOffset = MVec2f((size - Vec2f(maxElementWidth, totalHeight)) / 2)
         for (element in elements) {
-            element.render(offset + startOffset + Vec2f((maxElementWidth - element.size.x) / 2, 0), consumer, options)
+            element.render(offset + startOffset + Vec2f((maxElementWidth - element.size.x) / 2, 0f), consumer, options)
             startOffset.y += BUTTON_Y_MARGIN + element.size.y
         }
     }
@@ -103,7 +104,7 @@ abstract class Menu(
 
     override fun getAt(position: Vec2f): Pair<Element, Vec2f>? {
         var element: Element? = null
-        val delta = position(position)
+        val delta = MVec2f(position)
         val elementWidth = maxElementWidth
         val size = size
         val xStart = (size.x - elementWidth) / 2
@@ -139,7 +140,7 @@ abstract class Menu(
             return null
         }
 
-        return Pair(element, delta)
+        return Pair(element, delta.unsafe)
     }
 
     override fun tick() {

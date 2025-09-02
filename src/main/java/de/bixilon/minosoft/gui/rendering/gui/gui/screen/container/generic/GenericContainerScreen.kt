@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.container.types.generic.GenericContainer
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
@@ -58,22 +59,22 @@ open class GenericContainerScreen(
 
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val centerOffset = (size - containerSize) / 2
-        val initialOffset = centerOffset
+        val centerOffset = MVec2f((size - containerSize) / 2)
+        val initialOffset = centerOffset.final()
 
-        super.forceRender(centerOffset, consumer, options)
+        super.forceRender(centerOffset.unsafe, consumer, options)
 
-        header.render(centerOffset, consumer, options)
+        header.render(centerOffset.unsafe, consumer, options)
         if (container.title != null) {
-            title?.render(centerOffset, consumer, options)
+            title?.render(centerOffset.unsafe, consumer, options)
         }
         centerOffset.y += header.size.y
         for (i in 0 until container.rows) {
-            slotRow.render(centerOffset, consumer, options)
+            slotRow.render(centerOffset.unsafe, consumer, options)
             centerOffset.y += slotRow.size.y
         }
-        footer.render(centerOffset, consumer, options)
-        inventoryTitle?.render(centerOffset, consumer, options)
+        footer.render(centerOffset.unsafe, consumer, options)
+        inventoryTitle?.render(centerOffset.unsafe, consumer, options)
 
         forceRenderContainerScreen(initialOffset, consumer, options)
     }
@@ -89,7 +90,7 @@ open class GenericContainerScreen(
     private fun calculateSlots(): Int2ObjectOpenHashMap<AtlasArea> {
         val slots: Int2ObjectOpenHashMap<AtlasArea> = Int2ObjectOpenHashMap()
         var slotOffset = 0
-        val offset = Vec2i(0, 0)
+        val offset = MVec2f(0, 0)
 
         fun pushElement(atlasElement: AtlasElement) {
             if (atlasElement.slots != null) {

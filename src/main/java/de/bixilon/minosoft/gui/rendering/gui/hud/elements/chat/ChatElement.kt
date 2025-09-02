@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -233,7 +234,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             val internalSize = internal.size
             val internalStart = if (internalSize.y > messagesSize.y) {
                 messagesYStart = internalSize.y - messagesSize.y
-                0
+                0.0f
             } else {
                 messagesSize.y - internalSize.y
             }
@@ -246,7 +247,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         if (position.x < CHAT_INPUT_MARGIN) {
             return null
         }
-        val offset = position
+        val offset = MVec2f(position)
         offset.y -= messagesYStart
         offset.x -= CHAT_INPUT_MARGIN
 
@@ -254,7 +255,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             if (offset.x > messagesSize.x) {
                 return null
             }
-            return Pair(messages, offset)
+            return Pair(messages, offset.unsafe)
         }
         offset.y -= messagesSize.y
 
@@ -266,7 +267,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             if (offset.x > inputSize.x) {
                 return null
             }
-            return Pair(input, offset)
+            return Pair(input, offset.unsafe)
         }
         return null
     }

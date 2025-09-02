@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -68,21 +69,22 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
+        val offset = MVec2f(offset)
 
         offset.y += BACKGROUND_PADDING // No need for x, this is done with the CENTER offset calculation
 
         val size = size
 
         header.size.let {
-            header.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
+            header.render(offset.unsafe + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
             offset.y += it.y
         }
 
-        val offsetBefore = offset(offset)
+        val offsetBefore = Vec2f(offset)
         offset.x += HorizontalAlignments.CENTER.getOffset(size.x, entriesSize.x)
 
         for ((index, entry) in toRender.withIndex()) {
-            entry.render(offset, consumer, options)
+            entry.render(offset.unsafe, consumer, options)
             offset.y += TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 offset.x += entry.width + ENTRY_HORIZONTAL_SPACING
@@ -94,13 +96,13 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
 
         footer.size.let {
-            footer.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
+            footer.render(offset.unsafe + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
             offset.y += it.y
         }
     }
 
     override fun forceSilentApply() {
-        val size = Vec2f.EMPTY
+        val size = MVec2f.EMPTY
 
         size.y += header.size.y
 
@@ -180,8 +182,8 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
         this.columns = columns
         size += (BACKGROUND_PADDING * 2)
-        this.size = size
-        background.size = size
+        this.size = size.unsafe
+        background.size = size.unsafe
 
         cacheUpToDate = false
         needsApply = false

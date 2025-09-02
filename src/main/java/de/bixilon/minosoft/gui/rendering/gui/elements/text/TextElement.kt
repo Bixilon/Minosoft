@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.spaceSize
@@ -114,7 +114,7 @@ open class TextElement(
         if (!empty) {
             val info = TextRenderInfo(Vec2f.MAX)
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
-            prefSize = info.size
+            prefSize = info.size.unsafe
         }
         _prefSize = prefSize.withBackgroundSize()
     }
@@ -137,8 +137,8 @@ open class TextElement(
     override fun onChildChange(child: Element) = Broken("A TextElement can not have a child!")
 
     private fun GUIVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2f, options: GUIVertexOptions?) {
-        val start = Vec2f()
-        val end = Vec2f()
+        val start = MVec2f()
+        val end = MVec2f()
 
         val lineHeight = properties.lineHeight
 
@@ -150,7 +150,7 @@ open class TextElement(
             end.y = start.y + lineHeight + background.size.vertical
 
 
-            addQuad(start, end, context.textures.whiteTexture, background.color, options)
+            addQuad(start.unsafe, end.unsafe, context.textures.whiteTexture, background.color, options)
         }
     }
 
@@ -158,8 +158,8 @@ open class TextElement(
         if (empty) return
         val info = this.info
         val properties = this.properties
-        val initialOffset = (offset + margin.offset)(offset + margin.offset)
-        val textOffset = initialOffset(initialOffset)
+        val initialOffset = offset + margin.offset
+        val textOffset = MVec2f(initialOffset)
 
         this.background?.let {
             consumer.renderBackground(it, properties, info, initialOffset, options)
@@ -172,7 +172,7 @@ open class TextElement(
         }
         consumer.ensureSize(vertices)
 
-        ChatComponentRenderer.render(TextOffset(textOffset), context.font, properties, info, consumer, options, chatComponent)
+        ChatComponentRenderer.render(TextOffset(textOffset.unsafe), context.font, properties, info, consumer, options, chatComponent)
         info.rewind()
     }
 
@@ -196,7 +196,7 @@ open class TextElement(
     }
 
     override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
-        val pair = getTextComponentAt(position(position))
+        val pair = getTextComponentAt(position)
 
         if (activeElement != pair?.first) {
             val activeElement = activeElement
