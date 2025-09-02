@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -38,7 +37,7 @@ open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Re
             return
         }
 
-        (flameParticle ?: redstoneDustParticle)?.let { particle += it.factory?.build(session, Vec3d(position) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), MVec3d.EMPTY, DustParticleData(Colors.TRUE_RED.rgba(), 1.0f, it)) }
+        (flameParticle ?: redstoneDustParticle)?.let { particle += it.factory?.build(session, Vec3d(position) + Vec3d(0.5, 0.7, 0.5) + (Vec3d(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5) * 0.2), MVec3d.EMPTY, DustParticleData(Colors.TRUE_RED.rgba(), 1.0f, it)) }
     }
 
     companion object : PixLyzerBlockFactory<RedstoneTorchBlock> {

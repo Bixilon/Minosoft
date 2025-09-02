@@ -75,7 +75,7 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
             val halfHeart = healthLeft < 1.5f
             val image = heartType.get(!halfHeart, hardcode, false)
 
-            AtlasImageElement(guiRenderer, image).render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
+            AtlasImageElement(guiRenderer, image).render(offset + Vec2f(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 
             heart++
             healthLeft -= if(halfHeart) 1.0f else 2.0f

@@ -94,7 +94,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
 
         footer.size.let {
-            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
+            footer.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0.0f), consumer, options)
             offset.y += it.y
         }
     }

@@ -67,7 +67,7 @@ class TextOffset(
 
         this.offset.y += height
         if (consuming) {
-            align(properties.alignment, info.lines[info.lineIndex].width, info.size)
+            align(properties.alignment, info.lines[info.lineIndex].width, info.size.unsafe)
         } else {
             info.lines += LineRenderInfo()
             this.offset.x = this.initial.x

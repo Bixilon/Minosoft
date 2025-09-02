@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
-import glm_.func.rad
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class SkeletalFeature(

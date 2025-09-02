@@ -34,7 +34,7 @@ class EntityEmitterParticle(
 
     init {
         val cameraPosition = entity.renderInfo.position
-        this.position(Vec3d(cameraPosition.x, cameraPosition.y + entity.type.height * 0.5, cameraPosition.z))
+        this.position = Vec3d(cameraPosition.x, cameraPosition.y + entity.type.height * 0.5, cameraPosition.z)
         this.maxAge = maxAge
         movement = false
         tick()

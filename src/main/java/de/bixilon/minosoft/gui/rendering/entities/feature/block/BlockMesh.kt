@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.block
 import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockVertexConsumer {
     override val order = context.system.quadOrder
-    val offset = Vec3f()
+    val offset = MVec3f()
 
     override fun ensureSize(size: Int) {
         data.ensureSize(size)
