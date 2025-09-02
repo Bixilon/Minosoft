@@ -19,6 +19,7 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -93,10 +94,10 @@ class BossbarElement(
     }
 
     override fun forceSilentApply() {
-        val size = Vec2f(BAR_SIZE)
+        val size = MVec2f(BAR_SIZE)
         size.x = maxOf(size.x, titleElement.size.x)
         size.y += titleElement.size.y
-        _size = size
+        _size = size.unsafe
 
         cacheUpToDate = false
     }

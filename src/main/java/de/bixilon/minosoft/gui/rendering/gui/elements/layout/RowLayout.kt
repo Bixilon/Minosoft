@@ -124,8 +124,8 @@ open class RowLayout(
         }
 
         val maxSize = maxSize
-        val size = margin.offset
-        val prefSize = margin.spaceSize
+        val size = margin.offset.mutable()
+        val prefSize = margin.spaceSize.mutable()
         val xMargin = margin.horizontal
 
         val children = children.toSynchronizedList()
@@ -136,7 +136,7 @@ open class RowLayout(
             prefSize.y += child.prefSize.y
         }
 
-        _prefSize = prefSize
+        _prefSize = prefSize.unsafe
 
         fun addY(y: Float): Boolean {
             val available = maxSize.y - size.y
@@ -173,7 +173,7 @@ open class RowLayout(
             }
         }
 
-        _size = size
+        _size = size.unsafe
         cacheUpToDate = false
     }
 

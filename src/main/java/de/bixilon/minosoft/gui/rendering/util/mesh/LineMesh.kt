@@ -34,7 +34,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
 
         val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).normalizeAssign()
-        val normal1 = Vec3f(direction.z, direction.z, direction.x - direction.y)
+        val normal1 = MVec3f(direction.z, direction.z, direction.x - direction.y)
         if (direction.z == 0.0f && direction.x == 0.0f) {
             normal1.x = normal1.z
             normal1.z = direction.z
@@ -53,10 +53,10 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
 
         val floatColor = color.rgba.buffer()
 
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal1, normal2, direction, floatColor)
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal2, normal1, direction, floatColor)
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal2, invertedNormal1, direction, floatColor)
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal1, invertedNormal2, direction, floatColor)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal1.unsafe, normal2.unsafe, direction.unsafe, floatColor)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal2.unsafe, normal1.unsafe, direction.unsafe, floatColor)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal2.unsafe, invertedNormal1.unsafe, direction.unsafe, floatColor)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal1.unsafe, invertedNormal2.unsafe, direction.unsafe, floatColor)
     }
 
     fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {

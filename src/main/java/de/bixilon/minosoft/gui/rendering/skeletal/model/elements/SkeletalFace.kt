@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
@@ -45,7 +46,7 @@ data class SkeletalFace(
         ).toArray(direction, 0)
 
 
-        val normal = direction.vectorf
+        val normal = MVec3f(direction.vectorf)
 
         if (context.rotation != null) {
             val origin = context.rotation.origin?.div(BLOCK_SIZE) ?: ((to + from) / 2.0f)
@@ -63,7 +64,7 @@ data class SkeletalFace(
         normal.normalizeAssign()
 
 
-        context.consumer.addQuad(positions, uvData, transform, normal, texture.texture, path)
+        context.consumer.addQuad(positions, uvData, transform, normal.unsafe, texture.texture, path)
     }
 
     companion object {
