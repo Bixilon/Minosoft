@@ -94,7 +94,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         if (consumer != null && info.lineIndex == 0 && info.lines.isNotEmpty() && offset.offset.x == offset.initial.x) {
             // switched to consumer mode but offset was not updated yet
-            offset.align(properties.alignment, info.lines.first().width, info.size)
+            offset.align(properties.alignment, info.lines.first().width, info.size.unsafe)
         }
 
         val textFont = fontManager[text.font]

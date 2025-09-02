@@ -63,7 +63,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         }
 
     init {
-        _prefMaxSize = Vec2f(MAX_SCOREBOARD_WIDTH, -1)
+        _prefMaxSize = Vec2f(MAX_SCOREBOARD_WIDTH, -1f)
         forceSilentApply()
     }
 

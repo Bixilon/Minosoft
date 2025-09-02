@@ -51,7 +51,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
             val image = AtlasImageElement(guiRenderer, atlasElement)
 
-            image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), consumer, options)
+            image.render(offset + Vec2f(i * ARMOR_SIZE.x, 0), consumer, options)
 
             protectionLeft -= 2.0f
         }

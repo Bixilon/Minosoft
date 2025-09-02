@@ -40,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.WaterFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
@@ -87,7 +86,7 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
 
         // ToDo: if not sill and not falling
         if (random.chance(10)) {
-            particle += UnderwaterParticle(session, Vec3d(blockPosition) + { random.nextDouble() })
+            particle += UnderwaterParticle(session, Vec3d(blockPosition.x + random.nextDouble(), blockPosition.y + random.nextDouble(), blockPosition.z + random.nextDouble()))
         }
     }
 

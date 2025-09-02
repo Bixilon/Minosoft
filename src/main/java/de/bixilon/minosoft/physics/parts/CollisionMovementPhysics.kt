@@ -44,8 +44,8 @@ object CollisionMovementPhysics {
         return value
     }
 
-    fun collide(movement: Vec3d, aabb: AABB, collisions: Shape): Vec3d {
-        if (movement.length2() < 1.0E-7) return movement
+    fun collide(movement: Vec3d, aabb: AABB, collisions: Shape): MVec3d {
+        if (movement.length2() < 1.0E-7) return MVec3d.EMPTY
 
         val adjustedAABB = AABB(aabb)
         val adjusted = MVec3d(movement)
@@ -66,10 +66,10 @@ object CollisionMovementPhysics {
 
 
         if (adjusted.length2() > movement.length2()) {
-            return Vec3d.EMPTY // movement exceeds expected, some value gets invalid
+            return MVec3d.EMPTY
         }
 
-        return adjusted.unsafe
+        return adjusted
     }
 
     fun EntityPhysics<*>.collide(movement: Vec3d): Vec3d {
