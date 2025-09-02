@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -77,7 +78,7 @@ class MarkTextElement(
             val message = chatComponent.message // ToDo: This does not include formatting
             val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), properties = properties, parent = _parent)
             val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), properties = properties, parent = _parent)
-            val markOffset = Vec2f(preMark.info.lines.lastOrNull()?.width ?: 0f, preMark.size.y)
+            val markOffset = MVec2f(preMark.info.lines.lastOrNull()?.width ?: 0f, preMark.size.y)
             if (markOffset.y > 0 && (preMark.info.lines.lastOrNull()?.width ?: 0.0f) <= (info.lines.lastOrNull()?.width ?: 0.0f)) {
                 markOffset.y -= (properties.lineHeight).toInt()
             }

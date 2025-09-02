@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Sig
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -49,6 +50,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.SignTextC2SP
+import de.bixilon.minosoft.util.f
 
 class SignEditorScreen(
     guiRenderer: GUIRenderer,
@@ -93,26 +95,27 @@ class SignEditorScreen(
         lengthLimitSwitch.render(offset + VerticalAlignments.BOTTOM.getOffset(size, lengthLimitSwitch.size), consumer, options)
 
         val size = size
+        val offset = MVec2f(offset)
 
         offset.y += size.y / 8
-        headerElement.render(offset + HorizontalAlignments.CENTER.getOffset(size, headerElement.size), consumer, options)
+        headerElement.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, headerElement.size), consumer, options)
         offset.y += headerElement.size.y
 
         offset.y += size.y / 100
-        positionElement.render(offset + HorizontalAlignments.CENTER.getOffset(size, positionElement.size), consumer, options)
+        positionElement.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, positionElement.size), consumer, options)
         offset.y += positionElement.size.y
 
         offset.y += size.y / 12
-        backgroundElement?.render(offset + HorizontalAlignments.CENTER.getOffset(size, backgroundElement.size), consumer, options)
+        backgroundElement?.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, backgroundElement.size), consumer, options)
 
         offset.y += (1.8f * BACKGROUND_SCALE).toInt()
         for (line in lines) {
-            line.render(offset + HorizontalAlignments.CENTER.getOffset(size, line.size), consumer, options)
+            line.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, line.size), consumer, options)
             offset.y += TEXT_PROPERTIES.lineHeight + TEXT_PROPERTIES.lineSpacing
         }
         offset.y += size.y / 8
 
-        doneButton.render(offset + HorizontalAlignments.CENTER.getOffset(size, doneButton.size), consumer, options)
+        doneButton.render(offset.unsafe + HorizontalAlignments.CENTER.getOffset(size, doneButton.size), consumer, options)
     }
 
     private fun getText(): Array<ChatComponent> {
@@ -133,12 +136,13 @@ class SignEditorScreen(
         super.forceSilentApply()
 
         for (line in lines) {
-            line.prefMaxSize = Vec2f(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale else SIGN_MAX_CHARS, line.prefMaxSize.y)
+            line.prefMaxSize = Vec2f(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale else SIGN_MAX_CHARS.f, line.prefMaxSize.y)
         }
     }
 
     override fun getAt(position: Vec2f): Pair<Element, Vec2f>? {
         val size = size
+        val position = MVec2f(position)
 
         if (position.y in size.y - lengthLimitSwitch.size.y..size.y) {
             position.y -= size.y - lengthLimitSwitch.size.y

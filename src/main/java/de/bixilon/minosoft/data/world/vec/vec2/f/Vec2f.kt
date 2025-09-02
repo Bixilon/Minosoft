@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.world.vec.number.FloatUtil.minus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.plus
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.rem
 import de.bixilon.minosoft.data.world.vec.number.FloatUtil.times
+import de.bixilon.minosoft.data.world.vec.vec2.d._Vec2d
 import de.bixilon.minosoft.data.world.vec.vec2.i._Vec2i
 import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.util.f
@@ -89,7 +90,7 @@ value class Vec2f(
         inline operator fun invoke(other: Vec2f) = other
         inline operator fun invoke(other: _Vec2f) = Vec2f(other.x.f, other.y.f)
         inline operator fun invoke(other: _Vec2i) = Vec2f(other.x.f, other.y.f)
-        inline operator fun invoke(other: _Vec3d) = Vec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2d) = Vec2f(other.x.f, other.y.f)
 
         operator fun invoke() = EMPTY
     }
