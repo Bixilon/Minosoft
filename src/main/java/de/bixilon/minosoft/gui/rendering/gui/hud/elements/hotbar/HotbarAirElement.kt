@@ -52,7 +52,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
 
             val image = AtlasImageElement(guiRenderer, atlasElement)
 
-            image.render(offset + Vec2i(i * BUBBLE_SIZE.x, 0), consumer, options)
+            image.render(offset + Vec2f(i * BUBBLE_SIZE.x, 0), consumer, options)
         }
     }
 

@@ -81,7 +81,7 @@ open class SwitchElement(
 
 
     init {
-        size = SIZE + Vec2f(5 + TEXT_MARGIN + textElement.size.x, 0)
+        size = SIZE + Vec2f(5f + TEXT_MARGIN + textElement.size.x, 0f)
         this.parent = parent
     }
 
@@ -100,12 +100,12 @@ open class SwitchElement(
 
 
         if (state) {
-            AtlasImageElement(guiRenderer, onStateAtlas, size = SLIDER_SIZE).render(offset + Vec2i(SIZE.x - SLIDER_SIZE.x, 0), consumer, options)
+            AtlasImageElement(guiRenderer, onStateAtlas, size = SLIDER_SIZE).render(offset + Vec2f(SIZE.x - SLIDER_SIZE.x, 0f), consumer, options)
         } else {
             AtlasImageElement(guiRenderer, offStateAtlas, size = SLIDER_SIZE).render(offset, consumer, options)
         }
 
-        textElement.render(offset + Vec2i(SIZE.x + TEXT_MARGIN, VerticalAlignments.CENTER.getOffset(size.y, textElement.size.y)), consumer, options)
+        textElement.render(offset + Vec2f(SIZE.x + TEXT_MARGIN, VerticalAlignments.CENTER.getOffset(size.y, textElement.size.y)), consumer, options)
     }
 
     override fun forceSilentApply() {

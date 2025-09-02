@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark

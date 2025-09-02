@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
@@ -52,7 +51,7 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
         if (!isPlayerInRange(blockPosition)) {
             return
         }
-        val particlePosition = Vec3d(blockPosition) + { random.nextDouble() }
+        val particlePosition = Vec3d(blockPosition.x + random.nextDouble(), blockPosition.y + random.nextDouble(), blockPosition.z + random.nextDouble())
         smokeParticleType?.let { particle += SmokeParticle(session, particlePosition, MVec3d.EMPTY, it.default()) }
         flameParticleType?.let { particle += FlameParticle(session, particlePosition, MVec3d.EMPTY, it.default()) }
     }

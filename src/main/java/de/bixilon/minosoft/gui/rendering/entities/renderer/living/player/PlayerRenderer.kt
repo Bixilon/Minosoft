@@ -122,7 +122,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
         when (entity.pose) {
-            Poses.SNEAKING -> matrix.translateYAssign(SNEAKING_OFFSET) // TODO: interpolate
+            Poses.SNEAKING -> matrix.apply { translateYAssign(SNEAKING_OFFSET) } // TODO: interpolate
             else -> Unit
         }
     }

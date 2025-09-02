@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -39,7 +38,11 @@ class ExplosionEmitterParticle(session: PlaySession, position: Vec3d, data: Part
             return
         }
         for (i in 0 until 6) {
-            val position = position + { (random.nextDouble() - random.nextDouble()) * 4.0 }
+            val position = Vec3d(
+                position.x + random.nextDouble() - random.nextDouble() * 4.0,
+                position.y + random.nextDouble() - random.nextDouble() * 4.0,
+                position.z + random.nextDouble() - random.nextDouble() * 4.0,
+            )
 
             particle += ExplosionParticle(session, position, explosionParticleType.default(), floatAge / MAX_AGE)
         }

@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -22,6 +20,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
@@ -29,12 +28,10 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFeature
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.util.KUtil
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -71,9 +68,10 @@ abstract class EntityRenderer<E : Entity>(
         }
 
         if (entity.isFlipped()) {
-            matrix
-                .translateYAssign(entity.dimensions.y + 0.2f)
-                .rotateRadAssign(FLIP_ROTATION)
+            matrix.apply {
+                translateYAssign(entity.dimensions.y + 0.2f)
+                rotateRadAssign(FLIP_ROTATION)
+            }
         }
     }
 

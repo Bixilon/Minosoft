@@ -71,10 +71,12 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             mesh.addZQuad(
                 Vec2f(offset, 0f), OVERLAY_Z, Vec2f(offset + step, windowSize.y), Vec2f.EMPTY, texture.array.uvEnd ?: Vec2f.ONE
             ) { position, uv ->
-                val transformed = Vec2f()
-                transformed.x = position.x / (windowSize.x / 2) - 1.0f
-                transformed.y = position.y / (windowSize.y / 2) - 1.0f
-                mesh.addVertex(Vec3f(transformed.x, transformed.y, OVERLAY_Z), uv, timeOffset, offsetMultiplicator, alpha)
+                val transformed = Vec3f(
+                    position.x / (windowSize.x / 2) - 1.0f,
+                    position.y / (windowSize.y / 2) - 1.0f,
+                    OVERLAY_Z,
+                )
+                mesh.addVertex(transformed, uv, timeOffset, offsetMultiplicator, alpha)
             }
             offset += step
             if (offset > windowSize.x) {

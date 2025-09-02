@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions
@@ -29,11 +28,11 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogOptions
 import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.LavaFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
@@ -87,9 +86,10 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
             return
         }
         if (lavaParticleType != null && random.chance(1)) {
-            val position = Vec3d(blockPosition) + Vec3d.horizontal(
-                { random.nextDouble() },
-                1.0
+            val position = Vec3d(
+                blockPosition.x + random.nextDouble(),
+                blockPosition.y + 1.0,
+                blockPosition.z + random.nextDouble(),
             )
 
             particle += LavaParticle(session, position, lavaParticleType.default())

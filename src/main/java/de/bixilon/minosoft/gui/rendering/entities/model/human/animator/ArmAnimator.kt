@@ -51,8 +51,7 @@ class ArmAnimator(
     private fun apply(arm: Arms, walking: Float) {
         val transform = this[arm]
         val swinging = swinging[arm.ordinal]
-        transform.value
-            .translateAssign(right.pivot)
+        transform.value.translateAssign(right.pivot)
 
         if (swinging.isNaN()) {
             transform.value.rotateXAssign(walking)

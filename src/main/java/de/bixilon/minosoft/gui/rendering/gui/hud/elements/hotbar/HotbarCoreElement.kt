@@ -83,7 +83,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             topRight.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
-            experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0.0f), consumer, options)
+            experience.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0.0f), consumer, options)
             offset.y += experience.size.y + VERTICAL_SPACING
         }
         if (gamemode != Gamemodes.SPECTATOR) {

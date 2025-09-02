@@ -112,7 +112,9 @@ abstract class Particle(
 
 
     init {
-        this.velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
+        this.velocity.x += (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT
+        this.velocity.y += (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT
+        this.velocity.z += (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT
         val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15
         val divider = this.velocity.length()
 
@@ -152,22 +154,22 @@ abstract class Particle(
         }
 
 
-        return adjusted
+        return adjusted.unsafe
     }
 
     open fun move(velocity: Vec3d = this.velocity.unsafe) {
         if (alreadyCollided) {
-            this.previousPosition = position(position)
+            this.previousPosition = position
             return
         }
-        var newVelocity = velocity(velocity)
-        if (this.physics && newVelocity != Vec3d.EMPTY) {
-            newVelocity = collide(velocity)
+        val previousY = velocity.y
+        if (this.physics && velocity != Vec3d.EMPTY) {
+            velocity(collide(velocity))
         }
 
-        forceMove(newVelocity)
+        forceMove(velocity)
 
-        if (abs(newVelocity.y) >= Y_VELOCITY_TO_CHECK && abs(velocity.y) < Y_VELOCITY_TO_CHECK) {
+        if (abs(velocity.y) >= Y_VELOCITY_TO_CHECK && abs(previousY) < Y_VELOCITY_TO_CHECK) {
             this.alreadyCollided = true
         }
     }
@@ -240,6 +242,6 @@ abstract class Particle(
         private const val MAGIC_VELOCITY_CONSTANT = 0.4
         private const val MAGIC_VELOCITY_CONSTANTf = MAGIC_VELOCITY_CONSTANT.toFloat()
         private const val Y_VELOCITY_TO_CHECK = 9.999999747378752E-6f
-        private val DEFAULT_SPACING = Vec3(0.2)
+        private val DEFAULT_SPACING = Vec3f(0.2f)
     }
 }

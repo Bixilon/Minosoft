@@ -20,11 +20,10 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PoofParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null, velocity: MVec3d) : SimpleTextureParticle(session, position, velocity + { (Math.random() * 2.0 - 1.0) * 0.05 }, data) {
+class PoofParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null, velocity: MVec3d) : SimpleTextureParticle(session, position, MVec3d(velocity.x + (Math.random() * 2.0 - 1.0) * 0.05, velocity.y + (Math.random() * 2.0 - 1.0) * 0.05, velocity.z + (Math.random() * 2.0 - 1.0) * 0.05), data) {
 
     init {
         this.gravityStrength = -0.1f

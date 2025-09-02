@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -31,7 +30,7 @@ class BubbleParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, da
 
         this.scale *= random.nextFloat() * 0.6f + 0.2f
 
-        this.velocity((velocity * 0.2) + (Vec3d.of { random.nextDouble() * 2.0 - 1.0 } * 0.02))
+        this.velocity((velocity * 0.2) + (Vec3d(random.nextDouble() * 2.0 - 1.0, random.nextDouble() * 2.0 - 1.0, random.nextDouble() * 2.0 - 1.0) * 0.02))
         this.maxAge = (8.0f / random.nextFloat() * 0.8f + 0.2f).toInt()
 
         movement = false

@@ -24,8 +24,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -35,9 +33,14 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         val particle = session.world.particle ?: return
         if (portalParticleType == null) return
+
         for (i in 0 until 4) {
-            val particlePosition = MVec3d(position).apply { this += { random.nextDouble() } }
-            val velocity = Vec3d.of { (random.nextDouble() - 0.5) * 0.5 }
+            val particlePosition = MVec3d(
+                position.x + random.nextDouble(),
+                position.y + random.nextDouble(),
+                position.z + random.nextDouble(),
+            )
+            val velocity = MVec3d((random.nextDouble() - 0.5) * 0.5, (random.nextDouble() - 0.5) * 0.5, (random.nextDouble() - 0.5) * 0.5)
 
             val factor = (random.nextInt(2) * 2 + 1).toDouble()
 
@@ -50,7 +53,7 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
             }
             particle += PortalParticle(
                 session,
-                particlePosition,
+                particlePosition.unsafe,
                 velocity,
                 portalParticleType.default(),
             )

@@ -76,8 +76,8 @@ class UnifontTexture(
             }
         }
 
-        val uvStart = Vec2f(pixel * (offset), pixel * (row * UnifontRasterizer.HEIGHT)).fixUVStart()
-        val uvEnd = Vec2f(pixel * (offset + (end - start)), pixel * ((row + 1) * UnifontRasterizer.HEIGHT)).fixUVEnd()
+        val uvStart = Vec2f(pixel * (offset), pixel * (row * UnifontRasterizer.HEIGHT)).unsafe.apply { fixUVStart() }.unsafe
+        val uvEnd = Vec2f(pixel * (offset + (end - start)), pixel * ((row + 1) * UnifontRasterizer.HEIGHT)).unsafe.apply { fixUVEnd() }.unsafe
         val width = (end - start) * (FontProperties.CHAR_BASE_HEIGHT.toFloat() / UnifontRasterizer.HEIGHT)
 
         return UnicodeCodeRenderer(this, uvStart, uvEnd, width)

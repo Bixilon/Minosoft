@@ -19,12 +19,11 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class CrimsonSporeParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(session, position, Vec3d(9.999999974752427E-7) * { random.nextGaussian() }, data) {
+class CrimsonSporeParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(session, position, MVec3d(9.999999974752427E-7).apply { this *= Vec3d(random.nextGaussian(), random.nextGaussian(), random.nextGaussian()) }, data) {
 
     init {
         color = RGBAColor(0.9f, 0.4f, 0.5f)

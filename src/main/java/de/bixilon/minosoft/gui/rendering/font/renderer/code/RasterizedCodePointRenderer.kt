@@ -49,14 +49,14 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
         render(position, properties, color, bold, italic, scale, consumer, options)
     }
 
-    fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): Vec2f {
+    fun calculateStart(properties: TextRenderProperties, base: Vec2f, scale: Float): MVec2f {
         val position = MVec2f(base)
         position.y += properties.charSpacing.top * scale
 
         return position
     }
 
-    fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): Vec2f {
+    fun calculateEnd(properties: TextRenderProperties, start: Vec2f, scale: Float): MVec2f {
         val position = MVec2f(start)
         position.y += (properties.charBaseHeight * scale)
         position.x += width * scale
@@ -66,9 +66,9 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
 
     private fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val startPosition = calculateStart(properties, position, scale)
-        val endPosition = calculateEnd(properties, startPosition, scale)
+        val endPosition = calculateEnd(properties, startPosition.unsafe, scale)
 
-        consumer.addChar(startPosition, endPosition, texture, uvStart, uvEnd, italic, color, options)
+        consumer.addChar(startPosition.unsafe, endPosition.unsafe, texture, uvStart, uvEnd, italic, color, options)
 
         if (bold) {
             // render char another time but offset in x direction
@@ -76,8 +76,8 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
             startPosition.x += boldOffset
             endPosition.x += boldOffset
             consumer.addChar(
-                start = startPosition,
-                end = endPosition,
+                start = startPosition.unsafe,
+                end = endPosition.unsafe,
                 texture, uvStart, uvEnd, italic, color, options)
         }
     }

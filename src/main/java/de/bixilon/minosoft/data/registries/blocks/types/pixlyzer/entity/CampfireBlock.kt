@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -53,9 +52,10 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
     fun spawnSmokeParticles(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, extinguished: Boolean, random: Random) {
         val particle = session.world.particle ?: return
-        val position = Vec3d(blockPosition).horizontalPlus(
-            { 0.5 + 3.0.noised(random) },
-            random.nextDouble() + random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
+        val position = Vec3d(
+            blockPosition.x + 0.5 + 3.0.noised(random),
+            blockPosition.y + random.nextDouble() + random.nextDouble() + 0.5, // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
+            blockPosition.z + 0.5 + 3.0.noised(random),
         )
 
         val isSignal = isSignal(blockState)
@@ -65,9 +65,10 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         particle += CampfireSmokeParticle(session, position, SMOKE_VELOCITY.mutable(), particleType.default(), isSignal)
 
         if (extinguished) {
-            val position = Vec3d(blockPosition).horizontalPlus(
-                { 0.5 + 4.0.noised(random) },
-                0.5
+            val position = Vec3d(
+                blockPosition.x + 0.5 + 4.0.noised(random),
+                blockPosition.y + 0.5,
+                blockPosition.z + 0.5 + 4.0.noised(random),
             )
             particle += SmokeParticle(session, position, EXTINGUISHED_VELOCITY.mutable(), smokeParticle.default())
         }

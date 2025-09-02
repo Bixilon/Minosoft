@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class AmbientEntityEffectParticle(session: PlaySession, position: Vec3d, color: RGBAColor, data: ParticleData? = null) : SpellParticle(session, position, Vec3d(color.red, color.green, color.blue), data) {
+class AmbientEntityEffectParticle(session: PlaySession, position: Vec3d, color: RGBAColor, data: ParticleData? = null) : SpellParticle(session, position, MVec3d(color.red, color.green, color.blue), data) {
 
     init {
         this.color = color.with(alpha = 0.15f)
