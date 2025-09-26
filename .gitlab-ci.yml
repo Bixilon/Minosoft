@@ -1,12 +1,5 @@
 image: azul/zulu-openjdk-alpine:11-latest
 
-variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH/$CI_COMMIT_SHA
-
-before_script:
-  - export GRADLE_USER_HOME=`pwd`/.gradle_home
-
 stages:
   - create
   - build
@@ -14,6 +7,28 @@ stages:
   - package
   - publish
 
+
+.gradle:
+  image: azul/zulu-openjdk-alpine:21-latest
+  variables:
+    GRADLE_USER_HOME: $CI_PROJECT_DIR/.home
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  cache:
+    - key: "$CI_COMMIT_SHA"
+      paths:
+        - build
+        - .gradle
+    - key:
+        files:
+          - "build.gradle.kts"
+          - "gradle.properties"
+      paths:
+        - .home/caches
+    - key:
+        files:
+          - "gradle/wrapper/gradle-wrapper.properties"
+      paths:
+        - .home/wrapper
 
 cache:
   - key: "$CI_COMMIT_SHA"
@@ -31,10 +46,6 @@ cache:
         - "gradle/wrapper/gradle-wrapper.properties"
     paths:
       - $GRADLE_USER_HOME/wrapper
-  - key:
-      "minosoft-assets"
-    paths:
-      - ./it
 
 create:
   stage: create
@@ -46,6 +57,7 @@ create:
     - master
 
 build:
+  extends: .gradle
   stage: build
   script: ./gradlew --build-cache assemble -Pminosoft.updates=true
   only:
@@ -53,8 +65,9 @@ build:
     - merge_requests
 
 test:
+  extends: .gradle
   stage: test
-  script: ./gradlew check -Pminosoft.updates=true
+  script: ./gradlew test
   only:
     - master
     - merge_requests
@@ -63,8 +76,27 @@ test:
     reports:
       junit: build/test-results/**/TEST-*.xml
 
-# TODO: upload release in the publish step?
+integration test:
+  extends: .gradle
+  stage: test
+  script: ./gradlew integrationTest
+  only:
+    - master
+    - merge_requests
+  cache:
+    # TODO: check if gradle assets are also cached
+    - key:
+        "minosoft-assets"
+      paths:
+        - ./it
+
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/**/TEST-*.xml
+
 package:
+  extends: .gradle
   stage: package
   script:
     - ./gradlew fatJar upload --stacktrace -Pminosoft.updates=true
