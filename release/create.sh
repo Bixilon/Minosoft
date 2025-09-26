@@ -1,7 +1,7 @@
 #!/bin/ash
 #
 # Minosoft
-# Copyright (C) 2020-2024 Moritz Zwerger
+# Copyright (C) 2020-2025 Moritz Zwerger
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 #
@@ -12,10 +12,12 @@
 # This software is not affiliated with Mojang AB, the original developer of Minecraft.
 #
 set -e
-VERSION=$(git rev-parse HEAD)
-VERSION=${VERSION:0:10}
+
+VERSION="$(git rev-parse HEAD)"
+VERSION="${VERSION:0:10}"
 
 curl \
+  --fail \
   --form-string "stable=false" \
   --form-string "page=" \
   --form-string "release_notes=$(git log -1 --pretty=%B)" \
