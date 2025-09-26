@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.shapes.side
 
 import com.google.common.base.Objects
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 data class SideQuad(

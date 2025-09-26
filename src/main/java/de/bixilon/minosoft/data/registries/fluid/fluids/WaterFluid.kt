@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.interpolateYaw
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

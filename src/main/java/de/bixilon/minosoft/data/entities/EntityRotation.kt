@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.util.KUtil.cos
 import de.bixilon.minosoft.util.KUtil.rad

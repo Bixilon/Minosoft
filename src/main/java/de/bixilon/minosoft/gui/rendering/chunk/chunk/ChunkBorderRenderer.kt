@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.chunk
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding

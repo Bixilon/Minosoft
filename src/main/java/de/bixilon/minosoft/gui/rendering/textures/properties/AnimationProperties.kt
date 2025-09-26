@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

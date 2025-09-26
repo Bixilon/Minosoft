@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 
 class OpenGLTextureData(

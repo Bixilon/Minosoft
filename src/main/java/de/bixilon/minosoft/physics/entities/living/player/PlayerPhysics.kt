@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.entities.living.player
 
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity

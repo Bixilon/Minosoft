@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
@@ -166,7 +166,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             info.update(offset, properties, 0.0f, 0.0f, true)
         }
         if (line.isNotEmpty()) {
-            info.lines[info.lineIndex].pushAndRender(lineStart, text, line, offset.offset.x - lineStart.x, color, properties, consumer, options)
+            info.lines[info.lineIndex].pushAndRender(lineStart.unsafe, text, line, offset.offset.x - lineStart.x, color, properties, consumer, options)
         }
 
         return filled

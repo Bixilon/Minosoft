@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec3.i.Vec3i
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
