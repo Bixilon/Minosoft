@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 
 object CameraDefinition {
     const val NEAR_PLANE = 0.01f

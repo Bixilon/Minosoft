@@ -13,16 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import glm_.vec4.Vec4
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.kmath.vec.vec4.f.MVec4f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLinkingException
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException

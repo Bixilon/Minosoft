@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.physics.parts
 
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Axes

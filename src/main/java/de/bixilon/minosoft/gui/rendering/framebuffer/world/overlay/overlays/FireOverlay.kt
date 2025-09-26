@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft

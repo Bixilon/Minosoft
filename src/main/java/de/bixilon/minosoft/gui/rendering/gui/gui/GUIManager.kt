@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool

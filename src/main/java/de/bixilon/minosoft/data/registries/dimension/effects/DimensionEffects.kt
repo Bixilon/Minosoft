@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.dimension.effects
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

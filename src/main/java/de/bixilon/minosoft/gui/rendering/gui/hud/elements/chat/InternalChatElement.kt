@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now

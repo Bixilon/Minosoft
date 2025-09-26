@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.light.updater.normal
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.kmath.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
@@ -91,7 +93,7 @@ class NormalLightmapUpdater(
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
-        var color = Vec3f()
+        var color = MVec3f()
         for (sky in 0 until LightLevel.LEVELS) {
             for (block in 0 until LightLevel.LEVELS) {
                 combine(skyColors[sky], blockColors[block], color)
@@ -166,27 +168,23 @@ class NormalLightmapUpdater(
     }
 
 
-    private fun combine(sky: Vec3f, block: Vec3f, output: Vec3f) {
-        Vec3f.plus(output, sky, block.x, block.y, block.z)
+    private fun combine(sky: Vec3f, block: Vec3f, output: MVec3f) {
+        output.x = sky.x + block.x
+        output.y = sky.y + block.y
+        output.z = sky.z + block.z
 
         output.clampAssign()
     }
 
     private fun tweak(
-        color: Vec3f,
+        color: MVec3f,
         gamma: Float,
         brighten: Vec3f?,
         nightVision: Float,
-    ): Vec3f {
-        var output = color
-        output = applyGamma(output, gamma)
-
-        brighten?.let { output = applyBrighten(color, brighten) }
-
-        output = applyNightVision(output, nightVision)
-
-
-        return output
+    ) {
+        applyGamma(color, gamma)
+        brighten?.let { applyBrighten(color, brighten) } // TODO: only apply brighten to color without gamma?
+        applyNightVision(color, nightVision)
     }
 
     private fun applyNightVision(color: Vec3f, strength: Float): Vec3f {
@@ -201,7 +199,7 @@ class NormalLightmapUpdater(
     }
 
     private fun applyBrighten(color: Vec3f, brighten: Vec3f): Vec3f {
-        return interpolateLinear(0.25f, color, brighten).apply { clampAssign() }
+        return interpolateLinear(0.25f, color, brighten).apply { unsafe.clampAssign() }
     }
 
     private fun applyGamma(color: Vec3f, gamma: Float): Vec3f {
@@ -226,7 +224,7 @@ class NormalLightmapUpdater(
         return this * (1.0f - value) + value
     }
 
-    private fun Vec3f.clampAssign() {
+    private fun MVec3f.clampAssign() {
         this.clampAssign(0.0f, 1.0f)
     }
 

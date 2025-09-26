@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement

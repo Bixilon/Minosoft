@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.SkinManager.Companion.isReallyWide
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {

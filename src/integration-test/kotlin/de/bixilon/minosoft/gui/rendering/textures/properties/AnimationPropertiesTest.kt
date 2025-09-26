@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test

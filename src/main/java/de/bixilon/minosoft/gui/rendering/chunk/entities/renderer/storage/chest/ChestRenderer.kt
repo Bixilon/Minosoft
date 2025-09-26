@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing

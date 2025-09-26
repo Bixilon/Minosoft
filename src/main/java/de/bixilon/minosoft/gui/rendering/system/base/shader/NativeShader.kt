@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import glm_.vec4.Vec4
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.kmath.vec.vec4.f.MVec4f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import kotlin.math.max

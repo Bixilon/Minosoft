@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed

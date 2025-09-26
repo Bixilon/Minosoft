@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object QuaternionEntityDataType : EntityDataType<Vec4f> {

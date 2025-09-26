@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import org.junit.jupiter.api.Test
 

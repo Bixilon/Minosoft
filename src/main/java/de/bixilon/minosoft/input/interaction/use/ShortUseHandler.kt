@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.input.interaction.use
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.camera.target.targets.GenericTarget

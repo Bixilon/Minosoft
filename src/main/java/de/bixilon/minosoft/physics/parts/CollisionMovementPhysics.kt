@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.parts
 
 import de.bixilon.kutil.primitive.DoubleUtil.matches
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 
@@ -89,14 +89,14 @@ object CollisionMovementPhysics {
         }
     }
 
-    private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: Vec3d, collisions: Shape): MVec3d {
+    private fun EntityPhysics<*>.collideStepping(movement: Vec3d, collision: MVec3d, collisions: Shape): MVec3d {
         val collidedX = movement.x.matches(collision.x) // TODO: currently not collided
         val collidedY = movement.y.matches(collision.y)
         val collidedZ = movement.z.matches(collision.z)
 
         val grounded = this.onGround || collidedY && movement.y < 0.0
 
-        if (!grounded || !(collidedX || collidedZ)) return MVec3d(collision)
+        if (!grounded || !(collidedX || collidedZ)) return collision
 
         val stepHeight = stepHeight.toDouble()
 
@@ -113,6 +113,6 @@ object CollisionMovementPhysics {
             return total + collide(Vec3d(0.0, -total.y + movement.y, 0.0), aabb.offset(total), collisions)
         }
 
-        return MVec3d(collision)
+        return collision
     }
 }

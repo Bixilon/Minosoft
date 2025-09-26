@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render.property
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties

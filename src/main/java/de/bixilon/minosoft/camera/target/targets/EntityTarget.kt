@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.camera.target.targets
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.string.StringUtil.toSnakeCase
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.direction.Directions

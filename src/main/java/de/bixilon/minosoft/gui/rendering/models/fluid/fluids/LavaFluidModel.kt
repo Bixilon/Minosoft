@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.fluid.fluids
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext

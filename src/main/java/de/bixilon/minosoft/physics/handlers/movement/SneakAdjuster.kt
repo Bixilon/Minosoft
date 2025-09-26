@@ -16,14 +16,14 @@ package de.bixilon.minosoft.physics.handlers.movement
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.world.vec.vec3.d._Vec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d._Vec3d
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 
 interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
 
-    fun shouldAdjustForSneaking(movement: Vec3d): Boolean
+    fun shouldAdjustForSneaking(movement: MVec3d): Boolean
 
     private fun checkValue(value: Double) = when {
         value < SNEAK_CHECK && value >= -SNEAK_CHECK -> 0.0
@@ -44,14 +44,14 @@ interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
         return value
     }
 
-    fun adjustMovementForSneaking(movement: Vec3d): Vec3d {
+    fun adjustMovementForSneaking(movement: MVec3d) {
         if (!shouldAdjustForSneaking(movement)) {
-            return movement
+            return
         }
-        return adjustMovementForSneaking(_entity, aabb, movement)
+        adjustMovementForSneaking(_entity, aabb, movement)
     }
 
-    fun adjustMovementForSneaking(entity: Entity, aabb: AABB, movement: Vec3d): Vec3d {
+    fun adjustMovementForSneaking(entity: Entity, aabb: AABB, movement: MVec3d) {
         var x = movement.x
         var z = movement.z
 
@@ -64,7 +64,8 @@ interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
             z = checkValue(z)
         }
 
-        return Vec3d(x, movement.y, z)
+        movement.x = x
+        movement.z = z
     }
 
     companion object {

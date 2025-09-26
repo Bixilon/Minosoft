@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
 
 object SkeletalRotationDeserializer : StdDeserializer<SkeletalRotation>(SkeletalRotation::class.java) {

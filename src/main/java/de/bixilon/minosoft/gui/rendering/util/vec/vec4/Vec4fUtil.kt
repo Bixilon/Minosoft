@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
-import de.bixilon.minosoft.data.world.vec.vec4.f._Vec4f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
+import de.bixilon.kmath.vec.vec4.f._Vec4f
 
 object Vec4fUtil {
 

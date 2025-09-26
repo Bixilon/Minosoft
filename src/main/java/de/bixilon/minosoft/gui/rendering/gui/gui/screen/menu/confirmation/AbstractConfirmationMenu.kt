@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer

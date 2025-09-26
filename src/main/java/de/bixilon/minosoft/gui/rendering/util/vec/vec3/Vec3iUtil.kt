@@ -17,9 +17,9 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
-import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 object Vec3iUtil {

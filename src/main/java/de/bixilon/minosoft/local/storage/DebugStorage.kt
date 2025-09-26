@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.local.storage
 
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.area.StaticBorderArea
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

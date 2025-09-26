@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.dummy
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderContext

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
@@ -37,7 +37,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun ensureSize(size: Int) = Unit
 
     override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
-        quads += RendererdQuad(Vec2f(start), Vec2f(end))
+        quads += RendererdQuad(start(start), end(end))
     }
 
     data class RendererdCodePoint(val start: Vec2f)
@@ -50,7 +50,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
         }
 
         override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-            chars += RendererdCodePoint(Vec2f(position))
+            chars += RendererdCodePoint(position(position))
         }
     }
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -118,7 +118,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             _size = Vec2f.EMPTY
             return
         }
-        val size = Vec2f(MIN_WIDTH, TEXT_PROPERTIES.lineHeight)
+        val size = MVec2f(MIN_WIDTH, TEXT_PROPERTIES.lineHeight)
         size.x = maxOf(size.x, nameElement.size.x)
 
         val scores = scores.toSynchronizedMap()
@@ -133,9 +133,9 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
 
 
-        _size = size
+        _size = size.unsafe
         nameBackgroundElement.size = Vec2f(size.x, TEXT_PROPERTIES.lineHeight)
-        backgroundElement.size = size
+        backgroundElement.size = size.unsafe
 
 
         for ((_, element) in scores) {
