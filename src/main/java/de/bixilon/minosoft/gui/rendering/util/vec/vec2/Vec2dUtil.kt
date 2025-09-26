@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 
 object Vec2dUtil {

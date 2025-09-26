@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.shapes.collision
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.math.simple.DoubleMath.ceil

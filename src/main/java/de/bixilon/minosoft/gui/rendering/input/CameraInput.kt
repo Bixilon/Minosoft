@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input
 
 import com.sun.javafx.util.Utils.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
-import de.bixilon.minosoft.data.world.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes

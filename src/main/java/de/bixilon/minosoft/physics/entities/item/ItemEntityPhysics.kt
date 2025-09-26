@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.entities.item
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock

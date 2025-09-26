@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics.parkour
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.parser.brigadier._double.DoubleParser.Companion.readDouble

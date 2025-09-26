@@ -18,10 +18,10 @@ import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
@@ -41,7 +41,7 @@ class SunScatterRenderer(
     private var skyMatrix = Mat4f()
 
     private fun calculateMatrix(skyMatrix: Mat4f) = MMat4f(skyMatrix).apply {
-        rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
+        rotateZAssign((sun.calculateAngle() + 90.0f).rad)
     }
 
     override fun init() {
@@ -59,8 +59,9 @@ class SunScatterRenderer(
     }
 
     private fun calculateSunPosition(): Vec3f {
-        val matrix = Mat4f()
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3f.Z)
+        val matrix = MMat4f().apply {
+            rotateZAssign((sun.calculateAngle() + 90.0f).rad)
+        }
 
         val barePosition = Vec4f(1.0f, 0.128f, 0.0f, 1.0f)
 
@@ -92,7 +93,7 @@ class SunScatterRenderer(
         }
         val skyMatrix = sky.matrix
         if (this.skyMatrix != skyMatrix) {
-            shader.scatterMatrix = calculateMatrix(skyMatrix)
+            shader.scatterMatrix = calculateMatrix(skyMatrix).unsafe
             this.skyMatrix = skyMatrix
         }
 

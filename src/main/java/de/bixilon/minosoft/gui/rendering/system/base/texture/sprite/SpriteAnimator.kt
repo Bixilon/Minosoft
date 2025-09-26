@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.sprite
 
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet

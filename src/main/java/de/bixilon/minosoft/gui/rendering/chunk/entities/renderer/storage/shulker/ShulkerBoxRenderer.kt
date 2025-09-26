@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.FLATTENING
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.colors.DyeColors.Companion.name

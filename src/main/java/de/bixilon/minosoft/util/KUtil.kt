@@ -51,6 +51,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.eros.ErosOptions
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -73,14 +74,8 @@ import java.io.InputStream
 import java.nio.ByteOrder
 import java.security.MessageDigest
 import java.security.SecureRandom
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 import javax.net.ssl.SSLContext
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 
 object KUtil {

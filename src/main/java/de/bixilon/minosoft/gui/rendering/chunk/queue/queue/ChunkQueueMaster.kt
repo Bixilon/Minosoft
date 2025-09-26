@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.queue
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize

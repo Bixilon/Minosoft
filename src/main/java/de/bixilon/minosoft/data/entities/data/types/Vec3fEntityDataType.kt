@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object Vec3fEntityDataType : EntityDataType<Vec3f> {

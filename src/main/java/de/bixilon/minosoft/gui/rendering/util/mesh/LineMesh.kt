@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
@@ -33,14 +35,14 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     fun drawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
         data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
 
-        val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).normalizeAssign()
+        val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).apply { normalizeAssign() }
         val normal1 = MVec3f(direction.z, direction.z, direction.x - direction.y)
         if (direction.z == 0.0f && direction.x == 0.0f) {
             normal1.x = normal1.z
             normal1.z = direction.z
         }
         normal1.normalizeAssign()
-        val normal2 = (direction cross normal1).normalizeAssign()
+        val normal2 = (direction cross normal1).apply { normalizeAssign() }
 
         val halfLineWidth = lineWidth / 2
 

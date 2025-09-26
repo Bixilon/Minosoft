@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.audio
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 @Deprecated("use world.audio")

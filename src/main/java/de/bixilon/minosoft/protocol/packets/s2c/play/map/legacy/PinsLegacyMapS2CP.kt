@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.map.legacy
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
 import de.bixilon.minosoft.data.world.map.MapPinTypes
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer

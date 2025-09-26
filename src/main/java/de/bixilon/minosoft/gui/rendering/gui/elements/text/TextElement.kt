@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -272,13 +272,12 @@ open class TextElement(
         return chatComponent.toString()
     }
 
-    protected fun Vec2f.withBackgroundSize(sign: Float = 1.0f): Vec2f {
-        val size = this.mutable()
+    protected fun MVec2f.withBackgroundSize(sign: Float = 1.0f): MVec2f {
+        val size = this
         val background = this@TextElement.background
         if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
             size += background.size.spaceSize * sign
         }
-
-        return size.unsafe
+        return size
     }
 }

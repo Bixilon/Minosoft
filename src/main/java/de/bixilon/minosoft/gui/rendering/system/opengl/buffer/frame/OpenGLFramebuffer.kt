@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes

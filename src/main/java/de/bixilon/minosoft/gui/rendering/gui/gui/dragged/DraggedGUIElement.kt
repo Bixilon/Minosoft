@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIMeshElement
 
 class DraggedGUIElement<T : Dragged>(element: T) : GUIMeshElement<T>(element) {
