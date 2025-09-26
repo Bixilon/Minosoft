@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.shaking
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
@@ -58,6 +58,6 @@ class CameraShaking(
 
     fun transform(): Mat4f? {
         if (rotation == 0.0f) return null
-        return MMat4f().apply { rotateAssign(rotation, Vec3f.Z) }.unsafe
+        return MMat4f().apply { rotateZAssign(rotation) }.unsafe
     }
 }

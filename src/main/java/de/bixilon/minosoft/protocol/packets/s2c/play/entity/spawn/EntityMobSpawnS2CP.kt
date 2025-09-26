@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

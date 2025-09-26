@@ -20,11 +20,11 @@ import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.f._Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.util.KUtil.cos
 import de.bixilon.minosoft.util.KUtil.rad
 import de.bixilon.minosoft.util.KUtil.sin

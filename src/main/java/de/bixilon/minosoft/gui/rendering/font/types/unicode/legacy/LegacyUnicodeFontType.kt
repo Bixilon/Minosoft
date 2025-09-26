@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toHex

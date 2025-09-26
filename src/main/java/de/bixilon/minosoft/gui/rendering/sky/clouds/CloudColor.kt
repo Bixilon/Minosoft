@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.world.time.DayPhases

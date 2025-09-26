@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.misc.event.world.WorldEventHandler
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ceil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min

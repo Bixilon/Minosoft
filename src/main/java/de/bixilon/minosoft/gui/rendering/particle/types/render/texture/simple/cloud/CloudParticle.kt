@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.data.world.entities.WorldEntities
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

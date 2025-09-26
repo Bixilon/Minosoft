@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types
 
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
@@ -21,7 +22,7 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition

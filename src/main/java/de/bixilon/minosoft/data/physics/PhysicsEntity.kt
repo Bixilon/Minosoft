@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.physics
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 
 @Deprecated("merge with new physics")
 interface PhysicsEntity {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics.input
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround

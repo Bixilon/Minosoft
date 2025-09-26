@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.NoRenderParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

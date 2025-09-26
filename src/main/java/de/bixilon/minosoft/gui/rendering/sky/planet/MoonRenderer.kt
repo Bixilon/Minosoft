@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft

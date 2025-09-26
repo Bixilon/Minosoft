@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.shader
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor

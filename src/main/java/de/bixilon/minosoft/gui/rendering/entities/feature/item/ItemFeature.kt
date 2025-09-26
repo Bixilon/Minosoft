@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.item
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature.ItemRenderDistance.Companion.getCount

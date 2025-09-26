@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.models.raw.display
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3f
 
@@ -43,7 +42,7 @@ data class ModelDisplay(
         fun deserialize(data: JsonObject): ModelDisplay {
             return ModelDisplay(
                 rotation = data["rotation"]?.toVec3f()?.rad ?: Vec3f.EMPTY,
-                translation = data["translation"]?.toVec3f()?.apply { this /= BLOCK_SIZE } ?: Vec3f.EMPTY,
+                translation = data["translation"]?.toVec3f()?.apply { unsafe /= BLOCK_SIZE } ?: Vec3f.EMPTY,
                 scale = data["scale"]?.toVec3f() ?: Vec3f.ONE,
             )
         }

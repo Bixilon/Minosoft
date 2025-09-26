@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.events.click
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.kutil.url.URLUtil.toURL

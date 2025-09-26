@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.terminal.commands.session
 
 import de.bixilon.kutil.math.MathConstants.PIf
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.random.RandomUtil.nextDouble

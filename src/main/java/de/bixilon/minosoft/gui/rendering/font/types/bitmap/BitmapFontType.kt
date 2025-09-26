@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart

@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
@@ -27,8 +26,6 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -84,9 +81,9 @@ open class BillboardTextFeature(
         this.matrix.clearAssign()
         this.matrix.apply {
             translateYAssign(renderer.entity.dimensions.y + offset)
-            rotateYassign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
-            rotateXassign((180.0f - mat.pitch).rad)
-            translateXAssign(width / -2.0f * BillboardTextMesh.SCALE).translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
+            rotateYAssign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
+            rotateXAssign((180.0f - mat.pitch).rad)
+            translateXAssign(width / -2.0f * BillboardTextMesh.SCALE); translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
         }
 
         this.matrix = renderer.matrix * matrix
@@ -104,7 +101,7 @@ open class BillboardTextFeature(
         )
         val shader = renderer.renderer.features.text.shader
         shader.use()
-        shader.matrix = matrix
+        shader.matrix = matrix.unsafe
         shader.tint = renderer.light.value.rgba()
         super.draw(mesh)
     }

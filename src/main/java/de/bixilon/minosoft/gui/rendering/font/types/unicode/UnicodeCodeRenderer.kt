@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.RasterizedCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 

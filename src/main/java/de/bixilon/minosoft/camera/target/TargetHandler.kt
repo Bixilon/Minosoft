@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.camera.target
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.camera.SessionCamera
@@ -29,8 +29,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition

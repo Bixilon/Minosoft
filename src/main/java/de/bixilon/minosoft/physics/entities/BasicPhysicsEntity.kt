@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.physics.entities
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 
 abstract class BasicPhysicsEntity {
     var position = Vec3d.EMPTY

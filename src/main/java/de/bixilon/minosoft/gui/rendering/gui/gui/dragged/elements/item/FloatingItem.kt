@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.types.SimpleContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack

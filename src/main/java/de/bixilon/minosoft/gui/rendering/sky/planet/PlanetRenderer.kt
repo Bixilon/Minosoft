@@ -14,21 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
-import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
 import de.bixilon.minosoft.util.KUtil.rad
 
 abstract class PlanetRenderer(
@@ -81,7 +79,7 @@ abstract class PlanetRenderer(
         val matrix = MMat4f(base)
 
         matrix.apply {
-            rotateAssign(calculateAngle().rad, Vec3f.Z)
+            rotateZAssign(calculateAngle().rad)
             translateYAssign(-modifier) // moves the planet closer to the player (appears bigger)
         }
 

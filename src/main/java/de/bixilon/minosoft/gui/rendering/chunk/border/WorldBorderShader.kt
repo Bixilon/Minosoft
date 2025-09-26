@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
 import de.bixilon.minosoft.gui.rendering.shader.Shader

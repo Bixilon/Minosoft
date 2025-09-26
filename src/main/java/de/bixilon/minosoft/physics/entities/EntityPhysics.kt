@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.physics.entities
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 import de.bixilon.minosoft.physics.handlers.movement.SneakAdjuster
@@ -135,14 +136,14 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         return 1.0f
     }
 
-    private fun applyMovementMultiplier(movement: Vec3d): Vec3d {
+    private fun applyMovementMultiplier(movement: MVec3d) {
         val multiplier = this.movementMultiplier
-        if (multiplier.length2() <= 1.0E-7) return movement
+        if (multiplier.length2() <= 1.0E-7) return
 
         this.movementMultiplier = Vec3d.EMPTY
         this.velocity.clear()
 
-        return movement * multiplier
+        movement *= multiplier
     }
 
     private fun updateCollision(movement: Vec3d, collision: Vec3d): Boolean {
@@ -162,18 +163,18 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     }
 
     open fun move(movement: Vec3d = this.velocity.unsafe, pushed: Boolean = false) {
-        var adjusted = movement
+        val adjusted = MVec3d(movement)
 
-        adjusted = applyMovementMultiplier(adjusted)
+        applyMovementMultiplier(adjusted)
 
         if (this is SneakAdjuster && !pushed) {
-            adjusted = adjustMovementForSneaking(adjusted)
+            adjustMovementForSneaking(adjusted)
         }
-        val collisionMovement = if (adjusted.length2() >= 1.0E-7) collide(adjusted) else adjusted
+        val collisionMovement = if (adjusted.length2() >= 1.0E-7) collide(adjusted.unsafe) else adjusted
         // TODO: prevent moving into unloaded chunks
 
-        forceMove(collisionMovement)
-        val vertical = updateCollision(adjusted, collisionMovement)
+        forceMove(collisionMovement.unsafe)
+        val vertical = updateCollision(adjusted.unsafe, collisionMovement.unsafe)
 
         handleFalling(collisionMovement.y, vertical)
 

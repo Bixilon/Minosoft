@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.item
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer

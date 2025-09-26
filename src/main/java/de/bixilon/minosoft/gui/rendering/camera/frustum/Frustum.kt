@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
@@ -28,8 +28,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.data.world.vec.mat3.f.Mat3f
-import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.kmath.mat.mat3.f.Mat3f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler

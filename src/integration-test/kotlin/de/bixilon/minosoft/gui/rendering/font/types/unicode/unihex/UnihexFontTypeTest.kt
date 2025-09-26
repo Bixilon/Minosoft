@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.buffer.ByteBufferUtil.readRemaining
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible

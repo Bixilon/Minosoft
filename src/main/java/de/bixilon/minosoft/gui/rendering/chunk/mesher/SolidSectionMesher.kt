@@ -37,7 +37,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.data.world.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.background
 
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.world.vec.vec4.f.Vec4f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.marginOf
 

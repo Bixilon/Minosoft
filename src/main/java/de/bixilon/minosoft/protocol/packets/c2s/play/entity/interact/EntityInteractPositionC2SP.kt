@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

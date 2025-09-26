@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics.fluid.still
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition

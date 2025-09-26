@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
 import glm_.func.rad
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign

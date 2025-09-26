@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.render
 
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 
 interface Renderbuffer {
     val mode: RenderbufferModes

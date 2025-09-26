@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader

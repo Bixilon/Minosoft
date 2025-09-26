@@ -13,25 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.util.KUtil.rad
 
 object Mat4Util {
 
-    fun Mat4f.rotateDegreesAssign(rotation: Vec3f): Mat4f {
-        if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
-        if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
-        if (rotation.z != 0.0f) rotateZ(this, rotation.z.rad)
-        return this
-    }
-
-    fun Mat4f.rotateRadAssign(rotation: Vec3f): Mat4f {
-        if (rotation.x != 0.0f) rotateX(this, rotation.x)
-        if (rotation.y != 0.0f) rotateY(this, rotation.y)
-        if (rotation.z != 0.0f) rotateZ(this, rotation.z)
-        return this
-    }
 
     fun Mat4f.times(vec3: Vec3f, res: Vec3f): Vec3f {
         val array = vec3.array
@@ -41,13 +29,7 @@ object Mat4Util {
         return res
     }
 
-    fun Mat4f.rotateXAssign(rad: Float): Mat4f {
-        rotateX(this, rad)
-
-        return this
-    }
-
-    fun rotateX(m: Mat4f, angle: Float) {
+    fun rotateX(m: MMat4f, angle: Float) {
         val c = glm.cos(angle)
         val s = glm.sin(angle)
 
@@ -77,7 +59,7 @@ object Mat4Util {
         m[1, 3] = res1w
     }
 
-    fun rotateY(m: Mat4f, angle: Float) {
+    fun rotateY(m: MMat4f, angle: Float) {
         val c = glm.cos(angle)
         val s = glm.sin(angle)
 
@@ -108,7 +90,7 @@ object Mat4Util {
         m[0, 3] = res0w
     }
 
-    fun rotateZ(m: Mat4f, angle: Float) {
+    fun rotateZ(m: MMat4f, angle: Float) {
         val c = glm.cos(angle)
         val s = glm.sin(angle)
 
@@ -136,29 +118,5 @@ object Mat4Util {
         m[0, 1] = res0y
         m[0, 2] = res0z
         m[0, 3] = res0w
-    }
-
-    fun Mat4f.translateXAssign(vX: Float): Mat4f {
-        this[3, 0] += this[0, 0] * vX
-        this[3, 1] += this[0, 1] * vX
-        this[3, 2] += this[0, 2] * vX
-        this[3, 3] += this[0, 3] * vX
-        return this
-    }
-
-    fun Mat4f.translateYAssign(vY: Float): Mat4f {
-        this[3, 0] += this[1, 0] * vY
-        this[3, 1] += this[1, 1] * vY
-        this[3, 2] += this[1, 2] * vY
-        this[3, 3] += this[1, 3] * vY
-        return this
-    }
-
-    fun Mat4f.translateZAssign(vX: Float): Mat4f {
-        this[3, 0] += this[2, 0] * vX
-        this[3, 1] += this[2, 1] * vX
-        this[3, 2] += this[2, 2] * vX
-        this[3, 3] += this[2, 3] * vX
-        return this
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.ONE

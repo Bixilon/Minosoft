@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.gui.rendering.RenderContext
 
 class CameraPositionChangeEvent(

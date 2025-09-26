@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.physics.parts.climbing
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.Climbable
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock.Companion.canWalkOnPowderSnow
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.tags.block.MinecraftBlockTags.isIn

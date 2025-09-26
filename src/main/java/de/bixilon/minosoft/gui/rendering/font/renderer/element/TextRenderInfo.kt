@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 
 class TextRenderInfo(
     val maxSize: Vec2f,

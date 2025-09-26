@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.MMat4f
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4Operations
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import java.nio.FloatBuffer
 
 class TransformInstance(
@@ -37,10 +38,10 @@ class TransformInstance(
     }
 
     fun pack(parent: Mat4f) {
-        parent.times(value, value)
+        Mat4Operations.times(parent, value, value)
 
         for (child in array) {
-            child.pack(this.value)
+            child.pack(this.value.unsafe)
         }
     }
 

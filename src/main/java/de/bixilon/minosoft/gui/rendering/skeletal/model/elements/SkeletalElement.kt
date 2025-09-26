@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform

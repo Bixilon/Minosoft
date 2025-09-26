@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap

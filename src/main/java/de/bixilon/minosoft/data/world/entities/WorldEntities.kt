@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.entities
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes

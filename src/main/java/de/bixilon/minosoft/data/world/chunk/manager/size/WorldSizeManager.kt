@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.vec.vec2.i.MVec2i
+import de.bixilon.kmath.vec.vec2.i.MVec2i
 
 class WorldSizeManager(private val world: World) {
     val size = WorldSize()
@@ -27,7 +27,8 @@ class WorldSizeManager(private val world: World) {
         val max = size.max
         if (!addExtreme(position, min, max)) return
 
-        this.size.size = calculateSize(min, max)
+        val size = calculateSize(min, max)
+        this.size.size.x = size.x; this.size.size.y = size.y
 
         world.view.updateServerDistance()
     }
@@ -46,17 +47,14 @@ class WorldSizeManager(private val world: World) {
     private fun recalculate(lock: Boolean = true) {
         if (lock) world.lock.acquire()
 
-        val min = Vec2i(Int.MAX_VALUE)
-        val max = Vec2i(Int.MIN_VALUE)
+        this.size.clear()
 
         for ((position, _) in world.chunks.chunks.unsafe) {
-            addExtreme(position, min, max)
+            addExtreme(position, this.size.min, this.size.max)
         }
-        val size = calculateSize(min, max)
+        val size = calculateSize(this.size.min, this.size.max)
+        this.size.size.x = size.x; this.size.size.y = size.y
 
-        this.size.min = min
-        this.size.max = max
-        this.size.size = size
         if (lock) world.lock.release()
 
         world.view.updateServerDistance()
@@ -84,9 +82,9 @@ class WorldSizeManager(private val world: World) {
         return changes > 0
     }
 
-    private fun calculateSize(min: Vec2i, max: Vec2i, empty: Boolean = world.chunks.chunks.unsafe.isEmpty()): Vec2i {
+    private fun calculateSize(min: MVec2i, max: MVec2i, empty: Boolean = world.chunks.chunks.unsafe.isEmpty()): Vec2i {
         if (empty) return Vec2i.EMPTY
-        val size = ((max - min) + 1)((max - min) + 1)
+        val size = (max - min) + 1
         
         if (size.x > World.MAX_CHUNKS_SIZE) {
             size.x = World.MAX_CHUNKS_SIZE
@@ -99,6 +97,6 @@ class WorldSizeManager(private val world: World) {
         } else if (size.y < 0) {
             size.y = 0
         }
-        return size
+        return size.unsafe
     }
 }

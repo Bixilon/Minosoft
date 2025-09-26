@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.physics.entities.living.player.local
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.physics.handlers.movement.SneakAdjuster
 import de.bixilon.minosoft.physics.input.MovementInput
@@ -95,7 +95,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         return !entity.abilities.flying && entity.input.sneak
     }
 
-    override fun shouldAdjustForSneaking(movement: Vec3d): Boolean {
+    override fun shouldAdjustForSneaking(movement: MVec3d): Boolean {
         if (!entity.input.sneak) return false
         if (movement.y > 0.0) return false
         if (entity.abilities.flying) return false

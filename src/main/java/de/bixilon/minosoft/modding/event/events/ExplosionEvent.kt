@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.world.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

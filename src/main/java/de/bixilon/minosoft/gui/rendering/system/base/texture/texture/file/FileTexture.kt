@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

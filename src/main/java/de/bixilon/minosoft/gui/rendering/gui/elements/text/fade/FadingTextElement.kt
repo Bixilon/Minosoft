@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.fade
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties

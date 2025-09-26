@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.physics.input
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.math.sqrt

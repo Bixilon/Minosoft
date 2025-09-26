@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
-import de.bixilon.minosoft.data.world.vec.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull

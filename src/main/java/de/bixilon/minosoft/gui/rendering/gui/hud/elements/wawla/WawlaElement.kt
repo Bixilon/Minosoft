@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -30,16 +31,17 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
 
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val offset = MVec2f(offset)
         for (element in elements) {
             if (element == null) continue
 
-            element.render(offset, consumer, options)
+            element.render(offset.unsafe, consumer, options)
             offset.y += element.size.y
         }
     }
 
     override fun forceSilentApply() {
-        val size = Vec2f.EMPTY
+        val size = MVec2f.EMPTY
 
         for (element in elements) {
             if (element == null) continue
@@ -49,7 +51,7 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
             size.y += elementSize.y
         }
 
-        this._size = size
+        this._size = size.unsafe
     }
 
     protected fun createNameElement(text: ChatComponent?, translationKey: ResourceLocation?, fallback: ChatComponent): TextElement {

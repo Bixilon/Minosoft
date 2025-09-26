@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.map
 
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 

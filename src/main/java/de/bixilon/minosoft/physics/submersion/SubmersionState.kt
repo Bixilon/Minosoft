@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.physics.VanillaMath.vanillaNormalizeAssign
 import de.bixilon.minosoft.physics.entities.EntityPhysics

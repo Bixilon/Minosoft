@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -69,7 +69,7 @@ abstract class Popper(
 
         // top
         layoutOffset = position - Vec2f(0.0f, size.y + POSITION_OFFSET)
-        if (!(layoutOffset isSmaller EMPTY)) {
+        if (!(layoutOffset.unsafe isSmaller EMPTY)) {
             layoutOffset.x = minOf(maxOf(layoutOffset.x - size.x / 2 - POSITION_OFFSET, 0.0f), windowSize.x - size.x) // try to center element, but clamp on edges (try not to make the popper go out of the window)
             this.layoutOffset = layoutOffset.unsafe
             return

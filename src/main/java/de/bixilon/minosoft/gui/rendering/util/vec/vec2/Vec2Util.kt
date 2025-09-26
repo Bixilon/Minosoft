@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.minosoft.data.world.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 
 object Vec2Util {
 

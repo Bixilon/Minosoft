@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.view
 
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 
@@ -67,8 +68,8 @@ open class WorldView(
     open fun updateServerDistance() {
         val cameraPosition = session.player.physics.positionInfo.chunkPosition
         val size = session.world.chunks.size.size
-        val max = size.max - cameraPosition
-        val min = size.min - cameraPosition
-        serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.y), abs(max.y)))
+        val min = ChunkPosition(size.min.x - cameraPosition.x, size.min.y - cameraPosition.z)
+        val max = ChunkPosition(size.max.x - cameraPosition.x, size.max.y - cameraPosition.z)
+        serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.z), abs(max.z)))
     }
 }

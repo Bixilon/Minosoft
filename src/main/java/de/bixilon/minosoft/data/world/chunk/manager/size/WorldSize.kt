@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
-import de.bixilon.minosoft.data.world.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i.MVec2i
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 
 data class WorldSize(
-    var min: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),
-    var max: Vec2i = Vec2i(Int.MIN_VALUE, Int.MIN_VALUE),
-    var size: Vec2i = Vec2i(0, 0),
+    val min: MVec2i = MVec2i(Int.MAX_VALUE, Int.MAX_VALUE),
+    val max: MVec2i = MVec2i(Int.MIN_VALUE, Int.MIN_VALUE),
+    val size: MVec2i = MVec2i(0, 0),
 ) {
 
     fun clear() {
-        min = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE)
-        max = Vec2i(Int.MIN_VALUE, Int.MIN_VALUE)
-        size = Vec2i(0, 0)
+        min.x = Int.MAX_VALUE; min.y = Int.MAX_VALUE
+        max.x = Int.MIN_VALUE; max.y = Int.MIN_VALUE
+        size.x = 0; size.y = 0
     }
 }

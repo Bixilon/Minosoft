@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.world.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.ConfirmTeleportC2SP

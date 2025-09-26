@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelF
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : EntityRenderer<ItemEntity>(renderer, entity) {
@@ -53,7 +52,7 @@ class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : Entit
 
         this.matrix.apply {
             translateYAssign(sin(floating * CIRCLE) * 0.1f + 0.1f)
-            rotateYassign(rotation * CIRCLE)
+            rotateYAssign(rotation * CIRCLE)
         }
     }
 

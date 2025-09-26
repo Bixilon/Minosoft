@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.generatePositionHash
-import de.bixilon.minosoft.data.world.vec.vec3.i._Vec3i
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 

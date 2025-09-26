@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.events.hover
 
-import de.bixilon.minosoft.data.world.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.events.ChatEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
