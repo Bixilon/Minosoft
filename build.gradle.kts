@@ -48,11 +48,11 @@ import java.util.stream.Collectors
 
 
 plugins {
-    kotlin("jvm") version "2.2.0"
+    kotlin("jvm") version "2.2.20"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.3.2"
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("org.ajoberstar.grgit.service") version "5.3.3"
+    id("com.github.ben-manes.versions") version "0.53.0"
 }
 
 fun getProperty(name: String): String {
@@ -356,12 +356,12 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.17")
-    implementation("com.google.guava", "guava", "33.4.8-jre")
+    implementation("com.google.guava", "guava", "33.5.0-jre")
     implementation("dnsjava", "dnsjava", "3.6.3")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.30.4")
+    implementation("org.jline", "jline", "3.30.6")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.8.2")
+    implementation("com.github.oshi", "oshi-core", "6.9.0")
     implementation("com.github.luben", "zstd-jni", "1.5.7-4", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.18.0")
     implementation("org.kamranzafar", "jtar", "2.3")
@@ -402,7 +402,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "2.2.0"))
+    implementation(kotlin("reflect", "2.2.20"))
 
 
     // platform specific
