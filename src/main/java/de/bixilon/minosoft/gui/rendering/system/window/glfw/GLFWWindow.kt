@@ -253,8 +253,10 @@ class GLFWWindow(
     }
 
     override fun destroy() {
-        glfwFreeCallbacks(window)
-        glfwDestroyWindow(window)
+        if (window != MemoryUtil.NULL) {
+            glfwFreeCallbacks(window)
+            glfwDestroyWindow(window)
+        }
 
         glfwSetErrorCallback(null)?.free()
     }
