@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import glm_.vec2.Vec2
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
@@ -35,9 +33,9 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
+import glm_.vec2.Vec2
 
 class GUIRenderer(
     val session: PlaySession,
@@ -69,7 +67,10 @@ class GUIRenderer(
     override fun postInit(latch: AbstractLatch) {
         shader.load()
 
-        session.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
+        context.window::size.observeRendering(this, true) { // TODO: updateResolution changes the state of the mesh (crosshair). Don't do that, call it async
+            updateResolution(Vec2(it))
+        }
+
         context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
         profile::scale.observeRendering(this) { updateResolution(scale = it) }
 

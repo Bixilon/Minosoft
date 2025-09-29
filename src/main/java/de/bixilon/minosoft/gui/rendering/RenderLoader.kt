@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,13 +22,11 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -123,23 +121,21 @@ object RenderLoader {
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Finishing up (after ${stopwatch.labTime()})..." }
 
-        window::focused.observeRendering(this) { state = if(it) RenderingStates.RUNNING else RenderingStates.SLOW }
+        window::focused.observeRendering(this) { state = if (it) RenderingStates.RUNNING else RenderingStates.SLOW }
 
-        window::iconified.observeRendering(this) { state = if(it) RenderingStates.PAUSED else RenderingStates.RUNNING }
+        window::iconified.observeRendering(this) { state = if (it) RenderingStates.PAUSED else RenderingStates.RUNNING }
 
 
         input.init()
         DefaultKeyBindings.register(this)
         DebugKeyBindings.register(this)
-        session.events.listen<ResizeWindowEvent> { system.viewport = it.size }
+        window::size.observeRendering(this, true) { system.viewport = it }
 
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
                 pause()
             }
         }
-
-        window.postInit()
 
         textures.dynamic.activate()
         textures.static.activate()

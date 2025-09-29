@@ -13,23 +13,21 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.system.SystemUtil
 import de.matthiasmann.twl.utils.PNGDecoder
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
-interface BaseWindow {
+interface Window {
     val systemScale: Vec2
 
     var size: Vec2i
-    val sizef: Vec2
-        get() = Vec2(size)
     var minSize: Vec2i
     var maxSize: Vec2i
 
@@ -63,8 +61,6 @@ interface BaseWindow {
         minSize = DEFAULT_MINIMUM_WINDOW_SIZE
         maxSize = DEFAULT_MAXIMUM_WINDOW_SIZE
     }
-
-    fun postInit()
 
     fun destroy()
 

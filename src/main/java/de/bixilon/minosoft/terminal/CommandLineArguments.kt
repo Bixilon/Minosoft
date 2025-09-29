@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.assets.util.AssetsOptions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
-import de.bixilon.minosoft.gui.rendering.system.window.glfw.GLFWWindowFactory
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindowFactory
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
@@ -165,7 +165,7 @@ object CommandLineArguments {
 
     private fun setWindowFactory(name: String) {
         WindowFactory.factory = when (name) {
-            "glfw" -> GLFWWindowFactory
+            "glfw" -> GlfwWindowFactory
             else -> throw IllegalStateException("Unknown window library: $name")
         }
     }

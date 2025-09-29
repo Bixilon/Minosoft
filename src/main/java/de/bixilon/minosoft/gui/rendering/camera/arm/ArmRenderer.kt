@@ -13,12 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.arm
 
-import glm_.func.rad
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
@@ -31,15 +29,16 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerR
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.SKIN
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.SLIM
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.WIDE
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import glm_.func.rad
 import glm_.glm
+import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
 
 class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
     private var perspective = Mat4()
@@ -53,7 +52,9 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        context.session.events.listen<ResizeWindowEvent> { perspective = glm.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE) }
+        context.window::size.observe(this, true) {
+            perspective = glm.perspective(60.0f.rad, it.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE)
+        }
     }
 
     private fun registerModels() {

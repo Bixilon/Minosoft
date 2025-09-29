@@ -23,22 +23,26 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.gui.rendering.system.window.Window
+import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
+import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
+import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_WINDOW_SIZE
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.KEY_CODE_MAPPING
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.glfw
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.scalePosition
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.unscalePosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -54,13 +58,16 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 
-class GLFWWindow(
+class GlfwWindow(
     private val context: RenderContext,
     private val eventMaster: AbstractEventMaster = context.session.events,
-) : BaseWindow {
+) : Window {
     private var mousePosition = Vec2d.EMPTY
     private var skipNextMouseEvent = true
     private var window = -1L
+
+
+    // TODO: on poll events get correct window and fire event there
 
     override var cursorMode: CursorModes = CursorModes.NORMAL
         set(value) {
@@ -80,14 +87,7 @@ class GLFWWindow(
             field = value
         }
 
-    private var _size = Vec2i(DEFAULT_WINDOW_SIZE)
-
-    override var size: Vec2i
-        get() = _size
-        set(value) {
-            glfwSetWindowSize(window, value.x, value.y)
-            _size = size
-        }
+    override var size by observed(DEFAULT_WINDOW_SIZE)
 
     override var minSize: Vec2i = DEFAULT_MINIMUM_WINDOW_SIZE
         set(value) {
@@ -225,8 +225,9 @@ class GLFWWindow(
         glfwMakeContextCurrent(window)
 
         super.init(profile)
+        this::size.observeRendering(this) { glfwSetWindowSize(window, it.x, it.y) }
         val size = scalePosition(Vec2i(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y))
-        glfwSetWindowSize(window, size.x, size.y)
+        this.size = size
 
         val primaryMonitor = glfwGetPrimaryMonitor()
         if (primaryMonitor != MemoryUtil.NULL) {
@@ -235,11 +236,17 @@ class GLFWWindow(
             }
         }
 
-        glfwSetKeyCallback(window, this::keyInput)
-        glfwSetMouseButtonCallback(window, this::mouseKeyInput)
+        initCallbacks()
 
-        glfwSetCharCallback(window, this::charInput)
-        glfwSetCursorPosCallback(window, this::mouseMove)
+        onWindowScale(window, getWindowScale())
+    }
+
+    private fun initCallbacks() {
+        glfwSetKeyCallback(window, this::onKeyInput)
+        glfwSetMouseButtonCallback(window, this::onMouseKeyInput)
+
+        glfwSetCharCallback(window, this::onCharInput)
+        glfwSetCursorPosCallback(window, this::onMouseMove)
 
         glfwSetWindowSizeCallback(window, this::onResize)
 
@@ -248,12 +255,6 @@ class GLFWWindow(
         glfwSetWindowIconifyCallback(window, this::onIconify)
         glfwSetScrollCallback(window, this::onScroll)
         glfwSetWindowContentScaleCallback(window, this::onWindowScale)
-
-        pollWindowScale()
-    }
-
-    override fun postInit() {
-        fireGLFWEvent(ResizeWindowEvent(context, previousSize = Vec2i(0, 0), size = unscalePosition(size)))
     }
 
     override fun destroy() {
@@ -296,59 +297,57 @@ class GLFWWindow(
 
     override var systemScale by observed(Vec2(1.0f))
 
-    private fun scalePosition(position: Vec2i): Vec2i {
-        if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position / systemScale
-    }
 
-    private fun unscalePosition(position: Vec2i): Vec2i {
-        if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position * systemScale
-    }
-
-    private fun unscalePosition(position: Vec2d): Vec2d {
-        if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position * systemScale
-    }
-
-
-    private fun pollWindowScale() {
+    private fun getWindowScale(): Vec2 {
         val x = FloatArray(1)
         val y = FloatArray(1)
         glfwGetWindowContentScale(window, x, y)
-        onWindowScale(window, x[0], y[0])
+
+        return Vec2(x[0], y[0])
     }
 
-    private fun onWindowScale(window: Long, x: Float, y: Float) {
-        if (window != this.window) {
-            return
+    private fun onWindowScale(window: Long, x: Float, y: Float) = onWindowScale(window, Vec2(x, y))
+
+    private fun onWindowScale(window: Long, scale: Vec2) {
+        if (window != this.window) return
+        if (this.systemScale == scale) return
+
+
+        apply {
+            val x = IntArray(1)
+            val y = IntArray(1)
+            glfwGetWindowSize(window, x, y)
+            onResize(window, x[0], y[0])
         }
-        val scale = Vec2(x, y)
+        apply {
+            val x = DoubleArray(1)
+            val y = DoubleArray(1)
+            glfwGetCursorPos(window, x, y)
+            onMouseMove(window, x[0], y[0])
+        }
+
+
+        // TODO: update sizes
+
         this.systemScale = scale
     }
 
     override var focused by observed(false)
 
     private fun onFocusChange(window: Long, focused: Boolean) {
-        if (window != this.window) {
-            return
-        }
+        if (window != this.window) return
         this.focused = focused
     }
 
     override var iconified by observed(false)
 
     private fun onIconify(window: Long, iconified: Boolean) {
-        if (window != this.window) {
-            return
-        }
+        if (window != this.window) return
         this.iconified = iconified
     }
 
     private fun onClose(window: Long) {
-        if (window != this.window) {
-            return
-        }
+        if (window != this.window) return
         val cancelled = fireGLFWEvent(WindowCloseEvent(context, window = this))
 
         if (cancelled) {
@@ -357,26 +356,22 @@ class GLFWWindow(
     }
 
     private fun onResize(window: Long, width: Int, height: Int) {
-        if (window != this.window) {
-            return
-        }
+        if (window != this.window) return
+
         val nextSize = unscalePosition(Vec2i(width, height))
         if (nextSize.x <= 0 || nextSize.y <= 0) return  // windows returns size (0,0) if minimized
-        val previousSize = Vec2i(_size)
-        if (previousSize == nextSize) return
-        _size = nextSize
-        fireGLFWEvent(ResizeWindowEvent(context, previousSize = previousSize, size = _size))
+        if (this.size == nextSize) return
+        this.size = nextSize
         this.skipNextMouseEvent = true
     }
 
-    private fun mouseKeyInput(windowId: Long, button: Int, action: Int, modifierKey: Int) {
-        keyInput(windowId, button, 0, action, modifierKey)
+    private fun onMouseKeyInput(windowId: Long, button: Int, action: Int, modifierKey: Int) {
+        onKeyInput(windowId, button, 0, action, modifierKey)
     }
 
-    private fun keyInput(window: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
-        if (window != this.window) {
-            return
-        }
+    private fun onKeyInput(window: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
+        if (window != this.window) return
+
         val keyCode = KEY_CODE_MAPPING[key] ?: KeyCodes.KEY_UNKNOWN
 
         val keyAction = when (action) {
@@ -392,18 +387,13 @@ class GLFWWindow(
         fireGLFWEvent(KeyInputEvent(context, code = keyCode, change = keyAction))
     }
 
-    private fun charInput(windowId: Long, char: Int) {
-        if (windowId != window) {
-            return
-        }
+    private fun onCharInput(windowId: Long, char: Int) {
+        if (windowId != window) return
         fireGLFWEvent(CharInputEvent(context, char = char))
     }
 
-    private fun mouseMove(windowId: Long, x: Double, y: Double) {
-        if (windowId != window) {
-            return
-        }
-
+    private fun onMouseMove(windowId: Long, x: Double, y: Double) {
+        if (windowId != window) return
 
         val position = unscalePosition(Vec2d(x, y))
         val previous = this.mousePosition
@@ -417,10 +407,7 @@ class GLFWWindow(
     }
 
     private fun onScroll(window: Long, xOffset: Double, yOffset: Double) {
-        if (window != this.window) {
-            return
-        }
-
+        if (window != this.window) return
         fireGLFWEvent(MouseScrollEvent(context, offset = Vec2d(xOffset, yOffset)))
     }
 
@@ -460,176 +447,5 @@ class GLFWWindow(
                 initLatch.dec()
             }
         }
-
-
-        val KEY_CODE_MAPPING = mapOf(
-            GLFW_KEY_UNKNOWN to KeyCodes.KEY_UNKNOWN,
-            GLFW_KEY_SPACE to KeyCodes.KEY_SPACE,
-            GLFW_KEY_APOSTROPHE to KeyCodes.KEY_APOSTROPHE,
-            GLFW_KEY_COMMA to KeyCodes.KEY_COMMA,
-            GLFW_KEY_MINUS to KeyCodes.KEY_MINUS,
-            GLFW_KEY_PERIOD to KeyCodes.KEY_PERIOD,
-            GLFW_KEY_SLASH to KeyCodes.KEY_SLASH,
-            GLFW_KEY_0 to KeyCodes.KEY_0,
-            GLFW_KEY_1 to KeyCodes.KEY_1,
-            GLFW_KEY_2 to KeyCodes.KEY_2,
-            GLFW_KEY_3 to KeyCodes.KEY_3,
-            GLFW_KEY_4 to KeyCodes.KEY_4,
-            GLFW_KEY_5 to KeyCodes.KEY_5,
-            GLFW_KEY_6 to KeyCodes.KEY_6,
-            GLFW_KEY_7 to KeyCodes.KEY_7,
-            GLFW_KEY_8 to KeyCodes.KEY_8,
-            GLFW_KEY_9 to KeyCodes.KEY_9,
-            GLFW_KEY_SEMICOLON to KeyCodes.KEY_SEMICOLON,
-            GLFW_KEY_EQUAL to KeyCodes.KEY_EQUAL,
-            GLFW_KEY_A to KeyCodes.KEY_A,
-            GLFW_KEY_B to KeyCodes.KEY_B,
-            GLFW_KEY_C to KeyCodes.KEY_C,
-            GLFW_KEY_D to KeyCodes.KEY_D,
-            GLFW_KEY_E to KeyCodes.KEY_E,
-            GLFW_KEY_F to KeyCodes.KEY_F,
-            GLFW_KEY_G to KeyCodes.KEY_G,
-            GLFW_KEY_H to KeyCodes.KEY_H,
-            GLFW_KEY_I to KeyCodes.KEY_I,
-            GLFW_KEY_J to KeyCodes.KEY_J,
-            GLFW_KEY_K to KeyCodes.KEY_K,
-            GLFW_KEY_L to KeyCodes.KEY_L,
-            GLFW_KEY_M to KeyCodes.KEY_M,
-            GLFW_KEY_N to KeyCodes.KEY_N,
-            GLFW_KEY_O to KeyCodes.KEY_O,
-            GLFW_KEY_P to KeyCodes.KEY_P,
-            GLFW_KEY_Q to KeyCodes.KEY_Q,
-            GLFW_KEY_R to KeyCodes.KEY_R,
-            GLFW_KEY_S to KeyCodes.KEY_S,
-            GLFW_KEY_T to KeyCodes.KEY_T,
-            GLFW_KEY_U to KeyCodes.KEY_U,
-            GLFW_KEY_V to KeyCodes.KEY_V,
-            GLFW_KEY_W to KeyCodes.KEY_W,
-            GLFW_KEY_X to KeyCodes.KEY_X,
-            GLFW_KEY_Y to KeyCodes.KEY_Y,
-            GLFW_KEY_Z to KeyCodes.KEY_Z,
-            GLFW_KEY_LEFT_BRACKET to KeyCodes.KEY_LEFT_BRACKET,
-            GLFW_KEY_BACKSLASH to KeyCodes.KEY_BACKSLASH,
-            GLFW_KEY_RIGHT_BRACKET to KeyCodes.KEY_RIGHT_BRACKET,
-            GLFW_KEY_GRAVE_ACCENT to KeyCodes.KEY_GRAVE_ACCENT,
-            GLFW_KEY_WORLD_1 to KeyCodes.KEY_WORLD_1,
-            GLFW_KEY_WORLD_2 to KeyCodes.KEY_WORLD_2,
-
-            GLFW_KEY_ESCAPE to KeyCodes.KEY_ESCAPE,
-            GLFW_KEY_ENTER to KeyCodes.KEY_ENTER,
-            GLFW_KEY_TAB to KeyCodes.KEY_TAB,
-            GLFW_KEY_BACKSPACE to KeyCodes.KEY_BACKSPACE,
-            GLFW_KEY_INSERT to KeyCodes.KEY_INSERT,
-            GLFW_KEY_DELETE to KeyCodes.KEY_DELETE,
-            GLFW_KEY_RIGHT to KeyCodes.KEY_RIGHT,
-            GLFW_KEY_LEFT to KeyCodes.KEY_LEFT,
-            GLFW_KEY_DOWN to KeyCodes.KEY_DOWN,
-            GLFW_KEY_UP to KeyCodes.KEY_UP,
-            GLFW_KEY_PAGE_UP to KeyCodes.KEY_PAGE_UP,
-            GLFW_KEY_PAGE_DOWN to KeyCodes.KEY_PAGE_DOWN,
-            GLFW_KEY_HOME to KeyCodes.KEY_HOME,
-            GLFW_KEY_END to KeyCodes.KEY_END,
-            GLFW_KEY_CAPS_LOCK to KeyCodes.KEY_CAPS_LOCK,
-            GLFW_KEY_SCROLL_LOCK to KeyCodes.KEY_SCROLL_LOCK,
-            GLFW_KEY_NUM_LOCK to KeyCodes.KEY_NUM_LOCK,
-            GLFW_KEY_PRINT_SCREEN to KeyCodes.KEY_PRINT_SCREEN,
-            GLFW_KEY_PAUSE to KeyCodes.KEY_PAUSE,
-            GLFW_KEY_F1 to KeyCodes.KEY_F1,
-            GLFW_KEY_F2 to KeyCodes.KEY_F2,
-            GLFW_KEY_F3 to KeyCodes.KEY_F3,
-            GLFW_KEY_F4 to KeyCodes.KEY_F4,
-            GLFW_KEY_F5 to KeyCodes.KEY_F5,
-            GLFW_KEY_F6 to KeyCodes.KEY_F6,
-            GLFW_KEY_F7 to KeyCodes.KEY_F7,
-            GLFW_KEY_F8 to KeyCodes.KEY_F8,
-            GLFW_KEY_F9 to KeyCodes.KEY_F9,
-            GLFW_KEY_F10 to KeyCodes.KEY_F10,
-            GLFW_KEY_F11 to KeyCodes.KEY_F11,
-            GLFW_KEY_F12 to KeyCodes.KEY_F12,
-            GLFW_KEY_F13 to KeyCodes.KEY_F13,
-            GLFW_KEY_F14 to KeyCodes.KEY_F14,
-            GLFW_KEY_F15 to KeyCodes.KEY_F15,
-            GLFW_KEY_F16 to KeyCodes.KEY_F16,
-            GLFW_KEY_F17 to KeyCodes.KEY_F17,
-            GLFW_KEY_F18 to KeyCodes.KEY_F18,
-            GLFW_KEY_F19 to KeyCodes.KEY_F19,
-            GLFW_KEY_F20 to KeyCodes.KEY_F20,
-            GLFW_KEY_F21 to KeyCodes.KEY_F21,
-            GLFW_KEY_F22 to KeyCodes.KEY_F22,
-            GLFW_KEY_F23 to KeyCodes.KEY_F23,
-            GLFW_KEY_F24 to KeyCodes.KEY_F24,
-            GLFW_KEY_F25 to KeyCodes.KEY_F25,
-            GLFW_KEY_KP_0 to KeyCodes.KEY_KP_0,
-            GLFW_KEY_KP_1 to KeyCodes.KEY_KP_1,
-            GLFW_KEY_KP_2 to KeyCodes.KEY_KP_2,
-            GLFW_KEY_KP_3 to KeyCodes.KEY_KP_3,
-            GLFW_KEY_KP_4 to KeyCodes.KEY_KP_4,
-            GLFW_KEY_KP_5 to KeyCodes.KEY_KP_5,
-            GLFW_KEY_KP_6 to KeyCodes.KEY_KP_6,
-            GLFW_KEY_KP_7 to KeyCodes.KEY_KP_7,
-            GLFW_KEY_KP_8 to KeyCodes.KEY_KP_8,
-            GLFW_KEY_KP_9 to KeyCodes.KEY_KP_9,
-            GLFW_KEY_KP_DECIMAL to KeyCodes.KEY_KP_DECIMAL,
-            GLFW_KEY_KP_DIVIDE to KeyCodes.KEY_KP_DIVIDE,
-            GLFW_KEY_KP_MULTIPLY to KeyCodes.KEY_KP_MULTIPLY,
-            GLFW_KEY_KP_SUBTRACT to KeyCodes.KEY_KP_SUBTRACT,
-            GLFW_KEY_KP_ADD to KeyCodes.KEY_KP_ADD,
-            GLFW_KEY_KP_ENTER to KeyCodes.KEY_KP_ENTER,
-            GLFW_KEY_KP_EQUAL to KeyCodes.KEY_KP_EQUAL,
-            GLFW_KEY_LEFT_SHIFT to KeyCodes.KEY_LEFT_SHIFT,
-            GLFW_KEY_LEFT_CONTROL to KeyCodes.KEY_LEFT_CONTROL,
-            GLFW_KEY_LEFT_ALT to KeyCodes.KEY_LEFT_ALT,
-            GLFW_KEY_LEFT_SUPER to KeyCodes.KEY_LEFT_SUPER,
-            GLFW_KEY_RIGHT_SHIFT to KeyCodes.KEY_RIGHT_SHIFT,
-            GLFW_KEY_RIGHT_CONTROL to KeyCodes.KEY_RIGHT_CONTROL,
-            GLFW_KEY_RIGHT_ALT to KeyCodes.KEY_RIGHT_ALT,
-            GLFW_KEY_RIGHT_SUPER to KeyCodes.KEY_RIGHT_SUPER,
-            GLFW_KEY_MENU to KeyCodes.KEY_MENU,
-            GLFW_KEY_LAST to KeyCodes.KEY_LAST,
-
-
-            GLFW_MOUSE_BUTTON_1 to KeyCodes.MOUSE_BUTTON_1,
-            GLFW_MOUSE_BUTTON_2 to KeyCodes.MOUSE_BUTTON_2,
-            GLFW_MOUSE_BUTTON_3 to KeyCodes.MOUSE_BUTTON_3,
-            GLFW_MOUSE_BUTTON_4 to KeyCodes.MOUSE_BUTTON_4,
-            GLFW_MOUSE_BUTTON_5 to KeyCodes.MOUSE_BUTTON_5,
-            GLFW_MOUSE_BUTTON_6 to KeyCodes.MOUSE_BUTTON_6,
-            GLFW_MOUSE_BUTTON_7 to KeyCodes.MOUSE_BUTTON_7,
-            GLFW_MOUSE_BUTTON_8 to KeyCodes.MOUSE_BUTTON_8,
-            GLFW_MOUSE_BUTTON_LAST to KeyCodes.MOUSE_BUTTON_LAST,
-            GLFW_MOUSE_BUTTON_LEFT to KeyCodes.MOUSE_BUTTON_LEFT,
-            GLFW_MOUSE_BUTTON_RIGHT to KeyCodes.MOUSE_BUTTON_RIGHT,
-            GLFW_MOUSE_BUTTON_MIDDLE to KeyCodes.MOUSE_BUTTON_MIDDLE,
-        )
-
-        val CursorModes.glfw: Int
-            get() {
-                return when (this) {
-                    CursorModes.NORMAL -> GLFW_CURSOR_NORMAL
-                    CursorModes.HIDDEN -> GLFW_CURSOR_HIDDEN
-                    CursorModes.DISABLED -> GLFW_CURSOR_DISABLED
-                }
-            }
-
-        val Boolean.glfw: Int
-            get() {
-                return when (this) {
-                    true -> GLFW_TRUE
-                    false -> GLFW_FALSE
-                }
-            }
-        val CursorShapes.glfw: Int
-            get() {
-                return when (this) {
-                    CursorShapes.ARROW -> GLFW_ARROW_CURSOR
-                    CursorShapes.IBEAM -> GLFW_IBEAM_CURSOR
-                    CursorShapes.CROSSHAIR -> GLFW_CROSSHAIR_CURSOR
-                    CursorShapes.HAND -> GLFW_HAND_CURSOR
-                    CursorShapes.HORIZONTAL_RESIZE -> GLFW_HRESIZE_CURSOR
-                    CursorShapes.VERTICAL_RESIZE -> GLFW_VRESIZE_CURSOR
-                }
-            }
-
-        private val OSTypes.needsWindowScaling: Boolean get() = this == OSTypes.MAC
     }
 }

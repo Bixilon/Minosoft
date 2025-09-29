@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.WorldFramebuffer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class FramebufferManager(
     private val context: RenderContext,
@@ -32,9 +31,9 @@ class FramebufferManager(
         world.init()
         gui.init()
 
-        context.session.events.listen<ResizeWindowEvent> {
-            world.resize(it.size)
-            gui.resize(it.size)
+        context.window::size.observeRendering(this, true) {
+            world.resize(it)
+            gui.resize(it)
         }
     }
 

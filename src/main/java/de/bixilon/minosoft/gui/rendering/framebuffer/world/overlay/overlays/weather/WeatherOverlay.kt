@@ -13,11 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -29,8 +26,9 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import java.util.*
-import kotlin.time.Duration.Companion.milliseconds
 
 class WeatherOverlay(private val context: RenderContext) : Overlay {
     private val world = context.session.world
@@ -102,7 +100,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
     }
 
     override fun draw() {
-        val windowSize = context.window.sizef
+        val windowSize = Vec2(context.window.size)
         if (this.windowSize != windowSize) {
             updateMesh(windowSize)
         }

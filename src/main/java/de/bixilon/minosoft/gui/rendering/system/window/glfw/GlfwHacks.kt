@@ -11,13 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.events
+package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
-import glm_.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.kutil.os.OSTypes
+import de.bixilon.kutil.os.PlatformInfo
 
-class ResizeWindowEvent(
-    context: RenderContext,
-    val previousSize: Vec2i,
-    val size: Vec2i,
-) : RenderEvent(context)
+object GlfwHacks {
+
+    val windowScale = PlatformInfo.OS == OSTypes.MAC
+}

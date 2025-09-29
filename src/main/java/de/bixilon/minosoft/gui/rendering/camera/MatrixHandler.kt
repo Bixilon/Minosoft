@@ -13,12 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import glm_.func.common.clamp
-import glm_.func.rad
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 import de.bixilon.kutil.avg._float.FloatAverage
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
@@ -26,17 +22,18 @@ import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
 import de.bixilon.minosoft.gui.rendering.camera.shaking.CameraShaking
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.func.common.clamp
+import glm_.func.rad
 import glm_.glm
-import kotlin.time.Duration.Companion.milliseconds
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 
 class MatrixHandler(
     private val context: RenderContext,
@@ -93,7 +90,7 @@ class MatrixHandler(
         this.viewMatrix = matrix
     }
 
-    private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2 = context.window.sizef) {
+    private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2 = Vec2(context.window.size)) {
         val fog = camera.fog.state
         var far = (session.world.view.viewDistance + 1) * ChunkSize.SECTION_LENGTH.toFloat()
         if (fog.enabled) {
@@ -103,8 +100,8 @@ class MatrixHandler(
     }
 
     fun init() {
-        session.events.listen<ResizeWindowEvent> {
-            calculateProjectionMatrix(calculateFOV(), Vec2(it.size))
+        context.window::size.observe(this, true) {
+            calculateProjectionMatrix(calculateFOV(), Vec2(it))
             invalidate()
         }
         draw() // set initial values

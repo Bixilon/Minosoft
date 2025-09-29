@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import glm_.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
+import glm_.vec2.Vec2
 import java.util.*
 
 class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
@@ -50,7 +50,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
             return true
         }
     override var uvEnd: Vec2
-        get() = Vec2(0.3f, context.window.sizef.x / context.window.sizef.y / 3.0f) // To make pixels squares and make it look more like minecraft
+        get() = Vec2(0.3f, context.window.size.x.toFloat() / context.window.size.y.toFloat() / 3.0f) // To make pixels squares and make it look more like minecraft
         set(value) {}
     private val random = Random()
 
