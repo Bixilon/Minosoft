@@ -52,12 +52,13 @@ data class SkeletalFace(
             val origin = context.rotation.origin?.div(BLOCK_SIZE) ?: ((to + from) / 2.0f)
 
             val rad = -context.rotation.value.rad
-            val vec = Vec3f(0, positions)  // TODO: vec offset
+            val vec = MVec3f()  // TODO: vec offset
             normal.rotateAssign(rad)
 
             for (i in 0 until 4) {
-                vec.ofs = i * Vec3f.LENGTH
+                vec.read(positions, i * Vec3f.LENGTH)
                 vec.rotateAssign(rad, origin, false)
+                vec.write(positions, i * Vec3f.LENGTH)
             }
         }
 

@@ -90,8 +90,9 @@ value class InSectionPosition(
 
     inline operator fun plus(position: InSectionPosition) = InSectionPosition(this.x + position.x, this.y + position.y, this.z + position.z)
 
-    inline operator fun plus(direction: Directions) = InSectionPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
-    inline operator fun minus(direction: Directions) = InSectionPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+
+    inline operator fun plus(other: _Vec3i) = InSectionPosition(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = InSectionPosition(this.x - other.x, this.y - other.y, this.z - other.z)
 
     override inline operator fun component1() = x
     override inline operator fun component2() = y

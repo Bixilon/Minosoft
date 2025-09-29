@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -169,13 +170,12 @@ data class SingleBlockStateApply(
                 uv = uv.pushRight(2, getTextureRotation(direction, rotatedX))
             }
 
-            val vec = Vec2f(0, uv) // TODO: vec offset
+            val vec = MVec2f()
 
             for (ofs in 0 until 4) {
-                vec.ofs = ofs * 2
-                val transformed = texture.transformUV(vec)
-                uv[ofs * 2 + 0] = transformed.x
-                uv[ofs * 2 + 1] = transformed.y
+                vec.read(uv, ofs * Vec2f.LENGTH)
+                val transformed = texture.transformUV(vec.unsafe)
+                transformed.write(uv, ofs * Vec2f.LENGTH)
             }
 
 

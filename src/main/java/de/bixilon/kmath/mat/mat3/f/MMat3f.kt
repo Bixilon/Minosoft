@@ -16,6 +16,7 @@ package de.bixilon.kmath.mat.mat3.f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.util.f
 
 @JvmInline
@@ -86,20 +87,20 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
 
     inline fun translate(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, x, y, z, this) }
     inline fun translate(offset: _Vec3f) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, offset.x, offset.y, offset.z, this) }
-    inline fun translate(offset: de.bixilon.kmath.vec.vec3.i._Vec3i) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, offset.x.f, offset.y.f, offset.z.f, this) }
+    inline fun translate(offset: _Vec3i) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, offset.x.f, offset.y.f, offset.z.f, this) }
 
     inline fun translateAssign(x: Float, y: Float, z: Float) = Mat3Operations.translate(this@MMat3f, x, y, z, this)
     inline fun translateAssign(offset: _Vec3f) = Mat3Operations.translate(this@MMat3f, offset.x, offset.y, offset.z, this)
-    inline fun translateAssign(offset: de.bixilon.kmath.vec.vec3.i._Vec3i) = Mat3Operations.translate(this@MMat3f, offset.x.f, offset.y.f, offset.z.f, this)
+    inline fun translateAssign(offset: _Vec3i) = Mat3Operations.translate(this@MMat3f, offset.x.f, offset.y.f, offset.z.f, this)
 
 
     inline fun scale(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, x, y, z, this) }
     inline fun scale(scale: _Vec3f) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, scale.x, scale.y, scale.z, this) }
-    inline fun scale(scale: de.bixilon.kmath.vec.vec3.i._Vec3i) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, scale.x.f, scale.y.f, scale.z.f, this) }
+    inline fun scale(scale: _Vec3i) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, scale.x.f, scale.y.f, scale.z.f, this) }
 
     inline fun scaleAssign(x: Float, y: Float, z: Float) = Mat3Operations.scale(this@MMat3f, x, y, z, this)
     inline fun scaleAssign(scale: _Vec3f) = Mat3Operations.scale(this@MMat3f, scale.x, scale.y, scale.z, this)
-    inline fun scaleAssign(scale: de.bixilon.kmath.vec.vec3.i._Vec3i) = Mat3Operations.scale(this@MMat3f, scale.x.f, scale.y.f, scale.z.f, this)
+    inline fun scaleAssign(scale: _Vec3i) = Mat3Operations.scale(this@MMat3f, scale.x.f, scale.y.f, scale.z.f, this)
 
 
     // TODO: rotate

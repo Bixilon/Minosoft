@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.kmath.vec.vec3.i.SVec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -100,8 +101,9 @@ value class InChunkPosition(
 
     inline operator fun plus(position: InChunkPosition) = InChunkPosition(this.x + position.x, this.y + position.y, this.z + position.z)
 
-    inline operator fun plus(direction: Directions) = InChunkPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
-    inline operator fun minus(direction: Directions) = InChunkPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+
+    inline operator fun plus(other: _Vec3i) = InChunkPosition(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = InChunkPosition(this.x - other.x, this.y - other.y, this.z - other.z)
 
     override inline operator fun component1() = x
     override inline operator fun component2() = y
