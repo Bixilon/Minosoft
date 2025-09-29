@@ -147,8 +147,8 @@ object KUtil {
     fun TextFormattable.format() = ChatComponent.of(this.toText())
     fun Identified.format() = identifier.format()
     fun Boolean.format() = if (this) TextFormattable.TRUE else TextFormattable.FALSE
-    inline fun Float.format() = TextComponent("§d%.3f".format(this)).color(ChatColors.LIGHT_PURPLE)
-    inline fun Double.format() = TextComponent("§d%.4f".format(this)).color(ChatColors.LIGHT_PURPLE)
+    inline fun Float.format() = TextComponent("%.3f".format(this)).color(ChatColors.LIGHT_PURPLE)
+    inline fun Double.format() = TextComponent("%.4f".format(this)).color(ChatColors.LIGHT_PURPLE)
     inline fun Number.format() = TextComponent(this.toString()).color(ChatColors.LIGHT_PURPLE)
 
     fun ResourceLocation.format() = TextComponent(this.toString()).color(ChatColors.GOLD)
