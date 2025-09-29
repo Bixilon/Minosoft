@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -24,16 +22,16 @@ import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 
 
 @JvmInline
 value class RGBAColor(val rgba: Int) : Color, TextFormattable {
 
-    constructor(red: Int, green: Int, blue: Int) : this(red, green, blue, MAX)
-    constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(((alpha.clamp() and MASK) shl ALPHA_SHIFT) or ((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
+    constructor(red: Int, green: Int, blue: Int, alpha: Int = MAX) : this(((alpha.clamp() and MASK) shl ALPHA_SHIFT) or ((red.clamp() and MASK) shl RED_SHIFT) or ((green.clamp() and MASK) shl GREEN_SHIFT) or ((blue.clamp() and MASK) shl BLUE_SHIFT))
 
-    constructor(red: Float, green: Float, blue: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue))
-    constructor(red: Float, green: Float, blue: Float, alpha: Float) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue), Color.fromFloat(alpha))
+    constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this(Color.fromFloat(red), Color.fromFloat(green), Color.fromFloat(blue), Color.fromFloat(alpha))
 
     override inline val red: Int get() = (rgba ushr RED_SHIFT) and MASK
     override inline val green: Int get() = (rgba ushr GREEN_SHIFT) and MASK

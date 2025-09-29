@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -26,6 +24,8 @@ import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.minus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMesh(context, initialCacheSize = initialCacheSize) {
 
@@ -70,7 +70,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     }
 
     fun tryDrawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {
-        if (shape != null) { // && !shape.shouldDrawLine(startX, startY, startZ, endX, endY, endZ)
+        if (shape != null && !shape.shouldDrawLine(Vec3(startX, startY, startZ), Vec3(endX, endY, endZ))) {
             return
         }
         drawLine(startX, startY, startZ, endX, endY, endZ, lineWidth, color)
