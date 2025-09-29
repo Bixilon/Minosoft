@@ -16,7 +16,6 @@ package de.bixilon.minosoft.input.interaction
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import org.testng.SkipException
@@ -32,6 +31,7 @@ object KeyHandlerUtil {
     fun KeyHandler.awaitTicks(count: Int) {
         val start = now()
         val task = getTask()
+        val executions = task.executions
         while (true) {
             val time = now()
             if (time - start > (count + 1).ticks.duration - 1.milliseconds) throw SkipException("busy") // wait max one tick longer
@@ -41,8 +41,8 @@ object KeyHandlerUtil {
                 continue
             }
 
-            //if (task.executions - executions == count) break
-            //if (task.executions - executions > count) throw SkipException("Ran too often!")
+            if (task.executions - executions == count) break
+            if (task.executions - executions > count) throw SkipException("Ran too often!")
             Thread.sleep(5)
             break // TODO
         }
