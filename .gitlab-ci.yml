@@ -84,7 +84,21 @@ integration test:
     - master
     - merge_requests
   cache:
-    # TODO: check if gradle assets are also cached
+    - key: "$CI_COMMIT_SHA"
+      paths:
+        - build
+        - .gradle
+    - key:
+        files:
+          - "build.gradle.kts"
+          - "gradle.properties"
+      paths:
+        - .home/caches
+    - key:
+        files:
+          - "gradle/wrapper/gradle-wrapper.properties"
+      paths:
+        - .home/wrapper
     - key:
         "minosoft-assets"
       paths:
