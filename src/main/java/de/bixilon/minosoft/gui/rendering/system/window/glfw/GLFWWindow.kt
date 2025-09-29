@@ -195,6 +195,21 @@ class GLFWWindow(
         glfwWindowHint(GLFW_STENCIL_BITS, 0)
 
 
+        when (PlatformInfo.OS) {
+            OSTypes.MAC -> {
+                glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, true.glfw)
+                glfwWindowHintString(GLFW_COCOA_FRAME_NAME, "Minosoft")
+            }
+
+            OSTypes.LINUX -> {
+                glfwWindowHintString(GLFW_X11_CLASS_NAME, "de.bixilon.minosoft")
+                glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "Minosoft")
+            }
+
+            else -> {}
+        }
+
+
         window = glfwCreateWindow(size.x, size.y, RunConfiguration.APPLICATION_NAME, MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
             try {
@@ -232,20 +247,6 @@ class GLFWWindow(
         glfwSetWindowContentScaleCallback(window, this::onWindowScale)
 
         pollWindowScale()
-
-        when (PlatformInfo.OS) {
-            OSTypes.MAC -> {
-                glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, true.glfw)
-                glfwWindowHintString(GLFW_COCOA_FRAME_NAME, "Minosoft")
-            }
-
-            OSTypes.LINUX -> {
-                glfwWindowHintString(GLFW_X11_CLASS_NAME, "de.bixilon.minosoft")
-                glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "Minosoft")
-            }
-
-            else -> {}
-        }
     }
 
     override fun postInit() {
