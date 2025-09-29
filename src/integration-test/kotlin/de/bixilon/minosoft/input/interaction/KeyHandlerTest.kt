@@ -33,6 +33,7 @@ class KeyHandlerTest {
         val handler = TestKeyHandler()
         handler.press()
         handler.awaitTicks(1)
+        Thread.sleep(5) // no clue
         assertEquals(handler.actions.toList(), listOf(
             TestKeyHandler.Actions.PRESS,
             TestKeyHandler.Actions.TICK,
@@ -44,6 +45,7 @@ class KeyHandlerTest {
         val handler = TestKeyHandler()
         handler.press()
         handler.awaitTicks(2)
+        Thread.sleep(5) // no clue
         handler.release()
         assertEquals(handler.actions.toList(), listOf(
             TestKeyHandler.Actions.PRESS,
