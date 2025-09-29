@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.light.section.border
 
 import de.bixilon.kutil.array.ArrayUtil.getFirst
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -24,7 +25,7 @@ class BottomSectionLight(
 ) : BorderSectionLight(chunk) {
 
     override fun get(position: InSectionPosition): LightLevel {
-        if (position.y != ProtocolDefinition.SECTION_MAX_Y) return LightLevel.EMPTY
+        if (position.y != ChunkSize.SECTION_MAX_Y) return LightLevel.EMPTY
         return LightLevel(this.light[position.xz])
     }
 

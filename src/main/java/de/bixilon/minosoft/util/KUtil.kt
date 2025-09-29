@@ -52,7 +52,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.world.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -166,6 +165,7 @@ object KUtil {
 
     fun ResourceLocation.format() = TextComponent(this.toString()).color(ChatColors.GOLD)
 
+    @JvmName("formatNull")
     fun Any?.format(): ChatComponent {
         if (this == null) return TextFormattable.NULL
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 interface Heightmap {
 
@@ -22,7 +23,9 @@ interface Heightmap {
 
     operator fun get(x: Int, z: Int): Int
     operator fun get(index: Int): Int
-    operator fun get(position: InChunkPosition): Int
+    operator fun get(xz: InChunkPosition): Int
+    operator fun get(xz: InSectionPosition): Int
+
 
     fun onBlockChange(position: InChunkPosition, state: BlockState?)
 }

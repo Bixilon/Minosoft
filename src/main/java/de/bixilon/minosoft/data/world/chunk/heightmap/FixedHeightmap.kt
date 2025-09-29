@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 class FixedHeightmap(val height: Int) : Heightmap {
 
@@ -22,7 +23,8 @@ class FixedHeightmap(val height: Int) : Heightmap {
 
     override fun get(x: Int, z: Int) = height
     override fun get(index: Int) = height
-    override fun get(position: InChunkPosition) = height
+    override fun get(xz: InChunkPosition) = height
+    override fun get(xz: InSectionPosition) = height
 
     override fun onBlockChange(position: InChunkPosition, state: BlockState?) = Unit
 
