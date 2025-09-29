@@ -90,15 +90,16 @@ class InteractionManager(val camera: SessionCamera) : Tickable {
 
     fun tryAttack(pressed: Boolean) {
         if (!pressed || use.long.isUsing || !session.player.canInteract()) {
-            return breaking.change(false)
+            breaking.release()
+            return
         }
         when (val target = camera.target.target) {
             is EntityTarget -> {
-                breaking.change(false)
+                breaking.release()
                 attack.tryAttack(target)
             }
 
-            is BlockTarget -> breaking.change(true)
+            is BlockTarget -> breaking.press()
             else -> swingHand(Hands.MAIN)
         }
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,9 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil
 import de.bixilon.minosoft.data.registries.item.items.weapon.defend.ShieldItem
 import de.bixilon.minosoft.data.registries.items.EggTest0
-import de.bixilon.minosoft.input.interaction.KeyHandlerUtil.awaitTicks
+import de.bixilon.minosoft.input.interaction.InteractionTestUtil.tick
+import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
+import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
@@ -37,11 +39,11 @@ class UseHandlerInputTest {
         val handler = UseHandler(session.camera.interactions)
         player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, 16)
 
-        handler.press()
+        handler.unsafePress()
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertPacket(UseItemC2SP::class.java)
         session.assertPacket(SwingArmC2SP::class.java)
-        handler.release()
+        handler.unsafeRelease()
         session.assertNoPacket()
     }
 
@@ -51,16 +53,23 @@ class UseHandlerInputTest {
         val handler = UseHandler(session.camera.interactions)
         player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, 16)
 
-        handler.press()
+        handler.unsafePress()
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertPacket(UseItemC2SP::class.java)
         session.assertPacket(SwingArmC2SP::class.java)
         session.assertNoPacket()
-        handler.awaitTicks(4)
+
+        handler.tick(); session.assertNoPacket()
+        handler.tick(); session.assertNoPacket()
+        handler.tick(); session.assertNoPacket()
+
+        handler.tick()
+
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertPacket(UseItemC2SP::class.java)
         session.assertPacket(SwingArmC2SP::class.java)
-        handler.release()
+
+        handler.unsafeRelease()
         session.assertNoPacket()
     }
 
@@ -70,12 +79,13 @@ class UseHandlerInputTest {
         val handler = UseHandler(session.camera.interactions)
         player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
 
-        handler.press()
+        handler.unsafePress()
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertPacket(UseItemC2SP::class.java)
-        handler.awaitTicks(1)
-        session.assertNoPacket()
-        handler.release()
+
+        handler.tick(); session.assertNoPacket()
+
+        handler.unsafeRelease()
         session.assertPacket(PlayerActionC2SP::class.java)
     }
 }

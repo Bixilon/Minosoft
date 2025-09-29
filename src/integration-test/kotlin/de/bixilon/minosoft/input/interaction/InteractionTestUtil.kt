@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.input.interaction
 
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -35,6 +34,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPa
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
+import glm_.vec3.Vec3d
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
 
@@ -47,7 +47,7 @@ object InteractionTestUtil {
 
     fun createSession(): PlaySession {
         val session = SessionTestUtil.createSession(0)
-        val player = createPlayer(session)
+        createPlayer(session)
 
         return session
     }
@@ -81,12 +81,10 @@ object InteractionTestUtil {
 
 
     fun KeyHandler.unsafePress() {
-        this::isPressed.forceSet(true)
         PRESS.invoke(this)
     }
 
     fun KeyHandler.unsafeRelease() {
-        this::isPressed.forceSet(false)
         RELEASE.invoke(this)
     }
 

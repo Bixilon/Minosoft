@@ -16,47 +16,40 @@ package de.bixilon.minosoft.input.interaction
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 
 abstract class KeyHandler {
     private var task: RepeatedTask? = null
-    var isPressed: Boolean = false
-        private set
-    private var previousTick = TimeUtil.NULL
 
     private fun queueTick() {
-        val task = RepeatedTask(TickUtil.INTERVAL, priority = ThreadPool.Priorities.HIGH) { if (now() - previousTick >= TickUtil.INTERVAL) onTick() } // first tick is scheduled instantly, avoid double ticking
+        var skip = true // first tick is scheduled instantly, avoid double ticking
+        val task = RepeatedTask(TickUtil.INTERVAL, priority = ThreadPool.Priorities.HIGH) {
+            if (skip) {
+                skip = false
+                return@RepeatedTask
+            }
+            if (task == null) return@RepeatedTask
+            onTick()
+        }
         this.task = task
         TaskScheduler += task
     }
 
     fun press() {
-        if (isPressed) return
-        this.isPressed = true
+        val task = task
+        if (task != null) return
         onPress()
-        this.previousTick = now()
         queueTick()
     }
 
     fun release() {
-        if (!isPressed) return
-        val task = this.task ?: Broken("Not pressed!")
+        val task = this.task ?: return
         TaskScheduler -= task
         this.task = null
-        this.isPressed = false
-        this.previousTick = TimeUtil.NULL
         this.onRelease()
     }
 
     protected abstract fun onPress()
-    protected abstract fun onRelease()
     protected abstract fun onTick()
-
-
-    fun change(pressed: Boolean) {
-        if (pressed) press() else release()
-    }
+    protected abstract fun onRelease()
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ class InteractionManagerKeys(
     private fun registerInteraction() {
         input.bindings.register(USE_ITEM, KeyBinding(
             KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
-        )) { interactions.use.change(it) }
+        )) { if (it) interactions.use.press() else interactions.use.release() }
     }
 
     private fun registerPick() {

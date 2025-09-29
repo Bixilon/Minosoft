@@ -44,7 +44,6 @@ object KeyHandlerUtil {
             if (task.executions - executions == count) break
             if (task.executions - executions > count) throw SkipException("Ran too often!")
             Thread.sleep(5)
-            break // TODO
         }
     }
 }
