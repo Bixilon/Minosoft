@@ -13,15 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust
 
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
+import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec3.Vec3d
 
 class DustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data: DustParticleData) : AbstractDustParticle(session, position, velocity, data) {
 
@@ -30,6 +33,10 @@ class DustParticle(session: PlaySession, position: Vec3d, velocity: Vec3d, data:
 
         override fun build(session: PlaySession, position: Vec3d, velocity: Vec3d, data: ParticleData): DustParticle {
             return DustParticle(session, position, velocity, data.nullCast<DustParticleData>() ?: DustParticleData(ChatColors.WHITE, 1.0f, data.type))
+        }
+
+        override fun read(session: Session, buffer: PlayInByteBuffer, type: ParticleType): ParticleData {
+            return DustParticleData.read(buffer, type)
         }
     }
 }

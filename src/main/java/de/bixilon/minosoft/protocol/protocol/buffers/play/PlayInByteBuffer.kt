@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
@@ -60,6 +59,7 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3d
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.time.Instant
 import java.util.*
@@ -131,18 +131,17 @@ class PlayInByteBuffer : InByteBuffer {
 
     @Deprecated("Should be made with factories")
     fun readParticleData(type: ParticleType): ParticleData {
-        // ToDo: Replace with dynamic particle type calling
-        if (this.versionId < V_17W45A) {
-            return when (type.identifier.toString()) {
-                "minecraft:iconcrack" -> ItemParticleData.read(this, type)
-                "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
-                else -> ParticleData(type)
-            }
+        type.factory?.read(session, this, type)?.let { return it }
+
+        // TODO: Implement those particles
+        if (this.versionId < V_17W45A) return when (type.identifier.toString()) {
+            "minecraft:iconcrack" -> ItemParticleData.read(this, type)
+            "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
+            else -> ParticleData(type)
         }
 
         return when (type.identifier.toString()) {
-            "minecraft:block", "minecraft:falling_dust", "minecraft:block_marker" -> BlockParticleData.read(this, type)
-            "minecraft:dust" -> DustParticleData.read(this, type)
+            "minecraft:falling_dust", "minecraft:block_marker" -> BlockParticleData.read(this, type)
             "minecraft:item" -> ItemParticleData.read(this, type)
             "minecraft:shriek" -> ShriekParticleData.read(this, type)
             "minecraft:sculk_charge" -> SculkChargeParticleData.read(this, type)
@@ -308,7 +307,7 @@ class PlayInByteBuffer : InByteBuffer {
             return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
         }
         if (versionId > ProtocolVersions.V_22W42A) {
-            val uuid = readUUID()
+            readUUID()
         }
         if (versionId < ProtocolVersions.V_22W43A) {
             if (!readBoolean()) {
