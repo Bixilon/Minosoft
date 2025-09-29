@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
@@ -22,7 +24,6 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -30,8 +31,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLine
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import java.util.*
 import kotlin.math.abs
 import kotlin.reflect.full.companionObjectInstance
@@ -80,7 +79,7 @@ abstract class Particle(
     var alreadyCollided = false
     var accelerateIfYBlocked = false
     override var aabb: AABB = AABB.EMPTY
-    var spacing: Vec3 = Vec3.EMPTY
+    var spacing: Vec3f = Vec3f.EMPTY
         set(value) {
             if (field == value) {
                 return

@@ -60,7 +60,6 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3d
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.time.Instant
 import java.util.*

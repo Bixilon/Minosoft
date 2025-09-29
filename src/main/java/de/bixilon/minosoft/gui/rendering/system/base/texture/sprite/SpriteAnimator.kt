@@ -27,11 +27,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.Memo
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec2.Vec2i
 import kotlin.time.Duration
 
 class SpriteAnimator(val context: RenderContext) {

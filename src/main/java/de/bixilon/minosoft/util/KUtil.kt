@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -25,7 +26,6 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry
@@ -34,11 +34,9 @@ import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.isIntSafe
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -52,7 +50,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -72,13 +69,10 @@ import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
 import java.io.FileOutputStream
 import java.security.SecureRandom
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 import javax.net.ssl.SSLContext
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.ExperimentalTime
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 object KUtil {
@@ -352,25 +346,14 @@ object KUtil {
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
 
-    @Deprecated("kutil 1.27.2")
-    val TIME_ZERO = now() // TODO
+    val Double.sin get() = sin(this)
+    val Double.cos get() = cos(this)
 
-    @Deprecated("kutil 1.27.2")
-    operator fun Duration.rem(rem: Duration): Duration {
-        if (rem == Duration.ZERO) throw ArithmeticException("Division by zero!")
+    val Double.rad get() = Math.toRadians(this)
+    val Double.deg get() = Math.toDegrees(this)
+    val Float.sin get() = Trigonometry.sin(this)
+    val Float.cos get() = Trigonometry.cos(this)
 
-        return (inWholeNanoseconds % rem.inWholeNanoseconds).nanoseconds
-    }
-
-    @Deprecated("kutil 1.27.2")
-    fun SimpleDateFormat.format1(instant: Instant) = format(instant.toEpochMilli())
-
-    @OptIn(ExperimentalTime::class)
-    @Deprecated("kutil 1.27.2")
-    fun SimpleDateFormat.format1(instant: kotlin.time.Instant) = format(instant.toEpochMilliseconds())
-
-    @Deprecated("Kutil 1.27.2")
-    fun RepeatedTask.skip(count: Int = 1) {
-        this::next.forceSet(now() + this.interval * count)
-    }
+    val Float.rad get() = this * (PIf / 180.0f)
+    val Float.deg get() = this * (180.0f / PIf)
 }

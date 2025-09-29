@@ -45,7 +45,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2
 
 class GUIManager(
     private val guiRenderer: GUIRenderer,
@@ -201,7 +200,7 @@ class GUIManager(
         return runForEach { it.onCharPress(char) }
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         return runForEach { it.onMouseMove(position) }
     }
 
@@ -209,7 +208,7 @@ class GUIManager(
         return runForEach { it.onKey(code, change) }
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
         return runForEach { it.onScroll(scrollOffset) }
     }
 
@@ -227,7 +226,7 @@ class GUIManager(
         return null
     }
 
-    override fun onDragMove(position: Vec2, dragged: Dragged): Element? {
+    override fun onDragMove(position: Vec2f, dragged: Dragged): Element? {
         return runForEachDrag { it.onDragMove(position, dragged) }
     }
 
@@ -235,7 +234,7 @@ class GUIManager(
         return runForEachDrag { it.onDragKey(type, key, dragged) }
     }
 
-    override fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? {
+    override fun onDragScroll(scrollOffset: Vec2f, dragged: Dragged): Element? {
         return runForEachDrag { it.onDragScroll(scrollOffset, dragged) }
     }
 

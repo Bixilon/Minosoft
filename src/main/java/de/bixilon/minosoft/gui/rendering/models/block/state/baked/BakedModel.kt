@@ -83,8 +83,8 @@ class BakedModel(
     }
 
     private fun render(mesh: BlockVertexConsumer, tints: RGBArray?) {
-        for (faces in faces) {
-            for (face in faces) {
+        for (side in this.faces) {
+            for (face in side) {
                 face.render(mesh, tints)
             }
         }

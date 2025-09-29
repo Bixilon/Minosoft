@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
-import de.bixilon.minosoft.util.KUtil
 import org.lwjgl.openal.AL10.*
 import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
@@ -38,13 +37,13 @@ class SoundSource {
             field = value
         }
 
-    var position: Vec3 = Vec3.EMPTY
+    var position: Vec3f = Vec3f.EMPTY
         set(value) {
             alSource3f(source, AL_POSITION, value.x, value.y, value.z)
             field = value
         }
 
-    var velocity: Vec3 = Vec3.EMPTY
+    var velocity: Vec3f = Vec3f.EMPTY
         set(value) {
             alSource3f(source, AL_VELOCITY, value.x, value.y, value.z)
             field = value

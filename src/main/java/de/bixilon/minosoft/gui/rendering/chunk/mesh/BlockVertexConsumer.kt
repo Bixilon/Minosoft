@@ -65,3 +65,4 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
 
     operator fun get(transparency: TextureTransparencies): BlockVertexConsumer = this
 }
+
