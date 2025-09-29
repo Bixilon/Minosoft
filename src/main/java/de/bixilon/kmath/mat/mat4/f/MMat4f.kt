@@ -14,8 +14,8 @@
 package de.bixilon.kmath.mat.mat4.f
 
 import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kmath.vec.vec4.f._Vec4f
@@ -51,6 +51,7 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     )))
 
     constructor(other: Mat4f) : this() // TODO
+    constructor(other: MMat4f) : this() // TODO
 
     val unsafe get() = Mat4f(_0)
 
@@ -103,31 +104,31 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
     inline fun translate(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, x, y, z, this) }
     inline fun translate(offset: _Vec3f) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, offset.x, offset.y, offset.z, this) }
-    inline fun translate(offset: de.bixilon.kmath.vec.vec3.i._Vec3i) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f, this) }
+    inline fun translate(offset: _Vec3i) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f, this) }
 
     inline fun translateAssign(x: Float, y: Float, z: Float) = Mat4Operations.translate(this@MMat4f, x, y, z, this)
     inline fun translateAssign(offset: _Vec3f) = Mat4Operations.translate(this@MMat4f, offset.x, offset.y, offset.z, this)
-    inline fun translateAssign(offset: de.bixilon.kmath.vec.vec3.i._Vec3i) = Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f, this)
+    inline fun translateAssign(offset: _Vec3i) = Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f, this)
 
 
     inline fun scale(scale: Float) = scale(scale, scale, scale)
     inline fun scale(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, x, y, z, this) }
     inline fun scale(scale: _Vec3f) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, scale.x, scale.y, scale.z, this) }
-    inline fun scale(scale: de.bixilon.kmath.vec.vec3.i._Vec3i) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f, this) }
+    inline fun scale(scale: _Vec3i) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f, this) }
 
     inline fun scaleAssign(scale: Float) = scaleAssign(scale, scale, scale)
     inline fun scaleAssign(x: Float, y: Float, z: Float) = Mat4Operations.scale(this@MMat4f, x, y, z, this)
     inline fun scaleAssign(scale: _Vec3f) = Mat4Operations.scale(this@MMat4f, scale.x, scale.y, scale.z, this)
-    inline fun scaleAssign(scale: de.bixilon.kmath.vec.vec3.i._Vec3i) = Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f, this)
+    inline fun scaleAssign(scale: _Vec3i) = Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f, this)
 
 
-    fun rotateDegreesAssign(rotation: Vec3f) {
+    inline fun rotateDegreesAssign(rotation: _Vec3f) {
         if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
         if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
         if (rotation.z != 0.0f) rotateZ(this, rotation.z.rad)
     }
 
-    fun rotateRadAssign(rotation: Vec3f) {
+    inline fun rotateRadAssign(rotation: _Vec3f) {
         if (rotation.x != 0.0f) rotateX(this, rotation.x)
         if (rotation.y != 0.0f) rotateY(this, rotation.y)
         if (rotation.z != 0.0f) rotateZ(this, rotation.z)

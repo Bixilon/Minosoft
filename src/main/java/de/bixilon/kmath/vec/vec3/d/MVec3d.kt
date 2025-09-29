@@ -15,6 +15,7 @@ package de.bixilon.kmath.vec.vec3.d
 
 import de.bixilon.kmath.vec.vec2.d.MVec2d
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.util.d
@@ -53,17 +54,17 @@ value class MVec3d(
     val unsafe get() = Vec3d(_0)
 
 
-    inline operator fun plus(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = MVec3d(this.x + other.x, this.y + other.y, this.z + other.z)
-    inline operator fun minus(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = MVec3d(this.x - other.x, this.y - other.y, this.z - other.z)
-    inline operator fun times(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = MVec3d(this.x * other.x, this.y * other.y, this.z * other.z)
-    inline operator fun div(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = MVec3d(this.x / other.x, this.y / other.y, this.z / other.z)
-    inline operator fun rem(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = MVec3d(this.x % other.x, this.y % other.y, this.z % other.z)
+    inline operator fun plus(other: _Vec3i) = MVec3d(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = MVec3d(this.x - other.x, this.y - other.y, this.z - other.z)
+    inline operator fun times(other: _Vec3i) = MVec3d(this.x * other.x, this.y * other.y, this.z * other.z)
+    inline operator fun div(other: _Vec3i) = MVec3d(this.x / other.x, this.y / other.y, this.z / other.z)
+    inline operator fun rem(other: _Vec3i) = MVec3d(this.x % other.x, this.y % other.y, this.z % other.z)
 
-    inline operator fun plusAssign(other: de.bixilon.kmath.vec.vec3.i._Vec3i): Unit = let { this.x += other.x; this.y += other.y; this.z += other.z }
-    inline operator fun minusAssign(other: de.bixilon.kmath.vec.vec3.i._Vec3i): Unit = let { this.x -= other.x; this.y -= other.y; this.z -= other.z }
-    inline operator fun timesAssign(other: de.bixilon.kmath.vec.vec3.i._Vec3i): Unit = let { this.x *= other.x; this.y *= other.y; this.z *= other.z }
-    inline operator fun divAssign(other: de.bixilon.kmath.vec.vec3.i._Vec3i): Unit = let { this.x /= other.x; this.y /= other.y; this.z /= other.z }
-    inline operator fun remAssign(other: de.bixilon.kmath.vec.vec3.i._Vec3i): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
+    inline operator fun plusAssign(other: _Vec3i): Unit = let { this.x += other.x; this.y += other.y; this.z += other.z }
+    inline operator fun minusAssign(other: _Vec3i): Unit = let { this.x -= other.x; this.y -= other.y; this.z -= other.z }
+    inline operator fun timesAssign(other: _Vec3i): Unit = let { this.x *= other.x; this.y *= other.y; this.z *= other.z }
+    inline operator fun divAssign(other: _Vec3i): Unit = let { this.x /= other.x; this.y /= other.y; this.z /= other.z }
+    inline operator fun remAssign(other: _Vec3i): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
 
     inline operator fun plus(other: _Vec3f) = MVec3d(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3f) = MVec3d(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -88,15 +89,6 @@ value class MVec3d(
     inline operator fun timesAssign(other: _Vec3d): Unit = let { this.x *= other.x; this.y *= other.y; this.z *= other.z }
     inline operator fun divAssign(other: _Vec3d): Unit = let { this.x /= other.x; this.y /= other.y; this.z /= other.z }
     inline operator fun remAssign(other: _Vec3d): Unit = let { this.x %= other.x; this.y %= other.y; this.z %= other.z }
-
-    inline operator fun plus(direction: Directions) = this + direction.vector
-    inline operator fun minus(direction: Directions) = this - direction.vector
-    inline operator fun times(direction: Directions) = this * direction.vector
-
-    inline operator fun plusAssign(direction: Directions) = let { this += direction.vector }
-    inline operator fun minusAssign(direction: Directions) = let { this -= direction.vector }
-    inline operator fun timesAssign(direction: Directions) = let { this *= direction.vector }
-
 
     inline operator fun plus(other: Number) = MVec3d(this.x + other.d, this.y + other.d, this.z + other.d)
     inline operator fun minus(other: Number) = MVec3d(this.x - other.d, this.y - other.d, this.z - other.d)
@@ -183,7 +175,7 @@ value class MVec3d(
     companion object {
         val EMPTY get() = MVec3d(0)
 
-        inline operator fun invoke(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = MVec3d(other.x.d, other.y.d, other.z.d)
+        inline operator fun invoke(other: _Vec3i) = MVec3d(other.x.d, other.y.d, other.z.d)
         inline operator fun invoke(other: _Vec3f) = MVec3d(other.x.d, other.y.d, other.z.d)
         inline operator fun invoke(other: _Vec3d) = MVec3d(other.x.d, other.y.d, other.z.d)
     }

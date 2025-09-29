@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
@@ -139,7 +140,7 @@ class FluidSectionMesher(
                             texture = model.still
                         } else {
                             texture = model.flowing
-                            maxUV.x = 0.5f
+                            maxUV.unsafe.x = 0.5f
 
                             val atan = atan2(velocity!!.x, velocity.z).toFloat()
                             val sin = atan.sin

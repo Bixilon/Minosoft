@@ -61,7 +61,7 @@ class FadingTextElement(
     }
 
     private fun updateSize(phase: FadePhase?) {
-        this._size = if (phase == null) Vec2f.EMPTY else info.size.withBackgroundSize()
+        this._size = if (phase == null) Vec2f.EMPTY else info.size.withBackgroundSize().unsafe
     }
 
     fun show() {

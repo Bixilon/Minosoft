@@ -126,8 +126,9 @@ value class BlockPosition(
     inline operator fun unaryMinus() = BlockPosition(-this.x, -this.y, -this.z)
     inline operator fun unaryPlus() = this
 
-    inline operator fun plus(direction: Directions) = BlockPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
-    inline operator fun minus(direction: Directions) = BlockPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+
+    inline operator fun plus(other: _Vec3i) = BlockPosition(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = BlockPosition(this.x - other.x, this.y - other.y, this.z - other.z)
 
     inline infix fun and(mask: Int) = BlockPosition(x and mask, y and mask, z and mask)
 

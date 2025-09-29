@@ -19,6 +19,7 @@ import de.bixilon.kmath.number.DoubleUtil.plus
 import de.bixilon.kmath.number.DoubleUtil.rem
 import de.bixilon.kmath.number.DoubleUtil.times
 import de.bixilon.kmath.vec.vec2.f._Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.util.d
 import kotlin.math.sqrt
@@ -83,7 +84,7 @@ value class Vec2d(
         inline operator fun invoke(other: Vec2d) = other
         inline operator fun invoke(other: _Vec2d) = Vec2d(other.x.d, other.y.d)
         inline operator fun invoke(other: _Vec2f) = Vec2d(other.x.d, other.y.d)
-        inline operator fun invoke(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2d(other.x.d, other.y.d)
+        inline operator fun invoke(other: Vec2i) = Vec2d(other.x.d, other.y.d)
 
         operator fun invoke() = EMPTY
     }

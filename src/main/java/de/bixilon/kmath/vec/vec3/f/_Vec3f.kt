@@ -27,6 +27,7 @@ interface _Vec3f : Vec {
     operator fun component2() = y
     operator fun component3() = z
 
+
     fun toArray() = floatArrayOf(x, y, z)
     override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
 

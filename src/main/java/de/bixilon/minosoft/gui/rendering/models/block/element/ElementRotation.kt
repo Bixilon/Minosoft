@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.element
 
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -34,13 +35,12 @@ data class ElementRotation(
     fun apply(positions: FaceVertexData) {
         val angle = -angle.rad
 
-        val vec = Vec3f(0, positions) // TODO: vec offset
+        val vec = MVec3f()
 
         for (index in 0 until VERTEX_DATA_COMPONENTS) {
-            val offset = index * 3
-            vec.ofs = offset
-
+            vec.read(positions, index * Vec3f.LENGTH)
             vec.rotateAssign(angle, axis, origin, rescale)
+            vec.write(positions, index * Vec3f.LENGTH)
         }
     }
 

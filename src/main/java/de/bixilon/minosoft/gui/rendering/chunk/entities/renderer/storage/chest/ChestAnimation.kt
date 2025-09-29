@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenCloseAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateSine
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 

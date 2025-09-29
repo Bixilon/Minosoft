@@ -18,6 +18,8 @@ import de.bixilon.kmath.number.FloatUtil.minus
 import de.bixilon.kmath.number.FloatUtil.plus
 import de.bixilon.kmath.number.FloatUtil.rem
 import de.bixilon.kmath.number.FloatUtil.times
+import de.bixilon.kmath.vec.vec2.d._Vec2d
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
@@ -35,11 +37,11 @@ value class Vec2f(
     val unsafe get() = MVec2f(_0)
 
 
-    inline operator fun plus(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2f(this.x + other.x, this.y + other.y)
-    inline operator fun minus(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2f(this.x - other.x, this.y - other.y)
-    inline operator fun times(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2f(this.x * other.x, this.y * other.y)
-    inline operator fun div(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2f(this.x / other.x, this.y / other.y)
-    inline operator fun rem(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2f(this.x % other.x, this.y % other.y)
+    inline operator fun plus(other: Vec2i) = Vec2f(this.x + other.x, this.y + other.y)
+    inline operator fun minus(other: Vec2i) = Vec2f(this.x - other.x, this.y - other.y)
+    inline operator fun times(other: Vec2i) = Vec2f(this.x * other.x, this.y * other.y)
+    inline operator fun div(other: Vec2i) = Vec2f(this.x / other.x, this.y / other.y)
+    inline operator fun rem(other: Vec2i) = Vec2f(this.x % other.x, this.y % other.y)
 
     inline operator fun plus(other: _Vec2f) = Vec2f(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2f) = Vec2f(this.x - other.x, this.y - other.y)
@@ -60,6 +62,11 @@ value class Vec2f(
     inline fun length2() = x * x + y * y
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
+
+    inline fun write(array: FloatArray, offset: Int = 0) {
+        array[offset + 0] = x
+        array[offset + 1] = y
+    }
 
     override fun toString(): String = "($x $y)"
 
@@ -86,8 +93,8 @@ value class Vec2f(
         @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
         inline operator fun invoke(other: Vec2f) = other
         inline operator fun invoke(other: _Vec2f) = Vec2f(other.x.f, other.y.f)
-        inline operator fun invoke(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = Vec2f(other.x.f, other.y.f)
-        inline operator fun invoke(other: de.bixilon.kmath.vec.vec2.d._Vec2d) = Vec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: Vec2i) = Vec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2d) = Vec2f(other.x.f, other.y.f)
 
         operator fun invoke() = EMPTY
     }

@@ -52,11 +52,6 @@ value class Vec3i(
     inline operator fun div(other: Number) = Vec3i(this.x / other, this.y / other, this.z / other)
     inline operator fun rem(other: Number) = Vec3i(this.x % other, this.y % other, this.z % other)
 
-    inline operator fun plus(direction: Directions) = this + direction.vector
-    inline operator fun minus(direction: Directions) = this - direction.vector
-    inline operator fun times(direction: Directions) = this * direction.vector
-
-
 
     inline infix fun shr(bits: Int) = Vec3i(this.x shr bits, this.y shr bits, this.z shr bits)
     inline infix fun ushr(bits: Int) = Vec3i(this.x ushr bits, this.y ushr bits, this.z ushr bits)

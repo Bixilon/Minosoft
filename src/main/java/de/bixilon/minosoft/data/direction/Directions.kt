@@ -23,13 +23,14 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.kmath.vec.vec3.i.SVec3i
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import kotlin.collections.set
 
 enum class Directions(
     val axis: Axes,
     val index: SVec3i,
-) {
+) : _Vec3i {
     DOWN(Axes.Y, SVec3i(1, -1, 1)),  // y-
     UP(Axes.Y, SVec3i(3, -1, 3)),    // y+
     NORTH(Axes.Z, SVec3i(0, 0, -1)), // z-
@@ -37,6 +38,10 @@ enum class Directions(
     WEST(Axes.X, SVec3i(-1, 3, 2)),  // x-
     EAST(Axes.X, SVec3i(-1, 1, 0)),  // x+
     ;
+
+    override val x get() = vector.x
+    override val y get() = vector.y
+    override val z get() = vector.z
 
     val negative = ordinal % 2 == 0
 
