@@ -48,16 +48,16 @@ jobs:
           key: minosoft-assets
 
       - name: Build
-        run: ./gradlew assemble -Pminosoft.updates=true
+        run: './gradlew assemble "-Pminosoft.updates=true"'
 
       - name: Unit test
-        run: ./gradlew test
+        run: './gradlew test'
 
       - name: Integration test
-        run: ./gradlew integrationTest
+        run: './gradlew integrationTest'
 
       - name: Package amd64
-        run: ./gradlew fatJar -Parchitecture=amd64 -Pminosoft.updates=true
+        run: './gradlew fatJar "-Parchitecture=amd64" "-Pminosoft.updates=true"'
 
       - name: Upload amd64 build
         uses: actions/upload-artifact@v4
@@ -67,7 +67,7 @@ jobs:
 
       - name: Package aarch64
         if: ${{ !startsWith(matrix.os, 'windows') }}
-        run: ./gradlew fatJar -Parchitecture=aarch64 -Pminosoft.updates=true
+        run: './gradlew fatJar "-Parchitecture=aarch64" "-Pminosoft.updates=true"'
 
       - name: Upload aarch64 build
         if: ${{ !startsWith(matrix.os, 'windows') }}
