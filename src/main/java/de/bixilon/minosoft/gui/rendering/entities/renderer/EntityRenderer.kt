@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.Interpolator
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
@@ -31,15 +30,16 @@ import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import de.bixilon.minosoft.util.KUtil
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
     val entity: E,
 ) {
-    private var update = KUtil.TIME_ZERO
+    private var update = TimeUtil.NULL
     val features = FeatureManager(this)
     val info = entity.renderInfo
     var distance: Double = 0.0
@@ -73,7 +73,7 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun update(time: ValueTimeMark) {
-        val delta = if (this.update == KUtil.TIME_ZERO) 0.0f else ((time - update) / 1.seconds).toFloat()
+        val delta = if (this.update == TimeUtil.NULL) 0.0f else ((time - update) / 1.seconds).toFloat()
         update(time, delta)
         this.update = time
     }

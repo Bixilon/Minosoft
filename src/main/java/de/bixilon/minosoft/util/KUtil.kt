@@ -18,10 +18,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
-import glm_.vec2.Vec2t
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3t
-import glm_.vec4.Vec4t
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -38,7 +34,6 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -67,20 +62,14 @@ import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
 import glm_.glm
+import glm_.vec3.Vec3d
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
-import java.io.File
 import java.io.FileOutputStream
-import java.nio.file.Path
 import java.security.SecureRandom
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 import javax.net.ssl.SSLContext
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.ExperimentalTime
 
 
 object KUtil {
@@ -143,7 +132,6 @@ object KUtil {
     }
 
     fun pause() {
-        var setBreakPointHere = 1
     }
 
     fun Collection<Int>.entities(session: PlaySession): Set<Entity> {
@@ -355,37 +343,4 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
-
-    @Deprecated("kutil 1.27.2")
-    val TIME_ZERO = now() // TODO
-
-    @Deprecated("kutil 1.27.2")
-    operator fun Duration.rem(rem: Duration): Duration {
-        if (rem == Duration.ZERO) throw ArithmeticException("Division by zero!")
-
-        return (inWholeNanoseconds % rem.inWholeNanoseconds).nanoseconds
-    }
-
-    @Deprecated("kutil 1.27.2")
-    fun SimpleDateFormat.format1(instant: Instant) = format(instant.toEpochMilli())
-
-    @OptIn(ExperimentalTime::class)
-    @Deprecated("kutil 1.27.2")
-    fun SimpleDateFormat.format1(instant: kotlin.time.Instant) = format(instant.toEpochMilliseconds())
-
-
-    @Deprecated("kutil 1.27.2")
-    fun String.toPath() = Path.of(this)
-
-    @Deprecated("kutil 1.27.2")
-    operator fun Path.div(file: String) = this.resolve(file)
-
-    @Deprecated("kutil 1.27.2")
-    operator fun Path.div(file: Path) = this.resolve(file)
-
-    @Deprecated("kutil 1.27.2")
-    operator fun File.div(file: String) = this.resolve(file)
-
-    @Deprecated("kutil 1.27.2")
-    operator fun File.div(file: File) = this.resolve(file)
 }

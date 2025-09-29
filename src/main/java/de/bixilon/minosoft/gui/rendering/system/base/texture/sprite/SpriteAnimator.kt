@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.sprite
 
-import glm_.vec2.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
@@ -27,18 +27,17 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2i
 import kotlin.time.Duration
-import kotlin.time.TimeSource
 
 class SpriteAnimator(val context: RenderContext) {
     private val animations: MutableList<TextureAnimation> = ArrayList()
     private var buffer: IntUniformBuffer? = null
     private var enabled = true
-    private var previous = KUtil.TIME_ZERO
+    private var previous = TimeUtil.NULL
     val size get() = animations.size
 
     fun init() {

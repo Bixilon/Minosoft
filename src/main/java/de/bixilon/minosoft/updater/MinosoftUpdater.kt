@@ -17,6 +17,8 @@ import com.google.common.io.Files
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.file.PathUtil.div
+import de.bixilon.kutil.file.PathUtil.toPath
 import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.PlatformInfo
@@ -29,8 +31,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
-import de.bixilon.minosoft.util.KUtil.toPath
 import de.bixilon.minosoft.util.http.HTTP2.get
 import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.http.exceptions.HTTPException

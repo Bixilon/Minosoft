@@ -97,10 +97,9 @@ class RendererManager(
 
     private fun prepare() {
         val queue = LinkedBlockingQueue<Renderer>()
-        var total = 0
+        val total = list.size
 
         for (renderer in list) {
-            total++
             renderer.prePrepareDraw()
             if (renderer is AsyncRenderer) {
                 context.runAsync { renderer.prepareDrawAsync(); queue += renderer }

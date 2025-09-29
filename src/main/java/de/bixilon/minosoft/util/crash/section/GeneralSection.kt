@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.util.crash.section
 
+import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.util.KUtil.format1
 import java.text.SimpleDateFormat
 import java.time.Instant
 

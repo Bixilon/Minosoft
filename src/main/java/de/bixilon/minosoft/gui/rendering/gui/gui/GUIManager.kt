@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
-import glm_.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -43,10 +42,9 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2
 
 class GUIManager(
     private val guiRenderer: GUIRenderer,
@@ -55,7 +53,7 @@ class GUIManager(
     private var orderLock = ReentrantRWLock()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val context = guiRenderer.context
-    private var lastTickTime = KUtil.TIME_ZERO
+    private var lastTickTime = TimeUtil.NULL
 
     private var order: Collection<GUIElement> = emptyList()
 

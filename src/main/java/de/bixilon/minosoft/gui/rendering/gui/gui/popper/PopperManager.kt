@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
-import glm_.vec2.Vec2
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -25,15 +24,14 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil
+import glm_.vec2.Vec2
 
 class PopperManager(
     private val guiRenderer: GUIRenderer,
 ) : Initializable, InputHandler, AsyncDrawable, Drawable {
     private val poppers: MutableList<PopperGUIElement> = mutableListOf()
-    private var lastTickTime = KUtil.TIME_ZERO
+    private var lastTickTime = TimeUtil.NULL
 
 
     fun onScreenChange() {

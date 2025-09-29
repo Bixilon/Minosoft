@@ -16,6 +16,7 @@ import de.bixilon.kutil.ansi.ANSI.RESET
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.format1
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter

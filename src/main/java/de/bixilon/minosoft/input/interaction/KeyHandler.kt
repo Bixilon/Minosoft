@@ -17,15 +17,15 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.util.KUtil
 
 abstract class KeyHandler {
     private var task: RepeatedTask? = null
     var isPressed: Boolean = false
         private set
-    private var previousTick = KUtil.TIME_ZERO
+    private var previousTick = TimeUtil.NULL
 
     private fun queueTick() {
         val task = RepeatedTask(TickUtil.INTERVAL, priority = ThreadPool.Priorities.HIGH) { if (now() - previousTick >= TickUtil.INTERVAL) onTick() } // first tick is scheduled instantly, avoid double ticking
@@ -47,7 +47,7 @@ abstract class KeyHandler {
         TaskScheduler -= task
         this.task = null
         this.isPressed = false
-        this.previousTick = KUtil.TIME_ZERO
+        this.previousTick = TimeUtil.NULL
         this.onRelease()
     }
 

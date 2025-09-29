@@ -12,9 +12,6 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
@@ -23,6 +20,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityAnimations
@@ -45,7 +43,9 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import java.util.*
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -101,7 +101,7 @@ abstract class Entity(
 
     val renderInfo: EntityRenderInfo = unsafeNull()
 
-    var lastTickTime = KUtil.TIME_ZERO
+    var lastTickTime = TimeUtil.NULL
 
     open var renderer: EntityRenderer<*>? = null
 

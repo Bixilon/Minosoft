@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import glm_.vec2.Vec2i
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.file.FileUtil.slashPath
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.file.PathUtil.div
+import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.minosoft.assets.util.AssetsOptions
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -35,13 +33,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
-import de.bixilon.minosoft.util.KUtil.format1
+import glm_.vec2.Vec2i
 import java.io.File
 import java.nio.file.Path
 import java.text.SimpleDateFormat
 import java.time.Instant
-import kotlin.time.Duration.Companion.seconds
 
 
 class ScreenshotTaker(

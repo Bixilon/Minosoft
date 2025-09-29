@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -40,7 +41,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HUDManager(
@@ -49,7 +49,7 @@ class HUDManager(
     val context = guiRenderer.context
     private val hudElements: LockMap<ResourceLocation, HUDElement> = lockMapOf()
 
-    override var lastTickTime = KUtil.TIME_ZERO
+    override var lastTickTime = TimeUtil.NULL
 
     var enabled: Boolean = true
 

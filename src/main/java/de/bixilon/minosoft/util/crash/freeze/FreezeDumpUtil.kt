@@ -19,23 +19,20 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.kutil.file.FileUtil.slashPath
+import de.bixilon.kutil.file.FileUtil.div
+import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
-import de.bixilon.minosoft.util.KUtil.format1
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
-import java.nio.file.Path
 import java.text.SimpleDateFormat
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 
 object FreezeDumpUtil {

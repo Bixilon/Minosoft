@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.file.FileUtil.mkdirParent
+import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
@@ -36,7 +37,6 @@ import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
 import java.nio.file.Files
 
 object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(

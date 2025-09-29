@@ -15,6 +15,8 @@ package de.bixilon.minosoft
 
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.environment.Environment
+import de.bixilon.kutil.file.PathUtil.div
+import de.bixilon.kutil.file.PathUtil.toPath
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Andesite
@@ -31,8 +33,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.div
-import de.bixilon.minosoft.util.KUtil.toPath
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

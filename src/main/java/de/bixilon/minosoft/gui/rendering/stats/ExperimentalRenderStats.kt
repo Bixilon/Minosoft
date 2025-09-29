@@ -13,13 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import glm_.func.common.clamp
 import de.bixilon.kutil.avg._long.LongAverage
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
-import de.bixilon.minosoft.util.KUtil
+import glm_.func.common.clamp
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -34,7 +33,7 @@ class ExperimentalRenderStats : AbstractRenderStats {
     override val avgFrameTime = LongAverage(1.seconds)
     override val avgDrawTime = LongAverage(1.seconds)
 
-    private var lastSmoothFPSCalculationTime = KUtil.TIME_ZERO
+    private var lastSmoothFPSCalculationTime = TimeUtil.NULL
     override var smoothAvgFPS: Double = 0.0
         get() {
             val time = now()

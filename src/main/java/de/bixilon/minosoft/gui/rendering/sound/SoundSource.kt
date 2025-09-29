@@ -13,15 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import glm_.vec3.Vec3
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.util.KUtil
+import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class SoundSource {
     private var playTime: ValueTimeMark = now()
@@ -94,7 +93,7 @@ class SoundSource {
     }
 
     fun stop() {
-        playTime = KUtil.TIME_ZERO
+        playTime = TimeUtil.NULL
         alSourceStop(source)
     }
 

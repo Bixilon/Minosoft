@@ -22,7 +22,9 @@ import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.file.FileUtil.div
 import de.bixilon.kutil.file.FileUtil.mkdirParent
+import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -34,7 +36,6 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

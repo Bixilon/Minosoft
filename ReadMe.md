@@ -116,7 +116,7 @@ If you want to get notified when cool new features arrive or other interesting s
 
 ### Linux, Windows, macOS
 
-The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/?ref=gitlab.bixilon.de)
+The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/workflows/build.yml?query=+branch%3Amaster+event%3Apush?ref=gitlab.bixilon.de)
 
 
 #### Arch

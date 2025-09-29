@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.fog
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
@@ -25,8 +25,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -44,7 +42,7 @@ class FogManager(
 
     fun draw() {
         update()
-        if (interpolation.change != KUtil.TIME_ZERO) {
+        if (interpolation.change != TimeUtil.NULL) {
             interpolate()
         }
         updateShaders()
@@ -110,7 +108,7 @@ class FogManager(
         }
         state.color = color
         if (progress >= 1.0f) {
-            interpolation.change = KUtil.TIME_ZERO // this avoid further interpolations with the same data
+            interpolation.change = TimeUtil.NULL // this avoid further interpolations with the same data
             interpolation.color = options?.color?.rgba()
         }
 

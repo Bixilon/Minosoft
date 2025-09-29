@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.assets.util
 
+import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.hex.HexUtil.isHexString
-import de.bixilon.minosoft.util.KUtil.div
 import java.nio.file.Path
 
 object PathUtil {

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.loader
 
+import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
 
 
 object ModLoader {

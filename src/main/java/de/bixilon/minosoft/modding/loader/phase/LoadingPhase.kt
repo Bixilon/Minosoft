@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.loader.phase
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.latch.ParentLatch
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.modding.loader.error.DuplicateProvidedError
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.source.ModSource
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.div
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

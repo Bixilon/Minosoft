@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kutil.array.ArrayUtil.isIndex
+import de.bixilon.kutil.time.DurationUtil.rem
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
-import de.bixilon.minosoft.util.KUtil.rem
 import kotlin.time.Duration
 
 class TextureAnimation(

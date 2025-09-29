@@ -216,7 +216,7 @@ class PlaySession(
 
             val keyManagement = SignatureKeyManagement(this, account)
             if (version.requiresSignedChat && !profiles.session.signature.disableKeys && connection is NetworkConnection) {
-                taskWorker += WorkerTask(optional = true) { keyManagement.init(latch) }
+                taskWorker += WorkerTask { keyManagement.init(latch) }
             }
 
             taskWorker.work(latch)

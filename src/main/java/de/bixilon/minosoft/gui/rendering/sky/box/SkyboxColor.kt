@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
-import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -28,7 +26,8 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.util.KUtil
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.time.Duration
@@ -37,7 +36,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class SkyboxColor(
     val sky: SkyRenderer,
 ) {
-    private var lastStrike = KUtil.TIME_ZERO
+    private var lastStrike = TimeUtil.NULL
     private var strikeDuration = Duration.ZERO
 
     private var baseColor: RGBColor? = null

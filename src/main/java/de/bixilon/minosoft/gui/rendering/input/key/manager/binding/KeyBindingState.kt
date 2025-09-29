@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager.binding
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.util.KUtil
 
 data class KeyBindingState(
     var binding: KeyBinding,
@@ -22,5 +22,5 @@ data class KeyBindingState(
     val pressed: Boolean = false,
     val callback: MutableSet<KeyBindingCallback> = mutableSetOf(),
 ) {
-    var lastChange = KUtil.TIME_ZERO
+    var lastChange = TimeUtil.NULL
 }

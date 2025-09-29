@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.fog
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.util.KUtil
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FogInterpolationStart {
     var start: Float = 0.0f
     var end: Float = 0.0f
     var color: RGBAColor? = null
-    var change: ValueTimeMark = KUtil.TIME_ZERO
+    var change: ValueTimeMark = TimeUtil.NULL
 }

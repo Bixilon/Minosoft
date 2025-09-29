@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types
 
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
@@ -32,8 +31,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLine
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import java.util.*
 import kotlin.math.abs
 import kotlin.reflect.full.companionObjectInstance
@@ -54,7 +53,7 @@ abstract class Particle(
     var chunkPosition = position.blockPosition.chunkPosition
         private set
     protected val random = Random()
-    private var lastTickTime = KUtil.TIME_ZERO
+    private var lastTickTime = TimeUtil.NULL
 
     private var chunk: Chunk? = null
     private var chunkRevision = -1
@@ -188,7 +187,7 @@ abstract class Particle(
             return
         }
 
-        if (lastTickTime == KUtil.TIME_ZERO) {
+        if (lastTickTime == TimeUtil.NULL) {
             lastTickTime = time
             return
         }
