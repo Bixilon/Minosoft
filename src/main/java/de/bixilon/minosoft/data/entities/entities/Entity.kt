@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -46,9 +45,6 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.util.Initializable
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import java.util.*
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -84,7 +80,7 @@ abstract class Entity(
     open val primaryPassenger: Entity? = null
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
-    open val dimensions = Vec2(type.width, type.height)
+    open val dimensions = Vec2f(type.width, type.height)
     open val defaultAABB: AABB = AABB.EMPTY
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
@@ -93,12 +89,10 @@ abstract class Entity(
 
     protected fun createDefaultAABB(): AABB {
         val halfWidth = dimensions.x / 2
-        return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
+        return AABB(Vec3d(-halfWidth, 0.0f, -halfWidth), Vec3d(halfWidth, dimensions.y, halfWidth))
     }
 
-    open fun getDimensions(pose: Poses): Vec2? {
-        return dimensions
-    }
+    open fun getDimensions(pose: Poses): Vec2f? = dimensions
 
     open val eyeHeight: Float get() = dimensions.y * 0.85f
 

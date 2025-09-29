@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.i.MVec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil
@@ -23,12 +25,9 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.i.MVec3i
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
-import de.bixilon.minosoft.util.KUtil
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.time.Duration
@@ -103,7 +102,7 @@ class SkyboxColor(
     }
 
 
-    fun lightning(original: Vec3): Vec3 {
+    fun lightning(original: Vec3f): Vec3f {
         val duration = this.strikeDuration
         val delta = now() - lastStrike
         if (delta > duration) {
@@ -112,10 +111,10 @@ class SkyboxColor(
         val progress = (delta / duration).toFloat()
 
         val sine = abs(sin(progress * PIf * (duration / 80.milliseconds).toInt()))
-        return interpolateLinear(sine, original, Vec3(1.0f))
+        return interpolateLinear(sine, original, Vec3f(1.0f))
     }
 
-    private fun thunder(time: WorldTime, rain: Float, thunder: Float): Vec3? {
+    private fun thunder(time: WorldTime, rain: Float, thunder: Float): Vec3f? {
         val rainColor = rain(time, rain) ?: return null
         val brightness = minOf(rainColor.length() * 2, 1.0f)
 
@@ -125,7 +124,7 @@ class SkyboxColor(
         return lightning(interpolateLinear(thunder, rainColor, thunderColor.unsafe))
     }
 
-    private fun rain(time: WorldTime, rain: Float): Vec3? {
+    private fun rain(time: WorldTime, rain: Float): Vec3f? {
         val clearColor = clear(time) ?: return null
         val brightness = minOf(clearColor.length(), 1.0f)
 
@@ -135,7 +134,7 @@ class SkyboxColor(
         return interpolateLinear(rain, clearColor, rainColor.unsafe)
     }
 
-    private fun sunrise(progress: Float, moon: MoonPhases): Vec3? {
+    private fun sunrise(progress: Float, moon: MoonPhases): Vec3f? {
         val night = night(1.0f, moon) ?: return null
         val day = day(0.0f) ?: return null
 
@@ -153,13 +152,13 @@ class SkyboxColor(
         return color
     }
 
-    private fun day(progress: Float): Vec3? {
-        val base = this.baseColor?.toVec3() ?: return null
+    private fun day(progress: Float): Vec3f? {
+        val base = this.baseColor?.toVec3f() ?: return null
 
         return interpolateLinear((abs(progress - 0.5f) * 2.0f).pow(2), base, base * 0.9f)
     }
 
-    private fun sunset(progress: Float, moon: MoonPhases): Vec3? {
+    private fun sunset(progress: Float, moon: MoonPhases): Vec3f? {
         val night = night(0.0f, moon) ?: return null
         val day = day(1.0f) ?: return null
 
@@ -238,10 +237,10 @@ class SkyboxColor(
     }
 
     companion object {
-        private val THUNDER_BASE_COLOR = Vec3(0.16f, 0.18f, 0.21f)
-        private val RAIN_BASE_COLOR = Vec3(0.39f, 0.45f, 0.54f)
-        private val SUNRISE_BASE_COLOR = Vec3(0.95f, 0.78f, 0.56f)
-        private val SUNSET_BASE_COLOR = Vec3(0.95f, 0.68f, 0.56f)
-        private val NIGHT_BASE_COLOR = Vec3(0.02f, 0.04f, 0.09f)
+        private val THUNDER_BASE_COLOR = Vec3f(0.16f, 0.18f, 0.21f)
+        private val RAIN_BASE_COLOR = Vec3f(0.39f, 0.45f, 0.54f)
+        private val SUNRISE_BASE_COLOR = Vec3f(0.95f, 0.78f, 0.56f)
+        private val SUNSET_BASE_COLOR = Vec3f(0.95f, 0.68f, 0.56f)
+        private val NIGHT_BASE_COLOR = Vec3f(0.02f, 0.04f, 0.09f)
     }
 }

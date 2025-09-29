@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.util.Initializable
-import glm_.vec2.Vec2
 
 class PopperManager(
     private val guiRenderer: GUIRenderer,
@@ -100,7 +99,7 @@ class PopperManager(
         return false
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
@@ -124,7 +123,7 @@ class PopperManager(
         return false
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue

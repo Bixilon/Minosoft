@@ -13,16 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import glm_.vec3.Vec3d
 
 interface ParticleFactory<T : Particle> : Identified {
 

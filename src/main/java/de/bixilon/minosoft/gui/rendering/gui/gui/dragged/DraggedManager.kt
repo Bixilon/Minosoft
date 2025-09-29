@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import glm_.vec2.Vec2
 
 class DraggedManager(
     private val guiRenderer: GUIRenderer,
@@ -39,13 +39,13 @@ class DraggedManager(
             }
             val position = guiRenderer.currentMousePosition
             val previous = field
-            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragMove(Vec2(-1, -1), previous.element))
+            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragMove(Vec2f(-1, -1), previous.element))
 
             field = value
             if (value == null) {
                 guiRenderer.gui.onMouseMove(position)
             } else {
-                guiRenderer.gui.onMouseMove(Vec2(-1, -1)) // move mouse out
+                guiRenderer.gui.onMouseMove(Vec2f(-1, -1)) // move mouse out
                 value.element.onDragStart(position, guiRenderer.gui.onDragMove(position, value.element))
             }
             applyCursor()
@@ -106,7 +106,7 @@ class DraggedManager(
         return true
     }
 
-    override fun onMouseMove(position: Vec2): Boolean {
+    override fun onMouseMove(position: Vec2f): Boolean {
         element?.onMouseMove(position) ?: return false
         return true
     }
@@ -126,7 +126,7 @@ class DraggedManager(
         return true
     }
 
-    override fun onScroll(scrollOffset: Vec2): Boolean {
+    override fun onScroll(scrollOffset: Vec2f): Boolean {
         val element = element ?: return false
         val target = guiRenderer.gui.onDragScroll(scrollOffset, element.element)
         element.element.onDragScroll(guiRenderer.currentMousePosition, scrollOffset, target)

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -30,8 +30,6 @@ import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
 import java.util.*
 
 class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: BlockParticleData) : AdvancedTextureParticle(session, position, velocity, data) {
@@ -53,8 +51,8 @@ class BlockDustParticle(session: PlaySession, position: Vec3d, velocity: MVec3d,
         val randomU = random.nextFloat() * 3.0f
         val randomV = random.nextFloat() * 3.0f
 
-        minUV = Vec2(randomU + 1.0f, randomV) / 4.0f
-        maxUV = Vec2(randomU, randomV + 1.0f) / 4.0f
+        minUV = Vec2f(randomU + 1.0f, randomV) / 4.0f
+        maxUV = Vec2f(randomU, randomV + 1.0f) / 4.0f
     }
 
 

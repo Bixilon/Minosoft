@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -46,7 +47,7 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: RGBArray?, ao: IntArray) {
+    fun render(offset: Vec3f, mesh: BlockVertexConsumer, light: ByteArray, tints: RGBArray?, ao: IntArray) {
         val tint = color(tints.getOr0(tintIndex))
         val lightTint = ((light[lightIndex].toInt() and 0xFF shl 24) or tint.rgb).buffer()
         val textureId = this.texture.shaderId.buffer()

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
@@ -50,7 +51,6 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.eros.ErosOptions
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -348,6 +348,10 @@ object KUtil {
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
 
+    val Double.sin get() = sin(this)
+    val Double.cos get() = cos(this)
+
+
     @Deprecated("Kutil 1.28")
     private fun MessageDigest.hash(input: InputStream): ByteArray {
         val buffer = createBuffer()
@@ -367,11 +371,18 @@ object KUtil {
         return MessageDigest.getInstance(SHA_256).hash(this)
     }
 
+    val Double.rad get() = Math.toRadians(this)
+    val Double.deg get() = Math.toDegrees(this)
+    val Float.sin get() = Trigonometry.sin(this)
+    val Float.cos get() = Trigonometry.cos(this)
+
+    val Float.rad get() = this * (PIf / 180.0f)
+    val Float.deg get() = this * (180.0f / PIf)
+
     @Deprecated("Kutil 1.28")
     fun ByteArray.sha256(): ByteArray {
         return ByteArrayInputStream(this).sha256()
     }
-
 
     @Deprecated("Kutil 1.28")
     fun Long.toByteArray(order: ByteOrder): ByteArray {
