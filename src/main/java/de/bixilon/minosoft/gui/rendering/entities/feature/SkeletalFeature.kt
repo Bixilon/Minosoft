@@ -58,7 +58,7 @@ open class SkeletalFeature(
 
     protected open fun updateInstance() {
         val rotation = Vec3f(0.0f, -yaw.rad, 0.0f)
-        instance.update(rotation, renderer.matrix)
+        instance.update(rotation, renderer.matrix.unsafe)
     }
 
     override fun update(time: ValueTimeMark, delta: Float) {
@@ -68,7 +68,7 @@ open class SkeletalFeature(
     }
 
     override fun prepare() {
-        instance.transform.pack(instance.matrix)
+        instance.transform.pack(instance.matrix.unsafe)
     }
 
     override fun draw() {

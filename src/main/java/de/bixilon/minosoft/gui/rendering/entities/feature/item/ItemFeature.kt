@@ -25,8 +25,6 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
 import java.util.*
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -120,7 +118,7 @@ open class ItemFeature(
 
     protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
         shader.use()
-        shader.matrix = matrix
+        shader.matrix = matrix.unsafe
         shader.tint = renderer.light.value.rgba()
         super.draw(mesh)
     }

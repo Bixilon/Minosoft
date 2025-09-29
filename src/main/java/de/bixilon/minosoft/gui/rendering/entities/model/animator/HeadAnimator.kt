@@ -19,7 +19,6 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.util.KUtil.rad
 
 class HeadAnimator(

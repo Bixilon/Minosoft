@@ -18,6 +18,7 @@ import de.bixilon.kmath.number.FloatUtil.minus
 import de.bixilon.kmath.number.FloatUtil.plus
 import de.bixilon.kmath.number.FloatUtil.rem
 import de.bixilon.kmath.number.FloatUtil.times
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.util.f
 import de.bixilon.minosoft.util.i
@@ -45,11 +46,11 @@ value class MVec2f(
     val unsafe get() = Vec2f(_0)
 
 
-    inline operator fun plus(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = MVec2f(this.x + other.x, this.y + other.y)
-    inline operator fun minus(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = MVec2f(this.x - other.x, this.y - other.y)
-    inline operator fun times(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = MVec2f(this.x * other.x, this.y * other.y)
-    inline operator fun div(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = MVec2f(this.x / other.x, this.y / other.y)
-    inline operator fun rem(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = MVec2f(this.x % other.x, this.y % other.y)
+    inline operator fun plus(other: Vec2i) = MVec2f(this.x + other.x, this.y + other.y)
+    inline operator fun minus(other: Vec2i) = MVec2f(this.x - other.x, this.y - other.y)
+    inline operator fun times(other: Vec2i) = MVec2f(this.x * other.x, this.y * other.y)
+    inline operator fun div(other: Vec2i) = MVec2f(this.x / other.x, this.y / other.y)
+    inline operator fun rem(other: Vec2i) = MVec2f(this.x % other.x, this.y % other.y)
 
     inline operator fun plus(other: _Vec2f) = MVec2f(this.x + other.x, this.y + other.y)
     inline operator fun minus(other: _Vec2f) = MVec2f(this.x - other.x, this.y - other.y)
@@ -57,11 +58,11 @@ value class MVec2f(
     inline operator fun div(other: _Vec2f) = MVec2f(this.x / other.x, this.y / other.y)
     inline operator fun rem(other: _Vec2f) = MVec2f(this.x % other.x, this.y % other.y)
 
-    inline operator fun plusAssign(other: de.bixilon.kmath.vec.vec2.i._Vec2i): Unit = let { this.x += other.x; this.y += other.y }
-    inline operator fun minusAssign(other: de.bixilon.kmath.vec.vec2.i._Vec2i): Unit = let { this.x -= other.x; this.y -= other.y }
-    inline operator fun timesAssign(other: de.bixilon.kmath.vec.vec2.i._Vec2i): Unit = let { this.x *= other.x; this.y *= other.y }
-    inline operator fun divAssign(other: de.bixilon.kmath.vec.vec2.i._Vec2i): Unit = let { this.x /= other.x; this.y /= other.y }
-    inline operator fun remAssign(other: de.bixilon.kmath.vec.vec2.i._Vec2i): Unit = let { this.x %= other.x; this.y %= other.y }
+    inline operator fun plusAssign(other: Vec2i): Unit = let { this.x += other.x; this.y += other.y }
+    inline operator fun minusAssign(other: Vec2i): Unit = let { this.x -= other.x; this.y -= other.y }
+    inline operator fun timesAssign(other: Vec2i): Unit = let { this.x *= other.x; this.y *= other.y }
+    inline operator fun divAssign(other: Vec2i): Unit = let { this.x /= other.x; this.y /= other.y }
+    inline operator fun remAssign(other: Vec2i): Unit = let { this.x %= other.x; this.y %= other.y }
 
     inline operator fun plusAssign(other: _Vec2f): Unit = let { this.x += other.x; this.y += other.y }
     inline operator fun minusAssign(other: _Vec2f): Unit = let { this.x -= other.x; this.y -= other.y }
@@ -94,12 +95,22 @@ value class MVec2f(
     inline fun normalizeAssign() = let { this *= length() }
 
 
+    inline fun invoke(other: _Vec2f) = put(other)
     inline fun put(other: _Vec2f) {
         this.x = other.x
         this.y = other.y
     }
 
-    inline fun invoke(other: _Vec2f) = put(other)
+
+    inline fun write(array: FloatArray, offset: Int = 0) {
+        array[offset + 0] = x
+        array[offset + 1] = y
+    }
+
+    inline fun read(array: FloatArray, offset: Int = 0) {
+        x = array[offset + 0]
+        y = array[offset + 1]
+    }
 
     override fun toString(): String = "($x $y)"
 
@@ -121,7 +132,7 @@ value class MVec2f(
     companion object {
         val EMPTY get() = MVec2f(0)
 
-        inline operator fun invoke(other: de.bixilon.kmath.vec.vec2.i._Vec2i) = MVec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: Vec2i) = MVec2f(other.x.f, other.y.f)
         inline operator fun invoke(other: _Vec2f) = MVec2f(other.x.i, other.y.i)
     }
 }

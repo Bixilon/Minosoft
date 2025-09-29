@@ -20,6 +20,7 @@ import de.bixilon.kmath.number.DoubleUtil.rem
 import de.bixilon.kmath.number.DoubleUtil.times
 import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.util.d
@@ -49,11 +50,11 @@ value class Vec3d(
     val unsafe get() = MVec3d(_0)
 
 
-    inline operator fun plus(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = Vec3d(this.x + other.x, this.y + other.y, this.z + other.z)
-    inline operator fun minus(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
-    inline operator fun times(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = Vec3d(this.x * other.x, this.y * other.y, this.z * other.z)
-    inline operator fun div(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = Vec3d(this.x / other.x, this.y / other.y, this.z / other.z)
-    inline operator fun rem(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = Vec3d(this.x % other.x, this.y % other.y, this.z % other.z)
+    inline operator fun plus(other: _Vec3i) = Vec3d(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
+    inline operator fun times(other: _Vec3i) = Vec3d(this.x * other.x, this.y * other.y, this.z * other.z)
+    inline operator fun div(other: _Vec3i) = Vec3d(this.x / other.x, this.y / other.y, this.z / other.z)
+    inline operator fun rem(other: _Vec3i) = Vec3d(this.x % other.x, this.y % other.y, this.z % other.z)
 
     inline operator fun plus(other: _Vec3f) = Vec3d(this.x + other.x, this.y + other.y, this.z + other.z)
     inline operator fun minus(other: _Vec3f) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
@@ -75,11 +76,6 @@ value class Vec3d(
     inline operator fun times(other: Number) = Vec3d(this.x * other, this.y * other, this.z * other)
     inline operator fun div(other: Number) = Vec3d(this.x / other, this.y / other, this.z / other)
     inline operator fun rem(other: Number) = Vec3d(this.x % other, this.y % other, this.z % other)
-
-
-    inline operator fun plus(direction: Directions) = this + direction.vector
-    inline operator fun minus(direction: Directions) = this - direction.vector
-    inline operator fun times(direction: Directions) = this * direction.vector
 
     inline operator fun unaryPlus() = Vec3d(x, y, z)
     inline operator fun unaryMinus() = Vec3d(-x, -y, -z)
@@ -119,7 +115,7 @@ value class Vec3d(
 
         @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
         inline operator fun invoke(other: Vec3d) = other
-        inline operator fun invoke(other: de.bixilon.kmath.vec.vec3.i._Vec3i) = Vec3d(other.x.d, other.y.d, other.z.d)
+        inline operator fun invoke(other: _Vec3i) = Vec3d(other.x.d, other.y.d, other.z.d)
         inline operator fun invoke(other: _Vec3f) = Vec3d(other.x.d, other.y.d, other.z.d)
         inline operator fun invoke(other: _Vec3d) = Vec3d(other.x.d, other.y.d, other.z.d)
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -110,22 +110,21 @@ open class TextElement(
     }
 
     private fun updatePrefSize(text: ChatComponent) {
-        var prefSize = Vec2f.EMPTY
-        if (!empty) {
+        val prefSize = if (empty) MVec2f.EMPTY else {
             val info = TextRenderInfo(Vec2f.MAX)
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
-            prefSize = info.size.unsafe
+            MVec2f(info.size)
         }
-        _prefSize = prefSize.withBackgroundSize()
+        _prefSize = prefSize.withBackgroundSize().unsafe
     }
 
     private fun updateText(text: ChatComponent) {
-        val info = TextRenderInfo(maxSize.withBackgroundSize(-1.0f))
+        val info = TextRenderInfo(MVec2f(maxSize).withBackgroundSize(-1.0f).unsafe)
         if (!empty) {
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
         }
-        _size = info.size.withBackgroundSize()
+        _size = info.size.withBackgroundSize().unsafe
         this.info = info
     }
 

@@ -16,6 +16,7 @@ package de.bixilon.kmath.mat.mat4.f
 import de.bixilon.kmath.mat.mat3.f.Mat3f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kmath.vec.vec4.f._Vec4f
@@ -77,12 +78,12 @@ value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
 
     inline fun translate(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, x, y, z, this) }.unsafe
     inline fun translate(offset: _Vec3f) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x, offset.y, offset.z, this) }.unsafe
-    inline fun translate(offset: de.bixilon.kmath.vec.vec3.i._Vec3i) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x.f, offset.y.f, offset.z.f, this) }.unsafe
+    inline fun translate(offset: _Vec3i) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x.f, offset.y.f, offset.z.f, this) }.unsafe
 
     inline fun scale(scale: Float) = scale(scale, scale, scale)
     inline fun scale(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, x, y, z, this) }.unsafe
     inline fun scale(scale: _Vec3f) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x, scale.y, scale.z, this) }.unsafe
-    inline fun scale(scale: de.bixilon.kmath.vec.vec3.i._Vec3i) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x.f, scale.y.f, scale.z.f, this) }.unsafe
+    inline fun scale(scale: _Vec3i) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x.f, scale.y.f, scale.z.f, this) }.unsafe
 
 
     // TODO: rotate

@@ -113,8 +113,9 @@ value class SectionPosition(
     inline operator fun plus(position: ChunkPosition) = SectionPosition(this.x + position.x, this.y, this.z + position.z)
     inline operator fun minus(position: ChunkPosition) = SectionPosition(this.x - position.x, this.y, this.z - position.z)
 
-    inline operator fun plus(direction: Directions) = SectionPosition(this.x + direction.vector.x, this.y + direction.vector.y, this.z + direction.vector.z)
-    inline operator fun minus(direction: Directions) = SectionPosition(this.x - direction.vector.x, this.y - direction.vector.y, this.z - direction.vector.z)
+
+    inline operator fun plus(other: _Vec3i) = SectionPosition(this.x + other.x, this.y + other.y, this.z + other.z)
+    inline operator fun minus(other: _Vec3i) = SectionPosition(this.x - other.x, this.y - other.y, this.z - other.z)
 
     inline operator fun unaryMinus() = SectionPosition(-this.x, -this.y, -this.z)
     inline operator fun unaryPlus() = this

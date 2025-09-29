@@ -133,7 +133,7 @@ open class TextInputElement(
             textUpToDate = true
             cutOffText()
         }
-        _size = textElement.size(textElement.size)
+        _size = textElement.size
         backgroundElement.size = prefMaxSize
 
         cursorOffset = if (_pointer == 0) {
