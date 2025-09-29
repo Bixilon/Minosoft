@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.util
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
@@ -34,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.Delete
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.terminal.RunConfiguration
-import glm_.vec2.Vec2i
 import java.io.File
 import java.nio.file.Path
 import java.text.SimpleDateFormat
