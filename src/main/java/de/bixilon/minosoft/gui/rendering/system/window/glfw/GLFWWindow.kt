@@ -13,9 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -45,6 +42,9 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
+import glm_.vec2.Vec2i
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -190,9 +190,12 @@ class GLFWWindow(
             setOpenGLVersion(3, 3, true)
         }
         glfwWindowHint(GLFW_VISIBLE, false.glfw)
-        glfwWindowHint(GLFW_ALPHA_BITS, 0)
-        glfwWindowHint(GLFW_DEPTH_BITS, 0)
-        glfwWindowHint(GLFW_STENCIL_BITS, 0)
+        if (PlatformInfo.OS != OSTypes.MAC) {
+            // Somehow apple does not like the value 0. Setting it to GLFW_DONT_CARE does not help. See https://github.com/Bixilon/Minosoft/issues/40
+            glfwWindowHint(GLFW_ALPHA_BITS, 0)
+            glfwWindowHint(GLFW_DEPTH_BITS, 0)
+            glfwWindowHint(GLFW_STENCIL_BITS, 0)
+        }
 
 
         when (PlatformInfo.OS) {
