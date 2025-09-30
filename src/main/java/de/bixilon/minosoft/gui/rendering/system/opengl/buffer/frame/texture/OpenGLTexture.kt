@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,18 +18,22 @@ import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 
 abstract class OpenGLTexture {
+    var state = OpenGLTextureStates.PREPARING
+        protected set
     var id: Int = -1
         protected set
 
     abstract fun init()
 
     fun bind(target: Int) {
+        if (state != OpenGLTextureStates.INITIALIZED) throw IllegalStateException("Not loaded (state=$state)")
         check(target in 0 until 12)
         glActiveTexture(GL_TEXTURE0 + target)
         glBindTexture(GL_TEXTURE_2D, id)
     }
 
     fun unload() {
+        if (state != OpenGLTextureStates.INITIALIZED) throw IllegalStateException("Not loaded (state=$state)")
         glDeleteTextures(id)
         id = -1
     }
