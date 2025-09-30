@@ -88,6 +88,7 @@ class GlfwWindow(
             field = value
         }
 
+    private var _size = DEFAULT_WINDOW_SIZE
     override var size by observed(DEFAULT_WINDOW_SIZE)
 
     override var minSize: Vec2i = DEFAULT_MINIMUM_WINDOW_SIZE
@@ -227,15 +228,18 @@ class GlfwWindow(
 
         glfwMakeContextCurrent(window)
 
+        this::size.observeRendering(this) {
+            if (_size == it) return@observeRendering
+            val scaled = scalePosition(it)
+            glfwSetWindowSize(window, scaled.x, scaled.y)
+        }
         super.init(profile)
-        this::size.observeRendering(this) { glfwSetWindowSize(window, it.x, it.y) }
-        val size = scalePosition(Vec2i(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y))
-        this.size = size
 
         val primaryMonitor = glfwGetPrimaryMonitor()
         if (primaryMonitor != MemoryUtil.NULL) {
             glfwGetVideoMode(primaryMonitor)?.let {
-                glfwSetWindowPos(window, (it.width() - size.x) / 2, (it.height() - size.y) / 2)
+                val scaled = scalePosition(size)
+                glfwSetWindowPos(window, (it.width() - scaled.x) / 2, (it.height() - scaled.y) / 2)
             }
         }
 
@@ -362,6 +366,8 @@ class GlfwWindow(
     private fun onResize(window: Long, width: Int, height: Int) {
         log { "Resize (window=$window, width=$width, height=$height)" }
         if (window != this.window) return
+
+        this._size = Vec2i(width, height)
 
         val nextSize = unscalePosition(Vec2i(width, height))
         if (nextSize.x <= 0 || nextSize.y <= 0) return  // windows returns size (0,0) if minimized
