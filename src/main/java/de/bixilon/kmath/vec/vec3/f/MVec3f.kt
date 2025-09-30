@@ -159,10 +159,11 @@ value class MVec3f(
     inline val yz get() = MVec2f(y, z)
 
 
-    inline fun mutate(lamba: (Float) -> Float) {
-        x = lamba(x)
-        y = lamba(y)
-        z = lamba(z)
+    inline fun transform(lambda: (Float) -> Float) = MVec3f(lambda(x), lambda(y), lambda(z))
+    inline fun transformAssign(lambda: (Float) -> Float) {
+        x = lambda(x)
+        y = lambda(y)
+        z = lambda(z)
     }
 
 

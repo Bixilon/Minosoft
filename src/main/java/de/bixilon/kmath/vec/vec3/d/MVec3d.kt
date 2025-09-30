@@ -172,6 +172,8 @@ value class MVec3d(
         Axes.Z -> z = value
     }
 
+    inline infix fun set(value: Vec3d) = put(value)
+
     companion object {
         val EMPTY get() = MVec3d(0)
 

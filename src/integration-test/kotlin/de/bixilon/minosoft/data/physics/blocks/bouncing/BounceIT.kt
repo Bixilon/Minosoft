@@ -43,7 +43,7 @@ abstract class BounceIT {
     protected fun longFall(): LocalPlayerEntity {
         val player = createPlayer(createSession(2))
         player.forceTeleport(Vec3d(5.0, 12.0, 5.0))
-        player.physics.velocity = Vec3d(0.0, -2.0, 0.0)
+        player.physics.velocity.put(Vec3d(0.0, -2.0, 0.0))
         player.session.world[BlockPosition(5, 10, 5)] = block
         player.runTicks(10)
 

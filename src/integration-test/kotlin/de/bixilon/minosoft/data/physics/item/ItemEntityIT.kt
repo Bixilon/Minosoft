@@ -94,7 +94,7 @@ class ItemEntityIT {
     fun itemVelocityY() {
         val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.physics.velocity = Vec3d(0.0, 0.2, 0.0)
+        entity.physics.velocity set Vec3d(0.0, 0.2, 0.0)
         entity.runTicks(10)
         entity.assertPosition(0.0, 5.756136856144935, 0.0)
         entity.assertVelocity(0.0, -0.1951227371228987, 0.0)
@@ -104,7 +104,7 @@ class ItemEntityIT {
     fun itemVelocity2() {
         val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.physics.velocity = Vec3d(0.1, 0.3, 0.1)
+        entity.physics.velocity set Vec3d(0.1, 0.3, 0.1)
         entity.runTicks(10)
         entity.assertPosition(0.9146360427032717, 6.670772821707201, 0.9146360427032717)
         entity.assertVelocity(0.08170729659123263, -0.11341545643414405, 0.08170729659123263)
@@ -114,7 +114,7 @@ class ItemEntityIT {
     fun itemVelocity3() {
         val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.physics.velocity = Vec3d(0.1, 0.3, -0.1)
+        entity.physics.velocity set Vec3d(0.1, 0.3, -0.1)
         entity.session.world.fill(BlockPosition(-5, 4, -5), BlockPosition(5, 4, 5), GlassTest0.state)
         entity.runTicks(30)
         entity.assertPosition(1.55521462290592, 5.0, -1.55521462290592)
@@ -125,7 +125,7 @@ class ItemEntityIT {
     fun itemVelocity4() {
         val entity = createItem(createSession(2))
         entity.forceTeleport(Vec3d(0.0, 6.0, 0.0))
-        entity.physics.velocity = Vec3d(-0.5, -0.1, 0.8)
+        entity.physics.velocity set Vec3d(-0.5, -0.1, 0.8)
         entity.session.world.fill(BlockPosition(-5, 4, -5), BlockPosition(5, 4, 5), GlassTest0.state)
         entity.runTicks(30)
         entity.assertPosition(-3.0597864176904332, 5.0, 4.895658268304694)

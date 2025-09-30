@@ -112,7 +112,7 @@ object PhysicsTestUtil {
     }
 
     fun Entity.assertVelocity(x: Double, y: Double, z: Double, ticks: Int = 1) {
-        val velocity = physics.velocity
+        val velocity = physics.velocity.unsafe
         val expected = Vec3d(x, y, z)
         if (MATCH_EXACTLY) {
             if (velocity == expected) {

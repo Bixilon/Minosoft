@@ -36,7 +36,7 @@ class ServerVelocityIT {
     fun serverVelocity1() {
         val player = createPlayer(session)
         player.forceTeleport(Vec3d(-10.0, 1.0, -11.0))
-        player.physics.velocity = Vec3d(1.4, 2.4, 1.3)
+        player.physics.velocity set Vec3d(1.4, 2.4, 1.3)
         player.runTicks(10)
         player.assertPosition(-0.5020274821311955, 19.60499464246711, -2.180454090550392)
         player.assertVelocity(0.5451827224860496, 1.2439004467539785, 0.506241099451332)
@@ -45,7 +45,7 @@ class ServerVelocityIT {
     fun serverVelocity2() {
         val player = createPlayer(session)
         player.forceTeleport(Vec3d(-10.0, 10.0, -11.0))
-        player.physics.velocity = Vec3d(-0.5, -2.1, -3.1)
+        player.physics.velocity set Vec3d(-0.5, -2.1, -3.1)
         player.runTicks(10)
         player.assertPosition(-13.392133042096003, -12.553627279180112, -32.03122486099521)
         player.assertVelocity(-0.19470811517358924, -2.432927899851489, -1.207190314076253)

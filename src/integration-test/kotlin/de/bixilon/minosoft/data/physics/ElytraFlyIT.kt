@@ -102,7 +102,7 @@ class ElytraFlyIT {
         player.startElytra()
         player.runTicks(1)
 
-        player.physics.velocity = Vec3d(0.0, 0.0, 3.0)
+        player.physics.velocity.put(Vec3d(0.0, 0.0, 3.0))
         player.forceRotate(EntityRotation(0.0f, -10.0f))
         player.runTicks(5)
 

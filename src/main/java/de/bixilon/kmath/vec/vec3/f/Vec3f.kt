@@ -92,6 +92,8 @@ value class Vec3f(
     inline val xz get() = Vec2f(x, z)
     inline val yz get() = Vec2f(y, z)
 
+    inline fun transform(lambda: (Float) -> Float) = MVec3f(lambda(x), lambda(y), lambda(z))
+
 
     override fun toString(): String = "($x $y $z)"
 
