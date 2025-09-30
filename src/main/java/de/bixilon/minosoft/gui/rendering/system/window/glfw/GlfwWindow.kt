@@ -131,7 +131,7 @@ class GlfwWindow(
             val monitor = glfwGetPrimaryMonitor()
             val mode = glfwGetVideoMode(monitor) ?: return
             if (value) {
-                glfwSetWindowMonitor(window, monitor, 15, 15, mode.width(), mode.height(), mode.refreshRate())
+                glfwSetWindowMonitor(window, monitor, 0, 0, mode.width(), mode.height(), mode.refreshRate())
             } else {
                 val size = scalePosition(Vec2i(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y))
                 glfwSetWindowMonitor(window, 0, (mode.width() - size.x) / 2, (mode.height() - size.y) / 2, size.x, size.y, GLFW_DONT_CARE)
