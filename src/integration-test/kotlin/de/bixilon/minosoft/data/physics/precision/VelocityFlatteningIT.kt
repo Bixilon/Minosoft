@@ -27,7 +27,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity1() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(0.002, 0.002, 0.002)
+        player.physics.velocity set Vec3d(0.002, 0.002, 0.002)
         player.runTicks(1)
         player.assertPosition(0.0, 0.0, 0.0)
         player.assertVelocity(0.0, -0.0784000015258789, 0.0)
@@ -36,7 +36,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity1n() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(-0.002, -0.002, -0.002)
+        player.physics.velocity set Vec3d(-0.002, -0.002, -0.002)
         player.runTicks(1)
         player.assertPosition(0.0, 0.0, 0.0)
         player.assertVelocity(0.0, -0.0784000015258789, 0.0)
@@ -45,7 +45,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity2() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(0.003, 0.003, 0.003)
+        player.physics.velocity set Vec3d(0.003, 0.003, 0.003)
         player.runTicks(1)
         player.assertPosition(0.003, 0.003, 0.003)
         player.assertVelocity(0.002730000078678131, -0.07546000146865844, 0.002730000078678131)
@@ -54,7 +54,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity2n() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(-0.003, -0.003, -0.003)
+        player.physics.velocity set Vec3d(-0.003, -0.003, -0.003)
         player.runTicks(1)
         player.assertPosition(-0.003, -0.003, -0.003)
         player.assertVelocity(-0.002730000078678131, -0.08134000158309937, -0.002730000078678131)
@@ -63,7 +63,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity3() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(0.004, 0.004, 0.004)
+        player.physics.velocity set Vec3d(0.004, 0.004, 0.004)
         player.runTicks(1)
         player.assertPosition(0.004, 0.004, 0.004)
         player.assertVelocity(0.0036400001049041748, -0.07448000144958496, 0.0036400001049041748)
@@ -72,7 +72,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity3n() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(-0.004, -0.004, -0.004)
+        player.physics.velocity set Vec3d(-0.004, -0.004, -0.004)
         player.runTicks(1)
         player.assertPosition(-0.004, -0.004, -0.004)
         player.assertVelocity(-0.0036400001049041748, -0.08232000160217286, -0.0036400001049041748)
@@ -81,7 +81,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity4() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(0.005, 0.005, 0.005)
+        player.physics.velocity set Vec3d(0.005, 0.005, 0.005)
         player.runTicks(1)
         player.assertPosition(0.005, 0.005, 0.005)
         player.assertVelocity(0.004550000131130219, -0.07350000143051147, 0.004550000131130219)
@@ -90,7 +90,7 @@ class VelocityFlatteningIT {
     fun flattenVelocity4n() {
         val player = createPlayer(createSession(1))
         player.forceTeleport(Vec3d(0.0, 0.0, 0.0))
-        player.physics.velocity = Vec3d(-0.005, -0.005, -0.005)
+        player.physics.velocity set Vec3d(-0.005, -0.005, -0.005)
         player.runTicks(1)
         player.assertPosition(-0.005, -0.005, -0.005)
         player.assertVelocity(-0.004550000131130219, -0.08330000162124634, -0.004550000131130219)

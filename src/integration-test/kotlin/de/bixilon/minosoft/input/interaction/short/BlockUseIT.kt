@@ -46,8 +46,8 @@ class BlockUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, null, Hands.MAIN, false))
-        session.assertOnlyPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, null, Hands.OFF, false, 2))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, null, Hands.MAIN, false))
+        session.assertOnlyPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, null, Hands.OFF, false, 2))
     }
 
     fun testCoalOnStone() {
@@ -58,10 +58,10 @@ class BlockUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(CoalTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(CoalTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
-        session.assertOnlyPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, null, Hands.OFF, false, 3))
+        session.assertOnlyPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.Vec3d, null, Hands.OFF, false, 3))
     }
 
     fun testCoalOnStone2() {
@@ -72,8 +72,8 @@ class BlockUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, null, Hands.MAIN, false))
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(CoalTest0.item), Hands.OFF, false, 2))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, null, Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(CoalTest0.item), Hands.OFF, false, 2))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.OFF)
         session.assertNoPacket()
@@ -88,10 +88,10 @@ class BlockUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(CoalTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(CoalTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(CoalTest0.item), Hands.OFF, false, 3))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(CoalTest0.item), Hands.OFF, false, 3))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertOnlyPacket(UseItemC2SP(Hands.OFF, 4))
     }

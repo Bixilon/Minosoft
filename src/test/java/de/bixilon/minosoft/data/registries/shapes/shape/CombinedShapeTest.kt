@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.shapes.shape
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -23,15 +23,15 @@ internal class CombinedShapeTest {
 
     @Test
     fun testEquals() {
-        val a = CombinedShape(AABB(Vec3f(0.0), Vec3f(1.0)), AABB(Vec3f(5.0), Vec3f(6.0)))
-        val b = CombinedShape(AABB(Vec3f(0.0), Vec3f(1.0)), AABB(Vec3f(5.0), Vec3f(6.0)))
+        val a = CombinedShape(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
+        val b = CombinedShape(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
         assertEquals(a, b)
     }
 
     @Test
     fun testNotEquals() {
-        val a = CombinedShape(AABB(Vec3f(0.1), Vec3f(1.0)), AABB(Vec3f(5.0), Vec3f(6.0)))
-        val b = CombinedShape(AABB(Vec3f(0.0), Vec3f(1.0)), AABB(Vec3f(5.0), Vec3f(6.0)))
+        val a = CombinedShape(AABB(Vec3d(0.1), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
+        val b = CombinedShape(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
         assertNotEquals(a, b)
     }
 
