@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -38,6 +39,7 @@ abstract class OpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, override va
 
 
     override fun use(shader: NativeShader, bufferName: String) {
+        if (this.state != RenderableBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         shader.use()
 
         shader[bufferName] = this

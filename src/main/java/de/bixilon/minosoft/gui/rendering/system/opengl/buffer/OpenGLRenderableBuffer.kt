@@ -34,6 +34,7 @@ abstract class OpenGLRenderableBuffer(
         private set
 
     override fun init() {
+        if (this.state != RenderableBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
         system.log { "Init renderable buffer $this" }
         id = glGenBuffers()
     }
@@ -49,6 +50,7 @@ abstract class OpenGLRenderableBuffer(
     }
 
     protected open fun unbind() {
+        if (this.state != RenderableBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
@@ -57,7 +59,7 @@ abstract class OpenGLRenderableBuffer(
     }
 
     override fun unload() {
-        check(state == RenderableBufferStates.UPLOADED) { "Buffer is not uploaded: $state" }
+        if (this.state != RenderableBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         glDeleteBuffers(id)
         if (system.boundBuffer == id) {
             system.boundBuffer = -1

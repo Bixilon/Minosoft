@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -49,14 +48,12 @@ class FloatOpenGLVertexBuffer(
     }
 
     override fun unbind() {
-        if (RenderConstants.DIRTY_BUFFER_UNBIND) {
-            return
-        }
         super.unbind()
         vao.unbind()
     }
 
     fun bindVao() {
+        if (this.state != RenderableBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         super.bind()
         vao.bind()
     }

@@ -44,7 +44,7 @@ class OpenGLFramebuffer(
     private var depthBuffer: OpenGLRenderbuffer? = null
 
     override fun init() {
-        check(state != FramebufferState.COMPLETE) { "Framebuffer is complete!" }
+        check(state == FramebufferState.PREPARING) { "Framebuffer was already initialized!" }
         if (scale <= 0.0f) throw IllegalArgumentException("Invalid scale: $scale")
         if (size.x <= 0 || size.y <= 0) throw IllegalArgumentException("Invalid framebuffer size: $size")
         system.log { "Init framebuffer $this" }
