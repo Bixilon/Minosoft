@@ -48,6 +48,11 @@ class FramebufferManager(
         gui.clear()
     }
 
+    fun update() {
+        world.update()
+        gui.update()
+    }
+
 
     override fun draw() {
         context.system.framebuffer = null

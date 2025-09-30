@@ -44,7 +44,6 @@ interface IntegratedFramebuffer : Drawable {
     fun postInit() {}
 
     fun clear() {
-        update()
         context.system.framebuffer = framebuffer
         context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
     }
@@ -60,7 +59,6 @@ interface IntegratedFramebuffer : Drawable {
     }
 
     fun bind() {
-        update()
         context.system.framebuffer = framebuffer
         context.system.polygonMode = polygonMode
     }

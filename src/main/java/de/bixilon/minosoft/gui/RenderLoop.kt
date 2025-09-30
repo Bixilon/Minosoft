@@ -60,12 +60,14 @@ class RenderLoop(
             }
             context.renderStats.startFrame()
 
+            context.window.pollEvents()
+
+            context.framebuffer.update()
             context.framebuffer.clear()
             context.system.framebuffer = null
             context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
 
-            context.window.pollEvents()
 
             val time = context.window.time
             lastFrame = time
