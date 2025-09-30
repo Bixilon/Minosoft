@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world
 
-import glm_.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -36,9 +35,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.test.IT
+import glm_.vec2.Vec2i
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -195,7 +196,14 @@ class WorldRendererPipelineTest {
         context::textures.forceSet(DummyTextureManager(context))
 
         val framebuffer = IT.OBJENESIS.newInstance(FramebufferManager::class.java)
-        framebuffer::world.forceSet(IT.OBJENESIS.newInstance(WorldFramebuffer::class.java).apply { this::polygonMode.forceSet(PolygonModes.FILL) })
+        framebuffer::world.forceSet(IT.OBJENESIS.newInstance(WorldFramebuffer::class.java).apply {
+            this::polygonMode.forceSet(PolygonModes.FILL)
+            this::size.forceSet(Vec2i(1, 1))
+            this::scale.forceSet(1.0f)
+            this::framebuffer.forceSet(DummyFramebuffer())
+
+            this::context.forceSet(context)
+        })
         context::framebuffer.forceSet(framebuffer)
 
         context.textures::whiteTexture.forceSet(CodeTexturePart(DummyTexture(), size = Vec2i(16, 16)))

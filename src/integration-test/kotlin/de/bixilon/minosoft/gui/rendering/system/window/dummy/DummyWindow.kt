@@ -27,7 +27,7 @@ import java.nio.ByteBuffer
 
 class DummyWindow : Window {
     override val systemScale by observed(Vec2(1.0f))
-    override var size: Vec2i = Vec2i.EMPTY
+    override var size by observed(Vec2i(1, 1))
     override var minSize: Vec2i = Vec2i.EMPTY
     override var maxSize: Vec2i = Vec2i.EMPTY
     override var visible: Boolean = false

@@ -18,8 +18,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferSta
 import glm_.vec2.Vec2i
 
 class DummyFramebuffer(
-    override val size: Vec2i,
-    override val scale: Float,
+    override val size: Vec2i = Vec2i(1, 1),
+    override val scale: Float = 1.0f,
 ) : Framebuffer {
     override val state: FramebufferState = FramebufferState.COMPLETE
 
