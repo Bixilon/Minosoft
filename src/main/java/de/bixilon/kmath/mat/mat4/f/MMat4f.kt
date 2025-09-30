@@ -50,8 +50,7 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         x3, y3, z3, w3,
     )))
 
-    constructor(other: Mat4f) : this() // TODO
-    constructor(other: MMat4f) : this() // TODO
+
 
     val unsafe get() = Mat4f(_0)
 
@@ -97,8 +96,12 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
     inline fun transposeAssign(): Unit = TODO()
 
-    // TODO: inline fun inverse(): Mat4f = TODO()
-    // TODO: inline fun normalize(): Mat4f = TODO()
+    inline fun inverse(): MMat4f = TODO()
+    inline fun inverseAssign(): Unit = TODO()
+
+    inline fun normalize(): MMat4f = TODO()
+    inline fun normalizeAssign(): Unit = TODO()
+
     inline fun clearAssign(): Unit = TODO()
 
 
@@ -170,4 +173,10 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     }
 
     // TODO: rotate
+
+    companion object {
+
+        operator fun invoke(other: Mat4f): MMat4f = TODO()
+        operator fun invoke(other: MMat4f): MMat4f = TODO()
+    }
 }

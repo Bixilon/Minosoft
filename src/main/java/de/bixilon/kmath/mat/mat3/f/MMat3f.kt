@@ -13,10 +13,13 @@
 
 package de.bixilon.kmath.mat.mat3.f
 
+import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.util.f
 
 @JvmInline
@@ -40,6 +43,9 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         x1, y1, z1,
         x2, y2, z2,
     )))
+
+
+    constructor(mat: Mat4f) : this() // TODO
 
     val unsafe get() = Mat3f(_0)
 
@@ -80,8 +86,6 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
 
     inline fun transposeAssign(): Unit = TODO()
 
-    // TODO: inline fun inverse(): Mat3f = TODO()
-    // TODO: inline fun normalize(): Mat3f = TODO()
     inline fun clearAssign(): Unit = TODO()
 
 

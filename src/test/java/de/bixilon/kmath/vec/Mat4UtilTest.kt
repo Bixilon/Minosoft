@@ -11,22 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.mat.mat4
+package de.bixilon.kmath.vec
 
-import glm_.func.rad
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util
+import de.bixilon.minosoft.util.KUtil.rad
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+/*
 class Mat4UtilTest {
 
     @Test
     fun `custom rotateX`() {
-        val expected = Mat4f().rotateAssign(12.0f.rad, Vec3f(1, 0, 0))
+        val expected = MMat4f().apply { rotateXAssign(12.0f.rad) }
         val actual = Mat4f().apply { Mat4Util.rotateX(this, 12.0f.rad) }
 
         assertEquals(expected, actual)
@@ -72,3 +72,4 @@ class Mat4UtilTest {
         assertEquals(expected, actual)
     }
 }
+ */

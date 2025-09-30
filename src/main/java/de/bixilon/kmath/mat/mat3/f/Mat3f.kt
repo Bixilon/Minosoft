@@ -70,9 +70,6 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
         this[0, 2], this[1, 2], this[2, 2],
     )
 
-    // TODO: inline fun inverse(): Mat4f = TODO()
-    // TODO: inline fun normalize(): Mat4f = TODO(
-
     inline fun translate(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.translate(this@Mat3f, x, y, z, this) }.unsafe
     inline fun translate(offset: _Vec3f) = MMat3f().apply { Mat3Operations.translate(this@Mat3f, offset.x, offset.y, offset.z, this) }.unsafe
     inline fun translate(offset: _Vec3i) = MMat3f().apply { Mat3Operations.translate(this@Mat3f, offset.x.f, offset.y.f, offset.z.f, this) }.unsafe

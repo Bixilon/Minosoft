@@ -31,7 +31,7 @@ internal class AABBTest {
     @Test
     fun testMaxDistance1() {
         val a = AABB(Vec3d(5.0, 0.0, 7.0), Vec3d(6.0, 1.0, 8.0))
-        val b = AABB(Vec3d(5.7, 1.0, 6.3), Vec3d(6.3, 3, 6.9))
+        val b = AABB(Vec3d(5.7, 1.0, 6.3), Vec3d(6.3, 3.0, 6.9))
 
         assertEquals(1239312.0, a.calculateMaxDistance(b, 1239312.0, Axes.Z))
     }
@@ -72,7 +72,7 @@ internal class AABBTest {
     @Test
     fun `raycastX-`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(-2, 0.5, 0.5)
+        val origin = Vec3d(-2.0, 0.5, 0.5)
         val front = Vec3d(1, 0, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -84,7 +84,7 @@ internal class AABBTest {
     @Test
     fun `failedRaycastX-`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(-2, 0.5, 0.5)
+        val origin = Vec3d(-2.0, 0.5, 0.5)
         val front = Vec3d(-1, 0, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -94,8 +94,8 @@ internal class AABBTest {
     @Test
     fun `raycastX+`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(3, 0.5, 0.5)
-        val front = Vec3d(-1, 0.0, 0.0)
+        val origin = Vec3d(3.0, 0.5, 0.5)
+        val front = Vec3d(-1.0, 0.0, 0.0)
 
         val hit = aabb.raycast(origin, front)
         assertNotNull(hit)
@@ -106,7 +106,7 @@ internal class AABBTest {
     @Test
     fun `failedRaycastX+`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(3, 0.5, 0.5)
+        val origin = Vec3d(3.0, 0.5, 0.5)
         val front = Vec3d(1, 0, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -116,7 +116,7 @@ internal class AABBTest {
     @Test
     fun `raycastY-`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, -2, 0.5)
+        val origin = Vec3d(0.5, -2.0, 0.5)
         val front = Vec3d(0, 1, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -128,7 +128,7 @@ internal class AABBTest {
     @Test
     fun `failedRaycastY-`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, -2, 0.5)
+        val origin = Vec3d(0.5, -2.0, 0.5)
         val front = Vec3d(0, -1, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -138,7 +138,7 @@ internal class AABBTest {
     @Test
     fun `raycastY+`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, 3, 0.5)
+        val origin = Vec3d(0.5, 3.0, 0.5)
         val front = Vec3d(0, -1, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -150,7 +150,7 @@ internal class AABBTest {
     @Test
     fun `failedRaycastY+`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, 3, 0.5)
+        val origin = Vec3d(0.5, 3.0, 0.5)
         val front = Vec3d(0, 1, 0)
 
         val hit = aabb.raycast(origin, front)
@@ -161,7 +161,7 @@ internal class AABBTest {
     @Test
     fun `raycastZ-`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, 0.5, -2)
+        val origin = Vec3d(0.5, 0.5, -2.0)
         val front = Vec3d(0, 0, 1)
 
         val hit = aabb.raycast(origin, front)
@@ -173,7 +173,7 @@ internal class AABBTest {
     @Test
     fun `failedRaycastZ-`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, 0.5, -2)
+        val origin = Vec3d(0.5, 0.5, -2.0)
         val front = Vec3d(0, 0, -1)
 
         val hit = aabb.raycast(origin, front)
@@ -183,7 +183,7 @@ internal class AABBTest {
     @Test
     fun `raycastZ+`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, 0.5, 3)
+        val origin = Vec3d(0.5, 0.5, 3.0)
         val front = Vec3d(0, 0, -1)
 
         val hit = aabb.raycast(origin, front)
@@ -195,7 +195,7 @@ internal class AABBTest {
     @Test
     fun `failedRaycastZ+`() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(0.5, 0.5, 3)
+        val origin = Vec3d(0.5, 0.5, 3.0)
         val front = Vec3d(0, 0, 1)
 
         val hit = aabb.raycast(origin, front)
@@ -219,8 +219,8 @@ internal class AABBTest {
     @Test
     fun distanced() {
         val aabb = AABB.BLOCK
-        val origin = Vec3d(-1, 0.5, 0.5)
-        val front = Vec3d(1, 0.4, 0.4).normalize() // front is always length=1
+        val origin = Vec3d(-1.0, 0.5, 0.5)
+        val front = Vec3d(1.0, 0.4, 0.4).normalize() // front is always length=1
 
         val hit = aabb.raycast(origin, front)
         assertNotNull(hit)

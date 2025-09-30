@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.light.updater.normal
 
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
@@ -23,8 +24,6 @@ import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.kmath.vec.vec3.d.MVec3d
-import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
@@ -33,8 +32,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLine
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 /**
  * Updates the lightmap similar to vanilla
@@ -77,9 +76,10 @@ class NormalLightmapUpdater(
         val nightVision = getNightVisionStrength(millis)
 
         for (block in 0 until LightLevel.LEVELS) {
-            var color = calculateBlock(dimension.ambientLight[block])
-            color = tweak(color, gamma, dimension.effects.brighten, nightVision)
-            buffer[0, block] = color
+            val color = calculateBlock(dimension.ambientLight[block]).unsafe
+            tweak(color, gamma, dimension.effects.brighten, nightVision)
+
+            buffer[0, block] = color.unsafe
         }
     }
 
@@ -93,12 +93,13 @@ class NormalLightmapUpdater(
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength(millis)
 
-        var color = MVec3f()
+        val color = MVec3f()
         for (sky in 0 until LightLevel.LEVELS) {
             for (block in 0 until LightLevel.LEVELS) {
                 combine(skyColors[sky], blockColors[block], color)
-                color = tweak(color, gamma, dimension.effects.brighten, nightVision)
-                buffer[sky, block] = color
+                tweak(color, gamma, dimension.effects.brighten, nightVision)
+
+                buffer[sky, block] = color.unsafe
             }
         }
     }
@@ -187,23 +188,20 @@ class NormalLightmapUpdater(
         applyNightVision(color, nightVision)
     }
 
-    private fun applyNightVision(color: Vec3f, strength: Float): Vec3f {
-        if (strength <= 0.0f) {
-            return color
-        }
+    private fun applyNightVision(color: MVec3f, strength: Float) {
+        if (strength <= 0.0f) return
         val max = maxOf(color.x, color.y, color.z)
-        if (max >= 1.0f) {
-            return color
-        }
-        return interpolateLinear(strength, color, color * (1.0f / max))
+        if (max >= 1.0f) return
+
+        color.put(interpolateLinear(strength, color.unsafe, color.unsafe * (1.0f / max)))
     }
 
-    private fun applyBrighten(color: Vec3f, brighten: Vec3f): Vec3f {
-        return interpolateLinear(0.25f, color, brighten).apply { unsafe.clampAssign() }
+    private fun applyBrighten(color: MVec3f, brighten: Vec3f) {
+        color.put(interpolateLinear(0.25f, color.unsafe, brighten).apply { unsafe.clampAssign() })
     }
 
-    private fun applyGamma(color: Vec3f, gamma: Float): Vec3f {
-        return interpolateLinear(gamma, color, color modify { 1.0f - (1.0f - it).pow(4) })
+    private fun applyGamma(color: MVec3f, gamma: Float) {
+        color.put(interpolateLinear(gamma, color.unsafe, color.transform { 1.0f - (1.0f - it).pow(4) }.unsafe))
     }
 
     private fun getNightVisionStrength(time: ValueTimeMark): Float {

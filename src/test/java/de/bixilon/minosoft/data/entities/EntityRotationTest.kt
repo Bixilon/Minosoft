@@ -58,18 +58,18 @@ class EntityRotationTest {
     @Test
     fun front1() {
         val front = EntityRotation(10.0f, 20.0f).front
-        assertEquals(front, Vec3f(-0.16317593, -0.34202015, 0.92541665))
+        assertEquals(front, Vec3f(-0.16317593f, -0.34202015f, 0.92541665f))
     }
 
     @Test
     fun front2() {
         val front = EntityRotation(-10.0f, -20.0f).front
-        assertEquals(front, Vec3f(0.16317593, 0.34202015, 0.92541665))
+        assertEquals(front, Vec3f(0.16317593f, 0.34202015f, 0.92541665f))
     }
 
     @Test
     fun front3() {
         val front = EntityRotation(-80.0f, 80.0f).front
-        assertEquals(front, Vec3f(0.1710101, -0.9848077, 0.030153705))
+        assertEquals(front, Vec3f(0.1710101f, -0.9848077f, 0.030153705f))
     }
 }

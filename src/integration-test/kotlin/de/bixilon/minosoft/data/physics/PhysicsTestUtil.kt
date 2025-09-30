@@ -111,11 +111,11 @@ object PhysicsTestUtil {
     fun Entity.assertVelocity(x: Double, y: Double, z: Double, ticks: Int = 1) {
         val velocity = physics.velocity
         val expected = Vec3d(x, y, z)
-        if (velocity.matches(expected, VALUE_MARGIN * ticks)) {
+        if (velocity.unsafe.matches(expected, VALUE_MARGIN * ticks)) {
             return
         }
         val delta = (velocity - expected)
-        Assert.assertEquals(velocity, expected, "Velocity mismatch:\nC${physics.velocity.formatted()}\nE${expected.formatted()}\nD:${delta.formatted()}\n\n")
+        Assert.assertEquals(velocity, expected, "Velocity mismatch:\nC${physics.velocity.unsafe.formatted()}\nE${expected.formatted()}\nD:${delta.unsafe.formatted()}\n\n")
     }
 
     fun Entity.assertGround(onGround: Boolean = true) {
