@@ -38,7 +38,9 @@ abstract class OpenGLRenderableBuffer(
         id = glGenBuffers()
     }
 
-    override fun bind() {
+    protected abstract fun initialUpload()
+
+    protected open fun bind() {
         if (system.boundBuffer == id) {
             return
         }
@@ -46,7 +48,7 @@ abstract class OpenGLRenderableBuffer(
         system.boundBuffer = id
     }
 
-    override fun unbind() {
+    protected open fun unbind() {
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
