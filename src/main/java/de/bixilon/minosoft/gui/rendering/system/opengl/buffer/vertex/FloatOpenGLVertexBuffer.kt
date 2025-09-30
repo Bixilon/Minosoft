@@ -39,10 +39,10 @@ class FloatOpenGLVertexBuffer(
         vertices = buffer.position() / floatsPerVertex
         super.init()
         bind()
+        vao.init()
         super.initialUpload()
         _data = null
 
-        vao.init()
 
         unbind()
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,8 +26,8 @@ class IntOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: Int
     override fun initialUpload() {
         bind()
         glBufferData(type.gl, data, drawTypes.gl)
-        unbind()
         state = RenderableBufferStates.UPLOADED
+        unbind()
     }
 
     override fun upload() {

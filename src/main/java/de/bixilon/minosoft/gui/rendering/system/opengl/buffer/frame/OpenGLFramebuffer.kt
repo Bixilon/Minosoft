@@ -15,8 +15,6 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
 import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
@@ -87,17 +85,16 @@ class OpenGLFramebuffer(
         glBindFramebuffer(GL_FRAMEBUFFER, id)
     }
 
-    override fun attach(renderbuffer: Renderbuffer) {
-        check(renderbuffer is OpenGLRenderbuffer) { "Can not attach non OpenGL renderbuffer!" }
+    private fun attach(renderbuffer: OpenGLRenderbuffer) {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.id)
     }
 
-    override fun attach(texture: FramebufferTexture) {
-        when (texture) {
-            is OpenGLFramebufferDepthTexture -> glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture.id, 0)
-            is OpenGLFramebufferColorTexture -> glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0)
-            else -> throw IllegalArgumentException("Can not attach non OpenGL texture!")
-        }
+    private fun attach(texture: OpenGLFramebufferDepthTexture) {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture.id, 0)
+    }
+
+    private fun attach(texture: OpenGLFramebufferColorTexture) {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0)
     }
 
     override fun delete() {

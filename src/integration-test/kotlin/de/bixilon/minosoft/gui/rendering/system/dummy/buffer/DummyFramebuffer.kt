@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.buffer
 
-import glm_.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
+import glm_.vec2.Vec2i
 
 class DummyFramebuffer : Framebuffer {
     override val state: FramebufferState = FramebufferState.COMPLETE
@@ -26,12 +24,6 @@ class DummyFramebuffer : Framebuffer {
     }
 
     override fun delete() {
-    }
-
-    override fun attach(renderbuffer: Renderbuffer) {
-    }
-
-    override fun attach(texture: FramebufferTexture) {
     }
 
     override fun bindTexture() {
