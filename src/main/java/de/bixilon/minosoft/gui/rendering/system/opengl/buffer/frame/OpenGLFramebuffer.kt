@@ -26,8 +26,8 @@ import org.lwjgl.opengl.GL30.*
 
 class OpenGLFramebuffer(
     val system: OpenGLRenderSystem,
-    var size: Vec2i,
-    var scale: Float,
+    override val size: Vec2i,
+    override val scale: Float,
     val color: Boolean,
     val depth: Boolean,
 ) : Framebuffer {
@@ -41,10 +41,15 @@ class OpenGLFramebuffer(
     private var depthTexture: OpenGLFramebufferDepthTexture? = null
     private var depthBuffer: OpenGLRenderbuffer? = null
 
-    override fun init() {
-        check(state == FramebufferState.PREPARING) { "Framebuffer was already initialized!" }
+
+    init {
+        if (!color && !depth) throw IllegalArgumentException("This framebuffer does nothing!")
         if (scale <= 0.0f) throw IllegalArgumentException("Invalid scale: $scale")
         if (size.x <= 0 || size.y <= 0) throw IllegalArgumentException("Invalid framebuffer size: $size")
+    }
+
+    override fun init() {
+        check(state == FramebufferState.PREPARING) { "Framebuffer was already initialized!" }
         system.log { "Init framebuffer $this" }
         id = glGenFramebuffers()
         unsafeBind()
@@ -99,6 +104,10 @@ class OpenGLFramebuffer(
 
     override fun delete() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
+
+        colorTexture?.unload()
+        depthBuffer?.unload()
+
         glDeleteFramebuffers(id)
         id = -1
         state = FramebufferState.DELETED
@@ -108,19 +117,6 @@ class OpenGLFramebuffer(
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         colorTexture?.bind(0)
         depthTexture?.bind(1)
-    }
-
-    override fun resize(size: Vec2i, scale: Float) {
-        if (size.x <= 0 || size.y <= 0) throw IllegalArgumentException("Invalid framebuffer size: $size")
-        if (size == this.size && this.scale == scale) {
-            return
-        }
-        colorTexture?.unload()
-        depthBuffer?.unload()
-        this.scale = scale
-        this.size = size
-        delete()
-        init()
     }
 
     protected fun finalize() {

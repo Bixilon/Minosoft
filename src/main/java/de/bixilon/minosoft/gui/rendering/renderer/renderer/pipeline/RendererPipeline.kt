@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
@@ -39,16 +38,21 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
     private fun RenderSystem.set(renderer: Renderer) {
         val framebuffer = renderer.framebuffer
-        this.framebuffer = framebuffer?.framebuffer
-        this.polygonMode = framebuffer?.polygonMode ?: PolygonModes.DEFAULT
+        if (framebuffer == null) {
+            this.framebuffer = null
+            this.polygonMode = PolygonModes.DEFAULT
+        } else {
+            framebuffer.bind()
+        }
     }
 
     private fun drawOther() {
         for (renderer in other) {
             if (renderer.skipDraw) continue
             if (renderer is SkipAll && renderer.skipAll) continue
+            renderer as Renderer
 
-            renderSystem.set(renderer.unsafeCast<Renderer>())
+            renderSystem.set(renderer)
             renderer.draw()
         }
     }

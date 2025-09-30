@@ -18,10 +18,11 @@ import glm_.vec2.Vec2i
 interface Framebuffer {
     val state: FramebufferState
 
+    val size: Vec2i
+    val scale: Float
+
     fun init()
     fun delete()
 
     fun bindTexture()
-
-    fun resize(size: Vec2i, scale: Float = 1.0f)
 }

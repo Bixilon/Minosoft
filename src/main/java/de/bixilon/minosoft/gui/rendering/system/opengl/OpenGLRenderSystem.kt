@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import glm_.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -40,6 +39,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
@@ -258,8 +258,8 @@ class OpenGLRenderSystem(
         return IntOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createFramebuffer(color: Boolean, depth: Boolean, scale: Float): OpenGLFramebuffer {
-        return OpenGLFramebuffer(this, context.window.size, scale, color, depth)
+    override fun createFramebuffer(size: Vec2i, scale: Float, color: Boolean, depth: Boolean): OpenGLFramebuffer {
+        return OpenGLFramebuffer(this, size, scale, color, depth)
     }
 
     override fun createTextureManager(): OpenGLTextureManager {

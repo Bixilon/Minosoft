@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world
 
-import glm_.vec2.Vec2i
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManage
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2i
 
 class WorldFramebuffer(
     override val context: RenderContext,
@@ -33,22 +34,21 @@ class WorldFramebuffer(
     private val defaultShader = context.system.createShader("minosoft:framebuffer/world".toResourceLocation()) { FramebufferShader(it) }
     override val shader: FramebufferShader
         get() = `fun`.shader ?: defaultShader
-    override val framebuffer: Framebuffer = context.system.createFramebuffer(color = true, depth = true)
+    override var framebuffer: Framebuffer = unsafeNull()
     override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 
-    private var scale = 1.0f
+    override var size = Vec2i(1, 1)
+    override var scale = 1.0f
 
     override fun init() {
-        framebuffer.init()
-        defaultShader.load()
-        defaultShader.use()
-        // shader.setInt("uDepth", 1)
-        mesh.load()
+        super.init() // TODO: init defaultShader
 
         overlay.init()
         context.session.profiles.rendering.quality.resolution::worldScale.observe(this, instant = true) { this.scale = it }
     }
+
+    override fun create() = context.system.createFramebuffer(this.size, this.scale, color = true, depth = true)
 
     override fun postInit() {
         super.postInit()
@@ -60,9 +60,5 @@ class WorldFramebuffer(
         `fun`.preDraw()
         super.draw()
         overlay.draw()
-    }
-
-    override fun resize(size: Vec2i) {
-        super.resize(size, this.scale)
     }
 }

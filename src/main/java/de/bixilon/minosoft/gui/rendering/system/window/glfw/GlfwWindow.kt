@@ -317,6 +317,7 @@ class GlfwWindow(
         if (window != this.window) return
         if (this.systemScale == scale) return
 
+        this.systemScale = scale
 
         apply {
             val x = IntArray(1)
@@ -330,11 +331,6 @@ class GlfwWindow(
             glfwGetCursorPos(window, x, y)
             onMouseMove(window, x[0], y[0])
         }
-
-
-        // TODO: update sizes
-
-        this.systemScale = scale
     }
 
     override var focused by observed(false)

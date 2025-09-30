@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.gui
 
-import glm_.vec2.Vec2i
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
@@ -22,23 +22,27 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2i
 
 class GUIFramebuffer(
     override val context: RenderContext,
 ) : IntegratedFramebuffer {
     override val shader = context.system.createShader("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
-    override val framebuffer: Framebuffer = context.system.createFramebuffer(color = true, depth = false)
+    override var framebuffer: Framebuffer = unsafeNull()
     override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 
-    private var scale = 1.0f
+    override var scale = 1.0f
+    override var size = Vec2i(1, 1)
 
     override fun init() {
         super.init()
         context.session.profiles.rendering.quality.resolution::guiScale.observe(this, instant = true) { this.scale = it }
     }
 
-    override fun resize(size: Vec2i) {
-        super.resize(size, this.scale)
+    override fun create() = context.system.createFramebuffer(this.size, this.scale, color = true, depth = false)
+
+    override fun draw() {
+        super.draw()
     }
 }

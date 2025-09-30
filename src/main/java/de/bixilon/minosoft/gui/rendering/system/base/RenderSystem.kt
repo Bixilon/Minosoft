@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base
 
-import glm_.vec2.Vec2i
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -30,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import glm_.vec2.Vec2i
 import java.nio.FloatBuffer
 
 interface RenderSystem {
@@ -142,7 +142,7 @@ interface RenderSystem {
 
     fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
     fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer
-    fun createFramebuffer(color: Boolean, depth: Boolean, scale: Float = 1.0f): Framebuffer
+    fun createFramebuffer(size: Vec2i, scale: Float = 1.0f, color: Boolean = true, depth: Boolean = true): Framebuffer
 
     fun createTextureManager(): TextureManager
 

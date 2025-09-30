@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.WorldFramebuffer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
-import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class FramebufferManager(
     private val context: RenderContext,
@@ -31,9 +31,9 @@ class FramebufferManager(
         world.init()
         gui.init()
 
-        context.window::size.observeRendering(this, true) {
-            world.resize(it)
-            gui.resize(it)
+        context.window::size.observe(this, true) {
+            world.size = it
+            gui.size = it
         }
     }
 

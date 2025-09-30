@@ -17,7 +17,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import glm_.vec2.Vec2i
 
-class DummyFramebuffer : Framebuffer {
+class DummyFramebuffer(
+    override val size: Vec2i,
+    override val scale: Float,
+) : Framebuffer {
     override val state: FramebufferState = FramebufferState.COMPLETE
 
     override fun init() {
@@ -27,8 +30,5 @@ class DummyFramebuffer : Framebuffer {
     }
 
     override fun bindTexture() {
-    }
-
-    override fun resize(size: Vec2i, scale: Float) {
     }
 }

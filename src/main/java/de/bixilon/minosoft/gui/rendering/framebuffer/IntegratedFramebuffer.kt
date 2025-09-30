@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
-import glm_.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
@@ -21,16 +20,21 @@ import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import glm_.vec2.Vec2i
 
 interface IntegratedFramebuffer : Drawable {
     val context: RenderContext
     val shader: FramebufferShader
-    val framebuffer: Framebuffer
+    var framebuffer: Framebuffer
     val mesh: Mesh
     val polygonMode: PolygonModes
 
+    var size: Vec2i
+    var scale: Float
+
 
     fun init() {
+        framebuffer = create() // unsafeNull
         framebuffer.init()
         shader.load()
         // shader.setInt("uDepth", 1)
@@ -40,8 +44,25 @@ interface IntegratedFramebuffer : Drawable {
     fun postInit() {}
 
     fun clear() {
+        update()
         context.system.framebuffer = framebuffer
         context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+    }
+
+    fun create(): Framebuffer
+
+    fun update() {
+        if (this.size == framebuffer.size && this.scale == framebuffer.scale) return
+
+        framebuffer.delete()
+        framebuffer = create()
+        framebuffer.init()
+    }
+
+    fun bind() {
+        update()
+        context.system.framebuffer = framebuffer
+        context.system.polygonMode = polygonMode
     }
 
     override fun draw() {
@@ -54,10 +75,5 @@ interface IntegratedFramebuffer : Drawable {
         framebuffer.bindTexture()
         shader.use()
         mesh.draw()
-    }
-
-    fun resize(size: Vec2i) = resize(size, 1.0f)
-    fun resize(size: Vec2i, scale: Float) {
-        framebuffer.resize(size, scale)
     }
 }

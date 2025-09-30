@@ -73,8 +73,6 @@ class RenderLoop(
             context.input.draw(time - lastFrame)
             context.camera.draw()
 
-            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
-
             context.light.updateAsync() // ToDo: do async
             context.light.update()
 
