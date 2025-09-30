@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -71,7 +70,7 @@ class GUIRenderer(
             updateResolution(Vec2(it))
         }
 
-        context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
+        context.window::systemScale.observeRendering(this) { updateResolution(systemScale = it) }
         profile::scale.observeRendering(this) { updateResolution(scale = it) }
 
         gui.postInit()
