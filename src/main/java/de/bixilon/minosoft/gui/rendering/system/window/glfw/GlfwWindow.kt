@@ -18,6 +18,7 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -222,6 +223,8 @@ class GlfwWindow(
             throw IllegalStateException("Failed to create the GLFW window. Check the console for details. BEFORE opening any issue check that your GPU supports OpenGL 3.3+ and the most recent drivers are installed!")
         }
 
+        log { "Created window (window=$window)" }
+
         glfwMakeContextCurrent(window)
 
         super.init(profile)
@@ -309,6 +312,8 @@ class GlfwWindow(
     private fun onWindowScale(window: Long, x: Float, y: Float) = onWindowScale(window, Vec2(x, y))
 
     private fun onWindowScale(window: Long, scale: Vec2) {
+        log { "Window scale (window=$window, scale=$scale)" }
+
         if (window != this.window) return
         if (this.systemScale == scale) return
 
@@ -335,6 +340,7 @@ class GlfwWindow(
     override var focused by observed(false)
 
     private fun onFocusChange(window: Long, focused: Boolean) {
+        log { "Focus (window=$window, focused=$focused)" }
         if (window != this.window) return
         this.focused = focused
     }
@@ -342,11 +348,13 @@ class GlfwWindow(
     override var iconified by observed(false)
 
     private fun onIconify(window: Long, iconified: Boolean) {
+        log { "Iconify (window=$window, iconified=$iconified)" }
         if (window != this.window) return
         this.iconified = iconified
     }
 
     private fun onClose(window: Long) {
+        log { "Close (window=$window)" }
         if (window != this.window) return
         val cancelled = fireGLFWEvent(WindowCloseEvent(context, window = this))
 
@@ -356,6 +364,7 @@ class GlfwWindow(
     }
 
     private fun onResize(window: Long, width: Int, height: Int) {
+        log { "Resize (window=$window, width=$width, height=$height)" }
         if (window != this.window) return
 
         val nextSize = unscalePosition(Vec2i(width, height))
@@ -370,6 +379,7 @@ class GlfwWindow(
     }
 
     private fun onKeyInput(window: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
+        log { "Key input (window=$window, key=$key, char=$char, action=$action)" }
         if (window != this.window) return
 
         val keyCode = KEY_CODE_MAPPING[key] ?: KeyCodes.KEY_UNKNOWN
@@ -388,11 +398,13 @@ class GlfwWindow(
     }
 
     private fun onCharInput(windowId: Long, char: Int) {
+        log { "Char input (window=$window, char=${char.toHex()})" }
         if (windowId != window) return
         fireGLFWEvent(CharInputEvent(context, char = char))
     }
 
     private fun onMouseMove(windowId: Long, x: Double, y: Double) {
+        log { "Mouse move (window=$window, x=$x, y=$y)" }
         if (windowId != window) return
 
         val position = unscalePosition(Vec2d(x, y))
@@ -407,6 +419,7 @@ class GlfwWindow(
     }
 
     private fun onScroll(window: Long, xOffset: Double, yOffset: Double) {
+        log { "Scroll (window=$window, x=$xOffset, y=$yOffset)" }
         if (window != this.window) return
         fireGLFWEvent(MouseScrollEvent(context, offset = Vec2d(xOffset, yOffset)))
     }
@@ -439,13 +452,21 @@ class GlfwWindow(
                 Configuration.GLFW_LIBRARY_NAME.set("glfw_async")
             }
             DefaultThreadPool += {
+                log { "Initializing library..." }
                 GLFWErrorCallback.createPrint(Log.FATAL_PRINT_STREAM).set()
                 if (PlatformInfo.OS == OSTypes.LINUX) {
                     glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11)
                 }
                 check(glfwInit()) { "Unable to initialize GLFW" }
+                log { "Initialized library!" }
                 initLatch.dec()
             }
+        }
+
+
+        inline fun log(builder: () -> Any?) {
+            if (!RunConfiguration.VERBOSE_LOGGING) return
+            Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "[GLFW] ${builder.invoke()}" }
         }
     }
 }

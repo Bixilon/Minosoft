@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame
 
-import glm_.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferColorTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferDepthTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
+import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL30.*
 
 class OpenGLFramebuffer(
@@ -47,7 +47,7 @@ class OpenGLFramebuffer(
         check(state != FramebufferState.COMPLETE) { "Framebuffer is complete!" }
         if (scale <= 0.0f) throw IllegalArgumentException("Invalid scale: $scale")
         if (size.x <= 0 || size.y <= 0) throw IllegalArgumentException("Invalid framebuffer size: $size")
-        system.log { "Generated framebuffer buffer $this" }
+        system.log { "Init framebuffer $this" }
         id = glGenFramebuffers()
         unsafeBind()
 
