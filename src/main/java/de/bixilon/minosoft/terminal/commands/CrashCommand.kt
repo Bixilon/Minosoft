@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.terminal.commands
 
+import de.bixilon.kutil.unsafe.UnsafeUtil
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 
 object CrashCommand : Command {
     override var node = LiteralNode("crash", executor = {
         Throwable("Intended crash!").crash()
-    })
+    }).addChild(LiteralNode("hard", executor = { UnsafeUtil.hardCrash() }))
 }
