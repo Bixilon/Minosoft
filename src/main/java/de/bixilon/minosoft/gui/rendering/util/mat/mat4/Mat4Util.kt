@@ -21,8 +21,6 @@ import de.bixilon.minosoft.util.KUtil.rad
 object Mat4Util {
 
 
-    fun Mat4f.times(vec3: Vec3f, res: Vec3f): Vec3f = TODO()
-
     fun rotateX(m: MMat4f, angle: Float): Unit = TODO()
 
     fun rotateY(m: MMat4f, angle: Float): Unit = TODO()

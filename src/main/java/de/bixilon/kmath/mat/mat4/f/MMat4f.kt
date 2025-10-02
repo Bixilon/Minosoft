@@ -55,9 +55,9 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     val unsafe get() = Mat4f(_0)
 
     override inline operator fun get(x: Int) = Vec4f(this[x, 0], this[x, 1], this[x, 2], this[x, 3])
-    override inline operator fun get(x: Int, y: Int) = _0[x, y]
+    override inline operator fun get(x: Int, y: Int) = _0[x, y]// TODO: access them column/row or row/column
 
-    inline operator fun set(x: Int, vec4: Vec4f) {
+    inline operator fun set(x: Int, vec4: Vec4f) {// TODO: access them column/row or row/column
         this[x, 0] = vec4.x
         this[x, 1] = vec4.y
         this[x, 2] = vec4.z
@@ -65,7 +65,7 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     }
 
     inline operator fun set(x: Int, y: Int, value: Float) {
-        _0[x, y] = value
+        _0[x, y] = value // TODO: access them column/row or row/column
     }
 
     inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, number, this) }
@@ -88,6 +88,7 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
 
     inline fun transpose() = MMat4f(
+// TODO: access them column/row or row/column
         this[0, 0], this[1, 0], this[2, 0], this[3, 0],
         this[0, 1], this[1, 1], this[2, 1], this[3, 1],
         this[0, 2], this[1, 2], this[2, 2], this[3, 2],
