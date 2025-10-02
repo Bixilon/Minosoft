@@ -115,22 +115,23 @@ interface RenderSystem {
     var quadOrder: RenderOrder
     @Deprecated("legacy") var legacyQuadOrder: RenderOrder
 
-    fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer
 
+    var viewport: Vec2i
 
-    fun createNativeShader(resourceLocation: ResourceLocation): NativeShader {
-        return createNativeShader(
-            vertex = "$resourceLocation.vsh".toResourceLocation(),
-            geometry = "$resourceLocation.gsh".toResourceLocation(),
-            fragment = "$resourceLocation.fsh".toResourceLocation(),
-        )
-    }
-
-    fun <T : Shader> createShader(resourceLocation: ResourceLocation, creator: (native: NativeShader) -> T): T {
-        return creator(createNativeShader(resourceLocation))
-    }
+    fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
     fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): NativeShader
+
+    fun createNativeShader(path: ResourceLocation) = createNativeShader(
+        vertex = "$path.vsh".toResourceLocation(),
+        geometry = "$path.gsh".toResourceLocation(),
+        fragment = "$path.fsh".toResourceLocation(),
+    )
+
+
+    fun <T : Shader> createShader(path: ResourceLocation, creator: (native: NativeShader) -> T): T {
+        return creator(createNativeShader(path))
+    }
 
     fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer
     fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer {
@@ -164,8 +165,6 @@ interface RenderSystem {
             shader.reload()
         }
     }
-
-    var viewport: Vec2i
 
     fun reportErrors() {
         val errors = getErrors()

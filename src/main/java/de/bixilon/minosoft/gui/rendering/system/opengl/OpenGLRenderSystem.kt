@@ -73,9 +73,8 @@ class OpenGLRenderSystem(
 
     override var shader: NativeShader? = null
         set(value) {
-            if (value === field) {
-                return
-            }
+            if (value === field) return
+
             if (value == null) {
                 glUseProgram(0)
                 field = null
@@ -235,10 +234,10 @@ class OpenGLRenderSystem(
     override lateinit var gpuType: String
         private set
 
-    override fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer {
-        val size = Vec2i(end.x - start.x, end.y - start.y)
+    override fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer {
+        val size = Vec2i(size.x - start.x, size.y - start.y)
         val buffer = RGB8Buffer(size)
-        glReadPixels(start.x, start.y, end.x, end.y, GL_RGB, GL_UNSIGNED_BYTE, buffer.data)
+        glReadPixels(start.x, start.y, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, buffer.data)
         return buffer
     }
 

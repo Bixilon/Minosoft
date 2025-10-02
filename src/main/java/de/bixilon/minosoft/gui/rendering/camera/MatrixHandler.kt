@@ -140,14 +140,12 @@ class MatrixHandler(
 
         session.events.fire(CameraPositionChangeEvent(context, useEyePosition))
 
-        session.events.fire(
-            CameraMatrixChangeEvent(
-                context = context,
-                viewMatrix = viewMatrix,
-                projectionMatrix = projectionMatrix,
-                viewProjectionMatrix = viewProjectionMatrix,
-            )
-        )
+        session.events.fire(CameraMatrixChangeEvent(
+            context = context,
+            viewMatrix = viewMatrix,
+            projectionMatrix = projectionMatrix,
+            viewProjectionMatrix = viewProjectionMatrix,
+        ))
 
         updateShaders(useMatrixPosition)
         invalid = false

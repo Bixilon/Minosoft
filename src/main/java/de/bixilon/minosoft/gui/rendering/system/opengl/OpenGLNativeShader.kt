@@ -13,10 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
@@ -32,6 +28,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShader
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.lwjgl.opengl.GL11.GL_FALSE
@@ -129,11 +129,11 @@ class OpenGLNativeShader(
     }
 
 
-    private fun getUniformLocation(uniformName: String): Int {
-        val location = uniformLocations.getOrPut(uniformName) {
-            val location = glGetUniformLocation(handler, uniformName)
+    private fun getUniformLocation(uniform: String): Int {
+        val location = uniformLocations.getOrPut(uniform) {
+            val location = glGetUniformLocation(handler, uniform)
             if (location < 0) {
-                val error = "No uniform named $uniformName in $this, maybe you use something that has been optimized out? Check your shader code!"
+                val error = "No uniform named $uniform in $this, maybe you use something that has been optimized out? Check your shader code!"
                 if (!context.profile.advanced.allowUniformErrors) {
                     throw IllegalArgumentException(error)
                 }
@@ -144,83 +144,83 @@ class OpenGLNativeShader(
         return location
     }
 
-    override fun setFloat(uniformName: String, value: Float) {
-        glUniform1f(getUniformLocation(uniformName), value)
+    override fun setFloat(uniform: String, value: Float) {
+        glUniform1f(getUniformLocation(uniform), value)
     }
 
-    override fun setInt(uniformName: String, value: Int) {
-        glUniform1i(getUniformLocation(uniformName), value)
+    override fun setInt(uniform: String, value: Int) {
+        glUniform1i(getUniformLocation(uniform), value)
     }
 
-    override fun setUInt(uniformName: String, value: Int) {
-        glUniform1ui(getUniformLocation(uniformName), value)
+    override fun setUInt(uniform: String, value: Int) {
+        glUniform1ui(getUniformLocation(uniform), value)
     }
 
-    override fun setBoolean(uniformName: String, boolean: Boolean) {
-        setInt(uniformName, if (boolean) 1 else 0)
+    override fun setBoolean(uniform: String, boolean: Boolean) {
+        setInt(uniform, if (boolean) 1 else 0)
     }
 
-    override fun setMat4(uniformName: String, mat4: Mat4) {
-        glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4.array)
+    override fun setMat4(uniform: String, mat4: Mat4) {
+        glUniformMatrix4fv(getUniformLocation(uniform), false, mat4.array)
     }
 
-    override fun setVec2(uniformName: String, vec2: Vec2) {
-        glUniform2f(getUniformLocation(uniformName), vec2.x, vec2.y)
+    override fun setVec2(uniform: String, vec2: Vec2) {
+        glUniform2f(getUniformLocation(uniform), vec2.x, vec2.y)
     }
 
-    override fun setVec3(uniformName: String, vec3: Vec3) {
-        glUniform3f(getUniformLocation(uniformName), vec3.x, vec3.y, vec3.z)
+    override fun setVec3(uniform: String, vec3: Vec3) {
+        glUniform3f(getUniformLocation(uniform), vec3.x, vec3.y, vec3.z)
     }
 
-    override fun setVec4(uniformName: String, vec4: Vec4) {
-        glUniform4f(getUniformLocation(uniformName), vec4.x, vec4.y, vec4.z, vec4.w)
+    override fun setVec4(uniform: String, vec4: Vec4) {
+        glUniform4f(getUniformLocation(uniform), vec4.x, vec4.y, vec4.z, vec4.w)
     }
 
-    override fun setArray(uniformName: String, array: Array<*>) {
+    override fun setArray(uniform: String, array: Array<*>) {
         for ((i, value) in array.withIndex()) {
-            this["$uniformName[$i]"] = value
+            this["$uniform[$i]"] = value
         }
     }
 
-    override fun setIntArray(uniformName: String, array: IntArray) {
+    override fun setIntArray(uniform: String, array: IntArray) {
         for ((i, value) in array.withIndex()) {
-            this.setInt("$uniformName[$i]", value)
+            this.setInt("$uniform[$i]", value)
         }
     }
 
-    override fun setUIntArray(uniformName: String, array: IntArray) {
+    override fun setUIntArray(uniform: String, array: IntArray) {
         for ((i, value) in array.withIndex()) {
-            this.setUInt("$uniformName[$i]", value)
+            this.setUInt("$uniform[$i]", value)
         }
     }
 
-    override fun setCollection(uniformName: String, collection: Collection<*>) {
+    override fun setCollection(uniform: String, collection: Collection<*>) {
         for ((i, value) in collection.withIndex()) {
-            this["$uniformName[$i]"] = value
+            this["$uniform[$i]"] = value
         }
     }
 
-    override fun setRGBColor(uniformName: String, color: RGBColor) {
-        setVec4(uniformName, Vec4(color.redf, color.greenf, color.bluef, 1.0f))
+    override fun setRGBColor(uniform: String, color: RGBColor) {
+        setVec4(uniform, Vec4(color.redf, color.greenf, color.bluef, 1.0f))
     }
 
-    override fun setRGBAColor(uniformName: String, color: RGBAColor) {
-        setVec4(uniformName, Vec4(color.redf, color.greenf, color.bluef, color.alphaf))
+    override fun setRGBAColor(uniform: String, color: RGBAColor) {
+        setVec4(uniform, Vec4(color.redf, color.greenf, color.bluef, color.alphaf))
     }
 
-    override fun setTexture(uniformName: String, textureId: Int) {
-        glUniform1i(getUniformLocation(uniformName), textureId)
+    override fun setTexture(uniform: String, textureId: Int) {
+        glUniform1i(getUniformLocation(uniform), textureId)
     }
 
-    override fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer) {
-        val index = uniformLocations.getOrPut(uniformName) {
-            val index = glGetUniformBlockIndex(handler, uniformName)
+    override fun setUniformBuffer(uniform: String, buffer: UniformBuffer) {
+        val index = uniformLocations.getOrPut(uniform) {
+            val index = glGetUniformBlockIndex(handler, uniform)
             if (index < 0) {
-                throw IllegalArgumentException("No uniform buffer called $uniformName")
+                throw IllegalArgumentException("No uniform buffer called $uniform")
             }
             return@getOrPut index
         }
-        glUniformBlockBinding(handler, index, uniformBuffer.bindingIndex)
+        glUniformBlockBinding(handler, index, buffer.bindingIndex)
     }
 
     fun unsafeUse() {

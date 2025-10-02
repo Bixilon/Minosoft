@@ -84,7 +84,7 @@ class DummyRenderSystem(
     override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
     override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
 
-    override fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer {
+    override fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer {
         TODO("Not yet implemented")
     }
 

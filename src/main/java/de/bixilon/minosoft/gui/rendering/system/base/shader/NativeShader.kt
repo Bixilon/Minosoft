@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader
 
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import glm_.vec4.Vec4
 import kotlin.math.max
 
 interface NativeShader {
@@ -42,53 +42,66 @@ interface NativeShader {
         return this
     }
 
-    fun setFloat(uniformName: String, value: Float)
-    fun setInt(uniformName: String, value: Int)
-    fun setUInt(uniformName: String, value: Int)
-    fun setMat4(uniformName: String, mat4: Mat4)
-    fun setVec2(uniformName: String, vec2: Vec2)
-    fun setVec3(uniformName: String, vec3: Vec3)
-    fun setVec4(uniformName: String, vec4: Vec4)
-    fun setArray(uniformName: String, array: Array<*>)
-    fun setIntArray(uniformName: String, array: IntArray)
-    fun setUIntArray(uniformName: String, array: IntArray)
-    fun setCollection(uniformName: String, collection: Collection<*>)
-    fun setRGBColor(uniformName: String, color: RGBColor)
-    fun setRGBAColor(uniformName: String, color: RGBAColor)
-    fun setBoolean(uniformName: String, boolean: Boolean)
-    fun setTexture(uniformName: String, textureId: Int)
-    fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer)
+    fun setFloat(uniform: String, value: Float)
+    fun setInt(uniform: String, value: Int)
+    fun setUInt(uniform: String, value: Int)
+    fun setMat4(uniform: String, mat4: Mat4)
+    fun setVec2(uniform: String, vec2: Vec2)
+    fun setVec3(uniform: String, vec3: Vec3)
+    fun setVec4(uniform: String, vec4: Vec4)
 
-    fun setVec3(uniformName: String, vec3: Vec3d) {
-        setVec3(uniformName, Vec3(vec3))
+    @Deprecated("Arrays don't exist natively")
+    fun setArray(uniform: String, array: Array<*>)
+
+    @Deprecated("Arrays don't exist natively")
+    fun setIntArray(uniform: String, array: IntArray)
+
+    @Deprecated("Arrays don't exist natively")
+    fun setUIntArray(uniform: String, array: IntArray)
+
+    @Deprecated("Arrays don't exist natively")
+    fun setCollection(uniform: String, collection: Collection<*>)
+    fun setRGBColor(uniform: String, color: RGBColor)
+    fun setRGBAColor(uniform: String, color: RGBAColor)
+    fun setBoolean(uniform: String, boolean: Boolean)
+    fun setTexture(uniform: String, textureId: Int)
+    fun setUniformBuffer(uniform: String, buffer: UniformBuffer)
+
+    @Deprecated("Implicit datatype conversion")
+    fun setVec3(uniform: String, vec3: Vec3d) {
+        setVec3(uniform, Vec3(vec3))
     }
 
-    operator fun set(uniformName: String, data: Any?) {
+    @Deprecated("Explicit datatype")
+    operator fun set(uniform: String, data: Any?) {
         if (data == null) return
         when (data) {
-            is Array<*> -> setArray(uniformName, data)
-            is IntArray -> setIntArray(uniformName, data)
-            is Collection<*> -> setCollection(uniformName, data)
-            is Int -> setInt(uniformName, data)
-            is Float -> setFloat(uniformName, data)
-            is Mat4 -> setMat4(uniformName, data)
-            is Vec4 -> setVec4(uniformName, data)
-            is Vec3 -> setVec3(uniformName, data)
-            is Vec2 -> setVec2(uniformName, data)
-            is RGBColor -> setRGBColor(uniformName, data)
-            is RGBAColor -> setRGBAColor(uniformName, data)
-            is UniformBuffer -> setUniformBuffer(uniformName, data)
+            is Array<*> -> setArray(uniform, data)
+            is IntArray -> setIntArray(uniform, data)
+            is Collection<*> -> setCollection(uniform, data)
+            is Int -> setInt(uniform, data)
+            is Float -> setFloat(uniform, data)
+            is Mat4 -> setMat4(uniform, data)
+            is Vec4 -> setVec4(uniform, data)
+            is Vec3 -> setVec3(uniform, data)
+            is Vec2 -> setVec2(uniform, data)
+            is RGBColor -> setRGBColor(uniform, data)
+            is RGBAColor -> setRGBAColor(uniform, data)
+            is UniformBuffer -> setUniformBuffer(uniform, data)
             // ToDo: PNGTexture
-            is Boolean -> setBoolean(uniformName, data)
+            is Boolean -> setBoolean(uniform, data)
             else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
         }
     }
 
-    operator fun set(uniformName: String, data: Boolean) = setBoolean(uniformName, data)
-    operator fun set(uniformName: String, data: Int) = setInt(uniformName, data)
-    operator fun set(uniformName: String, data: Float) = setFloat(uniformName, data)
-    operator fun set(uniformName: String, data: RGBColor) = setRGBColor(uniformName, data)
-    operator fun set(uniformName: String, data: RGBAColor) = setRGBAColor(uniformName, data)
+    operator fun set(uniform: String, data: Boolean) = setBoolean(uniform, data)
+    operator fun set(uniform: String, data: Int) = setInt(uniform, data)
+    operator fun set(uniform: String, data: Float) = setFloat(uniform, data)
+
+    operator fun set(name: String, data: RGBColor) = setRGBColor(name, data)
+    operator fun set(uniform: String, data: RGBAColor) = setRGBAColor(uniform, data)
+
+    operator fun set(uniform: String, data: UniformBuffer) = setUniformBuffer(uniform, data)
 
     companion object {
         val DEFAULT_DEFINES: Map<String, (context: RenderContext) -> Any?> = mapOf(

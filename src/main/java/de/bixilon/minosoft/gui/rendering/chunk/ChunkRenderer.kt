@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import glm_.vec3.Vec3
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -52,7 +51,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.minus
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec3.Vec3
 
 class ChunkRenderer(
     val session: PlaySession,
@@ -104,7 +103,7 @@ class ChunkRenderer(
         textShader.load()
 
 
-        session.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
+        session.events.listen<VisibilityGraphChangeEvent> { onVisibilityChange() }
 
         ChunkRendererChangeListener.register(this)
 
@@ -118,17 +117,17 @@ class ChunkRenderer(
                 paused = false
             }
         }
-        context.camera.offset::offset.observe(this) { silentlyClearChunkCache() }
+        context.camera.offset::offset.observe(this) { clearCache() }
 
-        context.input.bindings.register("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
+        context.input.bindings.register(minosoft("clear_chunk_cache"), KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
             KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-        )) { clearChunkCache() }
+        )) { clearCache(true) }
 
-        profile.rendering::antiMoirePattern.observe(this) { clearChunkCache() }
+        profile.rendering::antiMoirePattern.observe(this) { clearCache() }
         val rendering = session.profiles.rendering
-        rendering.performance::fastBedrock.observe(this) { clearChunkCache() }
-        rendering.light::ambientOcclusion.observe(this) { clearChunkCache() }
+        rendering.performance::fastBedrock.observe(this) { clearCache() }
+        rendering.light::ambientOcclusion.observe(this) { clearCache() }
         rendering.performance::limitChunkTransferTime.observe(this) { this.limitChunkTransferTime = it }
 
         profile::viewDistance.observe(this) { viewDistance ->
@@ -154,14 +153,13 @@ class ChunkRenderer(
         }
     }
 
-    fun silentlyClearChunkCache() {
+    fun clearCache(message: Boolean = false) {
         unloadWorld()
         master.tryQueue(world)
-    }
 
-    fun clearChunkCache() {
-        silentlyClearChunkCache()
-        session.util.sendDebugMessage("Chunk cache cleared!")
+        if (message) {
+            session.util.sendDebugMessage("Chunk cache cleared!")
+        }
     }
 
     fun unloadWorld() {
@@ -245,14 +243,14 @@ class ChunkRenderer(
         }
     }
 
-    private fun onFrustumChange() {
-        var sortQueue = false
+    private fun onVisibilityChange() {
+        var sort = false
         val cameraPosition = Vec3(session.player.renderInfo.eyePosition - context.camera.offset.offset)
         val sectionPosition = cameraPosition.blockPosition.sectionPosition
         if (this.cameraPosition != cameraPosition) {
             if (this.cameraSectionPosition != sectionPosition) {
                 this.cameraSectionPosition = sectionPosition
-                sortQueue = true
+                sort = true
             }
             this.cameraPosition = cameraPosition
         }
@@ -270,10 +268,10 @@ class ChunkRenderer(
             master.tryQueue(section, force = true, chunk = chunk)
         }
 
-        if (sortQueue && nextQueue.isNotEmpty()) {
-            meshingQueue.sort()
-        }
         if (nextQueue.isNotEmpty()) {
+            if (sort) {
+                meshingQueue.sort()
+            }
             meshingQueue.work()
         }
 

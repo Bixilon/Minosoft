@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.shader
 
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 
 class DummyNativeShader(
     override val context: RenderContext,
@@ -36,34 +36,34 @@ class DummyNativeShader(
 
     override fun reload() = Unit
 
-    override fun setFloat(uniformName: String, value: Float) = Unit
+    override fun setFloat(uniform: String, value: Float) = Unit
 
-    override fun setInt(uniformName: String, value: Int) = Unit
+    override fun setInt(uniform: String, value: Int) = Unit
 
-    override fun setUInt(uniformName: String, value: Int) = Unit
+    override fun setUInt(uniform: String, value: Int) = Unit
 
-    override fun setMat4(uniformName: String, mat4: Mat4) = Unit
+    override fun setMat4(uniform: String, mat4: Mat4) = Unit
 
-    override fun setVec2(uniformName: String, vec2: Vec2) = Unit
+    override fun setVec2(uniform: String, vec2: Vec2) = Unit
 
-    override fun setVec3(uniformName: String, vec3: Vec3) = Unit
+    override fun setVec3(uniform: String, vec3: Vec3) = Unit
 
-    override fun setVec4(uniformName: String, vec4: Vec4) = Unit
+    override fun setVec4(uniform: String, vec4: Vec4) = Unit
 
-    override fun setArray(uniformName: String, array: Array<*>) = Unit
+    override fun setArray(uniform: String, array: Array<*>) = Unit
 
-    override fun setIntArray(uniformName: String, array: IntArray) = Unit
+    override fun setIntArray(uniform: String, array: IntArray) = Unit
 
-    override fun setUIntArray(uniformName: String, array: IntArray) = Unit
+    override fun setUIntArray(uniform: String, array: IntArray) = Unit
 
-    override fun setCollection(uniformName: String, collection: Collection<*>) = Unit
+    override fun setCollection(uniform: String, collection: Collection<*>) = Unit
 
-    override fun setRGBColor(uniformName: String, color: RGBColor) = Unit
-    override fun setRGBAColor(uniformName: String, color: RGBAColor) = Unit
+    override fun setRGBColor(uniform: String, color: RGBColor) = Unit
+    override fun setRGBAColor(uniform: String, color: RGBAColor) = Unit
 
-    override fun setBoolean(uniformName: String, boolean: Boolean) = Unit
+    override fun setBoolean(uniform: String, boolean: Boolean) = Unit
 
-    override fun setTexture(uniformName: String, textureId: Int) = Unit
+    override fun setTexture(uniform: String, textureId: Int) = Unit
 
-    override fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer) = Unit
+    override fun setUniformBuffer(uniform: String, buffer: UniformBuffer) = Unit
 }
