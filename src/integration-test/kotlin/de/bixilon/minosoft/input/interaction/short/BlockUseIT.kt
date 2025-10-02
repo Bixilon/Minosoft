@@ -61,7 +61,7 @@ class BlockUseIT {
         session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(CoalTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
-        session.assertOnlyPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.Vec3d, null, Hands.OFF, false, 3))
+        session.assertOnlyPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, null, Hands.OFF, false, 3))
     }
 
     fun testCoalOnStone2() {

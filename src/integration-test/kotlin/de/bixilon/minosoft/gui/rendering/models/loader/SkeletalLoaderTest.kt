@@ -87,6 +87,6 @@ class SkeletalLoaderTest {
         val baked = loader[dummyModel]!!
 
 
-        assertEquals(baked.transform.children, mapOf("body" to BakedSkeletalTransform(1, Vec3f(0.0, 0.5, 0.0), mapOf("head" to BakedSkeletalTransform(2, Vec3f(0.0, 1.0, 0.0), emptyMap())))))
+        assertEquals(baked.transform.children, mapOf("body" to BakedSkeletalTransform(1, Vec3f(0.0f, 0.5f, 0.0f), mapOf("head" to BakedSkeletalTransform(2, Vec3f(0.0f, 1.0f, 0.0f), emptyMap())))))
     }
 }

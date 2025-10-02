@@ -50,7 +50,7 @@ class BlockPlaceIT {
         use.unsafePress()
         use.unsafeRelease()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.UP, Vec3f.EMPTY, ItemStack(item, 2), Hands.MAIN, false, 1))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.UP, Vec3d.EMPTY, ItemStack(item, 2), Hands.MAIN, false, 1))
         session.assertPacket(SwingArmC2SP(Hands.MAIN))
         // TODO: check placed fire?
         session.assertNoPacket()

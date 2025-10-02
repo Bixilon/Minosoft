@@ -160,7 +160,7 @@ class Vec4fTest {
     fun `length full`() {
         val vec = Vec4f(3.0f)
 
-        assertEquals(vec.length(), 9.0f)
+        assertEquals(vec.length(), 6.0f)
     }
 
     @Test

@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -54,7 +53,7 @@ class ChatComponentRendererTest {
     ) {
         if (lineIndex != null) assertEquals(this.lineIndex, lineIndex, "Line index mismatch")
         if (lines != null) assertEquals(this.lines, lines, "Lines mismatch")
-        if (size != null) assertEquals(this.size, size, "Size mismatch")
+        if (size != null) assertEquals(this.size.unsafe, size, "Size mismatch")
         assertEquals(this.cutOff, cutOff, "Cutoff mismatch!")
     }
 
@@ -349,7 +348,7 @@ class ChatComponentRendererTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 10f)),
         )
     }
 
@@ -359,10 +358,10 @@ class ChatComponentRendererTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
         )
     }
 
@@ -372,13 +371,13 @@ class ChatComponentRendererTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
 
             DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5, 32)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 32f)),
         )
     }
 
@@ -388,13 +387,13 @@ class ChatComponentRendererTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(11, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
 
             DummyComponentConsumer.RendererdCodePoint(Vec2f(11, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5, 32)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 32f)),
         )
     }
 
@@ -404,13 +403,13 @@ class ChatComponentRendererTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(12, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(13.5, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(13.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
 
             DummyComponentConsumer.RendererdCodePoint(Vec2f(12, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(13.5, 32)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(13.5f, 32f)),
         )
     }
 

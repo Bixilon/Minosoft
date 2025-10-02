@@ -96,16 +96,16 @@ class BitmapFontTypeTest {
     fun `load basic with default options`() {
         val font = load(intArrayOf(1, 2, 3), intArrayOf(7, 4, 6), chars = arrayOf(intArrayOf('a'.code, 'b'.code, 'c'.code)))
 
-        font.assert('a', 7, Vec2f(0.0078225f, 0), Vec2f(0.0546775f, 1.0f))
-        font.assert('b', 3, Vec2f(0.078135f, 0), Vec2f(0.0859275f, 1.0f))
-        font.assert('c', 4, Vec2f(0.1484475f, 0.0), Vec2f(0.15624f, 1.0f))
+        font.assert('a', 7, Vec2f(0.0078225f, 0f), Vec2f(0.0546775f, 1.0f))
+        font.assert('b', 3, Vec2f(0.078135f, 0f), Vec2f(0.0859275f, 1.0f))
+        font.assert('c', 4, Vec2f(0.1484475f, 0.0f), Vec2f(0.15624f, 1.0f))
     }
 
     fun `multiple rows`() {
         val font = load(IntArray(64) { it % 3 }, IntArray(64) { (it + 2) % 4 }, chars = arrayOf(IntArray(16) { 'A'.code + it }, IntArray(16) { 'A'.code + 16 + it }, IntArray(16) { 'A'.code + 32 + it }, IntArray(16) { 'A'.code + 48 + it }))
 
-        font.assert('A', 3, Vec2f(0.0f, 0), Vec2f(0.0234275f, 0.24999f))
-        font.assert('P', 2, Vec2f(0.93751f, 0.0), Vec2f(0.953115f, 0.24999f))
+        font.assert('A', 3, Vec2f(0.0f, 0f), Vec2f(0.0234275f, 0.24999f))
+        font.assert('P', 2, Vec2f(0.93751f, 0.0f), Vec2f(0.953115f, 0.24999f))
 
         font.assert('Q', 2, Vec2f(0.0078225f, 0.25001f), Vec2f(0.015615f, 0.49999f))
         font.assert('a', 1, Vec2f(0.015635f, 0.50001f), Vec2f(0.0078025f, 0.74999f))

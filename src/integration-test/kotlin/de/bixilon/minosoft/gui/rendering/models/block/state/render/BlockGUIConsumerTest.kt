@@ -41,7 +41,7 @@ class BlockGUIConsumerTest {
         return BlockGUIConsumer(gui, Vec2f(11, 12), consumer, null, ModelDisplay.DEFAULT, Vec2f(45))
     }
 
-    private fun BlockGUIConsumer.assertVertices(vararg expected: Vec2f) {
+    private fun BlockGUIConsumer.assertVertices(expected: Array<Vec2f>) {
         val consumer = this.consumer.unsafeCast<GUIConsumer>()
 
         if (consumer.vertices.size != expected.size) throw AssertionError("Size mismatch")
@@ -61,7 +61,7 @@ class BlockGUIConsumerTest {
         val uv = UnpackedUV(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f))
         consumer.addQuad(position, uv, 0f, 0f)
 
-        consumer.assertVertices(Vec2f()) // TODO
+        consumer.assertVertices(arrayOf(Vec2f())) // TODO
     }
 
     private class GUIConsumer : GUIVertexConsumer {

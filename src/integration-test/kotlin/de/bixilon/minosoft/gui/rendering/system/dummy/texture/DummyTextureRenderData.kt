@@ -23,8 +23,4 @@ object DummyTextureRenderData : TextureRenderData {
     override fun transformUV(end: Vec2f?): Vec2f {
         return end ?: Vec2f.EMPTY
     }
-
-    override fun transformUV(end: FloatArray?): FloatArray {
-        return end ?: floatArrayOf(1.0f, 1.0f)
-    }
 }
