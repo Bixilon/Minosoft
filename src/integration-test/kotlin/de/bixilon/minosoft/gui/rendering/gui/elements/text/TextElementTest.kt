@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.DummyComponentConsumer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
@@ -116,8 +117,8 @@ class TextElementTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5, 1)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 1f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 1f)),
         )
 
         consumer.assert(
@@ -135,9 +136,9 @@ class TextElementTest {
 
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.0, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(5.5, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(7.5, 1)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.0f, 1f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(5.5f, 1f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(7.5f, 1f)),
         )
 
         consumer.assert(
@@ -154,16 +155,16 @@ class TextElementTest {
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5, 1)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 1f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 1f)),
 
             DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 12)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5, 12)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5, 12)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 12f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 12f)),
 
             DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 23)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5, 23)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5, 23)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 23f)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 23f)),
         )
 
         consumer.assert(

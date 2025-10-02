@@ -34,9 +34,9 @@ class MMVec4fTest {
     fun `assign value to component`() {
         val vec = MVec4f(1.0f)
         vec.x = 2.0f; assertEquals(vec.x, 2.0f)
-        vec.y = 3.0f; assertEquals(vec.x, 3.0f)
-        vec.z = 4.0f; assertEquals(vec.x, 4.0f)
-        vec.w = 5.0f; assertEquals(vec.x, 5.0f)
+        vec.y = 3.0f; assertEquals(vec.y, 3.0f)
+        vec.z = 4.0f; assertEquals(vec.z, 4.0f)
+        vec.w = 5.0f; assertEquals(vec.w, 5.0f)
     }
 
     @Test
@@ -254,7 +254,7 @@ class MMVec4fTest {
     fun `length full`() {
         val vec = MVec4f(3.0f)
 
-        assertEquals(vec.length(), 9.0f)
+        assertEquals(vec.length(), 6.0f)
     }
 
     @Test

@@ -57,8 +57,8 @@ class ElementRotationTest {
     }
 
     fun `rotate grass around origin 45 degree on the y axis and rescale`() {
-        val from = Vec3f(0.8, 0, 8) / 16
-        val to = Vec3f(15.2, 16, 8) / 16
+        val from = Vec3f(0.8f, 0f, 8f) / 16
+        val to = Vec3f(15.2f, 16f, 8f) / 16
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(), rotation = ElementRotation(origin = Vec3f(0.5f), axis = Axes.Y, angle = 45.0f, rescale = true))), textures = mapOf("test" to minecraft("block/test").texture())))
 
 

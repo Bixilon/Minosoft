@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.session.play
 
-import glm_.pow
+import de.bixilon.kmath.number.IntUtil.pow
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat

@@ -34,7 +34,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertPa
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
-import glm_.vec3.Vec3d
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
 

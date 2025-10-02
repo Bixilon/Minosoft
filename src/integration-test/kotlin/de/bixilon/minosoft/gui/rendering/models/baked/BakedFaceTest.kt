@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
@@ -67,7 +68,7 @@ class BakedFaceTest {
 
         val mesh = mesh()
 
-        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, AmbientOcclusionUtil.EMPTY)
+        face.render(Vec3f(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, AmbientOcclusionUtil.EMPTY)
 
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
@@ -89,7 +90,7 @@ class BakedFaceTest {
 
         val mesh = mesh()
 
-        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, AmbientOcclusionUtil.EMPTY)
+        face.render(Vec3f(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, AmbientOcclusionUtil.EMPTY)
 
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()

@@ -21,4 +21,15 @@ object IntUtil {
     inline operator fun Int.times(number: Number) = this * number.toInt()
     inline operator fun Int.div(number: Number) = this / number.toInt()
     inline operator fun Int.rem(number: Number) = this % number.toInt()
+
+
+    inline fun Int.pow(pow: Int): Int {
+        var result = this
+
+        for (i in 0 until pow - 1) {
+            result *= this
+        }
+
+        return result
+    }
 }

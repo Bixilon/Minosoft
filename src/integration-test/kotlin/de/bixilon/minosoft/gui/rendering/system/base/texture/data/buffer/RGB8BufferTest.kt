@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb_INSTANCE
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -83,7 +83,7 @@ class RGB8BufferTest {
         source.setRGBA(11, 12, 0x11, 0x22, 0x33, 0x00)
 
         val destination = RGB8Buffer(Vec2i(12, 13))
-        destination.put(source, Vec2i.EMPTY_INSTANCE, Vec2i.EMPTY_INSTANCE, Vec2i(12, 13))
+        destination.put(source, Vec2i.EMPTY, Vec2i.EMPTY, Vec2i(12, 13))
 
         assertEquals(destination.getRGBA(0, 0), 0x112233FF.rgba())
         assertEquals(destination.getRGBA(10, 11), 0x112233FF.rgba())

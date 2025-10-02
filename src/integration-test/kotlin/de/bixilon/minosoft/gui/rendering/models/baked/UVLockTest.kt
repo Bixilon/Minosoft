@@ -123,7 +123,7 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0, 0.5, 0.5), Vec3f(1, 1, 1.0f)), block(0, 0, 16, 0, 16, 8, 0, 8), 1.0f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0f, 0.5f, 0.5f), Vec3f(1f, 1f, 1.0f)), block(0, 0, 16, 0, 16, 8, 0, 8), 1.0f)
     }
 
     fun `stairs top y=180`() {
@@ -133,7 +133,7 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0, 0.5, 0.0), Vec3f(0.5f, 1, 1.0f)), block(8, 0, 16, 0, 16, 16, 8, 16), 1.0f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0f, 0.5f, 0.0f), Vec3f(0.5f, 1f, 1.0f)), block(8, 0, 16, 0, 16, 16, 8, 16), 1.0f)
     }
 
     fun `stairs top y=270`() {
@@ -143,7 +143,7 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0, 0.5, 0), Vec3f(1, 1, 0.5f)), block(0, 0, 16, 0, 16, 8, 0, 8), 1.0f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0f, 0.5f, 0f), Vec3f(1f, 1f, 0.5f)), block(0, 0, 16, 0, 16, 8, 0, 8), 1.0f)
     }
 
     fun `stairs top 2 y=270`() {
@@ -153,7 +153,7 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0, 0.5, 0), Vec3f(1, 1, 0.5f)), block(0, 8, 16, 8, 16, 16, 0, 16), 1.0f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3f(0f, 0.5f, 0f), Vec3f(1f, 1f, 0.5f)), block(0, 8, 16, 8, 16, 16, 0, 16), 1.0f)
     }
 
     // TODO: test rotation around x axis and combinations

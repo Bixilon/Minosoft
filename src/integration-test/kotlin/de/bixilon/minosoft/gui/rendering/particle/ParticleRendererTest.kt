@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -126,7 +127,7 @@ class ParticleRendererTest {
 
     // TODO: auto ticking (task registering)
 
-    private class TestParticle(session: PlaySession) : Particle(session, Vec3d.EMPTY, Vec3d.EMPTY, DATA) {
+    private class TestParticle(session: PlaySession) : Particle(session, Vec3d.EMPTY, MVec3d.EMPTY, DATA) {
         var vertices = 0
         var tryTicks = 0
 

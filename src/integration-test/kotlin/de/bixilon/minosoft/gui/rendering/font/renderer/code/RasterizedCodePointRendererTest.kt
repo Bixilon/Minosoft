@@ -33,8 +33,8 @@ class RasterizedCodePointRendererTest {
             override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 this.char++
                 assertEquals(tint, ChatColors.BLUE)
-                assertEquals(uvStart, Vec2f(0.1, 0.2))
-                assertEquals(uvEnd, Vec2f(0.6, 0.7))
+                assertEquals(uvStart, Vec2f(0.1f, 0.2f))
+                assertEquals(uvEnd, Vec2f(0.6f, 0.7f))
                 assertNull(options)
             }
         }
@@ -90,8 +90,8 @@ class RasterizedCodePointRendererTest {
                 assertEquals(end, Vec2f(17.5f, 25.5f)) // start + width | start + height
 
                 // uv stays the same
-                assertEquals(uvStart, Vec2f(0.1, 0.2))
-                assertEquals(uvEnd, Vec2f(0.6, 0.7))
+                assertEquals(uvStart, Vec2f(0.1f, 0.2f))
+                assertEquals(uvEnd, Vec2f(0.6f, 0.7f))
             }
         }
         val char = DummyCodePointRenderer()

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f.UnsafeMat4f
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
@@ -29,8 +30,8 @@ import org.testng.annotations.Test
 
 @Test(groups = ["frustum", "rendering"])
 class FrustumTest {
-    private val CAMERA = Frustum::class.java.getFieldOrNull("camera")!!
-    private val RECALCULATE = Frustum::class.java.getDeclaredMethod("recalculate", Mat4::class.java).apply { setUnsafeAccessible() }
+    private val CAMERA by lazy { Frustum::class.java.getFieldOrNull("camera")!! }
+    private val RECALCULATE by lazy { Frustum::class.java.declaredMethods.find { it.name.startsWith("recalculate") && it.parameterCount == 1 && it.parameterTypes[0] == UnsafeMat4f::class.java }!!.apply { setUnsafeAccessible() } }
 
     private fun create(matrix: Mat4f, offset: BlockPosition = BlockPosition.EMPTY): Frustum {
         val worldOffset = WorldOffset::class.java.allocate()
@@ -41,7 +42,7 @@ class FrustumTest {
 
         val frustum = Frustum::class.java.allocate()
         CAMERA[frustum] = camera
-        RECALCULATE.invoke(frustum, matrix.transposeAssign())
+        RECALCULATE.invoke(frustum, matrix.transpose()._0)
 
         return frustum
     }
@@ -51,7 +52,7 @@ class FrustumTest {
     }
 
     fun `aabb without world offset`() {
-        val frustum = create(Mat4f(floatArrayOf(-0.86422914f, -0.09317832f, -0.24142957f, -0.24142484f, 0.0f, 1.3786901f, -0.26089254f, -0.26088744f, -0.2232244f, 0.36074647f, 0.9347118f, 0.9346935f, -240.01099f, -351.1156f, -635.5928f, -635.5603f)))
+        val frustum = create(Mat4f(-0.86422914f, -0.09317832f, -0.24142957f, -0.24142484f, 0.0f, 1.3786901f, -0.26089254f, -0.26088744f, -0.2232244f, 0.36074647f, 0.9347118f, 0.9346935f, -240.01099f, -351.1156f, -635.5928f, -635.5603f))
 
         assertTrue(AABB(-430.56384174919845, 70.0, 590.7873477416574, -430.31384174919845, 70.25, 591.0373477416574) in frustum)
         assertTrue(AABB(-427.9736901136882, 70.0, 591.3889686121771, -427.7236901136882, 70.25, 591.6389686121771) in frustum)
@@ -65,7 +66,7 @@ class FrustumTest {
     }
 
     fun `aabb without world offset 2`() {
-        val frustum = create(Mat4f(floatArrayOf(0.031299774f, 1.4272678f, 0.0017395335f, 0.0017394995f, 0.0f, 0.0024857917f, -1.0000181f, -0.99999857f, 0.89204353f, -0.050079573f, -6.103626E-5f, -6.103507E-5f, -533.13086f, 625.4982f, 80.68989f, 80.708305f)))
+        val frustum = create(Mat4f(0.031299774f, 1.4272678f, 0.0017395335f, 0.0017394995f, 0.0f, 0.0024857917f, -1.0000181f, -0.99999857f, 0.89204353f, -0.050079573f, -6.103626E-5f, -6.103507E-5f, -533.13086f, 625.4982f, 80.68989f, 80.708305f))
 
         assertTrue(AABB(-412.8941188408839, 71.0, 602.2574852969693, -412.6441188408839, 71.25, 602.5074852969693) in frustum)
         assertTrue(AABB(-410.98738348932096, 71.0, 607.7848105520435, -410.73738348932096, 71.25, 608.0348105520435) in frustum)
@@ -79,7 +80,7 @@ class FrustumTest {
     }
 
     fun `aabb with world offset`() {
-        val frustum = create(Mat4f(floatArrayOf(-0.50417376f, 1.1785046f, 0.0014267226f, 0.0014266947f, 0.0f, 0.0024691392f, -1.0000181f, -0.99999857f, 0.7365663f, 0.80667686f, 9.765802E-4f, 9.765611E-4f, 482.31094f, 369.0533f, 91.83938f, 91.85758f)), BlockPosition(12288, 0, -1837056))
+        val frustum = create(Mat4f(-0.50417376f, 1.1785046f, 0.0014267226f, 0.0014266947f, 0.0f, 0.0024691392f, -1.0000181f, -0.99999857f, 0.7365663f, 0.80667686f, 9.765802E-4f, 9.765611E-4f, 482.31094f, 369.0533f, 91.83938f, 91.85758f), BlockPosition(12288, 0, -1837056))
 
         assertTrue(AABB(12381.468664298143, 75.0, -1837647.3519469386, 12381.718664298143, 75.25, -1837647.1019469386) in frustum)
         assertTrue(AABB(12392.072452953968, 77.0, -1837649.209980461, 12392.322452953968, 77.25, -1837648.959980461) in frustum)

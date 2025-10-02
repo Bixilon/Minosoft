@@ -72,7 +72,7 @@ class LegacyUnicodeFontTypeTest {
 
         val char = chars[0]!!
         assertEquals(char.uvStart, Vec2f(0, 0))
-        assertEquals(char.uvEnd, Vec2f(0.00390625, 0.0625))
+        assertEquals(char.uvEnd, Vec2f(0.00390625f, 0.0625f))
         assertEquals(char.width, 0.5f)
     }
 
@@ -81,8 +81,8 @@ class LegacyUnicodeFontTypeTest {
         val chars = load(sizes)
 
         val char = chars[1]!!
-        assertEquals(char.uvStart, Vec2f(0.06640625, 0))
-        assertEquals(char.uvEnd, Vec2f(0.09765625, 0.0625f))
+        assertEquals(char.uvStart, Vec2f(0.06640625f, 0f))
+        assertEquals(char.uvEnd, Vec2f(0.09765625f, 0.0625f))
         assertEquals(char.width, 4.0f)
     }
 
@@ -92,8 +92,8 @@ class LegacyUnicodeFontTypeTest {
         val chars = load(sizes)
 
         val char = chars[18]!!
-        assertEquals(char.uvStart, Vec2f(0.15625, 0.0625))
-        assertEquals(char.uvEnd, Vec2f(0.18359375, 0.125))
+        assertEquals(char.uvStart, Vec2f(0.15625f, 0.0625f))
+        assertEquals(char.uvEnd, Vec2f(0.18359375f, 0.125f))
         assertEquals(char.width, 3.5f)
     }
 }

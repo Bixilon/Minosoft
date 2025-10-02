@@ -125,64 +125,66 @@ class BlockModelTest {
             "block/block" to BLOCK,
         )
 
-        val CUBE_ALL_MODEL: BlockModel = BlockModel(
-            GUILights.SIDE,
-            display = mapOf(
-                DisplayPositions.GUI to ModelDisplay(
-                    rotation = Vec3f(30, 225, 0).rad,
-                    translation = Vec3f(0, 0, 0),
-                    scale = Vec3f(0.625, 0.625, 0.625),
+        val CUBE_ALL_MODEL: BlockModel by lazy {
+            BlockModel(
+                GUILights.SIDE,
+                display = mapOf(
+                    DisplayPositions.GUI to ModelDisplay(
+                        rotation = Vec3f(30, 225, 0).rad,
+                        translation = Vec3f(0, 0, 0),
+                        scale = Vec3f(0.625f, 0.625f, 0.625f),
+                    ),
+                    DisplayPositions.GROUND to ModelDisplay(
+                        rotation = Vec3f(0, 0, 0),
+                        translation = Vec3f(0f, 3f / 16.0f, 0f),
+                        scale = Vec3f(0.25f, 0.25f, 0.25f),
+                    ),
+                    DisplayPositions.FIXED to ModelDisplay(
+                        rotation = Vec3f(0, 0, 0),
+                        translation = Vec3f(0, 0, 0),
+                        scale = Vec3f(0.5f, 0.5f, 0.5f),
+                    ),
+                    DisplayPositions.THIRD_PERSON_RIGHT_HAND to ModelDisplay(
+                        rotation = Vec3f(75, 45, 0).rad,
+                        translation = Vec3f(0f, 2.5f / 16.0f, 0f),
+                        scale = Vec3f(0.375f, 0.375f, 0.375f),
+                    ),
+                    DisplayPositions.FIRST_PERSON_RIGHT_HAND to ModelDisplay(
+                        rotation = Vec3f(0, 45, 0).rad,
+                        translation = Vec3f(0, 0, 0),
+                        scale = Vec3f(0.40f, 0.40f, 0.40f),
+                    ),
+                    DisplayPositions.FIRST_PERSON_LEFT_HAND to ModelDisplay(
+                        rotation = Vec3f(0, 225, 0).rad,
+                        translation = Vec3f(0, 0, 0),
+                        scale = Vec3f(0.40f, 0.40f, 0.40f),
+                    )
                 ),
-                DisplayPositions.GROUND to ModelDisplay(
-                    rotation = Vec3f(0, 0, 0),
-                    translation = Vec3f(0, 3 / 16.0f, 0),
-                    scale = Vec3f(0.25, 0.25, 0.25),
+                elements = listOf(ModelElement(
+                    from = Vec3f(0, 0, 0),
+                    to = Vec3f(1, 1, 1),
+                    faces = mapOf(
+                        Directions.DOWN to ModelFace("#down", null, 0, -1),
+                        Directions.UP to ModelFace("#up", null, 0, -1),
+                        Directions.NORTH to ModelFace("#north", null, 0, -1),
+                        Directions.SOUTH to ModelFace("#south", null, 0, -1),
+                        Directions.WEST to ModelFace("#west", null, 0, -1),
+                        Directions.EAST to ModelFace("#east", null, 0, -1),
+                    ),
+                    shade = true,
+                    rotation = null,
+                )),
+                textures = mapOf(
+                    "particle" to "all",
+                    "down" to "all",
+                    "up" to "all",
+                    "north" to "all",
+                    "east" to "all",
+                    "south" to "all",
+                    "west" to "all"
                 ),
-                DisplayPositions.FIXED to ModelDisplay(
-                    rotation = Vec3f(0, 0, 0),
-                    translation = Vec3f(0, 0, 0),
-                    scale = Vec3f(0.5, 0.5, 0.5),
-                ),
-                DisplayPositions.THIRD_PERSON_RIGHT_HAND to ModelDisplay(
-                    rotation = Vec3f(75, 45, 0).rad,
-                    translation = Vec3f(0, 2.5 / 16.0f, 0),
-                    scale = Vec3f(0.375, 0.375, 0.375),
-                ),
-                DisplayPositions.FIRST_PERSON_RIGHT_HAND to ModelDisplay(
-                    rotation = Vec3f(0, 45, 0).rad,
-                    translation = Vec3f(0, 0, 0),
-                    scale = Vec3f(0.40, 0.40, 0.40),
-                ),
-                DisplayPositions.FIRST_PERSON_LEFT_HAND to ModelDisplay(
-                    rotation = Vec3f(0, 225, 0).rad,
-                    translation = Vec3f(0, 0, 0),
-                    scale = Vec3f(0.40, 0.40, 0.40),
-                )
-            ),
-            elements = listOf(ModelElement(
-                from = Vec3f(0, 0, 0),
-                to = Vec3f(1, 1, 1),
-                faces = mapOf(
-                    Directions.DOWN to ModelFace("#down", null, 0, -1),
-                    Directions.UP to ModelFace("#up", null, 0, -1),
-                    Directions.NORTH to ModelFace("#north", null, 0, -1),
-                    Directions.SOUTH to ModelFace("#south", null, 0, -1),
-                    Directions.WEST to ModelFace("#west", null, 0, -1),
-                    Directions.EAST to ModelFace("#east", null, 0, -1),
-                ),
-                shade = true,
-                rotation = null,
-            )),
-            textures = mapOf(
-                "particle" to "all",
-                "down" to "all",
-                "up" to "all",
-                "north" to "all",
-                "east" to "all",
-                "south" to "all",
-                "west" to "all"
-            ),
-            ambientOcclusion = true,
-        )
+                ambientOcclusion = true,
+            )
+        }
     }
 }
