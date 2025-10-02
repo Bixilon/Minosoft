@@ -53,7 +53,7 @@ class ChatComponentRendererTest {
     ) {
         if (lineIndex != null) assertEquals(this.lineIndex, lineIndex, "Line index mismatch")
         if (lines != null) assertEquals(this.lines, lines, "Lines mismatch")
-        if (size != null) assertEquals(this.size, size, "Size mismatch")
+        if (size != null) assertEquals(this.size.unsafe, size, "Size mismatch")
         assertEquals(this.cutOff, cutOff, "Cutoff mismatch!")
     }
 

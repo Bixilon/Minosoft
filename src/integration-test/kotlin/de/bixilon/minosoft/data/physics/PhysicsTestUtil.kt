@@ -39,7 +39,6 @@ import de.bixilon.minosoft.util.KUtil.matches
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert
 import java.util.*
-import kotlin.time.Duration
 
 object PhysicsTestUtil {
     const val MATCH_EXACTLY = true
@@ -101,7 +100,11 @@ object PhysicsTestUtil {
     fun Entity.assertPosition(x: Double, y: Double, z: Double, ticks: Int = 1) {
         val position = physics.position
         val expected = Vec3d(x, y, z)
-        if (position.matches(expected, VALUE_MARGIN * ticks)) {
+        if (MATCH_EXACTLY) {
+            if (position == expected) {
+                return
+            }
+        } else if (position.matches(expected, VALUE_MARGIN * ticks)) {
             return
         }
         val delta = (position - expected)
@@ -109,13 +112,17 @@ object PhysicsTestUtil {
     }
 
     fun Entity.assertVelocity(x: Double, y: Double, z: Double, ticks: Int = 1) {
-        val velocity = physics.velocity
+        val velocity = physics.velocity.unsafe
         val expected = Vec3d(x, y, z)
-        if (velocity.unsafe.matches(expected, VALUE_MARGIN * ticks)) {
+        if (MATCH_EXACTLY) {
+            if (velocity == expected) {
+                return
+            }
+        } else if (velocity.matches(expected, VALUE_MARGIN * ticks)) {
             return
         }
         val delta = (velocity - expected)
-        Assert.assertEquals(velocity, expected, "Velocity mismatch:\nC${physics.velocity.unsafe.formatted()}\nE${expected.formatted()}\nD:${delta.unsafe.formatted()}\n\n")
+        Assert.assertEquals(velocity, expected, "Velocity mismatch:\nC${velocity.formatted()}\nE${expected.formatted()}\nD:${delta.formatted()}\n\n")
     }
 
     fun Entity.assertGround(onGround: Boolean = true) {
