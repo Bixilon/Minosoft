@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture_INSTANCE
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert
@@ -37,7 +37,7 @@ object BakedModelTestUtil {
     private val session by lazy { createSession() }
     private val rendering by lazy {
         val rendering = Rendering(session)
-        rendering.context.textures::debugTexture.forceSet(MemoryTexture(Vec2i.EMPTY_INSTANCE, mipmaps = 0, buffer = RGBA8Buffer(Vec2i(0, 0))))
+        rendering.context.textures::debugTexture.forceSet(MemoryTexture(Vec2i.EMPTY, mipmaps = 0, buffer = RGBA8Buffer(Vec2i(0, 0))))
         return@lazy rendering
     }
 

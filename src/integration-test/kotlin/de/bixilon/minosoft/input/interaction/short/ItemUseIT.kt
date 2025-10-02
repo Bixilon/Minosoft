@@ -88,7 +88,7 @@ class ItemUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
         session.assertOnlyPacket(SwingArmC2SP(Hands.MAIN))
@@ -102,8 +102,8 @@ class ItemUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, null, Hands.MAIN, false))
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(EggTest0.item), Hands.OFF, false, 2))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, null, Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(EggTest0.item), Hands.OFF, false, 2))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.OFF)
         session.assertOnlyPacket(SwingArmC2SP(Hands.OFF))
@@ -118,7 +118,7 @@ class ItemUseIT {
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3f.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
         session.assertOnlyPacket(SwingArmC2SP(Hands.MAIN))
