@@ -50,14 +50,6 @@ class DummyNativeShader(
 
     override fun setVec4(uniform: String, vec4: Vec4) = Unit
 
-    override fun setArray(uniform: String, array: Array<*>) = Unit
-
-    override fun setIntArray(uniform: String, array: IntArray) = Unit
-
-    override fun setUIntArray(uniform: String, array: IntArray) = Unit
-
-    override fun setCollection(uniform: String, collection: Collection<*>) = Unit
-
     override fun setRGBColor(uniform: String, color: RGBColor) = Unit
     override fun setRGBAColor(uniform: String, color: RGBAColor) = Unit
 

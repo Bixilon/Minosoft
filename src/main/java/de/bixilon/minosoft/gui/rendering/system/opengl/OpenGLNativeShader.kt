@@ -176,30 +176,6 @@ class OpenGLNativeShader(
         glUniform4f(getUniformLocation(uniform), vec4.x, vec4.y, vec4.z, vec4.w)
     }
 
-    override fun setArray(uniform: String, array: Array<*>) {
-        for ((i, value) in array.withIndex()) {
-            this["$uniform[$i]"] = value
-        }
-    }
-
-    override fun setIntArray(uniform: String, array: IntArray) {
-        for ((i, value) in array.withIndex()) {
-            this.setInt("$uniform[$i]", value)
-        }
-    }
-
-    override fun setUIntArray(uniform: String, array: IntArray) {
-        for ((i, value) in array.withIndex()) {
-            this.setUInt("$uniform[$i]", value)
-        }
-    }
-
-    override fun setCollection(uniform: String, collection: Collection<*>) {
-        for ((i, value) in collection.withIndex()) {
-            this["$uniform[$i]"] = value
-        }
-    }
-
     override fun setRGBColor(uniform: String, color: RGBColor) {
         setVec4(uniform, Vec4(color.redf, color.greenf, color.bluef, 1.0f))
     }
