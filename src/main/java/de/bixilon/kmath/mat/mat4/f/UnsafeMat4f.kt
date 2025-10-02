@@ -24,16 +24,16 @@ class UnsafeMat4f(
     fun final() = Mat4f(this)
     fun mutable() = MMat4f(this)
 
-    inline operator fun get(x: Int, y: Int): Float {
+    inline operator fun get(row: Int, column: Int): Float {
         // assert(x in 0 until 4)
         // assert(y in 0 until 4)
-        return array[(y shl 2) or x]
+        return array[(row shl 2) or column]
     }
 
-    inline operator fun set(x: Int, y: Int, value: Float) {
+    inline operator fun set(row: Int, column: Int, value: Float) {
         // assert(x in 0 until 4)
         // assert(y in 0 until 4)
-        array[(y shl 2) or x] = value
+        array[(row shl 2) or column] = value
     }
 
 
