@@ -229,8 +229,8 @@ class GlfwWindow(
         glfwMakeContextCurrent(window)
 
         this::size.observeRendering(this) {
-            if (_size == it) return@observeRendering
-            val scaled = scalePosition(it)
+            if (_size == size) return@observeRendering
+            val scaled = scalePosition(size)
             glfwSetWindowSize(window, scaled.x, scaled.y)
         }
         super.init(profile)
