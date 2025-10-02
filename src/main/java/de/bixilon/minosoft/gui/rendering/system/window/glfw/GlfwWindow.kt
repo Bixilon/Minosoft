@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -56,7 +57,6 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWImage
 import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryUtil
-import java.nio.ByteBuffer
 
 
 class GlfwWindow(
@@ -426,13 +426,16 @@ class GlfwWindow(
         fireGLFWEvent(MouseScrollEvent(context, offset = Vec2d(xOffset, yOffset)))
     }
 
-    override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
+    override fun setIcon(buffer: TextureBuffer) {
         if (PlatformInfo.OS == OSTypes.MAC) {
             return // the window icon can just be set with the TaskBar api. See SystemUtil for more information
         }
+        buffer.data.rewind()
+        // TODO: free both buffers again?
+        val image = GLFWImage.create()
+        image.set(buffer.size.x, buffer.size.y, buffer.data)
+
         val images = GLFWImage.malloc(1)
-        val image = GLFWImage.malloc()
-        image.set(size.x, size.y, buffer)
         images.put(0, image)
         glfwSetWindowIcon(window, images)
     }

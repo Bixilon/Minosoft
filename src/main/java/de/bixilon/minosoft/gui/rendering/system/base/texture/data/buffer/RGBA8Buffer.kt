@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
-import glm_.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
@@ -70,5 +70,9 @@ class RGBA8Buffer(
     private fun stride(x: Int, y: Int): Int {
         if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
+    }
+
+    companion object : TextureBufferFactory<RGBA8Buffer> {
+        override fun create(size: Vec2i) = RGBA8Buffer(size)
     }
 }

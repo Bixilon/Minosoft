@@ -15,14 +15,13 @@ package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.system.SystemUtil
-import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import org.lwjgl.BufferUtils
-import java.nio.ByteBuffer
 
 interface Window {
     val systemScale: Vec2
@@ -75,18 +74,12 @@ interface Window {
     fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean)
 
 
-    fun setIcon(size: Vec2i, buffer: ByteBuffer)
+    fun setIcon(buffer: TextureBuffer)
 
 
     fun setDefaultIcon(assetsManager: AssetsManager) {
-        val stream = assetsManager[SystemUtil.ICON]
-        val decoder = PNGDecoder(stream)
-        val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
-        decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
-        stream.close()
-        data.position(0)
-        data.limit(data.capacity())
-        setIcon(Vec2i(decoder.width, decoder.height), data)
+        val buffer = assetsManager[SystemUtil.ICON].readTexture()
+        setIcon(buffer)
     }
 
     fun resetCursor() {

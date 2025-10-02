@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.window.dummy
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import java.nio.ByteBuffer
 
 class DummyWindow : Window {
     override val systemScale by observed(Vec2(1.0f))
@@ -57,7 +57,7 @@ class DummyWindow : Window {
 
     override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) = Unit
 
-    override fun setIcon(size: Vec2i, buffer: ByteBuffer) = Unit
+    override fun setIcon(buffer: TextureBuffer) = Unit
 
     companion object : WindowFactory {
         override fun create(context: RenderContext) = DummyWindow()
