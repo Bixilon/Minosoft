@@ -244,7 +244,7 @@ class GlfwWindow(
         }
 
         initCallbacks()
-
+        fireSizeEvents()
         onWindowScale(window, getWindowScale())
     }
 
@@ -315,14 +315,7 @@ class GlfwWindow(
 
     private fun onWindowScale(window: Long, x: Float, y: Float) = onWindowScale(window, Vec2(x, y))
 
-    private fun onWindowScale(window: Long, scale: Vec2) {
-        log { "Window scale (window=$window, scale=$scale)" }
-
-        if (window != this.window) return
-        if (this.systemScale == scale) return
-
-        this.systemScale = scale
-
+    private fun fireSizeEvents() {
         apply {
             val x = IntArray(1)
             val y = IntArray(1)
@@ -335,6 +328,16 @@ class GlfwWindow(
             glfwGetCursorPos(window, x, y)
             onMouseMove(window, x[0], y[0])
         }
+    }
+
+    private fun onWindowScale(window: Long, scale: Vec2) {
+        log { "Window scale (window=$window, scale=$scale)" }
+
+        if (window != this.window) return
+        if (this.systemScale == scale) return
+
+        this.systemScale = scale
+        fireSizeEvents()
     }
 
     override var focused by observed(false)
