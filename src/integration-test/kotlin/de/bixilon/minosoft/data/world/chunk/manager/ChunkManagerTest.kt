@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager
 
+import de.bixilon.kmath.vec.vec2.i.MVec2i
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -38,7 +39,6 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -111,7 +111,7 @@ class ChunkManagerTest {
         val chunk = manager[ChunkPosition(3, 0)]
         assertNotNull(chunk)
         assertEquals(chunk!!.position, ChunkPosition(3, 0))
-        assertEquals(manager.size.size.size, Vec2i(1, 1))
+        assertEquals(manager.size.size.size, MVec2i(1, 1))
     }
 
     fun unloadSingle() {
@@ -120,7 +120,7 @@ class ChunkManagerTest {
         manager.create(ChunkPosition(0, 1))
         manager -= ChunkPosition(0, 1)
         assertEquals(0, manager.chunks.size)
-        assertEquals(manager.size.size.size, Vec2i.EMPTY)
+        assertEquals(manager.size.size.size, MVec2i.EMPTY)
     }
 
     fun neighbours2() {
@@ -132,7 +132,7 @@ class ChunkManagerTest {
         assertSame(b.neighbours.neighbours[Directions.NORTH], a)
 
 
-        assertEquals(manager.size.size.size, Vec2i(1, 2))
+        assertEquals(manager.size.size.size, MVec2i(1, 2))
     }
 
     fun neighbours9() {
@@ -153,7 +153,7 @@ class ChunkManagerTest {
         assertEquals(matrix[2][2].neighbours.neighbours.array, arrayOf(matrix[1][1], matrix[2][1], null, matrix[1][2], null, null, null, null))
 
 
-        assertEquals(manager.size.size.size, Vec2i(3, 3))
+        assertEquals(manager.size.size.size, MVec2i(3, 3))
     }
 
     fun neighboursUnload() {
@@ -173,7 +173,7 @@ class ChunkManagerTest {
         assertEquals(matrix[2][2].neighbours.neighbours.array, arrayOf(null, matrix[2][1], null, matrix[1][2], null, null, null, null))
 
 
-        assertEquals(manager.size.size.size, Vec2i(3, 3))
+        assertEquals(manager.size.size.size, MVec2i(3, 3))
     }
 
     fun clear() {
@@ -182,7 +182,7 @@ class ChunkManagerTest {
 
         manager.clear()
         assertEquals(manager.chunks.size, 0)
-        assertEquals(manager.size.size.size, Vec2i.EMPTY)
+        assertEquals(manager.size.size.size, MVec2i.EMPTY)
     }
 
     fun sectionNeighboursInitial() {

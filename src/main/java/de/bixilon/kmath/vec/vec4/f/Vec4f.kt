@@ -25,7 +25,7 @@ import kotlin.math.sqrt
 
 @JvmInline
 value class Vec4f(
-    private val _0: UnsafeVec4f,
+    val _0: UnsafeVec4f,
 ) : _Vec4f {
     override val x: Float get() = _0.x
     override val y: Float get() = _0.y
@@ -63,6 +63,12 @@ value class Vec4f(
     inline fun length2() = x * x + y * y + z * z + w * w
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
+    inline fun write(array: FloatArray, offset: Int = 0) {
+        array[offset + 0] = x
+        array[offset + 1] = y
+        array[offset + 2] = z
+        array[offset + 3] = w
+    }
 
     override fun toString(): String = "($x $y $z $w)"
 

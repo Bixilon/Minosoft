@@ -29,7 +29,7 @@ import kotlin.math.sqrt
 
 @JvmInline
 value class MVec3f(
-    private val _0: UnsafeVec3f,
+    val _0: UnsafeVec3f,
 ) : _Vec3f {
     override var x: Float
         get() = _0.x

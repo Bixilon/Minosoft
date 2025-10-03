@@ -13,8 +13,8 @@
 
 package de.bixilon.kmath.vec.vec4.f
 
-import de.bixilon.kmath.vec.vec4.f.MVec4f
 import org.junit.jupiter.api.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
@@ -284,5 +284,21 @@ class MMVec4fTest {
         val a = MVec4f(1.0f, 2.0f, 3.0f, 4.0f)
         val b = MVec4f(2.0f, 2.0f, 3.0f, 4.0f)
         assertNotEquals(a, b)
+    }
+
+    @Test
+    fun `write to array`() {
+        val vec = Vec4f(1.0f, 2.0f, 3.0f, 4.0f)
+        val array = FloatArray(6)
+        vec.write(array, 1)
+        assertContentEquals(array, floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 0.0f))
+    }
+
+    @Test
+    fun `read from array`() {
+        val array = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 0.0f)
+        val vec = MVec4f(0.0f, 0.0f, 0.0f, 0.0f)
+        vec.read(array, 1)
+        assertEquals(vec, MVec4f(1.0f, 2.0f, 3.0f, 4.0f))
     }
 }

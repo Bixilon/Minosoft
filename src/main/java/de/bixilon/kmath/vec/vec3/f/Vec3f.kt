@@ -23,13 +23,12 @@ import de.bixilon.kmath.vec.vec3.d._Vec3d
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline
 value class Vec3f(
-    private val _0: UnsafeVec3f,
+    val _0: UnsafeVec3f,
 ) : _Vec3f {
     override val x: Float get() = _0.x
     override val y: Float get() = _0.y

@@ -25,7 +25,7 @@ import kotlin.math.sqrt
 
 @JvmInline
 value class MVec2i(
-    private val _0: UnsafeVec2i,
+    val _0: UnsafeVec2i,
 ) : _Vec2i {
     override var x: Int
         get() = _0.x

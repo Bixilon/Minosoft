@@ -13,18 +13,14 @@
 
 package de.bixilon.kmath.mat.mat3.f
 
-import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
-import de.bixilon.kmath.vec.vec3.i._Vec3i
-import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.minosoft.util.f
 
 @JvmInline
 value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
-
 
     constructor() : this(1.0f) // TODO: remove
     constructor(s: Float) : this(s, s, s)
@@ -58,6 +54,16 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         this[x, 2] = vec3.z
     }
 
+    inline fun set(
+        x0: Float, y0: Float, z0: Float,
+        x1: Float, y1: Float, z1: Float,
+        x2: Float, y2: Float, z2: Float,
+    ) {
+        this[0, 0] = x0; this[0, 1] = y0; this[0, 2] = z0
+        this[1, 0] = x1; this[1, 1] = y1; this[1, 2] = z1
+        this[2, 0] = x2; this[2, 1] = y2; this[2, 2] = z2
+    }
+
     inline operator fun set(x: Int, y: Int, value: Float) {
         _0[x, y] = value
     }
@@ -84,28 +90,23 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         this[0, 2], this[1, 2], this[2, 2],
     )
 
-    inline fun transposeAssign(): Unit = TODO()
+    inline fun transposeAssign() = set(
+        this[0, 0], this[1, 0], this[2, 0],
+        this[0, 1], this[1, 1], this[2, 1],
+        this[0, 2], this[1, 2], this[2, 2],
+    )
 
-    inline fun clearAssign(): Unit = TODO()
+    inline fun clearAssign() {
+        _0.array.fill(0.0f)
+    }
 
+    companion object {
+        const val LENGTH = 3 * 3
 
-    inline fun translate(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, x, y, z, this) }
-    inline fun translate(offset: _Vec3f) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, offset.x, offset.y, offset.z, this) }
-    inline fun translate(offset: _Vec3i) = MMat3f().apply { Mat3Operations.translate(this@MMat3f, offset.x.f, offset.y.f, offset.z.f, this) }
-
-    inline fun translateAssign(x: Float, y: Float, z: Float) = Mat3Operations.translate(this@MMat3f, x, y, z, this)
-    inline fun translateAssign(offset: _Vec3f) = Mat3Operations.translate(this@MMat3f, offset.x, offset.y, offset.z, this)
-    inline fun translateAssign(offset: _Vec3i) = Mat3Operations.translate(this@MMat3f, offset.x.f, offset.y.f, offset.z.f, this)
-
-
-    inline fun scale(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, x, y, z, this) }
-    inline fun scale(scale: _Vec3f) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, scale.x, scale.y, scale.z, this) }
-    inline fun scale(scale: _Vec3i) = MMat3f().apply { Mat3Operations.scale(this@MMat3f, scale.x.f, scale.y.f, scale.z.f, this) }
-
-    inline fun scaleAssign(x: Float, y: Float, z: Float) = Mat3Operations.scale(this@MMat3f, x, y, z, this)
-    inline fun scaleAssign(scale: _Vec3f) = Mat3Operations.scale(this@MMat3f, scale.x, scale.y, scale.z, this)
-    inline fun scaleAssign(scale: _Vec3i) = Mat3Operations.scale(this@MMat3f, scale.x.f, scale.y.f, scale.z.f, this)
-
-
-    // TODO: rotate
+        inline operator fun invoke(mat: _Mat4f) = Mat3f(
+            mat[0, 0], mat[0, 1], mat[0, 2],
+            mat[1, 0], mat[1, 1], mat[1, 2],
+            mat[2, 0], mat[2, 1], mat[2, 2],
+        )
+    }
 }

@@ -41,7 +41,7 @@ class TargetHandlerTest {
         session.world[7, 69, 6] = IT.BLOCK_2
         session.world[8, 69, 6] = IT.BLOCK_1
 
-        player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
+        player.renderInfo::eyePosition.forceSet((player.physics.position + Vec3d(0.0, 1.5, 0.0))._0)
         player.renderInfo::rotation.forceSet(player.physics.rotation)
 
         session.camera.target.update()
@@ -65,7 +65,7 @@ class TargetHandlerTest {
 
         session.world[8, 70, 2] = IT.BLOCK_1
 
-        player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
+        player.renderInfo::eyePosition.forceSet((player.physics.position + Vec3d(0.0, 1.5, 0.0))._0)
         player.renderInfo::rotation.forceSet(player.physics.rotation)
 
         session.camera.target.update()
@@ -89,7 +89,7 @@ class TargetHandlerTest {
 
         session.world[9, 70, 2] = IT.BLOCK_1
 
-        player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
+        player.renderInfo::eyePosition.forceSet((player.physics.position + Vec3d(0.0, 1.5, 0.0))._0)
         player.renderInfo::rotation.forceSet(player.physics.rotation)
 
         session.camera.target.update()

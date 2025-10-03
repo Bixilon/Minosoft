@@ -50,7 +50,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
         }
 
         override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-            chars += RendererdCodePoint(position)
+            chars += RendererdCodePoint(Vec2f(position.x, position.y)) // copy because unsafe
         }
     }
 

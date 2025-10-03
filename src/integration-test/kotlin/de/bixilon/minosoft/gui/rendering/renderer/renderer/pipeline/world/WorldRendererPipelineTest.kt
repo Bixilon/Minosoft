@@ -198,7 +198,7 @@ class WorldRendererPipelineTest {
         val framebuffer = IT.OBJENESIS.newInstance(FramebufferManager::class.java)
         framebuffer::world.forceSet(IT.OBJENESIS.newInstance(WorldFramebuffer::class.java).apply {
             this::polygonMode.forceSet(PolygonModes.FILL)
-            this::size.forceSet(Vec2i(1, 1))
+            this::size.forceSet(Vec2i(1, 1)._0)
             this::scale.forceSet(1.0f)
             this::framebuffer.forceSet(DummyFramebuffer())
 
