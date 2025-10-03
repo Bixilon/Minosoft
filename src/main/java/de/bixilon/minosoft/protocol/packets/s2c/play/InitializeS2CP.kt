@@ -143,7 +143,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             if (buffer.versionId >= V_23W31A) {
                 dimensionName = buffer.readResourceLocation()
-                buffer.readResourceLocation() // world
+                world = buffer.readResourceLocation()
                 hashedSeed = buffer.readLong()
                 gamemode = Gamemodes[buffer.readUnsignedByte()]
                 buffer.readByte() // previous gamemode
