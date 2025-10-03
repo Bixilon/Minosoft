@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import kotlin.math.abs
 
 enum class Axes {
     X,
@@ -22,8 +21,8 @@ enum class Axes {
     Z,
     ;
 
-    fun next() = VALUES[abs((ordinal - 1)) % VALUES.size]
-    fun previous() = VALUES[abs((ordinal + 1)) % VALUES.size]
+    fun previous() = VALUES[(ordinal + 2) % VALUES.size]
+    fun next() = VALUES[(ordinal + 1) % VALUES.size]
 
     companion object : ValuesEnum<Axes> {
         override val VALUES: Array<Axes> = values()

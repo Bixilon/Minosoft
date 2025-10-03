@@ -26,4 +26,14 @@ class AxesTest {
     fun `next x`() {
         assertEquals(Axes.X.next(), Axes.Y)
     }
+
+    @Test
+    fun `previous z`() {
+        assertEquals(Axes.Z.previous(), Axes.Y)
+    }
+
+    @Test
+    fun `next z`() {
+        assertEquals(Axes.Z.next(), Axes.X)
+    }
 }

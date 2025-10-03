@@ -19,9 +19,6 @@ import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kmath.vec.vec4.f._Vec4f
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateX
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateY
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateZ
 import de.bixilon.minosoft.util.KUtil.rad
 import de.bixilon.minosoft.util.f
 
@@ -42,7 +39,7 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         x0: Float, y0: Float, z0: Float, w0: Float,
         x1: Float, y1: Float, z1: Float, w1: Float,
         x2: Float, y2: Float, z2: Float, w2: Float,
-        x3: Float, y3: Float, z3: Float, w3: Float
+        x3: Float, y3: Float, z3: Float, w3: Float,
     ) : this(UnsafeMat4f(floatArrayOf(
         x0, y0, z0, w0,
         x1, y1, z1, w1,
@@ -51,21 +48,32 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     )))
 
 
-
     val unsafe get() = Mat4f(_0)
 
-    override inline operator fun get(x: Int) = Vec4f(this[x, 0], this[x, 1], this[x, 2], this[x, 3])
-    override inline operator fun get(x: Int, y: Int) = _0[x, y]// TODO: access them column/row or row/column
+    override inline operator fun get(row: Int) = Vec4f(this[row, 0], this[row, 1], this[row, 2], this[row, 3])
+    override inline operator fun get(row: Int, column: Int) = _0[row, column]
 
-    inline operator fun set(x: Int, vec4: Vec4f) {// TODO: access them column/row or row/column
-        this[x, 0] = vec4.x
-        this[x, 1] = vec4.y
-        this[x, 2] = vec4.z
-        this[x, 3] = vec4.w
+    inline operator fun set(row: Int, vec4: Vec4f) {
+        this[row, 0] = vec4.x
+        this[row, 1] = vec4.y
+        this[row, 2] = vec4.z
+        this[row, 3] = vec4.w
     }
 
-    inline operator fun set(x: Int, y: Int, value: Float) {
-        _0[x, y] = value // TODO: access them column/row or row/column
+    inline fun set(
+        x0: Float, y0: Float, z0: Float, w0: Float,
+        x1: Float, y1: Float, z1: Float, w1: Float,
+        x2: Float, y2: Float, z2: Float, w2: Float,
+        x3: Float, y3: Float, z3: Float, w3: Float,
+    ) {
+        this[0, 0] = x0; this[0, 1] = y0; this[0, 2] = z0; this[0, 3] = w0
+        this[1, 0] = x1; this[1, 1] = y1; this[1, 2] = z1; this[1, 3] = w1
+        this[2, 0] = x2; this[2, 1] = y2; this[2, 2] = z2; this[2, 3] = w2
+        this[3, 0] = x3; this[3, 1] = y3; this[3, 2] = z3; this[3, 3] = w3
+    }
+
+    inline operator fun set(row: Int, column: Int, value: Float) {
+        _0[row, column] = value
     }
 
     inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, number, this) }
@@ -88,22 +96,23 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
 
     inline fun transpose() = MMat4f(
-// TODO: access them column/row or row/column
         this[0, 0], this[1, 0], this[2, 0], this[3, 0],
         this[0, 1], this[1, 1], this[2, 1], this[3, 1],
         this[0, 2], this[1, 2], this[2, 2], this[3, 2],
         this[0, 3], this[1, 3], this[2, 3], this[3, 3],
     )
 
-    inline fun transposeAssign(): Unit = TODO()
+    inline fun transposeAssign() = set(
+        this[0, 0], this[1, 0], this[2, 0], this[3, 0],
+        this[0, 1], this[1, 1], this[2, 1], this[3, 1],
+        this[0, 2], this[1, 2], this[2, 2], this[3, 2],
+        this[0, 3], this[1, 3], this[2, 3], this[3, 3],
+    )
 
-    inline fun inverse(): MMat4f = TODO()
-    inline fun inverseAssign(): Unit = TODO()
 
-    inline fun normalize(): MMat4f = TODO()
-    inline fun normalizeAssign(): Unit = TODO()
-
-    inline fun clearAssign(): Unit = TODO()
+    inline fun clearAssign() {
+        _0.array.fill(0.0f)
+    }
 
 
     inline fun translate(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, x, y, z, this) }
@@ -127,29 +136,21 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
 
     inline fun rotateDegreesAssign(rotation: _Vec3f) {
-        if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
-        if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
-        if (rotation.z != 0.0f) rotateZ(this, rotation.z.rad)
+        if (rotation.x != 0.0f) Mat4Operations.rotateX(this, rotation.x.rad)
+        if (rotation.y != 0.0f) Mat4Operations.rotateY(this, rotation.y.rad)
+        if (rotation.z != 0.0f) Mat4Operations.rotateZ(this, rotation.z.rad)
     }
 
     inline fun rotateRadAssign(rotation: _Vec3f) {
-        if (rotation.x != 0.0f) rotateX(this, rotation.x)
-        if (rotation.y != 0.0f) rotateY(this, rotation.y)
-        if (rotation.z != 0.0f) rotateZ(this, rotation.z)
+        if (rotation.x != 0.0f) Mat4Operations.rotateX(this, rotation.x)
+        if (rotation.y != 0.0f) Mat4Operations.rotateY(this, rotation.y)
+        if (rotation.z != 0.0f) Mat4Operations.rotateZ(this, rotation.z)
     }
 
 
-    fun rotateXAssign(rad: Float) {
-        rotateX(this, rad)
-    }
-
-    fun rotateYAssign(rad: Float) {
-        rotateX(this, rad)
-    }
-
-    fun rotateZAssign(rad: Float) {
-        rotateX(this, rad)
-    }
+    fun rotateXAssign(rad: Float) = Mat4Operations.rotateX(this, rad)
+    fun rotateYAssign(rad: Float) = Mat4Operations.rotateY(this, rad)
+    fun rotateZAssign(rad: Float) = Mat4Operations.rotateZ(this, rad)
 
 
     fun translateXAssign(vX: Float) {
@@ -172,8 +173,6 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         this[3, 2] += this[2, 2] * vX
         this[3, 3] += this[2, 3] * vX
     }
-
-    // TODO: rotate
 
     companion object {
 

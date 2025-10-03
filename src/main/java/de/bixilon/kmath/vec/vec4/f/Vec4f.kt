@@ -60,7 +60,7 @@ value class Vec4f(
     inline operator fun dec() = this - 1
 
     inline fun length() = sqrt(length2())
-    inline fun length2() = x * x + y * y + z * z * w * w
+    inline fun length2() = x * x + y * y + z * z + w * w
     inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
 

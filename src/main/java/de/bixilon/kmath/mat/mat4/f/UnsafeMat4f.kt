@@ -36,6 +36,12 @@ class UnsafeMat4f(
         array[(row shl 2) or column] = value
     }
 
+    override fun toString(): String {
+        return "${this[0, 0]} ${this[0, 1]} ${this[0, 2]} ${this[0, 3]}\n" +
+                "${this[1, 0]} ${this[1, 1]} ${this[1, 2]} ${this[1, 3]}\n" +
+                "${this[2, 0]} ${this[2, 1]} ${this[2, 2]} ${this[2, 3]}\n" +
+                "${this[3, 0]} ${this[3, 1]} ${this[3, 2]} ${this[3, 3]}\n"
+    }
 
     override fun hashCode() = array.contentHashCode()
 
