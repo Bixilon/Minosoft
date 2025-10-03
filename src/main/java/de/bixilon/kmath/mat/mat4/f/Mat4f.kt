@@ -73,14 +73,14 @@ value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
     )
 
 
-    inline fun translate(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, x, y, z, this) }.unsafe
-    inline fun translate(offset: _Vec3f) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x, offset.y, offset.z, this) }.unsafe
-    inline fun translate(offset: _Vec3i) = MMat4f().apply { Mat4Operations.translate(this@Mat4f, offset.x.f, offset.y.f, offset.z.f, this) }.unsafe
+    inline fun translate(x: Float, y: Float, z: Float) = MMat4f(this).apply { Mat4Operations.translate(this, x, y, z) }.unsafe
+    inline fun translate(offset: _Vec3f) = MMat4f(this).apply { Mat4Operations.translate(this, offset.x, offset.y, offset.z) }.unsafe
+    inline fun translate(offset: _Vec3i) = MMat4f(this).apply { Mat4Operations.translate(this, offset.x.f, offset.y.f, offset.z.f) }.unsafe
 
     inline fun scale(scale: Float) = scale(scale, scale, scale)
-    inline fun scale(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, x, y, z, this) }.unsafe
-    inline fun scale(scale: _Vec3f) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x, scale.y, scale.z, this) }.unsafe
-    inline fun scale(scale: _Vec3i) = MMat4f().apply { Mat4Operations.scale(this@Mat4f, scale.x.f, scale.y.f, scale.z.f, this) }.unsafe
+    inline fun scale(x: Float, y: Float, z: Float) = MMat4f(this).apply { Mat4Operations.scale(this, x, y, z) }.unsafe
+    inline fun scale(scale: _Vec3f) = MMat4f(this).apply { Mat4Operations.scale(this, scale.x, scale.y, scale.z) }.unsafe
+    inline fun scale(scale: _Vec3i) = MMat4f(this).apply { Mat4Operations.scale(this, scale.x.f, scale.y.f, scale.z.f) }.unsafe
 
 
     // TODO: rotate

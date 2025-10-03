@@ -24,5 +24,5 @@ uniform sampler2D uTexture;
 void main() {
     foutColor = texture(uTexture, finUV);
     discard_alpha();
-    foutColor.rgb = Vec3f((foutColor.r + foutColor.g + foutColor.b) / 3.0f);
+    foutColor.rgb = vec3((foutColor.r + foutColor.g + foutColor.b) / 3.0f);
 }
