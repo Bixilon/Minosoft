@@ -32,5 +32,5 @@ class PlaySoundEvent(
 
     constructor(session: PlaySession, packet: SoundEventS2CP) : this(session, packet.category, packet.position, packet.sound, packet.volume, packet.pitch)
 
-    constructor(session: PlaySession, packet: NamedSoundS2CP) : this(session, packet.category, packet.position, packet.soundEvent!!, packet.volume, packet.pitch)
+    constructor(session: PlaySession, packet: NamedSoundS2CP) : this(session, packet.category, packet.position!!, packet.soundEvent!!, packet.volume, packet.pitch)
 }
