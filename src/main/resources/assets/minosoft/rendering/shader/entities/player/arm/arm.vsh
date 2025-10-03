@@ -42,7 +42,7 @@ void run_skeletal(uint inTransformNormal, vec3 inPosition) {
     gl_Position = position;
     vec3 normal = transformNormal(decodeNormal(inTransformNormal & 0xFFFu), uTransform);
 
-    finTintColor = vec4(Vec3f(getShade(normal)), 1.0f);
+    finTintColor = vec4(vec3(getShade(normal)), 1.0f);
     finFragmentPosition = position.xyz;
 }
 

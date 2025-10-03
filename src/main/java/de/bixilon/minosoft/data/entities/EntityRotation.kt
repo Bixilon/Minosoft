@@ -14,26 +14,32 @@ package de.bixilon.minosoft.data.entities
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import de.bixilon.minosoft.util.KUtil.cos
 import de.bixilon.minosoft.util.KUtil.rad
-import de.bixilon.minosoft.util.KUtil.sin
 import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 data class EntityRotation(
     val yaw: Float,
     val pitch: Float,
 ) {
+    private var _front: Vec3f? = null
     val front: Vec3f
         get() {
+            if (_front != null) return _front!!
+
+
             val pitchRad = pitch.rad
-            val pitchCos = pitchRad.cos
+            val pitchCos = cos(pitchRad)
             val yawRad = -yaw.rad
 
-            return Vec3f(
-                yawRad.sin * pitchCos,
-                -pitchRad.sin,
-                yawRad.cos * pitchCos
-            ).normalize() // TODO: memory
+            _front = Vec3f(
+                sin(yawRad) * pitchCos,
+                -sin(pitchRad),
+                cos(yawRad) * pitchCos
+            ).normalize()
+
+            return _front!!
         }
 
     override fun toString(): String {

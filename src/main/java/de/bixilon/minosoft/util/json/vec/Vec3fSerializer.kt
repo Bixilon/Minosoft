@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.util.f
 
-object Vec3Serializer : SimpleModule() {
+object Vec3fSerializer : SimpleModule() {
 
     init {
         addDeserializer(Vec3f::class.java, Deserializer)
