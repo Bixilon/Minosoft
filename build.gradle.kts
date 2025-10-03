@@ -152,7 +152,7 @@ when (os) {
                 javafxNatives += "-x86"
             }
 
-            Architectures.ARM -> {
+            Architectures.AARCH64, Architectures.ARM -> {
                 lwjglNatives += "-arm64"
                 zstdNatives += "_aarch64"
                 // TODO: javafx for Windows on arm is not yet supported
