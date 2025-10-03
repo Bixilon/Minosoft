@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
@@ -43,7 +42,8 @@ abstract class FileTexture(
 ) : Texture {
     override lateinit var renderData: TextureRenderData
     override lateinit var array: TextureArrayProperties
-    override var size: Vec2i = unsafeNull()
+    private var _size: Vec2i? = null
+    override val size: Vec2i get() = _size!!
     override lateinit var transparency: TextureTransparencies
     override lateinit var data: TextureData
 
@@ -73,7 +73,7 @@ abstract class FileTexture(
     private fun loadSprites(context: RenderContext, properties: AnimationProperties, buffer: TextureBuffer) {
         val (frames, animation) = context.textures.static.animator.create(this, buffer, properties)
         this.animation = animation
-        this.size = frames.size
+        this._size = frames.size
 
         var transparency = TextureTransparencies.OPAQUE
 
@@ -92,7 +92,7 @@ abstract class FileTexture(
     private fun load(buffer: TextureBuffer) {
         val data = createData(mipmaps, buffer)
 
-        this.size = data.size
+        this._size = data.size
         this.transparency = buffer.getTransparency()
         this.data = data
     }
