@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
-import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec3.Vec3
 
 class FireOverlay(
     private val context: RenderContext,
@@ -31,7 +31,7 @@ class FireOverlay(
     private val config = context.session.profiles.rendering.overlay.fire
     private val player = context.session.player
     private val shader = context.shaders.genericTexture2dShader
-    private var texture: Texture = context.textures.static.create("block/fire_1".toResourceLocation().texture())
+    private var texture: Texture = context.textures.static.create(if (context.session.version.flattened) TEXTURE else LEGACY_TEXTURE)
     private val lava = context.session.registries.fluid[LavaFluid]
     override val render: Boolean
         get() {
@@ -83,6 +83,8 @@ class FireOverlay(
 
 
     companion object : OverlayFactory<FireOverlay> {
+        private val TEXTURE = minecraft("block/fire_1").texture()
+        private val LEGACY_TEXTURE = minecraft("blocks/fire_layer_1").texture()
 
         override fun build(context: RenderContext): FireOverlay {
             return FireOverlay(context)
