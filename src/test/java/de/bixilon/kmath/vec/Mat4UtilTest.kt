@@ -13,14 +13,6 @@
 
 package de.bixilon.kmath.vec
 
-import de.bixilon.kmath.mat.mat4.f.MMat4f
-import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util
-import de.bixilon.minosoft.util.KUtil.rad
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-
 /*
 class Mat4UtilTest {
 
