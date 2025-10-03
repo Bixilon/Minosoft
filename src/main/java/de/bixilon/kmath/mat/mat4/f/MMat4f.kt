@@ -13,6 +13,7 @@
 
 package de.bixilon.kmath.mat.mat4.f
 
+import de.bixilon.kmath.mat.mat3.f._Mat3f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
@@ -178,5 +179,13 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
         operator fun invoke(other: Mat4f): MMat4f = TODO()
         operator fun invoke(other: MMat4f): MMat4f = TODO()
+
+
+        inline operator fun invoke(mat: _Mat3f) = Mat4f(
+            mat[0, 0], mat[0, 1], mat[0, 2], 0.0f,
+            mat[1, 0], mat[1, 1], mat[1, 2], 0.0f,
+            mat[2, 0], mat[2, 1], mat[2, 2], 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        )
     }
 }

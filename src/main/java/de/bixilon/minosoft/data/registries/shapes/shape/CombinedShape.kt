@@ -26,7 +26,7 @@ class CombinedShape(
 
     init {
         if (aabbs.isEmpty()) Broken("Empty voxel shape == null")
-        if (aabbs.size == 1) Broken("AABB?")
+        if (aabbs.size == 1) Broken("Combined shape must have at least 2 aabbs (has 1)")
     }
 
     @Deprecated("AABB", level = DeprecationLevel.ERROR)

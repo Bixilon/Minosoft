@@ -27,7 +27,7 @@ import kotlin.math.sqrt
 
 @JvmInline
 value class Vec2f(
-    private val _0: UnsafeVec2f,
+    val _0: UnsafeVec2f,
 ) : _Vec2f {
     override val x get() = _0.x
     override val y get() = _0.y
@@ -89,7 +89,7 @@ value class Vec2f(
         val ONE = Vec2f(1.0f)
         val MIN = Vec2f(Float.MIN_VALUE)
         val MAX = Vec2f(Float.MAX_VALUE)
-        const val LENGTH = 3
+        const val LENGTH = 2
 
         @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
         inline operator fun invoke(other: Vec2f) = other

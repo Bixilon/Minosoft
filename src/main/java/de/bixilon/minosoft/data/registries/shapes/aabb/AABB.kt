@@ -13,6 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.shapes.aabb
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
+import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d._Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
@@ -27,16 +34,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kmath.vec.vec3.d._Vec3d
-import de.bixilon.kmath.vec.vec3.f._Vec3f
-import de.bixilon.kmath.vec.vec3.i.Vec3i
-import de.bixilon.kmath.vec.vec3.i._Vec3i
-import de.bixilon.kmath.vec.vec4.f._Vec4f
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.toVec3d
 import kotlin.math.abs
 
@@ -81,8 +80,14 @@ class AABB : Shape {
     override operator fun plus(offset: Vec3i): AABB = this.offset(offset)
     fun offset(other: _Vec3i) = AABB(true, min + other, max + other)
 
+    override operator fun plus(offset: BlockPosition): AABB = offset(offset)
+    inline fun offset(other: BlockPosition) = AABB(true, min + other, max + other)
+
     override operator fun plus(offset: InChunkPosition): AABB = offset(offset)
     inline fun offset(other: InChunkPosition) = AABB(true, min + other, max + other)
+
+    override operator fun plus(offset: InSectionPosition): AABB = offset(offset)
+    inline fun offset(other: InSectionPosition) = AABB(true, min + other, max + other)
 
 
     operator fun plus(other: AABB): AABB {

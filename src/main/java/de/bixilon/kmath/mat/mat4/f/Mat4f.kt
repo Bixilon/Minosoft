@@ -13,7 +13,7 @@
 
 package de.bixilon.kmath.mat.mat4.f
 
-import de.bixilon.kmath.mat.mat3.f.Mat3f
+import de.bixilon.kmath.mat.mat3.f._Mat3f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
@@ -46,14 +46,11 @@ value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
         x3, y3, z3, w3,
     )))
 
-    constructor(mat3: Mat3f) : this(1.0f) // TODO
-
 
     val unsafe get() = MMat4f(_0)
 
     override inline operator fun get(row: Int) = Vec4f(this[row, 0], this[row, 1], this[row, 2], this[row, 3])
     override inline operator fun get(row: Int, column: Int) = _0[row, column]
-
 
 
     inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@Mat4f, number, this) }.unsafe
@@ -93,5 +90,12 @@ value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
         const val LENGTH = 4 * 4
 
         inline operator fun invoke() = EMPTY
+
+        inline operator fun invoke(mat: _Mat3f) = Mat4f(
+            mat[0, 0], mat[0, 1], mat[0, 2], 0.0f,
+            mat[1, 0], mat[1, 1], mat[1, 2], 0.0f,
+            mat[2, 0], mat[2, 1], mat[2, 2], 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        )
     }
 }
