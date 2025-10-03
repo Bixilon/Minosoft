@@ -16,14 +16,13 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.kmath.vec.vec4.f.MVec4f
-import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLinkingException
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
@@ -161,8 +160,8 @@ class OpenGLNativeShader(
         setInt(uniform, if (boolean) 1 else 0)
     }
 
-    override fun setMat4(uniform: String, mat4: Mat4f) {
-        glUniformMatrix4fv(getUniformLocation(uniform), false, mat4.array)
+    override fun setMat4f(uniform: String, mat4: Mat4f) {
+        glUniformMatrix4fv(getUniformLocation(uniform), false, mat4._0.array)
     }
 
     override fun setVec2f(uniform: String, vec2: Vec2f) {
@@ -178,11 +177,11 @@ class OpenGLNativeShader(
     }
 
     override fun setRGBColor(uniform: String, color: RGBColor) {
-        setVec4(uniform, Vec4(color.redf, color.greenf, color.bluef, 1.0f))
+        setVec4f(uniform, Vec4f(color.redf, color.greenf, color.bluef, 1.0f))
     }
 
     override fun setRGBAColor(uniform: String, color: RGBAColor) {
-        setVec4(uniform, Vec4(color.redf, color.greenf, color.bluef, color.alphaf))
+        setVec4f(uniform, Vec4f(color.redf, color.greenf, color.bluef, color.alphaf))
     }
 
     override fun setTexture(uniform: String, textureId: Int) {
