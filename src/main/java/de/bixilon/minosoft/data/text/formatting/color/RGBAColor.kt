@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.BITS
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
-import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
@@ -58,7 +57,7 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
 
     inline operator fun plus(color: RGBAColor) = RGBAColor(red + color.red, green + color.green, blue + color.blue, alpha + color.alpha)
     inline operator fun minus(color: RGBAColor) = RGBAColor(red - color.red, green - color.green, blue - color.blue, alpha - color.alpha)
-    inline operator fun times(color: RGBAColor) = RGBAColor(red * color.red / TIMES, green * color.green / TIMES, blue * color.blue / TIMES, alpha * color.alpha / TIMES)
+    inline operator fun times(color: RGBAColor) = RGBAColor(red * color.red / MAX, green * color.green / MAX, blue * color.blue / MAX, alpha * color.alpha / MAX)
 
 
     inline fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue, alpha: Int = this.alpha) = RGBAColor(red, green, blue, alpha)

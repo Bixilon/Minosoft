@@ -12,15 +12,14 @@
  */
 package de.bixilon.minosoft.data.text.formatting.color
 
-import glm_.vec3.Vec3
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.BITS
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MASK
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.MAX
-import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.TIMES
 import de.bixilon.minosoft.data.text.formatting.color.Color.Companion.clamp
+import glm_.vec3.Vec3
 
 @JvmInline
 value class RGBColor(override val rgb: Int) : Color, TextFormattable {
@@ -50,7 +49,7 @@ value class RGBColor(override val rgb: Int) : Color, TextFormattable {
 
     inline operator fun plus(color: RGBColor) = RGBColor(red + color.red, green + color.green, blue + color.blue)
     inline operator fun minus(color: RGBColor) = RGBColor(red - color.red, green - color.green, blue - color.blue)
-    inline operator fun times(color: RGBColor) = RGBColor(red * color.red / TIMES, green * color.green / TIMES, blue * color.blue / TIMES)
+    inline operator fun times(color: RGBColor) = RGBColor(red * color.red / MAX, green * color.green / MAX, blue * color.blue / MAX)
 
 
     inline fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue) = RGBColor(red, green, blue)

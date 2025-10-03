@@ -85,5 +85,30 @@ class RGBColorTest {
         assertEquals("#12345678".rgb(), RGBColor(0x12, 0x34, 0x56))
     }
 
+
+    @Test
+    fun `multiply white`() {
+        val a = ChatColors.WHITE.rgb()
+        val b = ChatColors.WHITE.rgb()
+
+        assertEquals(a * b, ChatColors.WHITE.rgb())
+    }
+
+    @Test
+    fun `multiply black`() {
+        val a = ChatColors.BLACK.rgb()
+        val b = ChatColors.BLACK.rgb()
+
+        assertEquals(a * b, ChatColors.BLACK.rgb())
+    }
+
+    @Test
+    fun `multiply grey`() {
+        val grey = RGBColor(0.5f, 0.5f, 0.5f).rgb()
+
+        assertEquals(grey * grey, RGBColor(0.25f, 0.25f, 0.25f))
+    }
+
+
     // TODO: operations (plus, times), toString, Int::rgb, Int::rgba, mix
 }

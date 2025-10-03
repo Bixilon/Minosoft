@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import glm_.func.common.clamp
 import de.bixilon.kutil.ansi.ANSI
+import glm_.func.common.clamp
 
 interface Color {
     val ansi: String get() = ANSI.rgb(red, green, blue)
@@ -40,8 +40,6 @@ interface Color {
         const val MAX = VALUES - 1
 
         const val MASK = VALUES - 1
-
-        const val TIMES = VALUES * VALUES
 
 
         fun Int.clamp() = this.clamp(MIN, MAX)
