@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.sound
 
-import de.bixilon.kutil.cast.CastUtil
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -28,12 +26,15 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import org.jetbrains.annotations.NotNull
 
 class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val soundEvent: ResourceLocation?
     val volume: Float
     val pitch: Float
-    var position: Vec3d = unsafeNull()
+
+    @NotNull
+    var position: Vec3d? = null
         private set
     var category: SoundCategories? = null
         private set
