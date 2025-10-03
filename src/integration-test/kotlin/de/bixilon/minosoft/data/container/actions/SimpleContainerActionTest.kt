@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -123,5 +123,5 @@ class SimpleContainerActionTest {
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 12, 0, 1, 0, slotsOf(12 to ItemStack(AppleTest0.item, 4)), ItemStack(AppleTest0.item, count = 5)))
     }
 
-    // TODO: mixing types, revert
+    // TODO: mixing types, revert, creative
 }

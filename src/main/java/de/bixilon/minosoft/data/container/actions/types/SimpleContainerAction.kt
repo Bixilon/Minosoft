@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,16 @@
 
 package de.bixilon.minosoft.data.container.actions.types
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
 class SimpleContainerAction(
     val slot: Int?,
@@ -47,21 +50,63 @@ class SimpleContainerAction(
         }
 
         container.floatingItem = floatingItem
-        session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to item), floatingItem))
+
+
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            session.connection += ItemStackCreateC2SP(slot, item)
+        } else {
+            session.connection += ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to item), floatingItem)
+        }
+    }
+
+    private fun dropItem(session: PlaySession, containerId: Int, container: Container, floatingItem: ItemStack) {
+        // slot id is null, we are not targeting anything
+        // -> drop item into the void
+        val previous = floatingItem.item._count
+        if (count == ContainerCounts.ALL) {
+            floatingItem.item._count = 0
+        } else {
+            floatingItem.item._count-- // don't use decrease, item + container is already locked
+        }
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            session.connection += ItemStackCreateC2SP(-1, if (count == ContainerCounts.ALL) floatingItem.copy(count = previous) else floatingItem.copy(count = 1))
+        } else {
+            session.connection += ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null)
+        }
+    }
+
+    private fun swapItems(session: PlaySession, containerId: Int, container: Container, floatingItem: ItemStack, matches: Boolean, target: ItemStack?) {
+        val slot = slot ?: return
+
+        var nextContainer: ItemStack?
+        var nextFloating: ItemStack?
+
+        if (count == ContainerCounts.ALL || (!matches && target != null)) {
+            nextContainer = floatingItem
+            nextFloating = target
+        } else {
+            floatingItem.item.count--
+
+            nextContainer = floatingItem.copy(count = 1)
+            nextFloating = floatingItem
+        }
+
+        container[slot] = nextContainer
+        container.floatingItem = nextFloating
+
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            session.connection += ItemStackCreateC2SP(slot, nextContainer)
+        } else {
+            session.connection += ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to nextContainer), nextFloating)
+        }
     }
 
     private fun putItem(session: PlaySession, containerId: Int, container: Container, floatingItem: ItemStack) {
         if (slot == null) {
-            // slot id is null, we are not targeting anything
-            // -> drop item into the void
-            if (count == ContainerCounts.ALL) {
-                floatingItem.item._count = 0
-            } else {
-                floatingItem.item._count-- // don't use decrease, item + container is already locked
-            }
-            return session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null))
+            dropItem(session, containerId, container, floatingItem)
+            return
         }
-        var target = container[slot]
+        val target = container[slot]
         val slotType = container.getSlotType(slot)
         val matches = floatingItem.matches(target)
 
@@ -93,7 +138,13 @@ class SimpleContainerAction(
             } else {
                 container.floatingItem = null
             }
-            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), container.floatingItem))
+
+            if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+                session.connection += ItemStackCreateC2SP(slot, target)
+            } else {
+                session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), container.floatingItem))
+            }
+
             return
         }
         if (target != null && slotType?.canRemove(container, slot, target) != true) {
@@ -105,25 +156,19 @@ class SimpleContainerAction(
             // when can not put any item in there, cancel
             return
         }
-        // swap
-        if (count == ContainerCounts.ALL || (!matches && target != null)) {
-            container.floatingItem = target
-            container[slot] = floatingItem
-            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to floatingItem), target))
-        } else {
-            floatingItem.item.count--
-            container.floatingItem = floatingItem
-            target = floatingItem.copy(count = 1)
-            container[slot] = target
-            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), floatingItem))
-        }
+
+        swapItems(session, containerId, container, floatingItem, matches, target)
     }
 
     override fun invoke(session: PlaySession, containerId: Int, container: Container) {
         try {
             container.lock()
-            val floatingItem = container.floatingItem?.copy() ?: return pickItem(session, containerId, container)
-            return putItem(session, containerId, container, floatingItem)
+            val floatingItem = container.floatingItem?.copy()
+            if (floatingItem == null) {
+                pickItem(session, containerId, container)
+            } else {
+                putItem(session, containerId, container, floatingItem)
+            }
         } finally {
             container.commit()
         }

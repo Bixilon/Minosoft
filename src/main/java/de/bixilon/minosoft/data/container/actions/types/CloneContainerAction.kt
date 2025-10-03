@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,16 @@
 
 package de.bixilon.minosoft.data.container.actions.types
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
 class CloneContainerAction(
     val slot: Int,
@@ -32,8 +35,11 @@ class CloneContainerAction(
         val stack = clicked.copy(count = if (clicked.item.item is StackableItem) clicked.item.item.maxStackSize else 1)
         this.copied = stack
 
-        // TODO (1.18.2): use creative inventory packet
-        session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            session.connection += ItemStackCreateC2SP(this.slot, stack)
+        } else {
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
+        }
 
         container.floatingItem = stack
     }

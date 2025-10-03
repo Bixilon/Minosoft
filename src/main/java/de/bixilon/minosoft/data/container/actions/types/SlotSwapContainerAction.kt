@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.data.container.actions.types
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
 class SlotSwapContainerAction(
     val sourceId: Int,
@@ -37,7 +40,14 @@ class SlotSwapContainerAction(
             container[this.sourceId] = target
             container[targetId] = source
 
-            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.actions.createId(this), slotsOf(sourceId to target, targetId to source), source))
+
+            if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+                session.connection += ItemStackCreateC2SP(this.sourceId, target)
+                session.connection += ItemStackCreateC2SP(targetId, source)
+            } else {
+                session.connection += ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.actions.createId(this), slotsOf(sourceId to target, targetId to source), source)
+            }
+
 
         } finally {
             container.commit()
