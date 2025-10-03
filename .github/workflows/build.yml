@@ -66,11 +66,9 @@ jobs:
           path: build/libs/minosoft-fat-*-amd64-*.jar
 
       - name: Package aarch64
-        if: ${{ !startsWith(matrix.os, 'windows') }}
         run: './gradlew fatJar "-Parchitecture=aarch64" "-Pminosoft.updates=true"'
 
       - name: Upload aarch64 build
-        if: ${{ !startsWith(matrix.os, 'windows') }}
         uses: actions/upload-artifact@v4
         with:
           name: 'minosoft-${{ matrix.os }}-aarch64'

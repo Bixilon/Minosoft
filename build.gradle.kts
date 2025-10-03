@@ -151,13 +151,12 @@ when (os) {
                 zstdNatives += "_x86"
                 javafxNatives += "-x86"
             }
-            /*
+
             Architectures.ARM -> {
                 lwjglNatives += "-arm64"
-                zstdNatives += "-amd64"
-                 // TODO: javafx for Windows on arm is not yet supported
+                zstdNatives += "_aarch64"
+                // TODO: javafx for Windows on arm is not yet supported
             }
-             */
 
             else -> throw IllegalArgumentException("Can not determinate windows natives on $architecture")
         }
@@ -315,8 +314,15 @@ tasks.named("check") {
 }
 
 fun DependencyHandler.javafx(name: String) {
-    implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives) {
-        version { strictly(javafxVersion) }
+    if (javafxNatives == "") {
+        logger.error("JavaFX does not have natives for windows. You must use a JRE that bundles these or disable eros.")
+        compileOnly("org.openjfx", "javafx-$name", javafxVersion, classifier = "win") {
+            version { strictly(javafxVersion) }
+        }
+    } else {
+        implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives) {
+            version { strictly(javafxVersion) }
+        }
     }
 }
 
