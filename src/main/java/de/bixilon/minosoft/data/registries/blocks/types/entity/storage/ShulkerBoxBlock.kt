@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -143,7 +143,13 @@ open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings
     open class LightGray(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : ShulkerBoxBlock(identifier, settings), DyedBlock {
         override val color: DyeColors get() = DyeColors.LIGHT_GRAY
 
+        override fun getModelName(version: Version): ResourceLocation? {
+            if (!version.flattened) return LEGACY_MODEL
+            return super.getModelName(version)
+        }
+
         companion object : BlockFactory<LightGray> {
+            val LEGACY_MODEL = minecraft("silver_shulker_box")
             override val identifier = minecraft("light_gray_shulker_box")
 
             override fun build(registries: Registries, settings: BlockSettings) = LightGray(settings = settings)

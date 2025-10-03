@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
@@ -121,6 +122,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
     open class Gray(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.GRAY
 
+
         companion object : BlockFactory<Gray> {
             override val identifier = minecraft("gray_wool")
 
@@ -128,10 +130,16 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class LightGray(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class LightGray(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings), CustomModel {
         override val color: DyeColors get() = DyeColors.LIGHT_GRAY
 
+        override fun getModelName(version: Version): ResourceLocation? {
+            if (!version.flattened) return LEGACY_MODEL
+            return super.getModelName(version)
+        }
+
         companion object : BlockFactory<LightGray> {
+            val LEGACY_MODEL = minecraft("silver_wool")
             override val identifier = minecraft("light_gray_wool")
 
             override fun build(registries: Registries, settings: BlockSettings) = LightGray(settings = settings)
