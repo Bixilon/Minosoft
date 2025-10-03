@@ -16,12 +16,10 @@ package de.bixilon.minosoft.gui.rendering.system.base.shader
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.kmath.vec.vec4.f.MVec4f
-import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import kotlin.math.max
@@ -49,11 +47,11 @@ interface NativeShader {
     fun setInt(uniform: String, value: Int)
     fun setUInt(uniform: String, value: Int)
 
-    fun setMat4(uniform: String, mat4: Mat4)
+    fun setMat4f(uniform: String, mat4: Mat4f)
 
-    fun setVec2(uniform: String, vec2: Vec2f)
-    fun setVec3(uniform: String, vec3: Vec3f)
-    fun setVec4(uniform: String, vec4: Vec4f)
+    fun setVec2f(uniform: String, vec2: Vec2f)
+    fun setVec3f(uniform: String, vec3: Vec3f)
+    fun setVec4f(uniform: String, vec4: Vec4f)
 
     fun setRGBColor(uniform: String, color: RGBColor)
     fun setRGBAColor(uniform: String, color: RGBAColor)
@@ -65,11 +63,11 @@ interface NativeShader {
     operator fun set(uniform: String, value: Boolean) = setBoolean(uniform, value)
     operator fun set(uniform: String, value: Float) = setFloat(uniform, value)
 
-    operator fun set(uniform: String, mat4: Mat4) = setMat4(uniform, mat4)
+    operator fun set(uniform: String, mat4: Mat4f) = setMat4f(uniform, mat4)
 
-    operator fun set(uniform: String, vec2: Vec2) = setVec2(uniform, vec2)
-    operator fun set(uniform: String, vec3: Vec3) = setVec3(uniform, vec3)
-    operator fun set(uniform: String, vec4: Vec4) = setVec4(uniform, vec4)
+    operator fun set(uniform: String, vec2: Vec2f) = setVec2f(uniform, vec2)
+    operator fun set(uniform: String, vec3: Vec3f) = setVec3f(uniform, vec3)
+    operator fun set(uniform: String, vec4: Vec4f) = setVec4f(uniform, vec4)
 
     operator fun set(name: String, value: RGBColor) = setRGBColor(name, value)
     operator fun set(uniform: String, value: RGBAColor) = setRGBAColor(uniform, value)

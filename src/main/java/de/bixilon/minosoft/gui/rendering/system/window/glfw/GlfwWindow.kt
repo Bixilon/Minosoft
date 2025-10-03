@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
@@ -44,7 +44,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.KEY_CODE_MA
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.glfw
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.scalePosition
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.unscalePosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -307,15 +306,15 @@ class GlfwWindow(
     override var systemScale by observed(Vec2f(1.0f))
 
 
-    private fun getWindowScale(): Vec2 {
+    private fun getWindowScale(): Vec2f {
         val x = FloatArray(1)
         val y = FloatArray(1)
         glfwGetWindowContentScale(window, x, y)
 
-        return Vec2(x[0], y[0])
+        return Vec2f(x[0], y[0])
     }
 
-    private fun onWindowScale(window: Long, x: Float, y: Float) = onWindowScale(window, Vec2(x, y))
+    private fun onWindowScale(window: Long, x: Float, y: Float) = onWindowScale(window, Vec2f(x, y))
 
     private fun fireSizeEvents() {
         apply {
@@ -332,7 +331,7 @@ class GlfwWindow(
         }
     }
 
-    private fun onWindowScale(window: Long, scale: Vec2) {
+    private fun onWindowScale(window: Long, scale: Vec2f) {
         log { "Window scale (window=$window, scale=$scale)" }
 
         if (window != this.window) return

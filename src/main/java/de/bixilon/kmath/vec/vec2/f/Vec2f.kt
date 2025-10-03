@@ -20,6 +20,7 @@ import de.bixilon.kmath.number.FloatUtil.rem
 import de.bixilon.kmath.number.FloatUtil.times
 import de.bixilon.kmath.vec.vec2.d._Vec2d
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec2.i._Vec2i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
@@ -93,7 +94,7 @@ value class Vec2f(
         @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
         inline operator fun invoke(other: Vec2f) = other
         inline operator fun invoke(other: _Vec2f) = Vec2f(other.x.f, other.y.f)
-        inline operator fun invoke(other: Vec2i) = Vec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2i) = Vec2f(other.x.f, other.y.f)
         inline operator fun invoke(other: _Vec2d) = Vec2f(other.x.f, other.y.f)
 
         operator fun invoke() = EMPTY

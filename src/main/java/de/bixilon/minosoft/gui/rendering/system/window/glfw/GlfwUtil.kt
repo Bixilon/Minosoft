@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
+import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 import org.lwjgl.glfw.GLFW.*
 
 object GlfwUtil {
@@ -163,46 +164,40 @@ object GlfwUtil {
     )
 
     val CursorModes.glfw: Int
-        get() {
-            return when (this) {
+        get() = when (this) {
                 CursorModes.NORMAL -> GLFW_CURSOR_NORMAL
                 CursorModes.HIDDEN -> GLFW_CURSOR_HIDDEN
                 CursorModes.DISABLED -> GLFW_CURSOR_DISABLED
-            }
         }
 
     val Boolean.glfw: Int
-        get() {
-            return when (this) {
+        get() = when (this) {
                 true -> GLFW_TRUE
                 false -> GLFW_FALSE
-            }
         }
     val CursorShapes.glfw: Int
-        get() {
-            return when (this) {
-                CursorShapes.ARROW -> GLFW_ARROW_CURSOR
-                CursorShapes.IBEAM -> GLFW_IBEAM_CURSOR
-                CursorShapes.CROSSHAIR -> GLFW_CROSSHAIR_CURSOR
-                CursorShapes.HAND -> GLFW_HAND_CURSOR
-                CursorShapes.HORIZONTAL_RESIZE -> GLFW_HRESIZE_CURSOR
-                CursorShapes.VERTICAL_RESIZE -> GLFW_VRESIZE_CURSOR
-            }
+        get() = when (this) {
+            CursorShapes.ARROW -> GLFW_ARROW_CURSOR
+            CursorShapes.IBEAM -> GLFW_IBEAM_CURSOR
+            CursorShapes.CROSSHAIR -> GLFW_CROSSHAIR_CURSOR
+            CursorShapes.HAND -> GLFW_HAND_CURSOR
+            CursorShapes.HORIZONTAL_RESIZE -> GLFW_HRESIZE_CURSOR
+            CursorShapes.VERTICAL_RESIZE -> GLFW_VRESIZE_CURSOR
         }
 
 
     fun GlfwWindow.scalePosition(position: Vec2i): Vec2i {
         if (!GlfwHacks.windowScale) return position
-        return position / systemScale
+        return Vec2i(Vec2f(position) / systemScale)
     }
 
     fun GlfwWindow.unscalePosition(position: Vec2i): Vec2i {
         if (!GlfwHacks.windowScale) return position
-        return position * systemScale
+        return Vec2i(Vec2f(position) * systemScale)
     }
 
     fun GlfwWindow.unscalePosition(position: Vec2d): Vec2d {
         if (!GlfwHacks.windowScale) return position
-        return position * systemScale
+        return position * Vec2d(systemScale)
     }
 }

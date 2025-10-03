@@ -101,7 +101,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
     }
 
     override fun draw() {
-        val windowSize = Vec2(context.window.size)
+        val windowSize = Vec2f(context.window.size)
         if (this.windowSize != windowSize) {
             updateMesh(windowSize)
         }

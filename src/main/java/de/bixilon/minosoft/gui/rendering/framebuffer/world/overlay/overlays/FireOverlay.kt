@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
-import glm_.vec3.Vec3
 
 class FireOverlay(
     private val context: RenderContext,
