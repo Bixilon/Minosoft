@@ -45,7 +45,7 @@ object GuiRenderTestUtil {
     fun create(size: Vec2f = Vec2f(1920.0f, 1080.0f)): GUIRenderer {
         val renderer = OBJENESIS.newInstance(GUIRenderer::class.java)
         renderer::scaledSize.forceSet(DataObserver(size))
-        renderer::halfSize.forceSet(size / 2.0f)
+        renderer::halfSize.forceSet((size / 2.0f)._0)
 
         renderer::context.forceSet(createContext())
 

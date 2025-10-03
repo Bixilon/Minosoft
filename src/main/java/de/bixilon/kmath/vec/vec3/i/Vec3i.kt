@@ -21,14 +21,13 @@ import de.bixilon.kmath.number.IntUtil.times
 import de.bixilon.kmath.vec.vec3.d._Vec3d
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 
 @JvmInline
 value class Vec3i(
-    private val _0: UnsafeVec3i,
+    val _0: UnsafeVec3i,
 ) : _Vec3i {
     override val x: Int get() = _0.x
     override val y: Int get() = _0.y

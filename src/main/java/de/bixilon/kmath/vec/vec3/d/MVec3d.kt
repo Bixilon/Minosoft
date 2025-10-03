@@ -17,13 +17,12 @@ import de.bixilon.kmath.vec.vec2.d.MVec2d
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.util.d
 import kotlin.math.sqrt
 
 @JvmInline
 value class MVec3d(
-    private val _0: UnsafeVec3d,
+    val _0: UnsafeVec3d,
 ) : _Vec3d {
     override var x: Double
         get() = _0.x

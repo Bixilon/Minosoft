@@ -13,16 +13,13 @@
 
 package de.bixilon.kmath.mat.mat3.f
 
-import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
-import de.bixilon.kmath.vec.vec3.i._Vec3i
-import de.bixilon.minosoft.util.f
 
 @JvmInline
 value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
-
 
     constructor(s: Float) : this(s, s, s)
     constructor(x: Float, y: Float, z: Float) : this(
@@ -48,8 +45,6 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
         x2, y2, z2,
     )))
 
-    constructor(mat4: Mat4f) : this(1.0f) // TODO
-
     val unsafe get() = MMat3f(_0)
 
     override inline operator fun get(x: Int) = Vec3f(this[x, 0], this[x, 1], this[x, 2])
@@ -70,21 +65,16 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
         this[0, 2], this[1, 2], this[2, 2],
     )
 
-    inline fun translate(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.translate(this@Mat3f, x, y, z, this) }.unsafe
-    inline fun translate(offset: _Vec3f) = MMat3f().apply { Mat3Operations.translate(this@Mat3f, offset.x, offset.y, offset.z, this) }.unsafe
-    inline fun translate(offset: _Vec3i) = MMat3f().apply { Mat3Operations.translate(this@Mat3f, offset.x.f, offset.y.f, offset.z.f, this) }.unsafe
-
-    inline fun scale(x: Float, y: Float, z: Float) = MMat3f().apply { Mat3Operations.scale(this@Mat3f, x, y, z, this) }.unsafe
-    inline fun scale(scale: _Vec3f) = MMat3f().apply { Mat3Operations.scale(this@Mat3f, scale.x, scale.y, scale.z, this) }.unsafe
-    inline fun scale(scale: _Vec3i) = MMat3f().apply { Mat3Operations.scale(this@Mat3f, scale.x.f, scale.y.f, scale.z.f, this) }.unsafe
-
-
-    // TODO: rotate
-
     companion object {
         val EMPTY = Mat3f(1.0f)
-        const val LENGTH = 4 * 4
+        const val LENGTH = 3 * 3
 
         inline operator fun invoke() = EMPTY
+
+        inline operator fun invoke(mat: _Mat4f) = Mat3f(
+            mat[0, 0], mat[0, 1], mat[0, 2],
+            mat[1, 0], mat[1, 1], mat[1, 2],
+            mat[2, 0], mat[2, 1], mat[2, 2],
+        )
     }
 }
