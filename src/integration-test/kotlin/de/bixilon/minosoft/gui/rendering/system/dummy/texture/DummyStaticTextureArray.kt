@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import glm_.vec2.Vec2i
 
 class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(context, false, 0) {
 

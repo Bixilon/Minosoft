@@ -32,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
@@ -67,7 +66,7 @@ class GUIRenderer(
         shader.load()
 
         context.window::size.observeRendering(this, true) { // TODO: updateResolution changes the state of the mesh (crosshair). Don't do that, call it async
-            updateResolution(it)
+            updateResolution(Vec2f(it))
         }
 
         context.window::systemScale.observeRendering(this) { updateResolution(systemScale = it) }
