@@ -116,24 +116,24 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     }
 
 
-    inline fun translate(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, x, y, z, this) }
-    inline fun translate(offset: _Vec3f) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, offset.x, offset.y, offset.z, this) }
-    inline fun translate(offset: _Vec3i) = MMat4f().apply { Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f, this) }
+    inline fun translate(x: Float, y: Float, z: Float) = MMat4f(this).apply { Mat4Operations.translate(this, x, y, z) }
+    inline fun translate(offset: _Vec3f) = MMat4f(this).apply { Mat4Operations.translate(this, offset.x, offset.y, offset.z) }
+    inline fun translate(offset: _Vec3i) = MMat4f(this).apply { Mat4Operations.translate(this, offset.x.f, offset.y.f, offset.z.f) }
 
-    inline fun translateAssign(x: Float, y: Float, z: Float) = Mat4Operations.translate(this@MMat4f, x, y, z, this)
-    inline fun translateAssign(offset: _Vec3f) = Mat4Operations.translate(this@MMat4f, offset.x, offset.y, offset.z, this)
-    inline fun translateAssign(offset: _Vec3i) = Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f, this)
+    inline fun translateAssign(x: Float, y: Float, z: Float) = Mat4Operations.translate(this@MMat4f, x, y, z)
+    inline fun translateAssign(offset: _Vec3f) = Mat4Operations.translate(this@MMat4f, offset.x, offset.y, offset.z)
+    inline fun translateAssign(offset: _Vec3i) = Mat4Operations.translate(this@MMat4f, offset.x.f, offset.y.f, offset.z.f)
 
 
     inline fun scale(scale: Float) = scale(scale, scale, scale)
-    inline fun scale(x: Float, y: Float, z: Float) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, x, y, z, this) }
-    inline fun scale(scale: _Vec3f) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, scale.x, scale.y, scale.z, this) }
-    inline fun scale(scale: _Vec3i) = MMat4f().apply { Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f, this) }
+    inline fun scale(x: Float, y: Float, z: Float) = MMat4f(this).apply { Mat4Operations.scale(this, x, y, z) }
+    inline fun scale(scale: _Vec3f) = MMat4f(this).apply { Mat4Operations.scale(this, scale.x, scale.y, scale.z) }
+    inline fun scale(scale: _Vec3i) = MMat4f(this).apply { Mat4Operations.scale(this, scale.x.f, scale.y.f, scale.z.f) }
 
     inline fun scaleAssign(scale: Float) = scaleAssign(scale, scale, scale)
-    inline fun scaleAssign(x: Float, y: Float, z: Float) = Mat4Operations.scale(this@MMat4f, x, y, z, this)
-    inline fun scaleAssign(scale: _Vec3f) = Mat4Operations.scale(this@MMat4f, scale.x, scale.y, scale.z, this)
-    inline fun scaleAssign(scale: _Vec3i) = Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f, this)
+    inline fun scaleAssign(x: Float, y: Float, z: Float) = Mat4Operations.scale(this@MMat4f, x, y, z)
+    inline fun scaleAssign(scale: _Vec3f) = Mat4Operations.scale(this@MMat4f, scale.x, scale.y, scale.z)
+    inline fun scaleAssign(scale: _Vec3i) = Mat4Operations.scale(this@MMat4f, scale.x.f, scale.y.f, scale.z.f)
 
 
     inline fun rotateDegreesAssign(rotation: _Vec3f) {
@@ -177,8 +177,13 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
     companion object {
 
-        operator fun invoke(other: Mat4f): MMat4f = TODO()
-        operator fun invoke(other: MMat4f): MMat4f = TODO()
+        inline operator fun invoke(other: Mat4f): MMat4f {
+            val mat = MMat4f()
+            other._0.array.copyInto(mat._0.array)
+            return mat
+        }
+
+        inline operator fun invoke(other: MMat4f) = invoke(other.unsafe)
 
 
         inline operator fun invoke(mat: _Mat3f) = Mat4f(

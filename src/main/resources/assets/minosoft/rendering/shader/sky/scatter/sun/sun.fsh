@@ -36,8 +36,8 @@ uniform vec3 uSunPosition;
 
 #define END_DISTANCE MAX_DISTANCE - 0.2f
 
-#define YELLOWISH Vec3f(1.0f, 0.6f, 0.15f)
-#define REDISH Vec3f(1.0f, 0.4f, 0.05f)
+#define YELLOWISH vec3(1.0f, 0.6f, 0.15f)
+#define REDISH vec3(1.0f, 0.4f, 0.05f)
 
 void main() {
     foutColor = vec4(REDISH, uIntensity);

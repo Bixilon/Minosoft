@@ -29,13 +29,12 @@ data class SkeletalElement(
     val from: Vec3f,
     val to: Vec3f,
     val offset: Vec3f = Vec3f.EMPTY,
-    @JsonDeserialize(using = SkeletalRotationDeserializer::class) val rotation: SkeletalRotation? = null,
+    @field:JsonDeserialize(using = SkeletalRotationDeserializer::class) val rotation: SkeletalRotation? = null,
     val inflate: Float = 0.0f,
     val texture: ResourceLocation? = null,
     val uv: Vec2i? = null,
     val transform: String? = null,
-    @JsonDeserialize(using = SkeletalFaceDeserializer::class)
-    val faces: Map<Directions, SkeletalFace>,
+    @field:JsonDeserialize(using = SkeletalFaceDeserializer::class) val faces: Map<Directions, SkeletalFace>,
     val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
 

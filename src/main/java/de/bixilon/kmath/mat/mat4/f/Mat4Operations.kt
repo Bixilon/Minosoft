@@ -19,6 +19,8 @@ import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f._Vec4f
+import de.bixilon.minosoft.util.KUtil.cos
+import de.bixilon.minosoft.util.KUtil.sin
 
 object Mat4Operations {
 
@@ -83,24 +85,97 @@ object Mat4Operations {
         result.w = a[0, 3] * b.x + a[1, 3] * b.y + a[2, 3] * b.z + a[3, 3] * b.w
     }
 
-    inline fun translate(a: _Mat4f, x: Float, y: Float, z: Float, result: MMat4f) {
-        TODO()
+    inline fun translate(mat: MMat4f, x: Float, y: Float, z: Float) {
+        // TODO: Optimize
+        mat.translateXAssign(x)
+        mat.translateXAssign(y)
+        mat.translateXAssign(z)
     }
 
-    inline fun scale(a: _Mat4f, x: Float, y: Float, z: Float, result: MMat4f) {
-        TODO()
+    inline fun scale(mat: MMat4f, x: Float, y: Float, z: Float) {
+        // TODO
     }
 
 
-    fun rotateX(m: MMat4f, angle: Float) {
-        TODO()
+    fun rotateX(mat: MMat4f, angle: Float) {
+        val cos = angle.cos
+        val sin = angle.sin
+
+        val rotate = cos + (1f - cos)
+
+        mat[0, 0] = mat[0, 0] * rotate
+        mat[0, 1] = mat[0, 1] * rotate
+        mat[0, 2] = mat[0, 2] * rotate
+        mat[0, 3] = mat[0, 3] * rotate
+
+        val x1 = mat[1, 0] * cos + mat[2, 0] * sin
+        val y1 = mat[1, 1] * cos + mat[2, 1] * sin
+        val z1 = mat[1, 2] * cos + mat[2, 2] * sin
+        val w1 = mat[1, 3] * cos + mat[2, 3] * sin
+
+        mat[2, 0] = mat[1, 0] * -sin + mat[2, 0] * cos
+        mat[2, 1] = mat[1, 1] * -sin + mat[2, 1] * cos
+        mat[2, 2] = mat[1, 2] * -sin + mat[2, 2] * cos
+        mat[2, 3] = mat[1, 3] * -sin + mat[2, 3] * cos
+
+        mat[1, 0] = x1
+        mat[1, 1] = y1
+        mat[1, 2] = z1
+        mat[1, 3] = w1
     }
 
-    fun rotateY(m: MMat4f, angle: Float) {
-        TODO()
+    fun rotateY(mat: MMat4f, angle: Float) {
+        val cos = angle.cos
+        val sin = angle.sin
+
+        val rotate = cos + (1f - cos)
+
+
+        val x0 = mat[0, 0] * cos + mat[2, 0] * -sin
+        val y0 = mat[0, 1] * cos + mat[2, 1] * -sin
+        val z0 = mat[0, 2] * cos + mat[2, 2] * -sin
+        val w0 = mat[0, 3] * cos + mat[2, 3] * -sin
+
+        mat[1, 0] = mat[1, 0] * rotate
+        mat[1, 1] = mat[1, 1] * rotate
+        mat[1, 2] = mat[1, 2] * rotate
+        mat[1, 3] = mat[1, 3] * rotate
+
+        mat[2, 0] = mat[0, 0] * sin + mat[2, 0] * cos
+        mat[2, 1] = mat[0, 1] * sin + mat[2, 1] * cos
+        mat[2, 2] = mat[0, 2] * sin + mat[2, 2] * cos
+        mat[2, 3] = mat[0, 3] * sin + mat[2, 3] * cos
+
+        mat[0, 0] = x0
+        mat[0, 1] = y0
+        mat[0, 2] = z0
+        mat[0, 3] = w0
     }
 
-    fun rotateZ(m: MMat4f, angle: Float) {
-        TODO()
+    fun rotateZ(mat: MMat4f, angle: Float) {
+        val cos = angle.cos
+        val sin = angle.sin
+
+        val rotate = cos + (1f - cos)
+
+        val x0 = mat[0, 0] * cos + mat[1, 0] * sin
+        val y0 = mat[0, 1] * cos + mat[1, 1] * sin
+        val z0 = mat[0, 2] * cos + mat[1, 2] * sin
+        val w0 = mat[0, 3] * cos + mat[1, 3] * sin
+
+        mat[1, 0] = mat[0, 0] * -sin + mat[1, 0] * cos
+        mat[1, 1] = mat[0, 1] * -sin + mat[1, 1] * cos
+        mat[1, 2] = mat[0, 2] * -sin + mat[1, 2] * cos
+        mat[1, 3] = mat[0, 3] * -sin + mat[1, 3] * cos
+
+        mat[2, 0] = mat[2, 0] * rotate
+        mat[2, 1] = mat[2, 1] * rotate
+        mat[2, 2] = mat[2, 2] * rotate
+        mat[2, 3] = mat[2, 3] * rotate
+
+        mat[0, 0] = x0
+        mat[0, 1] = y0
+        mat[0, 2] = z0
+        mat[0, 3] = w0
     }
 }
