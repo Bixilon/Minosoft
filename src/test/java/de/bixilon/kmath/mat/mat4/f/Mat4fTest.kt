@@ -13,12 +13,17 @@
 
 package de.bixilon.kmath.mat.mat4.f
 
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class Mat4fTest {
+
+    private fun assertEquals(actual: Mat4f, expected: Mat4f) {
+        assertEquals(actual.unsafe, expected.unsafe)
+    }
 
     @Test
     fun `creation single value`() {
@@ -48,7 +53,7 @@ class Mat4fTest {
             1.0f, 2.0f, 3.0f, 4.0f,
             0.0f, 0.0f, 0.0f, 9.0f,
             6.0f, 5.0f, 7.0f, 0.0f,
-            6.0f, 7.0f, 5.0f, 8.0f
+            6.0f, 7.0f, 5.0f, 8.0f,
         )
 
         assertEquals(mat[0, 0], 1.0f)
@@ -62,7 +67,7 @@ class Mat4fTest {
             1.0f, 2.0f, 3.0f, 4.0f,
             0.0f, 0.0f, 0.0f, 9.0f,
             6.0f, 5.0f, 7.0f, 0.0f,
-            6.0f, 7.0f, 5.0f, 8.0f
+            6.0f, 7.0f, 5.0f, 8.0f,
         )
 
         assertEquals(mat[0], Vec4f(1.0f, 2.0f, 3.0f, 4.0f))
@@ -82,9 +87,14 @@ class Mat4fTest {
 
     @Test
     fun `plus matrix`() {
-        val mat = Mat4f(1.0f, 2.0f, 3.0f, 4.0f)
+        val mat = Mat4f(
+            5.0f, 5.0f, 5.0f, 5.0f,
+            5.0f, 5.0f, 5.0f, 5.0f,
+            5.0f, 5.0f, 5.0f, 5.0f,
+            5.0f, 5.0f, 5.0f, 5.0f,
+        )
 
-        assertEquals((mat + Mat4f(5.0f)), Mat4f(
+        assertEquals((mat + Mat4f(1.0f, 2.0f, 3.0f, 4.0f)), Mat4f(
             6.0f, 5.0f, 5.0f, 5.0f,
             5.0f, 7.0f, 5.0f, 5.0f,
             5.0f, 5.0f, 8.0f, 5.0f,
@@ -110,9 +120,9 @@ class Mat4fTest {
 
         assertEquals((mat * Mat4f(2.0f, 2.0f, 3.0f, 3.0f)), Mat4f(
             2.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 2.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 6.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 6.0f,
+            0.0f, 4.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 9.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 12.0f,
         ))
     }
 
@@ -135,21 +145,82 @@ class Mat4fTest {
 
     @Test
     fun `translate numbers`() {
-        val mat = Mat4f(
-            1.0f, 2.0f, 3.0f, 4.0f,
-            0.0f, 0.0f, 0.0f, 9.0f,
-            6.0f, 5.0f, 7.0f, 0.0f,
-            6.0f, 7.0f, 5.0f, 8.0f,
-        )
+        val mat = Mat4f(1.0f)
 
         assertEquals(mat.translate(2.0f, 3.0f, 4.0f), Mat4f(
-            // TODO
-            1.0f, 0.0f, 6.0f, 6.0f,
-            2.0f, 0.0f, 5.0f, 7.0f,
-            3.0f, 0.0f, 7.0f, 5.0f,
-            4.0f, 9.0f, 0.0f, 8.0f,
+            1.0f, 0.0f, 0.0f, 2.0f,
+            0.0f, 1.0f, 0.0f, 3.0f,
+            0.0f, 0.0f, 1.0f, 4.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
         ))
     }
 
-    // TODO: scale, rotate (x,y,z), times (vector)
+    @Test
+    fun `translate vector`() {
+        val mat = Mat4f(1.0f)
+
+        assertEquals(mat.translate(Vec3f(2.0f, 3.0f, 4.0f)), Mat4f(
+            1.0f, 0.0f, 0.0f, 2.0f,
+            0.0f, 1.0f, 0.0f, 3.0f,
+            0.0f, 0.0f, 1.0f, 4.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        ))
+    }
+
+    @Test
+    fun `scale number`() {
+        val mat = Mat4f(1.0f)
+
+        assertEquals(mat.scale(3.0f), Mat4f(
+            3.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 3.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 3.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        ))
+    }
+
+    @Test
+    fun `scale numbers`() {
+        val mat = Mat4f(1.0f)
+
+        assertEquals(mat.scale(2.0f, 3.0f, 4.0f), Mat4f(
+            2.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 3.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 4.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        ))
+    }
+
+    @Test
+    fun `scale vec`() {
+        val mat = Mat4f(1.0f)
+
+        assertEquals(mat.scale(Vec3f(2.0f, 3.0f, 4.0f)), Mat4f(
+            2.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 3.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 4.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        ))
+    }
+
+    @Test
+    fun `unit times vec`() {
+        val mat = Mat4f(1.0f)
+        val vec = Vec4f(2.0f, 3.0f, 4.0f, 5.0f)
+
+        assertEquals(mat * vec, vec)
+    }
+
+    @Test
+    fun `custom matrix times vec`() {
+        val mat = Mat4f(
+            1.0f, 2.0f, 3.0f, 4.0f,
+            5.0f, 6.0f, 7.0f, 8.0f,
+            9.0f, 10.0f, 11.0f, 12.0f,
+            13.0f, 14.0f, 15.0f, 16.0f,
+        )
+        val vec = Vec4f(2.0f, 3.0f, 4.0f, 5.0f)
+
+        assertEquals(mat * vec, Vec4f(40, 96, 152, 208))
+    }
 }

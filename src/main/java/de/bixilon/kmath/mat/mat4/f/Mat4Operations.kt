@@ -13,6 +13,8 @@
 
 package de.bixilon.kmath.mat.mat4.f
 
+import de.bixilon.kmath.number.FloatUtil.plus
+import de.bixilon.kmath.number.FloatUtil.times
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec4.f.MVec4f
@@ -20,15 +22,85 @@ import de.bixilon.kmath.vec.vec4.f._Vec4f
 
 object Mat4Operations {
 
-    inline fun plus(a: _Mat4f, b: Number, result: MMat4f): Unit = TODO()
-    inline fun plus(a: _Mat4f, b: _Mat4f, result: MMat4f): Unit = TODO()
+    inline fun plus(a: _Mat4f, b: Number, result: MMat4f) {
+        result[0, 0] = a[0, 0] + b; result[0, 1] = a[0, 1] + b; result[0, 2] = a[0, 2] + b; result[0, 3] = a[0, 3] + b
+        result[1, 0] = a[1, 0] + b; result[1, 1] = a[1, 1] + b; result[1, 2] = a[1, 2] + b; result[1, 3] = a[1, 3] + b
+        result[2, 0] = a[2, 0] + b; result[2, 1] = a[2, 1] + b; result[2, 2] = a[2, 2] + b; result[2, 3] = a[2, 3] + b
+        result[3, 0] = a[3, 0] + b; result[3, 1] = a[3, 1] + b; result[3, 2] = a[3, 2] + b; result[3, 3] = a[3, 3] + b
+    }
 
-    inline fun times(a: _Mat4f, b: Number, result: MMat4f): Unit = TODO()
-    inline fun times(a: _Mat4f, b: _Mat4f, result: MMat4f): Unit = TODO()
+    inline fun plus(a: _Mat4f, b: _Mat4f, result: MMat4f) {
+        result[0, 0] = a[0, 0] + b[0, 0]; result[0, 1] = a[0, 1] + b[0, 1]; result[0, 2] = a[0, 2] + b[0, 2]; result[0, 3] = a[0, 3] + b[0, 3]
+        result[1, 0] = a[1, 0] + b[1, 0]; result[1, 1] = a[1, 1] + b[1, 1]; result[1, 2] = a[1, 2] + b[1, 2]; result[1, 3] = a[1, 3] + b[1, 3]
+        result[2, 0] = a[2, 0] + b[2, 0]; result[2, 1] = a[2, 1] + b[2, 1]; result[2, 2] = a[2, 2] + b[2, 2]; result[2, 3] = a[2, 3] + b[2, 3]
+        result[3, 0] = a[3, 0] + b[3, 0]; result[3, 1] = a[3, 1] + b[3, 1]; result[3, 2] = a[3, 2] + b[3, 2]; result[3, 3] = a[3, 3] + b[3, 3]
+    }
 
-    inline fun times(a: _Mat4f, b: _Vec3f, result: MVec3f): Unit = TODO()
-    inline fun times(a: _Mat4f, b: _Vec4f, result: MVec4f): Unit = TODO()
+    inline fun times(a: _Mat4f, b: Number, result: MMat4f) {
+        result[0, 0] = a[0, 0] * b; result[0, 1] = a[0, 1] * b; result[0, 2] = a[0, 2] * b; result[0, 3] = a[0, 3] * b
+        result[1, 0] = a[1, 0] * b; result[1, 1] = a[1, 1] * b; result[1, 2] = a[1, 2] * b; result[1, 3] = a[1, 3] * b
+        result[2, 0] = a[2, 0] * b; result[2, 1] = a[2, 1] * b; result[2, 2] = a[2, 2] * b; result[2, 3] = a[2, 3] * b
+        result[3, 0] = a[3, 0] * b; result[3, 1] = a[3, 1] * b; result[3, 2] = a[3, 2] * b; result[3, 3] = a[3, 3] * b
+    }
 
-    inline fun translate(a: _Mat4f, x: Float, y: Float, z: Float, result: MMat4f): Unit = TODO()
-    inline fun scale(a: _Mat4f, x: Float, y: Float, z: Float, result: MMat4f): Unit = TODO()
+    inline fun times(a: _Mat4f, b: _Mat4f, result: MMat4f) {
+        val x0 = a[0, 0] * b[0, 0] + a[1, 0] * b[0, 1] + a[2, 0] * b[0, 2] + a[3, 0] * b[0, 3]
+        val x1 = a[0, 1] * b[0, 0] + a[1, 1] * b[0, 1] + a[2, 1] * b[0, 2] + a[3, 1] * b[0, 3]
+        val x2 = a[0, 2] * b[0, 0] + a[1, 2] * b[0, 1] + a[2, 2] * b[0, 2] + a[3, 2] * b[0, 3]
+        val x3 = a[0, 3] * b[0, 0] + a[1, 3] * b[0, 1] + a[2, 3] * b[0, 2] + a[3, 3] * b[0, 3]
+
+        val y0 = a[0, 0] * b[1, 0] + a[1, 0] * b[1, 1] + a[2, 0] * b[1, 2] + a[3, 0] * b[1, 3]
+        val y1 = a[0, 1] * b[1, 0] + a[1, 1] * b[1, 1] + a[2, 1] * b[1, 2] + a[3, 1] * b[1, 3]
+        val y2 = a[0, 2] * b[1, 0] + a[1, 2] * b[1, 1] + a[2, 2] * b[1, 2] + a[3, 2] * b[1, 3]
+        val y3 = a[0, 3] * b[1, 0] + a[1, 3] * b[1, 1] + a[2, 3] * b[1, 2] + a[3, 3] * b[1, 3]
+
+        val z0 = a[0, 0] * b[2, 0] + a[1, 0] * b[2, 1] + a[2, 0] * b[2, 2] + a[3, 0] * b[2, 3]
+        val z1 = a[0, 1] * b[2, 0] + a[1, 1] * b[2, 1] + a[2, 1] * b[2, 2] + a[3, 1] * b[2, 3]
+        val z2 = a[0, 2] * b[2, 0] + a[1, 2] * b[2, 1] + a[2, 2] * b[2, 2] + a[3, 2] * b[2, 3]
+        val z3 = a[0, 3] * b[2, 0] + a[1, 3] * b[2, 1] + a[2, 3] * b[2, 2] + a[3, 3] * b[2, 3]
+
+        val w0 = a[0, 0] * b[3, 0] + a[1, 0] * b[3, 1] + a[2, 0] * b[3, 2] + a[3, 0] * b[3, 3]
+        val w1 = a[0, 1] * b[3, 0] + a[1, 1] * b[3, 1] + a[2, 1] * b[3, 2] + a[3, 1] * b[3, 3]
+        val w2 = a[0, 2] * b[3, 0] + a[1, 2] * b[3, 1] + a[2, 2] * b[3, 2] + a[3, 2] * b[3, 3]
+        val w3 = a[0, 3] * b[3, 0] + a[1, 3] * b[3, 1] + a[2, 3] * b[3, 2] + a[3, 3] * b[3, 3]
+
+        result[0, 0] = x0; result[1, 0] = y0; result[2, 0] = z0; result[3, 0] = w0
+        result[0, 1] = x1; result[1, 1] = y1; result[2, 1] = z1; result[3, 1] = w1
+        result[0, 2] = x2; result[1, 2] = y2; result[2, 2] = z2; result[3, 2] = w2
+        result[0, 3] = x3; result[1, 3] = y3; result[2, 3] = z3; result[3, 3] = w3
+    }
+
+    inline fun times(a: _Mat4f, b: _Vec3f, result: MVec3f) {
+        result.x = a[0, 0] * b.x + a[1, 0] * b.y + a[2, 0] * b.z + a[3, 0]
+        result.y = a[0, 1] * b.x + a[1, 1] * b.y + a[2, 1] * b.z + a[3, 1]
+        result.z = a[0, 2] * b.x + a[1, 2] * b.y + a[2, 2] * b.z + a[3, 2]
+    }
+
+    inline fun times(a: _Mat4f, b: _Vec4f, result: MVec4f) {
+        result.x = a[0, 0] * b.x + a[1, 0] * b.y + a[2, 0] * b.z + a[3, 0] * b.w
+        result.y = a[0, 1] * b.x + a[1, 1] * b.y + a[2, 1] * b.z + a[3, 1] * b.w
+        result.z = a[0, 2] * b.x + a[1, 2] * b.y + a[2, 2] * b.z + a[3, 2] * b.w
+        result.w = a[0, 3] * b.x + a[1, 3] * b.y + a[2, 3] * b.z + a[3, 3] * b.w
+    }
+
+    inline fun translate(a: _Mat4f, x: Float, y: Float, z: Float, result: MMat4f) {
+        TODO()
+    }
+
+    inline fun scale(a: _Mat4f, x: Float, y: Float, z: Float, result: MMat4f) {
+        TODO()
+    }
+
+
+    fun rotateX(m: MMat4f, angle: Float) {
+        TODO()
+    }
+
+    fun rotateY(m: MMat4f, angle: Float) {
+        TODO()
+    }
+
+    fun rotateZ(m: MMat4f, angle: Float) {
+        TODO()
+    }
 }
