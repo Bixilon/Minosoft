@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
-import glm_.vec2.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import glm_.vec2.Vec2i
 
 class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(context, false, 0) {
 
@@ -39,8 +39,8 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
         animator.init()
     }
 
-    override fun create(resourceLocation: ResourceLocation, mipmaps: Boolean, factory: (mipmaps: Int) -> Texture): Texture {
-        return super.create(resourceLocation, mipmaps) { DummyTexture() }
+    override fun create(name: ResourceLocation, mipmaps: Boolean, factory: (mipmaps: Int) -> Texture): Texture {
+        return super.create(name, mipmaps) { DummyTexture() }
     }
 
     override fun findResolution(size: Vec2i) = size

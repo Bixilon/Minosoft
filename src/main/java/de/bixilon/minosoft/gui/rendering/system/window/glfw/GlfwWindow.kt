@@ -89,7 +89,7 @@ class GlfwWindow(
         }
 
     private var _size = DEFAULT_WINDOW_SIZE
-    override var size by observed(DEFAULT_WINDOW_SIZE)
+    override var size by observed(_size)
 
     override var minSize: Vec2i = DEFAULT_MINIMUM_WINDOW_SIZE
         set(value) {

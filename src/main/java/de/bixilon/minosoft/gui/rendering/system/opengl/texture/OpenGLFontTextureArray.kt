@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
-import glm_.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -31,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL33.GL_TEXTURE_SWIZZLE_RGBA
 import java.nio.ByteBuffer
@@ -102,7 +102,7 @@ class OpenGLFontTextureArray(
     }
 
     override fun load(latch: AbstractLatch?) {
-        if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
+        if (state != TextureArrayStates.PREPARING) throw IllegalStateException("Already loaded!")
         context.system.unsafeCast<OpenGLRenderSystem>().log { "Loading font texture" }
         for (texture in textures) {
             load(texture)
