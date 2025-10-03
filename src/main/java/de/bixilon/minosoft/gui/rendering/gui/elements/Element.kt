@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import glm_.vec2.Vec2
-import glm_.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
@@ -30,6 +28,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
+import glm_.vec2.Vec2
+import glm_.vec4.Vec4
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
@@ -94,8 +94,8 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
 
     protected open fun applyMaxSize(max: Vec2) {
         if (parent == null && !ignoreDisplaySize) {
-            max.x = guiRenderer.scaledSize.x
-            max.y = guiRenderer.scaledSize.y
+            if (max.x < 0) max.x = guiRenderer.scaledSize.x
+            if (max.y < 0) max.y = guiRenderer.scaledSize.y
         }
 
         val pref = prefMaxSize

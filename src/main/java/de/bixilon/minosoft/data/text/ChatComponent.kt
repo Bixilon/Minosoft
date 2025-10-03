@@ -81,7 +81,7 @@ interface ChatComponent {
 
 
     companion object {
-        val EMPTY = EmptyComponent
+        val EMPTY: ChatComponent = EmptyComponent
 
         fun of(component: ChatComponent) = component
         fun of(component: TextFormattable) = component.toText()
