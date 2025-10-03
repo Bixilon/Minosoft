@@ -38,7 +38,7 @@ import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.eros.Eros
-import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
+import de.bixilon.minosoft.gui.eros.crash.CrashReportState
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -110,7 +110,7 @@ object Minosoft {
     }
 
     private fun postBoot() {
-        if (ErosCrashReport.alreadyCrashed) return
+        if (CrashReportState.crashed) return
 
         KUtil.initPlayClasses()
         GlobalEventMaster.fire(FinishBootEvent())

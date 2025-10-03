@@ -86,19 +86,16 @@ class ErosCrashReport : JavaFXWindowController() {
 
     @OptIn(ExperimentalTime::class)
     companion object {
-        var alreadyCrashed = false
-            private set
-
 
         /**
          * Kills all connections, closes all windows, creates and saves a crash report
          * Special: Does not use any general functions/translations/..., because when a crash happens, you can't rely on anything.
          */
         fun Throwable?.crash(notes: String = "-/-") {
-            if (alreadyCrashed) {
+            if (CrashReportState.crashed) {
                 return
             }
-            alreadyCrashed = true
+            CrashReportState.crashed = true
             val details = try {
                 CrashReportUtil.createCrashReport(this, notes)
             } catch (error: Throwable) {
