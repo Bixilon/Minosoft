@@ -72,7 +72,7 @@ value class Vec3f(
 
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y + z * z
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
+    inline fun normalize() = this * (1.0f / length())
 
     inline fun write(array: FloatArray, offset: Int = 0) {
         array[offset + 0] = x

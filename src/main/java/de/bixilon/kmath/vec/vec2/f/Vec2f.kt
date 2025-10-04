@@ -61,7 +61,7 @@ value class Vec2f(
 
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
+    inline fun normalize() = this * (1.0f / length())
 
 
     inline fun write(array: FloatArray, offset: Int = 0) {

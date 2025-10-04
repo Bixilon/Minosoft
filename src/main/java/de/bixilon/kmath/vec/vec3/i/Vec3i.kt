@@ -64,7 +64,6 @@ value class Vec3i(
 
     inline fun length() = sqrt(length2().toDouble()).toInt()
     inline fun length2() = x * x + y * y + z * z
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
 
     override fun toString(): String = "($x $y $z)"

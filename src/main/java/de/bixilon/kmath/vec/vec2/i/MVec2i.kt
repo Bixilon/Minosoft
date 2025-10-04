@@ -77,8 +77,6 @@ value class MVec2i(
 
     inline fun length() = sqrt(length2().toDouble()).toInt()
     inline fun length2() = x * x + y * y
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
 
 
     override fun toString(): String = "($x $y)"
