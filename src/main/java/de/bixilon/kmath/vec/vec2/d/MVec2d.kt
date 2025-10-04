@@ -92,8 +92,8 @@ value class MVec2d(
 
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalize() = this * (1.0 / length())
+    inline fun normalizeAssign() = let { this *= (1.0 / length()) }
 
 
     override fun toString(): String = "($x $y)"
