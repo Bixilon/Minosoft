@@ -72,8 +72,8 @@ class GUIMesh(
         }
 
         fun addVertex(data: AbstractFloatList, halfSize: Vec2f, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-            val x = x / halfSize.x - 1.0f
-            val y = 1.0f - y / halfSize.y
+            val x = x / halfSize.x - 1.0f // TODO (performance): inverse
+            val y = 1.0f - y / halfSize.y // TODO (performance): inverse
 
 
             var color = tint

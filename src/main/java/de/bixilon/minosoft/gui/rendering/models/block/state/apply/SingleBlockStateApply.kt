@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
 import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
@@ -51,7 +52,7 @@ data class SingleBlockStateApply(
     private fun FaceVertexData.rotateX(steps: Int) {
         for (step in 0 until steps) {
             for (index in 0 until VERTEX_DATA_COMPONENTS) {
-                val offset = index * 3
+                val offset = index * Vec3f.LENGTH
                 val y = this[offset + 1]
 
                 this[offset + 1] = this[offset + 2]
@@ -77,7 +78,7 @@ data class SingleBlockStateApply(
     private fun FaceVertexData.rotateY(steps: Int) {
         for (step in 0 until steps) {
             for (index in 0 until VERTEX_DATA_COMPONENTS) {
-                val offset = index * 3
+                val offset = index * Vec3f.LENGTH
                 val x = this[offset + 0]
 
                 this[offset + 0] = -this[offset + 2] + 1.0f // translates to origin and back; same as -(z-0.5f) + 0.5f
@@ -97,7 +98,7 @@ data class SingleBlockStateApply(
     private fun FaceVertexData.rotateY(direction: Directions): FaceVertexData {
         if (y == 0) return this
         rotateY(y)
-        return pushRight(3, direction.yRotations())
+        return pushRight(Vec3f.LENGTH, direction.yRotations())
     }
 
     private fun rotatedY(direction: Directions): Int {
@@ -196,8 +197,8 @@ data class SingleBlockStateApply(
         if (!direction.negative && value != 1.0f) return null
 
         return FaceProperties(
-            start = getVec2f(0, axis),
-            end = getVec2f(6, axis),
+            start = getVec2f(0 * Vec3f.LENGTH, axis),
+            end = getVec2f(2 * Vec3f.LENGTH, axis),
             transparency = texture.transparency,
         )
     }

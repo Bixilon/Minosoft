@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.DummyComponentConsumer
@@ -91,21 +92,21 @@ class TextElementTest {
         val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = null, properties = TextRenderProperties(shadow = false))
         element.prefMaxSize = Vec2f(3.0f, 11.0f)
         element.assetSize(Vec2f(2.5f, 11.0f))
-        assertEquals(element.info.size, Vec2f(2.5f, 11.0f))
+        assertEquals(element.info.size, MVec2f(2.5f, 11.0f))
     }
 
     fun `limited size with background`() {
         val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1.0f)), properties = TextRenderProperties(shadow = false))
         element.prefMaxSize = Vec2f(5.0f, 11.0f)
         element.assetSize(Vec2f(0.0f, 0.0f))
-        assertEquals(element.info.size, Vec2f(0.0f, 0.0f))
+        assertEquals(element.info.size, MVec2f(0.0f, 0.0f))
     }
 
     fun `limited size with background 2`() {
         val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4f(1.0f)), properties = TextRenderProperties(shadow = false))
         element.prefMaxSize = Vec2f(5.0f, 13.0f)
         element.assetSize(Vec2f(4.5f, 13.0f))
-        assertEquals(element.info.size, Vec2f(2.5f, 11.0f))
+        assertEquals(element.info.size, MVec2f(2.5f, 11.0f))
     }
 
     fun `single line background and text`() {

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities
 
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.util.KUtil.rad
@@ -33,11 +34,11 @@ data class EntityRotation(
             val pitchCos = cos(pitchRad)
             val yawRad = -yaw.rad
 
-            _front = Vec3f(
+            _front = MVec3f(
                 sin(yawRad) * pitchCos,
                 -sin(pitchRad),
                 cos(yawRad) * pitchCos
-            ).normalize()
+            ).apply { normalizeAssign() }.unsafe
 
             return _front!!
         }

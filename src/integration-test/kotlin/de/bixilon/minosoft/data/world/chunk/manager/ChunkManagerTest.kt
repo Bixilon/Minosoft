@@ -63,9 +63,9 @@ class ChunkManagerTest {
 
     fun emptyWorldSize() {
         val manager = create()
-        assertEquals(manager.size.size.size, Vec2i.EMPTY)
-        assertEquals(manager.size.size.min, Vec2i(Int.MAX_VALUE)) // TODO: That is undefined, but probably the best
-        assertEquals(manager.size.size.max, Vec2i(Int.MIN_VALUE))
+        assertEquals(manager.size.size.size, MVec2i.EMPTY)
+        assertEquals(manager.size.size.min, MVec2i(Int.MAX_VALUE)) // TODO: That is undefined, but probably the best
+        assertEquals(manager.size.size.max, MVec2i(Int.MIN_VALUE))
     }
 
     fun createSingle() {
@@ -76,9 +76,9 @@ class ChunkManagerTest {
         assertSame(manager[ChunkPosition(0, 1)], chunk)
         assertEquals(chunk.position, ChunkPosition(0, 1))
         assertFalse(chunk.neighbours.complete)
-        assertEquals(manager.size.size.size, Vec2i(1, 1))
-        assertEquals(manager.size.size.min, Vec2i(0, 1))
-        assertEquals(manager.size.size.max, Vec2i(0, 1))
+        assertEquals(manager.size.size.size, MVec2i(1, 1))
+        assertEquals(manager.size.size.min, MVec2i(0, 1))
+        assertEquals(manager.size.size.max, MVec2i(0, 1))
     }
 
 

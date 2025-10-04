@@ -154,25 +154,25 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     fun rotateZAssign(rad: Float) = Mat4Operations.rotateZ(this, rad)
 
 
-    fun translateXAssign(vX: Float) {
-        this[3, 0] += this[0, 0] * vX
-        this[3, 1] += this[0, 1] * vX
-        this[3, 2] += this[0, 2] * vX
-        this[3, 3] += this[0, 3] * vX
+    fun translateXAssign(x: Float) {
+        this[3, 0] += this[0, 0] * x
+        this[3, 1] += this[0, 1] * x
+        this[3, 2] += this[0, 2] * x
+        this[3, 3] += this[0, 3] * x
     }
 
-    fun translateYAssign(vY: Float) {
-        this[3, 0] += this[1, 0] * vY
-        this[3, 1] += this[1, 1] * vY
-        this[3, 2] += this[1, 2] * vY
-        this[3, 3] += this[1, 3] * vY
+    fun translateYAssign(y: Float) {
+        this[3, 0] += this[1, 0] * y
+        this[3, 1] += this[1, 1] * y
+        this[3, 2] += this[1, 2] * y
+        this[3, 3] += this[1, 3] * y
     }
 
-    fun translateZAssign(vX: Float) {
-        this[3, 0] += this[2, 0] * vX
-        this[3, 1] += this[2, 1] * vX
-        this[3, 2] += this[2, 2] * vX
-        this[3, 3] += this[2, 3] * vX
+    fun translateZAssign(z: Float) {
+        this[3, 0] += this[2, 0] * z
+        this[3, 1] += this[2, 1] * z
+        this[3, 2] += this[2, 2] * z
+        this[3, 3] += this[2, 3] * z
     }
 
     companion object {

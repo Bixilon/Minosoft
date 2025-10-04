@@ -19,6 +19,7 @@ import de.bixilon.kmath.number.DoubleUtil.plus
 import de.bixilon.kmath.number.DoubleUtil.rem
 import de.bixilon.kmath.number.DoubleUtil.times
 import de.bixilon.kmath.vec.vec2.f._Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.util.d
 import kotlin.math.sqrt
@@ -114,6 +115,13 @@ value class MVec2d(
     }
 
     companion object {
-        val EMPTY = MVec2d(0)
+        val EMPTY get() = MVec2d(0)
+        const val LENGTH = 2
+
+        inline operator fun invoke(other: _Vec2d) = MVec2d(other.x.d, other.y.d)
+        inline operator fun invoke(other: _Vec2f) = MVec2d(other.x.d, other.y.d)
+        inline operator fun invoke(other: Vec2i) = MVec2d(other.x.d, other.y.d)
+
+        operator fun invoke() = EMPTY
     }
 }
