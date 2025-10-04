@@ -97,11 +97,11 @@ class WeightedBlockRender(
 
     private fun Array<WeightedEntry>.getProperties(): Array<SideProperties?> {
         val sizes: Array<SideProperties?> = arrayOfNulls(Directions.SIZE)
-        val skip = BooleanArray(Directions.SIZE)
+        val mismatch = BooleanArray(Directions.SIZE)
 
         for ((_, model) in this) {
             for (direction in Directions) {
-                if (skip[direction.ordinal]) continue
+                if (mismatch[direction.ordinal]) continue
 
                 val current = sizes[direction.ordinal]
                 val size = model.getProperties(direction)
@@ -110,13 +110,13 @@ class WeightedBlockRender(
                     continue
                 }
                 if (current != size) {
-                    skip[direction.ordinal] = true
+                    mismatch[direction.ordinal] = true
                     continue
                 }
             }
         }
 
-        for ((index, skip) in skip.withIndex()) {
+        for ((index, skip) in mismatch.withIndex()) {
             if (!skip) continue
             sizes[index] = null
         }
