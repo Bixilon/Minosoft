@@ -62,9 +62,9 @@ data class SingleBlockStateApply(
     }
 
     private fun Directions.xRotations() = when {
-        axis == Axes.X -> if (negative) -x else x
-        axis == Axes.Y && x != 1 -> if (negative) -1 else 1
-        axis == Axes.Z && x != 3 -> if (negative) 1 else -1
+        axis == Axes.X -> if (negative) -this@SingleBlockStateApply.x else this@SingleBlockStateApply.x
+        axis == Axes.Y && this@SingleBlockStateApply.x != 1 -> if (negative) -1 else 1
+        axis == Axes.Z && this@SingleBlockStateApply.x != 3 -> if (negative) 1 else -1
         else -> 0
     }
 
@@ -88,9 +88,9 @@ data class SingleBlockStateApply(
     }
 
     private fun Directions.yRotations() = when {
-        axis == Axes.Y -> if (negative) -y else y
-        axis == Axes.Z && y != 1 -> if (negative) -1 else 1
-        axis == Axes.X && y != 3 -> if (negative) 1 else -1
+        axis == Axes.Y -> if (negative) -this@SingleBlockStateApply.y else this@SingleBlockStateApply.y
+        axis == Axes.Z && this@SingleBlockStateApply.y != 1 -> if (negative) -1 else 1
+        axis == Axes.X && this@SingleBlockStateApply.y != 3 -> if (negative) 1 else -1
         else -> 0
     }
 
