@@ -38,8 +38,7 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
         x0: Float, y0: Float, z0: Float,
         x1: Float, y1: Float, z1: Float,
         x2: Float, y2: Float, z2: Float,
-    ) : this(UnsafeMat3f
-        (floatArrayOf(
+    ) : this(UnsafeMat3f(floatArrayOf(
         x0, y0, z0,
         x1, y1, z1,
         x2, y2, z2,
@@ -47,8 +46,8 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
 
     val unsafe get() = MMat3f(_0)
 
-    override inline operator fun get(x: Int) = Vec3f(this[x, 0], this[x, 1], this[x, 2])
-    override inline operator fun get(x: Int, y: Int) = _0[x, y]
+    override inline operator fun get(row: Int) = Vec3f(this[row, 0], this[row, 1], this[row, 2])
+    override inline operator fun get(row: Int, column: Int) = _0[row, column]
 
     inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, number, this) }.unsafe
     inline operator fun plus(other: _Mat3f) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, other, this) }.unsafe

@@ -40,18 +40,15 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         x2, y2, z2,
     )))
 
-
-    constructor(mat: Mat4f) : this() // TODO
-
     val unsafe get() = Mat3f(_0)
 
-    override inline operator fun get(x: Int) = Vec3f(this[x, 0], this[x, 1], this[x, 2])
-    override inline operator fun get(x: Int, y: Int) = _0[x, y]
+    override inline operator fun get(row: Int) = Vec3f(this[row, 0], this[row, 1], this[row, 2])
+    override inline operator fun get(row: Int, column: Int) = _0[row, column]
 
-    inline operator fun set(x: Int, vec3: Vec3f) {
-        this[x, 0] = vec3.x
-        this[x, 1] = vec3.y
-        this[x, 2] = vec3.z
+    inline operator fun set(row: Int, vec3: Vec3f) {
+        this[row, 0] = vec3.x
+        this[row, 1] = vec3.y
+        this[row, 2] = vec3.z
     }
 
     inline fun set(
@@ -64,8 +61,8 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         this[2, 0] = x2; this[2, 1] = y2; this[2, 2] = z2
     }
 
-    inline operator fun set(x: Int, y: Int, value: Float) {
-        _0[x, y] = value
+    inline operator fun set(row: Int, column: Int, value: Float) {
+        _0[row, column] = value
     }
 
     inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@MMat3f, number, this) }
@@ -103,7 +100,7 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
     companion object {
         const val LENGTH = 3 * 3
 
-        inline operator fun invoke(mat: _Mat4f) = Mat3f(
+        inline operator fun invoke(mat: _Mat4f) = MMat3f(
             mat[0, 0], mat[0, 1], mat[0, 2],
             mat[1, 0], mat[1, 1], mat[1, 2],
             mat[2, 0], mat[2, 1], mat[2, 2],
