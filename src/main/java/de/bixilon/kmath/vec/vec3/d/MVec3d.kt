@@ -110,8 +110,8 @@ value class MVec3d(
     inline fun isEmpty() = x == 0.0 && y == 0.0 && z == 0.0
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y + z * z
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalize() = this * (1.0 / length())
+    inline fun normalizeAssign() = let { this *= (1.0 / length()) }
 
     inline fun put(x: Number, y: Number, z: Number) {
         this.x = x.d

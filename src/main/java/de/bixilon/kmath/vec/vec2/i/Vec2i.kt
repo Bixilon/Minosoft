@@ -58,9 +58,8 @@ value class Vec2i(
     inline operator fun unaryPlus() = Vec2i(x, y)
     inline operator fun unaryMinus() = Vec2i(-x, -y)
 
-    inline fun length() = sqrt(length2().toDouble()).toInt()
+    inline fun length() = sqrt(length2().toDouble())
     inline fun length2() = x * x + y * y
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
 
 
     override fun toString(): String = "($x $y)"

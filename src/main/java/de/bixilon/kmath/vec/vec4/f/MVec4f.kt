@@ -91,8 +91,8 @@ value class MVec4f(
 
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y + z * z + w * w
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalize() = this * (1.0f / length())
+    inline fun normalizeAssign() = let { this *= (1.0f / length()) }
 
     inline fun put(other: _Vec4f) {
         this.x = other.x

@@ -91,8 +91,8 @@ value class MVec2f(
 
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y
-    inline fun normalize() = this / length() // TODO: inverse sqrt?x
-    inline fun normalizeAssign() = let { this *= length() }
+    inline fun normalize() = this * (1.0f / length())
+    inline fun normalizeAssign() = let { this *= (1.0f / length()) }
 
 
     inline fun invoke(other: _Vec2f) = put(other)
