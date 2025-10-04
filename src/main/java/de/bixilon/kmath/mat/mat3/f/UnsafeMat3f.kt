@@ -24,16 +24,23 @@ class UnsafeMat3f(
     fun final() = Mat3f(this)
     fun mutable() = MMat3f(this)
 
-    inline operator fun get(x: Int, y: Int): Float {
-        // assert(x in 0 until 4)
-        // assert(y in 0 until 4)
-        return array[y * 3 + x]
+    inline operator fun get(row: Int, column: Int): Float {
+        // assert(x in 0 until 3)
+        // assert(y in 0 until 3)
+        return array[row * 3 + column]
     }
 
-    inline operator fun set(x: Int, y: Int, value: Float) {
-        // assert(x in 0 until 4)
-        // assert(y in 0 until 4)
-        array[y * 3 + x] = value
+    inline operator fun set(row: Int, column: Int, value: Float) {
+        // assert(x in 0 until 3)
+        // assert(y in 0 until 3)
+        array[row * 3 + column] = value
+    }
+
+
+    override fun toString(): String {
+        return "${this[0, 0]} ${this[0, 1]} ${this[0, 2]}}\n" +
+            "${this[1, 0]} ${this[1, 1]} ${this[1, 2]}\n" +
+            "${this[2, 0]} ${this[2, 1]} ${this[2, 2]}\n"
     }
 
 
