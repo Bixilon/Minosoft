@@ -86,14 +86,16 @@ object Mat4Operations {
     }
 
     inline fun translate(mat: MMat4f, x: Float, y: Float, z: Float) {
-        // TODO: Optimize
-        mat.translateXAssign(x)
-        mat.translateXAssign(y)
-        mat.translateXAssign(z)
+        mat[0, 0] += mat[0, 0] * x + mat[1, 0] * y + mat[2, 0] * z
+        mat[3, 1] += mat[0, 1] * x + mat[1, 1] * y + mat[2, 1] * z
+        mat[3, 2] += mat[0, 2] * x + mat[1, 2] * y + mat[2, 2] * z
+        mat[3, 3] += mat[0, 3] * x + mat[1, 3] * y + mat[2, 3] * z
     }
 
     inline fun scale(mat: MMat4f, x: Float, y: Float, z: Float) {
-        // TODO
+        mat[0, 0] *= x; mat[0, 1] *= x; mat[0, 2] *= x; mat[0, 3] *= x
+        mat[1, 0] *= y; mat[1, 1] *= y; mat[1, 2] *= y; mat[1, 3] *= y
+        mat[2, 0] *= z; mat[2, 1] *= z; mat[2, 2] *= z; mat[2, 3] *= z
     }
 
 

@@ -18,8 +18,11 @@ import de.bixilon.kmath.number.FloatUtil.minus
 import de.bixilon.kmath.number.FloatUtil.plus
 import de.bixilon.kmath.number.FloatUtil.rem
 import de.bixilon.kmath.number.FloatUtil.times
+import de.bixilon.kmath.vec.vec2.d.MVec2d
+import de.bixilon.kmath.vec.vec2.d._Vec2d
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.util.d
 import de.bixilon.minosoft.util.f
 import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
@@ -129,10 +132,15 @@ value class MVec2f(
         else -> throw UnsupportedOperationException("Axis not supported: $axis")
     }
 
+
     companion object {
         val EMPTY get() = MVec2f(0)
+        const val LENGTH = 2
 
+        inline operator fun invoke(other: _Vec2d) = MVec2f(other.x.f, other.y.f)
+        inline operator fun invoke(other: _Vec2f) = MVec2f(other.x.f, other.y.f)
         inline operator fun invoke(other: Vec2i) = MVec2f(other.x.f, other.y.f)
-        inline operator fun invoke(other: _Vec2f) = MVec2f(other.x.i, other.y.i)
+
+        operator fun invoke() = EMPTY
     }
 }

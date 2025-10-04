@@ -85,8 +85,8 @@ class Rendering(private val session: PlaySession) {
                 session.events.fire(WindowCloseEvent(context, window = context.window))
             } catch (_: Throwable) {
             }
-            session.terminate()
             session.error = exception
+            session.terminate()
         }
     }
 

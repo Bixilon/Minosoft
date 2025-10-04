@@ -121,4 +121,10 @@ open class PropertyBlockState(
 
         return component
     }
+
+    override fun toString(): String {
+        if (properties.isEmpty()) return super.toString()
+
+        return super.toString() + "[${properties.map { "${it.key}=${it.value}" }.joinToString(",")}]"
+    }
 }

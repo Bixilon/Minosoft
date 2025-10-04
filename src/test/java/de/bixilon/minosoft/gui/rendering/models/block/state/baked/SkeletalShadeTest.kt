@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.kmath.mat.mat3.f.MMat3f
-import de.bixilon.kmath.mat.mat3.f.Mat3f
 import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
@@ -174,7 +173,12 @@ class SkeletalShadeTest {
 
     @Test
     fun `somehow broken in the shader`() {
-        val transform = Mat4f(-0.93298566f, 0.0f, 0.09189103f, 0.0f, -0.09186335f, 0.023007425f, -0.9327047f, 0.0f, -0.0022551212f, -0.9372176f, -0.02289664f, 0.0f, -455.2743f, 95.37174f, 618.4536f, 1.0f)
+        val transform = Mat4f(
+            -0.93298566f, 0.0f, 0.09189103f, 0.0f,
+            -0.09186335f, 0.023007425f, -0.9327047f, 0.0f,
+            -0.0022551212f, -0.9372176f, -0.02289664f, 0.0f,
+            -455.2743f, 95.37174f, 618.4536f, 1.0f,
+        )
         val expected = Vec3f(1.0f, 0.0f, 0.0f)
         val normal = transformNormal(expected, transform)
         assertEquals(normal, Vec3f(-1.0f, 0.0f, 0.0f))

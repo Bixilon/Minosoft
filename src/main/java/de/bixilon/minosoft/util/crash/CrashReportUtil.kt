@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,7 +48,7 @@ object CrashReportUtil {
         "This message should not be visible...",
         "lmfao",
         "Technoblade never dies", // In memorial to technoblade. RIP Technoblade 30.6.2022
-        "Find help at: https://www.youtube.com/watch?v=dQw4w9WgXcQ", // rick
+        "Please watch the tutorial: https://www.youtube.com/watch?v=dQw4w9WgXcQ", // rick
         "//TODO: What the hell is causing this?", // S H&R
         "If this happens, we're in big shit.", // S H&R
         "this is bulky, but fuck it, gotta get this shit working like yesterday", // S H&R

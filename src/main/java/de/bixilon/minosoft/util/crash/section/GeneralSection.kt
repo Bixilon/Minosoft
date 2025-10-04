@@ -20,7 +20,7 @@ import java.time.Instant
 
 class GeneralSection(notes: String) : CrashSection(
     "General information", arrayOf(
-        "Time" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format1(Instant.now()) + "(${millis() / 1000L})",
+        "Time" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format1(Instant.now()) + " (${millis() / 1000L})",
         "Thread" to Thread.currentThread().name,
         "Notes" to notes,
     )
