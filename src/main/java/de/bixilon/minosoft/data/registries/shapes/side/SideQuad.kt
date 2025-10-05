@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.shapes.side
 
-import com.google.common.base.Objects
 import glm_.vec2.Vec2
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
@@ -21,7 +20,7 @@ data class SideQuad(
     val min: Vec2,
     val max: Vec2,
 ) {
-    private val hashCode = Objects.hashCode(min.hashCode(), max.hashCode())
+    private var hashCode = 0 // lazy
 
     constructor(minX: Float, minZ: Float, maxX: Float, maxZ: Float) : this(Vec2(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2(maxOf(minX, maxX), maxOf(minZ, maxZ)))
     constructor(minX: Double, minZ: Double, maxX: Double, maxZ: Double) : this(Vec2(minOf(minX, maxX).toFloat(), minOf(minZ, maxZ).toFloat()), Vec2(maxOf(minX, maxX).toFloat(), maxOf(minZ, maxZ).toFloat()))
@@ -63,7 +62,17 @@ data class SideQuad(
         return VoxelSide(result)
     }
 
+    private fun _hashCode(): Int {
+        var result = 1
+        result = 31 * result + min.hashCode()
+        result = 31 * result + max.hashCode()
+        return result
+    }
+
     override fun hashCode(): Int {
+        if (hashCode == 0) {
+            hashCode = _hashCode()
+        }
         return hashCode
     }
 

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state
 
-import com.google.common.base.Objects
 import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
@@ -29,7 +28,7 @@ open class PropertyBlockState(
     val properties: Map<BlockProperty<*>, Any>,
     luminance: Int,
 ) : BlockState(block, luminance) {
-    private val hash = Objects.hashCode(block, properties)
+    private val hashCode = _hashCode()
 
     init {
         if (_isWaterlogged()) {
@@ -40,13 +39,18 @@ open class PropertyBlockState(
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance)
 
 
-    override fun hashCode(): Int {
-        return hash
+    private fun _hashCode(): Int {
+        var result = 1
+        result = 31 * result + block.hashCode()
+        result = 31 * result + properties.hashCode()
+        return result
     }
+
+    override fun hashCode() = hashCode
 
     override fun equals(other: Any?): Boolean {
         if (other is ResourceLocation) return other == block.identifier
-        if (other is PropertyBlockState) return other.hash == hash && other.block == block && other.luminance == luminance && other.properties == this.properties
+        if (other is PropertyBlockState) return other.hashCode == hashCode && other.block == block && other.luminance == luminance && other.properties == this.properties
 
         return false
     }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.container.stack.property
 
-import com.google.common.base.Objects
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import java.util.*
 
 class DisplayProperty(
     private val stack: ItemStack,
@@ -50,9 +50,7 @@ class DisplayProperty(
         return _customDisplayName == null && lore.isEmpty() && _dyeColor == null
     }
 
-    override fun hashCode(): Int {
-        return Objects.hashCode(lore, _customDisplayName, _dyeColor)
-    }
+    override fun hashCode() = Objects.hash(lore, _customDisplayName, _dyeColor)
 
     override fun equals(other: Any?): Boolean {
         if (isDefault() && other == null) return true
