@@ -37,6 +37,7 @@ I will still bring up fixes from time to time, might do some changes but don't e
 
 ## System requirements
 
+- OS: Windows/Linux/macOS (x86/x64 or arm64/aarch64)
 - CPU: Multiple (4+) cores, high clock speed (2+ GHz)
 - RAM: Minimum 500 MiB, 1 GiB recommended
 - Disk space: 80 MiB + assets (~ 300 MiB per version)
@@ -75,6 +76,8 @@ A beautiful sunset
 ![Eros](doc/img/eros.png)  
 [Eros](https://en.wikipedia.org/wiki/Eros) is the main gui. You can select your account/favorite server and then connect to it. Once everything is prepared, the rendering will start.
 
+Some screenshots are years old, try the latest version to see how it actually looks.
+
 ## Version support
 
 I always try to add support for the newest version of minecraft. Mostly it is pretty easy, just declaring it and generate all data. After pushing it, it is supported. Some versions are more complicated and need a bit of coding. I always try it as fast as possible, but sometimes I just need time.
@@ -110,7 +113,7 @@ I invested many thousands of hours in this project to make it "work". A lot of v
 A release normally means, that it is stable, has few (known) bugs and won't change that much in the near future.
 All those "requirements" are currently not fulfilled at all. It is just way to alpha atm. The current goal always was to play bedwars with this client and it actually worked on hypixel ([#42](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/42)).
 
-If you want to get notified when cool new features arrive or other interesting stuff happens were, feel free to subscribe to [@MinosoftDevNews](https://t.me/MinosoftDevNews).
+Feel free to join the [matrix channel](https://matrix.to/#/#minosoft:matrix.org) to get notified when new features arrive.
 
 ## Downloads / Installation
 
