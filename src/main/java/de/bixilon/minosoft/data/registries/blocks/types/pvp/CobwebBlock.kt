@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.util.d
 
 open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, FullOutlinedBlock, ToolRequirement, CustomDiggingBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
@@ -57,7 +58,7 @@ open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, sett
 
     companion object : BlockFactory<CobwebBlock> {
         override val identifier = minecraft("cobweb")
-        val SLOW = Vec3d(0.25, 0.05, 0.25)
+        val SLOW = Vec3d(0.25, 0.05f.d, 0.25)
 
         override fun build(registries: Registries, settings: BlockSettings) = CobwebBlock(settings = settings)
     }

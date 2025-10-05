@@ -91,18 +91,18 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
     private fun updateVelocity(fluid: Fluid, update: FluidUpdate, normalize: Boolean) {
         if (update.velocity.length2() <= 0.0) return
         val speed = fluid.getVelocityMultiplier(physics.entity.session)
-        val velocity = update.velocity.mutable()
+        val velocity = update.velocity.unsafe
         velocity *= 1.0 / update.count
         if (normalize) {
             velocity.vanillaNormalizeAssign()
         }
         velocity *= speed
 
-        if (abs(physics.velocity.x) < Vec3dUtil.MARGIN && abs(physics.velocity.z) < Vec3dUtil.MARGIN && update.velocity.length2() < (FLUID_SPEED * FLUID_SPEED)) {
+        if (abs(physics.velocity.x) < Vec3dUtil.MARGIN && abs(physics.velocity.z) < Vec3dUtil.MARGIN && velocity.length2() < (FLUID_SPEED * FLUID_SPEED)) {
             velocity.vanillaNormalizeAssign()
             velocity *= FLUID_SPEED
         }
-        physics.velocity += update.velocity
+        physics.velocity += velocity
     }
 
     private fun update(fluid: Fluid?, aabb: AABB, pushable: Boolean, previousHeight: Double) {

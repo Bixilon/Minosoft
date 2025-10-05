@@ -42,6 +42,7 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.tags.entity.MinecraftEntityTags.isIn
+import de.bixilon.minosoft.util.d
 
 open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock, FullOutlinedBlock, OpaqueBlock, BlockStateBuilder {
     override val hardness: Float get() = 0.25f
@@ -71,8 +72,8 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
 
     companion object : BlockFactory<PowderSnowBlock> {
         override val identifier = minecraft("powder_snow")
-        private val SLOW = Vec3d(0.9, 1.5, 0.9)
-        private val FALLING_SHAPE = AABB(Vec3d(0.0, 0.0, 0.0), Vec3d(1.0, 0.9, 1.0))
+        private val SLOW = Vec3d(0.9f.d, 1.5, 0.9f.d)
+        private val FALLING_SHAPE = AABB(Vec3d(0.0, 0.0, 0.0), Vec3d(1.0, 0.9f.d, 1.0))
         private val TAG = minecraft("powder_snow_walkable_mobs")
 
 
