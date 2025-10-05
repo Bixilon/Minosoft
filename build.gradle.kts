@@ -558,21 +558,50 @@ val fatJar = task("fatJar", type = Jar::class) {
     exclude("com/sun/jna/*mips*/**")
     exclude("com/sun/jna/*riscv*/**")
     exclude("com/sun/jna/*s390x*/**")
+    exclude("org/lwjgl/system/freebsd/**")
 
     if (PlatformInfo.OS != OSTypes.WINDOWS) {
         exclude("com/sun/jna/win32*/**")
         exclude("com/sun/jna/platform/win32/**")
+        exclude("org/lwjgl/system/windows/**")
+        exclude("oshi/software/os/windows/**")
+        exclude("oshi/hardware/platform/windows/**")
+        exclude("oshi/driver/windows/**")
     }
     if (PlatformInfo.OS != OSTypes.MAC) {
         exclude("com/sun/jna/darwin*/**")
         exclude("com/sun/jna/platform/mac/**")
+        exclude("org/lwjgl/system/macosx/**")
+        exclude("oshi/software/os/mac/**")
+        exclude("oshi/hardware/platform/mac/**")
+        exclude("oshi/driver/mac/**")
     }
     if (PlatformInfo.OS != OSTypes.UNIX && PlatformInfo.OS != OSTypes.LINUX) {
         exclude("com/sun/jna/linux*/**")
         exclude("com/sun/jna/platform/unix/**")
+        exclude("org/lwjgl/system/linux/**")
+        exclude("oshi/software/os/linux/**")
+        exclude("oshi/software/os/unix/**")
+        exclude("oshi/hardware/platform/linux/**")
+        exclude("oshi/hardware/platform/unix/**")
+        exclude("oshi/driver/linux/**")
+        exclude("oshi/driver/unix/**")
     }
 
-    // TODO: exclude arch
+    exclude("com/sun/jna/*loongarch64/**")
+    exclude("com/sun/jna/*armel/**")
+    if (PlatformInfo.ARCHITECTURE != Architectures.AMD64) {
+        exclude("com/sun/jna/*x86-64/**")
+    }
+    if (PlatformInfo.ARCHITECTURE != Architectures.X86) {
+        exclude("com/sun/jna/*x86/**")
+    }
+    if (PlatformInfo.ARCHITECTURE != Architectures.ARM) {
+        exclude("com/sun/jna/*arm/**")
+    }
+    if (PlatformInfo.ARCHITECTURE != Architectures.AARCH64) {
+        exclude("com/sun/jna/*aarch64/**")
+    }
 
 
     // TODO: exclude a lot of unneeded files
