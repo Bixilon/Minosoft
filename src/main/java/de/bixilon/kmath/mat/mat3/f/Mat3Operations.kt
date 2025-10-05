@@ -20,7 +20,7 @@ import de.bixilon.kmath.vec.vec3.f._Vec3f
 
 object Mat3Operations {
 
-    inline fun plus(a: _Mat3f, b: Number, result: MMat3f) {
+    fun plus(a: _Mat3f, b: Float, result: MMat3f) {
         result[0, 0] = a[0, 0] + b; result[0, 1] = a[0, 1] + b; result[0, 2] = a[0, 2] + b
         result[1, 0] = a[1, 0] + b; result[1, 1] = a[1, 1] + b; result[1, 2] = a[1, 2] + b
         result[2, 0] = a[2, 0] + b; result[2, 1] = a[2, 1] + b; result[2, 2] = a[2, 2] + b
@@ -32,7 +32,7 @@ object Mat3Operations {
         result[2, 0] = a[2, 0] + b[2, 0]; result[2, 1] = a[2, 1] + b[2, 1]; result[2, 2] = a[2, 2] + b[2, 2]
     }
 
-    inline fun times(a: _Mat3f, b: Number, result: MMat3f) {
+    fun times(a: _Mat3f, b: Float, result: MMat3f) {
         result[0, 0] = a[0, 0] * b; result[0, 1] = a[0, 1] * b; result[0, 2] = a[0, 2] * b
         result[1, 0] = a[1, 0] * b; result[1, 1] = a[1, 1] * b; result[1, 2] = a[1, 2] * b
         result[2, 0] = a[2, 0] * b; result[2, 1] = a[2, 1] * b; result[2, 2] = a[2, 2] * b

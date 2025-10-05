@@ -29,7 +29,7 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
 
     private fun updateFluidVelocity(friction: Float) {
         this.velocity.x *= friction
-        this.velocity += if (this.velocity.y < 0.06f) 5.0E-4f else 0.0f
+        this.velocity.y += if (this.velocity.y < 0.06f) 5.0E-4f else 0.0f
         this.velocity.z *= friction
     }
 

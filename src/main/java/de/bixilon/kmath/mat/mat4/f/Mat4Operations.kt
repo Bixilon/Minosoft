@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.KUtil.sin
 
 object Mat4Operations {
 
-    inline fun plus(a: _Mat4f, b: Number, result: MMat4f) {
+    fun plus(a: _Mat4f, b: Float, result: MMat4f) {
         result[0, 0] = a[0, 0] + b; result[0, 1] = a[0, 1] + b; result[0, 2] = a[0, 2] + b; result[0, 3] = a[0, 3] + b
         result[1, 0] = a[1, 0] + b; result[1, 1] = a[1, 1] + b; result[1, 2] = a[1, 2] + b; result[1, 3] = a[1, 3] + b
         result[2, 0] = a[2, 0] + b; result[2, 1] = a[2, 1] + b; result[2, 2] = a[2, 2] + b; result[2, 3] = a[2, 3] + b
@@ -38,7 +38,7 @@ object Mat4Operations {
         result[3, 0] = a[3, 0] + b[3, 0]; result[3, 1] = a[3, 1] + b[3, 1]; result[3, 2] = a[3, 2] + b[3, 2]; result[3, 3] = a[3, 3] + b[3, 3]
     }
 
-    inline fun times(a: _Mat4f, b: Number, result: MMat4f) {
+    fun times(a: _Mat4f, b: Float, result: MMat4f) {
         result[0, 0] = a[0, 0] * b; result[0, 1] = a[0, 1] * b; result[0, 2] = a[0, 2] * b; result[0, 3] = a[0, 3] * b
         result[1, 0] = a[1, 0] * b; result[1, 1] = a[1, 1] * b; result[1, 2] = a[1, 2] * b; result[1, 3] = a[1, 3] * b
         result[2, 0] = a[2, 0] * b; result[2, 1] = a[2, 1] * b; result[2, 2] = a[2, 2] * b; result[2, 3] = a[2, 3] * b

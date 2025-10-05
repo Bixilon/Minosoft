@@ -53,10 +53,10 @@ value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
     override inline operator fun get(row: Int, column: Int) = _0[row, column]
 
 
-    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@Mat4f, number, this) }.unsafe
+    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@Mat4f, number.f, this) }.unsafe
     inline operator fun plus(other: _Mat4f) = MMat4f().apply { Mat4Operations.plus(this@Mat4f, other, this) }.unsafe
 
-    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@Mat4f, number, this) }.unsafe
+    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@Mat4f, number.f, this) }.unsafe
     inline operator fun times(other: _Mat4f) = MMat4f().apply { Mat4Operations.times(this@Mat4f, other, this) }.unsafe
 
     inline operator fun times(other: _Vec4f) = MVec4f().apply { Mat4Operations.times(this@Mat4f, other, this) }.unsafe

@@ -18,6 +18,7 @@ import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.minosoft.util.f
 
 @JvmInline
 value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
@@ -65,19 +66,19 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         _0[row, column] = value
     }
 
-    inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@MMat3f, number, this) }
+    inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@MMat3f, number.f, this) }
     inline operator fun plus(other: _Mat3f) = MMat3f().apply { Mat3Operations.plus(this@MMat3f, other, this) }
 
-    inline operator fun times(number: Number) = MMat3f().apply { Mat3Operations.times(this@MMat3f, number, this) }
+    inline operator fun times(number: Number) = MMat3f().apply { Mat3Operations.times(this@MMat3f, number.f, this) }
     inline operator fun times(other: _Mat3f) = MMat3f().apply { Mat3Operations.times(this@MMat3f, other, this) }
 
     inline operator fun times(other: _Vec3f) = MVec3f().apply { Mat3Operations.times(this@MMat3f, other, this) }
 
 
-    inline operator fun plusAssign(number: Number) = Mat3Operations.plus(this@MMat3f, number, this)
+    inline operator fun plusAssign(number: Number) = Mat3Operations.plus(this@MMat3f, number.f, this)
     inline operator fun plusAssign(other: _Mat3f) = Mat3Operations.plus(this@MMat3f, other, this)
 
-    inline operator fun timesAssign(number: Number) = Mat3Operations.times(this@MMat3f, number, this)
+    inline operator fun timesAssign(number: Number) = Mat3Operations.times(this@MMat3f, number.f, this)
     inline operator fun timesAssign(other: _Mat3f) = Mat3Operations.times(this@MMat3f, other, this)
 
 
