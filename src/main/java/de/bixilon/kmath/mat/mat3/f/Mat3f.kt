@@ -17,6 +17,7 @@ import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.minosoft.util.f
 
 @JvmInline
 value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
@@ -49,10 +50,10 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
     override inline operator fun get(row: Int) = Vec3f(this[row, 0], this[row, 1], this[row, 2])
     override inline operator fun get(row: Int, column: Int) = _0[row, column]
 
-    inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, number, this) }.unsafe
+    inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, number.f, this) }.unsafe
     inline operator fun plus(other: _Mat3f) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, other, this) }.unsafe
 
-    inline operator fun times(number: Number) = MMat3f().apply { Mat3Operations.times(this@Mat3f, number, this) }.unsafe
+    inline operator fun times(number: Number) = MMat3f().apply { Mat3Operations.times(this@Mat3f, number.f, this) }.unsafe
     inline operator fun times(other: _Mat3f) = MMat3f().apply { Mat3Operations.times(this@Mat3f, other, this) }.unsafe
 
     inline operator fun times(other: _Vec3f) = MVec3f().apply { Mat3Operations.times(this@Mat3f, other, this) }.unsafe

@@ -77,10 +77,10 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         _0[row, column] = value
     }
 
-    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, number, this) }
+    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, number.f, this) }
     inline operator fun plus(other: _Mat4f) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, other, this) }
 
-    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@MMat4f, number, this) }
+    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@MMat4f, number.f, this) }
     inline operator fun times(other: _Mat4f) = MMat4f().apply { Mat4Operations.times(this@MMat4f, other, this) }
 
     inline operator fun times(other: _Vec4f) = MVec4f().apply { Mat4Operations.times(this@MMat4f, other, this) }
@@ -89,10 +89,10 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     inline operator fun times(other: _Vec3f) = MVec3f().apply { Mat4Operations.times(this@MMat4f, other, this) }
 
 
-    inline operator fun plusAssign(number: Number) = Mat4Operations.plus(this@MMat4f, number, this)
+    inline operator fun plusAssign(number: Number) = Mat4Operations.plus(this@MMat4f, number.f, this)
     inline operator fun plusAssign(other: _Mat4f) = Mat4Operations.plus(this@MMat4f, other, this)
 
-    inline operator fun timesAssign(number: Number) = Mat4Operations.times(this@MMat4f, number, this)
+    inline operator fun timesAssign(number: Number) = Mat4Operations.times(this@MMat4f, number.f, this)
     inline operator fun timesAssign(other: _Mat4f) = Mat4Operations.times(this@MMat4f, other, this)
 
 
