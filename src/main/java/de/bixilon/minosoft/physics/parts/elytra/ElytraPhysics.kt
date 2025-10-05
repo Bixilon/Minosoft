@@ -21,13 +21,13 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.item.items.armor.extra.ElytraItem
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics.isClimbing
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 object ElytraPhysics {
     val FRICTION = Vec3d(0.99f, 0.98f, 0.99f)
@@ -91,8 +91,7 @@ object ElytraPhysics {
     fun LivingEntityPhysics<*>.travelElytra(gravity: Double) {
         limitFallDistance()
 
-        val initialVelocity = velocity
-        val velocity = MVec3d(initialVelocity)
+        val horizontal = velocity.xz
         val rotation = rotation
         val front = rotation.elytra()
         val pitch = rotation.pitch.rad
@@ -112,7 +111,7 @@ object ElytraPhysics {
                 velocity += Vec3d(front.x * rot / length, rot, front.z * rot / length)
             }
 
-            val horizontalLength = initialVelocity.xz.length()
+            val horizontalLength = horizontal.length()
             if (pitch < 0.0f) {
                 // steering down
                 val rot = horizontalLength * -Trigonometry.sin(pitch) * 0.04
