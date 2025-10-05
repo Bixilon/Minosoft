@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import com.google.common.collect.HashBiMap
+import de.bixilon.kutil.collections.map.bi.MutableBiMap
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -34,7 +34,7 @@ object LANServerListener {
     const val BROADCAST_ADDRESS = "224.0.2.60"
     const val MAXIMUM_SERVERS = 100 // maximum number of lan servers, set because otherwise dos attacks would be easy
 
-    val SERVERS: HashBiMap<InetAddress, AbstractServer> = HashBiMap.create()
+    val SERVERS: MutableBiMap<InetAddress, AbstractServer> = MutableBiMap()
     private const val MOTD_START_STRING = "[MOTD]"
     private const val MOTD_END_STRING = "[/MOTD]"
     private const val PORT_START_STRING = "[AD]"

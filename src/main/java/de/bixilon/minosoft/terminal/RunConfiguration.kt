@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.terminal
 
-import com.google.common.base.StandardSystemProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
@@ -69,7 +68,7 @@ object RunConfiguration {
 
 
     private fun setDefaultHome() {
-        val user = System.getProperty(StandardSystemProperty.USER_HOME.key()) ?: throw IllegalStateException("Can not get user home!")
+        val user = System.getProperty("user.home") ?: throw IllegalStateException("Can not get user home!")
 
         val home = Path.of(user, when (PlatformInfo.OS) {
             OSTypes.LINUX -> ".local/share/minosoft/"
