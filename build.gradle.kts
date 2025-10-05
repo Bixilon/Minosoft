@@ -546,15 +546,41 @@ val fatJar = task("fatJar", type = Jar::class) {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     exclude("META-INF/maven/**")
+
+
+    exclude("com/sun/jna/aix*/**")
+    exclude("com/sun/jna/sunos*/**")
+    exclude("com/sun/jna/freebsd*/**")
+    exclude("com/sun/jna/openbsd*/**")
+    exclude("com/sun/jna/dragonflybsd*/**")
+    exclude("com/sun/jna/*sparc*/**")
+    exclude("com/sun/jna/*ppc*/**")
+    exclude("com/sun/jna/*mips*/**")
+    exclude("com/sun/jna/*riscv*/**")
+    exclude("com/sun/jna/*s390x*/**")
+
+    if (PlatformInfo.OS != OSTypes.WINDOWS) {
+        exclude("com/sun/jna/win32*/**")
+        exclude("com/sun/jna/platform/win32/**")
+    }
+    if (PlatformInfo.OS != OSTypes.MAC) {
+        exclude("com/sun/jna/darwin*/**")
+        exclude("com/sun/jna/platform/mac/**")
+    }
+    if (PlatformInfo.OS != OSTypes.UNIX && PlatformInfo.OS != OSTypes.LINUX) {
+        exclude("com/sun/jna/linux*/**")
+        exclude("com/sun/jna/platform/unix/**")
+    }
+
+    // TODO: exclude arch
+
+
+    // TODO: exclude a lot of unneeded files
+    // remove most of it.unimi.fastutil classes
     // TODO: This is bad! dnsjava is a multi release jar, and that a class is only present with java>18. See https://github.com/dnsjava/dnsjava/issues/329 and https://github.com/Bixilon/Minosoft/issues/33
     exclude("META-INF/services/java.net.spi.InetAddressResolverProvider")
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     with(tasks["jar"] as CopySpec)
-
-    // TODO: exclude a lot of unneeded files
-
-    // remote other platforms from com.sun.jna
-    // remove most of it.unimi.fastutil classes
 }
 
 
