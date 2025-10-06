@@ -64,6 +64,10 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         _0[row, column] = value
     }
 
+    inline fun set(other: Mat3f) {
+        other._0.array.copyInto(_0.array)
+    }
+
     inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@MMat3f.unsafe, number.f, this) }
     inline operator fun plus(other: Mat3f) = MMat3f().apply { Mat3Operations.plus(this@MMat3f.unsafe, other, this) }
     inline operator fun plus(other: MMat3f) = MMat3f().apply { Mat3Operations.plus(this@MMat3f.unsafe, other.unsafe, this) }
@@ -98,7 +102,7 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
     )
 
     inline fun clearAssign() {
-        _0.array.fill(0.0f)
+        set(Mat3f.EMPTY)
     }
 
     companion object {
