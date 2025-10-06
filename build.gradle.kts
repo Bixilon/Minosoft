@@ -605,7 +605,7 @@ val fatJar = task("fatJar", type = Jar::class) {
     }
 
 
-    exclude("it/unimi/dsi/fastutil/doubles/**")
+    // exclude("it/unimi/dsi/fastutil/doubles/**")
     exclude("it/unimi/dsi/fastutil/longs/**")
     exclude("it/unimi/dsi/fastutil/io/**")
     exclude("it/unimi/dsi/fastutil/bytes/**")

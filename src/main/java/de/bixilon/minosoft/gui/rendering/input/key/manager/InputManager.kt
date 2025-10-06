@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2d
 import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -32,10 +30,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import it.unimi.dsi.fastutil.objects.Object2LongMap
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class InputManager(

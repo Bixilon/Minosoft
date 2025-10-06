@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.keysP
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.test.IT
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 import java.util.*
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
