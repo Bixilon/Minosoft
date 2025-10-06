@@ -47,12 +47,12 @@ class OpenURLClickEvent(
     }
 
     override fun hashCode(): Int {
-        return url.hashCode()
+        return url.toString().hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is OpenURLClickEvent) return false
-        return other.url == url
+        return other.url.toString() == url.toString()
     }
 
     companion object : ClickEventFactory<OpenURLClickEvent> {
