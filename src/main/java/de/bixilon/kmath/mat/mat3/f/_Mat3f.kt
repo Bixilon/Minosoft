@@ -17,6 +17,6 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 
 interface _Mat3f {
 
-    operator fun get(x: Int, y: Int): Float
-    operator fun get(x: Int): Vec3f
+    operator fun get(row: Int, column: Int): Float
+    operator fun get(row: Int): Vec3f
 }

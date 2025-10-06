@@ -33,7 +33,6 @@ import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
-import de.bixilon.kutil.primitive.IntUtil.isIntSafe
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
@@ -64,11 +63,9 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.recipes.RecipeFactories
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
-import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
-import org.kamranzafar.jtar.TarHeader
 import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -193,18 +190,6 @@ object KUtil {
         else -> ChatComponent.of(this.toString())
     }
 
-    fun Any.toJson(beautiful: Boolean = false): String {
-        return if (beautiful) {
-            Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(this)
-        } else {
-            Jackson.MAPPER.writeValueAsString(this)
-        }
-    }
-
-    fun String.fromJson(): Any {
-        return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
-    }
-
     val Throwable.text: TextComponent
         get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
 
@@ -220,21 +205,6 @@ object KUtil {
         return null
     }
 
-    fun Any?.autoType(): Any? {
-        if (this == null) return null
-        if (this is Number) return this
-
-        val string = this.toString()
-
-        if (string == "true") return true
-        if (string == "false") return false
-
-        string.isIntSafe()?.let { return it }
-
-        return string
-    }
-
-
     val BooleanArray.isTrue: Boolean
         get() {
             for (boolean in this) {
@@ -244,14 +214,6 @@ object KUtil {
             }
             return true
         }
-
-    fun TarHeader.generalize() {
-        userId = 0
-        groupId = 0
-        modTime = 0L
-        userName = StringBuffer("nobody")
-        groupName = StringBuffer("nobody")
-    }
 
 
     fun initBootClasses() {
@@ -352,9 +314,6 @@ object KUtil {
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
 
-    val Double.sin get() = sin(this)
-    val Double.cos get() = cos(this)
-
 
     @Deprecated("Kutil 1.28")
     private fun MessageDigest.hash(input: InputStream): ByteArray {
@@ -374,6 +333,9 @@ object KUtil {
     fun InputStream.sha256(): ByteArray {
         return MessageDigest.getInstance(SHA_256).hash(this)
     }
+
+    val Double.sin get() = sin(this)
+    val Double.cos get() = cos(this)
 
     val Double.rad get() = Math.toRadians(this)
     val Double.deg get() = Math.toDegrees(this)

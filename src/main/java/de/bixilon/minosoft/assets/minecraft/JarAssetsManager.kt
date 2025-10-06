@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,6 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
@@ -194,6 +193,14 @@ class JarAssetsManager(
         private fun minifyJson(data: ByteArray): ByteArray {
             val node = Jackson.MAPPER.readValue(data, JsonNode::class.java)
             return node.toString().toByteArray()
+        }
+
+        private fun TarHeader.generalize() {
+            userId = 0
+            groupId = 0
+            modTime = 0L
+            userName = StringBuffer("nobody")
+            groupName = StringBuffer("nobody")
         }
     }
 }
