@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.util
 
-import com.google.common.net.InetAddresses
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
+import de.bixilon.kutil.primitive.IntUtil.isIntSafe
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.xbill.DNS.Lookup
@@ -28,7 +28,7 @@ object DNSUtil {
             // port provided, skip srv check
             return listOf(original)
         }
-        if (InetAddresses.isInetAddress(hostname)) {
+        if (hostname.startsWith('[') || hostname.split('.').let { it.size >= 2 && it[0].isIntSafe() != null }) {
             return listOf(original)
         }
 

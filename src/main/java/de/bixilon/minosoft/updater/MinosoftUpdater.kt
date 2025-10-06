@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.updater
 
-import com.google.common.io.Files
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.file.PathUtil.toPath
 import de.bixilon.kutil.hash.HashUtil
@@ -26,7 +26,6 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.stream.InputStreamUtil.copy
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
-import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.CommandLineArguments
@@ -41,6 +40,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.security.MessageDigest
 import java.security.SignatureException
 import kotlin.io.path.absolutePathString
@@ -130,10 +131,11 @@ object MinosoftUpdater {
         }
         progress.log?.print("Downloading update...")
 
+        var temp: File? = null
         try {
             val stream = download.url.openStream()
             val digest = MessageDigest.getInstance(HashUtil.SHA_512)
-            val temp = FileUtil.createTempFile()
+            temp = File("./Minosoft-${update.id}.jar.tmp")
             val signature = UpdateKey.createInstance()
             stream.copy(FileOutputStream(temp), digest = digest, signature = signature)
             if (digest.digest().toHex() != download.sha512) throw SignatureException("Hash mismatch of downloaded file: Expected ${download.sha512}, got ${digest.digest().toHex()}")
@@ -142,14 +144,15 @@ object MinosoftUpdater {
             progress.log?.print("Moving temporary file to final destination")
 
             // move to current directory
-            val output = File(("./Minosoft-${update.id}.jar"))
-            Files.move(temp, output) // TODO: might be possible to tamper jar? in the meantime
+            val output = File("./Minosoft-${update.id}.jar")
+            Files.move(temp.toPath(), output.toPath(), StandardCopyOption.ATOMIC_MOVE)
             progress.log?.print("Success, file saved to $output")
 
             start(output)
             progress.log?.print("Started new process, exiting")
             ShutdownManager.shutdown()
         } catch (error: Throwable) {
+            catchAll { temp?.delete() }
             if (progress.log == null) {
                 error.printStackTrace()
             } else {
