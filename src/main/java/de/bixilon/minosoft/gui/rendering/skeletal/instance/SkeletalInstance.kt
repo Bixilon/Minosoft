@@ -75,7 +75,7 @@ class SkeletalInstance(
         }
 
         if (matrix != null) {
-            Mat4Operations.times(matrix, this.matrix, this.matrix)
+            Mat4Operations.times(matrix, this.matrix.unsafe, this.matrix)
         }
     }
 
