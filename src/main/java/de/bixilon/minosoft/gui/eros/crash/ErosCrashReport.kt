@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.eros.crash
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
 import de.bixilon.kutil.file.FileUtil.div
@@ -102,19 +101,20 @@ class ErosCrashReport : JavaFXWindowController() {
                 error.toStackTrace()
             }
 
-            // Kill some stuff
-            catchAll(executor = { DefaultThreadPool.shutdownNow() })
-            catchAll(executor = { FileWatcherService.stop() })
-            catchAll(executor = {
+            catchAll {
+                for (session in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                    session.terminate()
+                    session.rendering?.context?.window?.destroy()
+                }
+            }
+            catchAll {
                 for (window in Window.getWindows().toSynchronizedSet()) {
                     JavaFXUtil.runLater { window.hide() }
                 }
-            })
-            catchAll(executor = {
-                for (session in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                    session.terminate()
-                }
-            })
+            }
+
+            // Kill some stuff
+            catchAll { FileWatcherService.stop() }
 
 
             var crashReportPath: File?

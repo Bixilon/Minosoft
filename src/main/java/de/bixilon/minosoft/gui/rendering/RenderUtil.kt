@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderConstants.UV_ADD
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 
 object RenderUtil {
 
@@ -33,6 +34,8 @@ object RenderUtil {
             try {
                 runnable()
             } catch (error: Throwable) {
+                window.cursorMode = CursorModes.NORMAL
+                window.destroy()
                 error.printStackTrace()
                 Exception("Exception in rendering: ${session.id}", error).crash()
             }

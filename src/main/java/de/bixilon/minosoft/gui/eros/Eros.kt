@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
+import de.bixilon.minosoft.gui.eros.crash.CrashReportState
 import de.bixilon.minosoft.gui.eros.dialog.UpdateAvailableDialog
 import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.MainErosController
@@ -59,12 +60,10 @@ object Eros {
 
     @Synchronized
     fun setVisibility(visible: Boolean) {
-        if (visible == this.visible) {
-            return
-        }
-        if (!initialized) {
-            return
-        }
+        if (visible == this.visible) return
+        if (CrashReportState.crashed) return
+        if (!initialized) return
+
         if (visible) {
             mainErosController.stage.show()
         } else {
