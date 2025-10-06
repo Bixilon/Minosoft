@@ -45,29 +45,29 @@ object Mat4Operations {
 
     fun times(a: Mat4f, b: Mat4f, result: MMat4f) {
         val x0 = a[0, 0] * b[0, 0] + a[0, 1] * b[1, 0] + a[0, 2] * b[2, 0] + a[0, 3] * b[3, 0]
-        val x1 = a[0, 0] * b[0, 1] + a[0, 1] * b[1, 1] + a[0, 2] * b[2, 1] + a[0, 3] * b[3, 1]
-        val x2 = a[0, 0] * b[0, 2] + a[0, 1] * b[1, 2] + a[0, 2] * b[2, 2] + a[0, 3] * b[3, 2]
-        val x3 = a[0, 0] * b[0, 3] + a[0, 1] * b[1, 3] + a[0, 2] * b[2, 3] + a[0, 3] * b[3, 3]
+        val x1 = a[1, 0] * b[0, 0] + a[1, 1] * b[1, 0] + a[1, 2] * b[2, 0] + a[1, 3] * b[3, 0]
+        val x2 = a[2, 0] * b[0, 0] + a[2, 1] * b[1, 0] + a[2, 2] * b[2, 0] + a[2, 3] * b[3, 0]
+        val x3 = a[3, 0] * b[0, 0] + a[3, 1] * b[1, 0] + a[3, 2] * b[2, 0] + a[3, 3] * b[3, 0]
 
-        val y0 = a[1, 0] * b[0, 0] + a[1, 1] * b[1, 0] + a[1, 2] * b[2, 0] + a[1, 3] * b[3, 0]
+        val y0 = a[0, 0] * b[0, 1] + a[0, 1] * b[1, 1] + a[0, 2] * b[2, 1] + a[0, 3] * b[3, 1]
         val y1 = a[1, 0] * b[0, 1] + a[1, 1] * b[1, 1] + a[1, 2] * b[2, 1] + a[1, 3] * b[3, 1]
-        val y2 = a[1, 0] * b[0, 2] + a[1, 1] * b[1, 2] + a[1, 2] * b[2, 2] + a[1, 3] * b[3, 2]
-        val y3 = a[1, 0] * b[0, 3] + a[1, 1] * b[1, 3] + a[1, 2] * b[2, 3] + a[1, 3] * b[3, 3]
+        val y2 = a[2, 0] * b[0, 1] + a[2, 1] * b[1, 1] + a[2, 2] * b[2, 1] + a[2, 3] * b[3, 1]
+        val y3 = a[3, 0] * b[0, 1] + a[3, 1] * b[1, 1] + a[3, 2] * b[2, 1] + a[3, 3] * b[3, 1]
 
-        val z0 = a[2, 0] * b[0, 0] + a[2, 1] * b[1, 0] + a[2, 2] * b[2, 0] + a[2, 3] * b[3, 0]
-        val z1 = a[2, 0] * b[0, 1] + a[2, 1] * b[1, 1] + a[2, 2] * b[2, 1] + a[2, 3] * b[3, 1]
+        val z0 = a[0, 0] * b[0, 2] + a[0, 1] * b[1, 2] + a[0, 2] * b[2, 2] + a[0, 3] * b[3, 2]
+        val z1 = a[1, 0] * b[0, 2] + a[1, 1] * b[1, 2] + a[1, 2] * b[2, 2] + a[1, 3] * b[3, 2]
         val z2 = a[2, 0] * b[0, 2] + a[2, 1] * b[1, 2] + a[2, 2] * b[2, 2] + a[2, 3] * b[3, 2]
-        val z3 = a[2, 0] * b[0, 3] + a[2, 1] * b[1, 3] + a[2, 2] * b[2, 3] + a[2, 3] * b[3, 3]
+        val z3 = a[3, 0] * b[0, 2] + a[3, 1] * b[1, 2] + a[3, 2] * b[2, 2] + a[3, 3] * b[3, 2]
 
-        val w0 = a[3, 0] * b[0, 0] + a[3, 1] * b[1, 0] + a[3, 2] * b[2, 0] + a[3, 3] * b[3, 0]
-        val w1 = a[3, 0] * b[0, 1] + a[3, 1] * b[1, 1] + a[3, 2] * b[2, 1] + a[3, 3] * b[3, 1]
-        val w2 = a[3, 0] * b[0, 2] + a[3, 1] * b[1, 2] + a[3, 2] * b[2, 2] + a[3, 3] * b[3, 2]
+        val w0 = a[0, 0] * b[0, 3] + a[0, 1] * b[1, 3] + a[0, 2] * b[2, 3] + a[0, 3] * b[3, 3]
+        val w1 = a[1, 0] * b[0, 3] + a[1, 1] * b[1, 3] + a[1, 2] * b[2, 3] + a[1, 3] * b[3, 3]
+        val w2 = a[2, 0] * b[0, 3] + a[2, 1] * b[1, 3] + a[2, 2] * b[2, 3] + a[2, 3] * b[3, 3]
         val w3 = a[3, 0] * b[0, 3] + a[3, 1] * b[1, 3] + a[3, 2] * b[2, 3] + a[3, 3] * b[3, 3]
 
-        result[0, 0] = x0; result[1, 0] = y0; result[2, 0] = z0; result[3, 0] = w0
-        result[0, 1] = x1; result[1, 1] = y1; result[2, 1] = z1; result[3, 1] = w1
-        result[0, 2] = x2; result[1, 2] = y2; result[2, 2] = z2; result[3, 2] = w2
-        result[0, 3] = x3; result[1, 3] = y3; result[2, 3] = z3; result[3, 3] = w3
+        result[0, 0] = x0; result[0, 1] = y0; result[0, 2] = z0; result[0, 3] = w0
+        result[1, 0] = x1; result[1, 1] = y1; result[1, 2] = z1; result[1, 3] = w1
+        result[2, 0] = x2; result[2, 1] = y2; result[2, 2] = z2; result[2, 3] = w2
+        result[3, 0] = x3; result[3, 1] = y3; result[3, 2] = z3; result[3, 3] = w3
     }
 
     fun times(a: Mat4f, b: Vec3f, result: MVec3f) {
@@ -102,40 +102,45 @@ object Mat4Operations {
         val cos = angle.cos
         val sin = angle.sin
 
-        val x1 = mat[0, 1] * cos + mat[0, 2] * -sin
-        val x2 = mat[0, 1] * sin + mat[0, 2] * cos
+        val x1 = mat[0, 1] * cos + mat[0, 2] * sin
+        val x2 = mat[0, 1] * -sin + mat[0, 2] * cos
 
-        val y1 = mat[1, 1] * cos + mat[1, 2] * -sin
-        val y2 = mat[1, 1] * sin + mat[1, 2] * cos
+        val y1 = mat[1, 1] * cos + mat[1, 2] * sin
+        val y2 = mat[1, 1] * -sin + mat[1, 2] * cos
 
-        val z1 = mat[2, 1] * cos + mat[2, 2] * -sin
-        val z2 = mat[2, 1] * sin + mat[2, 2] * cos
+        val z1 = mat[2, 1] * cos + mat[2, 2] * sin
+        val z2 = mat[2, 1] * -sin + mat[2, 2] * cos
 
-        val w1 = mat[3, 1] * cos + mat[3, 2] * -sin
-        val w2 = mat[3, 1] * sin + mat[3, 2] * cos
+        val w1 = mat[3, 1] * cos + mat[3, 2] * sin
+        val w2 = mat[3, 1] * -sin + mat[3, 2] * cos
 
-        mat[0, 1] = x1; mat[1, 1] = y1; mat[2, 1] = z1; mat[3, 1] = w1
-        mat[0, 2] = x2; mat[1, 2] = y2; mat[2, 2] = z2; mat[3, 2] = w2
+        mat[0, 1] = x1; mat[0, 2] = x2
+        mat[1, 1] = y1; mat[1, 2] = y2
+        mat[2, 1] = z1; mat[2, 2] = z2
+        mat[3, 1] = w1; mat[3, 2] = w2
+
     }
 
     fun rotateY(mat: MMat4f, angle: Float) {
         val cos = angle.cos
         val sin = angle.sin
 
-        val x0 = mat[0, 0] * cos + mat[0, 2] * sin
-        val x2 = mat[0, 0] * -sin + mat[0, 2] * cos
+        val x0 = mat[0, 0] * cos + mat[0, 2] * -sin
+        val x2 = mat[0, 0] * sin + mat[0, 2] * cos
 
-        val y0 = mat[1, 0] * cos + mat[1, 2] * sin
-        val y2 = mat[1, 0] * -sin + mat[1, 2] * cos
+        val y0 = mat[1, 0] * cos + mat[1, 2] * -sin
+        val y2 = mat[1, 0] * sin + mat[1, 2] * cos
 
-        val z0 = mat[2, 0] * cos + mat[2, 2] * sin
-        val z2 = mat[2, 0] * -sin + mat[2, 2] * cos
+        val z0 = mat[2, 0] * cos + mat[2, 2] * -sin
+        val z2 = mat[2, 0] * sin + mat[2, 2] * cos
 
-        val w0 = mat[3, 0] * cos + mat[3, 2] * sin
-        val w2 = mat[3, 0] * -sin + mat[3, 2] * cos
+        val w0 = mat[3, 0] * cos + mat[3, 2] * -sin
+        val w2 = mat[3, 0] * sin + mat[3, 2] * cos
 
-        mat[0, 0] = x0; mat[1, 0] = y0; mat[2, 0] = z0; mat[3, 0] = w0
-        mat[0, 2] = x2; mat[1, 2] = y2; mat[2, 2] = z2; mat[3, 2] = w2
+        mat[0, 0] = x0; mat[0, 2] = x2
+        mat[1, 0] = y0; mat[1, 2] = y2
+        mat[2, 0] = z0; mat[2, 2] = z2
+        mat[3, 0] = w0; mat[3, 2] = w2
     }
 
     fun rotateZ(mat: MMat4f, angle: Float) {
@@ -154,7 +159,9 @@ object Mat4Operations {
         val w0 = mat[3, 0] * cos + mat[3, 1] * sin
         val w1 = mat[3, 0] * -sin + mat[3, 1] * cos
 
-        mat[0, 0] = x0; mat[1, 0] = y0; mat[2, 0] = z0; mat[3, 0] = w0
-        mat[0, 1] = x1; mat[1, 1] = y1; mat[2, 1] = z1; mat[3, 1] = w1
+        mat[0, 0] = x0; mat[0, 1] = x1
+        mat[1, 0] = y0; mat[1, 1] = y1
+        mat[2, 0] = z0; mat[2, 1] = z1
+        mat[3, 0] = w0; mat[3, 1] = w1
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.kmath.mat.mat4.f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
+import de.bixilon.minosoft.util.KUtil.rad
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -439,13 +440,83 @@ class MMat4fTest {
         )
         mat.clearAssign()
 
+        assertEquals(mat, Mat4f().unsafe)
+    }
+
+    @Test
+    fun `rotate x`() {
+        val mat = MMat4f(
+            1.0f, 5.0f, 9.0f, 13.0f,
+            2.0f, 6.0f, 10.0f, 14.0f,
+            3.0f, 7.0f, 11.0f, 15.0f,
+            4.0f, 8.0f, 12.0f, 16.0f,
+        )
+        mat.rotateXAssign(45.0f.rad)
+
         assertEquals(mat, MMat4f(
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, 9.899494f, 2.8284268f, 13.0f,
+            2.0f, 11.313708f, 2.8284273f, 14.0f,
+            3.0f, 12.727922f, 2.8284268f, 15.0f,
+            4.0f, 14.142136f, 2.8284268f, 16.0f,
         ))
     }
 
-    // TODO: rotateDegreesAssign, rotateRadAssign, rotateXAssign, rotateYAssign, rotateZAssign, translateXAssign, YZ
+    @Test
+    fun `rotate y`() {
+        val mat = MMat4f(
+            1.0f, 5.0f, 9.0f, 13.0f,
+            2.0f, 6.0f, 10.0f, 14.0f,
+            3.0f, 7.0f, 11.0f, 15.0f,
+            4.0f, 8.0f, 12.0f, 16.0f,
+        )
+        mat.rotateYAssign(45.0f.rad)
+
+        assertEquals(mat, MMat4f(
+            -5.656854f, 5.0f, 7.0710673f, 13.0f,
+            -5.656854f, 6.0f, 8.485281f, 14.0f,
+            -5.656854f, 7.0f, 9.899494f, 15.0f,
+            -5.6568537f, 8.0f, 11.313708f, 16.0f,
+        ))
+    }
+
+    @Test
+    fun `rotate z`() {
+        val mat = MMat4f(
+            1.0f, 5.0f, 9.0f, 13.0f,
+            2.0f, 6.0f, 10.0f, 14.0f,
+            3.0f, 7.0f, 11.0f, 15.0f,
+            4.0f, 8.0f, 12.0f, 16.0f,
+        )
+        mat.rotateZAssign(45.0f.rad)
+
+        assertEquals(mat, MMat4f(
+            4.2426405f, 2.828427f, 9.0f, 13.0f,
+            5.656854f, 2.8284268f, 10.0f, 14.0f,
+            7.071068f, 2.8284273f, 11.0f, 15.0f,
+            8.485281f, 2.828427f, 12.0f, 16.0f,
+        ))
+    }
+
+    @Test
+    fun `translate x`() {
+        val mat = MMat4f(1.0f, 2.0f, 3.0f, 4.0f)
+        mat.translateXAssign(10.0f)
+        assertEquals(mat, MMat4f(1.0f, 2.0f, 3.0f, 4.0f).translate(Vec3f(10, 0, 0)))
+    }
+
+    @Test
+    fun `translate y`() {
+        val mat = MMat4f(1.0f, 2.0f, 3.0f, 4.0f)
+        mat.translateYAssign(10.0f)
+        assertEquals(mat, MMat4f(1.0f, 2.0f, 3.0f, 4.0f).translate(Vec3f(0, 10, 0)))
+    }
+
+    @Test
+    fun `translate z`() {
+        val mat = MMat4f(1.0f, 2.0f, 3.0f, 4.0f)
+        mat.translateZAssign(10.0f)
+        assertEquals(mat, MMat4f(1.0f, 2.0f, 3.0f, 4.0f).translate(Vec3f(0, 0, 10)))
+    }
+
+    // TODO: rotateDegreesAssign, rotateRadAssign
 }

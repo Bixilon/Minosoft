@@ -161,24 +161,24 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
 
     fun translateXAssign(x: Float) {
-        this[3, 0] += this[0, 0] * x
-        this[3, 1] += this[0, 1] * x
-        this[3, 2] += this[0, 2] * x
-        this[3, 3] += this[0, 3] * x
+        this[0, 3] += this[0, 0] * x
+        this[1, 3] += this[1, 0] * x
+        this[2, 3] += this[2, 0] * x
+        this[3, 3] += this[3, 0] * x
     }
 
     fun translateYAssign(y: Float) {
-        this[3, 0] += this[1, 0] * y
-        this[3, 1] += this[1, 1] * y
-        this[3, 2] += this[1, 2] * y
-        this[3, 3] += this[1, 3] * y
+        this[0, 3] += this[0, 1] * y
+        this[1, 3] += this[1, 1] * y
+        this[2, 3] += this[2, 1] * y
+        this[3, 3] += this[3, 1] * y
     }
 
     fun translateZAssign(z: Float) {
-        this[3, 0] += this[2, 0] * z
-        this[3, 1] += this[2, 1] * z
-        this[3, 2] += this[2, 2] * z
-        this[3, 3] += this[2, 3] * z
+        this[0, 3] += this[0, 2] * z
+        this[1, 3] += this[1, 2] * z
+        this[2, 3] += this[2, 2] * z
+        this[3, 3] += this[3, 2] * z
     }
 
     companion object {
