@@ -30,23 +30,6 @@ stages:
       paths:
         - .home/wrapper
 
-cache:
-  - key: "$CI_COMMIT_SHA"
-    paths:
-      - build
-      - .gradle
-  - key:
-      files:
-        - "build.gradle.kts"
-        - "gradle.properties"
-    paths:
-      - $GRADLE_USER_HOME/caches
-  - key:
-      files:
-        - "gradle/wrapper/gradle-wrapper.properties"
-    paths:
-      - $GRADLE_USER_HOME/wrapper
-
 create:
   stage: create
   image: alpine:latest
