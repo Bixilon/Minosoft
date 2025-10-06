@@ -124,7 +124,7 @@ open class TextElement(
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
         }
-        _size = info.size.withBackgroundSize().unsafe
+        _size = MVec2f(info.size).withBackgroundSize().unsafe
         this.info = info
     }
 

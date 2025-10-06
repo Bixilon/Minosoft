@@ -37,7 +37,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun ensureSize(size: Int) = Unit
 
     override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
-        quads += RendererdQuad(start, end)
+        quads += RendererdQuad(Vec2f(start.unsafe), Vec2f(end.unsafe)) // copy because unsafe
     }
 
     data class RendererdCodePoint(val start: Vec2f)

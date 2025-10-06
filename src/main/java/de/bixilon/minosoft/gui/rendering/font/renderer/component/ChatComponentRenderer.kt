@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -45,20 +44,18 @@ interface ChatComponentRenderer<T : ChatComponent> {
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
 
-        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent): Boolean {
-            return when (text) {
-                is BaseComponent -> BaseComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
-                is TextComponent -> TextComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
-                is EmptyComponent -> return false
-                else -> TODO("Don't know how to render ${text::class.java}")
-            }
+        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent) = when (text) {
+            is BaseComponent -> BaseComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
+            is TextComponent -> TextComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
+            is EmptyComponent -> false
+            else -> TODO("Don't know how to render ${text::class.java}")
         }
 
         fun render3d(context: RenderContext, position: Vec3f, properties: TextRenderProperties, rotation: Vec3f, maxSize: Vec2f, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = MMat4f().apply {
                 translateAssign(position)
                 rotateRadAssign(rotation)
-                translateAssign(Vec3f(0, 0, -1))
+                translateZAssign(-1.0f)
             }
 
             val primitives = calculatePrimitiveCount(text)
@@ -87,13 +84,11 @@ interface ChatComponentRenderer<T : ChatComponent> {
             return info
         }
 
-        override fun calculatePrimitiveCount(text: ChatComponent): Int {
-            return when (text) {
-                is BaseComponent -> BaseComponentRenderer.calculatePrimitiveCount(text)
-                is TextComponent -> TextComponentRenderer.calculatePrimitiveCount(text)
-                is EmptyComponent -> 0
-                else -> TODO("Don't know how to render ${text::class.java}")
-            }
+        override fun calculatePrimitiveCount(text: ChatComponent) = when (text) {
+            is BaseComponent -> BaseComponentRenderer.calculatePrimitiveCount(text)
+            is TextComponent -> TextComponentRenderer.calculatePrimitiveCount(text)
+            is EmptyComponent -> 0
+            else -> TODO("Don't know how to render ${text::class.java}")
         }
     }
 }
