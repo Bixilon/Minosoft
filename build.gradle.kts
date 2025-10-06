@@ -555,6 +555,7 @@ val fatJar = task("fatJar", type = Jar::class) {
     if (PlatformInfo.OS != OSTypes.WINDOWS) {
         exclude("com/sun/jna/win32*/**")
         exclude("com/sun/jna/platform/win32/**")
+        exclude("com/sun/jna/platform/wince/**")
         exclude("org/lwjgl/system/windows/**")
         exclude("oshi/software/os/windows/**")
         exclude("oshi/hardware/platform/windows/**")
@@ -582,6 +583,7 @@ val fatJar = task("fatJar", type = Jar::class) {
         exclude("org/lwjgl/system/freebsd/**")
     }
     if (PlatformInfo.OS != OSTypes.LINUX) {
+        exclude("com/sun/jna/platform/linux/**")
         exclude("com/sun/jna/linux*/**")
         exclude("org/lwjgl/system/linux/**")
         exclude("oshi/software/os/linux/**")
