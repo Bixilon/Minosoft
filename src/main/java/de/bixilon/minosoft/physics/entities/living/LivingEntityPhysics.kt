@@ -37,6 +37,7 @@ import de.bixilon.minosoft.physics.parts.elytra.ElytraPhysics.travelElytra
 import de.bixilon.minosoft.physics.parts.input.InputPhysics.travelNormal
 import de.bixilon.minosoft.tags.block.MinecraftBlockTags.SOUL_SPEED_BLOCKS
 import de.bixilon.minosoft.tags.block.MinecraftBlockTags.isIn
+import de.bixilon.minosoft.util.d
 
 open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(entity) {
     protected val powderSnow = PowderSnowHandler(this)
@@ -82,7 +83,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     fun swimUpwards(fluid: Identified) {
-        this.velocity += SWIM_UPWARDS
+        this.velocity.y += SWIM_UPWARDS
     }
 
     fun doesNotCollide(offset: Vec3d): Boolean {
@@ -174,6 +175,6 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     private companion object {
-        val SWIM_UPWARDS = Vec3d(0.0, 0.04, 0.0)
+        val SWIM_UPWARDS = 0.04f.d
     }
 }

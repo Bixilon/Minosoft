@@ -39,6 +39,7 @@ import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collectCollisi
 import de.bixilon.minosoft.physics.parts.OutOfBlockPusher.tryPushOutOfBlock
 import de.bixilon.minosoft.physics.parts.climbing.ClimbablePhysics
 import de.bixilon.minosoft.physics.parts.elytra.ElytraPhysics.tickElytra
+import de.bixilon.minosoft.util.d
 
 class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerEntity>(entity), SneakAdjuster, ClimbablePhysics {
     val sender = MovementPacketSender(this)
@@ -210,12 +211,12 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         val movement = entity.input.upwards
 
         if (movement == 0.0f) return
-        this.velocity += Vec3d(0.0, movement * entity.abilities.flyingSpeed * 3.0, 0.0)
+        this.velocity.y += movement * entity.abilities.flyingSpeed * 3.0f
     }
 
     private fun sink() {
         if (submersion[WaterFluid] <= 0.0 || !entity.input.sneak || !canJumpOrSwim) return
-        this.velocity += Vec3d(0.0, -0.04, 0.0)
+        this.velocity.y -= FLUID_GRAVITY
     }
 
     override fun tickMovement() {
@@ -332,5 +333,9 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         if (vehicle is InputSteerable) {
             vehicle.input = entity.input
         }
+    }
+
+    companion object {
+        val FLUID_GRAVITY = 0.04f.d
     }
 }
