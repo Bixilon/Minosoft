@@ -13,11 +13,8 @@
 
 package de.bixilon.kmath.mat.mat3.f
 
-import de.bixilon.kmath.number.FloatUtil.plus
-import de.bixilon.kmath.number.FloatUtil.times
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.f._Vec3f
 
 object Mat3Operations {
 
@@ -40,17 +37,17 @@ object Mat3Operations {
     }
 
     fun times(a: Mat3f, b: Mat3f, result: MMat3f) {
-        val x0 = a[0, 0] * b[0, 0] + a[1, 0] * b[0, 1] + a[2, 0] * b[0, 2]
-        val x1 = a[0, 1] * b[0, 0] + a[1, 1] * b[0, 1] + a[2, 1] * b[0, 2]
-        val x2 = a[0, 2] * b[0, 0] + a[1, 2] * b[0, 1] + a[2, 2] * b[0, 2]
+        val x0 = a[0, 0] * b[0, 0] + a[0, 1] * b[1, 0] + a[0, 2] * b[2, 0]
+        val x1 = a[0, 0] * b[0, 1] + a[0, 1] * b[1, 1] + a[0, 2] * b[2, 1]
+        val x2 = a[0, 0] * b[0, 2] + a[0, 1] * b[1, 2] + a[0, 2] * b[2, 2]
 
-        val y0 = a[0, 0] * b[1, 0] + a[1, 0] * b[1, 1] + a[2, 0] * b[1, 2]
-        val y1 = a[0, 1] * b[1, 0] + a[1, 1] * b[1, 1] + a[2, 1] * b[1, 2]
-        val y2 = a[0, 2] * b[1, 0] + a[1, 2] * b[1, 1] + a[2, 2] * b[1, 2]
+        val y0 = a[1, 0] * b[0, 0] + a[1, 1] * b[1, 0] + a[1, 2] * b[2, 0]
+        val y1 = a[1, 0] * b[0, 1] + a[1, 1] * b[1, 1] + a[1, 2] * b[2, 1]
+        val y2 = a[1, 0] * b[0, 2] + a[1, 1] * b[1, 2] + a[1, 2] * b[2, 2]
 
-        val z0 = a[0, 0] * b[2, 0] + a[1, 0] * b[2, 1] + a[2, 0] * b[2, 2]
-        val z1 = a[0, 1] * b[2, 0] + a[1, 1] * b[2, 1] + a[2, 1] * b[2, 2]
-        val z2 = a[0, 2] * b[2, 0] + a[1, 2] * b[2, 1] + a[2, 2] * b[2, 2]
+        val z0 = a[2, 0] * b[0, 0] + a[2, 1] * b[1, 0] + a[2, 2] * b[2, 0]
+        val z1 = a[2, 0] * b[0, 1] + a[2, 1] * b[1, 1] + a[2, 2] * b[2, 1]
+        val z2 = a[2, 0] * b[0, 2] + a[2, 1] * b[1, 2] + a[2, 2] * b[2, 2]
 
         result[0, 0] = x0; result[1, 0] = y0; result[2, 0] = z0
         result[0, 1] = x1; result[1, 1] = y1; result[2, 1] = z1
@@ -58,8 +55,8 @@ object Mat3Operations {
     }
 
     fun times(a: Mat3f, b: Vec3f, result: MVec3f) {
-        result.x = a[0, 0] * b.x + a[1, 0] * b.y + a[2, 0] * b.z
-        result.y = a[0, 1] * b.x + a[1, 1] * b.y + a[2, 1] * b.z
-        result.z = a[0, 2] * b.x + a[1, 2] * b.y + a[2, 2] * b.z
+        result.x = a[0, 0] * b.x + a[0, 1] * b.y + a[0, 2] * b.z
+        result.y = a[1, 0] * b.x + a[1, 1] * b.y + a[1, 2] * b.z
+        result.z = a[2, 0] * b.x + a[2, 1] * b.y + a[2, 2] * b.z
     }
 }

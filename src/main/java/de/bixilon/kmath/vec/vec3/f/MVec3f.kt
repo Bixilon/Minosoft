@@ -138,7 +138,7 @@ value class MVec3f(
     }
 
 
-    inline infix fun dot(other: _Vec3f) = this.x * other.x + this.y * other.y + this.z + other.z
+    inline infix fun dot(other: _Vec3f) = this.x * other.x + this.y * other.y + this.z * other.z
     inline infix fun cross(other: _Vec3f) = MVec3f(
         x = y * other.z - other.y * z,
         y = z * other.x - other.z * x,

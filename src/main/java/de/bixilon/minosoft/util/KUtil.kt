@@ -29,6 +29,8 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.hash.HashUtil.SHA_256
+import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.isIntSafe
@@ -75,6 +77,8 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 object KUtil {
