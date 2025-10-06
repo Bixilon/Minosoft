@@ -77,7 +77,7 @@ class ItemEntityIT {
         entity.session.world[BlockPosition(0, 4, 0)] = GlassTest0.state
         entity.runTicks(20)
         entity.assertPosition(0.0, 5.0, 0.0)
-        entity.assertVelocity(0.0, -0.0, 0.0)
+        entity.assertVelocity(0.0, 0.0, 0.0)
         entity.assertGround(true)
     }
 

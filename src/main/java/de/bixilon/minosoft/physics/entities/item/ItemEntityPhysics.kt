@@ -56,7 +56,7 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
             friction *= positionInfo.chunk?.get(frictionPosition)?.block?.nullCast<FrictionBlock>()?.friction ?: FrictionBlock.DEFAULT_FRICTION
         }
         this.velocity.x *= friction
-        this.velocity.x *= PhysicsConstants.AIR_RESISTANCE
+        this.velocity.y *= PhysicsConstants.AIR_RESISTANCE
         this.velocity.z *= friction
     }
 
