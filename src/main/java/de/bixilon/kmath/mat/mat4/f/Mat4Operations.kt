@@ -16,36 +16,38 @@ package de.bixilon.kmath.mat.mat4.f
 import de.bixilon.kmath.number.FloatUtil.plus
 import de.bixilon.kmath.number.FloatUtil.times
 import de.bixilon.kmath.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec4.f.MVec4f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kmath.vec.vec4.f._Vec4f
 import de.bixilon.minosoft.util.KUtil.cos
 import de.bixilon.minosoft.util.KUtil.sin
 
 object Mat4Operations {
 
-    fun plus(a: _Mat4f, b: Float, result: MMat4f) {
+    fun plus(a: Mat4f, b: Float, result: MMat4f) {
         result[0, 0] = a[0, 0] + b; result[0, 1] = a[0, 1] + b; result[0, 2] = a[0, 2] + b; result[0, 3] = a[0, 3] + b
         result[1, 0] = a[1, 0] + b; result[1, 1] = a[1, 1] + b; result[1, 2] = a[1, 2] + b; result[1, 3] = a[1, 3] + b
         result[2, 0] = a[2, 0] + b; result[2, 1] = a[2, 1] + b; result[2, 2] = a[2, 2] + b; result[2, 3] = a[2, 3] + b
         result[3, 0] = a[3, 0] + b; result[3, 1] = a[3, 1] + b; result[3, 2] = a[3, 2] + b; result[3, 3] = a[3, 3] + b
     }
 
-    inline fun plus(a: _Mat4f, b: _Mat4f, result: MMat4f) {
+    fun plus(a: Mat4f, b: Mat4f, result: MMat4f) {
         result[0, 0] = a[0, 0] + b[0, 0]; result[0, 1] = a[0, 1] + b[0, 1]; result[0, 2] = a[0, 2] + b[0, 2]; result[0, 3] = a[0, 3] + b[0, 3]
         result[1, 0] = a[1, 0] + b[1, 0]; result[1, 1] = a[1, 1] + b[1, 1]; result[1, 2] = a[1, 2] + b[1, 2]; result[1, 3] = a[1, 3] + b[1, 3]
         result[2, 0] = a[2, 0] + b[2, 0]; result[2, 1] = a[2, 1] + b[2, 1]; result[2, 2] = a[2, 2] + b[2, 2]; result[2, 3] = a[2, 3] + b[2, 3]
         result[3, 0] = a[3, 0] + b[3, 0]; result[3, 1] = a[3, 1] + b[3, 1]; result[3, 2] = a[3, 2] + b[3, 2]; result[3, 3] = a[3, 3] + b[3, 3]
     }
 
-    fun times(a: _Mat4f, b: Float, result: MMat4f) {
+    fun times(a: Mat4f, b: Float, result: MMat4f) {
         result[0, 0] = a[0, 0] * b; result[0, 1] = a[0, 1] * b; result[0, 2] = a[0, 2] * b; result[0, 3] = a[0, 3] * b
         result[1, 0] = a[1, 0] * b; result[1, 1] = a[1, 1] * b; result[1, 2] = a[1, 2] * b; result[1, 3] = a[1, 3] * b
         result[2, 0] = a[2, 0] * b; result[2, 1] = a[2, 1] * b; result[2, 2] = a[2, 2] * b; result[2, 3] = a[2, 3] * b
         result[3, 0] = a[3, 0] * b; result[3, 1] = a[3, 1] * b; result[3, 2] = a[3, 2] * b; result[3, 3] = a[3, 3] * b
     }
 
-    inline fun times(a: _Mat4f, b: _Mat4f, result: MMat4f) {
+    fun times(a: Mat4f, b: Mat4f, result: MMat4f) {
         val x0 = a[0, 0] * b[0, 0] + a[1, 0] * b[0, 1] + a[2, 0] * b[0, 2] + a[3, 0] * b[0, 3]
         val x1 = a[0, 1] * b[0, 0] + a[1, 1] * b[0, 1] + a[2, 1] * b[0, 2] + a[3, 1] * b[0, 3]
         val x2 = a[0, 2] * b[0, 0] + a[1, 2] * b[0, 1] + a[2, 2] * b[0, 2] + a[3, 2] * b[0, 3]
@@ -72,27 +74,27 @@ object Mat4Operations {
         result[0, 3] = x3; result[1, 3] = y3; result[2, 3] = z3; result[3, 3] = w3
     }
 
-    inline fun times(a: _Mat4f, b: _Vec3f, result: MVec3f) {
+    fun times(a: Mat4f, b: Vec3f, result: MVec3f) {
         result.x = a[0, 0] * b.x + a[1, 0] * b.y + a[2, 0] * b.z + a[3, 0]
         result.y = a[0, 1] * b.x + a[1, 1] * b.y + a[2, 1] * b.z + a[3, 1]
         result.z = a[0, 2] * b.x + a[1, 2] * b.y + a[2, 2] * b.z + a[3, 2]
     }
 
-    inline fun times(a: _Mat4f, b: _Vec4f, result: MVec4f) {
+    fun times(a: Mat4f, b: Vec4f, result: MVec4f) {
         result.x = a[0, 0] * b.x + a[1, 0] * b.y + a[2, 0] * b.z + a[3, 0] * b.w
         result.y = a[0, 1] * b.x + a[1, 1] * b.y + a[2, 1] * b.z + a[3, 1] * b.w
         result.z = a[0, 2] * b.x + a[1, 2] * b.y + a[2, 2] * b.z + a[3, 2] * b.w
         result.w = a[0, 3] * b.x + a[1, 3] * b.y + a[2, 3] * b.z + a[3, 3] * b.w
     }
 
-    inline fun translate(mat: MMat4f, x: Float, y: Float, z: Float) {
+    fun translate(mat: MMat4f, x: Float, y: Float, z: Float) {
         mat[0, 0] += mat[0, 0] * x + mat[1, 0] * y + mat[2, 0] * z
         mat[3, 1] += mat[0, 1] * x + mat[1, 1] * y + mat[2, 1] * z
         mat[3, 2] += mat[0, 2] * x + mat[1, 2] * y + mat[2, 2] * z
         mat[3, 3] += mat[0, 3] * x + mat[1, 3] * y + mat[2, 3] * z
     }
 
-    inline fun scale(mat: MMat4f, x: Float, y: Float, z: Float) {
+    fun scale(mat: MMat4f, x: Float, y: Float, z: Float) {
         mat[0, 0] *= x; mat[0, 1] *= x; mat[0, 2] *= x; mat[0, 3] *= x
         mat[1, 0] *= y; mat[1, 1] *= y; mat[1, 2] *= y; mat[1, 3] *= y
         mat[2, 0] *= z; mat[2, 1] *= z; mat[2, 2] *= z; mat[2, 3] *= z

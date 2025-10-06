@@ -15,11 +15,13 @@ package de.bixilon.kmath.mat.mat4.f
 
 import de.bixilon.kmath.mat.mat3.f._Mat3f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kmath.vec.vec4.f._Vec4f
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.util.KUtil.rad
 import de.bixilon.minosoft.util.f
 
@@ -77,23 +79,29 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         _0[row, column] = value
     }
 
-    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, number.f, this) }
-    inline operator fun plus(other: _Mat4f) = MMat4f().apply { Mat4Operations.plus(this@MMat4f, other, this) }
+    inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f.unsafe, number.f, this) }
+    inline operator fun plus(other: Mat4f) = MMat4f().apply { Mat4Operations.plus(this@MMat4f.unsafe, other, this) }
+    inline operator fun plus(other: MMat4f) = MMat4f().apply { Mat4Operations.plus(this@MMat4f.unsafe, other.unsafe, this) }
 
-    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@MMat4f, number.f, this) }
-    inline operator fun times(other: _Mat4f) = MMat4f().apply { Mat4Operations.times(this@MMat4f, other, this) }
+    inline operator fun times(number: Number) = MMat4f().apply { Mat4Operations.times(this@MMat4f.unsafe, number.f, this) }
+    inline operator fun times(other: Mat4f) = MMat4f().apply { Mat4Operations.times(this@MMat4f.unsafe, other, this) }
+    inline operator fun times(other: MMat4f) = MMat4f().apply { Mat4Operations.times(this@MMat4f.unsafe, other.unsafe, this) }
 
-    inline operator fun times(other: _Vec4f) = MVec4f().apply { Mat4Operations.times(this@MMat4f, other, this) }
+    inline operator fun times(other: Vec4f) = MVec4f().apply { Mat4Operations.times(this@MMat4f.unsafe, other, this) }
+    inline operator fun times(other: MVec4f) = MVec4f().apply { Mat4Operations.times(this@MMat4f.unsafe, other.unsafe, this) }
 
     // mathematically wrong, just a performance hack
-    inline operator fun times(other: _Vec3f) = MVec3f().apply { Mat4Operations.times(this@MMat4f, other, this) }
+    inline operator fun times(other: Vec3f) = MVec3f().apply { Mat4Operations.times(this@MMat4f.unsafe, other, this) }
+    inline operator fun times(other: MVec3f) = MVec3f().apply { Mat4Operations.times(this@MMat4f.unsafe, other.unsafe, this) }
 
 
-    inline operator fun plusAssign(number: Number) = Mat4Operations.plus(this@MMat4f, number.f, this)
-    inline operator fun plusAssign(other: _Mat4f) = Mat4Operations.plus(this@MMat4f, other, this)
+    inline operator fun plusAssign(number: Number) = Mat4Operations.plus(this@MMat4f.unsafe, number.f, this)
+    inline operator fun plusAssign(other: Mat4f) = Mat4Operations.plus(this@MMat4f.unsafe, other, this)
+    inline operator fun plusAssign(other: MMat4f) = Mat4Operations.plus(this@MMat4f.unsafe, other.unsafe, this)
 
-    inline operator fun timesAssign(number: Number) = Mat4Operations.times(this@MMat4f, number.f, this)
-    inline operator fun timesAssign(other: _Mat4f) = Mat4Operations.times(this@MMat4f, other, this)
+    inline operator fun timesAssign(number: Number) = Mat4Operations.times(this@MMat4f.unsafe, number.f, this)
+    inline operator fun timesAssign(other: Mat4f) = Mat4Operations.times(this@MMat4f.unsafe, other, this)
+    inline operator fun timesAssign(other: MMat4f) = Mat4Operations.times(this@MMat4f.unsafe, other.unsafe, this)
 
 
     inline fun transpose() = MMat4f(
@@ -178,9 +186,9 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     companion object {
 
         inline operator fun invoke(other: Mat4f): MMat4f {
-            val mat = MMat4f()
-            other._0.array.copyInto(mat._0.array)
-            return mat
+            val mat = UnsafeMat4f()
+            other._0.array.copyInto(mat.array)
+            return MMat4f(mat)
         }
 
         inline operator fun invoke(other: MMat4f) = invoke(other.unsafe)

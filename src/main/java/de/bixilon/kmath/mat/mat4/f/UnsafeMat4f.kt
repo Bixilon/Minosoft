@@ -14,7 +14,7 @@
 package de.bixilon.kmath.mat.mat4.f
 
 class UnsafeMat4f(
-    val array: FloatArray
+    val array: FloatArray = FloatArray(Mat4f.LENGTH)
 ) {
 
     init {

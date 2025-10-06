@@ -38,7 +38,7 @@ class TransformInstance(
     }
 
     fun pack(parent: Mat4f) {
-        Mat4Operations.times(parent, value, value)
+        Mat4Operations.times(parent, value.unsafe, value)
 
         for (child in array) {
             child.pack(this.value.unsafe)

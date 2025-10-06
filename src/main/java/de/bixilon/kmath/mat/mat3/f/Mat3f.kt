@@ -51,12 +51,15 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
     override inline operator fun get(row: Int, column: Int) = _0[row, column]
 
     inline operator fun plus(number: Number) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, number.f, this) }.unsafe
-    inline operator fun plus(other: _Mat3f) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, other, this) }.unsafe
+    inline operator fun plus(other: Mat3f) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, other, this) }.unsafe
+    inline operator fun plus(other: MMat3f) = MMat3f().apply { Mat3Operations.plus(this@Mat3f, other.unsafe, this) }.unsafe
 
     inline operator fun times(number: Number) = MMat3f().apply { Mat3Operations.times(this@Mat3f, number.f, this) }.unsafe
-    inline operator fun times(other: _Mat3f) = MMat3f().apply { Mat3Operations.times(this@Mat3f, other, this) }.unsafe
+    inline operator fun times(other: Mat3f) = MMat3f().apply { Mat3Operations.times(this@Mat3f, other, this) }.unsafe
+    inline operator fun times(other: MMat3f) = MMat3f().apply { Mat3Operations.times(this@Mat3f, other.unsafe, this) }.unsafe
 
-    inline operator fun times(other: _Vec3f) = MVec3f().apply { Mat3Operations.times(this@Mat3f, other, this) }.unsafe
+    inline operator fun times(other: Vec3f) = MVec3f().apply { Mat3Operations.times(this@Mat3f, other, this) }.unsafe
+    inline operator fun times(other: MVec3f) = MVec3f().apply { Mat3Operations.times(this@Mat3f, other.unsafe, this) }.unsafe
 
 
     inline fun transpose() = Mat3f(
