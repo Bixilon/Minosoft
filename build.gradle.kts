@@ -370,7 +370,6 @@ dependencies {
     implementation("com.github.luben", "zstd-jni", "1.5.7-4", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.18.0")
     implementation("org.kamranzafar", "jtar", "2.3")
-    implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.16")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
     implementation("io.github.kotlin-graphics", "glm", glmVersion)
