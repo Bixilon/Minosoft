@@ -390,7 +390,7 @@ dependencies {
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
     implementation("de.bixilon", "mbf-kotlin", "1.0.3") { exclude("com.github.luben", "zstd-jni") }
-    implementation("de.bixilon.javafx", "javafx-svg", "0.3.1") { exclude("org.openjfx", "javafx-controls") }
+    implementation("de.bixilon.javafx", "javafx-svg", "0.3.1") { exclude("org.openjfx", "javafx-controls") } // TODO: remove this, it is really large
 
     // netty
     netty("buffer")
@@ -546,17 +546,11 @@ val fatJar = task("fatJar", type = Jar::class) {
     exclude("META-INF/maven/**")
 
 
-    exclude("com/sun/jna/aix*/**")
-    exclude("com/sun/jna/sunos*/**")
-    exclude("com/sun/jna/freebsd*/**")
-    exclude("com/sun/jna/openbsd*/**")
-    exclude("com/sun/jna/dragonflybsd*/**")
     exclude("com/sun/jna/*sparc*/**")
     exclude("com/sun/jna/*ppc*/**")
     exclude("com/sun/jna/*mips*/**")
     exclude("com/sun/jna/*riscv*/**")
     exclude("com/sun/jna/*s390x*/**")
-    exclude("org/lwjgl/system/freebsd/**")
 
     if (PlatformInfo.OS != OSTypes.WINDOWS) {
         exclude("com/sun/jna/win32*/**")
@@ -574,16 +568,25 @@ val fatJar = task("fatJar", type = Jar::class) {
         exclude("oshi/hardware/platform/mac/**")
         exclude("oshi/driver/mac/**")
     }
-    if (PlatformInfo.OS != OSTypes.UNIX && PlatformInfo.OS != OSTypes.LINUX) {
-        exclude("com/sun/jna/linux*/**")
+    if (PlatformInfo.OS != OSTypes.UNIX) {
+        exclude("com/sun/jna/aix*/**")
+        exclude("com/sun/jna/sunos*/**")
+        exclude("com/sun/jna/freebsd*/**")
+        exclude("com/sun/jna/openbsd*/**")
+        exclude("com/sun/jna/dragonflybsd*/**")
         exclude("com/sun/jna/platform/unix/**")
+        exclude("com/sun/jna/platform/bsd/**")
+        exclude("oshi/software/os/unix/**")
+        exclude("oshi/hardware/platform/unix/**")
+        exclude("oshi/driver/unix/**")
+        exclude("org/lwjgl/system/freebsd/**")
+    }
+    if (PlatformInfo.OS != OSTypes.LINUX) {
+        exclude("com/sun/jna/linux*/**")
         exclude("org/lwjgl/system/linux/**")
         exclude("oshi/software/os/linux/**")
-        exclude("oshi/software/os/unix/**")
         exclude("oshi/hardware/platform/linux/**")
-        exclude("oshi/hardware/platform/unix/**")
         exclude("oshi/driver/linux/**")
-        exclude("oshi/driver/unix/**")
     }
 
     exclude("com/sun/jna/*loongarch64/**")
@@ -604,6 +607,11 @@ val fatJar = task("fatJar", type = Jar::class) {
 
     exclude("it/unimi/dsi/fastutil/doubles/**")
     exclude("it/unimi/dsi/fastutil/longs/**")
+    exclude("it/unimi/dsi/fastutil/io/**")
+    exclude("it/unimi/dsi/fastutil/bytes/**")
+    exclude("it/unimi/dsi/fastutil/booleans/**")
+    exclude("it/unimi/dsi/fastutil/chars/**")
+    exclude("it/unimi/dsi/fastutil/shorts/**")
 
 
     // TODO: This is bad! dnsjava is a multi release jar, and that a class is only present with java>18. See https://github.com/dnsjava/dnsjava/issues/329 and https://github.com/Bixilon/Minosoft/issues/33
