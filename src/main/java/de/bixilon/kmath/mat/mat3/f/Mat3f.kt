@@ -16,7 +16,6 @@ package de.bixilon.kmath.mat.mat3.f
 import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.minosoft.util.f
 
 @JvmInline
@@ -40,9 +39,9 @@ value class Mat3f(val _0: UnsafeMat3f) : _Mat3f {
         x1: Float, y1: Float, z1: Float,
         x2: Float, y2: Float, z2: Float,
     ) : this(UnsafeMat3f(floatArrayOf(
-        x0, y0, z0,
-        x1, y1, z1,
-        x2, y2, z2,
+        x0, x1, x2,
+        y0, y1, y2,
+        z0, z1, z2,
     )))
 
     val unsafe get() = MMat3f(_0)

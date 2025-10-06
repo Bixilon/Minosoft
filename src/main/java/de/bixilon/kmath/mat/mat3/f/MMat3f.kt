@@ -34,9 +34,9 @@ value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {
         x1: Float, y1: Float, z1: Float,
         x2: Float, y2: Float, z2: Float,
     ) : this(UnsafeMat3f(floatArrayOf(
-        x0, y0, z0,
-        x1, y1, z1,
-        x2, y2, z2,
+        x0, x1, x2,
+        y0, y1, y2,
+        z0, z1, z2,
     )))
 
     val unsafe get() = Mat3f(_0)

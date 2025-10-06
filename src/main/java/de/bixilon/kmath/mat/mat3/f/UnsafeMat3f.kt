@@ -27,13 +27,13 @@ class UnsafeMat3f(
     inline operator fun get(row: Int, column: Int): Float {
         // assert(x in 0 until 3)
         // assert(y in 0 until 3)
-        return array[row * 3 + column]
+        return array[column * 3 + row]
     }
 
     inline operator fun set(row: Int, column: Int, value: Float) {
         // assert(x in 0 until 3)
         // assert(y in 0 until 3)
-        array[row * 3 + column] = value
+        array[column * 3 + row] = value
     }
 
 
