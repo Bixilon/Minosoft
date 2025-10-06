@@ -27,13 +27,13 @@ class UnsafeMat4f(
     inline operator fun get(row: Int, column: Int): Float {
         // assert(x in 0 until 4)
         // assert(y in 0 until 4)
-        return array[(row shl 2) or column]
+        return array[(column * 4) or row]
     }
 
     inline operator fun set(row: Int, column: Int, value: Float) {
         // assert(x in 0 until 4)
         // assert(y in 0 until 4)
-        array[(row shl 2) or column] = value
+        array[(column * 4) or row] = value
     }
 
     override fun toString(): String {

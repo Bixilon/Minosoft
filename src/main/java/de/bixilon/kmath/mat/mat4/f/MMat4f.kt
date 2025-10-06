@@ -20,8 +20,6 @@ import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.kmath.vec.vec4.f._Vec4f
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.util.KUtil.rad
 import de.bixilon.minosoft.util.f
 
@@ -44,10 +42,10 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         x2: Float, y2: Float, z2: Float, w2: Float,
         x3: Float, y3: Float, z3: Float, w3: Float,
     ) : this(UnsafeMat4f(floatArrayOf(
-        x0, y0, z0, w0,
-        x1, y1, z1, w1,
-        x2, y2, z2, w2,
-        x3, y3, z3, w3,
+        x0, x1, x2, x3,
+        y0, y1, y2, y3,
+        z0, z1, z2, z3,
+        w0, w1, w2, w3,
     )))
 
 
