@@ -603,8 +603,10 @@ val fatJar = task("fatJar", type = Jar::class) {
     }
 
 
-    // TODO: exclude a lot of unneeded files
-    // remove most of it.unimi.fastutil classes
+    exclude("it/unimi/dsi/fastutil/doubles/**")
+    exclude("it/unimi/dsi/fastutil/longs/**")
+
+
     // TODO: This is bad! dnsjava is a multi release jar, and that a class is only present with java>18. See https://github.com/dnsjava/dnsjava/issues/329 and https://github.com/Bixilon/Minosoft/issues/33
     exclude("META-INF/services/java.net.spi.InetAddressResolverProvider")
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
