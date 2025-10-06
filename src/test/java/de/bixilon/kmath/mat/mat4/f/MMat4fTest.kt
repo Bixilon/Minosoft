@@ -50,6 +50,22 @@ class MMat4fTest {
     }
 
     @Test
+    fun `store column major in array`() {
+        val mat = MMat4f(
+            1.0f, 2.0f, 3.0f, 4.0f,
+            5.0f, 6.0f, 7.0f, 8.0f,
+            9.0f, 10.0f, 11.0f, 12.0f,
+            13.0f, 14.0f, 15.0f, 16.0f,
+        )
+        assertContentEquals(mat._0.array, floatArrayOf(
+            1.0f, 5.0f, 9.0f, 13.0f,
+            2.0f, 6.0f, 10.0f, 14.0f,
+            3.0f, 7.0f, 11.0f, 15.0f,
+            4.0f, 8.0f, 12.0f, 16.0f,
+        ))
+    }
+
+    @Test
     fun `get row column`() {
         val mat = MMat4f(
             1.0f, 2.0f, 3.0f, 4.0f,
@@ -518,5 +534,5 @@ class MMat4fTest {
         assertEquals(mat, MMat4f(1.0f, 2.0f, 3.0f, 4.0f).translate(Vec3f(0, 0, 10)))
     }
 
-    // TODO: rotateDegreesAssign, rotateRadAssign
+    // TODO: rotateDegreesAssign, rotateRadAssign, store order
 }

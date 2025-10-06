@@ -119,13 +119,25 @@ value class MVec3d(
         this.z = z.d
     }
 
+    inline operator fun invoke(other: _Vec3d) = put(other)
     inline fun put(other: _Vec3d) {
         this.x = other.x
         this.y = other.y
         this.z = other.z
     }
 
-    inline operator fun invoke(other: _Vec3d) = put(other)
+    inline fun write(array: DoubleArray, offset: Int = 0) {
+        array[offset + 0] = x
+        array[offset + 1] = y
+        array[offset + 2] = z
+    }
+
+    inline fun read(array: DoubleArray, offset: Int = 0) {
+        x = array[offset + 0]
+        y = array[offset + 1]
+        z = array[offset + 2]
+    }
+
 
     inline infix fun dot(other: _Vec3d) = this.x * other.x + this.y * other.y + this.z * other.z
     inline infix fun cross(other: _Vec3d) = MVec3d(
