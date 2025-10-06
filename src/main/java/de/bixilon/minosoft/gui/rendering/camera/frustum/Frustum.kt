@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
+import de.bixilon.kmath.mat.mat3.f.Mat3f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
@@ -28,12 +30,9 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.kmath.mat.mat3.f.Mat3f
-import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.dot
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(
@@ -46,6 +45,7 @@ class Frustum(
         private set
 
     private fun recalculate(matrix: Mat4f) {
+        val matrix = matrix.transpose()
         val planes = arrayOf(
             matrix[3] + matrix[0],
             matrix[3] - matrix[0],

@@ -77,6 +77,10 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
         _0[row, column] = value
     }
 
+    inline fun set(other: Mat4f) {
+        other._0.array.copyInto(_0.array)
+    }
+
     inline operator fun plus(number: Number) = MMat4f().apply { Mat4Operations.plus(this@MMat4f.unsafe, number.f, this) }
     inline operator fun plus(other: Mat4f) = MMat4f().apply { Mat4Operations.plus(this@MMat4f.unsafe, other, this) }
     inline operator fun plus(other: MMat4f) = MMat4f().apply { Mat4Operations.plus(this@MMat4f.unsafe, other.unsafe, this) }
@@ -118,7 +122,7 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
 
 
     inline fun clearAssign() {
-        _0.array.fill(0.0f)
+        set(Mat4f.EMPTY)
     }
 
 
