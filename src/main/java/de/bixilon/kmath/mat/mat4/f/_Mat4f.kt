@@ -17,6 +17,6 @@ import de.bixilon.kmath.vec.vec4.f.Vec4f
 
 interface _Mat4f {
 
-    operator fun get(x: Int, y: Int): Float
-    operator fun get(x: Int): Vec4f
+    operator fun get(row: Int, column: Int): Float
+    operator fun get(row: Int): Vec4f
 }

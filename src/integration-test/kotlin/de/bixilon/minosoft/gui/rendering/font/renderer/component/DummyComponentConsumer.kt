@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import org.testng.Assert.assertEquals
 
 class DummyComponentConsumer : GUIVertexConsumer {
-    val chars: MutableList<RendererdCodePoint> = mutableListOf()
-    val quads: MutableList<RendererdQuad> = mutableListOf()
+    val chars: MutableList<RenderedCodePoint> = mutableListOf()
+    val quads: MutableList<RenderedQuad> = mutableListOf()
 
     override val order: RenderOrder get() = RenderOrder(IntArray(0))
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
@@ -37,11 +37,11 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun ensureSize(size: Int) = Unit
 
     override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
-        quads += RendererdQuad(Vec2f(start.unsafe), Vec2f(end.unsafe)) // copy because unsafe
+        quads += RenderedQuad(Vec2f(start.unsafe), Vec2f(end.unsafe)) // copy because unsafe
     }
 
-    data class RendererdCodePoint(val start: Vec2f)
-    data class RendererdQuad(val start: Vec2f, val end: Vec2f)
+    data class RenderedCodePoint(val start: Vec2f)
+    data class RenderedQuad(val start: Vec2f, val end: Vec2f)
 
 
     inner class ConsumerCodePointRenderer(val width: Float) : CodePointRenderer {
@@ -50,7 +50,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
         }
 
         override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-            chars += RendererdCodePoint(Vec2f(position.x, position.y)) // copy because unsafe
+            chars += RenderedCodePoint(Vec2f(position.x, position.y)) // copy because unsafe
         }
     }
 
@@ -78,11 +78,11 @@ class DummyComponentConsumer : GUIVertexConsumer {
         }
     }
 
-    fun assert(vararg chars: RendererdCodePoint) {
+    fun assert(vararg chars: RenderedCodePoint) {
         assertEquals(this.chars, chars.toList())
     }
 
-    fun assert(vararg chars: RendererdQuad) {
+    fun assert(vararg chars: RenderedQuad) {
         assertEquals(this.quads, chars.toList())
     }
 }

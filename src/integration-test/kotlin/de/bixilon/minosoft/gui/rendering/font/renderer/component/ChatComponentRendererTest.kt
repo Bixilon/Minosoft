@@ -338,7 +338,7 @@ class ChatComponentRendererTest {
         render(TextComponent("b"), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 10)),
         )
     }
 
@@ -347,8 +347,8 @@ class ChatComponentRendererTest {
         render(TextComponent("bc"), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 10f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(11.5f, 10f)),
         )
     }
 
@@ -357,11 +357,11 @@ class ChatComponentRendererTest {
         render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 10f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(11.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12.5f, 21f)),
         )
     }
 
@@ -370,14 +370,14 @@ class ChatComponentRendererTest {
         render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.LEFT, shadow = false))
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 10f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(11.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12.5f, 21f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11.5f, 32f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 32)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(11.5f, 32f)),
         )
     }
 
@@ -386,14 +386,14 @@ class ChatComponentRendererTest {
         render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.CENTER, shadow = false))
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 10f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(11, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12.5f, 21f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(11, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 32f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(11, 32)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12.5f, 32f)),
         )
     }
 
@@ -402,14 +402,14 @@ class ChatComponentRendererTest {
         render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.RIGHT, shadow = false))
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(13.5f, 10f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(13.5f, 10f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10.0f, 21f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12.5f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10.0f, 21f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12.5f, 21f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(12, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(13.5f, 32f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(12, 32)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(13.5f, 32f)),
         )
     }
 
@@ -419,7 +419,7 @@ class ChatComponentRendererTest {
         render(TextComponent("bcd").strikethrough(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 14.0f), Vec2f(15.0f, 15.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 14.0f), Vec2f(15.0f, 15.0f)),
         )
     }
 
@@ -428,8 +428,8 @@ class ChatComponentRendererTest {
         render(TextComponent("bcd\ncde").strikethrough(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 14.0f), Vec2f(15.0f, 15.0f)),
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 25.0f), Vec2f(16.5f, 26.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 14.0f), Vec2f(15.0f, 15.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 25.0f), Vec2f(16.5f, 26.0f)),
         )
     }
 
@@ -438,7 +438,7 @@ class ChatComponentRendererTest {
         render(TextComponent("bcd").underline(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 19.0f), Vec2f(15.0f, 20.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 19.0f), Vec2f(15.0f, 20.0f)),
         )
     }
 
@@ -447,8 +447,8 @@ class ChatComponentRendererTest {
         render(TextComponent("bcd\ncde").underline(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 19.0f), Vec2f(15.0f, 20.0f)),
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 30.0f), Vec2f(16.5f, 31.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 19.0f), Vec2f(15.0f, 20.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 30.0f), Vec2f(16.5f, 31.0f)),
         )
     }
 
@@ -458,7 +458,7 @@ class ChatComponentRendererTest {
         render(BaseComponent(TextComponent("bcd").strikethrough(), TextComponent("bcd")), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(10.0f, 14.0f), Vec2f(15.0f, 15.0f)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(10.0f, 14.0f), Vec2f(15.0f, 15.0f)),
         )
     }
 
@@ -502,7 +502,7 @@ class ChatComponentRendererTest {
             LineRenderInfo(BaseComponent(), 0.0f),
             LineRenderInfo(BaseComponent(), 0.0f),
         ))
-        consumer.assert(*arrayOf<DummyComponentConsumer.RendererdCodePoint>())
+        consumer.assert(*arrayOf<DummyComponentConsumer.RenderedCodePoint>())
     }
 
     fun `render empty chars mixed and newline`() {
@@ -515,8 +515,8 @@ class ChatComponentRendererTest {
             LineRenderInfo(BaseComponent("b"), 0.5f),
         ))
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(10, 21)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 10)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(10, 21)),
         )
     }
 
@@ -529,7 +529,7 @@ class ChatComponentRendererTest {
             LineRenderInfo(BaseComponent(), 0.0f),
             LineRenderInfo(BaseComponent(), 0.0f),
         ))
-        consumer.assert(*arrayOf<DummyComponentConsumer.RendererdCodePoint>())
+        consumer.assert(*arrayOf<DummyComponentConsumer.RenderedCodePoint>())
     }
 
     // TODO: shadow, formatting (italic; strikethrough; underlined)

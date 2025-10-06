@@ -117,13 +117,13 @@ class TextElementTest {
 
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 1f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(1, 1)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(2.5f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(4.5f, 1f)),
         )
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(0, 0), Vec2f(7, 13)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(0, 0), Vec2f(7, 13)),
         )
     }
 
@@ -137,13 +137,13 @@ class TextElementTest {
 
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.0f, 1f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(5.5f, 1f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(7.5f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(4.0f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(5.5f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(7.5f, 1f)),
         )
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(0, 0), Vec2f(11, 15)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(0, 0), Vec2f(11, 15)),
         )
     }
 
@@ -155,23 +155,23 @@ class TextElementTest {
 
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 1)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 1f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(1, 1)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(2.5f, 1f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(4.5f, 1f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 12)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 12f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 12f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(1, 12)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(2.5f, 12f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(4.5f, 12f)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(1, 23)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(2.5f, 23f)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2f(4.5f, 23f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(1, 23)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(2.5f, 23f)),
+            DummyComponentConsumer.RenderedCodePoint(Vec2f(4.5f, 23f)),
         )
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2f(0, 0), Vec2f(7, 13)),
-            DummyComponentConsumer.RendererdQuad(Vec2f(0, 11), Vec2f(7, 24)),
-            DummyComponentConsumer.RendererdQuad(Vec2f(0, 22), Vec2f(7, 35)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(0, 0), Vec2f(7, 13)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(0, 11), Vec2f(7, 24)),
+            DummyComponentConsumer.RenderedQuad(Vec2f(0, 22), Vec2f(7, 35)),
         )
     }
 
