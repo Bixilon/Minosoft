@@ -70,9 +70,10 @@ class RenderLoop(
 
 
             val time = context.window.time
+            val delta = time - lastFrame
             lastFrame = time
 
-            context.input.draw(time - lastFrame)
+            context.input.draw(delta)
             context.camera.draw()
 
             context.light.updateAsync() // ToDo: do async
