@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
-import de.bixilon.kmath.mat.mat4.f.MMat4f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
@@ -29,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFeature
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import de.bixilon.minosoft.util.KUtil
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -59,10 +57,9 @@ abstract class EntityRenderer<E : Entity>(
         // TODO: update on demand
         val offset = renderer.context.camera.offset.offset
         val original = entity.renderInfo.position
-        val position = Vec3f((original.x - offset.x).toFloat(), (original.y - offset.y).toFloat(), (original.z - offset.z).toFloat())
         matrix.apply {
             clearAssign()
-            translateAssign(position)
+            translateAssign((original.x - offset.x).toFloat(), (original.y - offset.y).toFloat(), (original.z - offset.z).toFloat())
         }
 
         if (entity.isFlipped()) {
