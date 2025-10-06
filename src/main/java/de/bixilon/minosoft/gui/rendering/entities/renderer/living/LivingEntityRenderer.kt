@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DamageListener {
@@ -31,7 +31,7 @@ abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
         when (entity.pose) {
-            Poses.SLEEPING -> matrix.apply { rotateDegreesAssign(Vec3f(90, 0, 0)) } // TODO
+            Poses.SLEEPING -> matrix.apply { rotateXAssign(90.0f.rad) } // TODO
             else -> Unit
         }
     }

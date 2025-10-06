@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.fade
 
+import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -61,7 +61,7 @@ class FadingTextElement(
     }
 
     private fun updateSize(phase: FadePhase?) {
-        this._size = if (phase == null) Vec2f.EMPTY else info.size.withBackgroundSize().unsafe
+        this._size = if (phase == null) Vec2f.EMPTY else MVec2f(info.size).withBackgroundSize().unsafe
     }
 
     fun show() {
