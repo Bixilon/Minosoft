@@ -58,6 +58,10 @@ value class Vec2i(
     inline operator fun unaryPlus() = Vec2i(x, y)
     inline operator fun unaryMinus() = Vec2i(-x, -y)
 
+    inline operator fun inc() = this + 1
+    inline operator fun dec() = this - 1
+
+
     inline fun length() = sqrt(length2().toDouble())
     inline fun length2() = x * x + y * y
 

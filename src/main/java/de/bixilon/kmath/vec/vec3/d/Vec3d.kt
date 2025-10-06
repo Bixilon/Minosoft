@@ -79,9 +79,18 @@ value class Vec3d(
     inline operator fun unaryPlus() = Vec3d(x, y, z)
     inline operator fun unaryMinus() = Vec3d(-x, -y, -z)
 
+    inline operator fun inc() = this + 1
+    inline operator fun dec() = this - 1
+
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this * (1.0 / length())
+
+    inline fun write(array: DoubleArray, offset: Int = 0) {
+        array[offset + 0] = x
+        array[offset + 1] = y
+        array[offset + 2] = z
+    }
 
     inline infix fun dot(other: _Vec3d) = this.x * other.x + this.y * other.y + this.z * other.z
 

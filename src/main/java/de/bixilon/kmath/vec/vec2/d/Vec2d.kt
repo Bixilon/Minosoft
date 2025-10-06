@@ -59,6 +59,10 @@ value class Vec2d(
     inline operator fun unaryPlus() = Vec2d(x, y)
     inline operator fun unaryMinus() = Vec2d(-x, -y)
 
+    inline operator fun inc() = this + 1
+    inline operator fun dec() = this - 1
+
+
     inline fun length() = sqrt(length2())
     inline fun length2() = x * x + y * y
     inline fun normalize() = this * (1.0 / length())

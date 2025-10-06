@@ -62,7 +62,10 @@ value class Vec3i(
     inline operator fun unaryPlus() = Vec3i(x, y, z)
     inline operator fun unaryMinus() = Vec3i(-x, -y, -z)
 
-    inline fun length() = sqrt(length2().toDouble()).toInt()
+    inline operator fun inc() = this + 1
+    inline operator fun dec() = this - 1
+
+    inline fun length() = sqrt(length2().toDouble())
     inline fun length2() = x * x + y * y + z * z
 
 
