@@ -83,7 +83,7 @@ value class Vec3d(
     inline fun length2() = x * x + y * y + z * z
     inline fun normalize() = this * (1.0 / length())
 
-    inline infix fun dot(other: _Vec3d) = this.x * other.x + this.y * other.y + this.z + other.z
+    inline infix fun dot(other: _Vec3d) = this.x * other.x + this.y * other.y + this.z * other.z
 
     inline infix fun cross(other: _Vec3d) = Vec3d(
         x = y * other.z - other.y * z,

@@ -17,7 +17,6 @@ import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import kotlin.math.abs
-import kotlin.math.sqrt
 import kotlin.math.tan
 
 object CameraUtil {
@@ -25,55 +24,37 @@ object CameraUtil {
     fun perspective(fovY: Float, aspect: Float, near: Float, far: Float): Mat4f {
         assert(abs(aspect - Float.MIN_VALUE) > 0.0f)
 
-        val tanHalfFovy = tan(fovY / 2.0f)
+        val tan = tan(fovY / 2.0f)
 
         val mat = MMat4f(0.0f)
 
-        mat[0, 0] = 1.0f / (aspect * tanHalfFovy)
-        mat[1, 1] = 1.0f / (tanHalfFovy)
+        mat[0, 0] = 1.0f / (aspect * tan)
+        mat[1, 1] = 1.0f / tan
         mat[2, 2] = -(far + near) / (far - near)
-        mat[2, 3] = -1.0f
-        mat[3, 2] = -(2.0f * far * near) / (far - near)
+        mat[3, 2] = -1.0f
+        mat[2, 3] = -(2.0f * far * near) / (far - near)
 
         return mat.unsafe
     }
 
     fun lookAt(eye: Vec3f, center: Vec3f, up: Vec3f): Mat4f {
-
-        // f = normalize(center - eye)
-        var fX = center.x - eye.x
-        var fY = center.y - eye.y
-        var fZ = center.z - eye.z
-        var inv = 1f / sqrt(fX * fX + fY * fY + fZ * fZ)
-        fX *= inv
-        fY *= inv
-        fZ *= inv
-        // s = normalize(cross(f, up))
-        var sX = fY * up.z - up.y * fZ
-        var sY = fZ * up.x - up.z * fX
-        var sZ = fX * up.y - up.x * fY
-        inv = 1f / sqrt(sX * sX + sY * sY + sZ * sZ)
-        sX *= inv
-        sY *= inv
-        sZ *= inv
-        // u = cross(s, f)
-        val uX = sY * fZ - fY * sZ
-        val uY = sZ * fX - fZ * sX
-        val uZ = sX * fY - fX * sY
+        val f = (center - eye).normalize()
+        val s = (f cross up).normalize()
+        val u = s cross f
 
         val mat = MMat4f(1.0f)
-        mat[0, 0] = sX
-        mat[1, 0] = sY
-        mat[2, 0] = sZ
-        mat[0, 1] = uX
-        mat[1, 1] = uY
-        mat[2, 1] = uZ
-        mat[0, 2] = -fX
-        mat[1, 2] = -fY
-        mat[2, 2] = -fZ
-        mat[3, 0] = -(sX * eye.x + sY * eye.y + sZ * eye.z)
-        mat[3, 1] = -(uX * eye.x + uY * eye.y + uZ * eye.z)
-        mat[3, 2] = fX * eye.x + fY * eye.y + fZ * eye.z
+        mat[0, 0] = s.x
+        mat[0, 1] = s.y
+        mat[0, 2] = s.z
+        mat[1, 0] = u.x
+        mat[1, 1] = u.y
+        mat[1, 2] = u.z
+        mat[2, 0] = -f.x
+        mat[2, 1] = -f.y
+        mat[2, 2] = -f.z
+        mat[0, 3] = -(s dot eye)
+        mat[1, 3] = -(u dot eye)
+        mat[2, 3] = (f dot eye)
 
         return mat.unsafe
     }
