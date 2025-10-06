@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.item
 
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.kmath.mat.mat4.f.MMat4f
-import de.bixilon.kmath.mat.mat4.f.Mat4Operations
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature.ItemRenderDistance.Companion.getCount
@@ -96,18 +95,15 @@ open class ItemFeature(
     }
 
     private fun updateMatrix() {
-        this.matrix.apply {
-            clearAssign()
+        val matrix = this.matrix
+
+        matrix.set(renderer.matrix.unsafe)
+        matrix *= displayMatrix
+
+        matrix.apply {
             translateXAssign(-0.5f)
             translateZAssign(-0.5f)
         }
-
-        val next = MMat4f(renderer.matrix)
-        next *= displayMatrix
-        next *= matrix
-
-
-        this.matrix = next
     }
 
     override fun draw(mesh: BlockMesh) {
