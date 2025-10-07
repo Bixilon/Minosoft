@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.loader.mod.source
 
-import com.github.ajalt.clikt.core.FileNotFound
 import de.bixilon.minosoft.assets.file.ZipAssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.util.jar.JarEntry
 import java.util.jar.JarInputStream
 
@@ -33,7 +33,7 @@ class ArchiveSource(
 ) : ModSource, TextFormattable {
 
     init {
-        if (!jar.isFile) throw FileNotFound("Can not find archive: $jar")
+        if (!jar.isFile) throw FileNotFoundException("Can not find archive: $jar")
     }
 
     override fun process(mod: MinosoftMod) {

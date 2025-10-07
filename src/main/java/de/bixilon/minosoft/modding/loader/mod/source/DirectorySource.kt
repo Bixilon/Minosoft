@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.loader.mod.source
 
-import com.github.ajalt.clikt.core.FileNotFound
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
@@ -30,13 +29,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.logging.LogOptions
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 class DirectorySource(
     val directory: File,
 ) : ModSource, TextFormattable {
 
     init {
-        if (!directory.isDirectory) throw FileNotFound("Not a directory: $directory")
+        if (!directory.isDirectory) throw FileNotFoundException("Not such directory: $directory")
     }
 
     override fun process(mod: MinosoftMod) {
