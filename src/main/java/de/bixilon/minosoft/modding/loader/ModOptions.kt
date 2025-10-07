@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.modding.loader
 
 import de.bixilon.kutil.file.PathUtil.div
+import de.bixilon.minosoft.modding.loader.mod.source.ModSource
 import de.bixilon.minosoft.terminal.RunConfiguration
 
 object ModOptions {
@@ -21,4 +22,5 @@ object ModOptions {
     var path = RunConfiguration.home / "mods"
     var ignorePhases = setOf<String>()
     var ignoreMods = setOf<String>()
+    val additional: MutableMap<String, MutableSet<ModSource>> = mutableMapOf()
 }

@@ -92,7 +92,7 @@ class LoadingPhase(val name: String) {
         }
 
         val files = path.listFiles() ?: emptyArray()
-        val additionalSources: Set<ModSource> = emptySet() // TODO: RunConfiguration.MOD_PARAMETERS.additionalSources[this.name] ?: emptySet()
+        val additionalSources: Set<ModSource> = ModOptions.additional[this.name] ?: emptySet()
         if (files.isEmpty() && additionalSources.isEmpty()) {
             // no mods to load
             state = PhaseStates.COMPLETE

@@ -34,7 +34,7 @@ interface ModSource {
             return null
         }
 
-        fun of(url: URI) = when (url.scheme) {
+        fun of(url: URI): ModSource = when (url.scheme) {
             "directory" -> DirectorySource(url.path.toPath().toFile())
             // TODO: "split_directory" -> SplitDirectorySource(url.query.spl.toPath().toFile())
             "archive" -> ArchiveSource(url.path.toPath().toFile())

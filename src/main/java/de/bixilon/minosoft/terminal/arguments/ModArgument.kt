@@ -25,12 +25,15 @@ class ModArgument : OptionGroup(), AppliedArgument {
     val disable by option("--no-mods").flag(default = ModOptions.disabled)
     val ignoreMods by option("--ignore-mod").multiple(required = false).unique()
     val ignorePhases by option("--ignore-mod-phase").choice(DefaultModPhases.PRE.name, DefaultModPhases.BOOT.name, DefaultModPhases.POST.name).multiple(required = false).unique()
-    val sources by option("--mod-source").convert { ModSource.of(it.toURI()) }.multiple(required = false).unique()
+    val sources by option("--mod-source").splitPair("=").convert { pair -> Pair(pair.first, ModSource.of(pair.second.toURI())) }.multiple(required = false).unique()
 
     override fun apply() {
         ModOptions.disabled = disable
         ModOptions.ignoreMods = ignoreMods
         ModOptions.ignorePhases = ignorePhases
-        // TODO: Additional sources
+
+        for ((phase, source) in sources) {
+            ModOptions.additional.getOrPut(phase) { mutableSetOf() } += source
+        }
     }
 }
