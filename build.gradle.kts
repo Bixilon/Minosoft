@@ -177,6 +177,7 @@ testing {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
+                implementation("com.github.ajalt.clikt:clikt:5.0.3")
             }
 
             targets {
