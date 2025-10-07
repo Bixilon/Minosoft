@@ -38,15 +38,9 @@ object CommandLineArguments {
         .defaultHelp(true)
         .description("An open source minecraft client written from scratch")
         .apply {
-            addArgument("--disable_log_color_message")
+            addArgument("--no_color")
                 .action(Arguments.storeFalse())
-                .help("The message (after all prefixes) should be colored with ANSI color codes")
-            addArgument("--disable_log_color_level")
-                .action(Arguments.storeFalse())
-                .help("The level (e.g. [INFO]) should be colored")
-            addArgument("--disable_log_color_type")
-                .action(Arguments.storeFalse())
-                .help("The type (e.g. [OTHER]) should be colored")
+                .help("Log should NOT be colored with ANSI color codes")
             addArgument("--relative_log")
                 .action(Arguments.storeTrue())
                 .help("Prefixes all log messages with relative time instead of absolute time")
@@ -128,9 +122,7 @@ object CommandLineArguments {
             return ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
         }
 
-        RunConfiguration.LOG_COLOR_MESSAGE = namespace.getBoolean("disable_log_color_message")
-        RunConfiguration.LOG_COLOR_LEVEL = namespace.getBoolean("disable_log_color_level")
-        RunConfiguration.LOG_COLOR_TYPE = namespace.getBoolean("disable_log_color_type")
+        RunConfiguration.LOG_COLOR = if (System.getenv("NO_COLOR").isNotBlank()) true else namespace.getBoolean("disable_log_color_message")
         RunConfiguration.LOG_RELATIVE_TIME = namespace.getBoolean("relative_log")
         RunConfiguration.DISABLE_CURSOR_CATCH = namespace.getBoolean("disable_cursor_catch")
         RunConfiguration.DISABLE_EROS = namespace.getBoolean("disable_eros")

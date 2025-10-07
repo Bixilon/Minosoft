@@ -72,17 +72,16 @@ object Log {
                 TextComponent("[${TIME_FORMAT.format1(this.time)}] ")
             }
             message += TextComponent("[${this.thread.name}] ")
-            message += TextComponent("[${this.type}] ").let { if (RunConfiguration.LOG_COLOR_TYPE) it.color(color) else it }
-            message += TextComponent("[${this.level}] ").let { if (RunConfiguration.LOG_COLOR_LEVEL) it.color(this.level.levelColors) else it }
+            message += TextComponent("[${this.type}] ").color(color)
+            message += TextComponent("[${this.level}] ").color(this.level.levelColors)
             this.prefix?.let { message += it }
-            if (RunConfiguration.LOG_COLOR_MESSAGE) {
-                this.message.setFallbackColor(color)
-            }
+            this.message.setFallbackColor(color)
 
             val stream = if (this.level.error) SYSTEM_ERR_STREAM else SYSTEM_OUT_STREAM
 
             val prefix = message.ansi.removeSuffix(RESET) // reset suffix
-            for (line in this.message.ansi.lineSequence()) {
+            val lines = if (RunConfiguration.LOG_COLOR) this.message.ansi else this.message.message
+            for (line in lines.lineSequence()) {
                 stream.println(prefix + line + RESET)
             }
             stream.flush()
