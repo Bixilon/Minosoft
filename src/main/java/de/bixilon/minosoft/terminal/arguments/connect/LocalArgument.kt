@@ -45,7 +45,7 @@ class LocalArgument : OptionGroup(), AutoConnectFactory {
         val version = if (version == Versions.AUTOMATIC) Versions["1.20.4"]!! else version
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Starting local world (generator=${generator.name.lowercase()}, storage=${storage.name.lowercase()}) with version $version using account $account..." }
         return PlaySession(
-            connection = LocalConnection(::DebugGenerator, ::DebugStorage),
+            connection = LocalConnection(generator.factory, storage.factory),
             account = account,
             version = version,
         )

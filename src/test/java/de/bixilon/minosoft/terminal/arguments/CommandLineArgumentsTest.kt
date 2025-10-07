@@ -21,5 +21,4 @@ class CommandLineArgumentsTest {
     fun `no error during creation`() {
         CommandLineArguments.parse(emptyArray())
     }
-
 }
