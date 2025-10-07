@@ -55,7 +55,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         session.player.items.incomplete.remove(containerId)?.let {
             for ((slot, stack) in it.slots) {
-                container[slot] = stack
+                container.slots[slot] = stack
             }
             container.floating = it.floating
         }

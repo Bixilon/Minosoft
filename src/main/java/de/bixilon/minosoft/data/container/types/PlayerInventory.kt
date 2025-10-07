@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,7 +48,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class PlayerInventory(
     private val items: PlayerItemManager,
     session: PlaySession,
-) : Container(session = session, type = TYPE), ClientContainer {
+) : Container(session = session, type = TYPE, id = CONTAINER_ID), ClientContainer {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 

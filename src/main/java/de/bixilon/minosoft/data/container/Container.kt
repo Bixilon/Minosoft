@@ -33,15 +33,14 @@ abstract class Container(
     val session: PlaySession,
     val type: ContainerType,
     val title: ChatComponent? = null,
+    val id: Int,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
     val lock = ReentrantRWLock()
     val slots: MutableMap<Int, ItemStack> by observedMap(mutableMapOf())
     val transactions = ContainerTransactionManager(this)
     var serverRevision = 0
     var floating: ItemStack? by observed(null)
-
-    val id: Int?
-        get() = session.player.items.containers.getKey(this)
+        private set
 
     open val sections: Array<ContainerSection> get() = emptyArray()
 
@@ -64,25 +63,15 @@ abstract class Container(
         floating = null // ToDo: They are dropped, but not in all versions
     }
 
+    operator fun get(slotId: Int): ItemStack?
+
 
     protected open fun onAdd(slotId: Int, stack: ItemStack) = true
     protected open fun onSet(slotId: Int, previous: ItemStack, next: ItemStack) = true
     protected open fun onRemove(slotId: Int, stack: ItemStack) = true
 
-    operator fun get(slotId: Int): ItemStack?
-    fun remove(slotId: Int): ItemStack?
-    operator fun minusAssign(slotId: Int) {
-        remove(slotId)
-    }
-
-    operator fun set(slotId, stack: ItemStack?)
-    fun clear()
-
-
     fun close(force: Boolean = false) {
         onClose()
-
-        val id = id ?: return
 
         if (id != PlayerInventory.CONTAINER_ID && this !is ClientContainer) {
             session.player.items.containers -= id

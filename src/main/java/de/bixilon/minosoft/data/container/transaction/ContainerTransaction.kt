@@ -15,17 +15,38 @@ package de.bixilon.minosoft.data.container.transaction
 
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 
 class ContainerTransaction(
     val container: Container,
-    val id: Int,
 ) {
-    private val previous: MutableMap<Int, ItemStack> = mutableMapOf()
-    private val next: MutableMap<Int, ItemStack> = mutableMapOf()
-    // TODO: floating
+    var floating: ItemStack? = null
+    var state: TransactionState = TransactionState.PENDING
+        private set
 
-    fun commit()
-    fun rollback()
+    fun commit(): CommittedAction
+    fun drop()
+    fun revert()
 
     fun clear()
+
+
+    operator fun get(slotId: Int): ItemStack?
+    fun remove(slotId: Int): ItemStack?
+    operator fun minusAssign(slotId: Int) {
+        remove(slotId)
+    }
+
+    operator fun set(slotId, stack: ItemStack?)
+    fun clear()
+
+
+    data class CommittedAction(val id: Int, val changes: Int2ObjectMap<ItemStack?>)
+
+    enum class TransactionState {
+        PENDING,
+        COMMITTED,
+        DROPPED,
+        REVERTED,
+    }
 }

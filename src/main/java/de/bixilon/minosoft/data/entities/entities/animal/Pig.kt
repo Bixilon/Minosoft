@@ -43,7 +43,7 @@ class Pig(session: PlaySession, entityType: EntityType, data: EntityData, positi
 
 
     override fun isSteerableWith(stack: ItemStack): Boolean {
-        return stack.item.item is OnAStickItem.CarrotOnAStickItem
+        return stack.item is OnAStickItem.CarrotOnAStickItem
     }
 
     override fun createPhysics() = PigPhysics(this)

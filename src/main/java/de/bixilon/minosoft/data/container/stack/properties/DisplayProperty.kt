@@ -27,7 +27,7 @@ import java.util.*
 data class DisplayProperty(
     val lore: List<ChatComponent> = emptyList(),
     val customDisplayName: ChatComponent? = null,
-    val dyedColor: RGBColor? = null,
+    val dyeColor: RGBColor? = null,
 ) : Property {
 
 

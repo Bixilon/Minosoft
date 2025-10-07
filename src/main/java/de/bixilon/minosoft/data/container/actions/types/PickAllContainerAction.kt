@@ -16,15 +16,12 @@ package de.bixilon.minosoft.data.container.actions.types
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 /**
  * If you double-click on an item in an inventory, all items of the same type will be stacked together and selected
@@ -33,54 +30,40 @@ class PickAllContainerAction(
     @Deprecated("packet only") val slot: Int,
 ) : ContainerAction {
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) {
+    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         // TODO (1.18.2) minecraft always sends a packet
-        container.lock()
-        try {
-            val previous = container[slot]
-            val floating = container.floating?.copy()
-            if (previous != null || floating == null) {
-                return
-            }
-            var countLeft = (if (floating.item.item is StackableItem) floating.item.item.maxStackSize else 1) - floating.item.count
-            val changes: Int2ObjectMap<ItemStack?> = Int2ObjectOpenHashMap()
-            for ((slotId, slot) in container.slots) {
-                if (!floating.matches(slot)) {
-                    continue
-                }
-                if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
-                    continue
-                }
-                val countToRemove = minOf(slot.item.count, countLeft)
-                slot.item.count -= countToRemove
-                countLeft -= countToRemove
-                floating.item.count += countToRemove
-                if (slot.valid) {
-                    changes[slotId] = slot
-                } else {
-                    changes[slotId] = null
-                }
-                if (countLeft <= 0) {
-                    break
-                }
-            }
-            container.validate()
-            if (floating == container.floating) {
-                // no change
-                return
-            }
-            container.floating = floating
+        val previous = container[slot]
+        val floating = container.floating
+        if (previous != null || floating == null) {
+            return
+        }
+        val maxStackSize = if (floating.item is StackableItem) floating.item.maxStackSize else 1
+        if (floating.count >= maxStackSize) return
 
-            if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-                for ((slot, item) in changes) {
-                    session.connection += ItemStackCreateC2SP(slot, item)
-                }
-            } else {
-                session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.actions.createId(this), changes, floating)
-            }
+        var next = floating.count
 
-        } finally {
-            container.commit()
+        for ((slotId, slot) in container.slots) {
+            if (!floating.matches(slot)) continue
+            if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
+                continue
+            }
+            val count = minOf(slot.count, maxStackSize - next)
+            transaction[slotId] = slot.copy(count = slot.count - count)
+            next += count
+
+            if (next >= maxStackSize) break
+        }
+        if (floating.count == next) return
+
+        transaction.floating = floating
+
+        val (id, changes) = transaction.commit()
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            for ((slot, item) in changes) {
+                session.connection += ItemStackCreateC2SP(slot, item)
+            }
+        } else {
+            session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, id, changes, floating)
         }
     }
 }

@@ -15,32 +15,38 @@ package de.bixilon.minosoft.data.container.actions.types
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
-class CloneContainerAction(
+class DropSlotContainerAction(
     val slot: Int,
+    val stack: Boolean,
 ) : ContainerAction {
 
     override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
-        if (container.floating != null) return
-        val clicked = container[slot] ?: return
-        val stack = clicked.copy(count = if (clicked.item is StackableItem) clicked.item.maxStackSize else 1)
-
-        transaction.floating = stack
-
-        val (id, _) = transaction.commit()
-        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-            session.connection += ItemStackCreateC2SP(this.slot, stack)
-        } else {
-            session.connection.send(ContainerClickC2SP(container.id, container.serverRevision, this.slot, 3, 0, id, slotsOf(), stack))
+        val item = container[slot] ?: return
+        if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
+            return
         }
+        val next = if (stack) null else item.copy(count = item.count - DECREASE_AMOUNT)
 
+        transaction[slot] = next
+
+        val (id, changes) = transaction.commit()
+
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            session.connection += ItemStackCreateC2SP(-1, if (stack) item else item.copy(count = DECREASE_AMOUNT))
+            session.connection += ItemStackCreateC2SP(slot, item)
+        } else {
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, slot, 4, if (stack) 1 else 0, id, changes, null)
+        }
+    }
+
+    companion object {
+        const val DECREASE_AMOUNT = 1
     }
 }

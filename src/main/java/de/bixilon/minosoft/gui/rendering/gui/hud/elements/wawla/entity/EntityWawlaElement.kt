@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -66,7 +66,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
         }
         val hand = entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)
         if (wawla.profile.entity.hand && hand != null) {
-            component += TextComponent("Hand: ${hand.item.count}x ${hand.item.item}")
+            component += TextComponent("Hand: ${hand.count}x ${hand.item}")
             component += "\n"
         }
 

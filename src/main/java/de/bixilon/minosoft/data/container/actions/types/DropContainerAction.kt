@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -24,32 +25,27 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2S
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
 class DropContainerAction(
-    val slot: Int,
-    val stack: Boolean,
+    val count: ContainerCounts,
 ) : ContainerAction {
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) {
-        val item = container[slot] ?: return
-        if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
-            return
-        }
-        val next = if (stack) {
-            item.copy(count = 0)
+
+    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+        val previous = container.floating.count
+        if (count == ContainerCounts.ALL) {
+            floatingItem.item._count = 0
         } else {
-            item.copy(count = item.count - DECREASE_AMOUNT)
+            floatingItem.item._count-- // don't use decrease, item + container is already locked
         }
-
-        transaction[slot] = next
-
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-            session.connection += ItemStackCreateC2SP(-1, if (stack) item else item.copy(count = DECREASE_AMOUNT))
-            session.connection += ItemStackCreateC2SP(slot, item)
+            session.connection += ItemStackCreateC2SP(-1, if (count == ContainerCounts.ALL) floatingItem.copy(count = previous) else floatingItem.copy(count = 1))
         } else {
-            session.connection += ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, transaction.id, slotsOf(slot to item), null)
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null)
         }
     }
 
-    companion object {
-        const val DECREASE_AMOUNT = 1
+    enum class ContainerCounts {
+        ALL,
+        PART,
+        ;
     }
 }

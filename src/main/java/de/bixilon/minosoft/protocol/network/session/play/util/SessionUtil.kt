@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -146,6 +146,10 @@ class SessionUtil(
         session.player.items.opened?.let {
             session.player.items.opened = null
             session.events.fire(ContainerCloseEvent(session, it))
+        }
+
+        for ((_, container) in session.player.items.containers) {
+            container.transactions.clear()
         }
         session.player.healthCondition = HealthCondition()
     }

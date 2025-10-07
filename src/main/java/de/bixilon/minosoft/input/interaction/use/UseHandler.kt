@@ -115,7 +115,7 @@ class UseHandler(
         if (session.player.gamemode == Gamemodes.SPECTATOR) {
             return false
         }
-        if (interactions.isCoolingDown(stack.item.item)) {
+        if (interactions.isCoolingDown(stack.item)) {
             return false
         }
         return true

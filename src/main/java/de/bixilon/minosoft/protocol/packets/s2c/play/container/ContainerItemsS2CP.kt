@@ -38,11 +38,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readUnsignedShort()
         }
     ) { buffer.readItemStack() }
-    val floatingItem = if (buffer.versionId >= V_1_17_1_PRE1) {
-        buffer.readItemStack()?.let { Optional.of(it) } ?: Optional.empty()
-    } else {
-        null
-    }
+    val floatingItem = if (buffer.versionId >= V_1_17_1_PRE1) buffer.readItemStack() else null
 
     private fun pushIncompleteContainer(session: PlaySession) {
         val container = IncompleteContainer()
@@ -54,24 +50,20 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             container.slots[slotId] = stack
         }
-        container.floating = floatingItem?.let { if (it.isEmpty) null else it.get() }
+        container.floating = floatingItem
 
         session.player.items.incomplete[containerId] = container
     }
 
-    private fun updateContainer(container: Container) {
-        container.lock()
-        container.clear()
-
-        for ((slotId, stack) in this.items.withIndex()) {
+    private fun Container.update() {
+        for ((slotId, stack) in items.withIndex()) {
             if (stack == null) {
                 continue
             }
-            container[slotId] = stack
+            slots[slotId] = stack
         }
-        container.serverRevision = revision
-        this.floatingItem?.let { container.floating = if (it.isEmpty) null else it.get() }
-        container.commit()
+        serverRevision = revision
+        floatingItem?.let { floating = it }
     }
 
     override fun handle(session: PlaySession) {
@@ -79,7 +71,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (container == null) {
             pushIncompleteContainer(session)
         } else {
-            updateContainer(container)
+            container.update()
         }
     }
 
