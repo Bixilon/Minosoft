@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
@@ -34,6 +32,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class RawItemElement(
     guiRenderer: GUIRenderer,
@@ -73,7 +73,7 @@ class RawItemElement(
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val stack = stack ?: return
-        if (!stack._valid) return
+        if (!stack.valid) return
         val size = size
         val textureSize = size - 1
 

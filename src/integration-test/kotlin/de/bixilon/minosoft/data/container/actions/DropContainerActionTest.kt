@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ class DropContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.actions.invoke(DropContainerAction(7, false))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         session.assertNoPacket()
     }
 
@@ -42,7 +42,7 @@ class DropContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.actions.invoke(DropContainerAction(9, true))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         session.assertNoPacket()
     }
 
@@ -51,7 +51,7 @@ class DropContainerActionTest {
         val container = createContainer(session)
         container[9] = ItemStack(AppleTest0.item, count = 8)
         container.actions.invoke(DropContainerAction(9, false))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container[9], ItemStack(AppleTest0.item, count = 7))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTest0.item, count = 7)), null))
     }
@@ -61,7 +61,7 @@ class DropContainerActionTest {
         val container = createContainer(session)
         container[9] = ItemStack(AppleTest0.item, count = 1)
         container.actions.invoke(DropContainerAction(9, false))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container[9], null)
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
     }
@@ -71,7 +71,7 @@ class DropContainerActionTest {
         val container = createContainer(session)
         container[9] = ItemStack(AppleTest0.item, count = 12)
         container.actions.invoke(DropContainerAction(9, true))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container[9], null)
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
     }

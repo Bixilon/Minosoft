@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,15 +34,24 @@ abstract class InventorySynchronizedContainer(
         // ToDo: Add initial slots from inventory
     }
 
-    override fun onRemove(slotId: Int, stack: ItemStack) {
+    override fun onRemove(slotId: Int, stack: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory.remove(slotId - synchronizedSlots.first + inventorySlots.first)
+            playerInventory -= slotId - synchronizedSlots.first + inventorySlots.first
         }
+        return super.onRemove(slotId, stack)
     }
 
-    override fun onSet(slotId: Int, stack: ItemStack?) {
+    override fun onSet(slotId: Int, previous: ItemStack, next: ItemStack): Boolean {
+        if (slotId in synchronizedSlots) {
+            playerInventory[slotId - synchronizedSlots.first + inventorySlots.first] = next
+        }
+        return super.onSet(slotId, previous, next)
+    }
+
+    override fun onAdd(slotId: Int, stack: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
             playerInventory[slotId - synchronizedSlots.first + inventorySlots.first] = stack
         }
+        return super.onSet(slotId, stack)
     }
 }

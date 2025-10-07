@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -31,14 +32,13 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class PickAllContainerAction(
     @Deprecated("packet only") val slot: Int,
 ) : ContainerAction {
-    // ToDo: Action reverting
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
+    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) {
         // TODO (1.18.2) minecraft always sends a packet
         container.lock()
         try {
             val previous = container[slot]
-            val floating = container.floatingItem?.copy()
+            val floating = container.floating?.copy()
             if (previous != null || floating == null) {
                 return
             }
@@ -55,7 +55,7 @@ class PickAllContainerAction(
                 slot.item.count -= countToRemove
                 countLeft -= countToRemove
                 floating.item.count += countToRemove
-                if (slot._valid) {
+                if (slot.valid) {
                     changes[slotId] = slot
                 } else {
                     changes[slotId] = null
@@ -65,11 +65,11 @@ class PickAllContainerAction(
                 }
             }
             container.validate()
-            if (floating == container.floatingItem) {
+            if (floating == container.floating) {
                 // no change
                 return
             }
-            container.floatingItem = floating
+            container.floating = floating
 
             if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
                 for ((slot, item) in changes) {

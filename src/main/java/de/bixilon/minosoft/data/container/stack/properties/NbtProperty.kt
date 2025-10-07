@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container
+package de.bixilon.minosoft.data.container.stack.properties
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.kutil.json.JsonObject
 
-class ContainerEdit {
-    val slots: MutableSet<ItemStack> = mutableSetOf()
-    var changes = 0
+@JvmInline
+value class NbtProperty(
+    val nbt: JsonObject = emptyMap(),
+) : Property {
 
-    fun addChange() {
-        changes++
-    }
+    override fun getNBT() = nbt
 }

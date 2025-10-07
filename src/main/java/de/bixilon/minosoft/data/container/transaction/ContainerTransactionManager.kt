@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.stack.property
+package de.bixilon.minosoft.data.container.transaction
 
-import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.container.Container
+import java.util.concurrent.atomic.AtomicInteger
 
-interface Property {
+class ContainerTransactionManager(
+    val container: Container,
+) {
+    val id = AtomicInteger()
 
-    fun isDefault(): Boolean
+    fun create()
 
-    fun getNBT(): JsonObject = emptyMap()
+    fun acknowledge(id: Int)
+    fun rollback(id: Int)
+    fun remove(transaction: ContainerTransaction)
 }

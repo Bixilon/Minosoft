@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.data.container.actions.types
 
+import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 @Deprecated("Not yet implemented")
 class DistributeContainerAction : ContainerAction {
@@ -31,4 +34,6 @@ class DistributeContainerAction : ContainerAction {
     END_RIGHT_MOUSE_DRAG(5, 6, false),
     END_MIDDLE_MOUSE_DRAG(5, 10, false),
      */
+
+    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) = TODO("Not yet implemented")
 }
