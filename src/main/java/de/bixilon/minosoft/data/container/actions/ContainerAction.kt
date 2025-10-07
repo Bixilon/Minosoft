@@ -20,8 +20,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 interface ContainerAction {
     /**
      * Invokes the action
-     * (changes the container and sends the packets to the server
-     * @return the floating item or null
+     * (changes the container and sends the packets to the server)
      */
-    fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction)
+    fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction)
 }

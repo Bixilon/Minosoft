@@ -47,9 +47,6 @@ class RawItemElement(
             if (field === value) {
                 return
             }
-            if (value != null) {
-                value::revision.observe(this) { if (value === field) forceSilentApply() } // ToDo: check if watcher is still up-to-date
-            }
             field = value
             forceSilentApply()
         }
@@ -76,7 +73,7 @@ class RawItemElement(
         val size = size
         val textureSize = size - 1
 
-        val item = stack.item.item
+        val item = stack.item
         val model = item.getModel(guiRenderer.session)
         if (model != null) {
             val tints = context.tints.getItemTint(stack)
@@ -91,14 +88,11 @@ class RawItemElement(
 
     override fun forceSilentApply() {
         val item = _stack?.item
-        val count = item?.count
+        val count = _stack?.count
         countText.text = when {
             count == null || count == 1 -> ChatComponent.EMPTY
-            count < -99 -> NEGATIVE_INFINITE_TEXT
-            count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
-            count == 0 -> ZERO_TEXT
             count > 99 -> INFINITE_TEXT
-            count > if (item.item is StackableItem) item.item.maxStackSize else 1 -> TextComponent(count, color = ChatColors.RED)
+            count > if (item is StackableItem) item.maxStackSize else 1 -> TextComponent(count, color = ChatColors.RED)
             else -> TextComponent(count)
         }
 
@@ -110,9 +104,7 @@ class RawItemElement(
     }
 
     companion object {
-        private val NEGATIVE_INFINITE_TEXT = TextComponent("-∞").color(ChatColors.RED)
         private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
-        private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
 
         val DEFAULT_SIZE = Vec2f(17, 17) // 16x16 for the item and 1px for the count offset
     }

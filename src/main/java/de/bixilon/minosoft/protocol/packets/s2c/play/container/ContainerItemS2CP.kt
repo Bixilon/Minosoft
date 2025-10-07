@@ -23,11 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
-    val revision: Int = if (buffer.versionId >= V_1_17_1_PRE1) {
-        buffer.readVarInt()
-    } else {
-        -1
-    }
+    val revision: Int = if (buffer.versionId >= V_1_17_1_PRE1) buffer.readVarInt() else -1
     val slot = buffer.readShort().toInt()
     val stack = buffer.readItemStack()
 
@@ -49,7 +45,11 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (slot < 0) {
             container.floating = stack
         } else {
-            container[slot] = stack
+            if (stack == null) {
+                container.slots -= slot
+            } else {
+                container.slots[slot] = stack
+            }
         }
         container.serverRevision = revision
     }

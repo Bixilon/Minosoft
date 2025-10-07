@@ -12,11 +12,14 @@
  */
 package de.bixilon.minosoft.data.container.stack
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.properties.*
 import de.bixilon.minosoft.data.language.manager.Language
+import de.bixilon.minosoft.data.language.translate.Translatable
+import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
 
@@ -51,7 +54,7 @@ data class ItemStack(
             }
         }
 
-    fun getDisplayName(language: Language?): ChatComponent {
+    fun getDisplayName(language: Translator?): ChatComponent {
         display?.customDisplayName?.let { return it }
         if (language != null) {
             val translated = language.forceTranslate(item.translationKey)
@@ -78,6 +81,9 @@ data class ItemStack(
         if (other == null) return !valid
         return item == other.item && display == other.display && durability == other.durability && enchanting == other.enchanting && hide == other.hide && nbt == other.nbt
     }
+
+    @Deprecated("final", level = DeprecationLevel.ERROR)
+    fun copy(): Unit = Broken()
 
     override fun toString(): String {
         // this should not get synchronized, otherwise your debugger won't work that good:)

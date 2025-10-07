@@ -133,8 +133,8 @@ abstract class PlayerEntity(
                 return ChatColors.GREEN
             }
             val chestPlate = equipment[EquipmentSlots.CHEST]
-            if (chestPlate != null && chestPlate.item.item is DyeableItem) {
-                chestPlate._display?.dyeColor?.let { return it.rgba() }
+            if (chestPlate != null && chestPlate.item is DyeableItem) {
+                chestPlate.display?.dyeColor?.let { return it.rgba() }
             }
             additional.team?.formatting?.color?.let { return it.rgba() }
             return ChatColors.RED

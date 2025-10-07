@@ -165,9 +165,9 @@ class PlayInByteBuffer : InByteBuffer {
         }
         val nbt = readNBT()?.toMutableJsonObject()
         val item = session.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
+
         return ItemStackUtil.of(
             item = item,
-            session = session,
             count = count,
             meta = meta,
             nbt = nbt ?: mutableMapOf(),
@@ -182,7 +182,6 @@ class PlayInByteBuffer : InByteBuffer {
         return readOptional {
             ItemStackUtil.of(
                 item = session.registries.item[readVarInt()],
-                session = session,
                 count = readUnsignedByte(),
                 nbt = readNBT()?.toMutableJsonObject() ?: mutableMapOf(),
             )

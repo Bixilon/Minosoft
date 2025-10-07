@@ -44,7 +44,7 @@ data class DurabilityProperty(
 
     fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(UNBREAKABLE_TAG)?.toBoolean()?.let { this.unbreakable = it }
-        nbt.remove(DAMAGE_TAG)?.toInt()?.let { if (stack.item.item is DurableItem) this.durability = stack.item.item.maxDurability - it }
+        nbt.remove(DAMAGE_TAG)?.toInt()?.let { if (stack.item is DurableItem) this.durability = stack.item.maxDurability - it }
     }
 
     companion object {

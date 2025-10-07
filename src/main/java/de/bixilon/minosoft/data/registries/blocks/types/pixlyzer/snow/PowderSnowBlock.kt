@@ -83,7 +83,7 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
             }
             if (this !is LivingEntity) return false
 
-            return this.equipment[EquipmentSlots.FEET]?.item?.item is LeatherArmor.LeatherBoots
+            return this.equipment[EquipmentSlots.FEET]?.item is LeatherArmor.LeatherBoots
         }
 
         override fun build(registries: Registries, settings: BlockSettings) = PowderSnowBlock(settings = settings)

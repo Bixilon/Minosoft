@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,7 +36,7 @@ class ShulkerBoxContainer(session: PlaySession, type: ContainerType, title: Chat
     private object ShulkerBoxSlotType : SlotType {
 
         override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-            return stack.item.item.identifier == identifier // TODO: don't compare identifier
+            return stack.item.identifier == identifier // TODO: don't compare identifier
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ interface DurableItem : ItemWithMeta {
     }
 
     override fun getMeta(id: Int, stack: ItemStack): Int {
-        val durability = stack._durability ?: return 0
+        val durability = stack.durability ?: return 0
         return maxDurability - durability.durability
     }
 }

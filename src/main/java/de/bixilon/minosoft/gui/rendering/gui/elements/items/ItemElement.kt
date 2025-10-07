@@ -148,7 +148,7 @@ class ItemElement(
         val container = itemsElement.container
         when (key) {
             // ToDo: Make this configurable
-            KeyCodes.KEY_Q -> container.actions.invoke(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
+            KeyCodes.KEY_Q -> container.actions.invoke(DropSlotContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
 
             KeyCodes.KEY_1 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_1))
             KeyCodes.KEY_2 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_2))

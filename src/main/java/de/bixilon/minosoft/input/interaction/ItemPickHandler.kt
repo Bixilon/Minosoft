@@ -43,7 +43,7 @@ class ItemPickHandler(
             is BlockTarget -> {
                 val block = target.state.block
 
-                val stack = if (block is BlockWithItem<*>) ItemStackUtil.of(block.item, count = 1, session = session) else null
+                val stack = if (block is BlockWithItem<*>) ItemStackUtil.of(block.item, count = 1) else null
 
                 if (copyNBT && stack != null) {
                     val blockEntity = session.world.getBlockEntity(target.blockPosition)
@@ -54,7 +54,7 @@ class ItemPickHandler(
 
             is EntityTarget -> {
                 val entity = target.entity
-                return entity.type.spawnEgg?.let { ItemStackUtil.of(it, session = session) } ?: entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)?.copy()
+                return entity.type.spawnEgg?.let { ItemStackUtil.of(it) } ?: entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)?.copy()
             }
 
             else -> return null

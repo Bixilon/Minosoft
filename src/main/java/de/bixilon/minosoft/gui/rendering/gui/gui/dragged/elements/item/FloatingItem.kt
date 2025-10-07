@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.actions.types.DropContainerAction
 import de.bixilon.minosoft.data.container.actions.types.SimpleContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -54,7 +55,7 @@ class FloatingItem(
             return
         }
         if (target == null) {
-            container?.actions?.invoke(SimpleContainerAction(null, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            container?.actions?.invoke(DropContainerAction(if (button == MouseButtons.LEFT) DropContainerAction.ContainerCounts.ALL else DropContainerAction.ContainerCounts.PART))
             guiRenderer.dragged.element = null
             return
         }

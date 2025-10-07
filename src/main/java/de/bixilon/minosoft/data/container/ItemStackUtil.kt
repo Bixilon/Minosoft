@@ -15,18 +15,14 @@ package de.bixilon.minosoft.data.container
 
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.container.stack.properties.HolderProperty
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object ItemStackUtil {
 
-    fun of(item: Item, session: PlaySession, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
-        if (session.version.flattened) {
-            return of(item, count, session, nbt = nbt)
-        }
-        val stack = of(item, count, session, nbt = nbt)
+    fun of(item: Item, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
+        val stack = of(item, count, nbt = nbt)
 
         if (item is ItemWithMeta) {
             item.setMeta(stack, meta)
@@ -39,19 +35,13 @@ object ItemStackUtil {
         item: Item,
         count: Int = 1,
 
-        session: PlaySession? = null,
-        container: Container? = null,
-
         durability: Int? = null,
 
         nbt: MutableJsonObject? = null,
     ): ItemStack {
         val stack = ItemStack(item, count)
-        if (session != null || container != null) {
-            stack.holder = HolderProperty(session, container)
-        }
         if (durability != null) {
-            stack.durability._durability = durability
+            stack.durability.durability = durability
         }
         nbt?.let { stack.updateNbt(nbt) }
 

@@ -36,22 +36,22 @@ abstract class InventorySynchronizedContainer(
 
     override fun onRemove(slotId: Int, stack: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory -= slotId - synchronizedSlots.first + inventorySlots.first
+            playerInventory.slots -= slotId - synchronizedSlots.first + inventorySlots.first
         }
         return super.onRemove(slotId, stack)
     }
 
     override fun onSet(slotId: Int, previous: ItemStack, next: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory[slotId - synchronizedSlots.first + inventorySlots.first] = next
+            playerInventory.slots[slotId - synchronizedSlots.first + inventorySlots.first] = next
         }
         return super.onSet(slotId, previous, next)
     }
 
     override fun onAdd(slotId: Int, stack: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory[slotId - synchronizedSlots.first + inventorySlots.first] = stack
+            playerInventory.slots[slotId - synchronizedSlots.first + inventorySlots.first] = stack
         }
-        return super.onSet(slotId, stack)
+        return super.onAdd(slotId, stack, slotId, stack)
     }
 }

@@ -45,7 +45,7 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
 
 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
-        if (session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is ClimbingItems.ScaffoldingItem) {
+        if (session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item is ClimbingItems.ScaffoldingItem) {
             return Shape.FULL
         }
         return if (state.isBottom()) BOTTOM_OUTLINE else OUTLINE

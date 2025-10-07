@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -44,7 +44,7 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
     var seed = -1
         private set
 
-    val lapislazuli: Int get() = this[LAPISLAZULI_SLOT]?.item?._count ?: 0
+    val lapislazuli: Int get() = this[LAPISLAZULI_SLOT]?.count ?: 0
 
     override fun getSlotType(slotId: Int): SlotType? {
         return when (slotId) {
@@ -98,13 +98,13 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
         if (!canEnchant(index)) {
             throw IllegalStateException("Can not enchant $index!")
         }
-        val id = this.id ?: return
+        val id = this.id
         session.connection.send(ContainerButtonC2SP(id, index))
     }
 
     private object LapislazuliSlot : SlotType {
         override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-            return stack.item.item.identifier == MinecraftItems.LAPISLAZULI
+            return stack.item.identifier == MinecraftItems.LAPISLAZULI
         }
     }
 

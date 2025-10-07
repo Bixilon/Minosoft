@@ -75,7 +75,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
 
 
         if (player.gamemode != Gamemodes.CREATIVE) {
-            stack.item.decreaseCount()
+            stack.decreaseCount()
         }
         DefaultThreadPool += {
             world[placePosition] = state

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,7 +69,7 @@ class AttackHandler(
             return
         }
 
-        val sharpnessLevel = player.equipment[EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(WeaponEnchantment.Sharpness) ?: 0
+        val sharpnessLevel = player.equipment[EquipmentSlots.MAIN_HAND]?.enchanting?.enchantments?.get(WeaponEnchantment.Sharpness) ?: 0
 
         val critical = (cooldown / COOLDOWN.toFloat()) > 0.9f && player.physics.fallDistance != 0.0f && !player.physics.onGround && !player.physics().isClimbing() && (player.physics.submersion[WaterFluid]) <= 0.0f && player.effects[VisionEffect.Blindness] == null && player.attachment.vehicle == null && entity is LivingEntity
         // TODO: use attack speed entity attribute

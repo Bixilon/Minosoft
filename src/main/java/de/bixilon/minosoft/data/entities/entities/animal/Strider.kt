@@ -49,7 +49,7 @@ class Strider(session: PlaySession, entityType: EntityType, data: EntityData, po
         get() = data.get(HAS_SADDLE_DATA, false)
 
     override fun isSteerableWith(stack: ItemStack): Boolean {
-        return stack.item.item is OnAStickItem.WarpedFungusOnAStickItem
+        return stack.item is OnAStickItem.WarpedFungusOnAStickItem
     }
 
     override fun canWalkOnFluid(fluid: Fluid, state: BlockState): Boolean {

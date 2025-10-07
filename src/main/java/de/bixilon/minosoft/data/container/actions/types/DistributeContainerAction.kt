@@ -35,5 +35,5 @@ class DistributeContainerAction : ContainerAction {
     END_MIDDLE_MOUSE_DRAG(5, 10, false),
      */
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) = TODO("Not yet implemented")
+    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) = TODO("Not yet implemented")
 }

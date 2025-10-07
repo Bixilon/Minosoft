@@ -61,6 +61,7 @@ class FastMoveContainerAction(
 
     private fun merge(container: Container, source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
         val maxStack = if (source.item is StackableItem) source.item.maxStackSize else 1
+
         for ((section, list) in targets) {
             val putting = if (section.fillReversed) list.reversed().iterator() else list.intIterator()
             for (slot in putting) {
@@ -96,7 +97,7 @@ class FastMoveContainerAction(
         }
     }
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) {
+    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         // ToDo: minecraft always sends a packet
         val source = container.slots[slot] ?: return
 
@@ -105,12 +106,13 @@ class FastMoveContainerAction(
         merge(container, source, transaction, targets)
         move(container, source, transaction, targets)
 
+        val (id, changes) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
             for ((slot, item) in changes) {
                 session.connection += ItemStackCreateC2SP(slot, item)
             }
         } else {
-            session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, transaction.id, changes, null)
+            session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, id, changes, null)
         }
     }
 }
