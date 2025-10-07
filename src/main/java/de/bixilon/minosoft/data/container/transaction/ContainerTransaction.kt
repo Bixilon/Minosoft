@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,30 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container
+package de.bixilon.minosoft.data.container.transaction
 
+import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KMutableProperty0
-import kotlin.reflect.KProperty
 
-class InventoryDelegate<T>(
-    val stack: ItemStack,
-    val field: KMutableProperty0<T>,
-) : ReadWriteProperty<Any, T> {
+class ContainerTransaction(
+    val container: Container,
+    val id: Int,
+) {
+    private val previous: MutableMap<Int, ItemStack> = mutableMapOf()
+    private val next: MutableMap<Int, ItemStack> = mutableMapOf()
+    // TODO: floating
 
-    override operator fun getValue(thisRef: Any, property: KProperty<*>): T {
-        try {
-            stack.lock.acquire()
-            return field.getValue(thisRef, property)
-        } finally {
-            stack.lock.release()
-        }
-    }
+    fun commit()
+    fun rollback()
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        stack.lock.lock()
-        field.setValue(thisRef, property, value)
-        stack.commitChange()
-    }
+    fun clear()
 }

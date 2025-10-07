@@ -11,74 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.stack.property
+package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
-import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
-import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.Rarities
-import de.bixilon.minosoft.data.container.InventoryDelegate
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.remove
 import java.util.*
 
-class EnchantingProperty(
-    private val stack: ItemStack,
-    enchantments: MutableMap<Enchantment, Int> = mutableMapOf(),
-    repairCost: Int = 0,
+data class EnchantingProperty(
+    val enchantments: Map<Enchantment, Int> = emptyMap(),
+    val repairCost: Int = 0,
 ) : Property {
-    val enchantments by observedMap(enchantments) // ToDo: Lock
-    var _repairCost = repairCost
-    var repairCost by InventoryDelegate(stack, this::_repairCost)
 
-    init {
-        this::enchantments.observeMap(this) { stack.holder?.container?.let { it.revision++ } }
-    }
-
-    val enchantingRarity: Rarities
-        get() {
-            val itemRarity = stack.item.item.rarity
-            try {
-                stack.lock.acquire()
-                if (enchantments.isEmpty()) {
-                    return itemRarity
-                }
-            } finally {
-                stack.lock.release()
-            }
-
-            return when (itemRarity) {
-                Rarities.COMMON, Rarities.UNCOMMON -> Rarities.RARE
-                Rarities.RARE, Rarities.EPIC -> Rarities.EPIC
-            }
-        }
-
-    override fun isDefault(): Boolean {
-        return _repairCost == 0 && enchantments.isEmpty()
-    }
-
-    override fun hashCode() = Objects.hash(enchantments, _repairCost)
-
-    override fun equals(other: Any?): Boolean {
-        if (isDefault() && other == null) return true
-        if (other !is EnchantingProperty) return false
-        if (other.hashCode() != hashCode()) {
-            return false
-        }
-        return enchantments == other.enchantments && _repairCost == other._repairCost
-    }
-
-    fun copy(
-        stack: ItemStack,
-        enchantments: MutableMap<Enchantment, Int> = this.enchantments.toMutableMap(),
-        repairCost: Int = this._repairCost,
-    ): EnchantingProperty {
-        return EnchantingProperty(stack, enchantments, repairCost)
-    }
 
     companion object {
         private const val REPAIR_COST_TAG = "RepairCost"
@@ -92,7 +40,7 @@ class EnchantingProperty(
 
 
         fun ItemStack.updateEnchantingNbt(nbt: MutableJsonObject): Boolean {
-            nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { enchanting._repairCost = it }
+            nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { enchanting.repairCost = it }
 
             nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.let {
                 val registry = holder?.session?.registries?.enchantment ?: return@let

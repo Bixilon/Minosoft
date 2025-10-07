@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,89 +11,48 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.stack.property
+package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.container.InventoryDelegate
-import de.bixilon.minosoft.data.container.stack.ItemStack
 
-class HideProperty(
-    private val stack: ItemStack,
-    hideFlags: Int = 0,
+@JvmInline
+value class HideProperty(
+    val hideFlags: Int = 0,
 ) : Property {
-    var _hideFlags = hideFlags
-    var hideFlags by InventoryDelegate(stack, this::_hideFlags)
 
-    var enchantments: Boolean
+    val enchantments: Boolean
         get() = hideFlags.isBit(ENCHANTMENT_BIT)
-        set(value) = setHideFlag(ENCHANTMENT_BIT, value)
 
-    var modifiers: Boolean
+    val modifiers: Boolean
         get() = hideFlags.isBit(MODIFIERS_BIT)
-        set(value) = setHideFlag(MODIFIERS_BIT, value)
 
-    var unbreakable: Boolean
+    val unbreakable: Boolean
         get() = hideFlags.isBit(UNBREAKABLE_BIT)
-        set(value) = setHideFlag(UNBREAKABLE_BIT, value)
 
-    var canDestroy: Boolean
+    val canDestroy: Boolean
         get() = hideFlags.isBit(CAN_DESTROY_BIT)
-        set(value) = setHideFlag(CAN_DESTROY_BIT, value)
 
-    var canPlaceOn: Boolean
+    val canPlaceOn: Boolean
         get() = hideFlags.isBit(CAN_PLACE_BIT)
-        set(value) = setHideFlag(CAN_PLACE_BIT, value)
 
     /**
      * @return hides other information, including potion effects, shield pattern info, "StoredEnchantments", written book "generation" and "author", "Explosion", "Fireworks", and map tooltips
      */
-    var otherInformation: Boolean
+    val otherInformation: Boolean
         get() = hideFlags.isBit(OTHER_INFORMATION_BIT)
-        set(value) = setHideFlag(OTHER_INFORMATION_BIT, value)
 
 
-    var leatherDyeColor: Boolean
+    val leatherDyeColor: Boolean
         get() = hideFlags.isBit(LEATHER_DYE_COLOR_BIT)
-        set(value) = setHideFlag(LEATHER_DYE_COLOR_BIT, value)
 
 
-    private fun setHideFlag(bit: Int, setOrRemove: Boolean) {
-        val mask = (1 shl bit)
-        hideFlags = if (setOrRemove) {
-            hideFlags or mask
-        } else {
-            hideFlags and mask.inv()
-        }
-    }
-
-    override fun isDefault(): Boolean {
-        return _hideFlags == 0
-    }
 
     fun updateNbt(nbt: MutableJsonObject): Boolean {
-        nbt.remove(HIDE_FLAGS_TAG)?.toInt()?.let { this._hideFlags = it }
+        nbt.remove(HIDE_FLAGS_TAG)?.toInt()?.let { this.hideFlags = it }
         return !isDefault()
     }
-
-    override fun hashCode(): Int {
-        return _hideFlags
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (isDefault() && other == null) return true
-        if (other !is HideProperty) return false
-        return _hideFlags == other._hideFlags
-    }
-
-    fun copy(
-        stack: ItemStack,
-        hideFlags: Int = this._hideFlags,
-    ): HideProperty {
-        return HideProperty(stack, hideFlags)
-    }
-
 
     companion object {
         private const val HIDE_FLAGS_TAG = "HideFlags"

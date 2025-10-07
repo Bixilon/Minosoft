@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,16 +34,16 @@ class CloneContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.actions.invoke(CloneContainerAction(0))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         session.assertNoPacket()
     }
 
     fun testAlready1() {
         val session = createSession()
         val container = createContainer(session)
-        container.floatingItem = ItemStack(EggTest0.item, count = 7)
+        container.floating = ItemStack(EggTest0.item, count = 7)
         container.actions.invoke(CloneContainerAction(6))
-        assertEquals(container.floatingItem, ItemStack(EggTest0.item, count = 7))
+        assertEquals(container.floating, ItemStack(EggTest0.item, count = 7))
         assertNull(container[6])
         session.assertNoPacket()
     }
@@ -52,9 +52,9 @@ class CloneContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container[6] = ItemStack(AppleTest0.item, count = 7)
-        container.floatingItem = ItemStack(EggTest0.item, count = 7)
+        container.floating = ItemStack(EggTest0.item, count = 7)
         container.actions.invoke(CloneContainerAction(6))
-        assertEquals(container.floatingItem, ItemStack(EggTest0.item, count = 7))
+        assertEquals(container.floating, ItemStack(EggTest0.item, count = 7))
         assertEquals(container[6], ItemStack(AppleTest0.item, count = 7))
         session.assertNoPacket()
     }
@@ -64,7 +64,7 @@ class CloneContainerActionTest {
         val container = createContainer(session)
         container[1] = ItemStack(AppleTest0.item)
         container.actions.invoke(CloneContainerAction(1))
-        assertEquals(container.floatingItem, ItemStack(AppleTest0.item, count = 64))
+        assertEquals(container.floating, ItemStack(AppleTest0.item, count = 64))
         // TODO: Not sending any packet in 1.18.2?
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(AppleTest0.item, count = 64)))
     }
@@ -74,7 +74,7 @@ class CloneContainerActionTest {
         val container = createContainer(session)
         container[3] = ItemStack(AppleTest0.item, count = 8)
         container.actions.invoke(CloneContainerAction(3))
-        assertEquals(container.floatingItem, ItemStack(AppleTest0.item, count = 64))
+        assertEquals(container.floating, ItemStack(AppleTest0.item, count = 64))
         // TODO: Not sending any packet in 1.18.2?
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(AppleTest0.item, count = 64)))
     }
@@ -84,7 +84,7 @@ class CloneContainerActionTest {
         val container = createContainer(session)
         container[8] = ItemStack(EggTest0.item, count = 9)
         container.actions.invoke(CloneContainerAction(8))
-        assertEquals(container.floatingItem, ItemStack(EggTest0.item, count = 16))
+        assertEquals(container.floating, ItemStack(EggTest0.item, count = 16))
         // TODO: Not sending any packet in 1.18.2?
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(EggTest0.item, count = 16)))
     }
@@ -95,8 +95,8 @@ class CloneContainerActionTest {
         container[8] = ItemStack(EggTest0.item, count = 9)
         val action = CloneContainerAction(8)
         container.actions.invoke(action)
-        assertEquals(container.floatingItem, ItemStack(EggTest0.item, count = 16))
+        assertEquals(container.floating, ItemStack(EggTest0.item, count = 16))
         container.actions.revert(action)
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
     }
 }

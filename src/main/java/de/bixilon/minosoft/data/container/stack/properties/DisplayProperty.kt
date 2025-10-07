@@ -11,15 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.stack.property
+package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
-import de.bixilon.kutil.observer.list.ListObserver.Companion.observeList
-import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.container.InventoryDelegate
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -27,48 +24,12 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
 
-class DisplayProperty(
-    private val stack: ItemStack,
-    lore: MutableList<ChatComponent> = mutableListOf(),
-    customDisplayName: ChatComponent? = null,
-    dyedColor: RGBColor? = null,
+data class DisplayProperty(
+    val lore: List<ChatComponent> = emptyList(),
+    val customDisplayName: ChatComponent? = null,
+    val dyedColor: RGBColor? = null,
 ) : Property {
-    val lore by observedList(lore) // ToDo: Lock
-    var _customDisplayName = customDisplayName
-    var customDisplayName by InventoryDelegate(stack, this::_customDisplayName)
 
-    @Deprecated("Should belong in DyeableItem")
-    var _dyeColor = dyedColor
-    var dyeColor by InventoryDelegate(stack, this::_dyeColor)
-
-
-    init {
-        this::lore.observeList(this) { stack.holder?.container?.let { it.revision++ } }
-    }
-
-    override fun isDefault(): Boolean {
-        return _customDisplayName == null && lore.isEmpty() && _dyeColor == null
-    }
-
-    override fun hashCode() = Objects.hash(lore, _customDisplayName, _dyeColor)
-
-    override fun equals(other: Any?): Boolean {
-        if (isDefault() && other == null) return true
-        if (other !is DisplayProperty) return false
-        if (other.hashCode() != hashCode()) {
-            return false
-        }
-        return lore == other.lore && _customDisplayName == other._customDisplayName && _dyeColor == other._dyeColor
-    }
-
-    fun copy(
-        stack: ItemStack,
-        lore: MutableList<ChatComponent> = this.lore.toMutableList(),
-        customDisplayName: ChatComponent? = this._customDisplayName,
-        dyedColor: RGBColor? = this._dyeColor,
-    ): DisplayProperty {
-        return DisplayProperty(stack, lore, customDisplayName, dyedColor)
-    }
 
     companion object {
         private const val DISPLAY_TAG = "display"
@@ -78,7 +39,7 @@ class DisplayProperty(
 
         fun ItemStack.updateDisplayNbt(nbt: MutableJsonObject): Boolean {
             val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return false
-            display[DISPLAY_MAME_TAG]?.let { this.display._customDisplayName = ChatComponent.of(it, translator = this.holder?.session?.language) }
+            display[DISPLAY_MAME_TAG]?.let { this.display.customDisplayName = ChatComponent.of(it, translator = this.holder?.session?.language) }
 
             display[DISPLAY_LORE_TAG]?.listCast<String>()?.let {
                 for (line in it) {

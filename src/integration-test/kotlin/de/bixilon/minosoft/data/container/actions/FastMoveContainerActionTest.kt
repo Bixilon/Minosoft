@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createChest(session)
         container.actions.invoke(FastMoveContainerAction(0))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf())
         session.assertNoPacket()
     }
@@ -47,7 +47,7 @@ class FastMoveContainerActionTest {
         val container = createChest(session)
         container[54] = ItemStack(AppleTest0.item, 9)
         container.actions.invoke(FastMoveContainerAction(54))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(0 to ItemStack(AppleTest0.item, 9)))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 54, 1, 0, 0, slotsOf(54 to null, 0 to ItemStack(AppleTest0.item, count = 9)), null))
     }
@@ -57,7 +57,7 @@ class FastMoveContainerActionTest {
         val container = createChest(session)
         container[0] = ItemStack(AppleTest0.item, 9)
         container.actions.invoke(FastMoveContainerAction(0))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(62 to ItemStack(AppleTest0.item, 9)))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 62 to ItemStack(AppleTest0.item, count = 9)), null))
     }
@@ -79,7 +79,7 @@ class FastMoveContainerActionTest {
         container[0] = ItemStack(AppleTest0.item, 9)
 
         container.actions.invoke(FastMoveContainerAction(0))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertNull(container[0])
         assertEquals(container[53], ItemStack(AppleTest0.item, 9))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 53 to ItemStack(AppleTest0.item, count = 9)), null))
@@ -98,7 +98,7 @@ class FastMoveContainerActionTest {
         container[0] = ItemStack(CoalTest0.item, 63)
 
         container.actions.invoke(FastMoveContainerAction(0))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(
             container.slots, slotsOf(
                 54 to ItemStack(CoalTest0.item, 64),
@@ -122,7 +122,7 @@ class FastMoveContainerActionTest {
         container[30] = ItemStack(EggTest0.item, 12)
 
         container.actions.invoke(FastMoveContainerAction(30))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(3 to ItemStack(EggTest0.item, 12)))
 
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 3 to ItemStack(AppleTest0.item, count = 8)), null))
@@ -135,7 +135,7 @@ class FastMoveContainerActionTest {
         container[30] = ItemStack(CoalTest0.item, 12)
 
         container.actions.invoke(FastMoveContainerAction(30))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(1 to ItemStack(CoalTest0.item, 12)))
 
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 30, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(CoalTest0.item, count = 12)), null))
@@ -147,7 +147,7 @@ class FastMoveContainerActionTest {
         val container = createInventory(session)
         container[9] = ItemStack(AppleTest0.item)
         container.actions.invoke(FastMoveContainerAction(9))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(36 to ItemStack(AppleTest0.item)))
     }
 
@@ -156,7 +156,7 @@ class FastMoveContainerActionTest {
         val container = createInventory(session)
         container[1] = ItemStack(AppleTest0.item)
         container.actions.invoke(FastMoveContainerAction(1))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(9 to ItemStack(AppleTest0.item)))
     }
 
@@ -165,7 +165,7 @@ class FastMoveContainerActionTest {
         val container = createInventory(session)
         container[36] = ItemStack(AppleTest0.item)
         container.actions.invoke(FastMoveContainerAction(36))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(9 to ItemStack(AppleTest0.item)))
     }
 
@@ -174,7 +174,7 @@ class FastMoveContainerActionTest {
         val container = createChest(session)
         container[49] = ItemStack(AppleTest0.item, count = 19)
         container.actions.invoke(FastMoveContainerAction(49))
-        assertNull(container.floatingItem)
+        assertNull(container.floating)
         assertEquals(container.slots, slotsOf(0 to ItemStack(AppleTest0.item, 19)))
     }
 

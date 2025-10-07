@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
@@ -27,7 +28,7 @@ class SlotSwapContainerAction(
     val target: SwapTargets,
 ) : ContainerAction {
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
+    override fun invoke(session: PlaySession, containerId: Int, container: Container, transaction: ContainerTransaction) {
         val targetId = container.getSlotSwap(target) ?: return
         container.lock()
         try {
@@ -52,16 +53,6 @@ class SlotSwapContainerAction(
         } finally {
             container.commit()
         }
-    }
-
-    override fun revert(session: PlaySession, containerId: Int, container: Container) {
-        val targetId = container.getSlotSwap(target) ?: return
-        container.lock()
-        val target = container[targetId]
-        val source = container[sourceId]
-        container[sourceId] = target
-        container[targetId] = source
-        container.commit()
     }
 
     enum class SwapTargets(val button: Int) {
