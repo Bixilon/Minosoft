@@ -41,7 +41,7 @@ Example: `java -jar Minosoft.jar --local`
 
 | Argument    | Description                                | Example       | Default |
 |-------------|--------------------------------------------|---------------|---------|
-| `--connect` | Set connection mode to local               | -             | -       |
+| `--connect` | Set connection mode to server              | -             | -       |
 | `--address` | Address (with optional port) to connect to | `hypixel.net` | -       |
 
 Example: `java -jar Minosoft.jar --connect --address=hypixel.net --protocol-version=1.19.4 --account=9e6ce7c5-40d3-483e-8e5a-b6350987d65f`
@@ -75,4 +75,4 @@ Minosoft features a command line shell, that can be used to manage it. Auto comp
 
 - `say Moritz is the best developer ever!`
 
-There are even more commands, those are just examples.
+There are way more commands, those are just examples.
