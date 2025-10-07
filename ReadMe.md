@@ -119,7 +119,7 @@ Feel free to join the [matrix channel](https://matrix.to/#/#minosoft:matrix.org)
 
 ### Linux, Windows, macOS
 
-The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/workflows/build.yml?query=+branch%3Amaster+event%3Apush?ref=gitlab.bixilon.de)
+The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/workflows/build.yml?query=branch%3Amaster+event%3Apush+is%3Asuccess&ref=gitlab.bixilon.de)
 
 
 #### Arch
