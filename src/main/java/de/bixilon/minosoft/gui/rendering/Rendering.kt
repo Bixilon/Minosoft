@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -78,12 +78,12 @@ class Rendering(private val session: PlaySession) {
             context.awaitPlaying()
             loop.startLoop()
         } catch (exception: Throwable) {
-            CONTEXT_MAP.remove(Thread.currentThread())
+            CONTEXT_MAP -= Thread.currentThread()
             exception.printStackTrace()
             try {
                 context.window.destroy()
                 session.events.fire(WindowCloseEvent(context, window = context.window))
-            } catch (ignored: Throwable) {
+            } catch (_: Throwable) {
             }
             session.terminate()
             session.error = exception
@@ -93,7 +93,6 @@ class Rendering(private val session: PlaySession) {
     companion object {
         private val CONTEXT_MAP: MutableMap<Thread, RenderContext> = mutableMapOf()
 
-        val currentContext: RenderContext?
-            get() = CONTEXT_MAP[Thread.currentThread()]
+        val currentContext get() = CONTEXT_MAP[Thread.currentThread()]
     }
 }

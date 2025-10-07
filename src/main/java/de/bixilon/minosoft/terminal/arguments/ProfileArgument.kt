@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loader.parameters
+package de.bixilon.minosoft.terminal.arguments
 
-import de.bixilon.minosoft.modding.loader.mod.source.ModSource
+import com.github.ajalt.clikt.parameters.groups.OptionGroup
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
+import de.bixilon.minosoft.config.profile.ProfileOptions
 
-class ModParameters(
-    val ignorePhases: Set<String> = emptySet(),
-    val ignoreMods: Set<String> = emptySet(),
-    val additionalSources: Map<String, Set<ModSource>> = emptyMap(),
-)
+class ProfileArgument : OptionGroup(), AppliedArgument {
+    val disableSaving by option("--no-profile-saving").flag(default = !ProfileOptions.saving)
+    val disableHotReloading by option("--no-profile-reloading").flag(default = !ProfileOptions.hotReloading)
+
+
+    override fun apply() {
+        ProfileOptions.saving = !disableSaving
+        ProfileOptions.hotReloading = !disableHotReloading
+    }
+}

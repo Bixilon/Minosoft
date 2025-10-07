@@ -38,10 +38,12 @@ import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.eros.Eros
+import de.bixilon.minosoft.gui.eros.ErosOptions
 import de.bixilon.minosoft.gui.eros.crash.CrashReportState
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
@@ -49,9 +51,8 @@ import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
-import de.bixilon.minosoft.terminal.AutoConnect
-import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.terminal.arguments.CommandLineArguments
 import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.json.Jackson
@@ -96,10 +97,10 @@ object Minosoft {
 
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
 
-        if (!RunConfiguration.DISABLE_EROS) {
+        if (!ErosOptions.disabled) {
             javafx(taskWorker)
         }
-        if (RunConfiguration.DISABLE_EROS && !RunConfiguration.DISABLE_RENDERING) {
+        if (ErosOptions.disabled && !RenderingOptions.disabled) {
             // eros is disabled, but rendering not, force initialize the desktop, because eros won't
             DefaultThreadPool += { SystemUtil.api = DesktopAPI() }
         }
@@ -117,11 +118,11 @@ object Minosoft {
         DefaultThreadPool += { DefaultModPhases.POST.load(); Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO) { "Mod loading completed!" } }
         checkForUpdates()
 
-        if (RunConfiguration.DISABLE_EROS) {
+        if (ErosOptions.disabled) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
         }
 
-        RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
+        CommandLineArguments.connect?.connect()
     }
 
     private fun javafx(taskWorker: TaskWorker) {
@@ -135,7 +136,6 @@ object Minosoft {
 
     private fun initLog() {
         DefaultThreadPool += ForcePooledRunnable { Log.init() }
-        DefaultThreadPool += ForcePooledRunnable { RunConfiguration }
         DefaultThreadPool += ForcePooledRunnable { FormattingCodes }
         DefaultThreadPool += ForcePooledRunnable { ChatColors }
     }
@@ -166,14 +166,14 @@ object Minosoft {
     }
 
     private fun checkMacOS() {
-        if (!RunConfiguration.X_START_ON_FIRST_THREAD_SET || !(!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) return
+        if (!RunConfiguration.X_START_ON_FIRST_THREAD_SET || !(!RenderingOptions.disabled || !ErosOptions.disabled)) return
         Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using macOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
         ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
     }
 
     private fun enableUpdates() {
         val profile = OtherProfileManager.selected.updater
-        if (RunConfiguration.DISABLE_EROS) {
+        if (ErosOptions.disabled) {
             if (!profile.ask) return
             Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Automated update checking was §aenabled§r. To disable it, check the config file." }
             profile.ask = false
@@ -184,6 +184,7 @@ object Minosoft {
     }
 
     fun checkForUpdates() {
+        if (MinosoftUpdater.disabled) return
         if (!MinosoftProperties.canUpdate()) return
         if (!OtherProfileManager.selected.updater.check) return
         DefaultIOPool += ForcePooledRunnable(priority = ThreadPool.Priorities.LOW) {

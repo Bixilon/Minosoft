@@ -49,6 +49,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.eros.ErosOptions
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -59,7 +60,6 @@ import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.recipes.RecipeFactories
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
@@ -296,7 +296,7 @@ object KUtil {
             }
         }
         ShutdownManager += {
-            if (!RunConfiguration.DISABLE_EROS) {
+            if (!ErosOptions.disabled) {
                 Platform.exit()
             }
         }

@@ -15,12 +15,16 @@ package de.bixilon.minosoft.local.generator.flat
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.local.generator.ChunkGenerator
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class FlatGenerator(
     val biome: Biome?,
@@ -39,6 +43,27 @@ class FlatGenerator(
                     chunk[InChunkPosition(x, index + minY, z)] = layer
                 }
             }
+        }
+    }
+
+    companion object {
+
+        fun default(session: PlaySession): FlatGenerator {
+            val bedrock = session.registries.block[Bedrock]?.states?.default
+            val stone = session.registries.block[StoneBlock.Block]?.states?.default
+            val grass = session.registries.block[GrassBlock]?.states?.default
+
+            val plains = session.registries.biome[minecraft("plains")]
+
+            return FlatGenerator(plains, arrayOf(
+                bedrock,
+                stone,
+                stone,
+                stone,
+                stone,
+                stone,
+                grass,
+            ))
         }
     }
 }

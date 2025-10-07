@@ -35,10 +35,10 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGLVendor
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.logging.LogOptions
 import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
@@ -48,7 +48,7 @@ import java.nio.FloatBuffer
 
 class OpenGLRenderSystem(
     private val context: RenderContext,
-    val log: Boolean = RunConfiguration.VERBOSE_LOGGING,
+    val log: Boolean = LogOptions.verbose,
 ) : RenderSystem {
     private var thread: Thread? = null
     override val shaders: MutableSet<Shader> = mutableSetOf()

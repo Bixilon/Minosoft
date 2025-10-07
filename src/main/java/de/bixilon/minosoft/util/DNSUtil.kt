@@ -22,7 +22,7 @@ import org.xbill.DNS.Type
 
 object DNSUtil {
 
-    fun resolveServerAddress(hostname: String): List<ServerAddress> {
+    fun resolve(hostname: String): List<ServerAddress> {
         val original = getServerAddress(hostname)
         if (":" in hostname) {
             // port provided, skip srv check

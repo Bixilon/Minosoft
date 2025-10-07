@@ -19,6 +19,7 @@ import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.file.PathUtil.toPath
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
+import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Andesite
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Cobblestone
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
@@ -36,6 +37,7 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.logging.LogOptions
 import org.testng.annotations.BeforeSuite
 import java.nio.file.Path
 
@@ -43,15 +45,15 @@ import java.nio.file.Path
 internal object MinosoftSIT {
 
     private fun setupEnv() {
-        Log.ASYNC_LOGGING = false
-        RunConfiguration.VERBOSE_LOGGING = true
+        LogOptions.async = false
+        LogOptions.verbose = true
         RunConfiguration.APPLICATION_NAME = "Minosoft it"
 
         if (Environment.isInCI()) {
-            RunConfiguration::HOME_DIRECTORY.forceSet(Path.of("./it"))
+            RunConfiguration::home.forceSet(Path.of("./it"))
         }
-        RunConfiguration::CONFIG_DIRECTORY.forceSet(System.getProperty("java.io.tmpdir").toPath() / "minosoft" / "conf")
-        RunConfiguration.PROFILES_HOT_RELOADING = false
+        ProfileOptions.path = System.getProperty("java.io.tmpdir").toPath() / "minosoft" / "conf"
+        ProfileOptions.hotReloading = false
 
         WindowFactory.factory = DummyWindow
         RenderSystemFactory.factory = DummyRenderSystem

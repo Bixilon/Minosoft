@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.system.SystemUtil
 import glm_.vec2.Vec2
@@ -53,7 +53,7 @@ interface Window {
         resizable = true
         profile.advanced::swapInterval.observeRendering(this, true) { swapInterval = it }
 
-        if (!RunConfiguration.DISABLE_CURSOR_CATCH) {
+        if (!RenderingOptions.cursorCatch) {
             cursorMode = CursorModes.DISABLED
         }
         size = DEFAULT_WINDOW_SIZE

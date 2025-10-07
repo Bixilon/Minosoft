@@ -30,12 +30,12 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
+import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.ProfileUtil.isValidName
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -112,7 +112,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     }
 
     open fun load() {
-        root = (RunConfiguration.CONFIG_DIRECTORY / identifier.namespace / identifier.path).toFile()
+        root = (ProfileOptions.path / identifier.namespace / identifier.path).toFile()
         if (!root.exists()) {
             root.mkdirs()
             return createDefault()
@@ -147,7 +147,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         this.selected = this[selected] ?: create(selected)
         this::selected.observe(this) { ProfileIOManager.saveSelected(this) }
 
-        if (RunConfiguration.PROFILES_HOT_RELOADING) {
+        if (ProfileOptions.hotReloading) {
             observe(root.toPath())
         }
     }
@@ -201,7 +201,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     fun create(name: String): P {
         if (!name.isValidName()) throw IllegalArgumentException("Invalid profile name!")
-        val path = RunConfiguration.CONFIG_DIRECTORY / identifier.namespace / identifier.path / "$name.json"
+        val path = ProfileOptions.path / identifier.namespace / identifier.path / "$name.json"
         val storage = FileStorage(name, this, path.toFile())
         val profile = type.create(storage)
         storage.profile = profile

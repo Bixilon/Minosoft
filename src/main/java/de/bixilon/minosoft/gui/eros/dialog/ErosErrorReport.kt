@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,12 +17,12 @@ import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.TranslatableComponents.GENERAL_IGNORE
+import de.bixilon.minosoft.gui.eros.ErosOptions
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -72,7 +72,7 @@ class ErosErrorReport : DialogController() {
         private val FATAL_CRASH = "minosoft:error.fatal_crash".toResourceLocation()
 
         fun Throwable?.report() {
-            if (RunConfiguration.DISABLE_EROS) {
+            if (ErosOptions.disabled) {
                 return
             }
 

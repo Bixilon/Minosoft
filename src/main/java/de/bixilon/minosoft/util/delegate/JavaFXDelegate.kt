@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,14 +22,14 @@ import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observeBiMap
 import de.bixilon.kutil.observer.set.SetChange
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
+import de.bixilon.minosoft.gui.eros.ErosOptions
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.terminal.RunConfiguration
 import kotlin.reflect.KProperty0
 
 object JavaFXDelegate {
 
     internal fun checkErosState() {
-        if (RunConfiguration.DISABLE_EROS) {
+        if (ErosOptions.disabled) {
             throw IllegalStateException("Eros is disabled!")
         }
     }

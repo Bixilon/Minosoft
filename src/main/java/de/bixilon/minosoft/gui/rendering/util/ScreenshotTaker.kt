@@ -108,7 +108,7 @@ class ScreenshotTaker(
             val size = Vec2i(context.window.size)
             val buffer = context.system.readPixels(Vec2i.EMPTY_INSTANCE, size)
 
-            val path = RunConfiguration.HOME_DIRECTORY / "screenshots" / context.session.connection.identifier
+            val path = RunConfiguration.home / "screenshots" / context.session.connection.identifier
             val time = Instant.now()
             DefaultIOPool += ForcePooledRunnable(priority = ThreadPool.Priorities.HIGHER) { store(buffer, path, time) }
         } catch (exception: Exception) {

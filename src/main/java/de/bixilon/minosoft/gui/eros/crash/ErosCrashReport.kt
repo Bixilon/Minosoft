@@ -23,6 +23,7 @@ import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.kutil.unsafe.UnsafeUtil
+import de.bixilon.minosoft.gui.eros.ErosOptions
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -119,7 +120,7 @@ class ErosCrashReport : JavaFXWindowController() {
 
             var crashReportPath: File?
             try {
-                val crashReportFolder = (RunConfiguration.HOME_DIRECTORY / "crash-reports").toFile()
+                val crashReportFolder = (RunConfiguration.home / "crash-reports").toFile()
                 crashReportFolder.mkdirs()
 
                 crashReportPath = crashReportFolder / "crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format1(Clock.System.now())}.txt"
@@ -133,7 +134,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 crashReportPath = null
             }
 
-            if (RunConfiguration.DISABLE_EROS) {
+            if (ErosOptions.disabled) {
                 this?.printStackTrace()
                 ShutdownManager.shutdown(this?.message, AbstractShutdownReason.CRASH)
                 return

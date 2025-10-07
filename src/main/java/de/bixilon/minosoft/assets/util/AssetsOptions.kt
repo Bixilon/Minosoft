@@ -19,6 +19,6 @@ import kotlin.io.path.div
 object AssetsOptions {
     const val MAX_FILE_CHECKING = 10
     const val SEPARATOR = '/'
-    var PATH = RunConfiguration.HOME_DIRECTORY / "assets"
+    var path = RunConfiguration.home / "assets"
     var COMPRESS_ASSETS = true
 }

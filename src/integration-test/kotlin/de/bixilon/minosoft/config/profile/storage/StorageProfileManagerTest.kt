@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.config.profile.storage
 
+import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.config.profile.storage.ProfileIOManagerTest.Companion.isSaveQueued
 import de.bixilon.minosoft.config.profile.test.TestProfileManager
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
-import de.bixilon.minosoft.terminal.RunConfiguration
 import org.testng.Assert.*
 import org.testng.annotations.Test
 import java.io.FileOutputStream
@@ -24,7 +24,7 @@ import kotlin.io.path.div
 
 @Test(groups = ["profiles"])
 class StorageProfileManagerTest {
-    private val base by lazy { RunConfiguration.CONFIG_DIRECTORY / "minosoft" / "test" }
+    private val base by lazy { ProfileOptions.path / "minosoft" / "test" }
 
 
     private fun dump(name: String, data: String) {

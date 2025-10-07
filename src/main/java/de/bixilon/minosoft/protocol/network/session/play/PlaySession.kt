@@ -47,6 +47,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionCreateEvent
@@ -66,7 +67,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.tags.TagManager
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.startInit
@@ -234,7 +234,7 @@ class PlaySession(
             camera.init()
 
 
-            if (RunConfiguration.DISABLE_RENDERING) {
+            if (RenderingOptions.disabled) {
                 establish(latch)
             } else {
                 establishRendering(latch)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util.yggdrasil
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.mojang
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -22,9 +21,10 @@ import de.bixilon.minosoft.util.signature.SignatureSigner
 
 
 object YggdrasilUtil : SignatureSigner(mojang("yggdrasil/pubkey.der"), "SHA1withRSA") {
+    var ignore = false
 
     override fun load() {
-        if (RunConfiguration.IGNORE_YGGDRASIL) {
+        if (ignore) {
             Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Yggdrasil signature checking is disabled. Servers can pretend that they have valid data from mojang!" }
             return
         }
@@ -32,7 +32,7 @@ object YggdrasilUtil : SignatureSigner(mojang("yggdrasil/pubkey.der"), "SHA1with
     }
 
     override fun verify(data: ByteArray, signature: ByteArray?): Boolean {
-        if (RunConfiguration.IGNORE_YGGDRASIL) return true
+        if (ignore) return true
         return super.verify(data, signature)
     }
 }

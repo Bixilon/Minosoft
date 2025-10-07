@@ -13,11 +13,6 @@
 
 package de.bixilon.minosoft.modding.loader
 
-import de.bixilon.kutil.file.PathUtil.div
-import de.bixilon.minosoft.terminal.RunConfiguration
-
-
 object ModLoader {
-    val BASE_PATH = RunConfiguration.HOME_DIRECTORY / "mods"
     val mods = ModList()
 }

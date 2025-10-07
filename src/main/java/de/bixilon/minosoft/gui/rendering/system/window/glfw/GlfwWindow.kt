@@ -48,6 +48,7 @@ import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.logging.LogOptions
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
@@ -474,7 +475,7 @@ class GlfwWindow(
 
 
         inline fun log(builder: () -> Any?) {
-            if (!RunConfiguration.VERBOSE_LOGGING) return
+            if (!LogOptions.verbose) return
             Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "[GLFW] ${builder.invoke()}" }
         }
     }

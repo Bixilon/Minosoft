@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,8 @@ import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.updater.UpdateProgress
 
 object UpdateCommand : Command {
-    override var node: LiteralNode = LiteralNode("update", executor = { it.print.check() }).addChild(
+    // TODO: Only if updater is not disabled
+    override var node = if (MinosoftUpdater.disabled) null else LiteralNode("update", executor = { it.print.check() }).addChild(
         LiteralNode("notes", executor = {
             MinosoftUpdater.check { update ->
                 if (update == null) {

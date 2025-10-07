@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,17 @@
 
 package de.bixilon.minosoft.util.crash.section
 
-import de.bixilon.minosoft.terminal.CommandLineArguments
+import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.terminal.arguments.CommandLineArguments
 import java.lang.management.ManagementFactory
 
 class RuntimeSection : CrashSection(
     "Runtime details", arrayOf(
-        "Start arguments" to CommandLineArguments.ARGUMENTS,
+        "Start arguments" to CommandLineArguments.raw,
         "JVM flags" to ManagementFactory.getRuntimeMXBean().inputArguments,
         "Environment" to System.getenv(),
-        "Home directory" to RunConfiguration.HOME_DIRECTORY,
-        "Config directory" to RunConfiguration.CONFIG_DIRECTORY,
+        "Home path" to RunConfiguration.home,
+        "Profiles path" to ProfileOptions.path,
     )
 )

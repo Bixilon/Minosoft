@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import glm_.vec2.Vec2
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.key.KeyCodes.Companion.isPrintable
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import glm_.vec2.Vec2
 
 class InputHandlerManager(
     val input: InputManager,
@@ -90,7 +91,9 @@ class InputHandlerManager(
     }
 
     private fun disable() {
-        context.window.cursorMode = CursorModes.DISABLED
+        if (RenderingOptions.cursorCatch) {
+            context.window.cursorMode = CursorModes.DISABLED
+        }
     }
 
     fun checkSkip(code: KeyCodes, pressed: Boolean, previous: InputHandler?) {

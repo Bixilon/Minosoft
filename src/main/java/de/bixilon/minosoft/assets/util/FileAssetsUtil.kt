@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.assets.util
 import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
-import de.bixilon.kutil.file.FileUtil.createParent
+import de.bixilon.kutil.file.FileUtil.mkdirParent
 import de.bixilon.kutil.stream.InputStreamUtil.copy
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.HashTypes.Companion.hashType
@@ -31,7 +31,7 @@ object FileAssetsUtil {
 
     private fun save(input: InputStream, type: String, compress: Boolean, hash: HashTypes, close: Boolean, store: OutputStream?): String {
         val temp = FileUtil.createTempFile()
-        temp.createParent()
+        temp.mkdirParent()
 
         val digest = hash.createDigest()
         val output = FileOutputStream(temp).upgrade(compress)
@@ -55,7 +55,7 @@ object FileAssetsUtil {
             return hash
         }
 
-        file.createParent()
+        file.mkdirParent()
 
         Files.move(temp.toPath(), file.toPath())
 

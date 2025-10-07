@@ -26,6 +26,6 @@ object PathUtil {
         if (!hash.isHexString) {
             throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
         }
-        return AssetsOptions.PATH / type / hash.substring(0, 2) / hash
+        return AssetsOptions.path / type / hash.substring(0, 2) / hash
     }
 }

@@ -363,7 +363,7 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.17")
     implementation("dnsjava", "dnsjava", "3.6.3")
-    implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
+    implementation("com.github.ajalt.clikt:clikt:5.0.3")
     implementation("org.jline", "jline", "3.30.6")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
     implementation("com.github.oshi", "oshi-core", "6.9.0")

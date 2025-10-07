@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
-import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -35,7 +34,6 @@ import kotlin.time.ExperimentalTime
 
 
 object Log {
-    var ASYNC_LOGGING = true
     private val MINOSOFT_START_TIME = now()
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     private val QUEUE = LinkedBlockingQueue<QueuedMessage>()
@@ -58,7 +56,7 @@ object Log {
                 QUEUE.take().print()
             }
         }, "Log").start()
-        ShutdownManager.addHook { ASYNC_LOGGING = false; catchAll { await() } }
+        ShutdownManager.addHook { LogOptions.async = false; catchAll { await() } }
     }
 
     @OptIn(ExperimentalTime::class)
@@ -66,7 +64,7 @@ object Log {
         try {
             val message = BaseComponent()
             val color = this.type.colorMap[this.level] ?: this.type.defaultColor
-            message += if (RunConfiguration.LOG_RELATIVE_TIME) {
+            message += if (LogOptions.relative) {
                 TextComponent("[${now() - MINOSOFT_START_TIME}] ")
             } else {
                 TextComponent("[${TIME_FORMAT.format1(this.time)}] ")
@@ -80,7 +78,7 @@ object Log {
             val stream = if (this.level.error) SYSTEM_ERR_STREAM else SYSTEM_OUT_STREAM
 
             val prefix = message.ansi.removeSuffix(RESET) // reset suffix
-            val lines = if (RunConfiguration.LOG_COLOR) this.message.ansi else this.message.message
+            val lines = if (LogOptions.color) this.message.ansi else this.message.message
             for (line in lines.lineSequence()) {
                 stream.println(prefix + line + RESET)
             }
@@ -93,7 +91,7 @@ object Log {
 
 
     fun skipLogging(type: LogMessageType, level: LogLevels): Boolean {
-        if (RunConfiguration.VERBOSE_LOGGING) {
+        if (LogOptions.verbose) {
             return false
         }
         val setLevel = levels?.get(type) ?: LogLevels.INFO
@@ -167,7 +165,7 @@ object Log {
 
 
     private fun QueuedMessage.queue() {
-        if (!ASYNC_LOGGING) {
+        if (!LogOptions.async) {
             this.print()
             return
         }

@@ -37,11 +37,11 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -241,7 +241,7 @@ abstract class Entity(
 
     open fun postTick() {
         physics.postTick()
-        if (!RunConfiguration.DISABLE_RENDERING) {
+        if (!RenderingOptions.disabled) {
             renderInfo.tick()
         }
     }
@@ -266,7 +266,7 @@ abstract class Entity(
         PHYSICS.set(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
-        if (!RunConfiguration.DISABLE_RENDERING) {
+        if (!RenderingOptions.disabled) {
             RENDER_INFO.set(this, EntityRenderInfo(this))
         }
     }

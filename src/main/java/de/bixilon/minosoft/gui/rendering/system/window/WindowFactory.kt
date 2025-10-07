@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindowFactory
 
 interface WindowFactory {
 
@@ -21,6 +22,9 @@ interface WindowFactory {
 
 
     companion object {
-        var factory: WindowFactory? = null
+        val FACTORIES: Map<String, WindowFactory> = mapOf(
+            "glfw" to GlfwWindowFactory,
+        )
+        var factory: WindowFactory? = GlfwWindowFactory
     }
 }

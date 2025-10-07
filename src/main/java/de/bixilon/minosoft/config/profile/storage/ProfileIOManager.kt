@@ -18,8 +18,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -109,7 +109,7 @@ object ProfileIOManager {
 
 
     fun save(storage: FileStorage) {
-        if (!RunConfiguration.PROFILES_SAVING) return
+        if (!ProfileOptions.saving) return
         lock.lock()
         save += storage
         lock.unlock()

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.camera.target
 
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.camera.SessionCamera
@@ -29,11 +28,12 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
-import de.bixilon.minosoft.terminal.RunConfiguration
+import glm_.vec3.Vec3d
 
 class TargetHandler(
     private val camera: SessionCamera,
@@ -46,8 +46,8 @@ class TargetHandler(
 
     fun update() {
         val entity = camera.entity
-        val position = if (RunConfiguration.DISABLE_RENDERING) entity.physics.position + Vec3d(0.0f, entity.eyeHeight, 0.0f) else entity.renderInfo.eyePosition.toVec3d
-        val front = (if (entity is LocalPlayerEntity || RunConfiguration.DISABLE_RENDERING) entity.physics.rotation else entity.renderInfo.rotation).front.toVec3d
+        val position = if (RenderingOptions.disabled) entity.physics.position + Vec3d(0.0f, entity.eyeHeight, 0.0f) else entity.renderInfo.eyePosition.toVec3d
+        val front = (if (entity is LocalPlayerEntity || RenderingOptions.disabled) entity.physics.rotation else entity.renderInfo.rotation).front.toVec3d
 
         val (target, fluid) = this.raycast(position, front)
         this.target = target

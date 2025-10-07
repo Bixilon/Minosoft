@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.modding.loader.mod.source
 
+import com.github.ajalt.clikt.core.FileNotFound
 import de.bixilon.minosoft.assets.file.ZipAssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -30,6 +31,10 @@ import java.util.jar.JarInputStream
 class ArchiveSource(
     val jar: File,
 ) : ModSource, TextFormattable {
+
+    init {
+        if (!jar.isFile) throw FileNotFound("Can not find archive: $jar")
+    }
 
     override fun process(mod: MinosoftMod) {
         val stream = JarInputStream(FileInputStream(jar))

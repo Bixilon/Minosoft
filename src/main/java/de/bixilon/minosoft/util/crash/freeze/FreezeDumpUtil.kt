@@ -87,7 +87,7 @@ object FreezeDumpUtil {
 
         var path: File?
         try {
-            val crashReportFolder = (RunConfiguration.HOME_DIRECTORY / "dumps" / "freeze").toFile()
+            val crashReportFolder = (RunConfiguration.home / "dumps" / "freeze").toFile()
             crashReportFolder.mkdirs()
 
             path = crashReportFolder / "freeze-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format1(Clock.System.now())}.txt"

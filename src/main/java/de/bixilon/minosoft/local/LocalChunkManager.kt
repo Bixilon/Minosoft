@@ -24,7 +24,7 @@ class LocalChunkManager(
     val storage: WorldStorage,
     val generator: ChunkGenerator,
 ) {
-    private var previous = ChunkPosition(Int.MAX_VALUE, Int.MAX_VALUE)
+    private var previous = ChunkPosition(-1, -1)
 
     fun update() {
         val position = session.player.physics.positionInfo.chunkPosition

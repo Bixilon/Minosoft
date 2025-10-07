@@ -20,6 +20,7 @@ import de.bixilon.kutil.file.FileUtil.mkdirParent
 import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
@@ -36,7 +37,6 @@ import de.bixilon.minosoft.config.profile.storage.ProfileIOManager
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
-import de.bixilon.minosoft.terminal.RunConfiguration
 import java.nio.file.Files
 
 object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
@@ -56,16 +56,16 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
 
 
     private fun migrateLegacyProfiles() {
-        val legacy = (RunConfiguration.CONFIG_DIRECTORY / "selected_profiles.json").toFile()
+        val legacy = (ProfileOptions.path / "selected_profiles.json").toFile()
         if (!legacy.isFile) return
         legacy.delete()
 
-        for (namespace in RunConfiguration.CONFIG_DIRECTORY.toFile().listFiles() ?: return) {
+        for (namespace in ProfileOptions.path.toFile().listFiles() ?: return) {
             if (!namespace.isDirectory) continue
             for (profileName in namespace.listFiles() ?: continue) {
                 if (!profileName.isDirectory) continue
                 for (type in profileName.listFiles() ?: continue) {
-                    val target = (RunConfiguration.CONFIG_DIRECTORY / namespace.name / type.name.removeSuffix(".json") / "${profileName.name}.json").toFile()
+                    val target = (ProfileOptions.path / namespace.name / type.name.removeSuffix(".json") / "${profileName.name}.json").toFile()
                     target.mkdirParent()
                     ignoreAll { Files.move(type.toPath(), target.toPath()) }
                 }
@@ -76,7 +76,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
 
     fun load(latch: AbstractLatch?) {
         ignoreAll { migrateLegacyProfiles() }
-        if (RunConfiguration.PROFILES_HOT_RELOADING) {
+        if (ProfileOptions.hotReloading) {
             DefaultThreadPool += { FileWatcherService.start() }
         }
         val worker = UnconditionalWorker()
