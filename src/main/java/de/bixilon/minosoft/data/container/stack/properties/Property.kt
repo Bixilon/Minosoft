@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 interface Property {
 
-    fun getNBT(): JsonObject = emptyMap()
+    fun toNbt(registries: Registries): JsonObject? = null
 }

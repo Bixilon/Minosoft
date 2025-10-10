@@ -17,10 +17,9 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.properties.*
-import de.bixilon.minosoft.data.language.manager.Language
-import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.ChatComponent
 
 data class ItemStack(
@@ -64,15 +63,15 @@ data class ItemStack(
         return ChatComponent.of(toString())
     }
 
-    fun getNBT(): JsonObject {
+    fun toNbt(registries: Registries): JsonObject {
         val nbt: MutableJsonObject = mutableMapOf()
 
         // TODO: merge, not overwrite
-        this.display?.getNBT()?.let { nbt.putAll(it) }
-        this.durability?.getNBT()?.let { nbt.putAll(it) }
-        this.enchanting?.getNBT()?.let { nbt.putAll(it) }
-        this.hide?.getNBT()?.let { nbt.putAll(it) }
-        this.nbt?.getNBT()?.let { nbt.putAll(it) }
+        this.display?.toNbt(registries)?.let { nbt.putAll(it) }
+        this.durability?.toNbt(registries)?.let { nbt.putAll(it) }
+        this.enchanting?.toNbt(registries)?.let { nbt.putAll(it) }
+        this.hide?.toNbt(registries)?.let { nbt.putAll(it) }
+        this.nbt?.toNbt(registries)?.let { nbt.putAll(it) }
 
         return nbt
     }
