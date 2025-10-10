@@ -12,9 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
-import glm_.vec3.Vec3d
 import de.bixilon.minosoft.data.container.ItemStackUtil
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -22,17 +20,16 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import glm_.vec3.Vec3d
 
 abstract class Fireball(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHurtingProjectile(session, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData
-    val item: ItemStack
-        get() = data.get<ItemStack?>(ITEM_DATA, null) ?: defaultItem
-
     protected abstract val defaultItemType: ResourceLocation
 
-    val defaultItem: ItemStack
-        get() = ItemStackUtil.of(session.registries.item[defaultItemType]!!, session = session)
+    @get:SynchronizedEntityData
+    val item get() = data.get(ITEM_DATA, defaultItem)
+    val defaultItem get() = session.registries.item[defaultItemType]?.let { ItemStackUtil.of(it) }
+
 
     companion object {
         private val ITEM_DATA = EntityDataField("FIREBALL_ITEM")

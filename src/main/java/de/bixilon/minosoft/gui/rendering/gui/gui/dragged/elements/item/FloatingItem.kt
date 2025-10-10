@@ -13,10 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
-import glm_.vec2.Vec2
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.actions.types.DropContainerAction
-import de.bixilon.minosoft.data.container.actions.types.SimpleContainerAction
+import de.bixilon.minosoft.data.container.actions.types.DropFloatingContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -26,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import glm_.vec2.Vec2
 
 class FloatingItem(
     guiRenderer: GUIRenderer,
@@ -55,7 +54,7 @@ class FloatingItem(
             return
         }
         if (target == null) {
-            container?.actions?.invoke(DropContainerAction(if (button == MouseButtons.LEFT) DropContainerAction.ContainerCounts.ALL else DropContainerAction.ContainerCounts.PART))
+            container?.actions?.invoke(DropFloatingContainerAction(if (button == MouseButtons.LEFT) DropFloatingContainerAction.ContainerCounts.ALL else DropFloatingContainerAction.ContainerCounts.PART))
             guiRenderer.dragged.element = null
             return
         }

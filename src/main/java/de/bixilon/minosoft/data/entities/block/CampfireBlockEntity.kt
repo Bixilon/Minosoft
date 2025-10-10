@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import glm_.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -33,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.invoke
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import glm_.vec3.Vec3d
 import java.util.*
 
 class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
@@ -55,7 +55,6 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
             }
             val stack = ItemStackUtil.of(
                 item = session.registries.item[slot["id"].unsafeCast<String>()]!!,
-                session = session,
                 count = slot["Count"]?.toInt() ?: 1,
             )
 

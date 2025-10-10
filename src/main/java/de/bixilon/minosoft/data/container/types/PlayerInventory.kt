@@ -177,7 +177,7 @@ class PlayerInventory(
             HotbarSection(HOTBAR_OFFSET, false),
         )
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): PlayerInventory {
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): PlayerInventory {
             Broken("Can not create player inventory!")
         }
     }

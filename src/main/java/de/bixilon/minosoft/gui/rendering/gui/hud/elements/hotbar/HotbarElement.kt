@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import glm_.vec2.Vec2
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
@@ -39,10 +38,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
+import glm_.vec2.Vec2
 import kotlin.time.Duration.Companion.milliseconds
 
 class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
@@ -150,7 +149,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
-            currentItem?.displayName?.let { itemText._chatComponent = it;itemText.forceSilentApply() }
+            currentItem?.getDisplayName(context.session.language)?.let { itemText._chatComponent = it; itemText.forceSilentApply() }
             if (currentItem == null) {
                 itemText.hide()
             } else {

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.input.interaction.use
 
-import glm_.vec3.Vec3
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.camera.target.targets.GenericTarget
@@ -30,6 +29,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInter
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3
 
 class ShortUseHandler(
     private val interactionHandler: UseHandler,
@@ -74,8 +74,6 @@ class ShortUseHandler(
             return true
         }
 
-        val copy = stack?.copy()
-
         val result = interactBlock(target, stack, hand)
 
         if (result == InteractionResults.INVALID) {
@@ -85,7 +83,7 @@ class ShortUseHandler(
             position = target.blockPosition,
             direction = target.direction,
             cursorPosition = Vec3(target.cursor),
-            item = copy,
+            item = stack,
             hand = hand,
             insideBlock = target.inside,
             sequence = session.sequence.getAndIncrement()

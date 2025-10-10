@@ -60,8 +60,8 @@ object ContainerTestUtil {
     private object GenericContainerFactory : ContainerFactory<Container> {
         override val identifier: ResourceLocation = minosoft("test")
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): Container {
-            return UnknownContainer(session, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): Container {
+            return UnknownContainer(session, type, title, id)
         }
     }
 }

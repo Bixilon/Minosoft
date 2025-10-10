@@ -24,8 +24,6 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil.INTERVAL
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.time.Duration.Companion.milliseconds
 
 class SessionTicker(private val session: PlaySession) {
     private val tasks: MutableSet<RepeatedTask> = mutableSetOf()
@@ -58,7 +56,7 @@ class SessionTicker(private val session: PlaySession) {
         }
 
         if (DebugOptions.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
-            tasks += RepeatedTask(INTERVAL) { session.player.items.inventory[44] = ItemStack(session.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
+            tasks += RepeatedTask(INTERVAL) { session.player.items.inventory.slots[44] = ItemStack(session.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
         }
         if (DebugOptions.SIMULATE_TIME) {
             tasks += RepeatedTask(INTERVAL) {

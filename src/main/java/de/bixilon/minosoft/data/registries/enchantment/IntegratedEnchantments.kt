@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.enchantment
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.tool.ToolEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
 import de.bixilon.minosoft.data.registries.integrated.SingletonIntegratedRegistry
 
@@ -31,4 +32,6 @@ object IntegratedEnchantments : SingletonIntegratedRegistry<Enchantment>(
 
     WeaponEnchantment.Sharpness,
     WeaponEnchantment.Infinity,
+
+    ToolEnchantment.Durability,
 )

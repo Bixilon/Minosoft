@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val containerId = if (buffer.versionId <= V_1_14) buffer.readUnsignedByte() else buffer.readVarInt()  // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
+    val id = if (buffer.versionId <= V_1_14) buffer.readUnsignedByte() else buffer.readVarInt()  // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
     val containerType: ContainerType = when {
         buffer.versionId < V_14W03B -> buffer.session.registries.containerType[buffer.readUnsignedByte()]
         buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.session.registries.containerType, ContainerTypeFixer)!! // TODO: version completely guessed
@@ -47,25 +47,23 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     // TODO: the buffer should be supplied to the container for reading custom properties (e.g. entityId)
 
     override fun handle(session: PlaySession) {
-        if (containerId == PlayerInventory.CONTAINER_ID) {
-            return
-        }
+        if (id == PlayerInventory.CONTAINER_ID) return
         val title = if (hasTitle) title else null
-        val container = containerType.factory.build(session, containerType, title, slotCount)
+        val container = containerType.factory.build(session, containerType, title, slotCount, id)
 
-        session.player.items.incomplete.remove(containerId)?.let {
+        session.player.items.incomplete.remove(id)?.let {
             for ((slot, stack) in it.slots) {
                 container.slots[slot] = stack
             }
             container.floating = it.floating
         }
-        session.player.items.containers[containerId] = container
+        session.player.items.containers[id] = container
         session.player.items.opened = container
 
         session.events.fire(ContainerOpenEvent(session, container))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Open container (containerId=$containerId, containerType=$containerType, title=\"$title\", slotCount=$slotCount, hasTitle=$hasTitle, entityId=$entityId)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Open container (id=$id, containerType=$containerType, title=\"$title\", slotCount=$slotCount, hasTitle=$hasTitle, entityId=$entityId)" }
     }
 }

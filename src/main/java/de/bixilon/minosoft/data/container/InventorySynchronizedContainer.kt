@@ -26,7 +26,8 @@ abstract class InventorySynchronizedContainer(
     title: ChatComponent? = null,
     protected var synchronizedSlots: RangeSection,
     protected var inventorySlots: RangeSection = RangeSection(PlayerInventory.MAIN_SLOTS_START, PlayerInventory.MAIN_SLOTS),
-) : Container(session, type, title) {
+    id: Int,
+) : Container(session, type, title, id) {
     private val playerInventory = session.player.items.inventory
 
     init {
@@ -52,6 +53,6 @@ abstract class InventorySynchronizedContainer(
         if (slotId in synchronizedSlots) {
             playerInventory.slots[slotId - synchronizedSlots.first + inventorySlots.first] = stack
         }
-        return super.onAdd(slotId, stack, slotId, stack)
+        return super.onAdd(slotId, stack)
     }
 }

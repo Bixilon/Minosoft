@@ -80,11 +80,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readByteArray(): ByteArray {
-        val length: Int = if (versionId < V_14W21A) {
-            readUnsignedShort()
-        } else {
-            readVarInt()
-        }
+        val length: Int = if (versionId < V_14W21A) readUnsignedShort() else readVarInt()
         return super.readByteArray(length)
     }
 
@@ -171,7 +167,7 @@ class PlayInByteBuffer : InByteBuffer {
             item = item,
             count = count,
             meta = meta,
-            nbt = nbt ?: mutableMapOf(),
+            nbt = nbt ?: emptyMap(),
         )
     }
 
