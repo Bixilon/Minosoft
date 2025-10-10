@@ -15,37 +15,32 @@ package de.bixilon.minosoft.data.container.actions.types
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
-class DropContainerAction(
-    val count: ContainerCounts,
+class DropFloatingContainerAction(
+    val count: SlotCounts,
 ) : ContainerAction {
 
 
     override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
-        val previous = container.floating.count
-        if (count == ContainerCounts.ALL) {
-            floatingItem.item._count = 0
-        } else {
-            floatingItem.item._count-- // don't use decrease, item + container is already locked
+        val floating = container.floating ?: return
+        val next = when (this.count) {
+            SlotCounts.ALL -> null
+            SlotCounts.PART -> floating.copy(count = floating.count - 1)
         }
-        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-            session.connection += ItemStackCreateC2SP(-1, if (count == ContainerCounts.ALL) floatingItem.copy(count = previous) else floatingItem.copy(count = 1))
-        } else {
-            session.connection += ContainerClickC2SP(container.id, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null)
-        }
-    }
+        transaction.floating = next
 
-    enum class ContainerCounts {
-        ALL,
-        PART,
-        ;
+        val (id, changes) = transaction.commit()
+
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            session.connection += ItemStackCreateC2SP(-1, if (count == SlotCounts.ALL) floating else floating.copy(count = 1))
+        } else {
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, -999, 0, count.ordinal, id, changes, null)
+        }
     }
 }

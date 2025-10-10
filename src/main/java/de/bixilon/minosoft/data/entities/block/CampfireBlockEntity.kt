@@ -55,7 +55,6 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
             }
             val stack = ItemStackUtil.of(
                 item = session.registries.item[slot["id"].unsafeCast<String>()]!!,
-                session = session,
                 count = slot["Count"]?.toInt() ?: 1,
             )
 

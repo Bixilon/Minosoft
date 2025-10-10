@@ -56,7 +56,7 @@ class SessionTicker(private val session: PlaySession) {
         }
 
         if (DebugOptions.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
-            tasks += RepeatedTask(INTERVAL) { session.player.items.inventory[44] = ItemStack(session.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
+            tasks += RepeatedTask(INTERVAL) { session.player.items.inventory.slots[44] = ItemStack(session.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
         }
         if (DebugOptions.SIMULATE_TIME) {
             tasks += RepeatedTask(INTERVAL) {

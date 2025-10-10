@@ -36,7 +36,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerButtonC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
+class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS), id = id) {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val costs = IntArray(ENCHANTING_OPTIONS) { -1 }
     val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
@@ -64,10 +64,10 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
 
     override fun readProperty(property: Int, value: Int) {
         when (property) {
-            0, 1, 2 -> costs[property] = value
-            3 -> seed = value
-            4, 5, 6 -> enchantments[property - 4] = session.registries.enchantment.getOrNull(value)
-            7, 8, 9 -> enchantmentLevels[property - 7] = value
+            PROPERTY_OFFSET_COST + 0, PROPERTY_OFFSET_COST + 1, PROPERTY_OFFSET_COST + 2 -> costs[property - PROPERTY_OFFSET_COST] = value
+            PROPERTY_SEED -> seed = value
+            PROPERTY_OFFSET_ENCHANTMENT + 0, PROPERTY_OFFSET_ENCHANTMENT + 1, PROPERTY_OFFSET_ENCHANTMENT + 2 -> enchantments[property - PROPERTY_OFFSET_ENCHANTMENT] = session.registries.enchantment.getOrNull(value)
+            PROPERTY_OFFSET_LEVEL + 0, PROPERTY_OFFSET_LEVEL + 1, PROPERTY_OFFSET_LEVEL + 2 -> enchantmentLevels[property - PROPERTY_OFFSET_LEVEL] = value
         }
     }
 
@@ -116,6 +116,11 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3
 
+        private const val PROPERTY_OFFSET_COST = 0
+        private const val PROPERTY_SEED = 3
+        private const val PROPERTY_OFFSET_ENCHANTMENT = 4
+        private const val PROPERTY_OFFSET_LEVEL = 7
+
 
         private val SECTIONS: Array<ContainerSection> = arrayOf(
             RangeSection(0, ENCHANTING_SLOTS),
@@ -123,8 +128,8 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
             PassiveInventorySection(ENCHANTING_SLOTS),
         )
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): EnchantingContainer {
-            return EnchantingContainer(session, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): EnchantingContainer {
+            return EnchantingContainer(session, type, title, id)
         }
     }
 }

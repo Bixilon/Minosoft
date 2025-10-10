@@ -11,14 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.containers
+package de.bixilon.minosoft.data.container.actions.types
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-
-interface ContainerFactory<T : Container> : Identified {
-
-    fun build(session: PlaySession, type: ContainerType, title: ChatComponent? = null, slots: Int, id: Int): T
+enum class SlotCounts {
+    ALL,
+    PART,
 }

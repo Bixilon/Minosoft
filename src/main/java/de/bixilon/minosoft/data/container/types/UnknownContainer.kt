@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,14 +26,15 @@ class UnknownContainer(
     session: PlaySession,
     type: ContainerType,
     title: ChatComponent? = null,
-) : Container(session, type, title) {
+    id: Int,
+) : Container(session, type, title, id) {
 
 
     companion object : ContainerFactory<Container> {
         override val identifier: ResourceLocation = minecraft("container")
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): Container {
-            return UnknownContainer(session, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): Container {
+            return UnknownContainer(session, type, title, id)
         }
     }
 }

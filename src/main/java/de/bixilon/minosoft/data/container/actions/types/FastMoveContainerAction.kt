@@ -25,7 +25,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 import it.unimi.dsi.fastutil.ints.IntArrayList
-import kotlin.collections.iterator
 
 class FastMoveContainerAction(
     val slot: Int,
@@ -112,7 +111,7 @@ class FastMoveContainerAction(
                 session.connection += ItemStackCreateC2SP(slot, item)
             }
         } else {
-            session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, id, changes, null)
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, this.slot, 1, 0, id, changes, null)
         }
     }
 }

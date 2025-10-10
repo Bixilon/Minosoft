@@ -41,6 +41,5 @@ class CloneContainerAction(
         } else {
             session.connection.send(ContainerClickC2SP(container.id, container.serverRevision, this.slot, 3, 0, id, slotsOf(), stack))
         }
-
     }
 }

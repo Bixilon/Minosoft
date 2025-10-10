@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 
-class ShulkerBoxContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : Generic9x3Container(session, type, title) {
+class ShulkerBoxContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : Generic9x3Container(session, type, title, id) {
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId in 0 until rows * SLOTS_PER_ROW) {
@@ -43,8 +43,8 @@ class ShulkerBoxContainer(session: PlaySession, type: ContainerType, title: Chat
     companion object : ContainerFactory<ShulkerBoxContainer> {
         override val identifier: ResourceLocation = minecraft("shulker_box")
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): ShulkerBoxContainer {
-            return ShulkerBoxContainer(session, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): ShulkerBoxContainer {
+            return ShulkerBoxContainer(session, type, title, id)
         }
     }
 }

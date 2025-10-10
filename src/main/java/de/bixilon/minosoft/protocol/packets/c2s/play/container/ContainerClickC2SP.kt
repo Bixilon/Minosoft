@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 data class ContainerClickC2SP(
     val containerId: Int,
     val revision: Int,
-    val slot: Int?,
+    val slot: Int,
     val mode: Int,
     val button: Int,
     val actionId: Int,
@@ -38,7 +38,7 @@ data class ContainerClickC2SP(
             buffer.writeVarInt(revision)
         }
 
-        buffer.writeShort(slot ?: -999)
+        buffer.writeShort(slot)
         buffer.writeByte(button)
         if (buffer.versionId < V_1_17_1_PRE1) { // ToDo
             buffer.writeShort(actionId)

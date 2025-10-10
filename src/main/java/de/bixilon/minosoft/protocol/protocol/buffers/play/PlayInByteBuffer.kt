@@ -170,7 +170,7 @@ class PlayInByteBuffer : InByteBuffer {
             item = item,
             count = count,
             meta = meta,
-            nbt = nbt ?: mutableMapOf(),
+            nbt = nbt ?: emptyMap(),
         )
     }
 

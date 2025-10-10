@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.container.ItemStackUtil
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -25,15 +24,13 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import glm_.vec3.Vec3d
 
 class ThrownEyeOfEnder(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
-    val item: ItemStack
-        get() = data.get(ITEM_DATA, defaultItem)
-
-    val defaultItem: ItemStack
-        get() = ItemStackUtil.of(session.registries.item[DEFAULT_ITEM]!!, session = session)
+    val item get() = data.get(ITEM_DATA, defaultItem)
+    val defaultItem get() = session.registries.item[DEFAULT_ITEM]?.let { ItemStackUtil.of(it) }
 
     override fun onAttack(attacker: Entity): Boolean = false
 

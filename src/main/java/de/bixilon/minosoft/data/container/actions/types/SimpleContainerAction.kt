@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.container.actions.types
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
@@ -27,7 +26,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
 class SimpleContainerAction(
     val slot: Int,
-    val count: ContainerCounts,
+    val count: SlotCounts,
 ) : ContainerAction {
 
     private fun pickItem(session: PlaySession, container: Container, transaction: ContainerTransaction) {
@@ -37,7 +36,7 @@ class SimpleContainerAction(
         }
         val next: ItemStack?
         // ToDo: Check course of binding
-        if (count == ContainerCounts.ALL) {
+        if (count == SlotCounts.ALL) {
             transaction.floating = previous
             next = null
         } else {
@@ -62,7 +61,7 @@ class SimpleContainerAction(
         val nextContainer: ItemStack?
         val nextFloating: ItemStack?
 
-        if (count == ContainerCounts.ALL || (!matches && target != null)) {
+        if (count == SlotCounts.ALL || (!matches && target != null)) {
             nextContainer = floating
             nextFloating = target
         } else {
@@ -91,7 +90,7 @@ class SimpleContainerAction(
             // merge
             val item = target.item
             val maxStackSize = if (item is StackableItem) item.maxStackSize else 1
-            val subtract = if (count == ContainerCounts.ALL) minOf(maxStackSize - target.count, floating.count) else 1
+            val subtract = if (count == SlotCounts.ALL) minOf(maxStackSize - target.count, floating.count) else 1
             if (subtract == 0 || target.count + subtract > maxStackSize) return
             target.count += subtract
             floating.count -= subtract
@@ -142,11 +141,5 @@ class SimpleContainerAction(
         } else {
             putItem(session, container, floating, transaction)
         }
-    }
-
-    enum class ContainerCounts {
-        ALL,
-        PART,
-        ;
     }
 }

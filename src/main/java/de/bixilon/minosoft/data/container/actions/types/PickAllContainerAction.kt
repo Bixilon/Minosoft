@@ -63,7 +63,7 @@ class PickAllContainerAction(
                 session.connection += ItemStackCreateC2SP(slot, item)
             }
         } else {
-            session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, id, changes, floating)
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, this.slot, 6, 0, id, changes, floating)
         }
     }
 }

@@ -16,12 +16,10 @@ package de.bixilon.minosoft.data.container.stack.properties
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import java.util.*
 
 data class DurabilityProperty(
-    private val stack: ItemStack,
     val unbreakable: Boolean = false,
     val durability: Int = if (stack.item is DurableItem) stack.item.maxDurability else -1,
 ) : Property {

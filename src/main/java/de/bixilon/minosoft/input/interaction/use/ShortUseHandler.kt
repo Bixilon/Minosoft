@@ -74,8 +74,6 @@ class ShortUseHandler(
             return true
         }
 
-        val copy = stack?.copy()
-
         val result = interactBlock(target, stack, hand)
 
         if (result == InteractionResults.INVALID) {
@@ -85,7 +83,7 @@ class ShortUseHandler(
             position = target.blockPosition,
             direction = target.direction,
             cursorPosition = target.cursor,
-            item = copy,
+            item = stack,
             hand = hand,
             insideBlock = target.inside,
             sequence = session.sequence.getAndIncrement()

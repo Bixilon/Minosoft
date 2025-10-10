@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.data.container
 
-import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object ItemStackUtil {
 
-    fun of(item: Item, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
+    fun of(item: Item, count: Int, meta: Int, nbt: Map<String, Any>): ItemStack {
         val stack = of(item, count, nbt = nbt)
 
         if (item is ItemWithMeta) {
@@ -37,7 +35,7 @@ object ItemStackUtil {
 
         durability: Int? = null,
 
-        nbt: MutableJsonObject? = null,
+        nbt: Map<String, Any>? = null,
     ): ItemStack {
         val stack = ItemStack(item, count)
         if (durability != null) {
