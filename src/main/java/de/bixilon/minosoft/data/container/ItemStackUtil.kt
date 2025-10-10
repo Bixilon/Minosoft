@@ -36,7 +36,9 @@ object ItemStackUtil {
         durability: Int? = null,
 
         nbt: Map<String, Any>? = null,
-    ): ItemStack {
+    ): ItemStack? {
+        if (count == 0) return null
+
         val stack = ItemStack(item, count)
         if (durability != null) {
             stack.durability.durability = durability

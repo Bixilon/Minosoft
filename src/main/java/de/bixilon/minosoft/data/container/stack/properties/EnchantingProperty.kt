@@ -18,6 +18,7 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.remove
 import java.util.*
@@ -27,8 +28,10 @@ data class EnchantingProperty(
     val repairCost: Int = 0,
 ) : Property {
 
+    // TODO: toNbt
 
     companion object {
+        val DEFAULT = EnchantingProperty()
         private const val REPAIR_COST_TAG = "RepairCost"
 
         private const val ENCHANTMENT_FLATTENING_TAG = "Enchantments"
@@ -38,6 +41,10 @@ data class EnchantingProperty(
         private const val ENCHANTMENT_ID_TAG = "id"
         private const val ENCHANTMENT_LEVEL_TAG = "lvl"
 
+
+        fun of(registries: Registries, nbt: JsonObject): EnchantingProperty {
+
+        }
 
         fun ItemStack.updateEnchantingNbt(nbt: MutableJsonObject): Boolean {
             nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { enchanting.repairCost = it }

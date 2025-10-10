@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 @JvmInline
 value class NbtProperty(
     val nbt: JsonObject = emptyMap(),
 ) : Property {
 
-    override fun getNBT() = nbt
+    override fun toNbt(registries: Registries) = nbt
 }
