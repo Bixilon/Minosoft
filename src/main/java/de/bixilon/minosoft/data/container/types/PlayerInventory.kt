@@ -90,10 +90,11 @@ class PlayerInventory(
         items[slot.slot] = stack
     }
 
-    operator fun get(hand: Hands) = this[(when (hand) {
-        Hands.MAIN -> EquipmentSlots.MAIN_HAND
-        Hands.OFF -> EquipmentSlots.OFF_HAND
-    })]
+    operator fun get(hand: Hands) = this[hand.slot]
+
+    operator fun set(hand: Hands, stack: ItemStack?) {
+        this[hand.slot] = stack
+    }
 
     @JvmName("setEquipment")
     fun set(vararg slots: Pair<EquipmentSlots, ItemStack?>) {

@@ -43,7 +43,7 @@ interface FoodItem : LongItemUseHandler {
             return
         }
         if (player.gamemode != Gamemodes.CREATIVE) {
-            stack.decreaseCount()
+            player.items.inventory[hand] = stack.with(count = stack.count - 1)
         }
     }
 }

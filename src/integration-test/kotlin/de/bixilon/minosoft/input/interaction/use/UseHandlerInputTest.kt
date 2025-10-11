@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil
 import de.bixilon.minosoft.data.registries.item.items.weapon.defend.ShieldItem
-import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.tick
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
@@ -37,7 +36,7 @@ class UseHandlerInputTest {
         val session = SessionTestUtil.createSession(1)
         val player = PhysicsTestUtil.createPlayer(session)
         val handler = UseHandler(session.camera.interactions)
-        player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, 16)
+        player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1, 16)
 
         handler.unsafePress()
         session.assertPacket(PositionRotationC2SP::class.java)
@@ -51,7 +50,7 @@ class UseHandlerInputTest {
         val session = SessionTestUtil.createSession(1)
         val player = PhysicsTestUtil.createPlayer(session)
         val handler = UseHandler(session.camera.interactions)
-        player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, 16)
+        player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1, 16)
 
         handler.unsafePress()
         session.assertPacket(PositionRotationC2SP::class.java)

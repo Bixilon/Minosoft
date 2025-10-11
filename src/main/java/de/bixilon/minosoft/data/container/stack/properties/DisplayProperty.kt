@@ -42,7 +42,7 @@ data class DisplayProperty(
         private const val DISPLAY_LORE_TAG = "Lore"
         private const val DISPLAY_COLOR_TAG = "color"
 
-        fun of(translator: Translator, nbt: MutableJsonObject): DisplayProperty {
+        fun of(translator: Translator?, nbt: MutableJsonObject): DisplayProperty {
             val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>()?.takeIf { it.isNotEmpty() } ?: return DEFAULT
 
             val displayName = display[DISPLAY_MAME_TAG]?.let { ChatComponent.of(it, translator = translator) }

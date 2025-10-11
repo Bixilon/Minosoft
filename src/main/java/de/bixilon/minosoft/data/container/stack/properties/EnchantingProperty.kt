@@ -18,6 +18,7 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.remove
 
@@ -46,14 +47,14 @@ data class EnchantingProperty(
         private const val ENCHANTMENT_LEVEL_TAG = "lvl"
 
 
-        fun of(registries: Registries, nbt: MutableJsonObject): EnchantingProperty {
+        fun of(registry: Registry<Enchantment>, nbt: MutableJsonObject): EnchantingProperty {
             val repairCost = nbt.remove(REPAIR_COST_TAG)?.toInt() ?: 0
 
             val enchantments = nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.takeIf { it.isNotEmpty() }?.let {
                 val enchantments = HashMap<Enchantment, Int>(it.size)
                 for (tag in it) {
                     val name = tag[ENCHANTMENT_ID_TAG]
-                    val enchantment = registries.enchantment[name] ?: throw IllegalArgumentException("Unknown enchantment: $name")
+                    val enchantment = registry[name] ?: throw IllegalArgumentException("Unknown enchantment: $name")
                     val level = tag[ENCHANTMENT_LEVEL_TAG]?.toInt() ?: 1
                     if (level <= 0) continue
 

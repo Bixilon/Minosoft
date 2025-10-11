@@ -13,43 +13,55 @@
 
 package de.bixilon.minosoft.data.container
 
+import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.properties.*
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 object ItemStackUtil {
 
-    fun of(item: Item, count: Int, meta: Int, nbt: Map<String, Any>): ItemStack {
-        val stack = of(item, count, nbt = nbt)
+    fun of(item: Item, count: Int = 1): ItemStack? {
+        if (count == 0) return null
 
-        if (item is ItemWithMeta) {
-            item.withMeta(stack, meta)
+        return ItemStack(item, count)
+    }
+
+    fun of(item: Item, count: Int, meta: Int, session: PlaySession, nbt: MutableJsonObject): ItemStack? {
+        val stack = of(item, count, session, nbt)
+
+        if (stack != null && item is ItemWithMeta) {
+            return item.withMeta(stack, meta)
         }
 
         return stack
     }
 
-    fun of(item: Item, count: Int = 1, durability: Int, nbt: Map<String, Any>? = null): ItemStack? {
-        if (count == 0) return null
+    fun of(item: DurableItem, count: Int = 1, durability: Int, session: PlaySession, nbt: MutableJsonObject? = null): ItemStack? {
+        item as Item
 
-        val stack = ItemStack(item, count)
-        if (durability != null) {
-            stack.durability.durability = durability
+        val property = when {
+            nbt == null || nbt.isEmpty() -> DurabilityProperty(durability = durability)
+            else -> DurabilityProperty.of(item, nbt).copy(durability = durability)
         }
-        nbt?.let { stack.updateNbt(nbt) }
 
-        return stack
+        return of(item, count, session, nbt, durability = property)
     }
 
-    fun of(item: Item, count: Int = 1, nbt: Map<String, Any>? = null): ItemStack? {
+    fun of(item: Item, count: Int, session: PlaySession, nbt: MutableJsonObject? = null, durability: DurabilityProperty? = null): ItemStack? {
         if (count == 0) return null
 
-        val stack = ItemStack(item, count)
-        if (durability != null) {
-            stack.durability.durability = durability
-        }
-        nbt?.let { stack.updateNbt(nbt) }
+        if (nbt == null) return ItemStack(item, count, durability = durability)
 
-        return stack
+        val display = DisplayProperty.of(session.language, nbt)
+        val durability = DurabilityProperty.of(item, nbt)
+        val enchanting = EnchantingProperty.of(session.registries.enchantment, nbt)
+        val hide = HideProperty.of(nbt)
+
+        val nbt = NbtProperty.of(nbt)
+
+        return ItemStack(item, count, display, durability, enchanting, hide, nbt)
     }
 }

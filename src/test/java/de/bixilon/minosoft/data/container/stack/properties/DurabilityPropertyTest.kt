@@ -10,26 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.player
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
+package de.bixilon.minosoft.data.container.stack.properties
 
-enum class Hands(val slot: EquipmentSlots) {
-    MAIN(EquipmentSlots.MAIN_HAND),
-    OFF(EquipmentSlots.OFF_HAND),
-    ;
+import de.bixilon.kutil.json.MutableJsonObject
+import kotlin.test.assertEquals
 
-    fun getArm(main: Arms): Arms {
-        if (this == MAIN) {
-            return main
-        }
-        return if (main == Arms.LEFT) Arms.RIGHT else Arms.LEFT
+class DurabilityPropertyTest {
+
+    fun `unbreakable property`() {
+        val nbt: MutableJsonObject = mutableMapOf("unbreakable" to 1.toByte())
+
+
+        val actual = DurabilityProperty.of(DurableTestItem, nbt)
+        val expected = DurabilityProperty(durability = 100, unbreakable = true)
+
+        assertEquals(actual, expected)
+        assertEquals(nbt, emptyMap())
     }
 
-    companion object : ValuesEnum<Hands> {
-        override val VALUES: Array<Hands> = values()
-        override val NAME_MAP: Map<String, Hands> = EnumUtil.getEnumValues(VALUES)
-    }
+
 }

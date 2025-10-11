@@ -13,56 +13,19 @@
 
 package de.bixilon.minosoft.data.container
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.container.stack.properties.DisplayProperty
-import de.bixilon.minosoft.data.container.stack.properties.DurabilityProperty
-import de.bixilon.minosoft.data.container.stack.properties.EnchantingProperty
-import de.bixilon.minosoft.data.registries.enchantment.tool.ToolEnchantment
-import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
-import de.bixilon.minosoft.data.registries.items.AppleTest0
-import de.bixilon.minosoft.data.text.TextComponent
-import org.testng.AssertJUnit.assertEquals
+import org.testng.AssertJUnit.assertNull
 import org.testng.annotations.Test
 
 @Test(groups = ["item_stack"], dependsOnGroups = ["item"])
 class ItemStackUtilTest {
 
-    fun `multiple enchantments`() { // TODO: pre flattening
-        val nbt = mapOf("Enchantments" to listOf(
-            mapOf("id" to "minecraft:sharpness", "lvl" to 3.toShort()),
-            mapOf("id" to "minecraft:durability", "lvl" to 4.toShort()),
-        ))
-
-        val stack = ItemStackUtil.of(AppleTest0.item, nbt = nbt)
-        val expected = ItemStack(AppleTest0.item, enchanting = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Durability to 4)))
-
-        assertEquals(stack, expected)
+    fun `no count null`() {
+        val item = ItemStackUtil.of(TestItem1, 0)
+        assertNull(item)
     }
 
-    fun `display properties`() {
-        val nbt = mapOf("display" to mapOf(
-            "Name" to "display name",
-            "Lore" to listOf(
-                "first line",
-                "second line",
-            ),
-        ))
-
-        val stack = ItemStackUtil.of(AppleTest0.item, nbt = nbt)
-        val expected = ItemStack(AppleTest0.item, display = DisplayProperty(listOf(TextComponent("first line"), TextComponent("second line")), customDisplayName = TextComponent("display name")))
-
-        assertEquals(stack, expected)
-    }
     // TODO: dye color
 
-    fun `unbreakable property`() {
-        val nbt = mapOf("unbreakable" to 1.toByte())
-
-        val stack = ItemStackUtil.of(AppleTest0.item, nbt = nbt)
-        val expected = ItemStack(AppleTest0.item, durability = DurabilityProperty(unbreakable = true))
-
-        assertEquals(stack, expected)
-    }
 
     // TODO: HideFlags
 

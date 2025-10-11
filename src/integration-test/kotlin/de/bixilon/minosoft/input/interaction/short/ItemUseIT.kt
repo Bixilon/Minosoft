@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.assertUseItem
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.createSession
@@ -44,7 +43,7 @@ class ItemUseIT {
 
     fun eggOnAir() {
         val session = createSession()
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1)
         val use = session.camera.interactions.use
 
         use.unsafePress()
@@ -56,7 +55,7 @@ class ItemUseIT {
 
     fun eggOnAir2() {
         val session = createSession()
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggTest0.item)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem1)
         val use = session.camera.interactions.use
 
         use.unsafePress()
@@ -68,8 +67,8 @@ class ItemUseIT {
 
     fun eggOnAir3() {
         val session = createSession()
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item)
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem1)
         val use = session.camera.interactions.use
 
         use.unsafePress()
@@ -82,12 +81,12 @@ class ItemUseIT {
     fun eggOnStone() {
         val session = createSession()
         session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1)
         val use = session.camera.interactions.use
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(TestItem1), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
         session.assertOnlyPacket(SwingArmC2SP(Hands.MAIN))
@@ -96,13 +95,13 @@ class ItemUseIT {
     fun eggOnStone2() {
         val session = createSession()
         session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggTest0.item)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem1)
         val use = session.camera.interactions.use
 
         use.unsafePress()
 
         session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, null, Hands.MAIN, false))
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(EggTest0.item), Hands.OFF, false, 2))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(TestItem1), Hands.OFF, false, 2))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.OFF)
         session.assertOnlyPacket(SwingArmC2SP(Hands.OFF))
@@ -111,13 +110,13 @@ class ItemUseIT {
     fun eggOnStone3() {
         val session = createSession()
         session.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, IT.BLOCK_1, null, BlockPosition.EMPTY)))
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item)
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(EggTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem1)
         val use = session.camera.interactions.use
 
         use.unsafePress()
 
-        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(EggTest0.item), Hands.MAIN, false))
+        session.assertPacket(BlockInteractC2SP(BlockPosition.EMPTY, Directions.DOWN, Vec3d.EMPTY, ItemStack(TestItem1), Hands.MAIN, false))
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)
         session.assertOnlyPacket(SwingArmC2SP(Hands.MAIN))
@@ -126,14 +125,14 @@ class ItemUseIT {
 
     fun eggOnAirHold() {
         val session = createSession()
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, count = 16)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1, count = 16)
         val use = session.camera.interactions.use
 
         use.unsafePress()
 
         use.tick(15)
 
-        assertEquals(session.player.items.inventory[Hands.MAIN], ItemStack(EggTest0.item, count = 12))
+        assertEquals(session.player.items.inventory[Hands.MAIN], ItemStack(TestItem1, count = 12))
 
         for (x in 0 until 4) {
             session.assertPacket(PositionRotationC2SP::class.java)
@@ -145,7 +144,7 @@ class ItemUseIT {
 
     fun eggOnAirMultipleClicks() {
         val session = createSession()
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(EggTest0.item, count = 16)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem1, count = 16)
         val use = session.camera.interactions.use
 
         for (x in 0 until 10) {

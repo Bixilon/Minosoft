@@ -35,7 +35,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
 
 
     init {
-        container::propertiesRevision.observe(this) { forceApply() }
+        // TODO kutil 1.28 container::propertiesRevision.observe(this) { forceApply() }
     }
 
     override fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

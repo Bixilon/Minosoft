@@ -69,8 +69,7 @@ class FastMoveContainerAction(
                 if (count == 0) continue
 
                 source.count -= count
-                content.count += count
-                transaction[slot] = content
+                transaction[slot] = content.with(count = content.count + count)
                 if (source.count <= 0) {
                     transaction -= this.slot
                     return

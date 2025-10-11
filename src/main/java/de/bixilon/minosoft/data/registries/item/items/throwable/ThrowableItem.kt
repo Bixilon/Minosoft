@@ -25,7 +25,7 @@ interface ThrowableItem : ItemUseHandler {
     override fun useItem(player: LocalPlayerEntity, hand: Hands, stack: ItemStack): InteractionResults {
 
         if (player.gamemode != Gamemodes.CREATIVE) {
-            stack.decreaseCount()
+            player.items.inventory[hand] = stack.with(count = stack.count - 1)
         }
 
         return InteractionResults.SUCCESS
