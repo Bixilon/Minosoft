@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.data.container.slots
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil
+import de.bixilon.minosoft.data.container.TestItem2
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.items.CoalTest0
 import de.bixilon.minosoft.data.registries.items.LavaBucketTest0
 import de.bixilon.minosoft.data.registries.items.WaterBucketTest0
 import org.testng.Assert.assertFalse
@@ -37,6 +39,6 @@ class FuelSlotTypeTest {
     }
 
     fun coal() {
-        assertTrue(FuelSlotType.canPut(ContainerTestUtil.createContainer(), 0, ItemStack(TestItem3)))
+        assertTrue(FuelSlotType.canPut(ContainerTestUtil.createContainer(), 0, ItemStack(CoalTest0.item)))
     }
 }
