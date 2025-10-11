@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
@@ -143,14 +144,7 @@ class SessionUtil(
         session.player.physics.reset()
         session.world.audio?.stopAllSounds()
         session.world.particle?.removeAllParticles()
-        session.player.items.opened?.let {
-            session.player.items.opened = null
-            session.events.fire(ContainerCloseEvent(session, it))
-        }
 
-        for ((_, container) in session.player.items.containers) {
-            container.transactions.clear()
-        }
         session.player.healthCondition = HealthCondition()
     }
 
