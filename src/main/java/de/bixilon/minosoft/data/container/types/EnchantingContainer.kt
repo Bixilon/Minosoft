@@ -44,15 +44,13 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
     var seed = -1
         private set
 
-    val lapislazuli: Int get() = this[LAPISLAZULI_SLOT]?.count ?: 0
+    val lapislazuli: Int get() = items[LAPISLAZULI_SLOT]?.count ?: 0
 
-    override fun getSlotType(slotId: Int): SlotType? {
-        return when (slotId) {
-            0 -> EnchantableSlotType
-            1 -> LapislazuliSlot
-            in ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS -> DefaultSlotType
-            else -> null
-        }
+    override fun getSlotType(slotId: Int) = when (slotId) {
+        0 -> EnchantableSlotType
+        1 -> LapislazuliSlot
+        in ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS -> DefaultSlotType
+        else -> null
     }
 
     override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? {

@@ -40,7 +40,7 @@ class FastMoveContainerAction(
             val list = IntArrayList()
 
             for (slot in section) {
-                val content = container[slot]
+                val content = container.items[slot]
                 if (content != null && !source.matches(content)) { // only check slots that are not empty
                     continue
                 }
@@ -64,7 +64,7 @@ class FastMoveContainerAction(
         for ((section, list) in targets) {
             val putting = if (section.fillReversed) list.reversed().iterator() else list.intIterator()
             for (slot in putting) {
-                val content = container[slot] ?: continue // filling will be done one step afterwards
+                val content = transaction[slot] ?: continue // filling will be done one step afterwards
                 val count = if (source.count + content.count > maxStack) maxStack - content.count else source.count
                 if (count == 0) continue
 
@@ -86,7 +86,7 @@ class FastMoveContainerAction(
         for ((section, list) in targets) {
             val putting = if (section.fillReversed) list.reversed().iterator() else list.intIterator()
             for (slot in putting) {
-                val content = container[slot]
+                val content = transaction[slot]
                 if (content != null) continue
 
                 transaction[slot] = source
@@ -96,9 +96,9 @@ class FastMoveContainerAction(
         }
     }
 
-    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         // ToDo: minecraft always sends a packet
-        val source = container.slots[slot] ?: return
+        val source = transaction[slot] ?: return
 
         val targets = getTargets(container.getSection(slot), source, container)
 

@@ -20,15 +20,18 @@ class DropHandler(
     private val interactions: InteractionManager,
 ) {
     private val session = interactions.session
+    private val inventory = session.player.items.inventory
     private val rateLimiter = RateLimiter()
 
     fun dropItem(stack: Boolean) {
-        val type = if (stack) {
-            session.player.items.inventory.getHotbarSlot()?.count = 0
-            PlayerActionC2SP.Actions.DROP_ITEM_STACK
-        } else {
-            session.player.items.inventory.getHotbarSlot()?.decreaseCount()
-            PlayerActionC2SP.Actions.DROP_ITEM
+        val type = if (stack) PlayerActionC2SP.Actions.DROP_ITEM_STACK else PlayerActionC2SP.Actions.DROP_ITEM
+
+        val slot = inventory.manager.hotbar
+
+        val item = inventory.getHotbarSlot(slot)
+
+        if (item != null) {
+            inventory.setHotbarSlot(slot, item.with(count = if (stack) 0 else item.count - 1))
         }
         rateLimiter += { session.connection.send(PlayerActionC2SP(type)) }
     }

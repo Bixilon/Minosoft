@@ -56,11 +56,11 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun Container.update() {
-        for ((slotId, stack) in items.withIndex()) {
+        for ((slotId, stack) in this@ContainerItemsS2CP.items.withIndex()) {
             if (stack == null) {
                 continue
             }
-            slots[slotId] = stack
+            items[slotId] = stack
         }
         serverRevision = revision
         floatingItem?.let { floating = it }

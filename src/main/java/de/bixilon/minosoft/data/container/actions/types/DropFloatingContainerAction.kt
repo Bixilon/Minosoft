@@ -27,7 +27,7 @@ class DropFloatingContainerAction(
 ) : ContainerAction {
 
 
-    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         val floating = container.floating ?: return
         val next = when (this.count) {
             SlotCounts.ALL -> null

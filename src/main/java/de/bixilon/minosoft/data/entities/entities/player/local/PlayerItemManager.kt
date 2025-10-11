@@ -52,7 +52,7 @@ class PlayerItemManager(private val player: LocalPlayerEntity) {
 
     fun reset() {
         cooldown.clear()
-        inventory.slots.clear()
+        inventory.items.clear()
         inventory.floating = null
         opened = null
     }

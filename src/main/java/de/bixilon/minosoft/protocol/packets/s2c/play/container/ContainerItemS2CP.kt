@@ -46,9 +46,9 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             container.floating = stack
         } else {
             if (stack == null) {
-                container.slots -= slot
+                container.items -= slot
             } else {
-                container.slots[slot] = stack
+                container.items[slot] = stack
             }
         }
         container.serverRevision = revision

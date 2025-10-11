@@ -28,7 +28,7 @@ abstract class InventorySynchronizedContainer(
     protected var inventorySlots: RangeSection = RangeSection(PlayerInventory.MAIN_SLOTS_START, PlayerInventory.MAIN_SLOTS),
     id: Int,
 ) : Container(session, type, title, id) {
-    private val playerInventory = session.player.items.inventory
+    private val inventory = session.player.items.inventory
 
     init {
         check(synchronizedSlots.count == inventorySlots.count) { "Synchronized inventory slots must have the same size!" }
@@ -37,21 +37,21 @@ abstract class InventorySynchronizedContainer(
 
     override fun onRemove(slotId: Int, stack: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory.slots -= slotId - synchronizedSlots.first + inventorySlots.first
+            inventory.items -= slotId - synchronizedSlots.first + inventorySlots.first
         }
         return super.onRemove(slotId, stack)
     }
 
     override fun onSet(slotId: Int, previous: ItemStack, next: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory.slots[slotId - synchronizedSlots.first + inventorySlots.first] = next
+            inventory.items[slotId - synchronizedSlots.first + inventorySlots.first] = next
         }
         return super.onSet(slotId, previous, next)
     }
 
     override fun onAdd(slotId: Int, stack: ItemStack): Boolean {
         if (slotId in synchronizedSlots) {
-            playerInventory.slots[slotId - synchronizedSlots.first + inventorySlots.first] = stack
+            inventory.items[slotId - synchronizedSlots.first + inventorySlots.first] = stack
         }
         return super.onAdd(slotId, stack)
     }

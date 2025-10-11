@@ -30,7 +30,7 @@ class SimpleContainerAction(
 ) : ContainerAction {
 
     private fun pickItem(session: PlaySession, container: Container, transaction: ContainerTransaction) {
-        val previous = container.slots[slot] ?: return
+        val previous = transaction[slot] ?: return
         if (container.getSlotType(slot)?.canRemove(container, slot, previous) != true) {
             return
         }
@@ -71,8 +71,8 @@ class SimpleContainerAction(
             nextFloating = floating
         }
 
-        container[slot] = nextContainer
-        container.floating = nextFloating
+        transaction[slot] = nextContainer
+        transaction.floating = nextFloating
 
         val (id, changes) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
@@ -83,7 +83,7 @@ class SimpleContainerAction(
     }
 
     private fun merge(session: PlaySession, container: Container, floating: ItemStack, transaction: ContainerTransaction) {
-        val target = container[slot] ?: return
+        val target = transaction[slot] ?: return
         val slotType = container.getSlotType(slot)
 
         if (slotType?.canPut(container, slot, floating) == true) {
@@ -114,7 +114,7 @@ class SimpleContainerAction(
 
 
     private fun putItem(session: PlaySession, container: Container, floatingItem: ItemStack, transaction: ContainerTransaction) {
-        val target = container[slot]
+        val target = transaction[slot]
         val matches = floatingItem.matches(target)
 
         if (target != null && matches) {
@@ -133,7 +133,7 @@ class SimpleContainerAction(
         swapItems(session, container, floatingItem, matches, target, transaction)
     }
 
-    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         val floating = container.floating
 
         if (floating == null) {

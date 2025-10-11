@@ -23,20 +23,25 @@ object ItemStackUtil {
         val stack = of(item, count, nbt = nbt)
 
         if (item is ItemWithMeta) {
-            item.setMeta(stack, meta)
+            item.withMeta(stack, meta)
         }
 
         return stack
     }
 
-    fun of(
-        item: Item,
-        count: Int = 1,
+    fun of(item: Item, count: Int = 1, durability: Int, nbt: Map<String, Any>? = null): ItemStack? {
+        if (count == 0) return null
 
-        durability: Int? = null,
+        val stack = ItemStack(item, count)
+        if (durability != null) {
+            stack.durability.durability = durability
+        }
+        nbt?.let { stack.updateNbt(nbt) }
 
-        nbt: Map<String, Any>? = null,
-    ): ItemStack? {
+        return stack
+    }
+
+    fun of(item: Item, count: Int = 1, nbt: Map<String, Any>? = null): ItemStack? {
         if (count == 0) return null
 
         val stack = ItemStack(item, count)
