@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.container.stack
 
 import de.bixilon.minosoft.data.container.TestItem1
+import de.bixilon.minosoft.data.container.TestItem2
+import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.stack.properties.DurabilityProperty
 import org.testng.Assert.*
 import org.testng.annotations.Test
