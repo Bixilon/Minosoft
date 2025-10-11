@@ -69,7 +69,6 @@ class RawItemElement(
 
     override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val stack = stack ?: return
-        if (!stack.valid) return
         val size = size
         val textureSize = size - 1
 

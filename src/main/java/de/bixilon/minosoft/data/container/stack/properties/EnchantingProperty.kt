@@ -16,19 +16,23 @@ package de.bixilon.minosoft.data.container.stack.properties
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.remove
-import java.util.*
 
 data class EnchantingProperty(
     val enchantments: Map<Enchantment, Int> = emptyMap(),
     val repairCost: Int = 0,
 ) : Property {
 
-    // TODO: toNbt
+    init {
+        assert(repairCost > 0) { "Repair cost can not be negative" }
+    }
+
+    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+        // TODO
+    }
 
     companion object {
         val DEFAULT = EnchantingProperty()
@@ -42,29 +46,25 @@ data class EnchantingProperty(
         private const val ENCHANTMENT_LEVEL_TAG = "lvl"
 
 
-        fun of(registries: Registries, nbt: JsonObject): EnchantingProperty {
+        fun of(registries: Registries, nbt: MutableJsonObject): EnchantingProperty {
+            val repairCost = nbt.remove(REPAIR_COST_TAG)?.toInt() ?: 0
 
-        }
-
-        fun ItemStack.updateEnchantingNbt(nbt: MutableJsonObject): Boolean {
-            nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { enchanting.repairCost = it }
-
-            nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.let {
-                val registry = holder?.session?.registries?.enchantment ?: return@let
+            val enchantments = nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.takeIf { it.isNotEmpty() }?.let {
+                val enchantments = HashMap<Enchantment, Int>(it.size)
                 for (tag in it) {
-                    val enchantmentName = tag[ENCHANTMENT_ID_TAG]
-                    val enchantment = registry[enchantmentName] ?: throw IllegalArgumentException("Unknown enchantment: $enchantmentName")
+                    val name = tag[ENCHANTMENT_ID_TAG]
+                    val enchantment = registries.enchantment[name] ?: throw IllegalArgumentException("Unknown enchantment: $name")
                     val level = tag[ENCHANTMENT_LEVEL_TAG]?.toInt() ?: 1
-                    if (level <= 0) {
-                        continue
-                    }
+                    if (level <= 0) continue
 
-                    this.enchanting.enchantments[enchantment] = level
+                    enchantments[enchantment] = level
                 }
+                return@let enchantments
             }
-            if (_enchanting == null) return false
 
-            return !enchanting.isDefault()
+            if ((enchantments == null || enchantments.isEmpty()) && repairCost == 0) return DEFAULT
+
+            return EnchantingProperty(enchantments ?: emptyMap(), repairCost)
         }
     }
 }

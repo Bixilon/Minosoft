@@ -28,7 +28,7 @@ class DropSlotContainerAction(
 ) : ContainerAction {
 
     override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
-        val item = container[slot] ?: return
+        val item = transaction[slot] ?: return
         if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
             return
         }

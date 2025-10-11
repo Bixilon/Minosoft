@@ -51,7 +51,7 @@ class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
     }
 
     fun writeLegacyItemStack(stack: ItemStack?) {
-        if (stack == null || !stack.valid) {
+        if (stack == null) {
             writeShort(-1)
             return
         }
@@ -67,7 +67,7 @@ class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
         if (versionId < ProtocolVersions.V_1_13_2_PRE1) {
             return writeLegacyItemStack(stack)
         }
-        val valid = stack != null && stack.valid
+        val valid = stack != null
         writeBoolean(valid)
         if (!valid) return
         writeVarInt(session.registries.item.getId(stack.item))

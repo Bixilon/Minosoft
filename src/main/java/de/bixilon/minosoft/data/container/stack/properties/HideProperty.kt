@@ -16,45 +16,34 @@ package de.bixilon.minosoft.data.container.stack.properties
 import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 @JvmInline
 value class HideProperty(
-    val hideFlags: Int = 0,
+    val hideFlags: Int = 0x00,
 ) : Property {
 
-    val enchantments: Boolean
-        get() = hideFlags.isBit(ENCHANTMENT_BIT)
 
-    val modifiers: Boolean
-        get() = hideFlags.isBit(MODIFIERS_BIT)
-
-    val unbreakable: Boolean
-        get() = hideFlags.isBit(UNBREAKABLE_BIT)
-
-    val canDestroy: Boolean
-        get() = hideFlags.isBit(CAN_DESTROY_BIT)
-
-    val canPlaceOn: Boolean
-        get() = hideFlags.isBit(CAN_PLACE_BIT)
+    val enchantments get() = hideFlags.isBit(ENCHANTMENT_BIT)
+    val modifiers get() = hideFlags.isBit(MODIFIERS_BIT)
+    val unbreakable get() = hideFlags.isBit(UNBREAKABLE_BIT)
+    val canDestroy get() = hideFlags.isBit(CAN_DESTROY_BIT)
+    val canPlaceOn get() = hideFlags.isBit(CAN_PLACE_BIT)
 
     /**
      * @return hides other information, including potion effects, shield pattern info, "StoredEnchantments", written book "generation" and "author", "Explosion", "Fireworks", and map tooltips
      */
-    val otherInformation: Boolean
-        get() = hideFlags.isBit(OTHER_INFORMATION_BIT)
+    val otherInformation get() = hideFlags.isBit(OTHER_INFORMATION_BIT)
+    val leatherDyeColor get() = hideFlags.isBit(LEATHER_DYE_COLOR_BIT)
 
-
-    val leatherDyeColor: Boolean
-        get() = hideFlags.isBit(LEATHER_DYE_COLOR_BIT)
-
-
-
-    fun updateNbt(nbt: MutableJsonObject): Boolean {
-        nbt.remove(HIDE_FLAGS_TAG)?.toInt()?.let { this.hideFlags = it }
-        return !isDefault()
+    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+        if (hideFlags != DEFAULT.hideFlags) {
+            nbt[HIDE_FLAGS_TAG] = hideFlags // TODO: datatype?
+        }
     }
 
     companion object {
+        val DEFAULT = HideProperty()
         private const val HIDE_FLAGS_TAG = "HideFlags"
 
         private const val ENCHANTMENT_BIT = 0
@@ -64,5 +53,14 @@ value class HideProperty(
         private const val CAN_PLACE_BIT = 4
         private const val OTHER_INFORMATION_BIT = 5
         private const val LEATHER_DYE_COLOR_BIT = 6
+
+
+        fun of(nbt: MutableJsonObject): HideProperty {
+            val flags = nbt.remove(HIDE_FLAGS_TAG)?.toInt() ?: 0
+
+            if (flags == 0) return DEFAULT
+
+            return HideProperty(flags)
+        }
     }
 }
