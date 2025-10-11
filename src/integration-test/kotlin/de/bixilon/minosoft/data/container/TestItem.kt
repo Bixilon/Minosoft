@@ -10,26 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.player
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
+package de.bixilon.minosoft.data.container
 
-enum class Hands(val slot: EquipmentSlots) {
-    MAIN(EquipmentSlots.MAIN_HAND),
-    OFF(EquipmentSlots.OFF_HAND),
-    ;
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
+import de.bixilon.minosoft.data.registries.item.items.Item
 
-    fun getArm(main: Arms): Arms {
-        if (this == MAIN) {
-            return main
-        }
-        return if (main == Arms.LEFT) Arms.RIGHT else Arms.LEFT
-    }
+object TestItem1 : Item(minosoft("test1"))
+object TestItem2 : Item(minosoft("test2"))
+object TestItem3 : Item(minosoft("test3"))
 
-    companion object : ValuesEnum<Hands> {
-        override val VALUES: Array<Hands> = values()
-        override val NAME_MAP: Map<String, Hands> = EnumUtil.getEnumValues(VALUES)
-    }
+object DurableTestItem1 : Item(minosoft("durable_test1")), DurableItem {
+    override val maxDurability get() = 100
+}
+
+object DurableTestItem2 : Item(minosoft("durable_test2")), DurableItem {
+    override val maxDurability get() = 100
 }

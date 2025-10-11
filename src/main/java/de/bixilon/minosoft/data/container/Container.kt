@@ -41,7 +41,6 @@ abstract class Container(
     val transactions = ContainerTransactionManager(this)
     var serverRevision = 0
     var floating: ItemStack? by observed(null)
-        private set
 
     open val sections: Array<ContainerSection> get() = emptyArray()
 

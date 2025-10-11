@@ -25,13 +25,12 @@ class ItemParticleData(val stack: ItemStack?, type: ParticleType) : ParticleData
     }
 
     companion object : ParticleDataFactory<ItemParticleData> {
+
         override fun read(buffer: PlayInByteBuffer, type: ParticleType): ItemParticleData {
-            val itemId = if (buffer.versionId < ProtocolVersions.V_17W45A) {
-                buffer.readVarInt() shl 16 or buffer.readVarInt()
-            } else {
-                buffer.readVarInt()
-            }
-            return ItemParticleData(ItemStackUtil.of(buffer.session.registries.item[itemId]), type)
+            val itemId = if (buffer.versionId < ProtocolVersions.V_17W45A) (buffer.readVarInt() shl 16) or buffer.readVarInt() else buffer.readVarInt()
+            val item = buffer.session.registries.item[itemId]
+
+            return ItemParticleData(ItemStackUtil.of(item), type)
         }
     }
 }

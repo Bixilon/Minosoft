@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -35,7 +34,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
 
 
     init {
-        container::propertiesRevision.observe(this) { forceApply() }
+        // TODO kutil 1.28 container::propertiesRevision.observe(this) { forceApply() }
     }
 
     override fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

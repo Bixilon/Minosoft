@@ -92,16 +92,16 @@ class SimpleContainerAction(
             val maxStackSize = if (item is StackableItem) item.maxStackSize else 1
             val subtract = if (count == SlotCounts.ALL) minOf(maxStackSize - target.count, floating.count) else 1
             if (subtract == 0 || target.count + subtract > maxStackSize) return
-            target.count += subtract
-            floating.count -= subtract
+            target = target.with(count = target.count + subtract)!!
+            floating = floating.with(count = floating.count - subtract)
         } else if (slotType?.canRemove(container, slot, floating) == true) {
             // remove only (e.g. crafting result)
             // ToDo: respect count (part or all)
             val subtract = minOf((if (floating.item is StackableItem) floating.item.maxStackSize else 1) - floating.count, target.count)
             if (subtract == 0) return
 
-            target.count -= subtract
-            floating.count += subtract
+            target = target.with(count = target.count - subtract)!!
+            floating = floating.with(count = floating.count + subtract)
         }
 
         val (id, changes) = transaction.commit()

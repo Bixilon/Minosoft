@@ -30,7 +30,7 @@ interface FireItem : ItemInteractBlockHandler {
     override fun interactBlock(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (target.state.block is LitBlock) {
             if (this is DurableItem && player.gamemode != Gamemodes.CREATIVE) {
-                stack.decreaseCount()
+                player.items.inventory[hand] = stack.with(count = stack.count - 1)
             }
             return if (target.state.block.light(player.session, target.blockPosition, target.state)) InteractionResults.SUCCESS else InteractionResults.FAILED
         }

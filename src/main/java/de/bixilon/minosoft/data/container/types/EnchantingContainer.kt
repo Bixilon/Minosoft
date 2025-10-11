@@ -38,9 +38,9 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS), id = id) {
     override val sections: Array<ContainerSection> get() = SECTIONS
-    val costs = IntArray(ENCHANTING_OPTIONS) { -1 }
+    val costs = IntArray(ENCHANTING_OPTIONS) { -1 } // TODO: kutil 1.28 observedArray
     val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
-    var enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }
+    val enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }  // TODO: kutil 1.28 observedArray
     var seed = -1
         private set
 

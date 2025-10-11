@@ -17,8 +17,6 @@ import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.types.CloneContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.items.AppleTest0
-import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -41,9 +39,9 @@ class CloneContainerActionTest {
     fun testAlready1() {
         val session = createSession()
         val container = createContainer(session)
-        container.floating = ItemStack(EggTest0.item, count = 7)
+        container.floating = ItemStack(TestItem1, count = 7)
         container.actions.invoke(CloneContainerAction(6))
-        assertEquals(container.floating, ItemStack(EggTest0.item, count = 7))
+        assertEquals(container.floating, ItemStack(TestItem1, count = 7))
         assertNull(container[6])
         session.assertNoPacket()
     }
@@ -51,51 +49,51 @@ class CloneContainerActionTest {
     fun testAlready2() {
         val session = createSession()
         val container = createContainer(session)
-        container[6] = ItemStack(AppleTest0.item, count = 7)
-        container.floating = ItemStack(EggTest0.item, count = 7)
+        container[6] = ItemStack(TestItem2, count = 7)
+        container.floating = ItemStack(TestItem1, count = 7)
         container.actions.invoke(CloneContainerAction(6))
-        assertEquals(container.floating, ItemStack(EggTest0.item, count = 7))
-        assertEquals(container[6], ItemStack(AppleTest0.item, count = 7))
+        assertEquals(container.floating, ItemStack(TestItem1, count = 7))
+        assertEquals(container[6], ItemStack(TestItem2, count = 7))
         session.assertNoPacket()
     }
 
     fun testTaking() {
         val session = createSession()
         val container = createContainer(session)
-        container[1] = ItemStack(AppleTest0.item)
+        container[1] = ItemStack(TestItem2)
         container.actions.invoke(CloneContainerAction(1))
-        assertEquals(container.floating, ItemStack(AppleTest0.item, count = 64))
+        assertEquals(container.floating, ItemStack(TestItem2, count = 64))
         // TODO: Not sending any packet in 1.18.2?
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(AppleTest0.item, count = 64)))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(TestItem2, count = 64)))
     }
 
     fun taskTalking2() {
         val session = createSession()
         val container = createContainer(session)
-        container[3] = ItemStack(AppleTest0.item, count = 8)
+        container[3] = ItemStack(TestItem2, count = 8)
         container.actions.invoke(CloneContainerAction(3))
-        assertEquals(container.floating, ItemStack(AppleTest0.item, count = 64))
+        assertEquals(container.floating, ItemStack(TestItem2, count = 64))
         // TODO: Not sending any packet in 1.18.2?
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(AppleTest0.item, count = 64)))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(TestItem2, count = 64)))
     }
 
     fun testStackLimit() {
         val session = createSession()
         val container = createContainer(session)
-        container[8] = ItemStack(EggTest0.item, count = 9)
+        container[8] = ItemStack(TestItem1, count = 9)
         container.actions.invoke(CloneContainerAction(8))
-        assertEquals(container.floating, ItemStack(EggTest0.item, count = 16))
+        assertEquals(container.floating, ItemStack(TestItem1, count = 16))
         // TODO: Not sending any packet in 1.18.2?
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(EggTest0.item, count = 16)))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(TestItem1, count = 16)))
     }
 
     fun testRevert() {
         val session = createSession()
         val container = createContainer(session)
-        container[8] = ItemStack(EggTest0.item, count = 9)
+        container[8] = ItemStack(TestItem1, count = 9)
         val action = CloneContainerAction(8)
         container.actions.invoke(action)
-        assertEquals(container.floating, ItemStack(EggTest0.item, count = 16))
+        assertEquals(container.floating, ItemStack(TestItem1, count = 16))
         container.actions.revert(action)
         assertNull(container.floating)
     }

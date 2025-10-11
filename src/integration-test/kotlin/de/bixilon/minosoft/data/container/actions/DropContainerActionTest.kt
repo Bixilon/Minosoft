@@ -17,8 +17,6 @@ import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.types.DropSlotContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.items.AppleTest0
-import de.bixilon.minosoft.data.registries.items.EggTest0
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -49,17 +47,17 @@ class DropContainerActionTest {
     fun testDropSingle() {
         val session = createSession()
         val container = createContainer(session)
-        container[9] = ItemStack(AppleTest0.item, count = 8)
+        container[9] = ItemStack(TestItem2, count = 8)
         container.actions.invoke(DropSlotContainerAction(9, false))
         assertNull(container.floating)
-        assertEquals(container[9], ItemStack(AppleTest0.item, count = 7))
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTest0.item, count = 7)), null))
+        assertEquals(container[9], ItemStack(TestItem2, count = 7))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(TestItem2, count = 7)), null))
     }
 
     fun testDropSingleEmpty() {
         val session = createSession()
         val container = createContainer(session)
-        container[9] = ItemStack(AppleTest0.item, count = 1)
+        container[9] = ItemStack(TestItem2, count = 1)
         container.actions.invoke(DropSlotContainerAction(9, false))
         assertNull(container.floating)
         assertEquals(container[9], null)
@@ -69,7 +67,7 @@ class DropContainerActionTest {
     fun testDropStack() {
         val session = createSession()
         val container = createContainer(session)
-        container[9] = ItemStack(AppleTest0.item, count = 12)
+        container[9] = ItemStack(TestItem2, count = 12)
         container.actions.invoke(DropSlotContainerAction(9, true))
         assertNull(container.floating)
         assertEquals(container[9], null)
@@ -79,20 +77,20 @@ class DropContainerActionTest {
     fun testSingleRevert() {
         val session = createSession()
         val container = createContainer(session)
-        container[8] = ItemStack(EggTest0.item, count = 9)
+        container[8] = ItemStack(TestItem1, count = 9)
         val action = DropSlotContainerAction(8, false)
         container.actions.invoke(action)
         container.actions.revert(action)
-        assertEquals(container[8], ItemStack(EggTest0.item, count = 9))
+        assertEquals(container[8], ItemStack(TestItem1, count = 9))
     }
 
     fun testStackRevert() {
         val session = createSession()
         val container = createContainer(session)
-        container[8] = ItemStack(EggTest0.item, count = 9)
+        container[8] = ItemStack(TestItem1, count = 9)
         val action = DropSlotContainerAction(8, true)
         container.actions.invoke(action)
         container.actions.revert(action)
-        assertEquals(container[8], ItemStack(EggTest0.item, count = 9))
+        assertEquals(container[8], ItemStack(TestItem1, count = 9))
     }
 }
