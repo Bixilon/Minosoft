@@ -15,7 +15,10 @@ package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.TestItem1
+import de.bixilon.minosoft.data.container.TestItem2
 import de.bixilon.minosoft.data.container.actions.types.SimpleContainerAction
+import de.bixilon.minosoft.data.container.actions.types.SlotCounts
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
@@ -31,8 +34,8 @@ class SimpleContainerActionTest {
     fun testEmpty() {
         val session = createSession()
         val container = createContainer(session)
-        container.actions.invoke(SimpleContainerAction(0, SimpleContainerAction.ContainerCounts.ALL))
-        assertEquals(container.slots, slotsOf())
+        container.execute(SimpleContainerAction(0, SlotCounts.ALL))
+        assertEquals(container.items.slots, slotsOf())
         assertNull(container.floating)
         // session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 0, 0, 0, slotsOf(), null))
         session.assertNoPacket()
@@ -42,8 +45,8 @@ class SimpleContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.floating = ItemStack(TestItem2, count = 7)
-        container.actions.invoke(SimpleContainerAction(0, SimpleContainerAction.ContainerCounts.ALL))
-        assertEquals(container.slots, slotsOf(0 to ItemStack(TestItem2, count = 7)))
+        container.execute(SimpleContainerAction(0, SlotCounts.ALL))
+        assertEquals(container.items.slots, slotsOf(0 to ItemStack(TestItem2, count = 7)))
         assertNull(container.floating)
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 0, 0, 0, slotsOf(0 to ItemStack(TestItem2, count = 7)), null))
     }
@@ -52,8 +55,8 @@ class SimpleContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.floating = ItemStack(TestItem2, count = 7)
-        container.actions.invoke(SimpleContainerAction(0, SimpleContainerAction.ContainerCounts.PART))
-        assertEquals(container.slots, slotsOf(0 to ItemStack(TestItem2, count = 1)))
+        container.execute(SimpleContainerAction(0, SlotCounts.PART))
+        assertEquals(container.items.slots, slotsOf(0 to ItemStack(TestItem2, count = 1)))
         assertEquals(container.floating, ItemStack(TestItem2, count = 6))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 0, 1, 0, slotsOf(0 to ItemStack(TestItem2, count = 1)), ItemStack(TestItem2, count = 6)))
     }
@@ -62,9 +65,9 @@ class SimpleContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.floating = ItemStack(TestItem2, count = 7)
-        container[8] = ItemStack(TestItem2, count = 2)
-        container.actions.invoke(SimpleContainerAction(8, SimpleContainerAction.ContainerCounts.ALL))
-        assertEquals(container.slots, slotsOf(8 to ItemStack(TestItem2, count = 9)))
+        container.items[8] = ItemStack(TestItem2, count = 2)
+        container.execute(SimpleContainerAction(8, SlotCounts.ALL))
+        assertEquals(container.items.slots, slotsOf(8 to ItemStack(TestItem2, count = 9)))
         assertNull(container.floating)
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 0, 0, 0, slotsOf(8 to ItemStack(TestItem2, count = 9)), null))
     }
@@ -73,9 +76,9 @@ class SimpleContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.floating = ItemStack(TestItem2, count = 7)
-        container[12] = ItemStack(TestItem2, count = 3)
-        container.actions.invoke(SimpleContainerAction(12, SimpleContainerAction.ContainerCounts.PART))
-        assertEquals(container.slots, slotsOf(12 to ItemStack(TestItem2, count = 4)))
+        container.items[12] = ItemStack(TestItem2, count = 3)
+        container.execute(SimpleContainerAction(12, SlotCounts.PART))
+        assertEquals(container.items.slots, slotsOf(12 to ItemStack(TestItem2, count = 4)))
         assertEquals(container.floating, ItemStack(TestItem2, count = 6))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 12, 0, 1, 0, slotsOf(12 to ItemStack(TestItem2, count = 4)), ItemStack(TestItem2, count = 6)))
     }
@@ -84,9 +87,9 @@ class SimpleContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.floating = ItemStack(TestItem1, count = 14)
-        container[12] = ItemStack(TestItem1, count = 15)
-        container.actions.invoke(SimpleContainerAction(12, SimpleContainerAction.ContainerCounts.ALL))
-        assertEquals(container.slots, slotsOf(12 to ItemStack(TestItem1, count = 16)))
+        container.items[12] = ItemStack(TestItem1, count = 15)
+        container.execute(SimpleContainerAction(12, SlotCounts.ALL))
+        assertEquals(container.items.slots, slotsOf(12 to ItemStack(TestItem1, count = 16)))
         assertEquals(container.floating, ItemStack(TestItem1, 13))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 12, 0, 0, 0, slotsOf(12 to ItemStack(TestItem1, count = 16)), ItemStack(TestItem1, count = 13)))
     }
@@ -94,9 +97,9 @@ class SimpleContainerActionTest {
     fun testRemoveAll() {
         val session = createSession()
         val container = createContainer(session)
-        container[12] = ItemStack(TestItem2, count = 3)
-        container.actions.invoke(SimpleContainerAction(12, SimpleContainerAction.ContainerCounts.ALL))
-        assertEquals(container.slots, slotsOf())
+        container.items[12] = ItemStack(TestItem2, count = 3)
+        container.execute(SimpleContainerAction(12, SlotCounts.ALL))
+        assertEquals(container.items.slots, slotsOf())
         assertEquals(container.floating, ItemStack(TestItem2, count = 3))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 12, 0, 0, 0, slotsOf(12 to null), ItemStack(TestItem2, count = 3)))
     }
@@ -104,9 +107,9 @@ class SimpleContainerActionTest {
     fun testRemoveHalf() {
         val session = createSession()
         val container = createContainer(session)
-        container[12] = ItemStack(TestItem2, count = 8)
-        container.actions.invoke(SimpleContainerAction(12, SimpleContainerAction.ContainerCounts.PART))
-        assertEquals(container.slots, slotsOf(12 to ItemStack(TestItem2, 4)))
+        container.items[12] = ItemStack(TestItem2, count = 8)
+        container.execute(SimpleContainerAction(12, SlotCounts.PART))
+        assertEquals(container.items.slots, slotsOf(12 to ItemStack(TestItem2, 4)))
         assertEquals(container.floating, ItemStack(TestItem2, count = 4))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 12, 0, 1, 0, slotsOf(12 to ItemStack(TestItem2, 4)), ItemStack(TestItem2, count = 4)))
     }
@@ -114,9 +117,9 @@ class SimpleContainerActionTest {
     fun testRemoveHalfOdd() {
         val session = createSession()
         val container = createContainer(session)
-        container[12] = ItemStack(TestItem2, count = 9)
-        container.actions.invoke(SimpleContainerAction(12, SimpleContainerAction.ContainerCounts.PART))
-        assertEquals(container.slots, slotsOf(12 to ItemStack(TestItem2, 4)))
+        container.items[12] = ItemStack(TestItem2, count = 9)
+        container.execute(SimpleContainerAction(12, SlotCounts.PART))
+        assertEquals(container.items.slots, slotsOf(12 to ItemStack(TestItem2, 4)))
         assertEquals(container.floating, ItemStack(TestItem2, count = 5))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 12, 0, 1, 0, slotsOf(12 to ItemStack(TestItem2, 4)), ItemStack(TestItem2, count = 5)))
     }

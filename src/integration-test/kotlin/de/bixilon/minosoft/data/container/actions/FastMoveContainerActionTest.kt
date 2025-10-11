@@ -17,6 +17,9 @@ import de.bixilon.minosoft.data.container.ContainerTestUtil.createChest
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createFurnace
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createInventory
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.TestItem1
+import de.bixilon.minosoft.data.container.TestItem2
+import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.actions.types.FastMoveContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
@@ -33,29 +36,29 @@ class FastMoveContainerActionTest {
     fun empty() {
         val session = createSession()
         val container = createChest(session)
-        container.actions.invoke(FastMoveContainerAction(0))
+        container.execute(FastMoveContainerAction(0))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf())
+        assertEquals(container.items.slots, slotsOf())
         session.assertNoPacket()
     }
 
     fun hotbarToChest() {
         val session = createSession()
         val container = createChest(session)
-        container[54] = ItemStack(TestItem2, 9)
-        container.actions.invoke(FastMoveContainerAction(54))
+        container.items[54] = ItemStack(TestItem2, 9)
+        container.execute(FastMoveContainerAction(54))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(0 to ItemStack(TestItem2, 9)))
+        assertEquals(container.items.slots, slotsOf(0 to ItemStack(TestItem2, 9)))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 54, 1, 0, 0, slotsOf(54 to null, 0 to ItemStack(TestItem2, count = 9)), null))
     }
 
     fun chestToHotbar() {
         val session = createSession()
         val container = createChest(session)
-        container[0] = ItemStack(TestItem2, 9)
-        container.actions.invoke(FastMoveContainerAction(0))
+        container.items[0] = ItemStack(TestItem2, 9)
+        container.execute(FastMoveContainerAction(0))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(62 to ItemStack(TestItem2, 9)))
+        assertEquals(container.items.slots, slotsOf(62 to ItemStack(TestItem2, 9)))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 62 to ItemStack(TestItem2, count = 9)), null))
     }
 
@@ -63,22 +66,22 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createChest(session)
 
-        container[54] = ItemStack(TestItem1, 9)
-        container[55] = ItemStack(TestItem1, 9)
-        container[56] = ItemStack(TestItem1, 9)
-        container[57] = ItemStack(TestItem1, 9)
-        container[58] = ItemStack(TestItem1, 9)
-        container[59] = ItemStack(TestItem1, 9)
-        container[60] = ItemStack(TestItem1, 9)
-        container[61] = ItemStack(TestItem1, 9)
-        container[62] = ItemStack(TestItem1, 9)
+        container.items[54] = ItemStack(TestItem1, 9)
+        container.items[55] = ItemStack(TestItem1, 9)
+        container.items[56] = ItemStack(TestItem1, 9)
+        container.items[57] = ItemStack(TestItem1, 9)
+        container.items[58] = ItemStack(TestItem1, 9)
+        container.items[59] = ItemStack(TestItem1, 9)
+        container.items[60] = ItemStack(TestItem1, 9)
+        container.items[61] = ItemStack(TestItem1, 9)
+        container.items[62] = ItemStack(TestItem1, 9)
 
-        container[0] = ItemStack(TestItem2, 9)
+        container.items[0] = ItemStack(TestItem2, 9)
 
-        container.actions.invoke(FastMoveContainerAction(0))
+        container.execute(FastMoveContainerAction(0))
         assertNull(container.floating)
-        assertNull(container[0])
-        assertEquals(container[53], ItemStack(TestItem2, 9))
+        assertNull(container.items[0])
+        assertEquals(container.items[53], ItemStack(TestItem2, 9))
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 53 to ItemStack(TestItem2, count = 9)), null))
     }
 
@@ -86,18 +89,18 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createChest(session)
 
-        container[54] = ItemStack(TestItem3, 60)
-        container[55] = ItemStack(TestItem2, 61)
-        container[56] = ItemStack(TestItem3, 60)
-        container[57] = ItemStack(TestItem3, 56)
-        container[58] = ItemStack(TestItem3, 21)
+        container.items[54] = ItemStack(TestItem3, 60)
+        container.items[55] = ItemStack(TestItem2, 61)
+        container.items[56] = ItemStack(TestItem3, 60)
+        container.items[57] = ItemStack(TestItem3, 56)
+        container.items[58] = ItemStack(TestItem3, 21)
 
-        container[0] = ItemStack(TestItem3, 63)
+        container.items[0] = ItemStack(TestItem3, 63)
 
-        container.actions.invoke(FastMoveContainerAction(0))
+        container.execute(FastMoveContainerAction(0))
         assertNull(container.floating)
         assertEquals(
-            container.slots, slotsOf(
+            container.items.slots, slotsOf(
                 54 to ItemStack(TestItem3, 64),
                 55 to ItemStack(TestItem2, 61),
                 56 to ItemStack(TestItem3, 64),
@@ -116,11 +119,11 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createFurnace(session)
 
-        container[30] = ItemStack(TestItem1, 12)
+        container.items[30] = ItemStack(TestItem1, 12)
 
-        container.actions.invoke(FastMoveContainerAction(30))
+        container.execute(FastMoveContainerAction(30))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(3 to ItemStack(TestItem1, 12)))
+        assertEquals(container.items.slots, slotsOf(3 to ItemStack(TestItem1, 12)))
 
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 3 to ItemStack(TestItem2, count = 8)), null))
     }
@@ -129,11 +132,11 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createFurnace(session)
 
-        container[30] = ItemStack(TestItem3, 12)
+        container.items[30] = ItemStack(TestItem3, 12)
 
-        container.actions.invoke(FastMoveContainerAction(30))
+        container.execute(FastMoveContainerAction(30))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(1 to ItemStack(TestItem3, 12)))
+        assertEquals(container.items.slots, slotsOf(1 to ItemStack(TestItem3, 12)))
 
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 30, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(TestItem3, count = 12)), null))
     }
@@ -142,37 +145,37 @@ class FastMoveContainerActionTest {
     fun playerPassiveToHotbar() {
         val session = createSession()
         val container = createInventory(session)
-        container[9] = ItemStack(TestItem2)
-        container.actions.invoke(FastMoveContainerAction(9))
+        container.items[9] = ItemStack(TestItem2)
+        container.execute(FastMoveContainerAction(9))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(36 to ItemStack(TestItem2)))
+        assertEquals(container.items.slots, slotsOf(36 to ItemStack(TestItem2)))
     }
 
     fun craftingToPassive() {
         val session = createSession()
         val container = createInventory(session)
-        container[1] = ItemStack(TestItem2)
-        container.actions.invoke(FastMoveContainerAction(1))
+        container.items[1] = ItemStack(TestItem2)
+        container.execute(FastMoveContainerAction(1))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(9 to ItemStack(TestItem2)))
+        assertEquals(container.items.slots, slotsOf(9 to ItemStack(TestItem2)))
     }
 
     fun hotbarToPassive() {
         val session = createSession()
         val container = createInventory(session)
-        container[36] = ItemStack(TestItem2)
-        container.actions.invoke(FastMoveContainerAction(36))
+        container.items[36] = ItemStack(TestItem2)
+        container.execute(FastMoveContainerAction(36))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(9 to ItemStack(TestItem2)))
+        assertEquals(container.items.slots, slotsOf(9 to ItemStack(TestItem2)))
     }
 
     fun passiveToChest() {
         val session = createSession()
         val container = createChest(session)
-        container[49] = ItemStack(TestItem2, count = 19)
-        container.actions.invoke(FastMoveContainerAction(49))
+        container.items[49] = ItemStack(TestItem2, count = 19)
+        container.execute(FastMoveContainerAction(49))
         assertNull(container.floating)
-        assertEquals(container.slots, slotsOf(0 to ItemStack(TestItem2, 19)))
+        assertEquals(container.items.slots, slotsOf(0 to ItemStack(TestItem2, 19)))
     }
 
     // TODO: revert, full container
