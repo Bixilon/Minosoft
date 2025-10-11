@@ -58,7 +58,7 @@ class FastMoveContainerAction(
         return targets
     }
 
-    private fun merge(container: Container, source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
+    private fun merge(source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
         val maxStack = if (source.item is StackableItem) source.item.maxStackSize else 1
 
         for ((section, list) in targets) {
@@ -72,7 +72,7 @@ class FastMoveContainerAction(
                 content.count += count
                 transaction[slot] = content
                 if (source.count <= 0) {
-                    transaction[this.slot] -= null
+                    transaction -= this.slot
                     return
                 }
                 transaction[this.slot] = source
@@ -80,7 +80,7 @@ class FastMoveContainerAction(
         }
     }
 
-    private fun move(container: Container, source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
+    private fun move(source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
         if (source.count <= 0) return
 
         for ((section, list) in targets) {
@@ -102,8 +102,8 @@ class FastMoveContainerAction(
 
         val targets = getTargets(container.getSection(slot), source, container)
 
-        merge(container, source, transaction, targets)
-        move(container, source, transaction, targets)
+        merge(source, transaction, targets)
+        move(source, transaction, targets)
 
         val (id, changes) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {

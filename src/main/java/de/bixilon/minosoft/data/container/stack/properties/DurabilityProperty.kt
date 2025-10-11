@@ -17,36 +17,36 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
-import java.util.*
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 data class DurabilityProperty(
+    val durability: Int,
     val unbreakable: Boolean = false,
-    val durability: Int = if (stack.item is DurableItem) stack.item.maxDurability else -1,
 ) : Property {
 
-    val damageable get() = stack.item is DurableItem && stack.item.maxDurability > 0 || !unbreakable
+    init {
+        assert(durability > 0) { "Invalid durability: $durability" }
+    }
 
-    val _valid: Boolean
-        get() {
-            if (unbreakable) {
-                return true
-            }
-            if (stack.item !is DurableItem || stack.item.maxDurability <= 1) {
-                return true
-            }
-            if (durability <= 0) { // ToDo
-                return false
-            }
-            return true
+    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+        // TODO: durability
+        if (unbreakable) {
+            nbt[UNBREAKABLE_TAG] = 1.toByte()
         }
-
-    fun updateNbt(nbt: MutableJsonObject): Boolean {
-        nbt.remove(UNBREAKABLE_TAG)?.toBoolean()?.let { this.unbreakable = it }
-        nbt.remove(DAMAGE_TAG)?.toInt()?.let { if (stack.item is DurableItem) this.durability = stack.item.maxDurability - it }
     }
 
     companion object {
         private const val UNBREAKABLE_TAG = "unbreakable"
         private const val DAMAGE_TAG = "Damage"
+
+        fun of(item: Item, nbt: MutableJsonObject): DurabilityProperty? {
+            if (item !is DurableItem) return null
+
+            val durability = nbt.remove(DAMAGE_TAG)?.toInt()?.let { item.maxDurability - it } ?: item.maxDurability
+            val unbreakable = nbt.remove(UNBREAKABLE_TAG)?.toBoolean() ?: false
+
+            return DurabilityProperty(durability, unbreakable)
+        }
     }
 }

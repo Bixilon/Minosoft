@@ -61,7 +61,7 @@ class ContainerItemsElement(
         }
         this._size = size
 
-        container::slots.observeMap(this) {
+        container.items::slots.observeMap(this) {
             for ((slot, _) in it.removes) {
                 itemElements[slot]?.element?.stack = null
             }

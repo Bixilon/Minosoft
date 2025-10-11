@@ -18,6 +18,7 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.properties.*
 import de.bixilon.minosoft.data.language.translate.Translator
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -25,37 +26,35 @@ import de.bixilon.minosoft.data.text.ChatComponent
 data class ItemStack(
     val item: Item,
     val count: Int = 1,
-    val display: DisplayProperty? = null,
+    val display: DisplayProperty = DisplayProperty.DEFAULT,
     val durability: DurabilityProperty? = null,
-    val enchanting: EnchantingProperty? = null,
-    val hide: HideProperty? = null,
-    val nbt: NbtProperty? = null,
+    val enchanting: EnchantingProperty = EnchantingProperty.DEFAULT,
+    val hide: HideProperty = HideProperty.DEFAULT,
+    val nbt: NbtProperty = NbtProperty.DEFAULT,
 ) {
 
     init {
         assert(count > 0) { "Must habe positive stack count: $count" }
-    }
-
-    val valid: Boolean
-        get() {
-            return durability?._valid != false
+        if (durability != null) {
+            assert(item is DurableItem) { "Can not have durability set when item is not durable" }
         }
+    }
 
     val rarity: Rarities
         get() {
-            val itemRarity = item.rarity
-            if (enchanting?.enchantments?.isEmpty() != false) {
-                return itemRarity
+            val rarity = item.rarity
+            if (enchanting.enchantments.isEmpty()) {
+                return rarity
             }
 
-            return when (itemRarity) {
+            return when (rarity) {
                 Rarities.COMMON, Rarities.UNCOMMON -> Rarities.RARE
                 Rarities.RARE, Rarities.EPIC -> Rarities.EPIC
             }
         }
 
     fun getDisplayName(language: Translator?): ChatComponent {
-        display?.customDisplayName?.let { return it }
+        display.displayName?.let { return it }
         if (language != null) {
             val translated = language.forceTranslate(item.translationKey)
             rarity.color.let { color -> translated.setFallbackColor(color) }
@@ -68,17 +67,17 @@ data class ItemStack(
         val nbt: MutableJsonObject = mutableMapOf()
 
         // TODO: merge, not overwrite
-        this.display?.toNbt(registries)?.let { nbt.putAll(it) }
-        this.durability?.toNbt(registries)?.let { nbt.putAll(it) }
-        this.enchanting?.toNbt(registries)?.let { nbt.putAll(it) }
-        this.hide?.toNbt(registries)?.let { nbt.putAll(it) }
-        this.nbt?.toNbt(registries)?.let { nbt.putAll(it) }
+        this.display.writeNbt(registries, nbt)
+        this.durability?.writeNbt(registries, nbt)
+        this.enchanting.writeNbt(registries, nbt)
+        this.hide.writeNbt(registries, nbt)
+        this.nbt.writeNbt(registries, nbt)
 
         return nbt
     }
 
     fun matches(other: ItemStack?): Boolean {
-        if (other == null) return !valid
+        if (other == null) return false
         return item == other.item && display == other.display && durability == other.durability && enchanting == other.enchanting && hide == other.hide && nbt == other.nbt
     }
 

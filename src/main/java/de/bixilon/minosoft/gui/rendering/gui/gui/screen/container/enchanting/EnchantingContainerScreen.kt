@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
-import glm_.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
+import glm_.vec2.Vec2
 import kotlin.reflect.KClass
 
 class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingContainer, val atlas: Atlas? = guiRenderer.atlas[ATLAS]) : LabeledContainerScreen<EnchantingContainer>(guiRenderer, container, atlas["container"]) {
@@ -36,7 +36,6 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
 
     init {
         container::propertiesRevision.observe(this) { forceApply() }
-        container::revision.observe(this) { forceApply() }
     }
 
     override fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

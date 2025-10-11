@@ -17,40 +17,50 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.language.translate.Translator
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import java.util.*
 
 data class DisplayProperty(
+    val displayName: ChatComponent? = null,
     val lore: List<ChatComponent> = emptyList(),
-    val customDisplayName: ChatComponent? = null,
     val dyeColor: RGBColor? = null,
 ) : Property {
 
+    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+        // TODO
+    }
+
 
     companion object {
+        val DEFAULT = DisplayProperty()
         private const val DISPLAY_TAG = "display"
         private const val DISPLAY_MAME_TAG = "Name"
         private const val DISPLAY_LORE_TAG = "Lore"
         private const val DISPLAY_COLOR_TAG = "color"
 
-        fun ItemStack.updateDisplayNbt(nbt: MutableJsonObject): Boolean {
-            val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return false
-            display[DISPLAY_MAME_TAG]?.let { this.display.customDisplayName = ChatComponent.of(it, translator = this.holder?.session?.language) }
+        fun of(translator: Translator, nbt: MutableJsonObject): DisplayProperty {
+            val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>()?.takeIf { it.isNotEmpty() } ?: return DEFAULT
 
-            display[DISPLAY_LORE_TAG]?.listCast<String>()?.let {
+            val displayName = display[DISPLAY_MAME_TAG]?.let { ChatComponent.of(it, translator = translator) }
+
+            val lore = display[DISPLAY_LORE_TAG]?.listCast<String>()?.takeIf { it.isNotEmpty() }?.let {
+                val lore = ArrayList<ChatComponent>(it.size)
                 for (line in it) {
-                    this.display.lore += ChatComponent.of(line, translator = this.holder?.session?.language)
+                    lore += ChatComponent.of(line, translator = translator)
                 }
+
+                return@let lore
             }
 
-            display[DISPLAY_COLOR_TAG]?.toInt()?.rgb()?.let { this.display._dyeColor = it }
-            if (_display == null) return false
+            val dyeColor = display[DISPLAY_COLOR_TAG]?.toInt()?.rgb()
 
-            return !this.display.isDefault()
+            if (displayName == null && (lore == null || lore.isEmpty()) && dyeColor == null) return DEFAULT
+
+            return DisplayProperty(displayName, lore ?: emptyList(), dyeColor)
         }
     }
 }

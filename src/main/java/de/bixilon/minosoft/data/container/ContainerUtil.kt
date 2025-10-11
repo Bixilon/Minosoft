@@ -20,13 +20,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 object ContainerUtil {
 
     fun slotsOf(vararg slots: Pair<Int, ItemStack?>): Int2ObjectMap<ItemStack?> {
-        val map = Int2ObjectOpenHashMap<ItemStack?>()
+        val map = Int2ObjectOpenHashMap<ItemStack?>(slots.size)
         for ((slot, stack) in slots) {
-            val valid = stack == null || stack.valid
-            if (!valid) {
-                map[slot] = null
-                continue
-            }
             map[slot] = stack
         }
 

@@ -30,7 +30,7 @@ class CloneContainerAction(
 
     override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         if (container.floating != null) return
-        val clicked = container[slot] ?: return
+        val clicked = transaction[slot] ?: return
         val stack = clicked.copy(count = if (clicked.item is StackableItem) clicked.item.maxStackSize else 1)
 
         transaction.floating = stack

@@ -32,19 +32,16 @@ class ContainerItems(
     }
 
     operator fun set(slotId: Int, stack: ItemStack) = lock.locked {
-        if (!stack.valid) {
-            slots -= slotId
-            return@locked
-        }
         slots[slotId] = stack
     }
 
     operator fun set(slotId: Int, stack: ItemStack?) = lock.locked {
-        if (stack == null || !stack.valid) {
+        if (stack == null) {
             slots -= slotId
-            return
+        } else {
+            slots[slotId] = stack
         }
-        slots[slotId] = stack
+
     }
 
     fun clear() = lock.locked {

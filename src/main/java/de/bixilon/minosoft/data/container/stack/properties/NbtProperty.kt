@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 @JvmInline
@@ -21,5 +22,17 @@ value class NbtProperty(
     val nbt: JsonObject = emptyMap(),
 ) : Property {
 
-    override fun toNbt(registries: Registries) = nbt
+    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+        nbt.putAll(this.nbt) // TODO: merge
+    }
+
+    companion object {
+        val DEFAULT = NbtProperty()
+
+        fun of(nbt: MutableJsonObject): NbtProperty {
+            if (nbt.isEmpty()) return DEFAULT
+
+            return NbtProperty(nbt)
+        }
+    }
 }
