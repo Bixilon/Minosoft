@@ -13,19 +13,38 @@
 
 package de.bixilon.minosoft.data.container.transaction
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.minosoft.data.container.Container
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 class ContainerTransactionManager(
     val container: Container,
 ) {
-    val id = AtomicInteger()
+    private val transactions = Int2ObjectOpenHashMap<ContainerTransaction>(10)
+    private val id = AtomicInteger(1)
 
     fun create(transaction: ContainerTransaction): Int {
-        TODO()
-    }
-    fun clear()
+        container.lock.lock()
+        val id = this.id.getAndIncrement()
 
-    fun acknowledge(id: Int)
-    fun revert(id: Int)
+        while (transactions.size >= MAX_TRANSACTIONS) {
+            transactions.iterator().remove()
+        }
+
+        transactions[id] = transaction
+        container.lock.unlock()
+
+        return id
+    }
+
+    fun clear() = container.lock.locked { this.transactions.clear() }
+
+    fun acknowledge(id: Int) = container.lock.locked { transactions -= id }
+    fun revert(id: Int) = container.lock.locked { transactions.remove(id).revert() }
+
+
+    companion object {
+        const val MAX_TRANSACTIONS = 30
+    }
 }

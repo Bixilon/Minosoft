@@ -26,7 +26,6 @@ import org.testng.annotations.Test
 class ContainerTransactionTest {
     val A = ItemStack(TestItem1)
     val B = ItemStack(TestItem2)
-    val C = ItemStack(TestItem3)
 
     fun `commit empty transaction`() {
         val container = createInventory()
