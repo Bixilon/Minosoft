@@ -29,13 +29,13 @@ class ContainerLockingTest {
         container.lock()
 
         container.clear()
-        container[0] = ItemStack(TestItem2, count = 15)
-        container[2] = ItemStack(TestItem3)
+        container.items[0] = ItemStack(TestItem2, count = 15)
+        container.items[2] = ItemStack(TestItem3)
 
         assertEquals(container.revision, 0L)
         container.commit()
         assertEquals(container.revision, 1L)
-        assertEquals(container[0], ItemStack(TestItem2, count = 15))
+        assertEquals(container.items[0], ItemStack(TestItem2, count = 15))
     }
 
     fun verifyNoChange() {
@@ -51,13 +51,13 @@ class ContainerLockingTest {
 
         assertEquals(container.revision, 0L)
 
-        container[0] = ItemStack(TestItem2, count = 15)
+        container.items[0] = ItemStack(TestItem2, count = 15)
 
         assertEquals(container.revision, 1L)
-        assertNotNull(container[0])
-        container[0]!!.item.increaseCount()
+        assertNotNull(container.items[0])
+        container.items[0]!!.item.increaseCount()
         assertEquals(container.revision, 2L)
-        assertEquals(container[0], ItemStack(TestItem2, count = 16))
+        assertEquals(container.items[0], ItemStack(TestItem2, count = 16))
     }
 
     fun bulkEdit() {
@@ -66,11 +66,11 @@ class ContainerLockingTest {
         assertEquals(container.revision, 0L)
         container.lock()
 
-        container[0] = ItemStack(TestItem2, count = 15)
+        container.items[0] = ItemStack(TestItem2, count = 15)
 
-        assertNotNull(container[0])
-        container[0]!!.item.decreaseCount()
-        assertEquals(container[0]!!.item.count, 14)
+        assertNotNull(container.items[0])
+        container.items[0]!!.item.decreaseCount()
+        assertEquals(container.items[0]!!.item.count, 14)
 
         assertEquals(container.revision, 0L)
         container.commit()
@@ -82,32 +82,32 @@ class ContainerLockingTest {
 
         container.lock()
 
-        container[0] = ItemStack(TestItem2, count = 1)
+        container.items[0] = ItemStack(TestItem2, count = 1)
 
-        assertNotNull(container[0])
-        container[0]!!.item.decreaseCount()
-        assertNull(container[0])
+        assertNotNull(container.items[0])
+        container.items[0]!!.item.decreaseCount()
+        assertNull(container.items[0])
         container.commit()
     }
 
     fun bulkEditSingleItem() {
         val container = createContainer()
 
-        container[0] = ItemStack(TestItem2, count = 1)
+        container.items[0] = ItemStack(TestItem2, count = 1)
 
-        container[0]!!.lock()
-        container[0]!!.item.increaseCount()
-        container[0]!!.enchanting.repairCost = 123
-        container[0]!!.commit()
+        container.items[0]!!.lock()
+        container.items[0]!!.item.increaseCount()
+        container.items[0]!!.enchanting.repairCost = 123
+        container.items[0]!!.commit()
     }
 
     fun ensureLockedBulk() {
         val container = createContainer()
 
         container.lock()
-        container[0] = ItemStack(TestItem2, count = 1)
+        container.items[0] = ItemStack(TestItem2, count = 1)
         var end = 0L
-        Thread { container[1] = ItemStack(TestItem2); end = TimeUtil.nanos() }.start()
+        Thread { container.items[1] = ItemStack(TestItem2); end = TimeUtil.nanos() }.start()
         Thread.sleep(30L)
         assertEquals(end, 0L)
         container.commit()
@@ -118,14 +118,14 @@ class ContainerLockingTest {
     fun ensureLockedSingle() {
         val container = createContainer()
 
-        container[0] = ItemStack(TestItem2, count = 1)
-        container[0]!!.lock()
+        container.items[0] = ItemStack(TestItem2, count = 1)
+        container.items[0]!!.lock()
 
         var end = 0L
-        Thread { container[0]!!.item.increaseCount(); end = TimeUtil.nanos() }.start()
+        Thread { container.items[0]!!.item.increaseCount(); end = TimeUtil.nanos() }.start()
         Thread.sleep(30L)
         assertEquals(end, 0L)
-        container[0]!!.commit()
+        container.items[0]!!.commit()
         Thread.sleep(30L)
         assertNotEquals(end, 0L)
     }
@@ -133,7 +133,7 @@ class ContainerLockingTest {
     fun iterating() {
         val container = createContainer()
 
-        container[0] = ItemStack(TestItem2, count = 1)
+        container.items[0] = ItemStack(TestItem2, count = 1)
 
         container.lock.acquire()
         var slots = 0

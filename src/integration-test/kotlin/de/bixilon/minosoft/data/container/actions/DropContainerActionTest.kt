@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.container.actions.types.DropSlotContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
@@ -31,7 +32,7 @@ class DropContainerActionTest {
     fun dropEmptySingle() {
         val session = createSession()
         val container = createContainer(session)
-        container.actions.invoke(DropSlotContainerAction(7, false))
+        container.execute(DropSlotContainerAction(7, false))
         assertNull(container.floating)
         session.assertNoPacket()
     }
@@ -39,7 +40,7 @@ class DropContainerActionTest {
     fun dropEmptyStack() {
         val session = createSession()
         val container = createContainer(session)
-        container.actions.invoke(DropSlotContainerAction(9, true))
+        container.execute(DropSlotContainerAction(9, true))
         assertNull(container.floating)
         session.assertNoPacket()
     }
@@ -47,50 +48,30 @@ class DropContainerActionTest {
     fun testDropSingle() {
         val session = createSession()
         val container = createContainer(session)
-        container[9] = ItemStack(TestItem2, count = 8)
-        container.actions.invoke(DropSlotContainerAction(9, false))
+        container.items[9] = ItemStack(TestItem1, count = 8)
+        container.execute(DropSlotContainerAction(9, false))
         assertNull(container.floating)
-        assertEquals(container[9], ItemStack(TestItem2, count = 7))
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(TestItem2, count = 7)), null))
+        assertEquals(container.items[9], ItemStack(TestItem1, count = 7))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(TestItem1, count = 7)), null))
     }
 
     fun testDropSingleEmpty() {
         val session = createSession()
         val container = createContainer(session)
-        container[9] = ItemStack(TestItem2, count = 1)
-        container.actions.invoke(DropSlotContainerAction(9, false))
+        container.items[9] = ItemStack(TestItem1, count = 1)
+        container.execute(DropSlotContainerAction(9, false))
         assertNull(container.floating)
-        assertEquals(container[9], null)
+        assertEquals(container.items[9], null)
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
     }
 
     fun testDropStack() {
         val session = createSession()
         val container = createContainer(session)
-        container[9] = ItemStack(TestItem2, count = 12)
-        container.actions.invoke(DropSlotContainerAction(9, true))
+        container.items[9] = ItemStack(TestItem1, count = 12)
+        container.execute(DropSlotContainerAction(9, true))
         assertNull(container.floating)
-        assertEquals(container[9], null)
+        assertEquals(container.items[9], null)
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
-    }
-
-    fun testSingleRevert() {
-        val session = createSession()
-        val container = createContainer(session)
-        container[8] = ItemStack(TestItem1, count = 9)
-        val action = DropSlotContainerAction(8, false)
-        container.actions.invoke(action)
-        container.actions.revert(action)
-        assertEquals(container[8], ItemStack(TestItem1, count = 9))
-    }
-
-    fun testStackRevert() {
-        val session = createSession()
-        val container = createContainer(session)
-        container[8] = ItemStack(TestItem1, count = 9)
-        val action = DropSlotContainerAction(8, true)
-        container.actions.invoke(action)
-        container.actions.revert(action)
-        assertEquals(container[8], ItemStack(TestItem1, count = 9))
     }
 }

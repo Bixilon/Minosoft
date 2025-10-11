@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.TestItem1
+import de.bixilon.minosoft.data.container.TestItem2
 import de.bixilon.minosoft.data.container.actions.types.CloneContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
@@ -31,7 +33,7 @@ class CloneContainerActionTest {
     fun testEmpty() {
         val session = createSession()
         val container = createContainer(session)
-        container.actions.invoke(CloneContainerAction(0))
+        container.execute(CloneContainerAction(0))
         assertNull(container.floating)
         session.assertNoPacket()
     }
@@ -40,28 +42,28 @@ class CloneContainerActionTest {
         val session = createSession()
         val container = createContainer(session)
         container.floating = ItemStack(TestItem1, count = 7)
-        container.actions.invoke(CloneContainerAction(6))
+        container.execute(CloneContainerAction(6))
         assertEquals(container.floating, ItemStack(TestItem1, count = 7))
-        assertNull(container[6])
+        assertNull(container.items[6])
         session.assertNoPacket()
     }
 
     fun testAlready2() {
         val session = createSession()
         val container = createContainer(session)
-        container[6] = ItemStack(TestItem2, count = 7)
+        container.items[6] = ItemStack(TestItem2, count = 7)
         container.floating = ItemStack(TestItem1, count = 7)
-        container.actions.invoke(CloneContainerAction(6))
+        container.execute(CloneContainerAction(6))
         assertEquals(container.floating, ItemStack(TestItem1, count = 7))
-        assertEquals(container[6], ItemStack(TestItem2, count = 7))
+        assertEquals(container.items[6], ItemStack(TestItem2, count = 7))
         session.assertNoPacket()
     }
 
     fun testTaking() {
         val session = createSession()
         val container = createContainer(session)
-        container[1] = ItemStack(TestItem2)
-        container.actions.invoke(CloneContainerAction(1))
+        container.items[1] = ItemStack(TestItem2)
+        container.execute(CloneContainerAction(1))
         assertEquals(container.floating, ItemStack(TestItem2, count = 64))
         // TODO: Not sending any packet in 1.18.2?
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(TestItem2, count = 64)))
@@ -70,8 +72,8 @@ class CloneContainerActionTest {
     fun taskTalking2() {
         val session = createSession()
         val container = createContainer(session)
-        container[3] = ItemStack(TestItem2, count = 8)
-        container.actions.invoke(CloneContainerAction(3))
+        container.items[3] = ItemStack(TestItem2, count = 8)
+        container.execute(CloneContainerAction(3))
         assertEquals(container.floating, ItemStack(TestItem2, count = 64))
         // TODO: Not sending any packet in 1.18.2?
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(TestItem2, count = 64)))
@@ -80,21 +82,11 @@ class CloneContainerActionTest {
     fun testStackLimit() {
         val session = createSession()
         val container = createContainer(session)
-        container[8] = ItemStack(TestItem1, count = 9)
-        container.actions.invoke(CloneContainerAction(8))
+        container.items[8] = ItemStack(TestItem1, count = 9)
+        container.execute(CloneContainerAction(8))
         assertEquals(container.floating, ItemStack(TestItem1, count = 16))
         // TODO: Not sending any packet in 1.18.2?
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(TestItem1, count = 16)))
     }
 
-    fun testRevert() {
-        val session = createSession()
-        val container = createContainer(session)
-        container[8] = ItemStack(TestItem1, count = 9)
-        val action = CloneContainerAction(8)
-        container.actions.invoke(action)
-        assertEquals(container.floating, ItemStack(TestItem1, count = 16))
-        container.actions.revert(action)
-        assertNull(container.floating)
-    }
 }
