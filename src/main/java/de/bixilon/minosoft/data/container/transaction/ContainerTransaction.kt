@@ -24,11 +24,23 @@ class ContainerTransaction(
     var state: TransactionState = TransactionState.PENDING
         private set
 
-    fun commit(): CommittedAction
-    fun drop()
-    fun revert()
+    fun commit(): CommittedAction {
+        assert(state == TransactionState.PENDING)
+        // TODO
+        val id = container.transactions.create(this)
+        state = TransactionState.COMMITTED
+    }
 
-    fun clear()
+    fun drop() {
+        assert(state == TransactionState.PENDING)
+        state = TransactionState.DROPPED
+    }
+
+    fun revert() {
+        assert(state == TransactionState.COMMITTED)
+        state = TransactionState.REVERTED
+        // TODO
+    }
 
 
     operator fun get(slotId: Int): ItemStack?

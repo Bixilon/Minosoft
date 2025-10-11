@@ -27,7 +27,7 @@ class SlotSwapContainerAction(
     val target: SwapTargets,
 ) : ContainerAction {
 
-    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         val targetId = container.getSlotSwap(target) ?: return
         val source = transaction[sourceId]
         val target = transaction[targetId]

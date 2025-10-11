@@ -15,12 +15,13 @@ package de.bixilon.minosoft.data.container
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
+import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.actions.types.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.transaction.ContainerTransactionManager
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
@@ -34,9 +35,9 @@ abstract class Container(
     val type: ContainerType,
     val title: ChatComponent? = null,
     val id: Int,
-) : Iterable<Map.Entry<Int, ItemStack>> {
+) {
     val lock = ReentrantRWLock()
-    val slots: MutableMap<Int, ItemStack> by observedMap(mutableMapOf())
+    val items = ContainerItems(lock)
     val transactions = ContainerTransactionManager(this)
     var serverRevision = 0
     var floating: ItemStack? by observed(null)
@@ -63,9 +64,6 @@ abstract class Container(
         floating = null // ToDo: They are dropped, but not in all versions
     }
 
-    operator fun get(slotId: Int): ItemStack?
-
-
     protected open fun onAdd(slotId: Int, stack: ItemStack) = true
     protected open fun onSet(slotId: Int, previous: ItemStack, next: ItemStack) = true
     protected open fun onRemove(slotId: Int, stack: ItemStack) = true
@@ -86,7 +84,8 @@ abstract class Container(
         session.events.fire(ContainerCloseEvent(session, this))
     }
 
-    override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
-        return slots.iterator()
+    fun execute(action: ContainerAction) {
+        val transaction = ContainerTransaction(this)
+        action.execute(session, this, transaction)
     }
 }

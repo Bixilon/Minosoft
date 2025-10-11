@@ -28,7 +28,7 @@ class CloneContainerAction(
     val slot: Int,
 ) : ContainerAction {
 
-    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         if (container.floating != null) return
         val clicked = container[slot] ?: return
         val stack = clicked.copy(count = if (clicked.item is StackableItem) clicked.item.maxStackSize else 1)

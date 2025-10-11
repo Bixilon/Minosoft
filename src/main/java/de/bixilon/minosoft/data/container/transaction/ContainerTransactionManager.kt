@@ -21,10 +21,11 @@ class ContainerTransactionManager(
 ) {
     val id = AtomicInteger()
 
-    fun create() = ContainerTransaction(container)
+    fun create(transaction: ContainerTransaction): Int {
+        TODO()
+    }
     fun clear()
 
     fun acknowledge(id: Int)
     fun revert(id: Int)
-    fun remove(transaction: ContainerTransaction)
 }

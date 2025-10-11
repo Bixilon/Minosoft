@@ -46,7 +46,7 @@ class ContainerItemsElement(
 
         val size = MVec2f.EMPTY
         for ((slotId, binding) in slots) {
-            val item = container[slotId]
+            val item = container.items[slotId]
             itemElements[slotId] = ItemElementData(
                 element = ItemElement(
                     guiRenderer = guiRenderer,

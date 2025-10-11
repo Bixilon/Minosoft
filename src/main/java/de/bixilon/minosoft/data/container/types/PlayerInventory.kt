@@ -46,23 +46,23 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(
-    private val items: PlayerItemManager,
+    val manager: PlayerItemManager,
     session: PlaySession,
 ) : Container(session = session, type = TYPE, id = CONTAINER_ID), ClientContainer {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 
     init {
-        this::slots.observeMap(this) {
-            for ((slotId, stack) in it.removes) {
-                if (slotId - HOTBAR_OFFSET == items.hotbar) {
+        this.items::slots.observeMap(this) {
+            for ((slotId, _) in it.removes) {
+                if (slotId - HOTBAR_OFFSET == manager.hotbar) {
                     this.equipment -= EquipmentSlots.MAIN_HAND
                     continue
                 }
                 this.equipment -= slotId.equipmentSlot ?: continue
             }
             for ((slotId, stack) in it.adds) {
-                if (slotId - HOTBAR_OFFSET == items.hotbar) {
+                if (slotId - HOTBAR_OFFSET == manager.hotbar) {
                     this.equipment[EquipmentSlots.MAIN_HAND] = stack
                     continue
                 }
@@ -72,35 +72,34 @@ class PlayerInventory(
     }
 
 
-    fun getHotbarSlot(hotbarSlot: Int = items.hotbar): ItemStack? {
-        check(hotbarSlot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
-        return this[hotbarSlot + HOTBAR_OFFSET]
+    fun getHotbarSlot(slot: Int = manager.hotbar): ItemStack? {
+        assert(slot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
+        return items[slot + HOTBAR_OFFSET]
+    }
+
+    fun setHotbarSlot(slot: Int = manager.hotbar, value: ItemStack?) {
+        assert(slot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
+        items[slot + HOTBAR_OFFSET] = value
     }
 
     operator fun get(slot: EquipmentSlots): ItemStack? {
-        return this[slot.slot]
+        return items[slot.slot]
     }
 
     operator fun set(slot: EquipmentSlots, stack: ItemStack?) {
-        this[slot.slot] = stack
+        items[slot.slot] = stack
     }
 
-    operator fun get(hand: Hands): ItemStack? {
-        return this[(when (hand) {
-            Hands.MAIN -> EquipmentSlots.MAIN_HAND
-            Hands.OFF -> EquipmentSlots.OFF_HAND
-        })]
-    }
+    operator fun get(hand: Hands) = this[(when (hand) {
+        Hands.MAIN -> EquipmentSlots.MAIN_HAND
+        Hands.OFF -> EquipmentSlots.OFF_HAND
+    })]
 
     @JvmName("setEquipment")
     fun set(vararg slots: Pair<EquipmentSlots, ItemStack?>) {
-        val realSlots: MutableList<Pair<Int, ItemStack?>> = mutableListOf()
-
         for ((slot, stack) in slots) {
-            realSlots += Pair(slot.slot, stack)
+            items[slot.slot] = stack
         }
-
-        set(*realSlots.toTypedArray())
     }
 
     override fun onOpen() {
@@ -136,7 +135,7 @@ class PlayerInventory(
             EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
             EquipmentSlots.FEET -> ARMOR_OFFSET + 3
 
-            EquipmentSlots.MAIN_HAND -> items.hotbar + HOTBAR_OFFSET
+            EquipmentSlots.MAIN_HAND -> manager.hotbar + HOTBAR_OFFSET
             EquipmentSlots.OFF_HAND -> OFFHAND_SLOT
         }
 

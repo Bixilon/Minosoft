@@ -19,8 +19,11 @@ import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
 interface DurableItem : ItemWithMeta {
     val maxDurability: Int
 
-    override fun setMeta(stack: ItemStack, meta: Int) {
-        stack.durability.durability = maxDurability - meta // in <1.13 its damage not durability
+    override fun withMeta(stack: ItemStack, meta: Int): ItemStack? {
+        val durability = maxDurability - meta  // in <1.13 its damage not durability
+        if (durability <= 0) return null
+
+        return stack.with(durability = durability)
     }
 
     override fun getMeta(id: Int, stack: ItemStack): Int {

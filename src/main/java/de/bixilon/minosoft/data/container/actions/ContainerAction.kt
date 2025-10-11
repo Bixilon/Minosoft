@@ -22,5 +22,5 @@ interface ContainerAction {
      * Invokes the action
      * (changes the container and sends the packets to the server)
      */
-    fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction)
+    fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction)
 }

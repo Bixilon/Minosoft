@@ -32,11 +32,12 @@ data class ItemStack(
     val nbt: NbtProperty? = null,
 ) {
 
+    init {
+        assert(count > 0) { "Must habe positive stack count: $count" }
+    }
+
     val valid: Boolean
         get() {
-            if (count <= 0) {
-                return false
-            }
             return durability?._valid != false
         }
 
@@ -83,6 +84,11 @@ data class ItemStack(
 
     @Deprecated("final", level = DeprecationLevel.ERROR)
     fun copy(): Unit = Broken()
+
+    fun with(count: Int = this.count, durability: Int? = this.durability?.durability): ItemStack? {
+        if (count <= 0) return null
+        return copy(count = count) // TODO: durability
+    }
 
     override fun toString(): String {
         // this should not get synchronized, otherwise your debugger won't work that good:)

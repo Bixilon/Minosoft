@@ -30,10 +30,10 @@ class PickAllContainerAction(
     @Deprecated("packet only") val slot: Int,
 ) : ContainerAction {
 
-    override fun invoke(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         // TODO (1.18.2) minecraft always sends a packet
-        val previous = container[slot]
-        val floating = container.floating
+        val previous = transaction[slot]
+        val floating = transaction.floating
         if (previous != null || floating == null) {
             return
         }
@@ -42,7 +42,7 @@ class PickAllContainerAction(
 
         var next = floating.count
 
-        for ((slotId, slot) in container.slots) {
+        for ((slotId, slot) in container.items) {
             if (!floating.matches(slot)) continue
             if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
                 continue
