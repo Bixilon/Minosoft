@@ -141,7 +141,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 val text = BaseComponent("Facing ")
 
                 Directions.byDirection(rotation.front).apply {
-                    text += this
+                    text += TextComponent(name.lowercase()).color(ChatColors.YELLOW)
                     text += " "
                     text += vector
                 }
