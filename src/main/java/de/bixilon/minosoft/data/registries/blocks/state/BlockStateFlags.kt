@@ -18,6 +18,7 @@ import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 
 enum class BlockStateFlags {
     FULLY_OPAQUE,
+    FLUID,
     WATERLOGGED,
     ;
 

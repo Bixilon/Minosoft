@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion._isWaterlogged
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -33,6 +34,9 @@ open class PropertyBlockState(
     init {
         if (_isWaterlogged()) {
             flags += BlockStateFlags.WATERLOGGED
+        }
+        if (BlockStateFlags.WATERLOGGED in flags || block is FluidHolder) {
+            flags += BlockStateFlags.FLUID
         }
     }
 

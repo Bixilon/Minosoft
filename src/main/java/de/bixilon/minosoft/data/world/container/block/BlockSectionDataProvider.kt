@@ -15,8 +15,7 @@ package de.bixilon.minosoft.data.world.container.block
 
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
-import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -25,9 +24,10 @@ class BlockSectionDataProvider(
     lock: Lock? = null,
     val section: ChunkSection,
 ) : SectionDataProvider<BlockState?>(lock, true) {
+    private var fluidCount = 0
     val occlusion = SectionOcclusion(this)
-    var hasFluid = false
-        private set
+
+    val hasFluid get() = fluidCount > 0
 
     init {
         recalculate(false)
@@ -38,33 +38,31 @@ class BlockSectionDataProvider(
     }
 
     private fun recalculateFluid() {
-        val data: Array<Any?> = data ?: return
-        if (isEmpty) {
-            this.hasFluid = false
+        val data = data
+        if (data == null || isEmpty) {
+            fluidCount = 0
             return
         }
-
-        var hasFluid = false
+        var count = 0
         for (state in data) {
-            if (state !is BlockState?) continue
+            if (state == null) continue
+            state as BlockState
             if (state.isFluid()) {
-                hasFluid = true
-                break
+                count++
             }
         }
-        this.hasFluid = hasFluid
+        fluidCount = count
     }
 
     fun recalculate(notify: Boolean) {
         super.recalculate()
+        recalculateFluid()
         if (isEmpty) {
-            hasFluid = false
             occlusion.clear(notify)
             return
         }
-        recalculateFluid()
 
-        occlusion.recalculate(notify)
+        // occlusion.recalculate(notify)
     }
 
     fun noOcclusionSet(position: InSectionPosition, value: BlockState?): BlockState? {
@@ -73,9 +71,9 @@ class BlockSectionDataProvider(
         val valueFluid = value.isFluid()
 
         if (!previousFluid && valueFluid) {
-            hasFluid = true
+            fluidCount++
         } else if (previousFluid && !valueFluid) {
-            recalculateFluid()
+            fluidCount--
         }
 
         return previous
@@ -91,9 +89,6 @@ class BlockSectionDataProvider(
 
     private fun BlockState?.isFluid(): Boolean {
         if (this == null) return false
-        if (this.block is FluidHolder) {
-            return true
-        }
-        return this.isWaterlogged()
+        return BlockStateFlags.FLUID in flags
     }
 }

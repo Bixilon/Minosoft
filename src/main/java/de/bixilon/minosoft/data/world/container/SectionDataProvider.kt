@@ -18,7 +18,6 @@ import de.bixilon.kutil.collections.iterator.EmptyIterator
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 // Dump section: provider.joinToString(";") { it?.block?.identifier?.path ?: "" }
 open class SectionDataProvider<T>(
@@ -30,7 +29,7 @@ open class SectionDataProvider<T>(
     var count: Int = 0
         private set
     val isEmpty: Boolean
-        get() = count == 0
+        get() = data == null || count == 0
     var minPosition = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
         private set
     var maxPosition = InSectionPosition(0, 0, 0)
@@ -40,7 +39,8 @@ open class SectionDataProvider<T>(
     open operator fun get(position: InSectionPosition) = data?.get(position.index) as T
     open operator fun get(x: Int, y: Int, z: Int) = this[InSectionPosition(x, y, z)]
 
-    protected open fun recalculate() {
+
+    protected open fun recalculateSize() {
         val data = data
         if (data == null) {
             count = 0
@@ -93,6 +93,10 @@ open class SectionDataProvider<T>(
         }
     }
 
+    protected open fun recalculate() {
+        recalculateSize()
+    }
+
 
     open fun unsafeSet(position: InSectionPosition, value: T): T? {
         var data = data
@@ -116,10 +120,9 @@ open class SectionDataProvider<T>(
         data[position.index] = value
 
         if (checkSize) {
-
             if (value == null) {
                 if ((minPosition.x == position.x && minPosition.y == position.y && minPosition.z == position.z) || (maxPosition.x == position.x && maxPosition.y == position.y && maxPosition.z == position.z)) {
-                    recalculate()
+                    recalculateSize()
                 }
             } else {
                 if (minPosition.x > position.x) minPosition = minPosition.with(x = position.x)

@@ -13,13 +13,16 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
+import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.minosoft.data.registries.blocks.WaterTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
+import kotlin.random.Random
 
 @Test(groups = ["chunk"], dependsOnGroups = ["block"])
 class BlockSectionDataProviderTest {
@@ -101,7 +104,7 @@ class BlockSectionDataProviderTest {
     }
 
 
-    /*
+    @Test(enabled = false)
     fun benchmark() {
         val water = WaterTest0.state
         val stone = IT.BLOCK_1
@@ -109,21 +112,18 @@ class BlockSectionDataProviderTest {
 
         val data = create()
         for (i in 0 until ChunkSize.BLOCKS_PER_SECTION) {
+            val positon = InSectionPosition(i)
             if (random.nextBoolean()) {
-                data[i] = water
+                data[positon] = water
             } else if (random.nextBoolean()) {
-                data[i] = stone
+                data[positon] = stone
             }
         }
 
-        val time = measureTime {
-            for (i in 0 until 1999_999) {
-                data.recalculate(false)
-            }
-        }
-        println("Took: ${time.inWholeNanoseconds.formatNanos()}")
+        BenchmarkUtil.benchmark(iterations = 199_999) {
+            data.recalculate(false)
+        }.println()
     }
-     */
 
     // TODO: test initial block set
 }

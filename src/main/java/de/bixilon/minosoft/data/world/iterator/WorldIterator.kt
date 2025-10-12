@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPred
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -107,7 +108,7 @@ class WorldIterator(
     fun hasCollisions(context: CollisionContext, fluids: Boolean = true, predicate: CollisionPredicate? = null): Boolean {
         val aabb = context.aabb
         for ((position, state) in this) {
-            if (fluids && (state.block is FluidHolder)) {
+            if (fluids && (BlockStateFlags.FLUID in state.flags && state.block is FluidHolder)) {
                 //   val height = state.block.fluid.getHeight(state)
                 //   if (position.y + height > aabb.min.y) {
                 return true

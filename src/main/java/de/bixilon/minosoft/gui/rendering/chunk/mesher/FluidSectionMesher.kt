@@ -18,6 +18,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -49,13 +50,11 @@ class FluidSectionMesher(
     private val water = context.session.registries.fluid[WaterFluid]
     private val tints = context.tints
 
-    private fun BlockState.getFluid(): Fluid? {
-        val block = block
-        return when {
-            block is FluidHolder -> block.fluid
-            water != null && isWaterlogged() -> water
-            else -> null
-        }
+    private fun BlockState.getFluid() = when {
+        BlockStateFlags.FLUID !in flags -> null
+        water != null && isWaterlogged() -> water
+        block is FluidHolder -> block.fluid
+        else -> null
     }
 
 
