@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
@@ -24,7 +23,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
-import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -111,7 +109,7 @@ class FluidSectionMesher(
                     var rendered = false
                     position = BlockPosition(x = offsetX + x, y = offsetY + y, z = offsetZ + z)
 
-                    tint = tints.getFluidTint(chunk, fluid, height, position) ?: Colors.WHITE_RGB
+                    tint = tints.getFluidTint(chunk, fluid, height, position)
                     val cornerHeights = floatArrayOf(
                         getCornerHeight(chunk, position, fluid),
                         getCornerHeight(chunk, position + Directions.EAST, fluid),

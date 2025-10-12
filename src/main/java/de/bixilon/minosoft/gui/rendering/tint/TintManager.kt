@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
@@ -71,17 +72,17 @@ class TintManager(val session: PlaySession) {
         return getBlockTint(state, offset, biome, cache)
     }
 
-    fun getParticleTint(state: BlockState, position: BlockPosition): RGBColor? {
-        if (state.block !is TintedBlock) return null
-        val tintProvider = state.block.tintProvider ?: return null
+    fun getParticleTint(state: BlockState, position: BlockPosition): RGBColor {
+        if (state.block !is TintedBlock) return Colors.WHITE_RGB
+        val tintProvider = state.block.tintProvider ?: return Colors.WHITE_RGB
 
         // TODO: cache chunk of particle
         val biome = session.world.biomes[position]
         return tintProvider.getParticleColor(state, biome, position)
     }
 
-    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): RGBColor? {
-        val provider = fluid.model?.tint ?: return null
+    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): RGBColor {
+        val provider = fluid.model?.tint ?: return Colors.WHITE_RGB
         val biome = chunk.getBiome(position.inChunkPosition)
         return provider.getFluidTint(fluid, biome, height, position)
     }
