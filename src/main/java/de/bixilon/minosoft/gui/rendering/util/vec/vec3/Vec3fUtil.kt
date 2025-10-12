@@ -13,6 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f._Vec3f
+import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
@@ -20,11 +25,6 @@ import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.f._Vec3f
-import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.util.KUtil.cos
 import de.bixilon.minosoft.util.KUtil.rad
 import de.bixilon.minosoft.util.KUtil.sin
@@ -71,7 +71,7 @@ object Vec3fUtil {
         when (axis) {
             Axes.X -> {
                 val yz = rotate(this.y, this.z, sin, cos, rescale)
-                this.y = yz.y; this.z = yz.y
+                this.y = yz.x; this.z = yz.y
             }
 
             Axes.Y -> {
