@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
-import glm_.vec2.Vec2
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
