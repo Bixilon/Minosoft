@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.place
 
+import de.bixilon.kmath.vec.vec3.i.SVec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.minosoft.data.registries.blocks.TorchTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.kmath.vec.vec3.i.SVec3i
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
@@ -169,8 +169,8 @@ class BlockLightPlaceIT {
         val world = SessionTestUtil.createSession(3, light = true).world
         val events: MutableList<SVec3i> = synchronizedListOf()
         world.session.events.listen<WorldUpdateEvent> {
-            if (it.update !is SectionLightUpdate) return@listen
-            events += SVec3i(it.update.chunk.position.x, (it.update as SectionLightUpdate).section.height, it.update.chunk.position.z)
+            if (it.update !is ChunkLightUpdate) return@listen
+            events += SVec3i(it.update.chunk.position.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunk.position.z)
         }
         world[BlockPosition(8, 24, 8)] = TorchTest0.state
 
