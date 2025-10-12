@@ -122,7 +122,7 @@ object Minosoft {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
         }
 
-        CommandLineArguments.connect?.connect()
+        CommandLineArguments.connect.connect()
     }
 
     private fun javafx(taskWorker: TaskWorker) {

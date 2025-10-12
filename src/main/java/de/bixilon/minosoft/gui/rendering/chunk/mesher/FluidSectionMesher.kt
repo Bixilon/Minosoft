@@ -63,14 +63,13 @@ class FluidSectionMesher(
     fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
-        var position: BlockPosition
-        var tint: RGBColor
-
         val cameraOffset = context.camera.offset.offset
 
         val offsetX = sectionPosition.x * ChunkSize.SECTION_WIDTH_X
         val offsetY = sectionPosition.y * ChunkSize.SECTION_HEIGHT_Y
         val offsetZ = sectionPosition.z * ChunkSize.SECTION_WIDTH_Z
+
+        val skip = BooleanArray(Directions.VALUES.size)
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
@@ -95,21 +94,19 @@ class FluidSectionMesher(
                         return FaceCulling.canCull(state, model.properties, direction, neighbour)
                     }
 
-                    val skip = booleanArrayOf(
-                        isSideCovered(Directions.DOWN), /* ToDo */
-                        isSideCovered(Directions.UP),
-                        isSideCovered(Directions.NORTH),
-                        isSideCovered(Directions.SOUTH),
-                        isSideCovered(Directions.WEST),
-                        isSideCovered(Directions.EAST),
-                    )
+                    skip[Directions.O_DOWN] = isSideCovered(Directions.DOWN)
+                    skip[Directions.O_UP] = isSideCovered(Directions.UP)
+                    skip[Directions.O_NORTH] = isSideCovered(Directions.NORTH)
+                    skip[Directions.O_SOUTH] = isSideCovered(Directions.SOUTH)
+                    skip[Directions.O_WEST] = isSideCovered(Directions.WEST)
+                    skip[Directions.O_EAST] = isSideCovered(Directions.EAST)
 
                     if (skip.isTrue) continue
 
                     var rendered = false
-                    position = BlockPosition(x = offsetX + x, y = offsetY + y, z = offsetZ + z)
+                    val position = BlockPosition(x = offsetX + x, y = offsetY + y, z = offsetZ + z)
 
-                    tint = tints.getFluidTint(chunk, fluid, height, position)
+                    val tint = tints.getFluidTint(chunk, fluid, height, position)
                     val cornerHeights = floatArrayOf(
                         getCornerHeight(chunk, position, fluid),
                         getCornerHeight(chunk, position + Directions.EAST, fluid),
@@ -140,7 +137,7 @@ class FluidSectionMesher(
                             texture = model.flowing
                             maxUV.unsafe.x = 0.5f
 
-                            val atan = atan2(velocity!!.x, velocity.z).toFloat()
+                            val atan = atan2(velocity.x, velocity.z).toFloat()
                             val sin = atan.sin
                             val cos = atan.cos
 
