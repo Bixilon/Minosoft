@@ -89,6 +89,7 @@ class SpriteAnimator(val context: RenderContext) {
         buffer!!.use(shader, bufferName)
     }
 
+    @Synchronized
     fun create(texture: Texture, source: TextureBuffer, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
         val data = properties.create(source.size)
 
