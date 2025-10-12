@@ -74,7 +74,7 @@ class DummyRenderSystem(
     override val usedVRAM: Long = -1
     override val availableVRAM: Long = -1
     override val maximumVRAM: Long = -1
-    override val vendorString: String = "Bixilon hand made super gpu"
+    override val vendorString: String = "Bixilon's hand made super gpu"
     override val version: String = "dummy"
     override val gpuType: String = "dummy"
     override var clearColor = Colors.TRANSPARENT
