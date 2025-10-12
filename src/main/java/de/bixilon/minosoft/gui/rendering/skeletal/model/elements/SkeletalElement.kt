@@ -18,10 +18,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
-import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
 import de.bixilon.minosoft.util.json.SkeletalRotationDeserializer
 
@@ -38,13 +35,8 @@ data class SkeletalElement(
     val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
 
-    fun bake(consumer: AbstractSkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform, path: String) {
-        val context = SkeletalBakeContext(transform = transform, textures = textures, consumer = consumer)
-        return bake(context, path)
-    }
-
-    private fun bake(context: SkeletalBakeContext, path: String) {
-        val context = context.copy(this)
+    fun bake(context: SkeletalBakeContext, path: String) {
+        val context = context.copy(element = this)
 
 
         val transform = context.transform.id

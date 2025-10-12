@@ -30,12 +30,12 @@ class LegAnimator(
     private fun apply() {
         val angle = model.speedAnimator.getAngle(MAX_ANGLE).rad
 
-        left.value.apply {
+        left.matrix.apply {
             translateAssign(left.pivot)
             rotateXAssign(-angle)
             translateAssign(left.nPivot)
         }
-        right.value.apply {
+        right.matrix.apply {
             translateAssign(left.pivot)
             rotateXAssign(angle)
             translateAssign(left.nPivot)

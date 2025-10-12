@@ -26,11 +26,11 @@ class TransformInstance(
 ) {
     private val array = children.values.toTypedArray()
     val nPivot = -pivot
-    val value = MMat4f()
+    val matrix = MMat4f()
 
 
     fun reset() {
-        this.value.clearAssign()
+        this.matrix.clearAssign()
 
         for (child in array) {
             child.reset()
@@ -38,19 +38,16 @@ class TransformInstance(
     }
 
     fun pack(parent: Mat4f) {
-        Mat4Operations.times(parent, value.unsafe, value)
+        Mat4Operations.times(parent, matrix.unsafe, matrix)
 
         for (child in array) {
-            child.pack(this.value.unsafe)
+            child.pack(this.matrix.unsafe)
         }
     }
 
     fun pack(buffer: FloatBuffer) {
-        val array = value._0.array
-
-        val offset = this.id * Mat4f.LENGTH
-        buffer.position(offset)
-        buffer.put(array, 0, Mat4f.LENGTH)
+        buffer.position(this.id * Mat4f.LENGTH)
+        buffer.put(matrix._0.array, 0, Mat4f.LENGTH)
 
         for (child in this.array) {
             child.pack(buffer)

@@ -34,7 +34,7 @@ data class TranslateKeyframe(
 
     override fun instance() = object : Vec3KeyframeInstance(data, loop, interpolation) {
         override fun apply(value: Vec3f, transform: TransformInstance) {
-            transform.value
+            transform.matrix
                 .translateAssign(value)
         }
     }

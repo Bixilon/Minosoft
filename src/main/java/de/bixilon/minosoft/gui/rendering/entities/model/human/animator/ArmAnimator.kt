@@ -49,10 +49,10 @@ class ArmAnimator(
     private fun apply(arm: Arms, walking: Float) {
         val transform = this[arm]
         val swinging = swinging[arm.ordinal]
-        transform.value.translateAssign(right.pivot)
+        transform.matrix.translateAssign(right.pivot)
 
         if (swinging.isNaN()) {
-            transform.value.rotateXAssign(walking)
+            transform.matrix.rotateXAssign(walking)
         } else {
             var swing = 1.0f - (swinging)
             swing *= swing
@@ -66,9 +66,9 @@ class ArmAnimator(
             val x = sin * -1.4f
 
 
-            transform.value.rotateRadAssign(Vec3f(x, y, if (arm == Arms.RIGHT) z else -z))
+            transform.matrix.rotateRadAssign(Vec3f(x, y, if (arm == Arms.RIGHT) z else -z))
         }
-        transform.value
+        transform.matrix
             .translateAssign(right.nPivot)
 
     }

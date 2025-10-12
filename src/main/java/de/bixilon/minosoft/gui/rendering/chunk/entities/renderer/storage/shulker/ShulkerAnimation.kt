@@ -32,7 +32,7 @@ class ShulkerAnimation(
     override fun transform() {
         val rotation = interpolateLinear(this.progress, ROTATION_CLOSED, ROTATION_OPENED)
         val translation = interpolateLinear(this.progress, TRANSLATION_CLOSED, TRANSLATION_OPENED)
-        transform.value.apply {
+        transform.matrix.apply {
             translateAssign(translation)
             translateAssign(transform.pivot)
             rotateRadAssign(rotation)

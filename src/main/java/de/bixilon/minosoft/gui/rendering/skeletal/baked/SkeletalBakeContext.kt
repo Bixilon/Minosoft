@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Compa
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
-import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalInstanceTextureMap
 
 data class SkeletalBakeContext(
     val offset: Vec3f = Vec3f.EMPTY,
@@ -28,7 +28,7 @@ data class SkeletalBakeContext(
     val transform: BakedSkeletalTransform,
     val rotation: SkeletalRotation? = null,
 
-    val textures: Map<ResourceLocation, SkeletalTextureInstance>,
+    val textures: SkeletalInstanceTextureMap,
     val consumer: AbstractSkeletalMesh,
 ) {
 

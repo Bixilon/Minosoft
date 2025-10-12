@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshBuilder
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -38,7 +38,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
         if (loaded) throw IllegalStateException("Already loaded!")
         val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.1f)
 
-        for ((name, registered) in this.registered) {
+        for ((_, registered) in this.registered) {
             var template = templates[registered.template]
             if (template == null) {
                 template = loader.context.session.assetsManager.getOrNull(registered.template)?.readJson()
@@ -57,13 +57,13 @@ class SkeletalLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         for ((name, registered) in this.registered) {
-            val baked = registered.model?.bake(loader.context, registered.override, registered.mesh.buildMesh(loader.context)) ?: continue
+            val baked = registered.model?.bake(registered.override, registered.mesh.buildMesh(loader.context)) ?: continue
             this.baked[name] = baked
         }
     }
 
     fun upload() {
-        for ((name, baked) in this.baked) {
+        for ((_, baked) in this.baked) {
             baked.load()
         }
     }
@@ -76,7 +76,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
         return this.baked[name]
     }
 
-    fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture> = emptyMap(), mesh: SkeletalMeshBuilder = SkeletalMesh) {
+    fun register(name: ResourceLocation, template: ResourceLocation = name, override: SkeletalTextureMap = emptyMap(), mesh: SkeletalMeshBuilder = SkeletalMesh) {
         if (loaded) throw IllegalStateException("Already loaded!")
         val previous = this.registered.put(name, RegisteredModel(template, override, mesh))
         if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
@@ -84,7 +84,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
 
     private data class RegisteredModel(
         val template: ResourceLocation,
-        val override: Map<ResourceLocation, ShaderTexture>,
+        val override: SkeletalTextureMap,
         var mesh: SkeletalMeshBuilder,
         var model: SkeletalModel? = null,
     )

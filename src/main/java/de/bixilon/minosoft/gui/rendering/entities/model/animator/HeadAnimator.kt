@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.animator
 
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
@@ -35,7 +33,7 @@ class HeadAnimator(
         if (renderer.entity.isFlipped()) {
             this.rotation.x = -this.rotation.x // TODO: not 100% correct
         }
-        transform.value.apply {
+        transform.matrix.apply {
             translateAssign(transform.pivot)
             rotateRadAssign(rotation)
             translateAssign(transform.nPivot)
