@@ -114,6 +114,10 @@ class FluidSectionMesher(
                         getCornerHeight(chunk, position + Directions.SOUTH, fluid),
                     )
 
+                    if (cornerHeights[2].isNaN()) { // corner height can be invalid here
+                        cornerHeights[2] = cornerHeights[0]
+                    }
+
                     val offsetPosition = Vec3f(position - cameraOffset)
 
                     if (cornerHeights[0] <= 1.0f && !skip[Directions.O_UP]) {

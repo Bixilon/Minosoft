@@ -78,9 +78,10 @@ class ChunkSection(
             return blocks[offset.inSectionPosition]
         }
         val chunk = this.chunk.neighbours.traceChunk(chunkOffset) ?: return null
-        return chunk[offset.inChunkPosition]
+        val position = offset.inChunkPosition.plusY(this.height * ChunkSize.SECTION_HEIGHT_Y)
+        return chunk[position]
     }
 
     fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset - origin)
-    fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock((BlockPosition(origin.x, origin.y, origin.z) + direction))
+    fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock(BlockPosition(origin.x, origin.y, origin.z) + direction)
 }

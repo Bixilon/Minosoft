@@ -120,4 +120,11 @@ class ChunkNeighboursTest {
         chunk[InChunkPosition(2, 5, 8)] = IT.BLOCK_1 // 18 5 24
         assertEquals(world.chunks[-1, 0]!!.neighbours.traceBlock(InChunkPosition(3, 1, 3), BlockPosition(31, 4, 21)), IT.BLOCK_1)
     }
+
+    fun `trace block relative offset neighbour chunk negative`() {
+        val world = create()
+        val chunk = world.chunks[1, 1]!!
+        chunk[InChunkPosition(2, 21, 8)] = IT.BLOCK_1
+        assertEquals(world.chunks[2, 2]!!.neighbours.traceBlock(InChunkPosition(2, 37, 8), BlockPosition(-16, -16, -16)), IT.BLOCK_1)
+    }
 }
