@@ -20,6 +20,7 @@ enum class BlockStateFlags {
     FULLY_OPAQUE,
     FLUID,
     WATERLOGGED,
+    COLLISIONS,
     ;
 
     companion object : ValuesEnum<BlockStateFlags> {

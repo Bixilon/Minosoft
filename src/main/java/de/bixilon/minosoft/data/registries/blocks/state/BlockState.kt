@@ -16,6 +16,8 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion._isFullyOpaque
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
@@ -30,6 +32,12 @@ open class BlockState(
     init {
         if (_isFullyOpaque()) {
             flags += BlockStateFlags.FULLY_OPAQUE
+        }
+        if (block is CollidableBlock) {
+            flags += BlockStateFlags.COLLISIONS
+        }
+        if (block is FluidHolder) {
+            flags += BlockStateFlags.FLUID
         }
     }
 

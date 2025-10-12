@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.*
 
@@ -188,9 +187,8 @@ class SectionOcclusion(
 
 
         fun BlockState?._isFullyOpaque(): Boolean {
-            if (this == null) {
-                return false
-            }
+            if (this == null) return false
+
             if (BlockStateFlags.FULLY_OPAQUE in flags) return true
             val block = this.block
             if (block is FullOpaqueBlock) return true

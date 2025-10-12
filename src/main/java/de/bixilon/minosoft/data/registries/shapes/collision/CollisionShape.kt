@@ -23,6 +23,7 @@ import de.bixilon.kutil.memory.allocator.TemporaryAllocator
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
@@ -82,7 +83,7 @@ class CollisionShape(
         // TODO: add world border collision shape
 
         for ((position, state, chunk) in WorldIterator(aabbs, world, chunk)) {
-            if (state.block !is CollidableBlock) continue
+            if (BlockStateFlags.COLLISIONS !in state.flags || state.block !is CollidableBlock) continue
             if (predicate != null && !predicate.invoke(state)) continue
             // TODO: filter blocks (e.g. moving piston), whatever that means
 
@@ -126,7 +127,7 @@ class CollisionShape(
         TODO("Not yet implemented")
     }
 
-    override fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit? {
+    override fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit {
         TODO("Not yet implemented")
     }
 

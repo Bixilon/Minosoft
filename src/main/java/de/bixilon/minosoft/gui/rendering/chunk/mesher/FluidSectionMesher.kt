@@ -269,7 +269,7 @@ class FluidSectionMesher(
 
             if (!fluid.matches(state)) {
                 // TODO: this was !blockState.material.solid
-                if (state.block !is CollidableBlock || state.block.getCollisionShape(context.session, EmptyCollisionContext, now, state, null) == null) {
+                if ((BlockStateFlags.COLLISIONS !in state.flags || state.block !is CollidableBlock) || state.block.getCollisionShape(context.session, EmptyCollisionContext, now, state, null) == null) {
                     count++
                 }
                 continue

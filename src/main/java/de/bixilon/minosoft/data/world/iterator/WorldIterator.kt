@@ -114,7 +114,7 @@ class WorldIterator(
                 return true
                 //    }
             }
-            if (state.block !is CollidableBlock) continue
+            if (BlockStateFlags.COLLISIONS !in state.flags || state.block !is CollidableBlock) continue
             if (predicate != null && !predicate.invoke(state)) continue
 
             val shape = state.block.getCollisionShape(world.session, context, position, state, null) ?: continue
