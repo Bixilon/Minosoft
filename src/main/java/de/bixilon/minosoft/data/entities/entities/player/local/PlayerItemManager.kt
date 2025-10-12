@@ -30,9 +30,6 @@ import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 class PlayerItemManager(private val player: LocalPlayerEntity) {
     val inventory = PlayerInventory(this, player.session)
 
-    @Deprecated("this is probably not needed anymore, container network packets are not async anymore")
-    val incomplete: SynchronizedMap<Int, IncompleteContainer> = synchronizedMapOf()
-
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
         PlayerInventory.CONTAINER_ID to inventory,
     )
@@ -61,11 +58,9 @@ class PlayerItemManager(private val player: LocalPlayerEntity) {
         }
 
         inventory.transactions.clear()
-        incomplete.clear()
 
         containers.clear()
         containers[PlayerInventory.CONTAINER_ID] = inventory
-
     }
 
     init {

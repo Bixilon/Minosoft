@@ -28,20 +28,8 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val stack = buffer.readItemStack()
 
     override fun handle(session: PlaySession) {
-        val container = session.player.items.containers[containerId]
+        val container = session.player.items.containers[containerId] ?: return
 
-        if (container == null) {
-            val incomplete = session.player.items.incomplete.synchronizedGetOrPut(containerId) { IncompleteContainer() }
-            if (slot < 0) {
-                incomplete.floating = stack
-            } else if (stack == null) {
-                incomplete.slots -= slot
-            } else {
-                incomplete.slots[slot] = stack
-            }
-
-            return
-        }
         if (slot < 0) {
             container.floating = stack
         } else {
