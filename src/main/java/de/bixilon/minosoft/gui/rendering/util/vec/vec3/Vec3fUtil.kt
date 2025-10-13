@@ -49,7 +49,7 @@ object Vec3fUtil {
 
     inline val _Vec3f.rad get() = Vec3f(x.rad, y.rad, z.rad)
 
-    fun rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2f {
+    inline fun <T> rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean, setter: (x: Float, y: Float) -> T): T {
         var _x = x * cos - y * sin
         var _y = x * sin + y * cos
 
@@ -57,8 +57,10 @@ object Vec3fUtil {
             _x /= cos
             _y /= cos
         }
-        return Vec2f(_x, _y)
+        return setter.invoke(_x, _y)
     }
+
+    fun rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean) = rotate(x, y, sin, cos, rescale) { x, y -> Vec2f(x, y) }
 
 
     inline fun MVec3f.rotateAssign(angle: Float, axis: Axes, rescale: Boolean = false) {
@@ -69,20 +71,9 @@ object Vec3fUtil {
 
 
         when (axis) {
-            Axes.X -> {
-                val yz = rotate(this.y, this.z, sin, cos, rescale)
-                this.y = yz.x; this.z = yz.y
-            }
-
-            Axes.Y -> {
-                val xz = rotate(this.x, this.z, sin, cos, rescale)
-                this.x = xz.x; this.z = xz.y
-            }
-
-            Axes.Z -> {
-                val xy = rotate(this.x, this.y, sin, cos, rescale)
-                this.x = xy.x; this.y = xy.y
-            }
+            Axes.X -> rotate(this.y, this.z, sin, cos, rescale) { y, z -> this.y = y; this.z = z }
+            Axes.Y -> rotate(this.x, this.z, sin, cos, rescale) { x, z -> this.x = x; this.z = z }
+            Axes.Z -> rotate(this.x, this.y, sin, cos, rescale) { x, y -> this.x = x; this.y = y }
         }
     }
 
