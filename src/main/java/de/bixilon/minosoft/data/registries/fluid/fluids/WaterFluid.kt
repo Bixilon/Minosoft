@@ -66,12 +66,12 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
         return other.isWaterlogged()
     }
 
-    override fun getHeight(state: BlockState): Float {
+    override fun getHeight(state: BlockState?): Float {
         val `super` = super.getHeight(state)
         if (`super` != 0.0f) {
             return `super`
         }
-        if (state.isWaterlogged()) {
+        if (state != null && state.isWaterlogged()) {
             return MAX_LEVEL
         }
         return 0.0f

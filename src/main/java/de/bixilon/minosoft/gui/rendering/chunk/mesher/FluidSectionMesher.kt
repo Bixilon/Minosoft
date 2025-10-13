@@ -17,11 +17,13 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -69,5 +71,26 @@ class FluidSectionMesher(
                 }
             }
         }
+    }
+
+    private fun ChunkSection.getFluidHeight(fluid: Fluid, position: InSectionPosition, offset: BlockPosition): Float {
+        val offset = offset - position
+        val up = traceBlock(offset + Directions.UP)
+        if (fluid.matches(up)) return 1.0f
+
+        return fluid.getHeight(traceBlock(offset))
+    }
+
+    private fun getFluidHeights(section: ChunkSection, position: InSectionPosition, fluid: Fluid) {
+        val heights = FloatArray(9)
+
+        heights[0] = section.getFluidHeight(fluid, position, BlockPosition(0, 0, 0)) // TODO
+
+    }
+
+    private fun getCornerHeights(heights: FloatArray) {
+        FloatArray(4)
+
+
     }
 }
