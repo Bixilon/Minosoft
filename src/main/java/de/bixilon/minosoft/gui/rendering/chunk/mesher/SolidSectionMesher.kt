@@ -61,12 +61,12 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
+    fun mesh(chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
-        val isLowestSection = sectionPosition.y == chunk.minSection
-        val isHighestSection = sectionPosition.y == chunk.maxSection
+        val isLowestSection = section.height == chunk.minSection
+        val isHighestSection = section.height == chunk.maxSection
         val blocks = section.blocks
         val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
@@ -76,7 +76,7 @@ class SolidSectionMesher(
 
         val cameraOffset = context.camera.offset.offset
 
-        val offset = BlockPosition.of(sectionPosition)
+        val offset = BlockPosition.of(chunk.position, section.height)
 
         val floatOffset = MVec3f(3)
 

@@ -38,10 +38,10 @@ class ChunkMesher(
         }
         val mesh = ChunkMeshesBuilder(renderer.context, item.section.smallMesh)
         try {
-            solid.mesh(item.position, item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
+            solid.mesh(item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
 
             if (item.section.blocks.hasFluid) {
-                fluid.mesh(item.position, item.chunk, item.section, mesh)
+                fluid.mesh(item.chunk, item.section, mesh)
             }
         } catch (exception: Exception) {
             mesh.drop()

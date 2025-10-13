@@ -44,14 +44,14 @@ class FluidSectionMesher(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshesBuilder) {
+    fun mesh(chunk: Chunk, section: ChunkSection, mesh: ChunkMeshesBuilder) {
         val blocks = section.blocks
 
         context.camera.offset.offset
 
-        sectionPosition.x * ChunkSize.SECTION_WIDTH_X
-        sectionPosition.y * ChunkSize.SECTION_HEIGHT_Y
-        sectionPosition.z * ChunkSize.SECTION_WIDTH_Z
+        val offsetX = chunk.position.x * ChunkSize.SECTION_WIDTH_X
+        val offsetY = section.height * ChunkSize.SECTION_HEIGHT_Y
+        val offsetZ = chunk.position.z * ChunkSize.SECTION_WIDTH_Z
 
         BooleanArray(Directions.VALUES.size)
 
@@ -72,7 +72,6 @@ class FluidSectionMesher(
             }
         }
     }
-
     private fun ChunkSection.getFluidHeight(fluid: Fluid, position: InSectionPosition, offset: BlockPosition): Float {
         val offset = offset - position
         val up = traceBlock(offset + Directions.UP)
