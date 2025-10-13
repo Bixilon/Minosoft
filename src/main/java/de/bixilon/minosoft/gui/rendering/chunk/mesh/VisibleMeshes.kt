@@ -25,30 +25,32 @@ class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMe
     val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
     val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
     val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
-    val blockEntities: ArrayList<BlockEntityRenderer<*>> = ArrayList(previous?.blockEntities?.size ?: 128)
+    val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(previous?.entities?.size ?: 128)
 
     val sizeString: String
-        get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${blockEntities.size.format()}"
+        get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${entities.size.format()}"
 
 
-    fun addMesh(mesh: ChunkMeshes) {
+    fun add(mesh: ChunkMeshes) {
         val distance = Vec3fUtil.distance2(cameraPosition, mesh.center)
-        mesh.opaqueMesh?.let {
+        mesh.opaque?.let {
             it.distance = distance
             opaque += it
         }
-        mesh.translucentMesh?.let {
+        mesh.translucent?.let {
             it.distance = -distance
             translucent += it
         }
-        mesh.textMesh?.let {
+        mesh.text?.let {
             it.distance = distance
             text += it
         }
-        mesh.blockEntities?.let {
-            blockEntities += it
+        mesh.entities?.let {
+            entities += it
         }
     }
+
+    operator fun plusAssign(mesh: ChunkMeshes) = add(mesh)
 
 
     fun sort() {
@@ -60,17 +62,20 @@ class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMe
     }
 
 
-    fun removeMesh(mesh: ChunkMeshes) {
-        mesh.opaqueMesh?.let { opaque -= it }
-        mesh.translucentMesh?.let { translucent -= it }
-        mesh.textMesh?.let { text -= it }
-        mesh.blockEntities?.let { blockEntities -= it }
+    fun remove(mesh: ChunkMeshes) {
+        mesh.opaque?.let { opaque -= it }
+        mesh.translucent?.let { translucent -= it }
+        mesh.text?.let { text -= it }
+        mesh.entities?.let { entities -= it }
     }
+
+    operator fun minusAssign(mesh: ChunkMeshes) = remove(mesh)
+
 
     fun clear() {
         opaque.clear()
         translucent.clear()
         text.clear()
-        blockEntities.clear()
+        entities.clear()
     }
 }

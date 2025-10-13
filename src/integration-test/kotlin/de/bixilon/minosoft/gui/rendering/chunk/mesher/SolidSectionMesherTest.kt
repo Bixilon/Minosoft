@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -79,20 +80,20 @@ class SolidSectionMesherTest {
         return session
     }
 
-    private fun PlaySession.mesh(): ChunkMeshes {
+    private fun PlaySession.mesh(): ChunkMeshes? {
         val context = createContext(this)
         val mesher = SolidSectionMesher(context)
 
         val chunk = world.chunks[0, 0]!!
-        val meshes = ChunkMeshes(context, SectionPosition.of(chunk.position, 0), true)
+        val meshes = ChunkMeshesBuilder(context, true)
 
         mesher.mesh(SectionPosition.of(chunk.position, 0), chunk, chunk.sections[0]!!, chunk.neighbours.neighbours, chunk.sections[0]!!.neighbours!!, meshes)
 
-        return meshes
+        return meshes.build(SectionPosition.of(chunk.position, 0))
     }
 
 
-    private fun mesh(blocks: Map<BlockPosition, BlockState?>): ChunkMeshes {
+    private fun mesh(blocks: Map<BlockPosition, BlockState?>): ChunkMeshes? {
         val session = createSession(blocks)
 
         return session.mesh()
@@ -101,14 +102,14 @@ class SolidSectionMesherTest {
     fun `test simple stone block`() {
         val queue = TestQueue()
         val stone = queue.fullOpaque()
-        val meshes = mesh(mapOf(BlockPosition(2, 2, 2) to stone))
+        val meshes = mesh(mapOf(BlockPosition(2, 2, 2) to stone))!!
 
         queue.assert(
             TestQueue.RenderedBlock(BlockPosition(2, 2, 2), stone),
         )
 
-        assertEquals(meshes.minPosition, InSectionPosition(2, 2, 2))
-        assertEquals(meshes.maxPosition, InSectionPosition(2, 2, 2))
+        assertEquals(meshes.min, InSectionPosition(2, 2, 2))
+        assertEquals(meshes.max, InSectionPosition(2, 2, 2))
     }
 
     fun `tinted and untinted block`() {
@@ -132,16 +133,16 @@ class SolidSectionMesherTest {
         val meshes = mesh(mapOf(
             BlockPosition(0, 0, 0) to stone,
             BlockPosition(15, 15, 15) to stone,
-        ))
+        ))!!
 
         queue.assert(
             TestQueue.RenderedBlock(BlockPosition(0, 0, 0), stone),
             TestQueue.RenderedBlock(BlockPosition(15, 15, 15), stone),
         )
 
-        assertEquals(meshes.minPosition, InSectionPosition(0, 0, 0))
-        assertEquals(meshes.maxPosition, InSectionPosition(15, 15, 15))
-        assertEquals(meshes.blockEntities?.size, 0)
+        assertEquals(meshes.min, InSectionPosition(0, 0, 0))
+        assertEquals(meshes.max, InSectionPosition(15, 15, 15))
+        assertEquals(meshes.entities, null)
     }
 
     @Test(enabled = false)
@@ -177,7 +178,7 @@ class SolidSectionMesherTest {
         val meshes = mesh(mapOf(
             BlockPosition(2, 2, 2) to entity,
             BlockPosition(2, 5, 2) to stone,
-        ))
+        ))!!
 
         queue.assert(
             TestQueue.RenderedBlock(BlockPosition(2, 5, 2), stone),
@@ -185,7 +186,7 @@ class SolidSectionMesherTest {
         queue.assert(
             TestQueue.RenderedEntity(BlockPosition(2, 2, 2), entity),
         )
-        assertEquals(meshes.blockEntities?.size, 1)
+        assertEquals(meshes.entities?.size, 1)
     }
 
     @Test(enabled = false)
@@ -500,11 +501,11 @@ class SolidSectionMesherTest {
         override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
         override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
         override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
-        override fun getProperties(direction: Directions): SideProperties? {
-            return this.properties
-        }
+
+        override fun getProperties(direction: Directions) = this.properties
 
         override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
+            (props.mesh as ChunkMeshesBuilder).opaque.addVertex(1f, 1f, 1f, 1f, 1f, 1f)
             queue.blocks.add(TestQueue.RenderedBlock(position, state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }

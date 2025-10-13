@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
@@ -54,12 +54,11 @@ class BakedFaceTest {
         return mesh
     }
 
-    private fun mesh(): ChunkMeshes {
-        val mesh = OBJENESIS.newInstance(ChunkMeshes::class.java)
-        mesh::opaqueMesh.forceSet(singleMesh())
+    private fun mesh(): ChunkMeshesBuilder {
+        val mesh = OBJENESIS.newInstance(ChunkMeshesBuilder::class.java)
+        mesh::opaque.forceSet(singleMesh())
 
         return mesh
-
     }
 
     fun mixed() {
@@ -73,7 +72,7 @@ class BakedFaceTest {
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
 
-        val data = mesh.opaqueMesh!!.data.toArray()
+        val data = mesh.opaque!!.data.toArray()
         val expected = floatArrayOf(
             0f, 1f, 2f, PackedUV.pack(-1f, -2f), texture, lightTint,
             9f, 10f, 11f, PackedUV.pack(-7f, -8f), texture, lightTint,
@@ -95,7 +94,7 @@ class BakedFaceTest {
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
 
-        val data = mesh.opaqueMesh!!.data.toArray()
+        val data = mesh.opaque!!.data.toArray()
         val expected = floatArrayOf(
             0f, 0f, 0f, PackedUV.pack(0f, 0f), texture, lightTint,
             0f, 0f, 1f, PackedUV.pack(1f, 0f), texture, lightTint,

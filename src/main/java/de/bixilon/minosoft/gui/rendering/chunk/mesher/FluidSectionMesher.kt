@@ -35,7 +35,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotate
@@ -59,7 +59,7 @@ class FluidSectionMesher(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshes) {
+    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, mesh: ChunkMeshesBuilder) {
         val blocks = section.blocks
 
         val cameraOffset = context.camera.offset.offset

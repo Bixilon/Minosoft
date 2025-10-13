@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign
 
-import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -31,11 +32,10 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Wal
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -62,9 +62,9 @@ class SignBlockEntityRenderer(
         state.model?.render(props, position, state, entity, tints) // render wood part
         if (entity !is SignBlockEntity) return true
 
-        if (props.mesh !is ChunkMeshes) return true // TODO
+        if (props.mesh !is ChunkMeshesBuilder) return true // TODO
 
-        renderText(state, entity, props.offset, props.mesh.textMesh!!, props.light[SELF_LIGHT_INDEX].toInt())
+        renderText(state, entity, props.offset, props.mesh.text, props.light[SELF_LIGHT_INDEX].toInt())
 
         return true
     }

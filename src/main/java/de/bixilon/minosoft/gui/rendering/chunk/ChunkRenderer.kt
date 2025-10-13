@@ -92,7 +92,7 @@ class ChunkRenderer(
         layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visible.opaque.isEmpty() }
         layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
         layers.register(TextLayer, textShader, this::drawText) { visible.text.isEmpty() }
-        layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.blockEntities.isEmpty() }
+        layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.entities.isEmpty() }
     }
 
     override fun postInit(latch: AbstractLatch) {
@@ -236,7 +236,7 @@ class ChunkRenderer(
     }
 
     private fun drawBlockEntities() {
-        for (blockEntity in visible.blockEntities) {
+        for (blockEntity in visible.entities) {
             blockEntity.draw(context)
         }
     }

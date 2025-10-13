@@ -61,7 +61,7 @@ class ChunkMeshingQueue(
         working = true
 
 
-        val items: MutableList<WorldQueueItem> = mutableListOf()
+        val items: MutableList<WorldQueueItem> = ArrayList(tasks.max - size)
         lock()
         for (i in 0 until tasks.max - size) {
             if (queue.isEmpty()) {

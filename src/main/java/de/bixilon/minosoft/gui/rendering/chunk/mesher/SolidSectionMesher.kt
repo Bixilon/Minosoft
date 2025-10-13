@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
@@ -37,14 +38,12 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusion
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 class SolidSectionMesher(
@@ -62,7 +61,7 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
+    fun mesh(sectionPosition: SectionPosition, chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
@@ -149,7 +148,7 @@ class SolidSectionMesher(
                 }
             }
         }
-        mesh.blockEntities = entities
+        mesh.entities = entities
     }
 
     private inline fun setDown(state: BlockState, fastBedrock: Boolean, position: InSectionPosition, lowest: Boolean, neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, light: ByteArray, section: ChunkSection, chunk: Chunk) {

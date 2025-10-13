@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import kotlin.time.TimeSource
 
 class MeshLoadingQueue(
     private val renderer: ChunkRenderer,
@@ -66,14 +65,14 @@ class MeshLoadingQueue(
 
 
             meshes.put(mesh.position.y, mesh)?.let {
-                renderer.visible.removeMesh(it)
+                renderer.visible -= it
                 it.unload()
             }
 
-            val visible = renderer.visibility.isSectionVisible(mesh.position, mesh.minPosition, mesh.maxPosition)
+            val visible = renderer.visibility.isSectionVisible(mesh.position, mesh.min, mesh.max)
             if (visible) {
                 count++
-                renderer.visible.addMesh(mesh)
+                renderer.visible += mesh
             }
         }
         renderer.loaded.unlock()

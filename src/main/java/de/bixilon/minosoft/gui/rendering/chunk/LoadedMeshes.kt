@@ -109,10 +109,10 @@ class LoadedMeshes(
             while (iterator.hasNext()) {
                 val key = iterator.nextInt()
                 val mesh = meshes[key] ?: continue
-                if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, key), mesh.minPosition, mesh.maxPosition)) {
+                if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, key), mesh.min, mesh.max)) {
                     continue
                 }
-                visible.addMesh(mesh)
+                visible += mesh
             }
         }
         lock.release()

@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
 
@@ -28,16 +29,14 @@ class ChunkMesher(
 
     private fun mesh(item: WorldQueueItem): ChunkMeshes? {
         if (item.section.blocks.isEmpty) {
-            renderer.unload(item)
             return null
         }
         val neighbours = item.chunk.neighbours
         val sectionNeighbours = item.section.neighbours
         if (!neighbours.complete || sectionNeighbours == null) {
-            renderer.unload(item)
             return null
         }
-        val mesh = ChunkMeshes(renderer.context, item.position, item.section.smallMesh)
+        val mesh = ChunkMeshesBuilder(renderer.context, item.section.smallMesh)
         try {
             solid.mesh(item.position, item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
 
@@ -45,21 +44,21 @@ class ChunkMesher(
                 fluid.mesh(item.position, item.chunk, item.section, mesh)
             }
         } catch (exception: Exception) {
-            mesh.unload()
+            mesh.drop()
             throw exception
         }
 
-        return mesh
+        return mesh.build(item.position)
     }
 
     private fun mesh(item: WorldQueueItem, runnable: InterruptableRunnable) {
-        val mesh = mesh(item) ?: return
+        val mesh = mesh(item)
         runnable.interruptable = false
-        if (Thread.interrupted()) return
-        if (mesh.clearEmpty() == 0) {
+        if (mesh == null) {
             return renderer.unload(item)
         }
-        mesh.finish()
+        if (Thread.interrupted()) throw InterruptedException()
+        mesh.preload()
         item.mesh = mesh
         renderer.loadingQueue.queue(mesh)
     }
