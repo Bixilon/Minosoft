@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.physics.submersion
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Tickable
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.physics.VanillaMath.vanillaNormalizeAssign
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -67,6 +67,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         val totalVelocity = MVec3d()
         var count = 0
 
+        val velocity = MVec3d()
         for ((position, state, chunk) in WorldIterator(aabb, world, physics.positionInfo.chunk)) {
             if (!fluid.matches(state)) continue // TODO: tags?
 
@@ -77,7 +78,8 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
             totalHeight = maxOf(totalHeight, height - aabb.min.y)
             if (!pushable) continue
 
-            val velocity = fluid.getVelocity(state, position, chunk) ?: continue
+            fluid.getVelocity(state, position, chunk, velocity)
+            if (velocity.isEmpty()) continue
             if (totalHeight < 0.4) {
                 velocity *= totalHeight
             }

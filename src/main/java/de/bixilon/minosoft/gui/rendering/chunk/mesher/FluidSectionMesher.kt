@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -45,8 +46,8 @@ class FluidSectionMesher(
     }
 
 
-    private fun renderUp(section: ChunkSection, position: InSectionPosition, model: FluidModel, velocity: Vec3d?, heights: FloatArray) {
-        if (velocity == null || (velocity.x == 0.0 && velocity.z == 0.0)) {
+    private fun renderUp(section: ChunkSection, position: InSectionPosition, model: FluidModel, velocity: Vec3d, heights: FloatArray) {
+        if (velocity.x == 0.0 && velocity.z == 0.0) {
             // still
         } else {
             // flowing
@@ -81,13 +82,14 @@ class FluidSectionMesher(
 
         context.camera.offset.offset
 
-        val offsetX = chunk.position.x * ChunkSize.SECTION_WIDTH_X
-        val offsetY = section.height * ChunkSize.SECTION_HEIGHT_Y
-        val offsetZ = chunk.position.z * ChunkSize.SECTION_WIDTH_Z
+        chunk.position.x * ChunkSize.SECTION_WIDTH_X
+        section.height * ChunkSize.SECTION_HEIGHT_Y
+        chunk.position.z * ChunkSize.SECTION_WIDTH_Z
 
 
         val heights = FloatArray(3 * 3)
         val corners = FloatArray(4)
+        val velocity = MVec3d()
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
@@ -114,17 +116,18 @@ class FluidSectionMesher(
                     val height = fluid.getHeight(state) // TODO: remove
                     val position = BlockPosition.of(chunk.position, section.height, inSection)
 
-                    val tint = tints.getFluidTint(chunk, fluid, height, position)
+                    tints.getFluidTint(chunk, fluid, height, position)
 
 
                     if (up) {
-                        val velocity = fluid.getVelocity(state, position, chunk) // TODO: Don't allocate Vec3d
-                        renderUp(section, inSection, model, velocity, heights)
+                        fluid.getVelocity(state, position, chunk, velocity)
+                        renderUp(section, inSection, model, velocity.unsafe, heights)
                     }
 
                     // TODO: sides, down
 
                     mesh.addBlock(x, y, z)
+
                     if (Thread.interrupted()) throw InterruptedException()
                 }
             }

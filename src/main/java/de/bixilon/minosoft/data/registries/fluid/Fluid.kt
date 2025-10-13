@@ -44,9 +44,19 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
     open fun getVelocity(state: BlockState, position: BlockPosition, chunk: Chunk): MVec3d? {
         if (!this.matches(state)) return null
-        val fluidHeight = getHeight(state)
 
         val velocity = MVec3d.EMPTY
+        getVelocity(state, position, chunk, velocity)
+        if (velocity.isEmpty()) return null
+
+        return velocity
+    }
+
+    open fun getVelocity(state: BlockState, position: BlockPosition, chunk: Chunk, velocity: MVec3d) {
+        velocity.clear()
+        if (!this.matches(state)) return
+        val fluidHeight = getHeight(state)
+
 
         val offset = position.inChunkPosition
         for (direction in Directions.SIDES) {
@@ -71,11 +81,9 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
         // ToDo: Falling fluid
 
-        if (velocity.isEmpty()) return null
+        if (velocity.isEmpty()) return
 
         velocity.normalizeAssign()
-
-        return velocity
     }
 
 
