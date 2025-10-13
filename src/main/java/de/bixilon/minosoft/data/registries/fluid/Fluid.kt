@@ -117,15 +117,16 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
     }
 
     open fun matches(other: BlockState?): Boolean {
-        if (other == null || other.block !is FluidHolder) return false
+        if (other == null) return false
+        if (BlockStateFlags.FLUID !in other.flags) return false
+        if (other.block !is FluidHolder) return false
+
         return matches(other.block.fluid)
     }
 
     open fun getHeight(state: BlockState): Float {
-        if (BlockStateFlags.FLUID !in state.flags) return 0.0f
-        if (state.block !is FluidHolder || state.block.fluid != this) {
-            return 0.0f
-        }
+        if (!matches(state)) return 0.0f
+
         if (state.block is FluidFilled && state.block.fluid == this) {
             return MAX_LEVEL
         }

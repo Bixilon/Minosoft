@@ -62,9 +62,7 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
 
     override fun matches(other: BlockState?): Boolean {
         if (other == null) return false
-        if (super.matches(other)) {
-            return true
-        }
+        if (super.matches(other)) return true
         return other.isWaterlogged()
     }
 
