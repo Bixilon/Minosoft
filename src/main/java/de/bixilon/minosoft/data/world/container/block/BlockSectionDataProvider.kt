@@ -62,7 +62,7 @@ class BlockSectionDataProvider(
             return
         }
 
-        // occlusion.recalculate(notify)
+        occlusion.recalculate(notify)
     }
 
     fun noOcclusionSet(position: InSectionPosition, value: BlockState?): BlockState? {
