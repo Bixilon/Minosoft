@@ -139,17 +139,28 @@ class FluidSectionMesher(
         val up = traceBlock(offset + Directions.UP)
         if (fluid.matches(up)) return 1.0f
 
+        // TODO: check if block has collisions
+
         return fluid.getHeight(traceBlock(offset))
     }
 
     private fun updateFluidHeights(section: ChunkSection, position: InSectionPosition, fluid: Fluid, heights: FloatArray) {
-        heights[0] = section.getFluidHeight(fluid, position, BlockPosition(0, 0, 0)) // TODO
-        // TODO
+        heights[0] = section.getFluidHeight(fluid, position, BlockPosition(-1, 0, -1))
+        heights[1] = section.getFluidHeight(fluid, position, BlockPosition(+0, 0, -1))
+        heights[2] = section.getFluidHeight(fluid, position, BlockPosition(+1, 0, -1))
+        heights[3] = section.getFluidHeight(fluid, position, BlockPosition(-1, 0, +0))
+        heights[4] = section.getFluidHeight(fluid, position, BlockPosition(+0, 0, +0))
+        heights[5] = section.getFluidHeight(fluid, position, BlockPosition(+1, 0, +0))
+        heights[6] = section.getFluidHeight(fluid, position, BlockPosition(-1, 0, +1))
+        heights[7] = section.getFluidHeight(fluid, position, BlockPosition(+0, 0, +1))
+        heights[8] = section.getFluidHeight(fluid, position, BlockPosition(+1, 0, +1))
     }
 
     private fun updateCornerHeights(heights: FloatArray, corners: FloatArray) {
-        corners[0] = averageHeight(heights[0], heights[1], heights[2], heights[3]) // TODO
-        // TODO
+        corners[0] = averageHeight(heights[0], heights[1], heights[3], heights[4])
+        corners[1] = averageHeight(heights[1], heights[2], heights[4], heights[5])
+        corners[2] = averageHeight(heights[4], heights[5], heights[7], heights[8])
+        corners[3] = averageHeight(heights[3], heights[4], heights[6], heights[7])
     }
 
     private fun averageHeight(a: Float, b: Float, c: Float, d: Float): Float {
@@ -163,22 +174,22 @@ class FluidSectionMesher(
         if (a > 0.0f) {
             val multiplier = (if (a >= 0.8f) 10 else 1)
             total += a * multiplier
-            count += 1 * multiplier
+            count += multiplier
         }
         if (b > 0.0f) {
             val multiplier = (if (b >= 0.8f) 10 else 1)
             total += b * multiplier
-            count += 1 * multiplier
+            count += multiplier
         }
         if (c > 0.0f) {
             val multiplier = (if (c >= 0.8f) 10 else 1)
             total += c * multiplier
-            count += 1 * multiplier
+            count += multiplier
         }
         if (d > 0.0f) {
             val multiplier = (if (d >= 0.8f) 10 else 1)
             total += d * multiplier
-            count += 1 * multiplier
+            count += multiplier
         }
 
         return total / count
