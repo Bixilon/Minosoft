@@ -37,18 +37,18 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
 
     abstract fun getVelocityMultiplier(session: PlaySession): Double
 
-    fun getVelocity(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition): MVec3d? {
-        val chunk = session.world.chunks[blockPosition.chunkPosition] ?: return null
-        return getVelocity(blockState, blockPosition, chunk)
+    fun getVelocity(session: PlaySession, state: BlockState, position: BlockPosition): MVec3d? {
+        val chunk = session.world.chunks[position.chunkPosition] ?: return null
+        return getVelocity(state, position, chunk)
     }
 
-    open fun getVelocity(blockState: BlockState, blockPosition: BlockPosition, chunk: Chunk): MVec3d? {
-        if (!this.matches(blockState)) return null
-        val fluidHeight = getHeight(blockState)
+    open fun getVelocity(state: BlockState, position: BlockPosition, chunk: Chunk): MVec3d? {
+        if (!this.matches(state)) return null
+        val fluidHeight = getHeight(state)
 
         val velocity = MVec3d.EMPTY
 
-        val offset = blockPosition.inChunkPosition
+        val offset = position.inChunkPosition
         for (direction in Directions.SIDES) {
             val neighbour = chunk.neighbours.traceBlock(offset, direction) ?: continue
             if (!this.matches(neighbour)) {
