@@ -55,52 +55,36 @@ class FluidSectionMesher(
         else -> null
     }
 
+    private fun renderUp(model: FluidModel, velocity: Vec3d, heights: FloatArray, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Float, packedUV: FloatArray) {
+        val texture: Texture
+        var packedUV = packedUV
 
-    private fun renderUp(section: ChunkSection, position: InSectionPosition, model: FluidModel, velocity: Vec3d, heights: FloatArray, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Float) {
-        var texture: Texture
 
-
-        val textureUV: PackedUV
         if (velocity.x == 0.0 && velocity.z == 0.0) {
             texture = model.still
-            textureUV = STILL_UV_TOP
-            // still
+            packedUV = STILL_UV_TOP.raw
         } else {
-            // flowing
             texture = model.flowing
-            val atan = atan2(velocity.x, velocity.z).toFloat()
+            val atan = atan2(velocity.x, velocity.z).toFloat() // TODO: cache atan2? velocity is normalized
             val sin = atan.sin
             val cos = atan.cos
 
-            val TEXTURE_CENTER = 1.0f / 2.0f
-
-            val raw = floatArrayOf(
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                1.0f, 1.0f,
-                0.0f, 1.0f,
-            )
+            val center = 1.0f / 2.0f
 
 
             for (i in 0 until PackedUV.SIZE) {
-                rotate(raw[i * Vec2f.LENGTH + 0] - TEXTURE_CENTER, raw[i * Vec2f.LENGTH + 1] - TEXTURE_CENTER, sin, cos, false) { x, y -> raw[i * Vec2f.LENGTH + 0] = x + TEXTURE_CENTER; raw[i * Vec2f.LENGTH + 1] = y + TEXTURE_CENTER }
+                rotate(POSITIONS_TOP_FLOWING[i * Vec2f.LENGTH + 0] - center, POSITIONS_TOP_FLOWING[i * Vec2f.LENGTH + 1] - center, sin, cos, false) { x, y ->
+                    packedUV[i] = PackedUV.pack(x + center, y + center)
+                }
             }
-
-            textureUV = UnpackedUV(raw).pack()
         }
         val textureId = texture.shaderId.buffer()
 
 
         val mesh = meshes[model.still.transparency]
 
-        mesh.order.iterate { position, uv ->
-            val packed = texture.transformUVPacked(textureUV.raw[uv])
-            mesh.addVertex(offset.x + POSITIONS_TOP[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP[position * Vec2f.LENGTH + 1], packed, textureId, lightTint)
-        }
-        mesh.order.iterateReverse { position, uv ->
-            val packed = texture.transformUVPacked(textureUV.raw[uv])
-            mesh.addVertex(offset.x + POSITIONS_TOP[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP[position * Vec2f.LENGTH + 1], packed, textureId, lightTint)
-        }
+        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
     }
 
     private fun canCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid): FluidCull {
@@ -136,6 +120,7 @@ class FluidSectionMesher(
         val heights = FloatArray(3 * 3)
         val corners = FloatArray(4)
         val velocity = MVec3d()
+        val packedUV = FloatArray(PackedUV.SIZE)
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
@@ -177,7 +162,7 @@ class FluidSectionMesher(
 
                     if (up) {
                         fluid.updateVelocity(state, position, chunk, velocity)
-                        renderUp(section, inSection, model, velocity.unsafe, corners, offsetPosition, mesh, lightTint)
+                        renderUp(model, velocity.unsafe, corners, offsetPosition, mesh, lightTint, packedUV)
                     }
 
                     // TODO: sides, down
@@ -257,12 +242,19 @@ class FluidSectionMesher(
     }
 
     companion object {
-        val POSITIONS_TOP = floatArrayOf(
+        val POSITIONS_TOP_STILL = floatArrayOf(
             0.0f, 0.0f,
             1.0f, 0.0f,
             1.0f, 1.0f,
             0.0f, 1.0f,
         )
-        val STILL_UV_TOP = UnpackedUV(POSITIONS_TOP).pack()
+        val POSITIONS_TOP_FLOWING = floatArrayOf(
+            // TODO: 0.5f
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+        )
+        val STILL_UV_TOP = UnpackedUV(POSITIONS_TOP_STILL).pack()
     }
 }
