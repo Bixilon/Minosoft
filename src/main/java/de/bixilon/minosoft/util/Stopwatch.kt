@@ -15,29 +15,21 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.kutil.time.TimeUtil.now
 import kotlin.time.Duration
-import kotlin.time.TimeSource
 
 class Stopwatch {
-    val id = LAST_ID++
     private val start = now()
-    private val labs: MutableList<TimeSource.Monotonic.ValueTimeMark> = mutableListOf()
+    private var lab = start
 
-    /**
-     * @return Returns the difference between the last lab and the current time
-     */
     fun lab(): Duration {
+        val lab = this.lab
         val time = now()
-        val last = labs.lastOrNull() ?: start
-        val delta = time - last
-        labs += time
+        this.lab = time
+        val delta = time - lab
+
         return delta
     }
 
-    fun totalTime(): Duration {
+    fun elapsed(): Duration {
         return now() - start
-    }
-
-    companion object {
-        private var LAST_ID = 0
     }
 }

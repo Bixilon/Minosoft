@@ -33,7 +33,6 @@ import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import kotlin.system.measureNanoTime
 import kotlin.time.measureTime
 
 object RenderLoader {
@@ -145,7 +144,7 @@ object RenderLoader {
         renderLatch.dec() // initial count from rendering
         renderLatch.await()
 
-        Log.log(LogMessageType.RENDERING) { "Rendering is fully prepared in ${stopwatch.totalTime().format()}" }
+        Log.log(LogMessageType.RENDERING) { "Rendering is fully prepared in ${stopwatch.elapsed().format()}" }
     }
 
     fun RenderContext.awaitPlaying() {

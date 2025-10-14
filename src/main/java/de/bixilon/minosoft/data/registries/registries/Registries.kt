@@ -20,6 +20,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
@@ -163,7 +164,7 @@ class Registries(
 
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it })
-        val stopwatch = Stopwatch()
+        val stopwatch = now()
         // enums
         worker += WorkerTask(this::shape.i) { this.shape.load(pixlyzerData["shapes"]?.toJsonObject()) }
 
@@ -237,7 +238,7 @@ class Registries(
             shape.cleanup()
         }
         fluid.updateWaterLava()
-        Log.log(LogMessageType.LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.elapsedNow()}" }
     }
 
     operator fun <T : RegistryItem> get(type: Class<T>): Registry<T>? {
