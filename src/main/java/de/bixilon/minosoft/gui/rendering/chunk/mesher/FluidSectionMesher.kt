@@ -138,7 +138,7 @@ class FluidSectionMesher(
         val corners = FloatArray(4)
         val velocity = MVec3d()
         val packedUV = FloatArray(PackedUV.SIZE)
-        val positions = FloatArray(3 * Vec3f.LENGTH)
+        val positions = FloatArray(4 * Vec3f.LENGTH)
         val offsetPosition = MVec3f()
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
