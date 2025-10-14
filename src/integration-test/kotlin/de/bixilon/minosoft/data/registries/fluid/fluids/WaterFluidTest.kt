@@ -35,6 +35,7 @@ class WaterFluidTest {
     fun getWater() {
         this.block = IT.REGISTRIES.block[WaterFluid].unsafeCast()
         this.water = IT.REGISTRIES.fluid[WaterFluid].unsafeCast()
+        this.lava = IT.REGISTRIES.fluid[LavaFluid].unsafeCast()
     }
 
     fun heightLevel0() {

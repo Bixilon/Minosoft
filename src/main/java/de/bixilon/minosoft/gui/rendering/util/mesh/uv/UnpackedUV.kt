@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.uv
 
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV.Companion.COMPONENTS
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 
 @JvmInline
 value class UnpackedUV(val raw: FloatArray) {
@@ -25,8 +25,8 @@ value class UnpackedUV(val raw: FloatArray) {
     fun pack(): PackedUV {
         val packed = FloatArray(PackedUV.SIZE)
         for (i in 0 until PackedUV.SIZE) {
-            val u = raw[i * COMPONENTS + 0]
-            val v = raw[i * COMPONENTS + 1]
+            val u = raw[i * COMPONENT + 0]
+            val v = raw[i * COMPONENT + 1]
 
             packed[i] = PackedUV.pack(u, v)
         }
@@ -34,7 +34,9 @@ value class UnpackedUV(val raw: FloatArray) {
     }
 
     companion object {
-        const val SIZE = 8
+        const val COMPONENT = Vec2f.LENGTH
+        const val COMPONENT_SIZE = 4
+        const val SIZE = COMPONENT * COMPONENT_SIZE
 
 
         inline fun unpackU(uv: Float): Float {

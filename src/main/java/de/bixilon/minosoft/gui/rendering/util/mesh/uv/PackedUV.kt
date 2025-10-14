@@ -28,8 +28,9 @@ value class PackedUV(val raw: FloatArray) {
         const val BITS = 12
         const val MASK = (1 shl BITS) - 1
 
-        const val COMPONENTS = Vec2f.LENGTH
-        const val SIZE = 4
+        const val COMPONENT_LENGTH = 1
+        const val COMPONENTS = 4
+        const val SIZE = COMPONENTS * COMPONENT_LENGTH
 
 
         inline fun pack(u: Float, v: Float): Float {

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesher
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel.Companion.MAX
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -62,7 +64,7 @@ class FluidSectionMesher(
 
         if (velocity.x == 0.0 && velocity.z == 0.0) {
             texture = model.still
-            packedUV = STILL_UV_TOP.raw
+            packedUV = STILL_UV_TOP
         } else {
             texture = model.flowing
             val atan = atan2(velocity.x, velocity.z).toFloat() // TODO: cache atan2? velocity is normalized
@@ -81,10 +83,25 @@ class FluidSectionMesher(
         val textureId = texture.shaderId.buffer()
 
 
-        val mesh = meshes[model.still.transparency]
+        val mesh = meshes[texture.transparency]
 
         mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+    }
+
+    fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, textureId: Float, mesh: ChunkMesh, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
+        packedUV[2] = PackedUV.pack(1.0f, height1) // TODO: transformUV
+        packedUV[3] = PackedUV.pack(0.0f, height2)
+
+
+        // TODO: verify z
+        positions[0] = x1; positions[1] = 0.0f; positions[2] = z1
+        positions[3] = x2; positions[4] = 0.0f; positions[5] = z2
+        positions[6] = x2; positions[7] = height1; positions[8] = z2
+        positions[9] = x1; positions[10] = height2; positions[11] = z1
+
+        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
+        mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
     }
 
     private fun canCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid): FluidCull {
@@ -121,6 +138,8 @@ class FluidSectionMesher(
         val corners = FloatArray(4)
         val velocity = MVec3d()
         val packedUV = FloatArray(PackedUV.SIZE)
+        val positions = FloatArray(3 * Vec3f.LENGTH)
+        val offsetPosition = MVec3f()
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
@@ -139,16 +158,22 @@ class FluidSectionMesher(
                     val west = canCull(section, inSection, Directions.WEST, fluid)
                     val east = canCull(section, inSection, Directions.EAST, fluid)
 
-                    if (!up && down == FluidCull.CULLED && north == FluidCull.CULLED && south == FluidCull.CULLED && west == FluidCull.CULLED && east == FluidCull.CULLED) {
+
+                    val sides = down != FluidCull.CULLED || north != FluidCull.CULLED || south != FluidCull.CULLED || west != FluidCull.CULLED && east == FluidCull.CULLED
+
+                    if (!up && !sides) {
                         continue
                     }
 
 
                     updateFluidHeights(section, inSection, fluid, heights)
                     updateCornerHeights(heights, corners)
-                    val height = fluid.getHeight(state) // TODO: remove
+                    val height = fluid.getHeight(state) // TODO: remove (also from tint)
                     val position = BlockPosition.of(chunk.position, section.height, inSection)
-                    val offsetPosition = Vec3f(position - cameraOffset)
+
+                    offsetPosition.x = (position.x - cameraOffset.x).toFloat()
+                    offsetPosition.y = (position.y - cameraOffset.y).toFloat()
+                    offsetPosition.z = (position.z - cameraOffset.z).toFloat()
 
 
                     val tint = tints.getFluidTint(chunk, fluid, height, position)
@@ -162,10 +187,21 @@ class FluidSectionMesher(
 
                     if (up) {
                         fluid.updateVelocity(state, position, chunk, velocity)
-                        renderUp(model, velocity.unsafe, corners, offsetPosition, mesh, lightTint, packedUV)
+                        renderUp(model, velocity.unsafe, corners, offsetPosition.unsafe, mesh, lightTint, packedUV)
+                    }
+                    if (sides) {
+                        packedUV[0] = PackedUV.pack(0.0f, 0.0f)
+                        packedUV[1] = PackedUV.pack(1.0f, 0.0f)
+                        val mesh = mesh[model.flowing.transparency]
+                        val textureId = model.flowing.renderData.shaderTextureId.buffer()
+
+                        // if (north == FluidCull.VISIBLE) renderSide(offsetPosition.unsafe, ..., textureId, mesh, lightTint, positions, packedUv)
+                        //if (south == FluidCull.VISIBLE) renderSide()
+                        //if (west == FluidCull.VISIBLE) renderSide()
+                        //if (east == FluidCull.VISIBLE) renderSide()
                     }
 
-                    // TODO: sides, down
+                    // TODO: down
 
                     mesh.addBlock(x, y, z)
 
@@ -212,12 +248,7 @@ class FluidSectionMesher(
         // TODO
 
         var total = a + b + c + d
-        var count = 0
-
-        if (a > 0.0f) count++
-        if (b > 0.0f) count++
-        if (c > 0.0f) count++
-        if (d > 0.0f) count++
+        var count = 4
 
         if (a >= 0.8f) {
             total += a * 9; count += 9
@@ -237,7 +268,7 @@ class FluidSectionMesher(
 
     enum class FluidCull {
         VISIBLE,
-        OVERLAY,
+        OVERLAY, // TODO
         CULLED,
     }
 
@@ -255,6 +286,6 @@ class FluidSectionMesher(
             1.0f, 1.0f,
             0.0f, 1.0f,
         )
-        val STILL_UV_TOP = UnpackedUV(POSITIONS_TOP_STILL).pack()
+        val STILL_UV_TOP = UnpackedUV(POSITIONS_TOP_STILL).pack().raw
     }
 }
