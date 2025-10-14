@@ -231,7 +231,6 @@ testing {
             targets {
                 all {
                     testTask.configure {
-                        shouldRunAfter(test)
                         filter {
                             isFailOnNoMatchingTests = true
                         }
