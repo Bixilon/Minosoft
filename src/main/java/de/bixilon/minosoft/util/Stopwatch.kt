@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,37 +13,28 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.kutil.time.TimeUtil.now
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 class Stopwatch {
     val id = LAST_ID++
-    private val startTime = System.nanoTime()
-    private val labs: MutableList<Long> = mutableListOf()
+    private val start = now()
+    private val labs: MutableList<TimeSource.Monotonic.ValueTimeMark> = mutableListOf()
 
     /**
      * @return Returns the difference between the last lab and the current time
      */
-    fun lab(): Long {
-        val currentTime = System.nanoTime()
-        val lastLab = labs.getOrNull(labs.size - 1) ?: startTime
-        labs.add(currentTime)
-        return currentTime - lastLab
+    fun lab(): Duration {
+        val time = now()
+        val last = labs.lastOrNull() ?: start
+        val delta = time - last
+        labs += time
+        return delta
     }
 
-    fun labTime(): String {
-        return lab().formatNanos()
-    }
-
-    fun labPrint() {
-        val delta = lab()
-        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Stop watch ($id) lab: ${delta.formatNanos()}" }
-    }
-
-    fun totalTime(): String {
-        return (System.nanoTime() - startTime).formatNanos()
+    fun totalTime(): Duration {
+        return now() - start
     }
 
     companion object {

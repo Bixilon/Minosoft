@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kutil.benchmark.BenchmarkUtil
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
@@ -24,6 +25,8 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import org.testng.annotations.Test
 import kotlin.system.measureNanoTime
+import kotlin.time.Duration
+import kotlin.time.measureTime
 
 
 internal class LightBenchmark {
@@ -64,15 +67,15 @@ internal class LightBenchmark {
                 highest.unsafeSet(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), solid)
             }
         }
-        var totalPlace = 0L
-        var totalBreak = 0L
+        var totalPlace = Duration.ZERO
+        var totalBreak = Duration.ZERO
         val benchmark = BenchmarkUtil.benchmark(10000) {
-            totalPlace += measureNanoTime { chunk[InChunkPosition(7, 1, 7)] = light }
-            totalBreak += measureNanoTime { chunk[InChunkPosition(7, 1, 7)] = null }
+            totalPlace += measureTime { chunk[InChunkPosition(7, 1, 7)] = light }
+            totalBreak += measureTime { chunk[InChunkPosition(7, 1, 7)] = null }
         }
 
-        println("Placing light took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.iterations).formatNanos()}, runs=${benchmark.iterations}")
-        println("Breaking light took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.iterations).formatNanos()}, runs=${benchmark.iterations}")
+        println("Placing light took ${totalPlace.format()}, avg=${(totalPlace / benchmark.iterations).format()}, runs=${benchmark.iterations}")
+        println("Breaking light took ${totalBreak.format()}, avg=${(totalBreak / benchmark.iterations).format()}, runs=${benchmark.iterations}")
     }
 
     @Test
@@ -92,15 +95,15 @@ internal class LightBenchmark {
             }
         }
 
-        var totalPlace = 0L
-        var totalBreak = 0L
+        var totalPlace = Duration.ZERO
+        var totalBreak = Duration.ZERO
         val benchmark = BenchmarkUtil.benchmark(100000) {
-            totalBreak += measureNanoTime { chunk[InChunkPosition(7, 255, 7)] = null }
-            totalPlace += measureNanoTime { chunk[InChunkPosition(7, 255, 7)] = solid }
+            totalBreak += measureTime { chunk[InChunkPosition(7, 255, 7)] = null }
+            totalPlace += measureTime { chunk[InChunkPosition(7, 255, 7)] = solid }
         }
 
-        println("Placing block took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.iterations).formatNanos()}, runs=${benchmark.iterations}")
-        println("Breaking block took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.iterations).formatNanos()}, runs=${benchmark.iterations}")
+        println("Placing block took ${totalPlace.format()}, avg=${(totalPlace / benchmark.iterations).format()}, runs=${benchmark.iterations}")
+        println("Breaking block took ${totalBreak.format()}, avg=${(totalBreak / benchmark.iterations).format()}, runs=${benchmark.iterations}")
     }
 
     @Test
@@ -115,14 +118,14 @@ internal class LightBenchmark {
                 highest.unsafeSet(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), solid)
             }
         }
-        var totalPlace = 0L
-        var totalBreak = 0L
+        var totalPlace = Duration.ZERO
+        var totalBreak = Duration.ZERO
         val benchmark = BenchmarkUtil.benchmark(10000) {
-            totalPlace += measureNanoTime { chunk[InChunkPosition(8, 0, 8)] = light }
-            totalBreak += measureNanoTime { chunk[InChunkPosition(8, 0, 8)] = null }
+            totalPlace += measureTime { chunk[InChunkPosition(8, 0, 8)] = light }
+            totalBreak += measureTime { chunk[InChunkPosition(8, 0, 8)] = null }
         }
 
-        println("Placing block took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.iterations).formatNanos()}, runs=${benchmark.iterations}")
-        println("Breaking block took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.iterations).formatNanos()}, runs=${benchmark.iterations}")
+        println("Placing block took ${totalPlace.format()}, avg=${(totalPlace / benchmark.iterations).format()}, runs=${benchmark.iterations}")
+        println("Breaking block took ${totalBreak.format()}, avg=${(totalBreak / benchmark.iterations).format()}, runs=${benchmark.iterations}")
     }
 }

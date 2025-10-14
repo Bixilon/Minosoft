@@ -19,7 +19,7 @@ import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
@@ -34,6 +34,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import kotlin.system.measureNanoTime
+import kotlin.time.measureTime
 
 object RenderLoader {
 
@@ -63,7 +64,7 @@ object RenderLoader {
         camera.init()
 
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.lab().format()})..." }
 
         system.init()
         system.reset()
@@ -72,7 +73,7 @@ object RenderLoader {
 
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.lab().format()})..." }
         initLatch.inc(); runAsync { tints.init(session.assetsManager); initLatch.dec() }
         textures.dynamic.load(initLatch); textures.dynamic.upload(initLatch)
         textures.initializeSkins(session)
@@ -85,7 +86,7 @@ object RenderLoader {
         framebuffer.init()
 
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.lab().format()})..." }
         light.init()
         skeletal.init()
         renderer.init(initLatch)
@@ -98,28 +99,28 @@ object RenderLoader {
         renderer[GUIRenderer]?.atlas?.load() // TODO: remove this
 
         // Post init stage
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.lab().format()})..." }
         // TODO: async load both
         textures.static.load(renderLatch)
         textures.font.load(renderLatch)
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Uploading textures (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Uploading textures (after ${stopwatch.lab().format()})..." }
         textures.static.upload(renderLatch)
         textures.font.upload(renderLatch)
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Baking models (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Baking models (after ${stopwatch.lab().format()})..." }
         font.postInit(renderLatch)
         models.bake(renderLatch)
         models.upload()
         models.cleanup()
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.lab().format()})..." }
         shaders.postInit()
         skeletal.postInit()
         renderer.postInit(renderLatch)
         framebuffer.postInit()
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Finishing up (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Finishing up (after ${stopwatch.lab().format()})..." }
 
         window::focused.observeRendering(this) { state = if (it) RenderingStates.RUNNING else RenderingStates.SLOW }
 
@@ -144,7 +145,7 @@ object RenderLoader {
         renderLatch.dec() // initial count from rendering
         renderLatch.await()
 
-        Log.log(LogMessageType.RENDERING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.RENDERING) { "Rendering is fully prepared in ${stopwatch.totalTime().format()}" }
     }
 
     fun RenderContext.awaitPlaying() {
@@ -158,11 +159,11 @@ object RenderLoader {
             }
         }
 
-        val time = measureNanoTime {
+        val time = measureTime {
             latch.await()
             state = RenderingStates.RUNNING
             window.visible = true
         }
-        Log.log(LogMessageType.RENDERING) { "Showing window after ${time.formatNanos()}" }
+        Log.log(LogMessageType.RENDERING) { "Showing window after ${time.format()}" }
     }
 }

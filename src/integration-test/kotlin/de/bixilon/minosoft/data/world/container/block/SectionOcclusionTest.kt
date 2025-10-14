@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -136,7 +137,7 @@ class SectionOcclusionTest {
                 occlusion.recalculate(false)
             }
         }
-        println("Took: ${time.inWholeNanoseconds.formatNanos()}")
+        println("Took: ${time.format()}")
     }
 
     // TODO: Test more possible cases

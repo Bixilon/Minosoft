@@ -19,7 +19,6 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.SelectedProfiles
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers

@@ -29,6 +29,8 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.StaticConfiguration
@@ -142,7 +144,7 @@ object Minosoft {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val start = nanos()
+        val start = now()
         initLog()
 
 
@@ -154,8 +156,8 @@ object Minosoft {
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Booting..." }
         boot()
 
-        val delta = nanos() - start
-        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${delta.formatNanos()}!" }
+        val delta = now() - start
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${delta.format()}!" }
 
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Post booting..." }
         postBoot()

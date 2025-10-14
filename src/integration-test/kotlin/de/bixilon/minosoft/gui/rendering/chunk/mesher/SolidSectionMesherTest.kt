@@ -324,7 +324,7 @@ class SolidSectionMesherTest {
     fun benchmark() {
         MinosoftSIT.setup()
         RenderTestLoader().init()
-        val session =SessionTestUtil.createSession(worldSize = 2)
+        val session = SessionTestUtil.createSession(worldSize = 2)
         val context = createContext(session)
         val mesher = SolidSectionMesher(context)
         
@@ -340,7 +340,7 @@ class SolidSectionMesherTest {
         
         println("Starting")
 
-       val time =  measureTime {
+       val time = measureTime {
             for (i in 0 until 30_000) {
                 val meshes = ChunkMeshes(context, chunk.chunkPosition, 2, true)
 
@@ -349,9 +349,8 @@ class SolidSectionMesherTest {
                 meshes.unload()
             }
         }
-        println("Took: ${time.inWholeNanoseconds.formatNanos()}")
+        println("Took: ${time.format()}")
     }
-    
      */
 
     // TODO: test sign block entity rendering

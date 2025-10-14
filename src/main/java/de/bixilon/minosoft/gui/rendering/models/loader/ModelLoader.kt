@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
@@ -35,39 +37,39 @@ class ModelLoader(
     val skeletal = SkeletalLoader(this)
 
     fun loadRegistry(latch: AbstractLatch) {
-        val start = nanos()
+        val start = now()
 
         fluids.load(latch)
         block.load(latch)
         item.load(latch)
 
-        val time = nanos() - start
+        val time = now() - start
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all registry models in ${time.formatNanos()}!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all registry models in ${time.format()}!" }
     }
 
     fun loadDynamic(latch: AbstractLatch) {
-        val start = nanos()
+        val start = now()
 
         DefaultBlockEntityModels.load(this, latch)
         DefaultEntityModels.load(this, latch)
         skeletal.load(latch)
 
-        val time = nanos() - start
+        val time = now() - start
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all dynamic models in ${time.formatNanos()}!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all dynamic models in ${time.format()}!" }
     }
 
     fun bake(latch: AbstractLatch) {
-        val start = nanos()
+        val start = now()
 
         block.bake(latch)
         item.bake(latch)
         skeletal.bake(latch)
 
-        val time = nanos() - start
+        val time = now() - start
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models in ${time.formatNanos()}!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models in ${time.format()}!" }
     }
 
     fun upload() {

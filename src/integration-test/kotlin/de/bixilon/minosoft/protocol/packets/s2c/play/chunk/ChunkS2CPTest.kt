@@ -121,11 +121,11 @@ class ChunkS2CPTest {
     }
 
 //    fun benchmark() {
-//        val start = nanos()
+//        val start = now()
 //        for (i in 0 until 10000) {
 //            hypixel1_19_3()
 //        }
-//        val end = nanos()
-//        println("Took ${(end-start).formatNanos()}")
+//        val end = now()
+//        println("Took ${(end-start).format()}")
 //    }
 }

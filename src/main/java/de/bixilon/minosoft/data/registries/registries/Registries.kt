@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -75,6 +75,7 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 import kotlin.reflect.KProperty0
+import kotlin.time.Duration.Companion.milliseconds
 
 
 class Registries(
@@ -216,12 +217,13 @@ class Registries(
         val inner = ParentLatch(1, latch)
         worker.work(inner)
         inner.dec()
-        while (inner.count > 0) {
+
+        while (inner.count > 0) { // a task might fail and blocks forever
             val error2 = error
             if (error2 != null) {
                 throw error2
             }
-            inner.waitForChange(100L)
+            inner.awaitOrChange(100.milliseconds)
         }
         error?.let { throw it }
 

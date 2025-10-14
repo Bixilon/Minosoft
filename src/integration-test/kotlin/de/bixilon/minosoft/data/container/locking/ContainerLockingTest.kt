@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.locking
 
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTest0
@@ -108,8 +109,8 @@ class ContainerLockingTest {
 
         container.lock()
         container[0] = ItemStack(AppleTest0.item, count = 1)
-        var end = 0L
-        Thread { container[1] = ItemStack(AppleTest0.item); end = TimeUtil.nanos() }.start()
+        var end = TimeUtil.NULL
+        Thread { container[1] = ItemStack(AppleTest0.item); end = now() }.start()
         Thread.sleep(30L)
         assertEquals(end, 0L)
         container.commit()
@@ -123,8 +124,8 @@ class ContainerLockingTest {
         container[0] = ItemStack(AppleTest0.item, count = 1)
         container[0]!!.lock()
 
-        var end = 0L
-        Thread { container[0]!!.item.increaseCount(); end = TimeUtil.nanos() }.start()
+        var end = TimeUtil.NULL
+        Thread { container[0]!!.item.increaseCount(); end = now() }.start()
         Thread.sleep(30L)
         assertEquals(end, 0L)
         container[0]!!.commit()
