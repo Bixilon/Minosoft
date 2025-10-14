@@ -454,7 +454,6 @@ fun loadGit() {
     val status = git.status()
     if (!status.isClean) {
         nextVersion += "-dirty"
-        println(status)
     }
     if (project.version != nextVersion) {
         project.version = nextVersion
