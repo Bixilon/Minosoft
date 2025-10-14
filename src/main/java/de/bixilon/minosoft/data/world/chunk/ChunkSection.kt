@@ -82,6 +82,6 @@ class ChunkSection(
         return chunk[position]
     }
 
-    fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset - origin)
+    fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset + origin)
     fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock(BlockPosition(origin.x, origin.y, origin.z) + direction)
 }

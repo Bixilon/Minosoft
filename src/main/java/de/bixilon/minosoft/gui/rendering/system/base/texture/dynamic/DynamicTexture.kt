@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 abstract class DynamicTexture(
     val identifier: Any,
@@ -47,9 +48,12 @@ abstract class DynamicTexture(
         return identifier.toString()
     }
 
-    override fun transformUV(end: Vec2f?): Vec2f {
-        return end ?: Vec2f(1.0f)  // TODO: memory
+    override fun transformUV(end: Vec2f) = end // TODO
+    override fun transformUVPacked(end: Vec2f): Float {
+        return PackedUV.pack(end.x, end.y)  // TODO
     }
+
+    override fun transformUVPacked(end: Float) = end
 
     operator fun plusAssign(callback: DynamicTextureListener) = addListener(callback)
     fun addListener(callback: DynamicTextureListener) {

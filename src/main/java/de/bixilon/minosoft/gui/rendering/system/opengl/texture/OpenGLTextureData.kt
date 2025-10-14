@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class OpenGLTextureData(
     val array: Int,
@@ -24,14 +26,25 @@ class OpenGLTextureData(
 ) : TextureRenderData {
     override val shaderTextureId: Int = (array shl 28) or (index shl 12) or (animationData + 1)
 
-    override fun transformUV(end: Vec2f?): Vec2f {
-        if (end == null) {
-            return uvEnd ?: VEC2_ONE
-        }
-        if (uvEnd == null) {
-            return end
-        }
+    override fun transformUV(end: Vec2f): Vec2f {
+        if (uvEnd == null) return end
+
         return Vec2f(end.x * uvEnd.x, end.y * uvEnd.y)
+    }
+
+    override fun transformUVPacked(end: Vec2f): Float {
+        if (uvEnd == null) return PackedUV.pack(end.x, end.y)
+
+        return PackedUV.pack(end.x * uvEnd.x, end.y * uvEnd.y)
+    }
+
+    override fun transformUVPacked(end: Float): Float {
+        if (uvEnd == null) return end
+
+        val u = UnpackedUV.unpackU(end)
+        val v = UnpackedUV.unpackV(end)
+
+        return PackedUV.pack(u * uvEnd.x, v * uvEnd.y)
     }
 
     companion object {

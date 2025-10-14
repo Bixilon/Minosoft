@@ -17,5 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 
 interface ShaderTexture : ShaderIdentifiable {
 
-    fun transformUV(end: Vec2f?): Vec2f
+    fun transformUV(end: Vec2f): Vec2f
+    fun transformUVPacked(end: Vec2f): Float
+    fun transformUVPacked(end: Float): Float
 }

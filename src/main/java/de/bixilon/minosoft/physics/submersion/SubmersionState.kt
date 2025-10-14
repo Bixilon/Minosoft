@@ -78,7 +78,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
             totalHeight = maxOf(totalHeight, height - aabb.min.y)
             if (!pushable) continue
 
-            fluid.getVelocity(state, position, chunk, velocity)
+            fluid.updateVelocity(state, position, chunk, velocity)
             if (velocity.isEmpty()) continue
             if (totalHeight < 0.4) {
                 velocity *= totalHeight

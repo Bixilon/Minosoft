@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -30,9 +30,9 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
 
     override fun clear() = Unit
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
-        val minTransformedUV = if (uvMin == null) Vec2f.EMPTY else texture.renderData.transformUV(uvMin)
-        val maxTransformedUV = texture.renderData.transformUV(uvMax)
+    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f = Vec2f.EMPTY, uvMax: Vec2f = Vec2f.ONE, light: Int) {
+        val minTransformedUV = texture.transformUV(uvMin)
+        val maxTransformedUV = texture.transformUV(uvMax)
         val data = data
         val offset = context.camera.offset.offset
         data.add((position.x - offset.x).toFloat())
@@ -57,5 +57,9 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
         val light: Int,
     ) {
         companion object : MeshStruct(ParticleMeshStruct::class)
+    }
+
+    private companion object {
+        val ONE = Vec2f(1.0f)
     }
 }

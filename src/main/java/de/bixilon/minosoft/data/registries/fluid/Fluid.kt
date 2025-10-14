@@ -46,13 +46,13 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
         if (!this.matches(state)) return null
 
         val velocity = MVec3d.EMPTY
-        getVelocity(state, position, chunk, velocity)
+        updateVelocity(state, position, chunk, velocity)
         if (velocity.isEmpty()) return null
 
         return velocity
     }
 
-    open fun getVelocity(state: BlockState, position: BlockPosition, chunk: Chunk, velocity: MVec3d) {
+    open fun updateVelocity(state: BlockState, position: BlockPosition, chunk: Chunk, velocity: MVec3d) {
         velocity.clear()
         if (!this.matches(state)) return
         val fluidHeight = getHeight(state)
@@ -66,16 +66,16 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
             }
             val height = getHeight(neighbour)
 
-            var heightDifference = 0.0f
+            var delta = 0.0f
 
             if (height == 0.0f) {
                 // ToDo
             } else {
-                heightDifference = fluidHeight - height
+                delta = fluidHeight - height
             }
 
-            if (heightDifference != 0.0f) {
-                velocity += (direction.vectord * heightDifference)
+            if (delta != 0.0f) {
+                velocity += (direction.vectord * delta)
             }
         }
 

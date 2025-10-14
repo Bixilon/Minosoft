@@ -46,9 +46,9 @@ interface Texture : ShaderTexture {
         get() = renderData.shaderTextureId
 
 
-    override fun transformUV(end: Vec2f?): Vec2f {
-        return renderData.transformUV(end)
-    }
+    override fun transformUV(end: Vec2f) = renderData.transformUV(end)
+    override fun transformUVPacked(end: Vec2f) = renderData.transformUVPacked(end)
+    override fun transformUVPacked(end: Float) = renderData.transformUVPacked(end)
 
     fun createData(mipmaps: Int = this.mipmaps, buffer: TextureBuffer): TextureData {
         if (mipmaps <= 0) return TextureData(buffer)
