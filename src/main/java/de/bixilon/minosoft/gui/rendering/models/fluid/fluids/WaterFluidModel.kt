@@ -32,7 +32,7 @@ class WaterFluidModel : FluidModel {
     override fun load(context: RenderContext) {
         still = context.textures.static.create(context.models.block.fixTexturePath(STILL).texture())
         flowing = context.textures.static.create(context.models.block.fixTexturePath(FLOWING).texture())
-        flowing = context.textures.static.create(context.models.block.fixTexturePath(OVERLAY).texture())
+        overlay = context.textures.static.create(context.models.block.fixTexturePath(OVERLAY).texture())
     }
 
     companion object {

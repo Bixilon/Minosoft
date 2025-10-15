@@ -96,10 +96,11 @@ class FluidSectionMesher(
         val textureId = texture.shaderId.buffer()
         val mesh = meshes[texture.transparency]
 
-        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
     }
 
-    fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, textureId: Float, mesh: ChunkMesh, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
+    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, overlay: Texture?, textureId: Float, mesh: ChunkMesh, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
+        if (cull == FluidCull.CULLED) return
         packedUV[2] = PackedUV.pack(0.5f, (1.0f - height1) * 0.5f) // TODO: transformUV
         packedUV[3] = PackedUV.pack(0.0f, (1.0f - height2) * 0.5f)
 
@@ -109,9 +110,13 @@ class FluidSectionMesher(
         positions[6] = x2; positions[7] = height2; positions[8] = z2
         positions[9] = x1; positions[10] = height1; positions[11] = z1
 
-        // TODO: only iterate if cull == OVERLAY
-        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
-        mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
+        if (cull == FluidCull.OVERLAY && overlay != null) {
+            val textureId = overlay.renderData.shaderTextureId.buffer()
+            mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
+        } else {
+            mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
+            mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
+        }
     }
 
     private fun canCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid, height: Float): FluidCull {
@@ -128,7 +133,7 @@ class FluidSectionMesher(
         val surface = (1.0f - 0.0f) * (height - 0.0f) // TODO: simplify
 
         val area = properties.getSideArea(side)
-        val covered = surface >= area
+        val covered = surface <= area
 
         if (!covered) return FluidCull.VISIBLE
 
@@ -214,11 +219,12 @@ class FluidSectionMesher(
                         packedUV[1] = PackedUV.pack(0.5f, 0.5f)
                         val mesh = mesh[flowing.transparency]
                         val textureId = flowing.renderData.shaderTextureId.buffer()
+                        val overlay = model.overlay
 
-                        if (north == FluidCull.VISIBLE) renderSide(offsetPosition.unsafe, 0.0f, 1.0f, 0.0f, 0.0f, corners[0], corners[1], textureId, mesh, lightTint, positions, packedUV)
-                        if (south == FluidCull.VISIBLE) renderSide(offsetPosition.unsafe, 1.0f, 0.0f, 1.0f, 1.0f, corners[2], corners[3], textureId, mesh, lightTint, positions, packedUV)
-                        if (west == FluidCull.VISIBLE) renderSide(offsetPosition.unsafe, 0.0f, 0.0f, 1.0f, 0.0f, corners[3], corners[0], textureId, mesh, lightTint, positions, packedUV)
-                        if (east == FluidCull.VISIBLE) renderSide(offsetPosition.unsafe, 1.0f, 1.0f, 0.0f, 1.0f, corners[1], corners[2], textureId, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 0.0f, 1.0f, 0.0f, 0.0f, corners[0], corners[1], north, overlay, textureId, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 1.0f, 0.0f, 1.0f, 1.0f, corners[2], corners[3], south, overlay, textureId, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 0.0f, 0.0f, 1.0f, 0.0f, corners[3], corners[0], west, overlay, textureId, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 1.0f, 1.0f, 0.0f, 1.0f, corners[1], corners[2], east, overlay, textureId, mesh, lightTint, positions, packedUV)
                     }
 
                     mesh.addBlock(x, y, z)
