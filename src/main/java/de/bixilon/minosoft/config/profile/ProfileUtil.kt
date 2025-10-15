@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.config.profile
 
 object ProfileUtil {
-    val NAME_REGEX = "[\\w_ ]{1,32}".toRegex()
+    val NAME_REGEX = "[\\w_ .]{1,32}".toRegex()
 
     fun String.isValidName(): Boolean {
         return NAME_REGEX.matches(this)
