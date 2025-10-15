@@ -14,20 +14,28 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 object FluidCornerHeightUtil {
+
     private fun ChunkSection.getFluidHeight(fluid: Fluid, position: InSectionPosition, offset: BlockPosition): Float {
         val offset = offset + position
         val up = traceBlock(offset + Directions.UP)
         if (fluid.matches(up)) return 1.0f
 
-        // TODO: check if block has collisions
+        val state = traceBlock(offset) ?: return 0.0f
+        val height = fluid.getHeight(state)
 
-        return fluid.getHeight(traceBlock(offset))
+        if (height != 0.0f) return height
+
+        if (BlockStateFlags.FULLY_OPAQUE in state.flags || BlockStateFlags.COLLISIONS in state.flags) {
+            return -1.0f
+        }
+        return 0.0f
     }
 
     fun updateFluidHeights(section: ChunkSection, position: InSectionPosition, fluid: Fluid, heights: FloatArray) {
@@ -56,21 +64,38 @@ object FluidCornerHeightUtil {
 
         // TODO
 
-        var total = a + b + c + d
-        var count = 4
+        var total = 0.0f
+        var count = 0
 
-        if (a >= 0.8f) {
-            total += a * 9; count += 9
+        if (a >= 0.0f) {
+            if (a >= 0.8f) {
+                total += a * 10; count += 10
+            } else {
+                total += a; count += 1
+            }
         }
-        if (b >= 0.8f) {
-            total += b * 9; count += 9
+        if (b >= 0.0f) {
+            if (b >= 0.8f) {
+                total += b * 10; count += 10
+            } else {
+                total += b; count += 1
+            }
         }
-        if (c >= 0.8f) {
-            total += c * 9; count += 9
+        if (c >= 0.0f) {
+            if (c >= 0.8f) {
+                total += c * 10; count += 10
+            } else {
+                total += c; count += 1
+            }
         }
-        if (d >= 0.8f) {
-            total += d * 9; count += 9
+        if (d >= 0.0f) {
+            if (d >= 0.8f) {
+                total += d * 10; count += 10
+            } else {
+                total += d; count += 1
+            }
         }
+
 
         return total / count
     }
