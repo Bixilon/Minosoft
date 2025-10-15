@@ -33,8 +33,8 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling.getSideArea
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -99,9 +99,9 @@ class FluidSectionMesher(
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
     }
 
-    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, overlay: Texture?, textureId: Float, mesh: ChunkMesh, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
+    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMesh, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
         if (cull == FluidCull.CULLED) return
-        packedUV[2] = PackedUV.pack(0.5f, (1.0f - height1) * 0.5f) // TODO: transformUV
+        packedUV[2] = PackedUV.pack(0.5f, (1.0f - height1) * 0.5f)
         packedUV[3] = PackedUV.pack(0.0f, (1.0f - height2) * 0.5f)
 
 
@@ -110,13 +110,38 @@ class FluidSectionMesher(
         positions[6] = x2; positions[7] = height2; positions[8] = z2
         positions[9] = x1; positions[10] = height1; positions[11] = z1
 
+        var backface = true
+        var texture = texture
         if (cull == FluidCull.OVERLAY && overlay != null) {
-            val textureId = overlay.renderData.shaderTextureId.buffer()
-            mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
-        } else {
-            mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
-            mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], packedUV[uv], textureId, lightTint) }
+            backface = false
+            texture = overlay
         }
+
+        val textureId = texture.renderData.shaderTextureId.buffer()
+        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        if (backface) {
+            mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        }
+    }
+
+
+    // TODO: merge with DirectedProperty
+    fun SideProperties.getSideArea(targetEndY: Float): Float {
+        // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
+        var area = 0.0f
+
+        for (quad in this.faces) {
+            area += quad.getSideArea(targetEndY)
+        }
+
+        return area
+    }
+
+    private fun FaceProperties.getSideArea(targetEndY: Float): Float {
+        val width = end.x - start.x
+        val height = minOf(targetEndY, end.y) - start.y
+
+        return width * height
     }
 
     private fun canCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid, height: Float): FluidCull {
@@ -128,12 +153,8 @@ class FluidSectionMesher(
         val model = state.model ?: state.block.model ?: return FluidCull.VISIBLE
         val properties = model.getProperties(direction) ?: return FluidCull.VISIBLE // not touching side
 
-        val side = FaceProperties(Vec2f(0.0f, 0.0f), Vec2f(1.0f, height), transparency = TextureTransparencies.TRANSPARENT) // TODO: remove allocation
-
-        val surface = (1.0f - 0.0f) * (height - 0.0f) // TODO: simplify
-
-        val area = properties.getSideArea(side)
-        val covered = surface <= area
+        val area = properties.getSideArea(height)
+        val covered = height <= area // height == surface
 
         if (!covered) return FluidCull.VISIBLE
 
@@ -218,13 +239,12 @@ class FluidSectionMesher(
                         packedUV[0] = PackedUV.pack(0.0f, 0.5f)
                         packedUV[1] = PackedUV.pack(0.5f, 0.5f)
                         val mesh = mesh[flowing.transparency]
-                        val textureId = flowing.renderData.shaderTextureId.buffer()
                         val overlay = model.overlay
 
-                        renderSide(offsetPosition.unsafe, 0.0f, 1.0f, 0.0f, 0.0f, corners[0], corners[1], north, overlay, textureId, mesh, lightTint, positions, packedUV)
-                        renderSide(offsetPosition.unsafe, 1.0f, 0.0f, 1.0f, 1.0f, corners[2], corners[3], south, overlay, textureId, mesh, lightTint, positions, packedUV)
-                        renderSide(offsetPosition.unsafe, 0.0f, 0.0f, 1.0f, 0.0f, corners[3], corners[0], west, overlay, textureId, mesh, lightTint, positions, packedUV)
-                        renderSide(offsetPosition.unsafe, 1.0f, 1.0f, 0.0f, 1.0f, corners[1], corners[2], east, overlay, textureId, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 0.0f, 1.0f, 0.0f, 0.0f, corners[0], corners[1], north, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 1.0f, 0.0f, 1.0f, 1.0f, corners[2], corners[3], south, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 0.0f, 0.0f, 1.0f, 0.0f, corners[3], corners[0], west, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        renderSide(offsetPosition.unsafe, 1.0f, 1.0f, 0.0f, 1.0f, corners[1], corners[2], east, flowing, overlay, mesh, lightTint, positions, packedUV)
                     }
 
                     mesh.addBlock(x, y, z)

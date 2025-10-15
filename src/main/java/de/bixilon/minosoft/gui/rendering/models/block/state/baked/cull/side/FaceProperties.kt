@@ -22,4 +22,9 @@ data class FaceProperties(
     val transparency: TextureTransparencies,
 ) {
     val surface = (end.x - start.x) * (end.y - start.y)
+
+    init {
+        assert(start.x >= 0.0f && start.y >= 0.0f) { "Out of bounds start: $start" }
+        assert(end.y <= 1.0f && start.y <= 1.0f) { "Out of bounds end: $end" }
+    }
 }

@@ -58,33 +58,30 @@ object FaceCulling {
     }
 
     // TODO: merge with DirectedProperty
-    fun SideProperties.getSideArea(target: FaceProperties): Float {
+    fun SideProperties.getSideArea(targetStartX: Float, targetStartY: Float, targetEndX: Float, targetEndY: Float): Float {
         // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
         var area = 0.0f
 
         for (quad in this.faces) {
-            area += quad.getSideArea(target)
+            area += quad.getSideArea(targetStartX, targetStartY, targetEndX, targetEndY)
         }
 
         return area
     }
 
-    private inline fun minOf(a: Float, b: Float): Float {
-        if (a < b) return a
-        return b
+    fun SideProperties.getSideArea(target: FaceProperties): Float {
+        val targetStartX = target.start.x
+        val targetStartY = target.start.y
+
+        val targetEndX = target.end.x
+        val targetEndY = target.end.y
+
+        return getSideArea(targetStartX, targetStartY, targetEndX, targetEndY)
     }
 
-    private inline fun maxOf(a: Float, b: Float): Float {
-        if (a > b) return a
-        return b
-    }
-
-    private fun FaceProperties.getSideArea(target: FaceProperties): Float {
-        val targetStart = target.start
-        val targetEnd = target.end
-
-        val width = minOf(targetEnd.x, end.x) - maxOf(start.x, targetStart.x)
-        val height = minOf(targetEnd.y, end.y) - maxOf(start.y, targetStart.y)
+    private fun FaceProperties.getSideArea(targetStartX: Float, targetStartY: Float, targetEndX: Float, targetEndY: Float): Float {
+        val width = minOf(targetEndX, end.x) - maxOf(start.x, targetStartX)
+        val height = minOf(targetEndY, end.y) - maxOf(start.y, targetStartY)
 
         return width * height
     }
@@ -95,7 +92,7 @@ object FaceCulling {
     }
 
     fun FaceProperties.isCoveredBy(properties: FaceProperties): Boolean {
-        val area = properties.getSideArea(this)
+        val area = properties.getSideArea(this.start.x, this.start.y, this.end.x, this.end.y)
         return surface <= area
     }
 }
