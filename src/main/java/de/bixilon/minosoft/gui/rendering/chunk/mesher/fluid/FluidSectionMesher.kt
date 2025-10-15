@@ -151,11 +151,12 @@ class FluidSectionMesher(
                     if (height <= 0.0f) continue
 
                     val up = !fluid.matches(section.traceBlock(inSection, Directions.UP))
-                    val down = canFluidCull(section, inSection, Directions.DOWN, fluid, height)
-                    val north = canFluidCull(section, inSection, Directions.NORTH, fluid, height)
-                    val south = canFluidCull(section, inSection, Directions.SOUTH, fluid, height)
-                    val west = canFluidCull(section, inSection, Directions.WEST, fluid, height)
-                    val east = canFluidCull(section, inSection, Directions.EAST, fluid, height)
+                    // TODO: height depends on the corners. Do the culling twice?
+                    val down = canFluidCull(section, inSection, Directions.DOWN, fluid, 1.0f)
+                    val north = canFluidCull(section, inSection, Directions.NORTH, fluid, 1.0f)
+                    val south = canFluidCull(section, inSection, Directions.SOUTH, fluid, 1.0f)
+                    val west = canFluidCull(section, inSection, Directions.WEST, fluid, 1.0f)
+                    val east = canFluidCull(section, inSection, Directions.EAST, fluid, 1.0f)
 
 
                     val sides = down != FluidCull.CULLED || north != FluidCull.CULLED || south != FluidCull.CULLED || west != FluidCull.CULLED && east == FluidCull.CULLED

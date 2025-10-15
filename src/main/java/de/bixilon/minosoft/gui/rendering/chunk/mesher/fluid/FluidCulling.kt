@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -42,8 +43,7 @@ object FluidCulling {
         return width * height
     }
 
-    fun canFluidCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid, height: Float): FluidCull {
-        val state = section.traceBlock(position, direction) ?: return FluidCull.VISIBLE
+    fun canFluidCull(state: BlockState, direction: Directions, fluid: Fluid, height: Float): FluidCull {
         if (fluid.matches(state)) return FluidCull.CULLED
 
 
@@ -52,9 +52,8 @@ object FluidCulling {
         val properties = model.getProperties(direction) ?: return FluidCull.VISIBLE // not touching side
 
         val area = properties.getSideArea(height)
-        val covered = height <= area // height == surface
 
-        if (!covered) return FluidCull.VISIBLE
+        if (height > area) return FluidCull.VISIBLE // height == surface -> isCovered
 
         // TODO: CustomBlockCulling
 
@@ -63,5 +62,11 @@ object FluidCulling {
         }
 
         return FluidCull.OVERLAY
+    }
+
+    fun canFluidCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid, height: Float): FluidCull {
+        val state = section.traceBlock(position, direction) ?: return FluidCull.VISIBLE
+
+        return canFluidCull(state, direction.inverted, fluid, height)
     }
 }
