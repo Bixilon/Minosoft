@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.mesher
+package de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.MVec3d
@@ -22,22 +22,21 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel.Companion.MAX_LEVEL
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateCornerHeights
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateFluidHeights
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCulling.canFluidCull
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
@@ -48,7 +47,7 @@ import kotlin.math.atan2
 class FluidSectionMesher(
     val context: RenderContext,
 ) {
-    private val water = context.session.registries.fluid[WaterFluid]
+    private val water = context.session.registries.fluid[WaterFluid.Companion]
     private val tints = context.tints
 
     private fun BlockState.getFluid() = when {
@@ -124,49 +123,6 @@ class FluidSectionMesher(
         }
     }
 
-
-    // TODO: merge with DirectedProperty
-    fun SideProperties.getSideArea(targetEndY: Float): Float {
-        // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
-        var area = 0.0f
-
-        for (quad in this.faces) {
-            area += quad.getSideArea(targetEndY)
-        }
-
-        return area
-    }
-
-    private fun FaceProperties.getSideArea(targetEndY: Float): Float {
-        val width = end.x - start.x
-        val height = minOf(targetEndY, end.y) - start.y
-
-        return width * height
-    }
-
-    private fun canCull(section: ChunkSection, position: InSectionPosition, direction: Directions, fluid: Fluid, height: Float): FluidCull {
-        val state = section.traceBlock(position, direction) ?: return FluidCull.VISIBLE
-        if (fluid.matches(state)) return FluidCull.CULLED
-
-
-        // copy from FaceCulling::canCull
-        val model = state.model ?: state.block.model ?: return FluidCull.VISIBLE
-        val properties = model.getProperties(direction) ?: return FluidCull.VISIBLE // not touching side
-
-        val area = properties.getSideArea(height)
-        val covered = height <= area // height == surface
-
-        if (!covered) return FluidCull.VISIBLE
-
-        // TODO: CustomBlockCulling
-
-        if (properties.transparency == TextureTransparencies.OPAQUE) {
-            return FluidCull.CULLED // impossible to see that face
-        }
-
-        return FluidCull.OVERLAY
-    }
-
     fun mesh(chunk: Chunk, section: ChunkSection, mesh: ChunkMeshesBuilder) {
         val blocks = section.blocks
 
@@ -195,11 +151,11 @@ class FluidSectionMesher(
                     if (height <= 0.0f) continue
 
                     val up = !fluid.matches(section.traceBlock(inSection, Directions.UP))
-                    val down = canCull(section, inSection, Directions.DOWN, fluid, height)
-                    val north = canCull(section, inSection, Directions.NORTH, fluid, height)
-                    val south = canCull(section, inSection, Directions.SOUTH, fluid, height)
-                    val west = canCull(section, inSection, Directions.WEST, fluid, height)
-                    val east = canCull(section, inSection, Directions.EAST, fluid, height)
+                    val down = canFluidCull(section, inSection, Directions.DOWN, fluid, height)
+                    val north = canFluidCull(section, inSection, Directions.NORTH, fluid, height)
+                    val south = canFluidCull(section, inSection, Directions.SOUTH, fluid, height)
+                    val west = canFluidCull(section, inSection, Directions.WEST, fluid, height)
+                    val east = canFluidCull(section, inSection, Directions.EAST, fluid, height)
 
 
                     val sides = down != FluidCull.CULLED || north != FluidCull.CULLED || south != FluidCull.CULLED || west != FluidCull.CULLED && east == FluidCull.CULLED
@@ -221,7 +177,7 @@ class FluidSectionMesher(
                     val tint = tints.getFluidTint(chunk, fluid, height, position)
                     var light = section.light[inSection]
                     if (position.y >= chunk.light.heightmap[inSection.xz]) {
-                        light = light.with(sky = MAX_LEVEL)
+                        light = light.with(sky = LightLevel.MAX_LEVEL)
                     }
 
                     val lightTint = (((light.index shl 24) or tint.rgb).buffer())
@@ -255,66 +211,6 @@ class FluidSectionMesher(
         }
     }
 
-    private fun ChunkSection.getFluidHeight(fluid: Fluid, position: InSectionPosition, offset: BlockPosition): Float {
-        val offset = offset + position
-        val up = traceBlock(offset + Directions.UP)
-        if (fluid.matches(up)) return 1.0f
-
-        // TODO: check if block has collisions
-
-        return fluid.getHeight(traceBlock(offset))
-    }
-
-    private fun updateFluidHeights(section: ChunkSection, position: InSectionPosition, fluid: Fluid, heights: FloatArray) {
-        heights[0] = section.getFluidHeight(fluid, position, BlockPosition(-1, 0, -1))
-        heights[1] = section.getFluidHeight(fluid, position, BlockPosition(+0, 0, -1))
-        heights[2] = section.getFluidHeight(fluid, position, BlockPosition(+1, 0, -1))
-        heights[3] = section.getFluidHeight(fluid, position, BlockPosition(-1, 0, +0))
-        heights[4] = section.getFluidHeight(fluid, position, BlockPosition(+0, 0, +0))
-        heights[5] = section.getFluidHeight(fluid, position, BlockPosition(+1, 0, +0))
-        heights[6] = section.getFluidHeight(fluid, position, BlockPosition(-1, 0, +1))
-        heights[7] = section.getFluidHeight(fluid, position, BlockPosition(+0, 0, +1))
-        heights[8] = section.getFluidHeight(fluid, position, BlockPosition(+1, 0, +1))
-    }
-
-    private fun updateCornerHeights(heights: FloatArray, corners: FloatArray) {
-        corners[0] = averageHeight(heights[0], heights[1], heights[3], heights[4])
-        corners[1] = averageHeight(heights[1], heights[2], heights[4], heights[5])
-        corners[2] = averageHeight(heights[4], heights[5], heights[7], heights[8])
-        corners[3] = averageHeight(heights[3], heights[4], heights[6], heights[7])
-    }
-
-    private fun averageHeight(a: Float, b: Float, c: Float, d: Float): Float {
-        if (a >= 1.0f || b >= 1.0f || c >= 1.0f || d >= 1.0f) {
-            return 1.0f
-        }
-
-        // TODO
-
-        var total = a + b + c + d
-        var count = 4
-
-        if (a >= 0.8f) {
-            total += a * 9; count += 9
-        }
-        if (b >= 0.8f) {
-            total += b * 9; count += 9
-        }
-        if (c >= 0.8f) {
-            total += c * 9; count += 9
-        }
-        if (d >= 0.8f) {
-            total += d * 9; count += 9
-        }
-
-        return total / count
-    }
-
-    enum class FluidCull {
-        VISIBLE,
-        OVERLAY,
-        CULLED,
-    }
 
     companion object {
         val POSITIONS_TOP_STILL = floatArrayOf(
