@@ -71,20 +71,23 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
             renderer.updateRenderInfo(time)
         }
         if (!renderer.isInRenderDistance()) {
-            return renderer.updateVisibility(true, false)
+            return renderer.updateVisibility(EntityVisibility.OUT_OF_VIEW_DISTANCE)
         }
-        val aabb = renderer.entity.renderInfo.cameraAABB
-        val visible = aabb in frustum
-        if (!visible) {
+        val entity = renderer.entity
+        val previous = renderer.visibility
+        val aabb = if (previous <= EntityVisibility.OUT_OF_FRUSTUM) entity.physics.aabb else entity.renderInfo.cameraAABB // cameraAABB is only updated if entity is visible
+        if (aabb !in frustum) {
             // TODO: renderer/features: renderOccluded -> occlusion culling is faster than frustum culling
-            return renderer.updateVisibility(true, false)
+            return renderer.updateVisibility(EntityVisibility.OUT_OF_FRUSTUM)
         }
-        val occluded = graph.isAABBOccluded(aabb)
-        renderer.updateVisibility(occluded, true)
+        if (graph.isAABBOccluded(aabb)) {
+            return renderer.updateVisibility(EntityVisibility.OCCLUDED)
+        }
+        return renderer.updateVisibility(EntityVisibility.VISIBLE)
     }
 
     fun collect(renderer: EntityRenderer<*>) {
-        if (!renderer.visible) return
+        if (!renderer.isVisible()) return
         lock.lock()
         _size++
         for (feature in renderer.features) {

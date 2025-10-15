@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -106,7 +107,7 @@ open class BillboardTextFeature(
         super.draw(mesh)
     }
 
-    override fun updateVisibility(occluded: Boolean) {
+    override fun updateVisibility(visibility: EntityVisibility) {
         this.visible = true
     }
 

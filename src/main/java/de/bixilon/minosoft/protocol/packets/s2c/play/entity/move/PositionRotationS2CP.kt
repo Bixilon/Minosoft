@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.ConfirmTeleportC2SP
@@ -28,15 +28,14 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position: Vec3d = Vec3d(buffer.readDoubleArray(3))
-    val rotation: EntityRotation
+    val position = Vec3d(buffer.readDoubleArray(3))
+    val rotation = EntityRotation(buffer.readFloat(), buffer.readFloat())
     var onGround = false
     private var flags: Int = 0
     var teleportId = 0
     private var dismountVehicle = true
 
     init {
-        rotation = EntityRotation(buffer.readFloat(), buffer.readFloat())
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             onGround = buffer.readBoolean()
         } else {

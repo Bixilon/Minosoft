@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelF
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.score.EntityScoreFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.human.PlayerModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -46,19 +48,18 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         entity.additional::properties.observe(this) { refresh = true }
     }
 
-    override fun updateVisibility(occluded: Boolean, visible: Boolean) {
-        if (visible) {
-            val team = renderer.session.player.additional.team
-            if (team == null || !team.canSee(entity.additional.team)) {
-                this.visible = false
-            } else {
-                this.visible = entity.isInvisible
-            }
-        } else {
-            this.visible = false
+    private fun canSeeTeam(): Boolean {
+        val camera = renderer.session.camera.entity.nullCast<PlayerEntity>() ?: return false
+        val team = camera.additional.team ?: return false
+
+        return team.canSee(entity.additional.team)
+    }
+
+    override fun updateVisibility(visibility: EntityVisibility) {
+        if (visibility >= EntityVisibility.OCCLUDED) {
+            this.isInvisible = entity.isInvisible && !canSeeTeam() // TODO: only update if that changes
         }
-        this.visible = visible && !entity.isInvisible
-        features.updateVisibility(occluded)
+        super.updateVisibility(visibility)
     }
 
 

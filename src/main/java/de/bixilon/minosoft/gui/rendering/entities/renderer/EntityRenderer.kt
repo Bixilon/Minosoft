@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFeature
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
@@ -45,7 +46,7 @@ abstract class EntityRenderer<E : Entity>(
     val name = EntityNameFeature(this).register()
     val light = Interpolator(ChatColors.WHITE.rgb(), ColorInterpolation::interpolateRGB)
     val matrix = MMat4f()
-    var visible = true
+    var visibility = EntityVisibility.VISIBLE
         protected set
 
     fun <T : EntityRenderFeature> T.register(): T {
@@ -119,8 +120,10 @@ abstract class EntityRenderer<E : Entity>(
         features.reset()
     }
 
-    open fun updateVisibility(occluded: Boolean, visible: Boolean) {
-        this.visible = visible
-        features.updateVisibility(occluded)
+    open fun isVisible() = visibility >= EntityVisibility.VISIBLE && !isInvisible
+
+    open fun updateVisibility(visibility: EntityVisibility) {
+        this.visibility = visibility
+        features.updateVisibility(visibility)
     }
 }

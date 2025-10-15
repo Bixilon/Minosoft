@@ -112,10 +112,10 @@ class ContainerLockingTest {
         var end = TimeUtil.NULL
         Thread { container[1] = ItemStack(AppleTest0.item); end = now() }.start()
         Thread.sleep(30L)
-        assertEquals(end, 0L)
+        assertEquals(end, TimeUtil.NULL)
         container.commit()
         Thread.sleep(30L)
-        assertNotEquals(end, 0L)
+        assertNotEquals(end, TimeUtil.NULL)
     }
 
     fun ensureLockedSingle() {
@@ -127,10 +127,10 @@ class ContainerLockingTest {
         var end = TimeUtil.NULL
         Thread { container[0]!!.item.increaseCount(); end = now() }.start()
         Thread.sleep(30L)
-        assertEquals(end, 0L)
+        assertEquals(end, TimeUtil.NULL)
         container[0]!!.commit()
         Thread.sleep(30L)
-        assertNotEquals(end, 0L)
+        assertNotEquals(end, TimeUtil.NULL)
     }
 
     fun iterating() {

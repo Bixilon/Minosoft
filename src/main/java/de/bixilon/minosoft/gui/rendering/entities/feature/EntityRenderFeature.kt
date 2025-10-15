@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.entities.visibility.VisibilityManager
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -32,8 +33,8 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
 
     open val layer: EntityLayer get() = EntityLayer.Opaque
 
-    open fun updateVisibility(occluded: Boolean) {
-        this.visible = !occluded
+    open fun updateVisibility(visibility: EntityVisibility) {
+        this.visible = visibility >= EntityVisibility.VISIBLE
     }
 
     open fun reset() = Unit

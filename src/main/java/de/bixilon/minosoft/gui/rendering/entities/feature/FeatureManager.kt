@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFeature> {
@@ -57,9 +58,9 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         }
     }
 
-    fun updateVisibility(occluded: Boolean) {
+    fun updateVisibility(visibility: EntityVisibility) {
         for (feature in features) {
-            feature.updateVisibility(occluded)
+            feature.updateVisibility(visibility)
         }
     }
 

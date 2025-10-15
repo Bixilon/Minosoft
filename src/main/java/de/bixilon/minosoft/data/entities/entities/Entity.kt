@@ -122,6 +122,8 @@ abstract class Entity(
     }
 
     open fun forceMove(delta: Vec3d) {
+        if (delta.length2() < 1.0E-7) return
+
         physics.forceMove(delta)
     }
 

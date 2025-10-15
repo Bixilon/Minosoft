@@ -61,8 +61,8 @@ class EntitiesRenderer(
         renderers.iterate {
             try {
                 if (reset) it.reset()
-                visibility.update(it, time)
-                if (!it.visible) return@iterate
+                visibility.update(it, time) // TODO: only update if position, world or frustum changed
+                if (!it.isVisible()) return@iterate
                 it.update(time)
                 it.prepare()
                 visibility.collect(it)
