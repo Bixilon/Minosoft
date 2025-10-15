@@ -58,7 +58,7 @@ object FaceCulling {
     }
 
     // TODO: merge with DirectedProperty
-    private fun SideProperties.getSideArea(target: FaceProperties): Float {
+    fun SideProperties.getSideArea(target: FaceProperties): Float {
         // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
         var area = 0.0f
 
