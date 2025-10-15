@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,12 +16,14 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @Test(priority = 100, groups = ["rendering"])
 class RenderTestLoader {
@@ -36,7 +38,7 @@ class RenderTestLoader {
         RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
         while (latch.count > 0) {
-            Thread.sleep(10)
+            sleep(10.milliseconds)
             session.error?.let { throw it }
         }
         val context = RenderTestUtil.rendering.context

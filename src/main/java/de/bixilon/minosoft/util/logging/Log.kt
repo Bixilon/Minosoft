@@ -18,6 +18,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -30,6 +31,7 @@ import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 
 
@@ -174,7 +176,7 @@ object Log {
 
     fun await() {
         while (this.QUEUE.isNotEmpty()) {
-            Thread.sleep(1)
+            sleep(1.milliseconds)
         }
     }
 

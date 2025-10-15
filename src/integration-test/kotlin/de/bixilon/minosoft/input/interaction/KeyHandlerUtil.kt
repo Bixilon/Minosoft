@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import org.testng.SkipException
 import kotlin.time.Duration.Companion.milliseconds
@@ -37,13 +38,13 @@ object KeyHandlerUtil {
             if (time - start > (count + 1).ticks.duration - 1.milliseconds) throw SkipException("busy") // wait max one tick longer
 
             if (time - start < count.ticks.duration) {
-                Thread.sleep(10)
+                sleep(10.milliseconds)
                 continue
             }
 
             if (task.executions - executions == count) break
             if (task.executions - executions > count) throw SkipException("Ran too often!")
-            Thread.sleep(5)
+            sleep(5.milliseconds)
         }
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.input.interaction.breaking.executor
 
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createS
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @Test(groups = ["interaction"])
 class SequencedExecutorTest {
@@ -48,7 +50,7 @@ class SequencedExecutorTest {
         // session.world[BlockPosition(1, 1, 1)] = state // <- set the same block -> revert/cancel
 
         executor.finish()
-        Thread.sleep(10) // async, wait for thread to complete
+        sleep(10.milliseconds) // async, wait for thread to complete
         assertEquals(session.world[BlockPosition(1, 1, 1)], state)
     }
 
@@ -60,7 +62,7 @@ class SequencedExecutorTest {
         executor.start(BlockPosition(1, 1, 1), state)
 
         executor.finish()
-        Thread.sleep(10) // async, wait for thread to complete
+        sleep(10.milliseconds) // async, wait for thread to complete
         assertNull(session.world[BlockPosition(1, 1, 1)])
     }
 }

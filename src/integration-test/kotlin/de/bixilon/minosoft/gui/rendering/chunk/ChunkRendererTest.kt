@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @Test(groups = ["chunk_renderer"], dependsOnGroups = ["rendering", "block"])
 class ChunkRendererTest {
@@ -32,7 +34,7 @@ class ChunkRendererTest {
 
     private fun ChunkRenderer.awaitQueue(count: Int) {
         for (i in 0 until 200) {
-            Thread.sleep(16)
+            sleep(16.milliseconds)
             frame()
             if (loaded.size == count) {
                 break
@@ -48,7 +50,7 @@ class ChunkRendererTest {
         val chunk = RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!
         val renderer = create()
         renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
-        Thread.sleep(50)
+        sleep(50.milliseconds)
         renderer.frame()
         renderer.awaitQueue(0)
         Assert.assertEquals(renderer.loaded.size, 0)

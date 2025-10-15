@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui
 
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
+import kotlin.time.Duration.Companion.milliseconds
 
 class RenderLoop(
     private val context: RenderContext,
@@ -51,7 +53,7 @@ class RenderLoop(
             }
 
             while (context.state == RenderingStates.PAUSED) {
-                Thread.sleep(20L)
+                sleep(20.milliseconds)
                 context.window.pollEvents()
             }
 
@@ -102,7 +104,7 @@ class RenderLoop(
 
 
             if (context.state == RenderingStates.SLOW && slowRendering) {
-                Thread.sleep(100L)
+                sleep(100.milliseconds)
             }
 
             for (error in context.system.getErrors()) {

@@ -15,12 +15,14 @@ package de.bixilon.minosoft.data.container.locking
 
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTest0
 import de.bixilon.minosoft.data.registries.items.CoalTest0
 import org.testng.Assert.*
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @Test(groups = ["container"], dependsOnGroups = ["item"])
 class ContainerLockingTest {
@@ -111,10 +113,10 @@ class ContainerLockingTest {
         container[0] = ItemStack(AppleTest0.item, count = 1)
         var end = TimeUtil.NULL
         Thread { container[1] = ItemStack(AppleTest0.item); end = now() }.start()
-        Thread.sleep(30L)
+        sleep(30.milliseconds)
         assertEquals(end, TimeUtil.NULL)
         container.commit()
-        Thread.sleep(30L)
+        sleep(30.milliseconds)
         assertNotEquals(end, TimeUtil.NULL)
     }
 
@@ -126,10 +128,10 @@ class ContainerLockingTest {
 
         var end = TimeUtil.NULL
         Thread { container[0]!!.item.increaseCount(); end = now() }.start()
-        Thread.sleep(30L)
+        sleep(30.milliseconds)
         assertEquals(end, TimeUtil.NULL)
         container[0]!!.commit()
-        Thread.sleep(30L)
+        sleep(30.milliseconds)
         assertNotEquals(end, TimeUtil.NULL)
     }
 

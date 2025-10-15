@@ -14,9 +14,11 @@
 package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.environment.Environment
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.input.interaction.KeyHandlerUtil.awaitTicks
 import org.testng.AssertJUnit.assertEquals
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 @Test(groups = ["interaction"])
 class KeyHandlerTest {
@@ -35,7 +37,7 @@ class KeyHandlerTest {
         val handler = TestKeyHandler()
         handler.press()
         handler.awaitTicks(1)
-        Thread.sleep(5) // no clue
+        sleep(5.milliseconds) // no clue
         assertEquals(handler.actions.toList(), listOf(
             TestKeyHandler.Actions.PRESS,
             TestKeyHandler.Actions.TICK,
@@ -48,7 +50,7 @@ class KeyHandlerTest {
         val handler = TestKeyHandler()
         handler.press()
         handler.awaitTicks(2)
-        Thread.sleep(5) // no clue
+        sleep(5.milliseconds) // no clue
         handler.release()
         assertEquals(handler.actions.toList(), listOf(
             TestKeyHandler.Actions.PRESS,

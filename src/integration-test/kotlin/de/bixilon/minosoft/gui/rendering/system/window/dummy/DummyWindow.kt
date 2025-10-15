@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
+import java.lang.Thread.sleep
 
 class DummyWindow : Window {
     override val systemScale by observed(Vec2f(1.0f))
@@ -48,10 +49,7 @@ class DummyWindow : Window {
 
     override fun forceClose() = Unit
 
-    override fun swapBuffers() {
-        Thread.sleep(20)
-    }
-
+    override fun swapBuffers() = Unit
     override fun pollEvents() = Unit
 
     override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) = Unit

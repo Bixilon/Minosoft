@@ -20,6 +20,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
@@ -238,7 +239,7 @@ class AudioPlayer(
             queue.workBlocking(500.milliseconds)
             calculateAvailableSources()
             while (!enabled) {
-                Thread.sleep(1L)
+                sleep(1.milliseconds)
                 if (session.established || session.error != null) {
                     break
                 }
