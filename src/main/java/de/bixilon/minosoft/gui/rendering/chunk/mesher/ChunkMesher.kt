@@ -37,7 +37,7 @@ class ChunkMesher(
         if (!neighbours.complete || sectionNeighbours == null) {
             return null
         }
-        val mesh = ChunkMeshesBuilder(renderer.context, item.section.smallMesh)
+        val mesh = ChunkMeshesBuilder(renderer.context, item.section.smallMesh, item.section.blockEntities.count)
         try {
             solid.mesh(item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
 

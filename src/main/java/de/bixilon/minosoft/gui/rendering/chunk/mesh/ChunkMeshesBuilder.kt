@@ -29,11 +29,12 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 class ChunkMeshesBuilder(
     context: RenderContext,
     smallMesh: Boolean = false,
+    entities: Int,
 ) : BlockVertexConsumer { // TODO: Don't inherit
     var opaque = ChunkMesh(context, if (smallMesh) 8192 else 65536)
     var translucent = ChunkMesh(context, if (smallMesh) 4096 else 16384)
     var text = ChunkMesh(context, if (smallMesh) 1024 else 4096)
-    var entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(if (smallMesh) 16 else 32)
+    var entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(entities)
 
     // used for frustum culling
     var minPosition = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
