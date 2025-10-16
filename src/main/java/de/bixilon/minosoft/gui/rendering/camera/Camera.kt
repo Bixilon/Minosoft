@@ -47,11 +47,7 @@ class Camera(
 
     fun draw() {
         val entity = context.session.camera.entity
-        try {
-            (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
-        } catch (error: Throwable) {
-            error.printStackTrace()
-        }
+        (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
         if (entity is LocalPlayerEntity) {
             entity._draw(now()) // TODO: force draw if entity is camera entity?
         }
