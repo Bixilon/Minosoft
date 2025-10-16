@@ -11,13 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-rootProject.name = "minosoft"
+package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
-    }
-}
+class LengthDecodedPacket(
+    val offset: Int,
+    val length: Int,
+    val buffer: ByteArray,
+)

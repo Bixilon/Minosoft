@@ -11,9 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty
+package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions
 
-class ReadArray(
-    val array: ByteArray,
-    val length: Int,
-)
+import de.bixilon.minosoft.protocol.packets.registry.PacketType
+
+class PacketBufferOverflowException(
+    val type: PacketType,
+    val size: Int,
+    val available: Int,
+) : NetworkException() {
+    override val message: String = "type=$type, size=$size, available=$available"
+}

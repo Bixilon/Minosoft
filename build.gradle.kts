@@ -20,7 +20,6 @@ import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.stream.InputStreamUtil.copy
-import de.bixilon.kutil.time.TimeUtil
 import org.ajoberstar.grgit.Commit
 import org.ajoberstar.grgit.Grgit
 import org.ajoberstar.grgit.operation.LogOp
@@ -44,6 +43,7 @@ import java.security.KeyFactory
 import java.security.MessageDigest
 import java.security.Signature
 import java.security.spec.PKCS8EncodedKeySpec
+import java.time.Instant
 import java.util.stream.Collectors
 
 
@@ -79,14 +79,14 @@ val architecture = properties["architecture"]?.let { Architectures[it] } ?: Plat
 logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase()}")
 
 repositories {
-    // mavenLocal()
+    mavenLocal()
     mavenCentral()
     maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
 }
 
 buildscript {
     dependencies {
-        classpath("de.bixilon", "kutil", "1.27.2")
+        classpath("de.bixilon", "kutil", "1.28")
     }
 }
 
@@ -480,7 +480,7 @@ val versionJsonTask = tasks.register("versionJson") {
         val versionInfo: MutableMap<String, Any> = mutableMapOf(
             "general" to mutableMapOf(
                 "name" to project.version,
-                "date" to TimeUtil.seconds(),
+                "date" to Instant.now().toEpochMilli() / 1000,
                 "stable" to stable,
                 "updates" to updates,
             )

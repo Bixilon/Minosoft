@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.lengt
 
 import de.bixilon.kutil.exception.FastException
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
-import de.bixilon.minosoft.protocol.network.network.client.netty.ReadArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
@@ -28,6 +27,7 @@ class LengthDecoder(
 
     override fun decode(context: ChannelHandlerContext?, buffer: ByteBuf, out: MutableList<Any>) {
         buffer.markReaderIndex()
+
         if (buffer.readableBytes() < 2) { // 1 length byte and 1 packet id byte is the minimum
             buffer.resetReaderIndex()
             return
@@ -52,7 +52,7 @@ class LengthDecoder(
         val array = NetworkAllocator.allocate(length)
         buffer.readBytes(array, 0, length)
 
-        out += ReadArray(array, length)
+        out += LengthDecodedPacket(0, length, array)
     }
 
 

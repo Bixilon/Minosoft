@@ -16,12 +16,13 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encod
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
-import de.bixilon.minosoft.protocol.network.network.client.netty.ReadArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketReadException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.UnknownPacketIdException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation.PacketNotImplementedException
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
+import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecodedPacket
+import de.bixilon.minosoft.protocol.packets.registry.PacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
@@ -32,37 +33,35 @@ import java.lang.reflect.InvocationTargetException
 
 class PacketDecoder(
     private val client: NettyClient,
-) : MessageToMessageDecoder<ReadArray>() {
+) : MessageToMessageDecoder<LengthDecodedPacket>() {
     private val version: Version? = client.session.version
 
-    override fun decode(context: ChannelHandlerContext, array: ReadArray, out: MutableList<Any>) {
-        val buffer = InByteBuffer(array.array)
-        val packetId = buffer.readVarInt()
-        val length = array.length - buffer.pointer
-        val data = NetworkAllocator.allocate(length)
-        buffer.readByteArray(data, 0, length)
-        NetworkAllocator.free(array.array)
+    override fun decode(context: ChannelHandlerContext, array: LengthDecodedPacket, out: MutableList<Any>) {
+        out += decode(array) ?: return
+    }
 
+    fun decode(data: LengthDecodedPacket): QueuedS2CP<S2CPacket>? {
+        val buffer = InByteBuffer(data.buffer).apply { pointer = data.offset }
+        val packetId = buffer.readVarInt()
+
+        val state = client.connection.state ?: return null
+        val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
+
+        val length = data.length - (buffer.pointer - data.offset)
         try {
-            val queued = decode(packetId, length, data) ?: return
-            out += queued
+            return decode(type, buffer.pointer, length, data.buffer)
         } finally {
-            NetworkAllocator.free(data)
+            NetworkAllocator.free(data.buffer)
         }
     }
 
-    private fun decode(packetId: Int, length: Int, data: ByteArray): QueuedS2CP<S2CPacket>? {
-        val state = client.connection.state ?: return null
-
-
-        val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
-
+    private fun decode(type: PacketType, offset: Int, length: Int, data: ByteArray): QueuedS2CP<S2CPacket>? {
         if (type.extra != null && type.extra.skip(client.session)) {
             return null
         }
 
         val packet = try {
-            type.create(data, length, client.session).unsafeCast<S2CPacket>()
+            type.create(data, offset, length, client.session).unsafeCast<S2CPacket>()
         } catch (error: PacketNotImplementedException) {
             error.printStackTrace()
             return null
@@ -70,12 +69,12 @@ class PacketDecoder(
             type.extra?.onError(exception, client.session)
             throw exception
         } catch (error: Throwable) {
-            var realError = error
+            var real = error
             if (error is InvocationTargetException) {
-                error.cause?.let { realError = it }
+                error.cause?.let { real = it }
             }
-            type.extra?.onError(realError, client.session)
-            throw PacketReadException(realError)
+            type.extra?.onError(real, client.session)
+            throw PacketReadException(real)
         }
 
         return QueuedS2CP(type, packet)
