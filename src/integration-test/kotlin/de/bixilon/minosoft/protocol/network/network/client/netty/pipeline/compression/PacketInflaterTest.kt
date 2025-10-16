@@ -72,6 +72,4 @@ class PacketInflaterTest {
         assertEquals(decoded.length, 1)
         assertEquals(decoded.offset, 0)
     }
-
-    // TODO: compressed tests (with offset and length)
 }

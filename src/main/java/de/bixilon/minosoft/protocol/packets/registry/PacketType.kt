@@ -45,8 +45,8 @@ class PacketType(
 
         val read = buffer.pointer - offset
         when {
-            read < length -> throw PacketBufferUnderflowException(this, length, read)
-            read > length -> throw PacketBufferOverflowException(this, length, read)
+            read < length -> throw PacketBufferUnderflowException(this, length, length - read)
+            read > length -> throw PacketBufferOverflowException(this, length, length - read)
         }
 
         return packet
