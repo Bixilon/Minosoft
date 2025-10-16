@@ -15,7 +15,6 @@ package de.bixilon.minosoft.config.profile.profiles.gui.chat
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
-import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
 import de.bixilon.minosoft.config.profile.profiles.gui.chat.internal.InternalC

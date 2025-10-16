@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
 import de.bixilon.kmath.vec.vec2.i.MVec2i
-import de.bixilon.kmath.vec.vec2.i.Vec2i
 
 data class WorldSize(
     val min: MVec2i = MVec2i(Int.MAX_VALUE, Int.MAX_VALUE),

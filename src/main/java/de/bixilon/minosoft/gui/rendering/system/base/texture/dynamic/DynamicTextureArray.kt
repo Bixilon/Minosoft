@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.AbstractLatch

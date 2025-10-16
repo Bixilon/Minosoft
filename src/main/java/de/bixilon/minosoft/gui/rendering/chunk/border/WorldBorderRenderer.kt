@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.chunk.border
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor

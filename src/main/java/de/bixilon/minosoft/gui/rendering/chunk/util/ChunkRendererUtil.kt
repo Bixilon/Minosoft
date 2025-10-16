@@ -16,8 +16,6 @@ package de.bixilon.minosoft.gui.rendering.chunk.util
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.isEmpty
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 

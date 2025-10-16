@@ -43,6 +43,7 @@ class PacketInflater(
         }
 
         val decompressed = NetworkAllocator.allocate(uncompressedLength)
+        assert(decompressed.size >= uncompressedLength) { "Something bad happened!" }
 
         val actualDecompressed = compressed.decompress(decompressed)
         NetworkAllocator.free(compressed)

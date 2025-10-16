@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.network.session.play.util
 
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.NextChunkBatchC2SP

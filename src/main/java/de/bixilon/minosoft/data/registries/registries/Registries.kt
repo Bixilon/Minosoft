@@ -66,15 +66,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.RegistriesUtil
 import de.bixilon.minosoft.util.RegistriesUtil.postInit
 import de.bixilon.minosoft.util.RegistriesUtil.setParent
-import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 import kotlin.reflect.KProperty0
 import kotlin.time.Duration.Companion.milliseconds
 

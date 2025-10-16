@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.util.f
+import de.bixilon.kutil.primitive.f
 
 object Vec3fSerializer : SimpleModule() {
 

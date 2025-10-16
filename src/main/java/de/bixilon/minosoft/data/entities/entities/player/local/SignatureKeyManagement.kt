@@ -18,7 +18,6 @@ import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.time.Interval
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
@@ -31,7 +30,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.SessionDataC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
-import java.time.Duration
 import java.time.Instant
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds

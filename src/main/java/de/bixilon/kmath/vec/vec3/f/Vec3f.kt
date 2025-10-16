@@ -22,8 +22,8 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d._Vec3d
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kutil.math.simple.FloatMath.clamp
+import de.bixilon.kutil.primitive.f
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.util.f
 import kotlin.math.sqrt
 
 @JvmInline

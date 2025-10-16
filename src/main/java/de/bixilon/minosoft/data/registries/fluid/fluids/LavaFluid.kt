@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogOptions
 import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.LavaFluidModel

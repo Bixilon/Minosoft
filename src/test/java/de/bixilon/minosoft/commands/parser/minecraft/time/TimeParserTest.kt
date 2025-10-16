@@ -17,7 +17,6 @@ import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParseError
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals

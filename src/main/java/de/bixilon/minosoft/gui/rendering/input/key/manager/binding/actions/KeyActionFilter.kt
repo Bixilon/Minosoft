@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 interface KeyActionFilter {
 

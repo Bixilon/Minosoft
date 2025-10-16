@@ -16,7 +16,6 @@ package de.bixilon.kmath.vec.vec3.i
 import de.bixilon.kmath.vec.VecUtil.assertVec
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.util.KUtil.format
 

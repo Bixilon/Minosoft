@@ -16,7 +16,7 @@ package de.bixilon.kmath.mat.mat4.f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

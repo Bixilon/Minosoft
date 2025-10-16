@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.MVec3f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec3.f.MVec3f
 import java.util.*
 
 @Deprecated(message = "Use VecXUtil instead")

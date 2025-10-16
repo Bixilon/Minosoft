@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import de.bixilon.kutil.avg._long.LongAverage
+import de.bixilon.kutil.avg.duration.DurationAverage
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
@@ -30,8 +30,8 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private val baseMultiplier = random.nextFloat(1.0f, 1.5f)
     private val baseJitter = random.nextInt(0, 20)
 
-    override val avgFrameTime = LongAverage(1.seconds)
-    override val avgDrawTime = LongAverage(1.seconds)
+    override val avgFrameTime = DurationAverage(1.seconds)
+    override val avgDrawTime = DurationAverage(1.seconds)
 
     private var lastSmoothFPSCalculationTime = TimeUtil.NULL
     override var smoothAvgFPS: Double = 0.0
@@ -62,8 +62,8 @@ class ExperimentalRenderStats : AbstractRenderStats {
 
 
     init {
-        avgFrameTime.add(5000000L) // ToDo: Add real stats
-        avgFrameTime.add(5000000L) // ToDo: Add real stats
+        avgFrameTime.add(5.milliseconds) // ToDo: Add real stats
+        avgFrameTime.add(5.milliseconds) // ToDo: Add real stats
     }
 
     override val totalFrames: Long

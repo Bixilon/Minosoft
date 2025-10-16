@@ -18,6 +18,8 @@ import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.primitive.FloatUtil.cos
+import de.bixilon.kutil.primitive.FloatUtil.sin
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
@@ -40,8 +42,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
-import de.bixilon.minosoft.util.KUtil.cos
-import de.bixilon.minosoft.util.KUtil.sin
 import kotlin.math.atan2
 
 class FluidSectionMesher(

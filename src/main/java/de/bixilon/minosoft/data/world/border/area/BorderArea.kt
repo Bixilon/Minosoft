@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.border.area
 
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.world.border.WorldBorderState

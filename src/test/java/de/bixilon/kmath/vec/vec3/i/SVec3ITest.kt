@@ -14,7 +14,6 @@
 package de.bixilon.kmath.vec.vec3.i
 
 import de.bixilon.kmath.vec.VecUtil.VERIFY_VECTORS
-import de.bixilon.kmath.vec.vec3.i.SVec3i
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals

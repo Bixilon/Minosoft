@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createOpaqueLight
@@ -24,7 +23,6 @@ import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.fillBottom
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import org.testng.annotations.Test
-import kotlin.system.measureNanoTime
 import kotlin.time.Duration
 import kotlin.time.measureTime
 

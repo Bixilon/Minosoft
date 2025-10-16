@@ -13,11 +13,8 @@
 
 package de.bixilon.minosoft.data.world.positions
 
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.text.formatting.TextFormattable
-import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 import de.bixilon.kmath.vec.vec3.i._Vec3i
-import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 
 @JvmInline
 value class SectionPosition(

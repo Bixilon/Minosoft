@@ -19,7 +19,6 @@ import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -28,9 +27,6 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.hash.HashUtil.SHA_256
-import de.bixilon.kutil.math.MathConstants.PIf
-import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.reflection.ReflectionUtil.field
@@ -66,16 +62,10 @@ import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
-import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.nio.ByteOrder
-import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
-import kotlin.math.cos
-import kotlin.math.sin
 
 
 object KUtil {
@@ -313,70 +303,4 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
-
-
-    @Deprecated("Kutil 1.28")
-    private fun MessageDigest.hash(input: InputStream): ByteArray {
-        val buffer = createBuffer()
-        var length: Int
-        while (true) {
-            length = input.read(buffer, 0, buffer.size)
-            if (length < 0) {
-                break
-            }
-            this.update(buffer, 0, length)
-        }
-        return this.digest()
-    }
-
-    @Deprecated("Kutil 1.28")
-    fun InputStream.sha256(): ByteArray {
-        return MessageDigest.getInstance(SHA_256).hash(this)
-    }
-
-    val Double.sin get() = sin(this)
-    val Double.cos get() = cos(this)
-
-    val Double.rad get() = Math.toRadians(this)
-    val Double.deg get() = Math.toDegrees(this)
-    val Float.sin get() = Trigonometry.sin(this)
-    val Float.cos get() = Trigonometry.cos(this)
-
-    val Float.rad get() = this * (PIf / 180.0f)
-    val Float.deg get() = this * (180.0f / PIf)
-
-    @Deprecated("Kutil 1.28")
-    fun ByteArray.sha256(): ByteArray {
-        return ByteArrayInputStream(this).sha256()
-    }
-
-    @Deprecated("Kutil 1.28")
-    fun Long.toByteArray(order: ByteOrder): ByteArray {
-        var value = this
-        val result = ByteArray(Long.SIZE_BYTES)
-
-
-        for (i in 0 until Long.SIZE_BYTES) {
-            val index = if (order == ByteOrder.BIG_ENDIAN) Long.SIZE_BYTES - i - 1 else i
-            result[index] = (value and 0xFFL).toByte()
-            value = value ushr Byte.SIZE_BITS
-        }
-
-        return result
-    }
-
-    @Deprecated("Kutil 1.28")
-    fun Int.toByteArray(order: ByteOrder): ByteArray {
-        var value = this
-        val result = ByteArray(Int.SIZE_BYTES)
-
-
-        for (i in 0 until Int.SIZE_BYTES) {
-            val index = if (order == ByteOrder.BIG_ENDIAN) Int.SIZE_BYTES - i - 1 else i
-            result[index] = (value and 0xFF).toByte()
-            value = value ushr Byte.SIZE_BITS
-        }
-
-        return result
-    }
 }

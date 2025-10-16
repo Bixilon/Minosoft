@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.IntUtil.toInt

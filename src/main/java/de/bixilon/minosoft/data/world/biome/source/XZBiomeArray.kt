@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.world.biome.source
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class XZBiomeArray(private val biomes: Array<Biome?>) : BiomeSource {
 

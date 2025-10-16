@@ -20,6 +20,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
-import de.bixilon.minosoft.util.KUtil.rad
 
 class MatrixHandler(
     private val context: RenderContext,

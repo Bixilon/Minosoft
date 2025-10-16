@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
-import de.bixilon.minosoft.util.KUtil.rad
 
 class LegAnimator(
     val model: HumanModel<*>,

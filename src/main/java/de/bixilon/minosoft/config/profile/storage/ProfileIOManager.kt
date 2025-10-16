@@ -18,7 +18,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.SimpleLatch
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.config.profile.profiles.Profile

@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec2.f.MVec2f
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache

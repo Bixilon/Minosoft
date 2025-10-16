@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.handler.entity.landing
 
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition

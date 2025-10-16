@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.abilities
 
-import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 

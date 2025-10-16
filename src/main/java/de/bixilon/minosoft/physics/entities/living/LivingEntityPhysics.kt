@@ -15,6 +15,7 @@ package de.bixilon.minosoft.physics.entities.living
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.properties.FluidWalker
@@ -37,7 +38,6 @@ import de.bixilon.minosoft.physics.parts.elytra.ElytraPhysics.travelElytra
 import de.bixilon.minosoft.physics.parts.input.InputPhysics.travelNormal
 import de.bixilon.minosoft.tags.block.MinecraftBlockTags.SOUL_SPEED_BLOCKS
 import de.bixilon.minosoft.tags.block.MinecraftBlockTags.isIn
-import de.bixilon.minosoft.util.d
 
 open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(entity) {
     protected val powderSnow = PowderSnowHandler(this)

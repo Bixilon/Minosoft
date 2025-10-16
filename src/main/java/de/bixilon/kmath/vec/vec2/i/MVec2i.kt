@@ -19,8 +19,8 @@ import de.bixilon.kmath.number.IntUtil.plus
 import de.bixilon.kmath.number.IntUtil.rem
 import de.bixilon.kmath.number.IntUtil.times
 import de.bixilon.kmath.vec.vec2.f._Vec2f
+import de.bixilon.kutil.primitive.i
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 @JvmInline

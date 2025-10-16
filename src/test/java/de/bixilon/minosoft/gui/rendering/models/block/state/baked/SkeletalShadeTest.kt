@@ -18,7 +18,7 @@ import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
 import kotlin.math.asin

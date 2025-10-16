@@ -28,10 +28,8 @@ import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager

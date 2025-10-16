@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.updater
 
+import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.hash.HashUtil.sha512
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -35,10 +36,10 @@ class MinosoftUpdateTest {
     }
 
     fun `correct data`() {
-        MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date + 1, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512(), ""), ChatComponent.of(":)"))
+        MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date + 1, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512().toHex(), ""), ChatComponent.of(":)"))
     }
 
     fun `older signature`() {
-        assertThrows { MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512(), ""), ChatComponent.of(":)")) }
+        assertThrows { MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512().toHex(), ""), ChatComponent.of(":)")) }
     }
 }

@@ -34,7 +34,6 @@ import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.test.IT
 
 object WorldTestUtil {
@@ -52,7 +51,7 @@ object WorldTestUtil {
         world::view.forceSet(TEST_WORLD_VIEW)
         world::time.forceSet(DataObserver(WorldTime()))
         world::biomes.forceSet(WorldBiomes(world))
-        world::weather.forceSet(DataObserver(WorldWeather.Companion.SUNNY))
+        world::weather.forceSet(DataObserver(WorldWeather.SUNNY))
         world::hardcore.forceSet(DataObserver(false))
         world::difficulty.forceSet(DataObserver(null))
 

@@ -18,13 +18,10 @@ import de.bixilon.kmath.number.FloatUtil.minus
 import de.bixilon.kmath.number.FloatUtil.plus
 import de.bixilon.kmath.number.FloatUtil.rem
 import de.bixilon.kmath.number.FloatUtil.times
-import de.bixilon.kmath.vec.vec2.d.MVec2d
 import de.bixilon.kmath.vec.vec2.d._Vec2d
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.primitive.f
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.util.d
-import de.bixilon.minosoft.util.f
-import de.bixilon.minosoft.util.i
 import kotlin.math.sqrt
 
 @JvmInline

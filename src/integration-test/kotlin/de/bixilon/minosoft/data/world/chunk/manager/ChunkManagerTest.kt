@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.world.chunk.manager
 
 import de.bixilon.kmath.vec.vec2.i.MVec2i
-import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState

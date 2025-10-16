@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.chat.signature.signer
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder
+import de.bixilon.kutil.primitive.LongUtil.toByteArray
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
-import de.bixilon.minosoft.util.KUtil.toByteArray
 import java.nio.ByteOrder
 import java.security.Signature
 import java.util.*

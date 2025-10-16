@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.MVec2i
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.util.KUtil.rad
-import de.bixilon.minosoft.util.f
+import de.bixilon.kutil.primitive.FloatUtil.rad
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.primitive.f
 import kotlin.math.abs
 
 object Vec2iUtil {

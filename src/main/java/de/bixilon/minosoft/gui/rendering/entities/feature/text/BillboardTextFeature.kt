@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BillboardTextFeature(

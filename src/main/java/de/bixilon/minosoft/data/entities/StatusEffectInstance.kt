@@ -12,14 +12,10 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.registries.effects.StatusEffectType
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.time.Duration
 
 data class StatusEffectInstance(
     val type: StatusEffectType,

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.physics.parts.elytra
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.Trigonometry
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -25,9 +26,7 @@ import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics.isClimbing
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
-import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.math.pow
-import kotlin.math.sqrt
 
 object ElytraPhysics {
     val FRICTION = Vec3d(0.99f, 0.98f, 0.99f)

@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.data.chat.signature.signer
 
+import de.bixilon.kutil.primitive.IntUtil.toByteArray
+import de.bixilon.kutil.primitive.LongUtil.toByteArray
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.toByteArray
 import java.nio.ByteOrder
 import java.security.PrivateKey
 import java.time.Instant

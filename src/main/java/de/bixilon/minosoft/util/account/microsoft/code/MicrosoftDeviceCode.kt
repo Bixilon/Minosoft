@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.util.account.microsoft.code
 
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.URLProtocols
 import java.net.URL

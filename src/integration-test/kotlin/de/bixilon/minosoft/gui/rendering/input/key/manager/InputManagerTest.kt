@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -23,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.create
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.simulate
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import org.testng.Assert
 import org.testng.Assert.*
 import org.testng.annotations.Test
 import kotlin.time.Duration.Companion.milliseconds

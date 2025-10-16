@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.frame
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 
 interface Framebuffer {
     val state: FramebufferState

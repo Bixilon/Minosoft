@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {

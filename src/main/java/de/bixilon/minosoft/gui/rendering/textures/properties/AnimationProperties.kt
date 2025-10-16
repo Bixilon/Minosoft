@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.time.Duration
 
 data class AnimationProperties(

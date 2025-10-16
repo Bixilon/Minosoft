@@ -18,8 +18,6 @@ package de.bixilon.minosoft.util.logging
 import de.bixilon.minosoft.data.text.ChatComponent
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
-import kotlin.time.TimeMark
 
 data class QueuedMessage(
     val message: ChatComponent,

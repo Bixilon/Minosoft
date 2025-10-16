@@ -20,7 +20,7 @@ import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.minosoft.util.f
+import de.bixilon.kutil.primitive.f
 
 @JvmInline
 value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {

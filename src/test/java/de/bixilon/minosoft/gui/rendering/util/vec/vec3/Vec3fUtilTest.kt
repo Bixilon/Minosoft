@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rotateAssign
-import de.bixilon.minosoft.util.KUtil.rad
 import org.junit.jupiter.api.Assertions.assertEquals
 import kotlin.test.Test
 

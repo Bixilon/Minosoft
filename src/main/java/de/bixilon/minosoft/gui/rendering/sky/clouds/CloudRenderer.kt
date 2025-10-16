@@ -16,8 +16,6 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext

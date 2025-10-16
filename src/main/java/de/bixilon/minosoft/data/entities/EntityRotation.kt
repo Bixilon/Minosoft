@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import de.bixilon.minosoft.util.KUtil.rad
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin

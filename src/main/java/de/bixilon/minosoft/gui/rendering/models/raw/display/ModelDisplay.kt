@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.raw.display
 
-import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.toVec3f

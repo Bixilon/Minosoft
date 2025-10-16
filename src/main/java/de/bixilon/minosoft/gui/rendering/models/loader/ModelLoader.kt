@@ -14,10 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.RenderContext

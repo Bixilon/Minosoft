@@ -14,13 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.input.count
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 interface ClickCounter {
 

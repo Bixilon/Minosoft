@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
-import de.bixilon.minosoft.util.d
 
 open class SweetBerryBushBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data), EntityCollisionHandler {
 

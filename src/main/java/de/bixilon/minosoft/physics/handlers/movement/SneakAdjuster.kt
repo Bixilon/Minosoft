@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.physics.handlers.movement
 
-import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.d._Vec3d
+import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 
 interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {

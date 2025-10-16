@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pvp
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
@@ -34,7 +35,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.d
 
 open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, FullOutlinedBlock, ToolRequirement, CustomDiggingBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)

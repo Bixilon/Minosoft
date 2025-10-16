@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.physics.parts
 
-import de.bixilon.kutil.primitive.DoubleUtil.matches
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 

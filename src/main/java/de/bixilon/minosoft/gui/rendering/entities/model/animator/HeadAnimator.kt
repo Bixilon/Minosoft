@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.entities.model.animator
 
 import de.bixilon.kmath.vec.vec3.f.MVec3f
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
-import de.bixilon.minosoft.util.KUtil.rad
 
 class HeadAnimator(
     val renderer: EntityRenderer<*>,

@@ -17,8 +17,8 @@ import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.border.WorldBorderState
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class DynamicBorderArea(
     val border: WorldBorder,

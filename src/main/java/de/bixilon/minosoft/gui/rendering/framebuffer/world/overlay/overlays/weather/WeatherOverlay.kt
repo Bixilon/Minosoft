@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.wea
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -95,7 +94,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
 
     private fun updateShader() {
         shader.intensity = world.weather.rain
-        val offset = (millis() % 500.0f) / 500.0f
+        val offset = (System.currentTimeMillis() % 500.0f) / 500.0f
         shader.offset = -offset
         shader.textureIndexLayer = texture!!.shaderId
     }

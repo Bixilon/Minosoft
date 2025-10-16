@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.TextureParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.FileTexture
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

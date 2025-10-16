@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.d._Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
@@ -23,13 +25,7 @@ import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.kmath.vec.vec3.d.MVec3d
-import de.bixilon.kmath.vec.vec3.d._Vec3d
-import de.bixilon.minosoft.util.f
 import kotlin.math.abs
 
 object Vec3dUtil {

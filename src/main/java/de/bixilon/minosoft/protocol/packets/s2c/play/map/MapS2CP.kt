@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.map
 
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
 import de.bixilon.minosoft.data.world.map.MapPinTypes

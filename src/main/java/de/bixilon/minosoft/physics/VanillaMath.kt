@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 
 object VanillaMath {
 

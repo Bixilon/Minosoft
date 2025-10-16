@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.chunk.manager.size
 
+import de.bixilon.kmath.vec.vec2.i.MVec2i
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.kmath.vec.vec2.i.MVec2i
 
 class WorldSizeManager(private val world: World) {
     val size = WorldSize()

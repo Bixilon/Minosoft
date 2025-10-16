@@ -12,9 +12,11 @@
  */
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.i.SVec3i
 import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
@@ -22,10 +24,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.kmath.vec.vec3.i.SVec3i
-import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
-import kotlin.collections.set
 
 enum class Directions(
     val axis: Axes,

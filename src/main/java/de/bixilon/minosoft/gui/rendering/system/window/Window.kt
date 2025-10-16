@@ -22,9 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.system.SystemUtil
-import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.BufferUtils
-import java.nio.ByteBuffer
 
 interface Window {
     val systemScale: Vec2f

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -42,7 +43,6 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.tags.entity.MinecraftEntityTags.isIn
-import de.bixilon.minosoft.util.d
 
 open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock, FullOutlinedBlock, OpaqueBlock, BlockStateBuilder {
     override val hardness: Float get() = 0.25f

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.physics.parts.input
 
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect

@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class ParticleTicker(val renderer: ParticleRenderer) {
     private val particles = renderer.particles

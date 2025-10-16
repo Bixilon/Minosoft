@@ -13,16 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.shaking
 
+import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.Trigonometry.sin
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
-import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 
 class CameraShaking(
@@ -46,7 +43,7 @@ class CameraShaking(
         } else {
             this.speed += 0.0f // TODO: remove this, kutil 1.21
         }
-        val time = (millis() % 100L).toFloat() / 100.0f
+        val time = (System.currentTimeMillis() % 100L).toFloat() / 100.0f
 
         this.rotation = sin(time * minOf(this.speed.avg, 0.5f) / 3.0f) * strength * 0.03f
     }

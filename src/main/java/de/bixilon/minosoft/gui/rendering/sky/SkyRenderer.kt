@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
+import de.bixilon.kmath.mat.mat3.f.Mat3f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kmath.mat.mat3.f.Mat3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.chat.signature.signer
 
+import de.bixilon.kutil.hash.HashUtil.sha256
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getJsonSignatureBytes
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.sha256
 import java.security.PrivateKey
 import java.time.Instant
 import java.util.*

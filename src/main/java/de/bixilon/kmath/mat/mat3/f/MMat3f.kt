@@ -16,7 +16,7 @@ package de.bixilon.kmath.mat.mat3.f
 import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.util.f
+import de.bixilon.kutil.primitive.f
 
 @JvmInline
 value class MMat3f(val _0: UnsafeMat3f) : _Mat3f {

@@ -16,14 +16,12 @@ package de.bixilon.minosoft.gui.rendering.system.window.dummy
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
-import java.lang.Thread.sleep
 
 class DummyWindow : Window {
     override val systemScale by observed(Vec2f(1.0f))
@@ -39,7 +37,7 @@ class DummyWindow : Window {
     override var clipboardText: String = ""
     override var title: String = ""
     override val version: String = "dummy"
-    override val time: Double get() = millis() / 1000.0
+    override val time: Double get() = System.currentTimeMillis() / 1000.0
     override val iconified: Boolean by observed(false)
     override val focused: Boolean by observed(false)
 

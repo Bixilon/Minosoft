@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent

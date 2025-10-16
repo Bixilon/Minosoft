@@ -18,7 +18,6 @@ import de.bixilon.kutil.math.interpolation.FloatInterpolation
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.seconds
 

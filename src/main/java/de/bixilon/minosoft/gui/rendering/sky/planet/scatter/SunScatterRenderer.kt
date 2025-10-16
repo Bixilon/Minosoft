@@ -13,22 +13,21 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet.scatter
 
-import de.bixilon.kutil.math.MathConstants.PIf
-import de.bixilon.kutil.math.Trigonometry.sin
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.world.time.DayPhases
-import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
+import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.math.Trigonometry.sin
+import de.bixilon.kutil.primitive.FloatUtil.rad
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.world.time.DayPhases
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.Z
-import de.bixilon.minosoft.util.KUtil.rad
 import kotlin.math.abs
 
 class SunScatterRenderer(

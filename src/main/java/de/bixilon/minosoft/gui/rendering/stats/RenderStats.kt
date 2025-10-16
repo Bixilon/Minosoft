@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import de.bixilon.kutil.avg._long.LongAverage
+import de.bixilon.kutil.avg.duration.DurationAverage
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class RenderStats : AbstractRenderStats {
-    override val avgDrawTime = LongAverage(1.seconds, Long.MAX_VALUE)
-    override val avgFrameTime = LongAverage(1.seconds, Long.MAX_VALUE)
+    override val avgDrawTime = DurationAverage(1.seconds, Duration.INFINITE)
+    override val avgFrameTime = DurationAverage(1.seconds, Duration.INFINITE)
     override var totalFrames: Long = 0L
         private set
 
-    private var lastFrameStartTime = -1L
+    private var lastFrameStartTime = TimeUtil.NULL
 
     private var lastSmoothFPSCalculationTime = TimeUtil.NULL
 
@@ -44,16 +45,16 @@ class RenderStats : AbstractRenderStats {
         get() {
             val avgFrameTime = avgFrameTime.avg
 
-            return 1000000000L / avgFrameTime.toDouble()  // SECOND_SCALE
+            return 1.seconds / avgFrameTime
         }
 
 
     override fun startFrame() {
-        lastFrameStartTime = System.nanoTime()
+        lastFrameStartTime = now()
     }
 
     override fun endFrame() {
-        val time = System.nanoTime()
+        val time = now()
 
         val delta = time - lastFrameStartTime
 
@@ -63,7 +64,7 @@ class RenderStats : AbstractRenderStats {
     }
 
     override fun endDraw() {
-        val time = System.nanoTime()
+        val time = now()
         val delta = time - lastFrameStartTime
 
         avgDrawTime += delta

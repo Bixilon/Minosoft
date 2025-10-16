@@ -22,12 +22,12 @@ import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.simple.FloatMath.floor
+import de.bixilon.kutil.primitive.FloatUtil.cos
+import de.bixilon.kutil.primitive.FloatUtil.rad
+import de.bixilon.kutil.primitive.FloatUtil.sin
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.util.KUtil.cos
-import de.bixilon.minosoft.util.KUtil.rad
-import de.bixilon.minosoft.util.KUtil.sin
 import kotlin.math.abs
 
 object Vec3fUtil {

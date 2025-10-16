@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFac
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP.Companion.LIGHT_SIZE
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightPacketUtil
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W35A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A

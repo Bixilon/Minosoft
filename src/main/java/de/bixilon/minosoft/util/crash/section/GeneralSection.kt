@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.util.crash.section
 
 import de.bixilon.kutil.time.TimeUtil.format1
-import de.bixilon.kutil.time.TimeUtil.millis
 import java.text.SimpleDateFormat
 import java.time.Instant
 
 class GeneralSection(notes: String) : CrashSection(
     "General information", arrayOf(
-        "Time" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format1(Instant.now()) + " (${millis() / 1000L})",
+        "Time" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format1(Instant.now()) + " (${Instant.now().toEpochMilli() / 1000L})",
         "Thread" to Thread.currentThread().name,
         "Notes" to notes,
     )

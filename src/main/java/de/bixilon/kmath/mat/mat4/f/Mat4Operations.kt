@@ -17,8 +17,8 @@ import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.MVec4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.minosoft.util.KUtil.cos
-import de.bixilon.minosoft.util.KUtil.sin
+import de.bixilon.kutil.primitive.FloatUtil.cos
+import de.bixilon.kutil.primitive.FloatUtil.sin
 
 object Mat4Operations {
 

@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.primitive.FloatUtil.rad
+import de.bixilon.kutil.primitive.FloatUtil.sin
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
-import de.bixilon.minosoft.util.KUtil.rad
-import de.bixilon.minosoft.util.KUtil.sin
 
 class ArmAnimator(
     val model: HumanModel<*>,

@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.physics.entities.living.player.local
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -31,7 +33,6 @@ import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.physics.handlers.movement.SneakAdjuster
 import de.bixilon.minosoft.physics.input.MovementInput
@@ -39,7 +40,6 @@ import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collectCollisi
 import de.bixilon.minosoft.physics.parts.OutOfBlockPusher.tryPushOutOfBlock
 import de.bixilon.minosoft.physics.parts.climbing.ClimbablePhysics
 import de.bixilon.minosoft.physics.parts.elytra.ElytraPhysics.tickElytra
-import de.bixilon.minosoft.util.d
 
 class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerEntity>(entity), SneakAdjuster, ClimbablePhysics {
     val sender = MovementPacketSender(this)

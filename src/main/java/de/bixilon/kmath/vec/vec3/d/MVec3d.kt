@@ -16,8 +16,8 @@ package de.bixilon.kmath.vec.vec3.d
 import de.bixilon.kmath.vec.vec2.d.MVec2d
 import de.bixilon.kmath.vec.vec3.f._Vec3f
 import de.bixilon.kmath.vec.vec3.i._Vec3i
+import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.util.d
 import kotlin.math.sqrt
 
 @JvmInline

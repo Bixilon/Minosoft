@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import de.bixilon.kutil.avg._long.LongAverage
+import de.bixilon.kutil.avg.duration.DurationAverage
 
 interface AbstractRenderStats {
-    val avgDrawTime: LongAverage // TODO: kutil 1.28 DurationAverage
-    val avgFrameTime: LongAverage // TODO: kutil 1.28 DurationAverage
+    val avgDrawTime: DurationAverage
+    val avgFrameTime: DurationAverage
 
     val avgFPS: Double
     val smoothAvgFPS: Double

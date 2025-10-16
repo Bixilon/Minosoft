@@ -13,15 +13,12 @@
 
 package de.bixilon.minosoft.terminal.commands.session
 
-import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
-import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.random.RandomUtil.nextDouble
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
-import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
@@ -37,7 +34,6 @@ import de.bixilon.minosoft.util.KUtil.startInit
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 import kotlin.math.cbrt
-import kotlin.time.Duration.Companion.seconds
 
 object BenchmarkCommand : SessionCommand {
     override var node = LiteralNode("benchmark").addChild(
@@ -65,7 +61,7 @@ object BenchmarkCommand : SessionCommand {
 
         var progress = 0.0f
         session.ticker += {
-            val time = (millis() % 1000L) / 1000.0f
+            val time = (System.currentTimeMillis() % 1000L) / 1000.0f
             progress += time
             if (progress > (PIf * 2)) {
                 progress %= (PIf * 2)

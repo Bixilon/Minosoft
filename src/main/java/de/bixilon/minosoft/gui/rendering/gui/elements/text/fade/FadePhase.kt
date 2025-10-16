@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.fade
 
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.Duration
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 interface FadePhase {
     val times: FadingTimes

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class WorldOffset(private val camera: Camera) : Drawable {
     var offset by observed(BlockPosition())

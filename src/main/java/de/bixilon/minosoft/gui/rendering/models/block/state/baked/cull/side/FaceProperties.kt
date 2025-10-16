@@ -25,6 +25,6 @@ data class FaceProperties(
 
     init {
         assert(start.x >= 0.0f && start.y >= 0.0f) { "Out of bounds start: $start" }
-        assert(end.y <= 1.0f && start.y <= 1.0f) { "Out of bounds end: $end" }
+        assert(end.y <= 1.0f && end.y <= 1.0f) { "Out of bounds end: $end" }
     }
 }

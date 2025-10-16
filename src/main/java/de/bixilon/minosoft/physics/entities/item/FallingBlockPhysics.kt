@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.physics.entities.item
 
-import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics

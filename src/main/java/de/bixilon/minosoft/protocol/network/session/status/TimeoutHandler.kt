@@ -18,11 +18,8 @@ import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unit.UnitFormatter.formatMillis
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.format
 import java.util.concurrent.TimeoutException
-import kotlin.time.Duration.Companion.milliseconds
 
 class TimeoutHandler(val session: StatusSession) {
     private var task: QueuedTask? = null
