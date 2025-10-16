@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.packets.registry
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.NetworkConnection
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketBufferOverflowException
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketBufferUnderflowException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferOverflowException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.registry.factory.PacketFactory
@@ -25,7 +25,6 @@ import de.bixilon.minosoft.protocol.packets.types.Packet
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertThrows
 import org.testng.annotations.Test
-import java.nio.BufferUnderflowException
 
 @Test(groups = ["network"])
 class PacketTypeTest {

@@ -33,7 +33,7 @@ class PacketInflaterTest {
         val decoded = data.decode()
 
         assertSame(decoded.buffer, data.buffer)
-        assertEquals(decoded.length, 1)
+        assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 1)
     }
 
@@ -41,7 +41,7 @@ class PacketInflaterTest {
         val data = LengthDecodedPacket(0, 4, byteArrayOf(0, 1, 2, 3))
         val decoded = data.decode()
 
-        assertEquals(decoded.length, 3)
+        assertEquals(decoded.size, 3)
         assertEquals(decoded.offset, 1)
     }
 
@@ -49,7 +49,7 @@ class PacketInflaterTest {
         val data = LengthDecodedPacket(2, 2, byteArrayOf(5, 1, 0, 3, 4))
         val decoded = data.decode()
 
-        assertEquals(decoded.length, 1)
+        assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 3)
     }
 
@@ -59,7 +59,7 @@ class PacketInflaterTest {
         val decoded = data.decode()
 
         assertNotSame(decoded.buffer, data.buffer)
-        assertEquals(decoded.length, 1)
+        assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 0)
     }
 
@@ -69,7 +69,7 @@ class PacketInflaterTest {
         val decoded = data.decode()
 
         assertNotSame(decoded.buffer, data.buffer)
-        assertEquals(decoded.length, 1)
+        assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 0)
     }
 }

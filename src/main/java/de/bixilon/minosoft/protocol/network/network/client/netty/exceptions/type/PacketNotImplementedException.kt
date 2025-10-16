@@ -11,14 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions
+package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type
 
-import de.bixilon.minosoft.protocol.packets.registry.PacketType
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.versions.Version
 
-class PacketBufferOverflowException(
-    val type: PacketType,
-    val size: Int,
-    val available: Int,
+class PacketNotImplementedException(
+    val name: String,
+    val state: ProtocolStates,
+    val version: Version?,
 ) : NetworkException() {
-    override val message: String = "type=$type, size=$size, available=$available"
+    override val message: String = "name=$name, state=$state, version=$version"
 }

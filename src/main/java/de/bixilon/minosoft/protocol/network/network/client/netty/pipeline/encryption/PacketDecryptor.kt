@@ -25,7 +25,7 @@ class PacketDecryptor(
 
     override fun decode(context: ChannelHandlerContext, data: ByteBuf, out: MutableList<Any>) {
         val length = data.readableBytes()
-        val encrypted = NetworkAllocator.allocate(length)
+        val encrypted = NetworkAllocator.allocate(length) // TODO: Limit to buffer size (we can do that in small chunks to not allocate to much at once)
         data.readBytes(encrypted, 0, length)
 
         val decrypted = NetworkAllocator.allocate(length)

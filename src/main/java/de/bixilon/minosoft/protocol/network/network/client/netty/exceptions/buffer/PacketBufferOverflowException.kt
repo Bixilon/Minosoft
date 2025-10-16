@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,16 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation
+package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer
 
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.packets.registry.PacketType
 
-class PacketNotImplementedException(
-    val name: String,
-    val state: ProtocolStates,
-    val version: Version?,
+class PacketBufferOverflowException(
+    val type: PacketType,
+    val size: Int,
+    val available: Int,
 ) : NetworkException() {
-    override val message: String = "name=$name, state=$state, version=$version"
+    override val message: String = "type=$type, size=$size, available=$available"
 }

@@ -25,19 +25,17 @@ class LengthDecoder(
     private val maxLength: Int,
 ) : ByteToMessageDecoder() {
 
-    override fun decode(context: ChannelHandlerContext?, buffer: ByteBuf, out: MutableList<Any>) {
-        buffer.markReaderIndex()
+    // TODO: tests
 
+    private fun readLength(buffer: ByteBuf): Int {
         if (buffer.readableBytes() < 2) { // 1 length byte and 1 packet id byte is the minimum
-            buffer.resetReaderIndex()
-            return
+            return -1
         }
         val length: Int
         try {
             length = buffer.readVarInt()
         } catch (error: BufferTooShortException) {
-            buffer.resetReaderIndex()
-            return
+            return -1
         }
 
         if (length <= 0 || length > maxLength) {
@@ -45,14 +43,28 @@ class LengthDecoder(
         }
 
         if (buffer.readableBytes() < length) {
+            return -1
+        }
+
+        return length
+    }
+
+    private fun read(buffer: ByteBuf): LengthDecodedPacket? {
+        buffer.markReaderIndex()
+        val length = readLength(buffer)
+        if (length < 0) {
             buffer.resetReaderIndex()
-            return
+            return null
         }
 
         val array = NetworkAllocator.allocate(length)
         buffer.readBytes(array, 0, length)
 
-        out += LengthDecodedPacket(0, length, array)
+        return LengthDecodedPacket(0, length, array)
+    }
+
+    override fun decode(context: ChannelHandlerContext?, buffer: ByteBuf, out: MutableList<Any>) {
+        out += read(buffer) ?: return
     }
 
 
@@ -72,9 +84,10 @@ class LengthDecoder(
                 varInt = varInt or (value shl 7 * readCount)
                 readCount++
                 if (readCount > 5) {
-                    throw RuntimeException("VarInt is too big")
+                    throw IllegalStateException("VarInt is too big")
                 }
             } while (currentByte and 0x80 != 0)
+
 
             return varInt
         }

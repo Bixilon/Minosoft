@@ -33,7 +33,7 @@ class PacketInflater(
 
         val length = buffer.readVarInt() // uncompressed
         val offset = buffer.pointer
-        val left = data.length - (buffer.pointer - data.offset)
+        val left = data.size - (buffer.pointer - data.offset)
 
         if (length == 0) { // TODO: uncompressed if length < threshold?
             // uncompressed

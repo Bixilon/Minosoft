@@ -235,12 +235,6 @@ object KUtil {
         DefaultThreadPool += { IntegratedStatusEffects::class.java.forceInit() }
     }
 
-    fun ByteArray.withLengthPrefix(): ByteArray {
-        val prefixed = OutByteBuffer()
-        prefixed.writeByteArray(this)
-        return prefixed.toArray()
-    }
-
     fun init() {
         Table.DEFAULT_STYLE = TableStyles.FANCY
         URLProtocolStreamHandlers.register("resource", ResourceURLHandler)

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 class CombinedShape(
-    val aabbs: Array<AABB>,
+    val aabbs: Array<AABB>, // TODO: primitive float list
 ) : Shape {
 
     init {

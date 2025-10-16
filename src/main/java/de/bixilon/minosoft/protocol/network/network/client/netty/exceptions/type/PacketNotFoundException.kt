@@ -11,17 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical
+package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type
 
-import de.bixilon.kutil.primitive.IntUtil.toHex
+import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.packets.types.Packet
+import kotlin.reflect.KClass
 
-class UnknownPacketIdException(
-    val packetId: Int,
-    val state: ProtocolStates,
-    val version: Version?,
+class PacketNotFoundException(
+    val clazz: KClass<out Packet>,
 ) : NetworkException() {
-    override val message: String = "packetId=0x${packetId.toHex(0)}, state=$state, version=$version"
+    override val message: String = "class=${clazz.java.realName}"
 }

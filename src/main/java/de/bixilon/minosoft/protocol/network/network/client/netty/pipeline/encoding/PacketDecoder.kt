@@ -18,8 +18,8 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketReadException
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.UnknownPacketIdException
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation.PacketNotImplementedException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.UnknownPacketIdException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotImplementedException
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecodedPacket
 import de.bixilon.minosoft.protocol.packets.registry.PacketType
@@ -47,7 +47,7 @@ class PacketDecoder(
         val state = client.connection.state ?: return null
         val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
 
-        val length = data.length - (buffer.pointer - data.offset)
+        val length = data.size - (buffer.pointer - data.offset)
         try {
             return decode(type, buffer.pointer, length, data.buffer)
         } finally {

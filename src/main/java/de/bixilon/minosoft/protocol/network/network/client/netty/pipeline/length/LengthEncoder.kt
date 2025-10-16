@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
-import de.bixilon.minosoft.util.KUtil.withLengthPrefix
+import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
@@ -22,13 +22,21 @@ import io.netty.handler.codec.MessageToByteEncoder
 
 class LengthEncoder(
     private val maxLength: Int,
-) : MessageToByteEncoder<ByteArray>() {
+) : MessageToByteEncoder<LengthDecodedPacket>() {
 
-    override fun encode(context: ChannelHandlerContext, data: ByteArray, out: ByteBuf) {
+    // TODO: tests
+
+    fun write(data: LengthDecodedPacket, out: ByteBuf) {
         if (data.size > maxLength) {
             throw PacketTooLongException(data.size, maxLength)
         }
-        out.writeBytes(data.withLengthPrefix())
+        val length = OutByteBuffer().apply { writeVarInt(data.size) }.toArray()
+        out.writeBytes(length)
+        out.writeBytes(data.buffer, data.offset, data.size)
+    }
+
+    override fun encode(context: ChannelHandlerContext?, data: LengthDecodedPacket, out: ByteBuf) {
+        write(data, out)
     }
 
     companion object {

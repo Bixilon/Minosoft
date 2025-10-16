@@ -15,6 +15,6 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.lengt
 
 class LengthDecodedPacket(
     val offset: Int,
-    val length: Int,
+    val size: Int,
     val buffer: ByteArray,
 )
