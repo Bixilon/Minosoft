@@ -222,6 +222,10 @@ testing {
 
                 implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
 
+                // netty
+                netty("buffer")
+                netty("handler")
+
                 jacksonCore("core")
                 jacksonCore("databind")
                 jackson("module", "kotlin")
@@ -342,6 +346,10 @@ fun JvmComponentDependencies.jacksonCore(name: String) {
 
 fun JvmComponentDependencies.jackson(group: String, name: String) {
     implementation("com.fasterxml.jackson.$group:jackson-$group-$name:$jacksonVersion")
+}
+
+fun JvmComponentDependencies.netty(name: String) {
+    implementation("io.netty:netty-$name:$nettyVersion")
 }
 
 fun DependencyHandler.netty(name: String) {

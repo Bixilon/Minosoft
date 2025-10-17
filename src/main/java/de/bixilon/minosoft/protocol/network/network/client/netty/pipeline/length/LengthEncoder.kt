@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.InvalidPacketSizeError
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
@@ -24,11 +24,9 @@ class LengthEncoder(
     private val maxLength: Int,
 ) : MessageToByteEncoder<LengthDecodedPacket>() {
 
-    // TODO: tests
-
     fun write(data: LengthDecodedPacket, out: ByteBuf) {
         if (data.size > maxLength) {
-            throw PacketTooLongException(data.size, maxLength)
+            throw InvalidPacketSizeError(data.size, maxLength)
         }
         val length = OutByteBuffer().apply { writeVarInt(data.size) }.toArray()
         out.writeBytes(length)

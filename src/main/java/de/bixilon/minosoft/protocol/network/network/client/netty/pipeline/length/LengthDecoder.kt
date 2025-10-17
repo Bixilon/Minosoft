@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.lengt
 
 import de.bixilon.kutil.exception.FastException
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.InvalidPacketSizeError
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
@@ -24,8 +24,6 @@ import io.netty.handler.codec.ByteToMessageDecoder
 class LengthDecoder(
     private val maxLength: Int,
 ) : ByteToMessageDecoder() {
-
-    // TODO: tests
 
     private fun readLength(buffer: ByteBuf): Int {
         if (buffer.readableBytes() < 2) { // 1 length byte and 1 packet id byte is the minimum
@@ -39,7 +37,7 @@ class LengthDecoder(
         }
 
         if (length <= 0 || length > maxLength) {
-            throw PacketTooLongException(length, maxLength)
+            throw InvalidPacketSizeError(length, maxLength)
         }
 
         if (buffer.readableBytes() < length) {
@@ -49,7 +47,7 @@ class LengthDecoder(
         return length
     }
 
-    private fun read(buffer: ByteBuf): LengthDecodedPacket? {
+    fun read(buffer: ByteBuf): LengthDecodedPacket? {
         buffer.markReaderIndex()
         val length = readLength(buffer)
         if (length < 0) {
@@ -72,24 +70,24 @@ class LengthDecoder(
         const val NAME = "length_decoder"
 
         private fun ByteBuf.readVarInt(): Int {
-            var readCount = 0
-            var varInt = 0
-            var currentByte: Int
+            var count = 0
+            var data = 0
+            var current: Int
             do {
                 if (this.readableBytes() <= 0) {
                     throw BufferTooShortException()
                 }
-                currentByte = this.readByte().toInt()
-                val value = currentByte and 0x7F
-                varInt = varInt or (value shl 7 * readCount)
-                readCount++
-                if (readCount > 5) {
+                current = this.readByte().toInt()
+                val value = current and 0x7F
+                data = data or (value shl 7 * count)
+                count++
+                if (count > 5) {
                     throw IllegalStateException("VarInt is too big")
                 }
-            } while (currentByte and 0x80 != 0)
+            } while (current and 0x80 != 0)
 
 
-            return varInt
+            return data
         }
 
         private class BufferTooShortException : FastException()

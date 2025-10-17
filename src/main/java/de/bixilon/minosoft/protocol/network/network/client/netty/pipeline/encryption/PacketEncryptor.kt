@@ -23,10 +23,12 @@ class PacketEncryptor(
     private val cipher: Cipher,
 ) : MessageToByteEncoder<ByteBuf>() {
 
+    // TODO: tests
+
     override fun encode(context: ChannelHandlerContext, data: ByteBuf, out: ByteBuf) {
         val size = data.readableBytes()
         val buffer = NetworkAllocator.allocate(size) // TODO: Limit to buffer size (we can do that in small chunks to not allocate to much at once)
-        data.readBytes(buffer)
+        data.readBytes(buffer, 0, size)
 
         out.writeBytes(cipher.update(buffer, 0, size))
         NetworkAllocator.free(buffer)

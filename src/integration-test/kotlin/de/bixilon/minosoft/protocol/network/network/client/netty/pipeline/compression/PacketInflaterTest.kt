@@ -21,11 +21,10 @@ import org.testng.annotations.Test
 
 @Test(groups = ["network"])
 class PacketInflaterTest {
-    private val DECODE = PacketInflater::class.java.getMethod("decode", LengthDecodedPacket::class.java)
 
     private fun LengthDecodedPacket.decode(): LengthDecodedPacket {
         val inflater = PacketInflater(0xFF)
-        return DECODE.invoke(inflater, this).unsafeCast()
+        return inflater.decode(this)
     }
 
     fun `uncompressed packet without data`() {

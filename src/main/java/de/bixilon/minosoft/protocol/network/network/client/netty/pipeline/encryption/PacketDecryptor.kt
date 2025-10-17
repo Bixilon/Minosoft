@@ -23,15 +23,18 @@ class PacketDecryptor(
     private val cipher: Cipher,
 ) : ByteToMessageDecoder() {
 
+    // TODO: tests
+
     override fun decode(context: ChannelHandlerContext, data: ByteBuf, out: MutableList<Any>) {
         val length = data.readableBytes()
         val encrypted = NetworkAllocator.allocate(length) // TODO: Limit to buffer size (we can do that in small chunks to not allocate to much at once)
         data.readBytes(encrypted, 0, length)
 
-        val decrypted = NetworkAllocator.allocate(length)
+        val decrypted = NetworkAllocator.allocate(length) // TODO: Don't double allocate
         cipher.update(encrypted, 0, length, decrypted)
         NetworkAllocator.free(encrypted)
-        out += context.alloc().buffer(decrypted.size).apply { writeBytes(decrypted, 0, length) }
+
+        out += context.alloc().buffer(length).apply { writeBytes(decrypted, 0, length) }
         NetworkAllocator.free(decrypted)
     }
 

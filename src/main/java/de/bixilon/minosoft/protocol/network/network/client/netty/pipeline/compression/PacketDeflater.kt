@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,30 +13,62 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
-import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
+import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
+import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
+import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecodedPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder
+import java.io.ByteArrayOutputStream
+import java.util.zip.Deflater
 
 
 class PacketDeflater(
     var threshold: Int,
-) : MessageToMessageEncoder<ByteArray>() {
+) : MessageToMessageEncoder<LengthDecodedPacket>() {
 
-    override fun encode(context: ChannelHandlerContext, data: ByteArray, out: MutableList<Any>) {
+    fun encode(data: LengthDecodedPacket): LengthDecodedPacket {
         val compress = data.size >= threshold
 
-        val prefixed = OutByteBuffer()
         if (compress) {
-            val compressed = data.compress()
-            prefixed.writeVarInt(data.size)
-            prefixed.writeBareByteArray(compressed)
-        } else {
-            prefixed.writeVarInt(0)
-            prefixed.writeBareByteArray(data)
+            val uncompressedLength = OutByteBuffer().apply { writeVarInt(data.size) }.toArray()
+            val compressed = data.buffer.compress(data.offset, data.size) // TODO: don't double allocate
+            NetworkAllocator.free(data.buffer)
+
+            val size = uncompressedLength.size + compressed.size
+            val final = NetworkAllocator.allocate(size)
+            System.arraycopy(uncompressedLength, 0, final, 0, uncompressedLength.size)
+            System.arraycopy(compressed, 0, final, uncompressedLength.size, compressed.size)
+
+            return LengthDecodedPacket(0, size, final)
         }
 
-        out += prefixed.toArray()
+        val final = NetworkAllocator.allocate(1 + data.size)
+        final[0] = 0x00 // uncompressed var int length
+        System.arraycopy(data.buffer, data.offset, final, 1, data.size)
+        NetworkAllocator.free(data.buffer)
+
+        return LengthDecodedPacket(0, 1 + data.size, final)
+    }
+
+    override fun encode(context: ChannelHandlerContext, data: LengthDecodedPacket, out: MutableList<Any>) {
+        out += encode(data)
+    }
+
+
+    private fun ByteArray.compress(offset: Int, size: Int): ByteArray {
+        val deflater = Deflater()
+        deflater.setInput(this, offset, size)
+        deflater.finish()
+        val stream = ByteArrayOutputStream(this.size)
+
+        val buffer = createBuffer(this.size)
+        while (!deflater.finished()) {
+            val length = deflater.deflate(buffer)
+            stream.write(buffer, 0, length)
+        }
+        stream.close()
+        return stream.toByteArray()
     }
 
     companion object {

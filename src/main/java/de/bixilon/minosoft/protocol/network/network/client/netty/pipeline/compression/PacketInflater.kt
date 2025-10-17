@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compr
 
 import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.PacketTooLongException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.InvalidPacketSizeError
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression.exception.SizeMismatchInflaterException
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecodedPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
@@ -40,7 +40,7 @@ class PacketInflater(
             return LengthDecodedPacket(offset, left, data.buffer)
         }
 
-        if (length > maxPacketSize) throw PacketTooLongException(length, maxPacketSize)
+        if (length > maxPacketSize) throw InvalidPacketSizeError(length, maxPacketSize)
         val decompressed = NetworkAllocator.allocate(length)
         val decompressedLength = data.buffer.decompress(decompressed, offset, left)
         NetworkAllocator.free(data.buffer)
@@ -51,7 +51,7 @@ class PacketInflater(
         return LengthDecodedPacket(0, length, decompressed)
     }
 
-    fun ByteArray.decompress(output: ByteArray, offset: Int, size: Int): Int {
+    private fun ByteArray.decompress(output: ByteArray, offset: Int, size: Int): Int {
         val inflater = Inflater()
         inflater.setInput(this, offset, size)
         var pointer = 0

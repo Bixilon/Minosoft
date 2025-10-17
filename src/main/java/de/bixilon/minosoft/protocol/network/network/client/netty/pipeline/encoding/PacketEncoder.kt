@@ -90,8 +90,8 @@ class PacketEncoder(
         val length = idData.size + packetData.size
         val temporary = NetworkAllocator.allocate(idData.size + length)
 
-        idData.copyInto(temporary, 0, 0, idData.size)
-        packetData.toArray().apply { copyInto(temporary, idData.size, 0, this.size) } // TODO: remove toArray allocation
+        System.arraycopy(idData, 0, temporary, 0, idData.size)
+        packetData.toArray().apply { System.arraycopy(this, 0, temporary, idData.size, this.size) } // TODO: remove toArray allocation
 
         return LengthDecodedPacket(0, length, temporary)
     }

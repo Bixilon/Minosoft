@@ -28,7 +28,6 @@ import org.testng.annotations.Test
 
 @Test(groups = ["network"])
 class PacketDecoderTest {
-    private val DECODE = PacketDecoder::class.java.getMethod("decode", LengthDecodedPacket::class.java)
     private val payload = byteArrayOf(0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88.toByte())
 
     private fun LengthDecodedPacket.decode(): QueuedS2CP<PongS2CP> {
@@ -38,8 +37,8 @@ class PacketDecoderTest {
         val client = NettyClient(connection, session)
         connection.state = ProtocolStates.PLAY
 
-        val inflater = PacketDecoder(client)
-        return DECODE.invoke(inflater, this).unsafeCast()
+        val decoder = PacketDecoder(client)
+        return decoder.decode(this).unsafeCast()
     }
 
     fun `decode no offset`() {
