@@ -36,7 +36,10 @@ class AutoConnectArgument(val connect: () -> AutoConnectFactory?) : OptionGroup(
 
 
     private fun getAccount(): Account {
+        val profile = AccountProfileManager.selected
         if (this.account == null) {
+            profile.selected?.let { return it }
+
             var name = System.getProperty("user.name").removeWhitespaces()
             if (name.isBlank()) {
                 name = "unknown"
@@ -44,20 +47,19 @@ class AutoConnectArgument(val connect: () -> AutoConnectFactory?) : OptionGroup(
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "No account specified, using temporary offline account: $name" }
             return OfflineAccount(name, null)
         }
-        val profile = AccountProfileManager.selected
-        val account = profile.entries[this.account] ?: profile.selected ?: throw IllegalArgumentException("Account ${this.account} not found! Did your create one before?")
-
-        Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Checking account $account..." }
-        account.tryCheck(null)
-
-        return account
+        return profile.entries[this.account] ?: throw IllegalArgumentException("Account ${this.account} not found! Did your create one before?")
     }
 
 
     fun connect() {
+        val version = Versions[version] ?: throw IllegalArgumentException("No such protocol version: $version")
+
         val connect = connect.invoke() ?: return
         val account = getAccount()
-        val version = Versions[version] ?: throw IllegalArgumentException("No such protocol version: $version")
+
+        Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Checking account $account..." }
+        account.tryCheck(null)
+
         val session = connect.create(version, account)
 
         if (ErosOptions.disabled) {
