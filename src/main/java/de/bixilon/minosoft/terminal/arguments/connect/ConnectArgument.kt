@@ -18,6 +18,8 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -28,7 +30,6 @@ import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import kotlin.system.exitProcess
 
 class ConnectArgument : OptionGroup(), AutoConnectFactory {
     val address by option("--address").required()
@@ -39,7 +40,7 @@ class ConnectArgument : OptionGroup(), AutoConnectFactory {
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server $address to get version..." }
         val ping = StatusSession(address)
         ping::status.observe(this) { latch.dec() }
-        ping::error.observe(this) { exitProcess(1) }
+        ping::error.observe(this) { it?.printStackTrace(); ShutdownManager.shutdown(it?.message, AbstractShutdownReason.CRASH) }
         ping.ping()
 
         latch.await()
