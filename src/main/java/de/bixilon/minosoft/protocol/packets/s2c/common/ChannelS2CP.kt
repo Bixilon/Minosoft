@@ -33,7 +33,7 @@ class ChannelS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    val data = buffer.readRemaining() // TODO: That is bad, it reads all the bytes. The buffer may be much larger than the actual data stream
+    val data = buffer.readRemaining()
 
     override fun handle(session: PlaySession) {
         session.channels.play.handle(channel, data)

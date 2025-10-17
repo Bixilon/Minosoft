@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -77,7 +78,7 @@ class FlatGenerator(
             val dirt = session.registries.block[Dirt]?.states?.default
             val grass = session.registries.block[GrassBlock]?.states?.default
 
-            val plains = session.registries.biome[minecraft("plains")] // TODO: That might be null in modern versions (datapack only)
+            val plains = session.registries.biome[minecraft("plains")] ?: Biome(minecraft("plains"), waterColor = RGBColor(0x3F76E4), temperature = 0.8f, downfall = 0.4f, fogColor = RGBColor(0xC0D8FF), skyColor = RGBColor(0x78A7FF))
 
             return FlatGenerator(plains, arrayOf(
                 bedrock,
