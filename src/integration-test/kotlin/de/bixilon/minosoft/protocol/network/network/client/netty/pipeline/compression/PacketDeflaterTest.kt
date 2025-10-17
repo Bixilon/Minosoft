@@ -14,41 +14,39 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
 import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecodedPacket
+import de.bixilon.minosoft.protocol.network.network.client.netty.NettyTestUtil.toArray
+import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
 import org.testng.Assert
 import org.testng.annotations.Test
 
 @Test(groups = ["network"])
 class PacketDeflaterTest {
 
-    private fun LengthDecodedPacket.encode(threshold: Int = 3): LengthDecodedPacket {
+    private fun ArbitraryBuffer.encode(threshold: Int = 3): ArbitraryBuffer {
         val inflater = PacketDeflater(threshold)
         return inflater.encode(this)
     }
 
-    private fun assertEquals(actual: LengthDecodedPacket, expected: ByteArray) {
-        val source = ByteArray(actual.size)
-        System.arraycopy(actual.buffer, actual.offset, source, 0, actual.size)
-
-        Assert.assertEquals(source, expected)
+    private fun assertEquals(actual: ArbitraryBuffer, expected: ByteArray) {
+        Assert.assertEquals(actual.toArray(), expected)
     }
 
     fun `below threshold, single byte data`() {
-        val data = LengthDecodedPacket(0, 1, byteArrayOf(0x11))
+        val data = ArbitraryBuffer(0, 1, byteArrayOf(0x11))
         val decoded = data.encode()
 
         assertEquals(decoded, byteArrayOf(0x00, 0x11))
     }
 
     fun `below threshold, single byte data with offset and trailing data`() {
-        val data = LengthDecodedPacket(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
+        val data = ArbitraryBuffer(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
         val decoded = data.encode()
 
         assertEquals(decoded, byteArrayOf(0x00, 0x11))
     }
 
     fun `above threshold, single byte data`() {
-        val data = LengthDecodedPacket(0, 1, byteArrayOf(0x11))
+        val data = ArbitraryBuffer(0, 1, byteArrayOf(0x11))
         val compressed = byteArrayOf(0x11).compress()
         val decoded = data.encode(0x00)
 
@@ -56,7 +54,7 @@ class PacketDeflaterTest {
     }
 
     fun `above threshold, single byte data with offset and trailing data`() {
-        val data = LengthDecodedPacket(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
+        val data = ArbitraryBuffer(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
         val compressed = byteArrayOf(0x11).compress()
         val decoded = data.encode(0x00)
 

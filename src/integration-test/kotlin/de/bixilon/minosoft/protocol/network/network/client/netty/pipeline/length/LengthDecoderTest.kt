@@ -20,7 +20,7 @@ import org.testng.annotations.Test
 @Test(groups = ["network"])
 class LengthDecoderTest {
 
-    private fun ByteArray.decode(): LengthDecodedPacket? {
+    private fun ByteArray.decode(): ArbitraryBuffer? {
         val decoder = LengthDecoder(1 shl 16)
         return decoder.read(Unpooled.wrappedBuffer(this))
     }

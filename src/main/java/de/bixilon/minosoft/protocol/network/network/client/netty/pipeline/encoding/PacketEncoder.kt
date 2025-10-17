@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocato
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongSessionTypeException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotAvailableException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotFoundException
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.LengthDecodedPacket
+import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
@@ -78,22 +78,22 @@ class PacketEncoder(
         throw PacketNotAvailableException(type, state, version)
     }
 
-    private fun encode(packet: C2SPacket): LengthDecodedPacket? {
+    fun encode(packet: C2SPacket): ArbitraryBuffer? {
         val state = client.connection.state ?: return null
 
         val type = DefaultPackets.C2S[state]?.get(packet::class) ?: throw PacketNotFoundException(packet::class)
         val id = getPacketId(version, state, type)
 
-        val packetData = packet.write()
+        val packetData = packet.write().toArray() // TODO: remove toArray allocation
 
         val idData = OutByteBuffer().apply { writeVarInt(id) }.toArray()
         val length = idData.size + packetData.size
-        val temporary = NetworkAllocator.allocate(idData.size + length)
+        val temporary = NetworkAllocator.allocate(length)
 
         System.arraycopy(idData, 0, temporary, 0, idData.size)
-        packetData.toArray().apply { System.arraycopy(this, 0, temporary, idData.size, this.size) } // TODO: remove toArray allocation
+        System.arraycopy(packetData, 0, temporary, idData.size, packetData.size)
 
-        return LengthDecodedPacket(0, length, temporary)
+        return ArbitraryBuffer(0, length, temporary)
     }
 
     override fun encode(context: ChannelHandlerContext?, packet: C2SPacket, out: MutableList<Any>) {

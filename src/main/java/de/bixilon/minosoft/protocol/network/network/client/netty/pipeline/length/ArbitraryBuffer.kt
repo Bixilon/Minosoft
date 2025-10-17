@@ -11,15 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer
+package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
-import de.bixilon.minosoft.protocol.packets.registry.PacketType
-
-data class PacketBufferOverflowException(
-    val type: PacketType,
+class ArbitraryBuffer(
+    val offset: Int,
     val size: Int,
-    val read: Int,
-) : NetworkException() {
-    override val message: String = "type=$type, size=$size, read=$read"
-}
+    val buffer: ByteArray,
+)

@@ -16,10 +16,10 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buf
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.packets.registry.PacketType
 
-class PacketBufferUnderflowException(
+data class PacketBufferUnderflowException(
     val type: PacketType,
     val size: Int,
-    val available: Int,
+    val read: Int,
 ) : NetworkException() {
-    override val message: String = "type=$type, size=$size, available=$available"
+    override val message: String = "type=$type, size=$size, read=$read"
 }

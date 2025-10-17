@@ -13,45 +13,60 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.minosoft.protocol.network.network.client.netty.NettyTestUtil.toArray
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
-import de.bixilon.minosoft.protocol.packets.s2c.play.PongS2CP
+import de.bixilon.minosoft.protocol.network.session.status.StatusSession
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP.Actions
+import de.bixilon.minosoft.protocol.packets.c2s.play.PingC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["network"])
-class PacketDecoderTest {
+class PacketEncoderTest {
     private val payload = byteArrayOf(0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88.toByte())
 
-    private fun ArbitraryBuffer.decode(): QueuedS2CP<PongS2CP> {
+
+    private fun PlayC2SPacket.encode(): ByteArray {
         val connection = NetworkConnection(ServerAddress("test"), false)
         val session = createSession(version = "1.20.3-pre1")
         session::connection.forceSet(connection)
         val client = NettyClient(connection, session)
         connection.state = ProtocolStates.PLAY
 
-        val decoder = PacketDecoder(client)
-        return decoder.decode(this).unsafeCast()
+        val encoder = PacketEncoder(client)
+
+        return encoder.encode(this)!!.toArray()
     }
 
-    fun `decode no offset`() {
-        val data = ArbitraryBuffer(0, 9, byteArrayOf(0x34) + payload)
-        val decoded = data.decode().packet
+    private fun C2SPacket.encode(): ByteArray {
+        val connection = NetworkConnection(ServerAddress("test"), false)
+        val session = StatusSession("test")
+        session::connection.forceSet(connection)
+        val client = NettyClient(connection, session)
+        connection.state = ProtocolStates.HANDSHAKE
 
-        assertEquals(decoded.payload, 0x1122334455667788)
+        val encoder = PacketEncoder(client)
+
+        return encoder.encode(this)!!.toArray()
     }
 
-    fun `decode offset, trailing`() {
-        val data = ArbitraryBuffer(1, 9, byteArrayOf(0x7A, 0x34) + payload + byteArrayOf(0x12))
-        val decoded = data.decode().packet
+    fun `encode play ping`() {
+        val data = PingC2SP(0x1122334455667788).encode()
 
-        assertEquals(decoded.payload, 0x1122334455667788)
+        assertEquals(data, byteArrayOf(0x1E) + payload)
+    }
+
+    fun `encode status handshake`() {
+        val data = HandshakeC2SP("a", 0x22, Actions.STATUS, 0x11).encode()
+
+        assertEquals(data, byteArrayOf(0x00, 0x11, 0x01, 'a'.code.toByte(), 0x00, 0x22, 0x01))
     }
 }

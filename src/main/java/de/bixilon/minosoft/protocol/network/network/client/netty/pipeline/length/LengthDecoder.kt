@@ -47,7 +47,7 @@ class LengthDecoder(
         return length
     }
 
-    fun read(buffer: ByteBuf): LengthDecodedPacket? {
+    fun read(buffer: ByteBuf): ArbitraryBuffer? {
         buffer.markReaderIndex()
         val length = readLength(buffer)
         if (length < 0) {
@@ -58,7 +58,7 @@ class LengthDecoder(
         val array = NetworkAllocator.allocate(length)
         buffer.readBytes(array, 0, length)
 
-        return LengthDecodedPacket(0, length, array)
+        return ArbitraryBuffer(0, length, array)
     }
 
     override fun decode(context: ChannelHandlerContext?, buffer: ByteBuf, out: MutableList<Any>) {

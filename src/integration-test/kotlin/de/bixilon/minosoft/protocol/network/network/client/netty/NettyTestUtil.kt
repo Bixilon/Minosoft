@@ -11,10 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
+package de.bixilon.minosoft.protocol.network.network.client.netty
 
-class LengthDecodedPacket(
-    val offset: Int,
-    val size: Int,
-    val buffer: ByteArray,
-)
+import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+
+object NettyTestUtil {
+
+    fun ArbitraryBuffer.toArray(): ByteArray {
+        val source = ByteArray(size)
+        System.arraycopy(buffer, offset, source, 0, size)
+
+        return source
+    }
+}

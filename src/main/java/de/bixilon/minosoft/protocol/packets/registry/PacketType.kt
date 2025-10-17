@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferOverflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotImplementedException
+import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
@@ -35,18 +36,19 @@ class PacketType(
     var factory: PacketFactory?,
 ) {
 
-    fun create(data: ByteArray, offset: Int, length: Int, session: Session): Packet {
+    fun create(data: ArbitraryBuffer, session: Session): Packet {
         val connection = session.nullCast<StatusSession>()?.connection ?: session.nullCast<PlaySession>()?.connection?.nullCast<NetworkConnection>() ?: Broken("No connection?")
         val factory = this.factory ?: throw PacketNotImplementedException(name, connection.state!!, session.version)
 
-        val buffer = if (session is PlaySession) PlayInByteBuffer(data, session) else InByteBuffer(data)
-        buffer.pointer = offset
+        val buffer = if (session is PlaySession) PlayInByteBuffer(data.buffer, session) else InByteBuffer(data.buffer)
+        buffer.pointer = data.offset
         val packet = factory.create(buffer)
 
-        val read = buffer.pointer - offset
+        val read = buffer.pointer - data.offset
+
         when {
-            read < length -> throw PacketBufferUnderflowException(this, length, length - read)
-            read > length -> throw PacketBufferOverflowException(this, length, length - read)
+            read < data.size -> throw PacketBufferUnderflowException(this, data.size, read)
+            read > data.size -> throw PacketBufferOverflowException(this, data.size, read)
         }
 
         return packet

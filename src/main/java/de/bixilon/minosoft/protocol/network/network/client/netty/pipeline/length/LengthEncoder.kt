@@ -22,9 +22,9 @@ import io.netty.handler.codec.MessageToByteEncoder
 
 class LengthEncoder(
     private val maxLength: Int,
-) : MessageToByteEncoder<LengthDecodedPacket>() {
+) : MessageToByteEncoder<ArbitraryBuffer>() {
 
-    fun write(data: LengthDecodedPacket, out: ByteBuf) {
+    fun write(data: ArbitraryBuffer, out: ByteBuf) {
         if (data.size > maxLength) {
             throw InvalidPacketSizeError(data.size, maxLength)
         }
@@ -33,7 +33,7 @@ class LengthEncoder(
         out.writeBytes(data.buffer, data.offset, data.size)
     }
 
-    override fun encode(context: ChannelHandlerContext?, data: LengthDecodedPacket, out: ByteBuf) {
+    override fun encode(context: ChannelHandlerContext?, data: ArbitraryBuffer, out: ByteBuf) {
         write(data, out)
     }
 
