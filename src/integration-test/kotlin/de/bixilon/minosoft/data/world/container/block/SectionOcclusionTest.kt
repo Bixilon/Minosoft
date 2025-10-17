@@ -109,7 +109,28 @@ class SectionOcclusionTest {
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 
-    @Test
+    fun `magic occlusion chunk`() {
+        val occlusion = create()
+        val data = SectionOcclusionTest::class.java.getResourceAsStream("/chunk/magic_occlusion_chunk.txt")!!.readAsString().split(';').map { IT.REGISTRIES.block[it]?.states?.default }
+        for ((index, state) in data.withIndex()) {
+            occlusion.provider[InSectionPosition(index)] = state
+        }
+
+        // only down is filled with solid bedrock, rest are just random blocks
+        val expected = booleanArrayOf(true, true, true, true, true, false, false, false, false, false, false, false, false, false, false)
+
+        assertEquals(occlusion.occlusion, expected)
+    }
+
+    /*
+     *
+     * Restore with:
+     *
+     *             val array = a.split(';').map { context.session.registries.block[it]?.states?.default }.toTypedArray()
+     *             context.session.world.chunks[32, -14]!!.getOrPut(10)!!.blocks.setData(array)
+     */
+
+    @Test(enabled = false)
     fun benchmark() {
         val occlusion = create()
         val random = Random(12)

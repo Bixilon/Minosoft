@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 
 object CubeDirections {
-    const val CUBE_DIRECTION_COMBINATIONS = 15 // 5+4+3+2+1
+    const val CUBE_DIRECTION_COMBINATIONS = 5 + 4 + 3 + 2 + 1
 
     val PAIRS = arrayOf(
         DirectionPair(Directions.DOWN, Directions.UP),
@@ -42,23 +42,19 @@ object CubeDirections {
     )
 
 
-    fun getIndex(`in`: Directions, out: Directions): Int {
+    fun getIndex(a: Directions, b: Directions): Int {
         // ToDo: Calculate this far better
-        val preferIn = `in`.ordinal < out.ordinal
+        var a = a
+        var b = b
 
-        val first: Directions
-        val second: Directions
-
-        if (preferIn) {
-            first = `in`
-            second = out
-        } else {
-            first = out
-            second = `in`
+        if (a.ordinal > b.ordinal) {
+            val temp = a
+            a = b
+            b = temp
         }
 
-        when (first) {
-            Directions.DOWN -> return when (second) {
+        when (a) {
+            Directions.DOWN -> return when (b) {
                 Directions.UP -> 0
                 Directions.NORTH -> 1
                 Directions.SOUTH -> 2
@@ -67,7 +63,7 @@ object CubeDirections {
                 else -> Broken()
             }
 
-            Directions.UP -> return when (second) {
+            Directions.UP -> return when (b) {
                 Directions.NORTH -> 5
                 Directions.SOUTH -> 6
                 Directions.WEST -> 7
@@ -75,14 +71,14 @@ object CubeDirections {
                 else -> Broken()
             }
 
-            Directions.NORTH -> return when (second) {
+            Directions.NORTH -> return when (b) {
                 Directions.SOUTH -> 9
                 Directions.WEST -> 10
                 Directions.EAST -> 11
                 else -> Broken()
             }
 
-            Directions.SOUTH -> return when (second) {
+            Directions.SOUTH -> return when (b) {
                 Directions.WEST -> 12
                 Directions.EAST -> 13
                 else -> Broken()

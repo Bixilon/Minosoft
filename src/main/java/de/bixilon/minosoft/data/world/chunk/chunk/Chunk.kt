@@ -153,6 +153,8 @@ class Chunk(
 
         return world.biomes.noise?.get(position, this)
     }
+
+    override fun toString() = "Chunk($position)"
 }
 
 
