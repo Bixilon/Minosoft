@@ -217,6 +217,8 @@ class Chunk(
         }
         return session.world.biomes.get(position, this)
     }
+
+    override fun toString() = "Chunk($position)"
 }
 
 

@@ -45,7 +45,7 @@ class SectionOcclusionTest {
     }
 
     private operator fun SectionOcclusion.set(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, state: BlockState?) {
-        CALCULATE.setBoolean(this, false)
+        CALCULATE.setBoolean(this, false) // tests calculate it at the end
         for (y in minY..maxY) {
             for (z in minZ..maxZ) {
                 for (x in minX..maxX) {
@@ -53,11 +53,11 @@ class SectionOcclusionTest {
                 }
             }
         }
-        CALCULATE.setBoolean(this, true)
     }
 
     private val SectionOcclusion.occlusion: BooleanArray
         get() {
+            CALCULATE.setBoolean(this, true)
             recalculate(false)
             return OCCLUSION[this].unsafeCast()
         }
@@ -118,6 +118,27 @@ class SectionOcclusionTest {
         }
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
+
+    fun `magic occlusion chunk`() {
+        val occlusion = create()
+        val data = SectionOcclusionTest::class.java.getResourceAsStream("/chunk/magic_occlusion_chunk.txt")!!.readAsString().split(';').map { IT.REGISTRIES.block[it]?.states?.default }
+        for ((index, state) in data.withIndex()) {
+            occlusion.provider[InSectionPosition(index)] = state
+        }
+
+        // only down is filled with solid bedrock, rest are just random blocks
+        val expected = booleanArrayOf(true, true, true, true, true, false, false, false, false, false, false, false, false, false, false)
+
+        assertEquals(occlusion.occlusion, expected)
+    }
+
+    /**
+     *
+     * Restore with:
+     *
+     *             val array = a.split(';').map { context.session.registries.block[it]?.states?.default }.toTypedArray()
+     *             context.session.world.chunks[32, -14]!!.getOrPut(10)!!.blocks.setData(array)
+     */
 
     @Test(enabled = false)
     fun benchmark() {

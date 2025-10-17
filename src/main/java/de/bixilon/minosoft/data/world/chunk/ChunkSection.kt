@@ -84,4 +84,6 @@ class ChunkSection(
 
     fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset + origin)
     fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock(BlockPosition(origin.x, origin.y, origin.z) + direction)
+
+    override fun toString() = "ChunkSection(${chunk.position.x} $height ${chunk.position.z})"
 }

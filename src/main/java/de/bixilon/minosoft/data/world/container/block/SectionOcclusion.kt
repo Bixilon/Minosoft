@@ -80,17 +80,23 @@ class SectionOcclusion(
         return false
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
-        trace(regions, position, DirectionVector(), position.index.toShort())
-        val region = regions[position.index].toInt()
-        if (region > EMPTY_REGION) {
-            set.add(region)
+    private fun trace(regions: ShortArray, position: InSectionPosition, sides: IntOpenHashSet) {
+        val current = regions[position.index]
+
+        if (current == INVALID_REGION) return
+        if (provider[position].isFullyOpaque()) {
+            regions[position.index] = INVALID_REGION
+            return
         }
+        val id = if (current > EMPTY_REGION) current else position.index.toShort()
+        regions[position.index] = id
+
+        traceForce(regions, position, DirectionVector(), id)
+
+        sides.add(id.toInt())
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
-        if (regions.setIfUnset(position, region)) return
-
+    private fun traceForce(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
         if (direction.x <= 0 && position.x > 0) trace(regions, position.minusX(), direction.with(Directions.WEST), region)
         if (direction.x >= 0 && position.x < ChunkSize.SECTION_MAX_X) trace(regions, position.plusX(), direction.with(Directions.EAST), region)
         if (direction.z <= 0 && position.z > 0) trace(regions, position.minusZ(), direction.with(Directions.NORTH), region)
@@ -99,11 +105,14 @@ class SectionOcclusion(
         if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
+    private fun trace(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
+        if (regions.setIfUnset(position, region)) return
+        traceForce(regions, position, direction, region)
+    }
+
     private fun calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
-
-        // TODO: force trace first block (might already be in a different region from a different vector)
 
         val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
 
@@ -116,7 +125,6 @@ class SectionOcclusion(
 
             trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_WEST])
             trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_EAST])
-            // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
         return sides
