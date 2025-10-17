@@ -79,7 +79,6 @@ val architecture = properties["architecture"]?.let { Architectures[it] } ?: Plat
 logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase()}")
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
 }
