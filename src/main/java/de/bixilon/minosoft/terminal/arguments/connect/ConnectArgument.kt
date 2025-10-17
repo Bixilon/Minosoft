@@ -21,9 +21,11 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.gui.eros.ErosOptions
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
+import de.bixilon.minosoft.protocol.network.session.status.StatusSessionStates
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.DNSUtil
@@ -39,8 +41,8 @@ class ConnectArgument : OptionGroup(), AutoConnectFactory {
 
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server $address to get version..." }
         val ping = StatusSession(address)
-        ping::status.observe(this) { latch.dec() }
-        ping::error.observe(this) { it?.printStackTrace(); ShutdownManager.shutdown(it?.message, AbstractShutdownReason.CRASH) }
+        ping::state.observe(this) { if (it == StatusSessionStates.PING_DONE) latch.dec() }
+        ping::error.observe(this) { it?.printStackTrace(); if (ErosOptions.disabled) ShutdownManager.shutdown(it?.message, AbstractShutdownReason.CRASH) }
         ping.ping()
 
         latch.await()
