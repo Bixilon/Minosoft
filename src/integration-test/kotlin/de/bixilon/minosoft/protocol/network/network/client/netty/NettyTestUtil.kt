@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty
 
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 
 object NettyTestUtil {
 
-    fun ArbitraryBuffer.toArray(): ByteArray {
+    fun ArbitraryByteBuffer.toArray(): ByteArray {
         val source = ByteArray(size)
         System.arraycopy(buffer, offset, source, 0, size)
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.kutil.exception.FastException
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.InvalidPacketSizeError
@@ -47,7 +48,7 @@ class LengthDecoder(
         return length
     }
 
-    fun read(buffer: ByteBuf): ArbitraryBuffer? {
+    fun read(buffer: ByteBuf): ArbitraryByteBuffer? {
         buffer.markReaderIndex()
         val length = readLength(buffer)
         if (length < 0) {
@@ -58,7 +59,7 @@ class LengthDecoder(
         val array = NetworkAllocator.allocate(length)
         buffer.readBytes(array, 0, length)
 
-        return ArbitraryBuffer(0, length, array)
+        return ArbitraryByteBuffer(0, length, array)
     }
 
     override fun decode(context: ChannelHandlerContext?, buffer: ByteBuf, out: MutableList<Any>) {

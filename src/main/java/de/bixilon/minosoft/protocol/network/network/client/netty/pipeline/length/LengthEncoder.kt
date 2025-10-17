@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.InvalidPacketSizeError
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.buffer.ByteBuf
@@ -22,9 +23,9 @@ import io.netty.handler.codec.MessageToByteEncoder
 
 class LengthEncoder(
     private val maxLength: Int,
-) : MessageToByteEncoder<ArbitraryBuffer>() {
+) : MessageToByteEncoder<ArbitraryByteBuffer>() {
 
-    fun write(data: ArbitraryBuffer, out: ByteBuf) {
+    fun write(data: ArbitraryByteBuffer, out: ByteBuf) {
         if (data.size > maxLength) {
             throw InvalidPacketSizeError(data.size, maxLength)
         }
@@ -33,7 +34,7 @@ class LengthEncoder(
         out.writeBytes(data.buffer, data.offset, data.size)
     }
 
-    override fun encode(context: ChannelHandlerContext?, data: ArbitraryBuffer, out: ByteBuf) {
+    override fun encode(context: ChannelHandlerContext?, data: ArbitraryByteBuffer, out: ByteBuf) {
         write(data, out)
     }
 

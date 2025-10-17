@@ -18,7 +18,8 @@ import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferOverflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferUnderflowException
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.bytes.`in`.ByteBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.registry.factory.PacketFactory
@@ -47,32 +48,32 @@ class PacketTypeTest {
     }
 
     fun `read directly`() {
-        val data = ArbitraryBuffer(0, 2, byteArrayOf(0x12, 0x34))
+        val data = ArbitraryByteBuffer(0, 2, byteArrayOf(0x12, 0x34))
         type.create(data, session())
     }
 
     fun `read wrong data`() {
-        val data = ArbitraryBuffer(0, 2, byteArrayOf(0x7A, 0x34))
+        val data = ArbitraryByteBuffer(0, 2, byteArrayOf(0x7A, 0x34))
         assertThrows { type.create(data, session()) }
     }
 
     fun `read with offset`() {
-        val data = ArbitraryBuffer(1, 2, byteArrayOf(0x22, 0x12, 0x34))
+        val data = ArbitraryByteBuffer(1, 2, byteArrayOf(0x22, 0x12, 0x34))
         type.create(data, session())
     }
 
     fun `read with offset and trailing data`() {
-        val data = ArbitraryBuffer(1, 2, byteArrayOf(0x22, 0x12, 0x34, 0x23))
+        val data = ArbitraryByteBuffer(1, 2, byteArrayOf(0x22, 0x12, 0x34, 0x23))
         type.create(data, session())
     }
 
     fun `read und underflow`() {
-        val data = ArbitraryBuffer(1, 3, byteArrayOf(0x22, 0x12, 0x34, 0x23, 0x45))
+        val data = ArbitraryByteBuffer(1, 3, byteArrayOf(0x22, 0x12, 0x34, 0x23, 0x45))
         assertThrows(PacketBufferUnderflowException::class.java) { type.create(data, session()) }
     }
 
     fun `read und overflow`() {
-        val data = ArbitraryBuffer(1, 1, byteArrayOf(0x22, 0x12, 0x34, 0x23))
-        assertThrows(PacketBufferOverflowException::class.java) { type.create(data, session()) }
+        val data = ArbitraryByteBuffer(1, 1, byteArrayOf(0x22, 0x12, 0x34, 0x23))
+        assertThrows(ByteBufferUnderflowException::class.java) { type.create(data, session()) }
     }
 }

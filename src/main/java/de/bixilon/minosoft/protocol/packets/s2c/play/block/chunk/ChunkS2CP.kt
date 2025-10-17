@@ -109,7 +109,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             if (buffer.versionId >= V_21W37A) {
                 if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
-                    buffer.pointer = buffer.size
+                    buffer.offset = buffer.data.offset + buffer.size
                 } else {
                     this.prototype.update(ChunkLightS2CP(buffer, position).prototype)
                 }

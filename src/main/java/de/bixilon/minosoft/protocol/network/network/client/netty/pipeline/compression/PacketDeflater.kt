@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compr
 
 import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder
@@ -25,9 +25,9 @@ import java.util.zip.Deflater
 
 class PacketDeflater(
     var threshold: Int,
-) : MessageToMessageEncoder<ArbitraryBuffer>() {
+) : MessageToMessageEncoder<ArbitraryByteBuffer>() {
 
-    fun encode(data: ArbitraryBuffer): ArbitraryBuffer {
+    fun encode(data: ArbitraryByteBuffer): ArbitraryByteBuffer {
         val compress = data.size >= threshold
 
         if (compress) {
@@ -40,7 +40,7 @@ class PacketDeflater(
             System.arraycopy(uncompressedLength, 0, final, 0, uncompressedLength.size)
             System.arraycopy(compressed, 0, final, uncompressedLength.size, compressed.size)
 
-            return ArbitraryBuffer(0, size, final)
+            return ArbitraryByteBuffer(0, size, final)
         }
 
         val final = NetworkAllocator.allocate(1 + data.size)
@@ -48,10 +48,10 @@ class PacketDeflater(
         System.arraycopy(data.buffer, data.offset, final, 1, data.size)
         NetworkAllocator.free(data.buffer)
 
-        return ArbitraryBuffer(0, 1 + data.size, final)
+        return ArbitraryByteBuffer(0, 1 + data.size, final)
     }
 
-    override fun encode(context: ChannelHandlerContext, data: ArbitraryBuffer, out: MutableList<Any>) {
+    override fun encode(context: ChannelHandlerContext, data: ArbitraryByteBuffer, out: MutableList<Any>) {
         out += encode(data)
     }
 

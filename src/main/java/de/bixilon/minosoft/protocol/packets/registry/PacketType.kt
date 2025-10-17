@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferOverflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotImplementedException
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
@@ -36,15 +36,14 @@ class PacketType(
     var factory: PacketFactory?,
 ) {
 
-    fun create(data: ArbitraryBuffer, session: Session): Packet {
+    fun create(data: ArbitraryByteBuffer, session: Session): Packet {
         val connection = session.nullCast<StatusSession>()?.connection ?: session.nullCast<PlaySession>()?.connection?.nullCast<NetworkConnection>() ?: Broken("No connection?")
         val factory = this.factory ?: throw PacketNotImplementedException(name, connection.state!!, session.version)
 
-        val buffer = if (session is PlaySession) PlayInByteBuffer(data.buffer, session) else InByteBuffer(data.buffer)
-        buffer.pointer = data.offset
+        val buffer = if (session is PlaySession) PlayInByteBuffer(data, session) else InByteBuffer(data)
         val packet = factory.create(buffer)
 
-        val read = buffer.pointer - data.offset
+        val read = buffer.offset - data.offset
 
         when {
             read < data.size -> throw PacketBufferUnderflowException(this, data.size, read)

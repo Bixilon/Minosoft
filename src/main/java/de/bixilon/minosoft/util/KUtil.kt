@@ -284,10 +284,10 @@ object KUtil {
     }
 
     fun PlayInByteBuffer.dump(name: String) {
-        val pointer = pointer
-        this.pointer = 0
-        val data = readRemaining()
-        this.pointer = pointer
+        val pointer = offset
+        this.offset = data.offset
+        val data = readRemaining()  // TODO: That is bad, it reads all the bytes. The buffer may be much larger than the actual data stream
+        this.offset = pointer
 
         val path = "/home/moritz/${name}_${Versions.getById(this.versionId)?.name?.replace(".", "_")}.bin"
         val stream = FileOutputStream(path)

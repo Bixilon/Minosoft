@@ -38,6 +38,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -69,22 +70,20 @@ class PlayInByteBuffer : InByteBuffer {
     val session: PlaySession
     val versionId: Int
 
-    constructor(bytes: ByteArray, session: PlaySession) : super(bytes) {
+    constructor(data: ArbitraryByteBuffer, session: PlaySession) : super(data) {
         this.session = session
         versionId = session.version.versionId
     }
 
-    constructor(buffer: PlayInByteBuffer) : super(buffer) {
-        session = buffer.session
+    constructor(data: ByteArray, session: PlaySession) : super(data) {
+        this.session = session
         versionId = session.version.versionId
     }
 
+
     fun readByteArray(): ByteArray {
-        val length: Int = if (versionId < V_14W21A) {
-            readUnsignedShort()
-        } else {
-            readVarInt()
-        }
+        val length = if (versionId < V_14W21A) readUnsignedShort() else readVarInt()
+
         return super.readByteArray(length)
     }
 

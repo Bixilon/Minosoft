@@ -181,7 +181,7 @@ object ChunkPacketUtil {
                     if (skylight) {
                         size += LIGHT_SIZE
                     }
-                    buffer.pointer += size
+                    buffer.offset += size
                 } else {
                     val blockLight = buffer.readByteArray(LIGHT_SIZE)
                     var skyLight: ByteArray? = null

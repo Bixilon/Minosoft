@@ -15,38 +15,38 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compr
 
 import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyTestUtil.toArray
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import org.testng.Assert
 import org.testng.annotations.Test
 
 @Test(groups = ["network"])
 class PacketDeflaterTest {
 
-    private fun ArbitraryBuffer.encode(threshold: Int = 3): ArbitraryBuffer {
+    private fun ArbitraryByteBuffer.encode(threshold: Int = 3): ArbitraryByteBuffer {
         val inflater = PacketDeflater(threshold)
         return inflater.encode(this)
     }
 
-    private fun assertEquals(actual: ArbitraryBuffer, expected: ByteArray) {
+    private fun assertEquals(actual: ArbitraryByteBuffer, expected: ByteArray) {
         Assert.assertEquals(actual.toArray(), expected)
     }
 
     fun `below threshold, single byte data`() {
-        val data = ArbitraryBuffer(0, 1, byteArrayOf(0x11))
+        val data = ArbitraryByteBuffer(0, 1, byteArrayOf(0x11))
         val decoded = data.encode()
 
         assertEquals(decoded, byteArrayOf(0x00, 0x11))
     }
 
     fun `below threshold, single byte data with offset and trailing data`() {
-        val data = ArbitraryBuffer(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
+        val data = ArbitraryByteBuffer(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
         val decoded = data.encode()
 
         assertEquals(decoded, byteArrayOf(0x00, 0x11))
     }
 
     fun `above threshold, single byte data`() {
-        val data = ArbitraryBuffer(0, 1, byteArrayOf(0x11))
+        val data = ArbitraryByteBuffer(0, 1, byteArrayOf(0x11))
         val compressed = byteArrayOf(0x11).compress()
         val decoded = data.encode(0x00)
 
@@ -54,7 +54,7 @@ class PacketDeflaterTest {
     }
 
     fun `above threshold, single byte data with offset and trailing data`() {
-        val data = ArbitraryBuffer(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
+        val data = ArbitraryByteBuffer(2, 1, ByteArray(2) + byteArrayOf(0x11) + ByteArray(3))
         val compressed = byteArrayOf(0x11).compress()
         val decoded = data.encode(0x00)
 

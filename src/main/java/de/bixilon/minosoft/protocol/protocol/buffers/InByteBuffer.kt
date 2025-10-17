@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
@@ -39,9 +40,8 @@ import java.nio.charset.StandardCharsets
 
 open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
 
-    constructor(bytes: ByteArray) : super(bytes)
-    constructor(buffer: InByteBuffer) : super(buffer)
-
+    constructor(data: ArbitraryByteBuffer) : super(data)
+    constructor(data: ByteArray) : super(data)
 
     fun readFixedPointNumberInt(): Double {
         return readInt() / 32.0

@@ -21,6 +21,7 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
@@ -234,7 +235,7 @@ class Registries(
             shape.cleanup()
         }
         fluid.updateWaterLava()
-        Log.log(LogMessageType.LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.elapsedNow()}" }
+        Log.log(LogMessageType.LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.elapsedNow().format()}" }
     }
 
     operator fun <T : RegistryItem> get(type: Class<T>): Registry<T>? {

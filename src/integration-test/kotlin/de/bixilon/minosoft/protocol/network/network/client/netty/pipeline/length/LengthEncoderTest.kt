@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import io.netty.buffer.Unpooled
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -20,7 +21,7 @@ import org.testng.annotations.Test
 @Test(groups = ["network"])
 class LengthEncoderTest {
 
-    private fun ArbitraryBuffer.encode(): ByteArray {
+    private fun ArbitraryByteBuffer.encode(): ByteArray {
         val buffer = Unpooled.buffer()
         LengthEncoder(1 shl 16).write(this, buffer)
         val array = ByteArray(buffer.writerIndex())
@@ -30,25 +31,25 @@ class LengthEncoderTest {
     }
 
     fun `no data`() {
-        val data = ArbitraryBuffer(0, 0, byteArrayOf())
+        val data = ArbitraryByteBuffer(0, 0, byteArrayOf())
         val expected = byteArrayOf(0x00)
         assertEquals(data.encode(), expected)
     }
 
     fun `single byte`() {
-        val data = ArbitraryBuffer(0, 1, byteArrayOf(0x11))
+        val data = ArbitraryByteBuffer(0, 1, byteArrayOf(0x11))
         val expected = byteArrayOf(0x01, 0x11)
         assertEquals(data.encode(), expected)
     }
 
     fun `128 bytes`() {
-        val data = ArbitraryBuffer(0, 128, ByteArray(128) { 0x11 })
+        val data = ArbitraryByteBuffer(0, 128, ByteArray(128) { 0x11 })
         val expected = byteArrayOf(0x80.toByte(), 0x01) + ByteArray(128) { 0x11 }
         assertEquals(data.encode(), expected)
     }
 
     fun `offset and trailing data`() {
-        val data = ArbitraryBuffer(5, 128, ByteArray(5) + ByteArray(128) { 0x11 } + ByteArray(8))
+        val data = ArbitraryByteBuffer(5, 128, ByteArray(5) + ByteArray(128) { 0x11 } + ByteArray(8))
         val expected = byteArrayOf(0x80.toByte(), 0x01) + ByteArray(128) { 0x11 }
         assertEquals(data.encode(), expected)
     }

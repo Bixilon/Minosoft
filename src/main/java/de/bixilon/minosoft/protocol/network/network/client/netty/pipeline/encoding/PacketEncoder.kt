@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocato
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongSessionTypeException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotAvailableException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotFoundException
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
@@ -78,7 +78,7 @@ class PacketEncoder(
         throw PacketNotAvailableException(type, state, version)
     }
 
-    fun encode(packet: C2SPacket): ArbitraryBuffer? {
+    fun encode(packet: C2SPacket): ArbitraryByteBuffer? {
         val state = client.connection.state ?: return null
 
         val type = DefaultPackets.C2S[state]?.get(packet::class) ?: throw PacketNotFoundException(packet::class)
@@ -93,7 +93,7 @@ class PacketEncoder(
         System.arraycopy(idData, 0, temporary, 0, idData.size)
         System.arraycopy(packetData, 0, temporary, idData.size, packetData.size)
 
-        return ArbitraryBuffer(0, length, temporary)
+        return ArbitraryByteBuffer(0, length, temporary)
     }
 
     override fun encode(context: ChannelHandlerContext?, packet: C2SPacket, out: MutableList<Any>) {

@@ -56,7 +56,7 @@ class ArrayPaletteData(
         val longs = calculateLongs()
         this.data = ALLOCATOR.allocate(longs)
         if (packetSize != longs) {
-            buffer.pointer += packetSize * Long.SIZE_BYTES // data is ignored
+            buffer.offset += packetSize * Long.SIZE_BYTES // data is ignored
             return
         }
         buffer.readLongArray(this.data, longs)

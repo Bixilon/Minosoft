@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.Pack
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotImplementedException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.UnknownPacketIdException
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length.ArbitraryBuffer
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.packets.registry.PacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
@@ -33,29 +33,29 @@ import java.lang.reflect.InvocationTargetException
 
 class PacketDecoder(
     private val client: NettyClient,
-) : MessageToMessageDecoder<ArbitraryBuffer>() {
+) : MessageToMessageDecoder<ArbitraryByteBuffer>() {
     private val version: Version? = client.session.version
 
-    override fun decode(context: ChannelHandlerContext, array: ArbitraryBuffer, out: MutableList<Any>) {
+    override fun decode(context: ChannelHandlerContext, array: ArbitraryByteBuffer, out: MutableList<Any>) {
         out += decode(array) ?: return
     }
 
-    fun decode(data: ArbitraryBuffer): QueuedS2CP<S2CPacket>? {
-        val buffer = InByteBuffer(data.buffer).apply { pointer = data.offset }
+    fun decode(data: ArbitraryByteBuffer): QueuedS2CP<S2CPacket>? {
+        val buffer = InByteBuffer(data)
         val packetId = buffer.readVarInt()
 
         val state = client.connection.state ?: return null
         val type = version?.s2c?.get(state, packetId) ?: DefaultPacketMapping.S2C_PACKET_MAPPING[state, packetId] ?: throw UnknownPacketIdException(packetId, state, version)
 
-        val length = data.size - (buffer.pointer - data.offset)
+        val length = data.size - (buffer.offset - data.offset)
         try {
-            return decode(type, ArbitraryBuffer(buffer.pointer, length, data.buffer))
+            return decode(type, ArbitraryByteBuffer(buffer.offset, length, data.buffer))
         } finally {
             NetworkAllocator.free(data.buffer)
         }
     }
 
-    private fun decode(type: PacketType, buffer: ArbitraryBuffer): QueuedS2CP<S2CPacket>? {
+    private fun decode(type: PacketType, buffer: ArbitraryByteBuffer): QueuedS2CP<S2CPacket>? {
         if (type.extra != null && type.extra.skip(client.session)) {
             return null
         }
