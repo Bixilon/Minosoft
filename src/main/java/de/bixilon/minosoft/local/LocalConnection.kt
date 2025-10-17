@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.local
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
@@ -58,7 +59,7 @@ class LocalConnection(
 
     override fun connect(session: Session) {
         if (session !is PlaySession) throw IllegalStateException("Not a play session?")
-        Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Establishing debug connection" }
+        Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Establishing local connection" }
         active = true
         this.session = session
         this.chunks = LocalChunkManager(session, storage.invoke(session), generator.invoke(session))
@@ -93,8 +94,10 @@ class LocalConnection(
         sendMessage("§e${session.player.name} §ejoined the game!")
 
 
+        Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loading local world" }
         chunks.storage.loadWorld(session.world)
-        chunks.update()
+        DefaultThreadPool += { chunks.update() }
+        Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loaded local world!" }
     }
 
     override fun disconnect() {

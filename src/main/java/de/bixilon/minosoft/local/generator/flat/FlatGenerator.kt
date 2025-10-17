@@ -15,6 +15,7 @@ package de.bixilon.minosoft.local.generator.flat
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.Dirt
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
@@ -22,7 +23,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -30,19 +33,39 @@ class FlatGenerator(
     val biome: Biome?,
     val layers: Array<BlockState?>,
 ) : ChunkGenerator {
+    private val data = bake()
+    private val biomeSource = DummyBiomeSource(biome)
+
+    private fun bake(): Array<Array<BlockState?>?> {
+        val sections = layers.size.sectionHeight + 1
+        val array = arrayOfNulls<Array<BlockState?>?>(sections)
+
+        for ((index, state) in this.layers.withIndex()) {
+            var section = array[index.sectionHeight]
+            if (section == null) {
+                section = arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION)
+                array[index.sectionHeight] = section
+            }
+            val y = index.inSectionHeight
+
+            for (xz in 0 until ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
+                val position = InSectionPosition(xz).with(y = y)
+                section[position.index] = state
+            }
+        }
+
+        return array
+    }
 
     override fun generate(chunk: Chunk) {
-        chunk.biomeSource = DummyBiomeSource(biome)
+        chunk.biomeSource = this.biomeSource
 
-        val minY = chunk.world.dimension.minY
-        for ((index, layer) in layers.withIndex()) {
-            if (layer == null) continue
+        for ((index, data) in this.data.withIndex()) {
+            if (data == null) continue
+            val section = chunk.getOrPut(index + chunk.minSection) ?: continue
+            val clone = data.clone()
 
-            for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
-                for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
-                    chunk[InChunkPosition(x, index + minY, z)] = layer
-                }
-            }
+            section.blocks.setData(clone)
         }
     }
 
@@ -51,9 +74,10 @@ class FlatGenerator(
         fun default(session: PlaySession): FlatGenerator {
             val bedrock = session.registries.block[Bedrock]?.states?.default
             val stone = session.registries.block[StoneBlock.Block]?.states?.default
+            val dirt = session.registries.block[Dirt]?.states?.default
             val grass = session.registries.block[GrassBlock]?.states?.default
 
-            val plains = session.registries.biome[minecraft("plains")]
+            val plains = session.registries.biome[minecraft("plains")] // TODO: That might be null in modern versions (datapack only)
 
             return FlatGenerator(plains, arrayOf(
                 bedrock,
@@ -62,6 +86,9 @@ class FlatGenerator(
                 stone,
                 stone,
                 stone,
+                dirt,
+                dirt,
+                dirt,
                 grass,
             ))
         }
