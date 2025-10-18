@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_HEIGHT_Y
 import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_X
 import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_Z
@@ -70,7 +71,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
                 val pass = passes(state)
                 if (pass == HeightmapPass.PASSES) continue
 
-                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
+                y = (sectionIndex + chunk.minSection) * SECTION_HEIGHT_Y + sectionY
                 if (pass == HeightmapPass.ABOVE) y++
 
                 break@sectionLoop

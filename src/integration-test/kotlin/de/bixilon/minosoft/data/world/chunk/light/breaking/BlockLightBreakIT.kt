@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.breaking
 
+import de.bixilon.kmath.vec.vec3.i.SVec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.minosoft.data.registries.blocks.TorchTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.SectionLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.vec.SVec3
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
@@ -184,21 +184,21 @@ class BlockLightBreakIT {
     fun lightUpdate() {
         val world = SessionTestUtil.createSession(3, light = true).world
         world[BlockPosition(8, 24, 8)] = TorchTest0.state
-        val events: MutableList<SVec3> = synchronizedListOf()
+        val events: MutableList<SVec3i> = synchronizedListOf()
         world.session.events.listen<WorldUpdateEvent> {
             if (it.update !is SectionLightUpdate) return@listen
-            events += SVec3(it.update.chunk.position.x, (it.update as SectionLightUpdate).section.height, it.update.chunk.position.z)
+            events += SVec3i(it.update.chunk.position.x, (it.update as SectionLightUpdate).section.height, it.update.chunk.position.z)
         }
         world[BlockPosition(8, 24, 8)] = null
 
         assertEquals(events.toSet(), setOf(
-            SVec3(+0, 1, +0),
-            SVec3(+0, 0, +0),
-            SVec3(+0, 2, +0),
-            SVec3(+0, 1, -1),
-            SVec3(+0, 1, +1),
-            SVec3(-1, 1, +0),
-            SVec3(+1, 1, +0),
+            SVec3i(+0, 1, +0),
+            SVec3i(+0, 0, +0),
+            SVec3i(+0, 2, +0),
+            SVec3i(+0, 1, -1),
+            SVec3i(+0, 1, +1),
+            SVec3i(-1, 1, +0),
+            SVec3i(+1, 1, +0),
         ))
         assertEquals(events.size, 7)
     }
