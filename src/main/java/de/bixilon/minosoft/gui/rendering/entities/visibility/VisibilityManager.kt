@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class VisibilityManager(val renderer: EntitiesRenderer) {
     private var update = false
@@ -41,6 +41,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     private val graph = renderer.context.camera.occlusion
     private val frustum = renderer.context.camera.frustum
     private var renderDistance = 0
+    private var eyePosition = renderer.session.camera.entity.physics.positionInfo.eyePosition
 
     fun init() {
         renderer.session.events.listen<VisibilityGraphChangeEvent> { update = true }
@@ -59,31 +60,28 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         opaque.clear()
         translucent.clear()
         _size = 0
+        eyePosition = renderer.session.camera.entity.physics.positionInfo.eyePosition
     }
 
-    private fun EntityRenderer<*>.isInRenderDistance(): Boolean {
-        return renderDistance < 0 || distance <= renderDistance
-    }
+    private fun getVisibility(renderer: EntityRenderer<*>): EntityVisibility {
+        val distance = Vec3iUtil.distance2(renderer.entity.physics.positionInfo.eyePosition, eyePosition).toDouble()
+        if (distance >= renderDistance) return EntityVisibility.OUT_OF_VIEW_DISTANCE
 
-    fun update(renderer: EntityRenderer<*>, time: ValueTimeMark) {
-        if (!renderer.isInRenderDistance()) {
-            // distance is only updated if the renderer is visible, so force update
-            renderer.updateRenderInfo(time)
-        }
-        if (!renderer.isInRenderDistance()) {
-            return renderer.updateVisibility(EntityVisibility.OUT_OF_VIEW_DISTANCE)
-        }
         val entity = renderer.entity
-        val previous = renderer.visibility
-        val aabb = if (previous <= EntityVisibility.OUT_OF_FRUSTUM) entity.physics.aabb else entity.renderInfo.cameraAABB // cameraAABB is only updated if entity is visible
-        if (aabb !in frustum) {
+        val aabb = if (!renderer.isVisible()) entity.physics.aabb else entity.renderInfo.cameraAABB // cameraAABB is only updated if entity is visible
+
+        return when {
             // TODO: renderer/features: renderOccluded -> occlusion culling is faster than frustum culling
-            return renderer.updateVisibility(EntityVisibility.OUT_OF_FRUSTUM)
+            aabb !in frustum -> EntityVisibility.OUT_OF_FRUSTUM
+            graph.isAABBOccluded(aabb) -> EntityVisibility.OCCLUDED
+            else -> EntityVisibility.VISIBLE
         }
-        if (graph.isAABBOccluded(aabb)) {
-            return renderer.updateVisibility(EntityVisibility.OCCLUDED)
-        }
-        return renderer.updateVisibility(EntityVisibility.VISIBLE)
+    }
+
+
+    fun update(renderer: EntityRenderer<*>) {
+        val visibility = getVisibility(renderer)
+        renderer.updateVisibility(visibility)
     }
 
     fun collect(renderer: EntityRenderer<*>) {

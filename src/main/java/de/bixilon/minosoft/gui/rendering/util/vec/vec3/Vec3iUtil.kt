@@ -55,4 +55,12 @@ object Vec3iUtil {
     fun Vec3i.max(value: Int): Vec3i {
         return Vec3i(maxOf(value, x), maxOf(value, y), maxOf(value, z))
     }
+
+
+    inline fun distance2(a: _Vec3i, b: _Vec3i): Int {
+        val x = a.x - b.x
+        val y = a.y - b.y
+        val z = a.z - b.z
+        return x * x + y * y + z * z
+    }
 }

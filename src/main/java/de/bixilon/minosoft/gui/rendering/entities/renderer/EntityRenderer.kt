@@ -39,8 +39,8 @@ abstract class EntityRenderer<E : Entity>(
     private var update = TimeUtil.NULL
     val features = FeatureManager(this)
     val info = entity.renderInfo
-    var distance: Double = 0.0
-    var isInvisible: Boolean = false
+    var distance = 0.0
+    var isInvisible = false
 
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
