@@ -177,11 +177,11 @@ class OpenGLNativeShader(
     }
 
     override fun setRGBColor(uniform: String, color: RGBColor) {
-        setVec4f(uniform, Vec4f(color.redf, color.greenf, color.bluef, 1.0f))
+        setRGBAColor(uniform, color.rgba())
     }
 
     override fun setRGBAColor(uniform: String, color: RGBAColor) {
-        setVec4f(uniform, Vec4f(color.redf, color.greenf, color.bluef, color.alphaf))
+        glUniform4f(getUniformLocation(uniform), color.redf, color.greenf, color.bluef, color.alphaf)
     }
 
     override fun setTexture(uniform: String, textureId: Int) {

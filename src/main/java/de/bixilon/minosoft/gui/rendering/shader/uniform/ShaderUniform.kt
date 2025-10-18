@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,19 +25,10 @@ class ShaderUniform<T>(
     private val setter: ShaderSetter<T>,
 ) : ReadWriteProperty<Any, T> {
     private var value = default
-    private var upload: Boolean = true
 
     fun upload() {
-        if (!upload) {
-            return
-        }
-        forceUpload()
-    }
-
-    fun forceUpload() {
         native.use()
         setter.set(native, name, value)
-        upload = false
     }
 
     override fun getValue(thisRef: Any, property: KProperty<*>): T {
@@ -45,13 +36,11 @@ class ShaderUniform<T>(
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
         if (this.value == value) {
             return
         }
         this.value = value
-        upload = true
-        if (Thread.currentThread() == native.context.thread) {
-            upload()
-        }
+        upload()
     }
 }
