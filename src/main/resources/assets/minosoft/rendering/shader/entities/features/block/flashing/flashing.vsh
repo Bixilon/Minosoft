@@ -20,8 +20,8 @@ layout (location = 3) in float vinTint;
 
 uniform mat4 uViewProjectionMatrix;
 uniform mat4 uMatrix;
-uniform uint uTintColor;
-uniform uint uFlashColor;
+uniform vec4 uTintColor;
+uniform vec4 uFlashColor;
 
 out vec4 finFlashColor;
 
@@ -34,9 +34,9 @@ out vec3 finFragmentPosition;
 void main() {
     vec4 position = uMatrix * vec4(vinPosition, 1.0f);
     gl_Position = uViewProjectionMatrix * position;
-    finTintColor = getRGBColor(floatBitsToUint(vinTint)) * getRGBColor(uTintColor);
+    finTintColor = getRGBColor(floatBitsToUint(vinTint)) * uTintColor;
     finFragmentPosition = position.xyz;
 
     setTexture(vinUV, vinIndexLayerAnimation);
-    finFlashColor = getRGBColor(uFlashColor);
+    finFlashColor = uFlashColor;
 }

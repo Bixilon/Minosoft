@@ -21,7 +21,7 @@ out vec3 finFragmentPosition;
 
 
 uniform uint uIndexLayer;
-uniform uint uTintColor;
+uniform vec4 uTintColor;
 uniform uint uSkinParts;
 
 flat out uint finAllowTransparency;
@@ -43,7 +43,7 @@ void main() {
     }
     finAllowTransparency = skinPart;
     run_skeletal(partTransformNormal, vinPosition);
-    finTintColor *= getRGBColor(uTintColor & 0xFFFFFFu);
+    finTintColor *= uTintColor;
 
     setTexture(vinUV, uIndexLayer);
 }

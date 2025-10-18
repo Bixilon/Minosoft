@@ -20,7 +20,7 @@ layout (location = 3) in float vinTint;
 
 uniform mat4 uViewProjectionMatrix;
 uniform mat4 uMatrix;
-uniform uint uTintColor;
+uniform vec4 uTintColor;
 
 out vec3 finFragmentPosition;
 
@@ -32,7 +32,7 @@ out vec3 finFragmentPosition;
 void main() {
     vec4 position = uMatrix * vec4(vinPosition, 0.0f, 1.0f);
     gl_Position = uViewProjectionMatrix * position;
-    finTintColor = getRGBAColor(floatBitsToUint(vinTint)) * getRGBColor(uTintColor);
+    finTintColor = getRGBAColor(floatBitsToUint(vinTint)) * uTintColor;
     finFragmentPosition = position.xyz;
 
     setTexture(vinUV, vinIndexLayerAnimation);

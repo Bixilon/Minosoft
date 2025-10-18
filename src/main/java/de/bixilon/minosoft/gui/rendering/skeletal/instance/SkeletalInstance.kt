@@ -20,6 +20,7 @@ import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -43,7 +44,7 @@ class SkeletalInstance(
         draw(shader)
     }
 
-    fun draw(tint: RGBAColor) {
+    fun draw(tint: RGBColor) {
         context.system.reset(faceCulling = false)
         val shader = context.skeletal.shader
         shader.use()

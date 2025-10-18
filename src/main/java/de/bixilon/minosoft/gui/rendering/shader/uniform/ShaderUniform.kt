@@ -13,35 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.uniform
 
-import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.minosoft.gui.rendering.shader.ShaderSetter
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-class ShaderUniform<T>(
-    private val native: NativeShader,
-    default: T,
-    private val name: String,
-    private val setter: ShaderSetter<T>,
-) : ReadWriteProperty<Any, T> {
-    private var value = default
+abstract class ShaderUniform(
+    protected val native: NativeShader,
+    val name: String,
+) {
 
-    fun upload() {
+    open fun upload() {
         native.use()
-        setter.set(native, name, value)
-    }
-
-    override fun getValue(thisRef: Any, property: KProperty<*>): T {
-        return value
-    }
-
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
-        if (value !is Mat4f && this.value == value) { // TODO: This is a hack, because mostly matrices are set unsafe (they are mutable) and the check is then always false
-            return
-        }
-        this.value = value
-        upload()
     }
 }

@@ -11,14 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.shader
+package de.bixilon.minosoft.gui.rendering.shader.uniform.vec
 
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
-import de.bixilon.minosoft.gui.rendering.shader.types.TintedShader
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
+import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import kotlin.reflect.KProperty
 
-class SkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), AnimatedShader, TintedShader {
-    override var tint by uniform("uTintColor", ChatColors.WHITE.rgb())
+class Vec3fShaderUniform(
+    native: NativeShader,
+    default: Vec3f,
+    name: String,
+) : ShaderUniform(native, name) {
+    private var value = default
+
+    override fun upload() {
+        super.upload()
+        native.setVec3f(name, value)
+    }
+
+    operator fun getValue(thisRef: Any, property: KProperty<*>): Vec3f {
+        return value
+    }
+
+    operator fun setValue(thisRef: Any, property: KProperty<*>, value: Vec3f) {
+        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        if (this.value == value) return
+        this.value = value
+        upload()
+    }
 }

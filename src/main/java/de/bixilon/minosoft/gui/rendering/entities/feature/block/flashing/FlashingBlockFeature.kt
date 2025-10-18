@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
@@ -29,7 +30,7 @@ open class FlashingBlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
     scale: Vec3f = DEFAULT_SCALE,
-    var flashColor: RGBAColor = ChatColors.WHITE,
+    var flashColor: RGBColor = ChatColors.WHITE.rgb(),
     var flashInterval: Float = 0.2f,
     var maxFlash: Float = 0.5f
 ) : BlockFeature(renderer, state, scale) {

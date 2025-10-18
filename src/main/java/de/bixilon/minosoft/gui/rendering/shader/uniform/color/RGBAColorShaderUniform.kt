@@ -11,23 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.box
+package de.bixilon.minosoft.gui.rendering.shader.uniform.color
 
-import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.shader.types.TintedShader
+import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import kotlin.reflect.KProperty
 
-class SkyboxTextureShader(
-    override val native: NativeShader,
-) : Shader(), TextureShader, TintedShader {
-    override var textures: TextureManager by textureManager()
+class RGBAColorShaderUniform(
+    native: NativeShader,
+    default: RGBAColor,
+    name: String,
+) : ShaderUniform(native, name) {
+    private var value = default
 
-    var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())
-    var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
-    override var tint by uniform("uTintColor", RGBColor(0.15f, 0.15f, 0.15f))
+    override fun upload() {
+        super.upload()
+        native.setRGBAColor(name, value)
+    }
+
+    operator fun getValue(thisRef: Any, property: KProperty<*>): RGBAColor {
+        return value
+    }
+
+    operator fun setValue(thisRef: Any, property: KProperty<*>, value: RGBAColor) {
+        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        if (this.value == value) {
+            return
+        }
+        this.value = value
+        upload()
+    }
 }

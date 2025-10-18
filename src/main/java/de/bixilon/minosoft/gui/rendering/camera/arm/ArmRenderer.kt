@@ -97,7 +97,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
         shader.use()
         shader.skinParts = renderer.model?.skinParts ?: 0xFF
         shader.texture = renderer.skin?.shaderId ?: context.textures.debugTexture.shaderId
-        shader.tint = ChatColors.WHITE
+        shader.tint = ChatColors.WHITE.rgb()
 
         val pivot = Vec3f((if (arm == Arms.RIGHT) 6f else -6f) / 16f, 24 / 16f, 0f)
 

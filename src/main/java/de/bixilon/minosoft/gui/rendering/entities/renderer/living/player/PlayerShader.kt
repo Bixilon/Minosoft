@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class PlayerShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), TintedShader {
     var texture by uniform("uIndexLayer", 0x00, NativeShader::setUInt)
-    override var tint by uniform("uTintColor", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
+    override var tint by uniform("uTintColor", ChatColors.WHITE.rgb())
     var skinParts by uniform("uSkinParts", 0xFF, NativeShader::setUInt)
 }

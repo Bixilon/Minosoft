@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.shader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 
 abstract class Shader : AbstractShader {
-    private val uniforms: MutableMap<String, ShaderUniform<*>> = mutableMapOf()
+    private val uniforms: MutableMap<String, ShaderUniform> = mutableMapOf()
 
     fun unload() {
         native.unload()
@@ -42,15 +42,15 @@ abstract class Shader : AbstractShader {
         }
     }
 
-
-    override fun <T> uniform(name: String, default: T, type: ShaderSetter<T>): ShaderUniform<T> {
-        val uniform = ShaderUniform(native, default, name, type)
-        val previous = uniforms.put(name, uniform)
+    private fun <T : ShaderUniform> T.register(): T {
+        val previous = uniforms.put(name, this)
 
         if (previous != null) {
             throw IllegalStateException("Duplicated uniform: $name")
         }
 
-        return uniform
+        return this
     }
+
+    override fun <T : ShaderUniform> uniform(uniform: T) = uniform.register()
 }

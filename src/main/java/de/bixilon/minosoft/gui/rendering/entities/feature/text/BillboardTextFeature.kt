@@ -103,7 +103,7 @@ open class BillboardTextFeature(
         val shader = renderer.renderer.features.text.shader
         shader.use()
         shader.matrix = matrix.unsafe
-        shader.tint = renderer.light.value.rgba()
+        shader.tint = renderer.light.value
         super.draw(mesh)
     }
 

@@ -11,19 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.shader.types
+package de.bixilon.minosoft.gui.rendering.shader.uniform.mat
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.shader.uniform.AnyShaderUniform
+import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
+import kotlin.reflect.KProperty
 
-interface ViewProjectionShader : AbstractShader {
-    var viewProjectionMatrix: Mat4f
+class Mat4fShaderUniform(
+    native: NativeShader,
+    default: Mat4f,
+    name: String,
+) : ShaderUniform(native, name) {
+    private var value = default
 
+    override fun upload() {
+        super.upload()
+        native.setMat4f(name, value)
+    }
 
-    fun viewProjectionMatrix(): AnyShaderUniform<Mat4f> {
-        return uniform(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4f(), NativeShader::setMat4f)
+    operator fun getValue(thisRef: Any, property: KProperty<*>): Mat4f {
+        return value
+    }
+
+    operator fun setValue(thisRef: Any, property: KProperty<*>, value: Mat4f) {
+        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        // TODO: This is a hack, because mostly matrices are set unsafe (they are mutable) and the check is then always false
+        this.value = value
+        upload()
     }
 }

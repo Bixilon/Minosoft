@@ -19,26 +19,33 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.shader.uniform.AnyShaderUniform
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
+import de.bixilon.minosoft.gui.rendering.shader.uniform.color.RGBAColorShaderUniform
+import de.bixilon.minosoft.gui.rendering.shader.uniform.color.RGBColorShaderUniform
+import de.bixilon.minosoft.gui.rendering.shader.uniform.mat.Mat4fShaderUniform
+import de.bixilon.minosoft.gui.rendering.shader.uniform.primitive.FloatShaderUniform
+import de.bixilon.minosoft.gui.rendering.shader.uniform.vec.Vec3fShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 interface AbstractShader {
     val native: NativeShader
 
-    fun <T> uniform(name: String, default: T, type: ShaderSetter<T>): ShaderUniform<T>
+    fun <T : ShaderUniform> uniform(uniform: T): T
+    fun <T> uniform(name: String, default: T, type: ShaderSetter<T>) = uniform(AnyShaderUniform(native, default, name, type))
 
-    fun uniform(name: String, default: Float) = uniform(name, default, NativeShader::set)
+    fun uniform(name: String, default: Float) = uniform(FloatShaderUniform(native, default, name))
     fun uniform(name: String, default: Boolean) = uniform(name, default, NativeShader::set)
 
-    fun uniform(name: String, default: RGBColor) = uniform(name, default, NativeShader::set)
-    fun uniform(name: String, default: RGBAColor) = uniform(name, default, NativeShader::set)
+    fun uniform(name: String, default: RGBColor) = uniform(RGBColorShaderUniform(native, default, name))
+    fun uniform(name: String, default: RGBAColor) = uniform(RGBAColorShaderUniform(native, default, name))
 
     fun uniform(name: String, default: Vec2f) = uniform(name, default, NativeShader::set)
-    fun uniform(name: String, default: Vec3f) = uniform(name, default, NativeShader::set)
+    fun uniform(name: String, default: Vec3f) = uniform(Vec3fShaderUniform(native, default, name))
     fun uniform(name: String, default: Vec4f) = uniform(name, default, NativeShader::set)
 
-    fun uniform(name: String, default: Mat4f) = uniform(name, default, NativeShader::set)
+    fun uniform(name: String, default: Mat4f) = uniform(Mat4fShaderUniform(native, default, name))
 
     fun uniform(name: String, default: UniformBuffer) = uniform(name, default, NativeShader::set)
 }

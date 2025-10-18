@@ -72,7 +72,7 @@ open class SkeletalFeature(
     }
 
     override fun draw() {
-        var tint = renderer.light.value.rgba()
+        var tint = renderer.light.value
         if (renderer is LivingEntityRenderer<*>) {
             tint *= renderer.damage.value
         }

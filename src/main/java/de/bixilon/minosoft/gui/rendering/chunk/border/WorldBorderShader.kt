@@ -24,13 +24,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class WorldBorderShader(
     override val native: NativeShader,
-) : Shader(), TextureShader, ViewProjectionShader, FogShader, CameraPositionShader, TintedShader {
+) : Shader(), TextureShader, ViewProjectionShader, FogShader, CameraPositionShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
     override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()
 
-    override var tint by uniform("uTintColor", ChatColors.BLACK)
+    var tint by uniform("uTintColor", ChatColors.BLACK)
 
     var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
     var textureOffset by uniform("uTextureOffset", 0.0f)

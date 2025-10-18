@@ -15,15 +15,14 @@ package de.bixilon.minosoft.gui.rendering.shader.types
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.shader.uniform.vec.Vec3fShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 
 interface CameraPositionShader : AbstractShader {
     var cameraPosition: Vec3f
 
 
-    fun cameraPosition(): ShaderUniform<Vec3f> {
-        return uniform(ShaderUniforms.CAMERA_POSITION, Vec3f(), NativeShader::setVec3f)
+    fun cameraPosition(): Vec3fShaderUniform {
+        return uniform(ShaderUniforms.CAMERA_POSITION, Vec3f())
     }
 }
