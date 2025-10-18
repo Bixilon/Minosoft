@@ -166,7 +166,7 @@ interface RenderSystem {
         }
     }
 
-    fun reportErrors() {
+    fun assertErrors() {
         val errors = getErrors()
         if (errors.isEmpty()) return
         throw Exception(errors.first().toString())

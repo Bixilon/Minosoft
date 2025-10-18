@@ -11,8 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl
+package de.bixilon.minosoft.gui.rendering.system.opengl.error
 
-import de.bixilon.kutil.exception.FastException
-
-class MemoryLeakException(message: String? = null) : FastException(message)
+class OpenGLException(val error: OpenGLError) : Exception()

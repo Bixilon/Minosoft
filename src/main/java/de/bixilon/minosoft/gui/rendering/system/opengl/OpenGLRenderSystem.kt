@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -31,6 +32,8 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFrameb
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGLError
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGLException
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGLVendor
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
@@ -408,5 +411,21 @@ class OpenGLRenderSystem(
                     else -> throw IllegalArgumentException("OpenGL does not support integrated buffer type: $this")
                 }
             }
+
+        inline fun <T> gl(runnable: () -> T): T {
+            if (OpenGLOptions.ASSERT_THREAD && Rendering.currentContext == null) {
+                throw IllegalStateException("No open gl context!")
+            }
+            if (OpenGLOptions.CHECK_ERRORS_BEFORE_CALL) {
+                val error = glGetError()
+                if (error != GL_NO_ERROR) throw OpenGLException(OpenGLError(error))
+            }
+            val result = runnable.invoke()
+            if (OpenGLOptions.CHECK_ERRORS_AFTER_CALL) {
+                val error = glGetError()
+                if (error != GL_NO_ERROR) throw OpenGLException(OpenGLError(error))
+            }
+            return result
+        }
     }
 }

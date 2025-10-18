@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
-import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER

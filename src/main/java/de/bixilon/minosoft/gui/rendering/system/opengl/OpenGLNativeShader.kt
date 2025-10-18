@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -62,17 +63,17 @@ class OpenGLNativeShader(
             code.defines[hack.name] = ""
         }
 
-        val program = glCreateShader(type.native)
+        val program = gl { glCreateShader(type.native) }
         if (program.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
 
         val glsl = code.code
-        glShaderSource(program, glsl)
+        gl { glShaderSource(program, glsl) }
 
-        glCompileShader(program)
+        gl { glCompileShader(program) }
 
-        if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
+        if (gl { glGetShaderi(program, GL_COMPILE_STATUS) } == GL_FALSE) {
             throw ShaderLoadingException("Can not load shader: $file:\n" + glGetShaderInfoLog(program), glsl)
         }
 
@@ -84,7 +85,7 @@ class OpenGLNativeShader(
         if (geometryCode != null) {
             defines["HAS_GEOMETRY_SHADER"] = " "
         }
-        handler = glCreateProgram()
+        handler = gl { glCreateProgram() }
 
         if (handler.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
@@ -100,25 +101,25 @@ class OpenGLNativeShader(
         programs += load(fragment, ShaderType.FRAGMENT, null)
 
         for (program in programs) {
-            glAttachShader(handler, program)
+            gl { glAttachShader(handler, program) }
         }
 
-        glLinkProgram(handler)
+        gl { glLinkProgram(handler) }
 
-        glValidateProgram(handler)
+        gl { glValidateProgram(handler) }
 
-        if (glGetProgrami(handler, GL_LINK_STATUS) == GL_FALSE) {
+        if (gl { glGetProgrami(handler, GL_LINK_STATUS) } == GL_FALSE) {
             throw ShaderLinkingException("Can not link shaders: $vertex with $geometry with ${fragment}: \n ${glGetProgramInfoLog(handler)}")
         }
         for (program in programs) {
-            glDeleteShader(program)
+            gl { glDeleteShader(program) }
         }
         loaded = true
     }
 
     override fun unload() {
         check(loaded) { "Not loaded!" }
-        glDeleteProgram(this.handler)
+        gl { glDeleteProgram(this.handler) }
         loaded = false
         this.handler = -1
     }
@@ -131,7 +132,7 @@ class OpenGLNativeShader(
 
     private fun getUniformLocation(uniform: String): Int {
         val location = uniformLocations.getOrPut(uniform) {
-            val location = glGetUniformLocation(handler, uniform)
+            val location = gl { glGetUniformLocation(handler, uniform) }
             if (location < 0) {
                 val error = "No uniform named $uniform in $this, maybe you use something that has been optimized out? Check your shader code!"
                 if (!context.profile.advanced.allowUniformErrors) {
@@ -145,15 +146,15 @@ class OpenGLNativeShader(
     }
 
     override fun setFloat(uniform: String, value: Float) {
-        glUniform1f(getUniformLocation(uniform), value)
+        gl { glUniform1f(getUniformLocation(uniform), value) }
     }
 
     override fun setInt(uniform: String, value: Int) {
-        glUniform1i(getUniformLocation(uniform), value)
+        gl { glUniform1i(getUniformLocation(uniform), value) }
     }
 
     override fun setUInt(uniform: String, value: Int) {
-        glUniform1ui(getUniformLocation(uniform), value)
+        gl { glUniform1ui(getUniformLocation(uniform), value) }
     }
 
     override fun setBoolean(uniform: String, boolean: Boolean) {
@@ -161,19 +162,19 @@ class OpenGLNativeShader(
     }
 
     override fun setMat4f(uniform: String, mat4: Mat4f) {
-        glUniformMatrix4fv(getUniformLocation(uniform), false, mat4._0.array)
+        gl { glUniformMatrix4fv(getUniformLocation(uniform), false, mat4._0.array) }
     }
 
     override fun setVec2f(uniform: String, vec2: Vec2f) {
-        glUniform2f(getUniformLocation(uniform), vec2.x, vec2.y)
+        gl { glUniform2f(getUniformLocation(uniform), vec2.x, vec2.y) }
     }
 
     override fun setVec3f(uniform: String, vec3: Vec3f) {
-        glUniform3f(getUniformLocation(uniform), vec3.x, vec3.y, vec3.z)
+        gl { glUniform3f(getUniformLocation(uniform), vec3.x, vec3.y, vec3.z) }
     }
 
     override fun setVec4f(uniform: String, vec4: Vec4f) {
-        glUniform4f(getUniformLocation(uniform), vec4.x, vec4.y, vec4.z, vec4.w)
+        gl { glUniform4f(getUniformLocation(uniform), vec4.x, vec4.y, vec4.z, vec4.w) }
     }
 
     override fun setRGBColor(uniform: String, color: RGBColor) {
@@ -181,26 +182,26 @@ class OpenGLNativeShader(
     }
 
     override fun setRGBAColor(uniform: String, color: RGBAColor) {
-        glUniform4f(getUniformLocation(uniform), color.redf, color.greenf, color.bluef, color.alphaf)
+        gl { glUniform4f(getUniformLocation(uniform), color.redf, color.greenf, color.bluef, color.alphaf) }
     }
 
     override fun setTexture(uniform: String, textureId: Int) {
-        glUniform1i(getUniformLocation(uniform), textureId)
+        gl { glUniform1i(getUniformLocation(uniform), textureId) }
     }
 
     override fun setUniformBuffer(uniform: String, buffer: UniformBuffer) {
         val index = uniformLocations.getOrPut(uniform) {
-            val index = glGetUniformBlockIndex(handler, uniform)
+            val index = gl { glGetUniformBlockIndex(handler, uniform) }
             if (index < 0) {
                 throw IllegalArgumentException("No uniform buffer called $uniform")
             }
             return@getOrPut index
         }
-        glUniformBlockBinding(handler, index, buffer.bindingIndex)
+        gl { glUniformBlockBinding(handler, index, buffer.bindingIndex) }
     }
 
     fun unsafeUse() {
-        glUseProgram(handler)
+        gl { glUseProgram(handler) }
     }
 
     override val log: String

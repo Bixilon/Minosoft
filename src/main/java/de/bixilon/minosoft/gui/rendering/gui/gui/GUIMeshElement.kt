@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.BaseDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
-import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.Initializable
