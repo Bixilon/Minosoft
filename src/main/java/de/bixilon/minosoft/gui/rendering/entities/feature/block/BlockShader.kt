@@ -33,5 +33,5 @@ open class BlockShader(
     override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()
     var matrix: Mat4f by uniform("uMatrix", Mat4f())
-    override var tint by uniform("uTintColor", ChatColors.WHITE.rgb()) { shader, name, value -> shader.setUInt(name, value.rgb) }
+    override var tint by uniform("uTintColor", ChatColors.WHITE.rgb())
 }
