@@ -14,8 +14,8 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in vec2 vinMinUV;
-layout (location = 2) in vec2 vinMaxUV;
+layout (location = 1) in float vinMinUV;
+layout (location = 2) in float vinMaxUV;
 layout (location = 3) in float vinIndexLayerAnimation;
 
 layout (location = 4) in float vinScale;
@@ -23,6 +23,7 @@ layout (location = 5) in float vinTintColor;
 layout (location = 6) in float vinLight;
 
 
+#include "minosoft:vsh"
 #include "minosoft:light"
 
 
@@ -30,8 +31,8 @@ out Vertex
 {
     vec2 minUV;
     vec2 maxUV;
-    flat uint array1;flat  float layer1;
-    flat uint array2;flat  float layer2;
+    flat uint array1; flat float layer1;
+    flat uint array2; flat float layer2;
     flat float interpolation;
 
     float scale;
@@ -44,8 +45,8 @@ out Vertex
 void main() {
     gl_Position = vec4(vinPosition, 1.0f);
 
-    ginVertex.maxUV = vinMaxUV;
-    ginVertex.minUV = vinMinUV;
+    ginVertex.maxUV = uv_unpack(floatBitsToUint(vinMaxUV));
+    ginVertex.minUV = uv_unpack(floatBitsToUint(vinMinUV));
 
     ginVertex.scale = vinScale;
     ginVertex.tintColor = getRGBAColor(floatBitsToUint(vinTintColor)) * getLight(floatBitsToUint(vinLight) & 0xFFu);

@@ -39,15 +39,11 @@ class OpenGLTextureData(
     }
 
     override fun transformUVPacked(end: Float): Float {
-        if (uvEnd == null) return end
+        val uvEnd = this.uvEnd ?: return end
 
         val u = UnpackedUV.unpackU(end)
         val v = UnpackedUV.unpackV(end)
 
         return PackedUV.pack(u * uvEnd.x, v * uvEnd.y)
-    }
-
-    companion object {
-        private val VEC2_ONE = Vec2f(1.0f, 1.0f)
     }
 }

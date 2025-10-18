@@ -25,32 +25,37 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
 
     override fun clear() = Unit
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f = Vec2f.EMPTY, uvMax: Vec2f = Vec2f.ONE, light: Int) {
-        val minTransformedUV = texture.transformUV(uvMin)
-        val maxTransformedUV = texture.transformUV(uvMax)
-        val data = data
+    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
+        val minTransformedUV = if (uvMin == null) texture.transformUVPacked(ZERO) else texture.transformUVPacked(uvMin)
+        val maxTransformedUV = if (uvMax == null) texture.transformUVPacked(ONE) else texture.transformUVPacked(uvMax)
         val offset = context.camera.offset.offset
-        data.add((position.x - offset.x).toFloat())
-        data.add((position.y - offset.y).toFloat())
-        data.add((position.z - offset.z).toFloat())
-        data.add(minTransformedUV.x, minTransformedUV.y)
-        data.add(maxTransformedUV.x, maxTransformedUV.y)
-        data.add(texture.renderData.shaderTextureId.buffer())
-        data.add(scale)
-        data.add(tintColor.rgba.buffer())
-        data.add(light.buffer())
+
+        data.add(
+            (position.x - offset.x).toFloat(),
+            (position.y - offset.y).toFloat(),
+            (position.z - offset.z).toFloat(),
+
+            minTransformedUV,
+            maxTransformedUV,
+
+            texture.renderData.shaderTextureId.buffer(),
+            scale,
+            tintColor.rgba.buffer(),
+            light.buffer(),
+        )
     }
 
 
     data class ParticleMeshStruct(
         val position: Vec3f,
-        val minUVCoordinates: Vec2f,
-        val maxUVCoordinates: Vec2f,
+        val minUVCoordinates: PackedUV,
+        val maxUVCoordinates: PackedUV,
         val indexLayerAnimation: Int,
         val scale: Float,
         val tintColor: RGBColor,
@@ -60,6 +65,7 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
     }
 
     private companion object {
-        val ONE = Vec2f(1.0f)
+        private val ZERO = PackedUV.pack(0.0f, 0.0f)
+        private val ONE = PackedUV.pack(1.0f, 1.0f)
     }
 }
