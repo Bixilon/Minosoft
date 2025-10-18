@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.uniform
 
+import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.minosoft.gui.rendering.shader.ShaderSetter
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.properties.ReadWriteProperty
@@ -37,7 +38,7 @@ class ShaderUniform<T>(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
         assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
-        if (this.value == value) {
+        if (value !is Mat4f && this.value == value) { // TODO: This is a hack, because mostly matrices are set unsafe (they are mutable) and the check is then always false
             return
         }
         this.value = value
