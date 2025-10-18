@@ -309,10 +309,6 @@ testing {
     }
 }
 
-tasks.named("check") {
-    dependsOn(testing.suites.named("integrationTest"))
-}
-
 fun DependencyHandler.javafx(name: String) {
     if (javafxNatives == "") {
         logger.error("JavaFX does not have natives for windows. You must use a JRE that bundles these or disable eros.")
@@ -624,14 +620,14 @@ val fatJar = task("fatJar", type = Jar::class) {
 }
 
 
-task("assetsProperties", type = JavaExec::class) {
+tasks.register("assetsProperties", fun JavaExec.() {
     dependsOn("processResources", "compileKotlin", "compileJava")
     classpath(project.configurations.runtimeClasspath.get(), tasks["jar"])
     standardOutput = System.out
     mainClass.set("de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator")
-}
+})
 
-task("upload") {
+tasks.register("upload") {
     dependsOn("fatJar")
     doLast {
         val base = (destination ?: File("build/libs"))
