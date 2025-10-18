@@ -47,6 +47,7 @@ class ParticleRendererTest {
         context::light.forceSet(RenderLight(context))
         context::camera.forceSet(Camera(context))
         val renderer = ParticleRenderer(context.session, context)
+        context::thread.forceSet(Thread.currentThread())
 
 
         return renderer
