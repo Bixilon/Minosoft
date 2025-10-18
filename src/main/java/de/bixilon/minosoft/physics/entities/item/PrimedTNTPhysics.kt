@@ -27,7 +27,7 @@ class PrimedTNTPhysics(entity: PrimedTNT) : EntityPhysics<PrimedTNT>(entity) {
             this.velocity.y -= GRAVITY
         }
 
-        this.move()
+        this.move(this.velocity.unsafe)
 
         this.velocity *= PhysicsConstants.AIR_RESISTANCE
 
