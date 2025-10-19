@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
@@ -54,10 +54,10 @@ abstract class Block(
             states.size == 1 -> SimpleStateManager(default)
             else -> PropertyStateManager(properties, states, default)
         }
-        STATES.set(this, manager)
+        STATES[this] = manager
     }
 
     private companion object {
-        val STATES = Block::states.jvmField
+        val STATES = Block::states.field
     }
 }

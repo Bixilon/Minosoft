@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.observer.DataObserver
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
@@ -49,7 +49,7 @@ object LightTestingUtil {
     fun createSession(): PlaySession {
         val session = ObjenesisStd().newInstance(PlaySession::class.java)
 
-        Session::events.jvmField.forceSet(session, EventMaster())
+        Session::events.field[session] = EventMaster()
         return session
     }
 

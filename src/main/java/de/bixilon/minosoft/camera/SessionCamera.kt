@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.camera.target.TargetHandler
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.input.interaction.InteractionManager
@@ -38,6 +38,6 @@ class SessionCamera(
 
 
     companion object {
-        private val INTERACTIONS = SessionCamera::interactions.jvmField
+        private val INTERACTIONS = SessionCamera::interactions.field
     }
 }

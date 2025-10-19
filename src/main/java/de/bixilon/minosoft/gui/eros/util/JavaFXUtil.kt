@@ -17,9 +17,8 @@ import afester.javafx.svg.SvgLoader
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.IntegratedAssets
@@ -139,7 +138,7 @@ object JavaFXUtil {
 
         val controller = fxmlLoader.getController<T>()
 
-        controller::root.jvmField.forceSet(controller, pane)
+        controller::root.field[controller] = pane
         controller.postInit()
 
         return controller

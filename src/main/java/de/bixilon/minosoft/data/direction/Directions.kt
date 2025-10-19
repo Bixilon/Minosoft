@@ -21,8 +21,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 
@@ -106,9 +105,9 @@ enum class Directions(
         }
 
         init {
-            val inverted = Directions::inverted.jvmField
+            val inverted = Directions::inverted.field
             for (direction in VALUES) {
-                inverted.forceSet(direction, direction.invert())
+                inverted[direction] = direction.invert()
             }
             NAME_MAP.unsafeCast<MutableMap<String, Directions>>()["bottom"] = DOWN
         }
