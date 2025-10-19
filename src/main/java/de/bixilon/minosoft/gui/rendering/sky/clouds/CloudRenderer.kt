@@ -39,8 +39,7 @@ class CloudRenderer(
 ) : WorldRenderer, AsyncRenderer {
     private val color = CloudColor(sky)
     override val layers = LayerSettings()
-    override val renderSystem: RenderSystem = context.system
-    val shader = renderSystem.createShader(minosoft("sky/clouds")) { CloudShader(it) }
+    val shader = context.system.createShader(minosoft("sky/clouds")) { CloudShader(it) }
     val matrix = CloudMatrix()
     private val cloudLayers: MutableList<CloudLayer> = mutableListOf()
     private var position = Vec2i(Int.MIN_VALUE)

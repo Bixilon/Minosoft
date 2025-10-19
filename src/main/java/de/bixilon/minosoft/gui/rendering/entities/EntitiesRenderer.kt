@@ -35,7 +35,6 @@ class EntitiesRenderer(
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer {
     override val layers = LayerSettings()
-    override val renderSystem: RenderSystem = context.system
     val profile = session.profiles.entity
     val features = EntityRenderFeatures(this)
     val renderers = EntityRendererManager(this)

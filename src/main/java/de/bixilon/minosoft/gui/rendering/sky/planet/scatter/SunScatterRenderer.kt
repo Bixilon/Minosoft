@@ -34,7 +34,7 @@ class SunScatterRenderer(
     private val sky: SkyRenderer,
     private val sun: SunRenderer,
 ) : SkyChildRenderer {
-    private val shader = sky.renderSystem.createShader(minosoft("sky/scatter/sun")) { SunScatterShader(it) }
+    private val shader = sky.context.system.createShader(minosoft("sky/scatter/sun")) { SunScatterShader(it) }
     private val mesh = SunScatterMesh(sky.context)
     private var timeUpdate = true
     private var skyMatrix = Mat4f()
@@ -96,14 +96,16 @@ class SunScatterRenderer(
             this.skyMatrix = skyMatrix
         }
 
-        sky.renderSystem.enable(RenderingCapabilities.BLENDING)
-        sky.renderSystem.setBlendFunction(
+        val system = sky.context.system
+
+        system.enable(RenderingCapabilities.BLENDING)
+        system.setBlendFunction(
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
             destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
             sourceAlpha = BlendingFunctions.SOURCE_ALPHA,
             destinationAlpha = BlendingFunctions.DESTINATION_ALPHA,
         )
         mesh.draw()
-        sky.renderSystem.resetBlending()
+        system.resetBlending()
     }
 }

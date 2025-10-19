@@ -79,20 +79,17 @@ class RendererManager(
         }
         pipeline.world.rebuild()
 
-        runAsync(latch, Renderer::preAsyncInit)
+        runAsync(latch, Renderer::asyncInit)
 
         for (renderer in list) {
             renderer.init(latch)
         }
-        runAsync(latch, Renderer::asyncInit)
     }
 
     fun postInit(latch: AbstractLatch) {
         for (renderer in list) {
             renderer.postInit(latch)
         }
-
-        runAsync(latch, Renderer::postAsyncInit)
     }
 
     private fun prepare() {

@@ -40,7 +40,6 @@ class GUIRenderer(
     override val context: RenderContext,
 ) : AsyncRenderer, InputHandler, Drawable {
     private val profile = session.profiles.gui
-    override val renderSystem = context.system
     var scaledSize: Vec2f by observed(Vec2f(context.window.size))
     val gui = GUIManager(this)
     val hud = HUDManager(this)
@@ -89,7 +88,7 @@ class GUIRenderer(
     }
 
     fun setup() {
-        renderSystem.reset(
+        context.system.reset(
             blending = true,
             depthTest = false,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,

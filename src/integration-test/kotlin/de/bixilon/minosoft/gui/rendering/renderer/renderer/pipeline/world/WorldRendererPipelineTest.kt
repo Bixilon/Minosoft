@@ -220,7 +220,6 @@ class WorldRendererPipelineTest {
     private fun renderer() = object : WorldRenderer {
         override val context get() = Broken()
         override val framebuffer get() = null
-        override val renderSystem get() = Broken()
 
         override val layers = LayerSettings()
         override fun registerLayers() = Unit

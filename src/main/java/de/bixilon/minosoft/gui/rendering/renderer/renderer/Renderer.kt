@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,15 +20,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 
 interface Renderer {
     val context: RenderContext
-    val renderSystem: RenderSystem
     val framebuffer: IntegratedFramebuffer?
 
-    fun preAsyncInit(latch: AbstractLatch) = Unit
-    fun init(latch: AbstractLatch) = Unit
     fun asyncInit(latch: AbstractLatch) = Unit
+    fun init(latch: AbstractLatch) = Unit
     fun postInit(latch: AbstractLatch) = Unit
-    fun postAsyncInit(latch: AbstractLatch) = Unit
 
     fun prePrepareDraw() = Unit
     fun postPrepareDraw() = Unit
+
+    // TODO: fun unload() = Unit
 }

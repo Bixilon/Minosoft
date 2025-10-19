@@ -48,7 +48,6 @@ class BlockOutlineRenderer(
 ) : WorldRenderer, AsyncRenderer, MeshSwapper {
     override val layers = LayerSettings()
     private val profile = session.profiles.block.outline
-    override val renderSystem: RenderSystem = context.system
 
     private var position: BlockPosition? = null
     private var state: BlockState? = null

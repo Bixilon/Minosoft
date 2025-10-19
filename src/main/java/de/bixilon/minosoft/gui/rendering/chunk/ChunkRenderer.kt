@@ -57,10 +57,9 @@ class ChunkRenderer(
 ) : WorldRenderer, AsyncRenderer {
     override val layers = LayerSettings()
     private val profile = session.profiles.block
-    override val renderSystem: RenderSystem = context.system
     val visibility = context.camera.visibility
-    private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
-    private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
+    private val shader = context.system.createShader(minosoft("chunk")) { ChunkShader(it) }
+    private val textShader = context.system.createShader(minosoft("chunk")) { ChunkShader(it) }
     val lock = RWLock.rwlock()
     val world: World = session.world
 

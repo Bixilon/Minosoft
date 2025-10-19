@@ -46,7 +46,6 @@ class ChunkBorderRenderer(
 ) : WorldRenderer, AsyncRenderer, MeshSwapper {
     override val layers = LayerSettings()
     private val profile = session.profiles.rendering
-    override val renderSystem: RenderSystem = context.system
     private var offset = BlockPosition()
     private var chunkPosition: ChunkPosition? = null
     private var sectionHeight: Int = Int.MIN_VALUE

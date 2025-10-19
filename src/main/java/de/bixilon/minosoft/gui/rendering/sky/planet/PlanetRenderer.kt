@@ -119,10 +119,11 @@ abstract class PlanetRenderer(
             prepareMesh()
         }
 
-        sky.renderSystem.enable(RenderingCapabilities.BLENDING)
-        sky.renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+        val system = sky.context.system
+        system.enable(RenderingCapabilities.BLENDING)
+        system.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
 
         mesh.draw()
-        sky.renderSystem.resetBlending()
+        system.resetBlending()
     }
 }

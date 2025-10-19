@@ -38,7 +38,6 @@ class SkyRenderer(
     val session: PlaySession,
     override val context: RenderContext,
 ) : Renderer, PreDrawable, AsyncRenderer {
-    override val renderSystem: RenderSystem = context.system
     override val framebuffer: IntegratedFramebuffer? = null
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
     var effects by observed(session.world.dimension.effects)

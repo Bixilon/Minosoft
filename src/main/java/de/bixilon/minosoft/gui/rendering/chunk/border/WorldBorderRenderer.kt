@@ -42,8 +42,7 @@ class WorldBorderRenderer(
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer, SkipAll {
     override val layers = LayerSettings()
-    override val renderSystem: RenderSystem = context.system
-    private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
+    private val shader = context.system.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private var borderMesh: WorldBorderMesh? = null
     private val border = context.session.world.border
     private lateinit var texture: Texture
