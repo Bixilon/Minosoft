@@ -61,22 +61,24 @@ class FastMoveContainerAction(
     private fun merge(source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
         val maxStack = if (source.item is StackableItem) source.item.maxStackSize else 1
 
+        var left = source.count
         for ((section, list) in targets) {
             val putting = if (section.fillReversed) list.reversed().iterator() else list.intIterator()
             for (slot in putting) {
                 val content = transaction[slot] ?: continue // filling will be done one step afterwards
-                val count = if (source.count + content.count > maxStack) maxStack - content.count else source.count
+                val count = if (left + content.count > maxStack) maxStack - content.count else left
                 if (count == 0) continue
 
-                source.count -= count
+                left -= count
                 transaction[slot] = content.with(count = content.count + count)
-                if (source.count <= 0) {
+                if (left <= 0) {
                     transaction -= this.slot
                     return
                 }
-                transaction[this.slot] = source
             }
         }
+
+        transaction[this.slot] = source.with(count = left)
     }
 
     private fun move(source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {

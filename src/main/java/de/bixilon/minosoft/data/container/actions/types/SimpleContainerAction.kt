@@ -65,10 +65,8 @@ class SimpleContainerAction(
             nextContainer = floating
             nextFloating = target
         } else {
-            floating.count--
-
             nextContainer = floating.copy(count = 1)
-            nextFloating = floating
+            nextFloating = floating.with(count = floating.count - 1)
         }
 
         transaction[slot] = nextContainer
@@ -86,23 +84,28 @@ class SimpleContainerAction(
         val target = transaction[slot] ?: return
         val slotType = container.getSlotType(slot)
 
+        var next: ItemStack? = target
+        var nextFloating: ItemStack? = floating
+
         if (slotType?.canPut(container, slot, floating) == true) {
             // merge
             val item = target.item
             val maxStackSize = if (item is StackableItem) item.maxStackSize else 1
             val subtract = if (count == SlotCounts.ALL) minOf(maxStackSize - target.count, floating.count) else 1
             if (subtract == 0 || target.count + subtract > maxStackSize) return
-            target = target.with(count = target.count + subtract)!!
-            floating = floating.with(count = floating.count - subtract)
+            next = target.with(count = target.count + subtract)
+            nextFloating = floating.with(count = floating.count - subtract)
         } else if (slotType?.canRemove(container, slot, floating) == true) {
             // remove only (e.g. crafting result)
             // ToDo: respect count (part or all)
             val subtract = minOf((if (floating.item is StackableItem) floating.item.maxStackSize else 1) - floating.count, target.count)
             if (subtract == 0) return
 
-            target = target.with(count = target.count - subtract)!!
-            floating = floating.with(count = floating.count + subtract)
+            next = target.with(count = target.count - subtract)
+            nextFloating = floating.with(count = floating.count + subtract)
         }
+        transaction[slot] = next
+        transaction.floating = nextFloating
 
         val (id, changes) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
