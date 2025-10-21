@@ -12,8 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.IncompleteContainer
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -22,7 +21,6 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.*
 
 class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
@@ -43,14 +41,14 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(session: PlaySession) {
         val container = session.player.items.containers[containerId] ?: return
 
-        for ((slotId, stack) in this@ContainerItemsS2CP.items.withIndex()) {
-            if (stack == null) {
-                continue
+        container.lock.locked {
+            for ((slotId, stack) in this@ContainerItemsS2CP.items.withIndex()) {
+                if (stack == null) continue
+                items[slotId] = stack
             }
-            items[slotId] = stack
+            container.serverRevision = revision
+            floatingItem?.let { container.floating = it }
         }
-        container.serverRevision = revision
-        floatingItem?.let { container.floating = it }
     }
 
     override fun log(reducedLog: Boolean) {

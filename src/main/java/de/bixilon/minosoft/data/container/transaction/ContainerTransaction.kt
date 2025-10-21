@@ -13,22 +13,55 @@
 
 package de.bixilon.minosoft.data.container.transaction
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ContainerTransaction(
     val container: Container,
 ) {
-    var floating: ItemStack? = null
+    private val flags = ContainerTransactionFlags.set()
+    private val previous = PreviousState()
+    private val changes = Int2ObjectOpenHashMap<ItemStack?>()
     var state: TransactionState = TransactionState.PENDING
         private set
 
+    var floating: ItemStack? = null
+        get() {
+            if (ContainerTransactionFlags.FLOATING_ITEM_CHANGED in flags) {
+                return field
+            }
+            return container.floating
+        }
+        set(value) {
+            assert(state == TransactionState.PENDING)
+            flags += ContainerTransactionFlags.FLOATING_ITEM_CHANGED
+            field = value
+        }
+
     fun commit(): CommittedAction {
         assert(state == TransactionState.PENDING)
-        // TODO
         val id = container.transactions.create(this)
+
+        container.lock.locked {
+            for ((slotId, next) in this.changes) {
+                val previous = container.items[slotId]
+                if (previous == next) continue
+                this.previous.items[slotId] = previous
+
+                container.items[slotId] = next
+            }
+            if (ContainerTransactionFlags.FLOATING_ITEM_CHANGED in flags) {
+                previous.floating = container.floating
+                container.floating = floating
+            }
+        }
+
         state = TransactionState.COMMITTED
+
+        return CommittedAction(id, this.changes)
     }
 
     fun drop() {
@@ -38,19 +71,36 @@ class ContainerTransaction(
 
     fun revert() {
         assert(state == TransactionState.COMMITTED)
+
+        container.lock.locked {
+            for ((slotId, previous) in this.previous.items) {
+                container.items[slotId] = previous
+            }
+            if (ContainerTransactionFlags.FLOATING_ITEM_CHANGED in flags) {
+                container.floating = previous.floating
+            }
+        }
+
         state = TransactionState.REVERTED
-        // TODO
     }
 
 
-    operator fun get(slotId: Int): ItemStack?
-    fun remove(slotId: Int): ItemStack?
-    operator fun minusAssign(slotId: Int) {
-        remove(slotId)
+    operator fun get(slotId: Int): ItemStack? {
+        assert(state == TransactionState.PENDING)
+        return this.changes.getOrDefault(slotId, container.items[slotId])
     }
 
-    operator fun set(slotId, stack: ItemStack?)
-    fun clear()
+    fun remove(slotId: Int) {
+        assert(state == TransactionState.PENDING)
+        this.changes[slotId] = null
+    }
+
+    operator fun minusAssign(slotId: Int) = remove(slotId)
+
+    operator fun set(slotId: Int, stack: ItemStack?) {
+        assert(state == TransactionState.PENDING)
+        this.changes[slotId] = stack
+    }
 
 
     data class CommittedAction(val id: Int, val changes: Int2ObjectMap<ItemStack?>)

@@ -18,6 +18,7 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.properties.*
 import de.bixilon.minosoft.data.language.translate.Translator
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -84,9 +85,18 @@ data class ItemStack(
     @Deprecated("final", level = DeprecationLevel.ERROR)
     fun copy(): Unit = Broken()
 
+    @Deprecated("final", level = DeprecationLevel.ERROR)
+    fun with(): Unit = Broken()
+
     fun with(count: Int = this.count, durability: Int? = this.durability?.durability): ItemStack? {
         if (count <= 0) return null
+
+        // TODO: durability
         return copy(count = count) // TODO: durability
+    }
+
+    fun with(enchantment: Enchantment, level: Int): ItemStack {
+        return copy(enchanting = enchanting.with(enchantment, level))
     }
 
     override fun toString(): String {

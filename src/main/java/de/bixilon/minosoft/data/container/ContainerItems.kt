@@ -35,6 +35,7 @@ class ContainerItems(
         slots[slotId] = stack
     }
 
+    @JvmName("setNull")
     operator fun set(slotId: Int, stack: ItemStack?) = lock.locked {
         if (stack == null) {
             slots -= slotId

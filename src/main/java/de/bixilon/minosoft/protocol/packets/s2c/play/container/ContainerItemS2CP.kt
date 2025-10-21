@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.minosoft.data.container.IncompleteContainer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -30,16 +31,14 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(session: PlaySession) {
         val container = session.player.items.containers[containerId] ?: return
 
-        if (slot < 0) {
-            container.floating = stack
-        } else {
-            if (stack == null) {
-                container.items -= slot
+        container.lock.locked {
+            if (slot < 0) {
+                container.floating = stack
             } else {
                 container.items[slot] = stack
             }
+            container.serverRevision = revision
         }
-        container.serverRevision = revision
     }
 
     override fun log(reducedLog: Boolean) {

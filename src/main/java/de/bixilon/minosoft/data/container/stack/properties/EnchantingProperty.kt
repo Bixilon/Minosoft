@@ -28,11 +28,22 @@ data class EnchantingProperty(
 ) : Property {
 
     init {
-        assert(repairCost > 0) { "Repair cost can not be negative" }
+        assert(repairCost >= 0) { "Repair cost can not be negative" } // TODO: Too expensive?
     }
 
     override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
         // TODO
+    }
+
+
+    fun with(enchantment: Enchantment, level: Int): EnchantingProperty {
+        val current = this.enchantments[enchantment]
+        if (current == null && level <= 0) return this
+        if (level <= 0) {
+            return copy(enchantments = enchantments.toMutableMap().apply { this -= enchantment })
+        }
+
+        return copy(enchantments = enchantments.toMutableMap().apply { this[enchantment] = level })
     }
 
     companion object {
