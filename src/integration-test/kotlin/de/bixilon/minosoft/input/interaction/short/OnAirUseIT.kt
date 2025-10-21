@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.input.interaction.short
 
+import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands

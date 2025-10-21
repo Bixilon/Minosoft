@@ -26,11 +26,11 @@ class EnchantingPropertyTest {
     fun `display properties`() {
         val nbt: MutableJsonObject = mutableMapOf("Enchantments" to listOf(
             mapOf("id" to "minecraft:sharpness", "lvl" to 3.toShort()),
-            mapOf("id" to "minecraft:durability", "lvl" to 4.toShort()),
+            mapOf("id" to "minecraft:unbreaking", "lvl" to 4.toShort()),
         ))
 
         val property = EnchantingProperty.of(IT.REGISTRIES.enchantment, nbt)
-        val expected = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Durability to 4))
+        val expected = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
 
 
 

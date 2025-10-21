@@ -99,8 +99,5 @@ data class ItemStack(
         return copy(enchanting = enchanting.with(enchantment, level))
     }
 
-    override fun toString(): String {
-        // this should not get synchronized, otherwise your debugger won't work that good:)
-        return "Item{type=${item}, count=${count}}"
-    }
+    override fun toString() = "Item(type=${item}, count=${count})"
 }

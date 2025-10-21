@@ -18,6 +18,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
@@ -37,8 +38,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityEmpty
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractPositionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import org.testng.annotations.Test
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item", "block"])

@@ -84,15 +84,13 @@ class BreakHandlerTest {
         if (tool != null) {
             val item = session.registries.item[tool] ?: Broken()
             val stack = ItemStack(item)
-            if (efficiency > 0) {
-                stack.enchanting.enchantments[MiningEnchantment.Efficiency] = efficiency
-            }
+                .with(MiningEnchantment.Efficiency, efficiency)
             player.items.inventory[EquipmentSlots.MAIN_HAND] = stack
         }
         if (haste > 0) player.effects += StatusEffectInstance(MiningEffect.Haste, haste, 100000.ticks)
         if (miningFatigue > 0) player.effects += StatusEffectInstance(MiningEffect.MiningFatigue, miningFatigue, 100000.ticks)
         if (aquaAffinity > 0) {
-            player.items.inventory[EquipmentSlots.HEAD] = ItemStack(session.registries.item["minecraft:iron_helmet"]!!, 1).apply { enchanting.enchantments[ArmorEnchantment.AquaAffinity] = 1 }
+            player.items.inventory[EquipmentSlots.HEAD] = ItemStack(session.registries.item["minecraft:iron_helmet"]!!, 1).with(ArmorEnchantment.AquaAffinity, 1)
         }
 
 

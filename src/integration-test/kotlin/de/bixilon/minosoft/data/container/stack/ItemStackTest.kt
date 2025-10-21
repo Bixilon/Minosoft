@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container.stack
 
+import de.bixilon.minosoft.data.container.DurableTestItem1
 import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.container.TestItem2
 import de.bixilon.minosoft.data.container.TestItem3
@@ -48,8 +49,8 @@ class ItemStackTest {
     }
 
     fun `matches different durability`() {
-        val a = ItemStack(TestItem3, count = 7, durability = DurabilityProperty(durability = 1, unbreakable = true))
-        val b = ItemStack(TestItem3, count = 19)
+        val a = ItemStack(DurableTestItem1, count = 7, durability = DurabilityProperty(durability = 1, unbreakable = true))
+        val b = ItemStack(DurableTestItem1, count = 19)
         assertFalse(a.matches(b))
     }
 
