@@ -33,5 +33,5 @@ object IntegratedEnchantments : SingletonIntegratedRegistry<Enchantment>(
     WeaponEnchantment.Sharpness,
     WeaponEnchantment.Infinity,
 
-    ToolEnchantment.Durability,
+    ToolEnchantment.Unbreaking,
 )

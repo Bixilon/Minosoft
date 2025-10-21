@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 
 interface ToolEnchantment : SlotSpecificEnchantment {
 
-    object Durability : Enchantment(), ToolEnchantment, Identified {
-        override val identifier = minecraft("durability")
+    object Unbreaking : Enchantment(), ToolEnchantment, Identified {
+        override val identifier = minecraft("unbreaking")
     }
 
     override fun canApply(entity: Entity, slot: EquipmentSlots, item: ItemStack): Boolean {
