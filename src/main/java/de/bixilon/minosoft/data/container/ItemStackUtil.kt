@@ -53,10 +53,10 @@ object ItemStackUtil {
     fun of(item: Item, count: Int, session: PlaySession, nbt: MutableJsonObject? = null, durability: DurabilityProperty? = null): ItemStack? {
         if (count == 0) return null
 
-        if (nbt == null) return ItemStack(item, count, durability = durability)
+        if (nbt == null || nbt.isEmpty()) return ItemStack(item, count, durability = durability)
 
         val display = DisplayProperty.of(session.language, nbt)
-        val durability = DurabilityProperty.of(item, nbt)
+        val durability = durability ?: DurabilityProperty.of(item, nbt)
         val enchanting = EnchantingProperty.of(session.registries.enchantment, nbt)
         val hide = HideProperty.of(nbt)
 

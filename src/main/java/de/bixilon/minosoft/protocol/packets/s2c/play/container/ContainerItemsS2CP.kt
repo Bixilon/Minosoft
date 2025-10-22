@@ -29,13 +29,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         -1
     }
-    val items: Array<ItemStack?> = buffer.readArray(
-        if (buffer.versionId >= V_1_17_1_PRE1) {
-            buffer.readVarInt()
-        } else {
-            buffer.readUnsignedShort()
-        }
-    ) { buffer.readItemStack() }
+    val items: Array<ItemStack?> = buffer.readArray(if (buffer.versionId >= V_1_17_1_PRE1) buffer.readVarInt() else buffer.readUnsignedShort()) { buffer.readItemStack() }
     val floatingItem = if (buffer.versionId >= V_1_17_1_PRE1) buffer.readItemStack() else null
 
     override fun handle(session: PlaySession) {

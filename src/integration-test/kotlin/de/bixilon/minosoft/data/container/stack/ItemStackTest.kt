@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.container.TestItem2
 import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.stack.properties.DurabilityProperty
+import de.bixilon.minosoft.data.container.stack.properties.EnchantingProperty
+import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -76,5 +78,27 @@ class ItemStackTest {
 
     fun `forbid durability with not durable item`() {
         assertThrows { ItemStack(TestItem1, 1, durability = DurabilityProperty(1)) }
+    }
+
+    fun `in place enchant`() {
+        val item = ItemStack(TestItem1)
+            .with(MovementEnchantment.DepthStrider, 4)
+            .with(MovementEnchantment.SoulSpeed, 2)
+
+        assertEquals(item, ItemStack(TestItem1, enchanting = EnchantingProperty(enchantments = mutableMapOf(MovementEnchantment.DepthStrider to 4, MovementEnchantment.SwiftSneak to 2))))
+    }
+
+    fun `with less count`() {
+        val item = ItemStack(TestItem1)
+            .with(count = 5)
+
+        assertEquals(item, ItemStack(TestItem1, count = 5))
+    }
+
+    fun `with durability`() {
+        val item = ItemStack(DurableTestItem1)
+            .with(durability = 100)
+
+        assertEquals(item, ItemStack(DurableTestItem1, durability = DurabilityProperty(durability = 100)))
     }
 }

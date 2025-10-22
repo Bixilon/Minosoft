@@ -91,8 +91,13 @@ data class ItemStack(
     fun with(count: Int = this.count, durability: Int? = this.durability?.durability): ItemStack? {
         if (count <= 0) return null
 
-        // TODO: durability
-        return copy(count = count) // TODO: durability
+        var durabilityProperty = this.durability
+
+        if (durability != null) {
+            durabilityProperty = durabilityProperty?.copy(durability = durability) ?: DurabilityProperty(durability = durability)
+        }
+
+        return copy(count = count, durability = durabilityProperty)
     }
 
     fun with(enchantment: Enchantment, level: Int): ItemStack {
