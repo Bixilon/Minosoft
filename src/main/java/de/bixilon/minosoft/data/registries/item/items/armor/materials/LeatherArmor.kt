@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,6 +32,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class LeatherBoots(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), BootsItem {
         override val defense: Int get() = 1
+        override val maxDurability get() = 65
 
         companion object : ItemFactory<LeatherBoots> {
             override val identifier = minecraft("leather_boots")
@@ -42,6 +43,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class LeatherLeggings(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), LeggingsItem {
         override val defense: Int get() = 2
+        override val maxDurability get() = 75
 
         companion object : ItemFactory<LeatherLeggings> {
             override val identifier = minecraft("leather_leggings")
@@ -52,6 +54,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class LeatherChestplate(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), ChestplateItem {
         override val defense: Int get() = 3
+        override val maxDurability get() = 80
 
         companion object : ItemFactory<LeatherChestplate> {
             override val identifier = minecraft("leather_chestplate")
@@ -62,6 +65,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class LeatherHelmet(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 1
+        override val maxDurability get() = 55
 
         companion object : ItemFactory<LeatherHelmet> {
             override val identifier = minecraft("leather_helmet")

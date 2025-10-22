@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,11 +18,13 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.handler.item.LongItemUseHandler
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.weapon.WeaponItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class ShieldItem(identifier: ResourceLocation = this.identifier) : Item(identifier), DefendingItem, WeaponItem, LongItemUseHandler {
+open class ShieldItem(identifier: ResourceLocation = this.identifier) : Item(identifier), DefendingItem, WeaponItem, LongItemUseHandler, DurableItem {
+    override val maxDurability get() = 336
 
     companion object : ItemFactory<ShieldItem> {
         override val identifier = minecraft("shield")

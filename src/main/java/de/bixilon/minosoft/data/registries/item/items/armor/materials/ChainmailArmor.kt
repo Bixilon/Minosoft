@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,6 +31,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
 
     open class ChainmailBoots(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), BootsItem {
         override val defense: Int get() = 1
+        override val maxDurability get() = 195
 
         companion object : ItemFactory<ChainmailBoots> {
             override val identifier = minecraft("chainmail_boots")
@@ -41,6 +42,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
 
     open class ChainmailLeggings(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), LeggingsItem {
         override val defense: Int get() = 4
+        override val maxDurability get() = 225
 
         companion object : ItemFactory<ChainmailLeggings> {
             override val identifier = minecraft("chainmail_leggings")
@@ -51,6 +53,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
 
     open class ChainmailChestplate(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), ChestplateItem {
         override val defense: Int get() = 5
+        override val maxDurability get() = 240
 
         companion object : ItemFactory<ChainmailChestplate> {
             override val identifier = minecraft("chainmail_chestplate")
@@ -61,6 +64,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
 
     open class ChainmailHelmet(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 2
+        override val maxDurability get() = 165
 
         companion object : ItemFactory<ChainmailHelmet> {
             override val identifier = minecraft("chainmail_helmet")
