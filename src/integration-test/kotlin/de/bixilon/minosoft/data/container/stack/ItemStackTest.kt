@@ -85,7 +85,13 @@ class ItemStackTest {
             .with(MovementEnchantment.DepthStrider, 4)
             .with(MovementEnchantment.SoulSpeed, 2)
 
-        assertEquals(item, ItemStack(TestItem1, enchanting = EnchantingProperty(enchantments = mutableMapOf(MovementEnchantment.DepthStrider to 4, MovementEnchantment.SwiftSneak to 2))))
+        val expected = ItemStack(TestItem1, enchanting = EnchantingProperty(
+            enchantments = mutableMapOf(
+                MovementEnchantment.DepthStrider to 4,
+                MovementEnchantment.SoulSpeed to 2
+            )))
+
+        assertEquals(item, expected)
     }
 
     fun `with less count`() {

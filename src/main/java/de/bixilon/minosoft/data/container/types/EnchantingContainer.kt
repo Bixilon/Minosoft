@@ -91,9 +91,7 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
 
 
     fun selectEnchantment(index: Int) {
-        if (index < 0 || index > 2) {
-            throw IllegalArgumentException("Index out of bounds: $index")
-        }
+        assert(index > 0 && index < ENCHANTING_OPTIONS)
         if (!canEnchant(index)) {
             throw IllegalStateException("Can not enchant $index!")
         }
