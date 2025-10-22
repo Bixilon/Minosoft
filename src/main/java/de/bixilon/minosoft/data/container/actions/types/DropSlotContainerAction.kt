@@ -32,14 +32,14 @@ class DropSlotContainerAction(
         if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
             return
         }
-        val next = if (stack) null else item.copy(count = item.count - DECREASE_AMOUNT)
+        val next = if (stack) null else item.with(count = item.count - DECREASE_AMOUNT)
 
         transaction[slot] = next
 
         val (id, changes) = transaction.commit()
 
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-            session.connection += ItemStackCreateC2SP(-1, if (stack) item else item.copy(count = DECREASE_AMOUNT))
+            session.connection += ItemStackCreateC2SP(-1, if (stack) item else item.with(count = DECREASE_AMOUNT))
             session.connection += ItemStackCreateC2SP(slot, item)
         } else {
             session.connection += ContainerClickC2SP(container.id, container.serverRevision, slot, 4, if (stack) 1 else 0, id, changes, null)

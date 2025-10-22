@@ -17,11 +17,13 @@ import de.bixilon.minosoft.data.container.ContainerTestUtil.createChest
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createFurnace
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createInventory
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.StackableTest1
+import de.bixilon.minosoft.data.container.StackableTest2
 import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.container.TestItem2
-import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.actions.types.FastMoveContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.items.CoalTest0
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -89,28 +91,28 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createChest(session)
 
-        container.items[54] = ItemStack(TestItem3, 60)
-        container.items[55] = ItemStack(TestItem2, 61)
-        container.items[56] = ItemStack(TestItem3, 60)
-        container.items[57] = ItemStack(TestItem3, 56)
-        container.items[58] = ItemStack(TestItem3, 21)
+        container.items[54] = ItemStack(StackableTest2, 60)
+        container.items[55] = ItemStack(StackableTest1, 61)
+        container.items[56] = ItemStack(StackableTest2, 60)
+        container.items[57] = ItemStack(StackableTest2, 56)
+        container.items[58] = ItemStack(StackableTest2, 21)
 
-        container.items[0] = ItemStack(TestItem3, 63)
+        container.items[0] = ItemStack(StackableTest2, 63)
 
         container.execute(FastMoveContainerAction(0))
         assertNull(container.floating)
         assertEquals(
             container.items.slots, slotsOf(
-                54 to ItemStack(TestItem3, 64),
-                55 to ItemStack(TestItem2, 61),
-                56 to ItemStack(TestItem3, 64),
-                57 to ItemStack(TestItem3, 64),
-                58 to ItemStack(TestItem3, 64),
-                62 to ItemStack(TestItem3, 4),
+                54 to ItemStack(StackableTest2, 64),
+                55 to ItemStack(StackableTest1, 61),
+                56 to ItemStack(StackableTest2, 64),
+                57 to ItemStack(StackableTest2, 64),
+                58 to ItemStack(StackableTest2, 64),
+                62 to ItemStack(StackableTest2, 4),
             )
         )
 
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 58 to ItemStack(TestItem3, count = 64), 56 to ItemStack(TestItem3, count = 64), 54 to ItemStack(TestItem3, count = 64), 57 to ItemStack(TestItem3, count = 64), 62 to ItemStack(TestItem3, count = 4)), null))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 58 to ItemStack(StackableTest2, count = 64), 56 to ItemStack(StackableTest2, count = 64), 54 to ItemStack(StackableTest2, count = 64), 57 to ItemStack(StackableTest2, count = 64), 62 to ItemStack(StackableTest2, count = 4)), null))
     }
 
     @Test(enabled = false)
@@ -123,7 +125,7 @@ class FastMoveContainerActionTest {
 
         container.execute(FastMoveContainerAction(30))
         assertNull(container.floating)
-        assertEquals(container.items.slots, slotsOf(3 to ItemStack(TestItem1, 12)))
+        assertEquals(container.items.slots, slotsOf(3 to ItemStack(CoalTest0.item, 12)))
 
         session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 3 to ItemStack(TestItem2, count = 8)), null))
     }
@@ -132,13 +134,13 @@ class FastMoveContainerActionTest {
         val session = createSession()
         val container = createFurnace(session)
 
-        container.items[30] = ItemStack(TestItem3, 12)
+        container.items[30] = ItemStack(CoalTest0.item, 12)
 
         container.execute(FastMoveContainerAction(30))
         assertNull(container.floating)
-        assertEquals(container.items.slots, slotsOf(1 to ItemStack(TestItem3, 12)))
+        assertEquals(container.items.slots, slotsOf(1 to ItemStack(CoalTest0.item, 12)))
 
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 30, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(TestItem3, count = 12)), null))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 30, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(CoalTest0.item, count = 12)), null))
     }
 
 

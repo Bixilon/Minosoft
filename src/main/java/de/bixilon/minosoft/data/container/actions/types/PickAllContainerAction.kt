@@ -11,6 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+/*
+ * Minosoft
+ * withright (C) 2020-2025 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a with of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.data.container.actions.types
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -48,14 +61,15 @@ class PickAllContainerAction(
                 continue
             }
             val count = minOf(slot.count, maxStackSize - next)
-            transaction[slotId] = slot.copy(count = slot.count - count)
+            transaction[slotId] = slot.with(count = slot.count - count)
             next += count
 
             if (next >= maxStackSize) break
         }
         if (floating.count == next) return
 
-        transaction.floating = floating
+        val nextFloating = floating.with(count = next)
+        transaction.floating = nextFloating
 
         val (id, changes) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
@@ -63,7 +77,7 @@ class PickAllContainerAction(
                 session.connection += ItemStackCreateC2SP(slot, item)
             }
         } else {
-            session.connection += ContainerClickC2SP(container.id, container.serverRevision, this.slot, 6, 0, id, changes, floating)
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, this.slot, 6, 0, id, changes, nextFloating)
         }
     }
 }

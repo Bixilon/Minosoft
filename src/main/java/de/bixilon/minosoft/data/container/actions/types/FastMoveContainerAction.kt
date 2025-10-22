@@ -104,7 +104,7 @@ class FastMoveContainerAction(
         val targets = getTargets(container.getSection(slot), source, container)
 
         merge(source, transaction, targets)
-        move(source, transaction, targets)
+        transaction[slot]?.let { move(it, transaction, targets) }
 
         val (id, changes) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {

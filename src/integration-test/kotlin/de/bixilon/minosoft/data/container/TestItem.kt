@@ -16,10 +16,23 @@ package de.bixilon.minosoft.data.container
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 
 object TestItem1 : Item(minosoft("test1"))
 object TestItem2 : Item(minosoft("test2"))
 object TestItem3 : Item(minosoft("test3"))
+
+object StackableTest1 : Item(minosoft("stackable_test1")), StackableItem {
+    override val maxStackSize get() = 64
+}
+
+object StackableTest2 : Item(minosoft("stackable_test2")), StackableItem {
+    override val maxStackSize get() = 64
+}
+
+object StackableTest3 : Item(minosoft("stackable_test3")), StackableItem {
+    override val maxStackSize get() = 16
+}
 
 object DurableTestItem1 : Item(minosoft("durable_test1")), DurableItem {
     override val maxDurability get() = 100

@@ -37,12 +37,12 @@ class EnchantingPropertyTest {
     }
 
     fun `pre flattening enchantments`() {
-        val nbt: MutableJsonObject = mutableMapOf("Ench" to listOf(
+        val nbt: MutableJsonObject = mutableMapOf("ench" to listOf(
             mapOf("id" to 16, "lvl" to 3.toShort()),
             mapOf("id" to 34, "lvl" to 4.toShort()),
         ))
 
-        val property = EnchantingProperty.of(IT.REGISTRIES.enchantment, nbt)
+        val property = EnchantingProperty.of(IT.REGISTRIES_PRE_FLATTENING.enchantment, nbt)
         val expected = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
 
         assertEquals(property, expected)

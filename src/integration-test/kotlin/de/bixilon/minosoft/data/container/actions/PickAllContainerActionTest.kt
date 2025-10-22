@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
-import de.bixilon.minosoft.data.container.TestItem1
-import de.bixilon.minosoft.data.container.TestItem2
+import de.bixilon.minosoft.data.container.StackableTest1
+import de.bixilon.minosoft.data.container.StackableTest2
 import de.bixilon.minosoft.data.container.actions.types.PickAllContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
@@ -42,55 +42,55 @@ class PickAllContainerActionTest {
     fun testSingle() {
         val session = createSession()
         val container = createContainer(session)
-        container.floating = ItemStack(TestItem1, count = 7)
+        container.floating = ItemStack(StackableTest1, count = 7)
         container.execute(PickAllContainerAction(6))
         assertEquals(container.items.slots, slotsOf())
-        // session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, slotsOf(), ItemStack(TestItem1, count = 7)))
+        // session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, slotsOf(), ItemStack(StackableTest1, count = 7)))
     }
 
     fun test2Single() {
         val session = createSession()
         val container = createContainer(session)
-        container.floating = ItemStack(TestItem2, 1)
-        container.items[1] = ItemStack(TestItem2, 2)
+        container.floating = ItemStack(StackableTest2, 1)
+        container.items[1] = ItemStack(StackableTest2, 2)
         container.execute(PickAllContainerAction(0))
         assertEquals(container.items.slots, slotsOf())
-        assertEquals(container.floating, ItemStack(TestItem2, count = 3))
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, slotsOf(1 to null), ItemStack(TestItem2, count = 3)))
+        assertEquals(container.floating, ItemStack(StackableTest2, count = 3))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, slotsOf(1 to null), ItemStack(StackableTest2, count = 3)))
     }
 
     fun testNotTaking() {
         val session = createSession()
         val container = createContainer(session)
-        container.floating = ItemStack(TestItem2, 1)
-        container.items[1] = ItemStack(TestItem1, 1)
-        container.items[2] = ItemStack(TestItem2, 2)
+        container.floating = ItemStack(StackableTest2, 1)
+        container.items[1] = ItemStack(StackableTest1, 1)
+        container.items[2] = ItemStack(StackableTest2, 2)
         container.execute(PickAllContainerAction(0))
 
-        assertEquals(container.items.slots, slotsOf(1 to ItemStack(TestItem1, 1)))
-        assertEquals(container.floating, ItemStack(TestItem2, count = 3))
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, slotsOf(2 to null), ItemStack(TestItem2, count = 3)))
+        assertEquals(container.items.slots, slotsOf(1 to ItemStack(StackableTest1, 1)))
+        assertEquals(container.floating, ItemStack(StackableTest2, count = 3))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, slotsOf(2 to null), ItemStack(StackableTest2, count = 3)))
     }
 
     fun testStack() {
         val session = createSession()
         val container = createContainer(session)
-        container.floating = ItemStack(TestItem2, 64)
-        container.items[5] = ItemStack(TestItem2, 2)
+        container.floating = ItemStack(StackableTest2, 64)
+        container.items[5] = ItemStack(StackableTest2, 2)
         container.execute(PickAllContainerAction(0))
-        assertEquals(container.items.slots, slotsOf(5 to ItemStack(TestItem2, 2)))
-        assertEquals(container.floating, ItemStack(TestItem2, count = 64))
+        assertEquals(container.items.slots, slotsOf(5 to ItemStack(StackableTest2, 2)))
+        assertEquals(container.floating, ItemStack(StackableTest2, count = 64))
         session.assertNoPacket()
     }
 
     fun testExceeds() {
         val session = createSession()
         val container = createContainer(session)
-        container.items[0] = ItemStack(TestItem2, 63)
-        container.floating = ItemStack(TestItem2, 3)
+        container.items[0] = ItemStack(StackableTest2, 63)
+        container.floating = ItemStack(StackableTest2, 3)
         container.execute(PickAllContainerAction(5))
-        assertEquals(container.items.slots, slotsOf(0 to ItemStack(TestItem2, 2)))
-        assertEquals(container.floating, ItemStack(TestItem2, count = 64))
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 5, 6, 0, 0, slotsOf(0 to ItemStack(TestItem2, count = 2)), ItemStack(TestItem2, count = 64)))
+        assertEquals(container.items.slots, slotsOf(0 to ItemStack(StackableTest2, 2)))
+        assertEquals(container.floating, ItemStack(StackableTest2, count = 64))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 5, 6, 0, 0, slotsOf(0 to ItemStack(StackableTest2, count = 2)), ItemStack(StackableTest2, count = 64)))
     }
 }

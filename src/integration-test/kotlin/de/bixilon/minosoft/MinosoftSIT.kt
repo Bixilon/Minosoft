@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.main.MinosoftBoot
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
@@ -87,6 +88,7 @@ internal object MinosoftSIT {
         val (version, registries) = ITUtil.loadPixlyzerData(IT.TEST_VERSION_NAME)
         IT.VERSION = version
         IT.REGISTRIES = registries
+        ITUtil.loadPreFlatteningData(Versions["1.12.2"]!!).let { IT.REGISTRIES_PRE_FLATTENING = it }
         IT.FALLBACK_TAGS = FallbackTags.map(registries)
 
         IT::BLOCK_1.forceSet(registries.block[StoneBlock.Block]!!.states.default)

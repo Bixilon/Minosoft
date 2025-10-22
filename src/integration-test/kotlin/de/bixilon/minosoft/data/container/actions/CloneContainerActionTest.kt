@@ -15,8 +15,9 @@ package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
-import de.bixilon.minosoft.data.container.TestItem1
-import de.bixilon.minosoft.data.container.TestItem2
+import de.bixilon.minosoft.data.container.StackableTest1
+import de.bixilon.minosoft.data.container.StackableTest2
+import de.bixilon.minosoft.data.container.StackableTest3
 import de.bixilon.minosoft.data.container.actions.types.CloneContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertNoPacket
@@ -41,9 +42,9 @@ class CloneContainerActionTest {
     fun testAlready1() {
         val session = createSession()
         val container = createContainer(session)
-        container.floating = ItemStack(TestItem1, count = 7)
+        container.floating = ItemStack(StackableTest1, count = 7)
         container.execute(CloneContainerAction(6))
-        assertEquals(container.floating, ItemStack(TestItem1, count = 7))
+        assertEquals(container.floating, ItemStack(StackableTest1, count = 7))
         assertNull(container.items[6])
         session.assertNoPacket()
     }
@@ -51,42 +52,42 @@ class CloneContainerActionTest {
     fun testAlready2() {
         val session = createSession()
         val container = createContainer(session)
-        container.items[6] = ItemStack(TestItem2, count = 7)
-        container.floating = ItemStack(TestItem1, count = 7)
+        container.items[6] = ItemStack(StackableTest2, count = 7)
+        container.floating = ItemStack(StackableTest1, count = 7)
         container.execute(CloneContainerAction(6))
-        assertEquals(container.floating, ItemStack(TestItem1, count = 7))
-        assertEquals(container.items[6], ItemStack(TestItem2, count = 7))
+        assertEquals(container.floating, ItemStack(StackableTest1, count = 7))
+        assertEquals(container.items[6], ItemStack(StackableTest2, count = 7))
         session.assertNoPacket()
     }
 
     fun testTaking() {
         val session = createSession()
         val container = createContainer(session)
-        container.items[1] = ItemStack(TestItem2)
+        container.items[1] = ItemStack(StackableTest1)
         container.execute(CloneContainerAction(1))
-        assertEquals(container.floating, ItemStack(TestItem2, count = 64))
+        assertEquals(container.floating, ItemStack(StackableTest1, count = 64))
         // TODO: Not sending any packet in 1.18.2?
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(TestItem2, count = 64)))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(StackableTest1, count = 64)))
     }
 
     fun taskTalking2() {
         val session = createSession()
         val container = createContainer(session)
-        container.items[3] = ItemStack(TestItem2, count = 8)
+        container.items[3] = ItemStack(StackableTest1, count = 8)
         container.execute(CloneContainerAction(3))
-        assertEquals(container.floating, ItemStack(TestItem2, count = 64))
+        assertEquals(container.floating, ItemStack(StackableTest1, count = 64))
         // TODO: Not sending any packet in 1.18.2?
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(TestItem2, count = 64)))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(StackableTest1, count = 64)))
     }
 
     fun testStackLimit() {
         val session = createSession()
         val container = createContainer(session)
-        container.items[8] = ItemStack(TestItem1, count = 9)
+        container.items[8] = ItemStack(StackableTest3, count = 9)
         container.execute(CloneContainerAction(8))
-        assertEquals(container.floating, ItemStack(TestItem1, count = 16))
+        assertEquals(container.floating, ItemStack(StackableTest3, count = 16))
         // TODO: Not sending any packet in 1.18.2?
-        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(TestItem1, count = 16)))
+        session.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(StackableTest3, count = 16)))
     }
 
 }

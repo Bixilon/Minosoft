@@ -22,7 +22,7 @@ class ContainerTransactionManager(
     val container: Container,
 ) {
     private val transactions = Int2ObjectOpenHashMap<ContainerTransaction>(10)
-    private val id = AtomicInteger(1)
+    private val id = AtomicInteger(0)
 
     fun create(transaction: ContainerTransaction): Int {
         container.lock.lock()

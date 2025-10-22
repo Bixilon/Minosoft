@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.container.transaction
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createInventory
 import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.container.TestItem2
-import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertThrows
@@ -32,7 +31,7 @@ class ContainerTransactionTest {
         val transaction = ContainerTransaction(container)
         val (id, changes) = transaction.commit()
 
-        assertEquals(id, 1)
+        assertEquals(id, 0)
         assertEquals(changes, emptyMap<Int, ItemStack?>())
     }
 
