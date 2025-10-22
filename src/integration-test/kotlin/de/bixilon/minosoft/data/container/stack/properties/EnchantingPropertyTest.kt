@@ -23,7 +23,7 @@ import org.testng.annotations.Test
 @Test(groups = ["item_stack"], dependsOnGroups = ["item"])
 class EnchantingPropertyTest {
 
-    fun `display properties`() {
+    fun `modern enchantments`() {
         val nbt: MutableJsonObject = mutableMapOf("Enchantments" to listOf(
             mapOf("id" to "minecraft:sharpness", "lvl" to 3.toShort()),
             mapOf("id" to "minecraft:unbreaking", "lvl" to 4.toShort()),
@@ -32,7 +32,18 @@ class EnchantingPropertyTest {
         val property = EnchantingProperty.of(IT.REGISTRIES.enchantment, nbt)
         val expected = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
 
+        assertEquals(property, expected)
+        assertEquals(nbt, emptyMap<String, Any>())
+    }
 
+    fun `pre flattening enchantments`() {
+        val nbt: MutableJsonObject = mutableMapOf("Ench" to listOf(
+            mapOf("id" to 16, "lvl" to 3.toShort()),
+            mapOf("id" to 34, "lvl" to 4.toShort()),
+        ))
+
+        val property = EnchantingProperty.of(IT.REGISTRIES.enchantment, nbt)
+        val expected = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
 
         assertEquals(property, expected)
         assertEquals(nbt, emptyMap<String, Any>())

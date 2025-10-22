@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container.types
 
+import de.bixilon.kutil.observer.array.ArrayObserver.Companion.observedArray
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
@@ -38,9 +39,9 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS), id = id) {
     override val sections: Array<ContainerSection> get() = SECTIONS
-    val costs = IntArray(ENCHANTING_OPTIONS) { -1 } // TODO: kutil 1.28 observedArray
-    val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
-    val enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }  // TODO: kutil 1.28 observedArray
+    val costs by observedArray(Array(ENCHANTING_OPTIONS) { -1 })
+    val enchantments by observedArray(Array<Enchantment?>(ENCHANTING_OPTIONS) { null })
+    val enchantmentLevels by observedArray(Array(ENCHANTING_OPTIONS) { -1 })
     var seed = -1
         private set
 

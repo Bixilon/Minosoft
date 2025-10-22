@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.array.ArrayObserver.Companion.observeArray
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -35,7 +35,9 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
 
 
     init {
-        // TODO kutil 1.28 container::propertiesRevision.observe(this) { forceApply() }
+        container::enchantments.observeArray(this) { forceApply() }
+        container::enchantmentLevels.observeArray(this) { forceApply() }
+        container::costs.observeArray(this) { forceApply() }
     }
 
     override fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
