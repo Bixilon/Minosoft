@@ -64,7 +64,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
 
     open class NetheriteHelmet(resourceLocation: ResourceLocation = this.identifier) : NetheriteArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 3
-        override val maxDurability get() = 275
+        override val maxDurability get() = 407
 
         companion object : ItemFactory<NetheriteHelmet> {
             override val identifier = minecraft("netherite_helmet")

@@ -41,6 +41,7 @@ data class DurabilityProperty(
         private const val DAMAGE_TAG = "Damage"
 
         fun of(item: Item, nbt: MutableJsonObject): DurabilityProperty {
+            assert(item is DurableItem && item.maxDurability > 0)
             item as DurableItem
 
             val durability = nbt.remove(DAMAGE_TAG)?.toInt()?.let { item.maxDurability - it } ?: item.maxDurability
