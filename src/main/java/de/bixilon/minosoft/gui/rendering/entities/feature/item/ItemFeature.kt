@@ -67,14 +67,14 @@ open class ItemFeature(
 
     private fun createMesh(stack: ItemStack) {
         val distance = this.distance ?: return
-        val model = stack.item.item.getModel(renderer.renderer.session) ?: return
+        val model = stack.item.getModel(renderer.renderer.session) ?: return
         val display = model.getDisplay(display)
         this.displayMatrix = display?.matrix ?: Mat4f.EMPTY
         val mesh = BlockMesh(renderer.renderer.context)
 
         val tint = renderer.renderer.context.tints.getItemTint(stack)
 
-        val count = if (many) distance.getCount(stack.item.count) else 1
+        val count = if (many) distance.getCount(stack.count) else 1
         val spread = maxOf(0.1f, count / 30.0f)
 
         model.render(mesh, stack, tint) // 0 without offset

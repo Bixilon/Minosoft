@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,28 +13,22 @@
 
 package de.bixilon.minosoft.data.container
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KMutableProperty0
-import kotlin.reflect.KProperty
+import org.testng.AssertJUnit.assertNull
+import org.testng.annotations.Test
 
-class InventoryDelegate<T>(
-    val stack: ItemStack,
-    val field: KMutableProperty0<T>,
-) : ReadWriteProperty<Any, T> {
+@Test(groups = ["item_stack"], dependsOnGroups = ["item"])
+class ItemStackUtilTest {
 
-    override operator fun getValue(thisRef: Any, property: KProperty<*>): T {
-        try {
-            stack.lock.acquire()
-            return field.getValue(thisRef, property)
-        } finally {
-            stack.lock.release()
-        }
+    fun `no count null`() {
+        val item = ItemStackUtil.of(TestItem1, 0)
+        assertNull(item)
     }
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        stack.lock.lock()
-        field.setValue(thisRef, property, value)
-        stack.commitChange()
-    }
+    // TODO: dye color
+
+
+    // TODO: HideFlags
+
+
+    // TODO: hide, nbt, serialize
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,16 +39,16 @@ class LongUseHandler(
     }
 
     fun abortUsing(using: ItemUsing, stack: ItemStack) {
-        if (stack.item.item is LongItemUseHandler) {
-            stack.item.item.abortUse(session.player, using.hand, stack, using.tick)
+        if (stack.item is LongItemUseHandler) {
+            stack.item.abortUse(session.player, using.hand, stack, using.tick)
         }
         clearUsing()
     }
 
     fun stopUsingItem(stack: ItemStack? = this.item, force: Boolean) {
         val using = session.player.using ?: return
-        if (stack != null && stack.item.item is LongItemUseHandler) {
-            stack.item.item.finishUse(session.player, using.hand, stack, using.tick)
+        if (stack != null && stack.item is LongItemUseHandler) {
+            stack.item.finishUse(session.player, using.hand, stack, using.tick)
         }
         if (!force) {
             session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
@@ -67,7 +67,7 @@ class LongUseHandler(
 
     fun tick(slot: Int) {
         val interactingItem = item
-        val item = interactingItem?.item?.item
+        val item = interactingItem?.item
         val using = using
         if (item !is LongItemUseHandler || using == null) {
             return
@@ -90,7 +90,7 @@ class LongUseHandler(
     }
 
     fun tryUse(hand: Hands, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
+        val item = stack.item
 
         if (item !is LongItemUseHandler) {
             return false

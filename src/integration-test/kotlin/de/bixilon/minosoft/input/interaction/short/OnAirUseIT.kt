@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.input.interaction.short
 
+import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.items.CoalTest0
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafePress
 import de.bixilon.minosoft.protocol.network.session.play.PacketTestUtil.assertOnlyPacket
@@ -30,7 +30,7 @@ class OnAirUseIT {
 
     fun coalOnAir() {
         val session = InteractionTestUtil.createSession()
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem3)
         val use = session.camera.interactions.use
 
         use.unsafePress()
@@ -41,7 +41,7 @@ class OnAirUseIT {
 
     fun coalOnAir2() {
         val session = InteractionTestUtil.createSession()
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem3)
         val use = session.camera.interactions.use
 
         use.unsafePress()
@@ -52,8 +52,8 @@ class OnAirUseIT {
 
     fun testCoalOnAir3() {
         val session = InteractionTestUtil.createSession()
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem3)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem3)
         val use = session.camera.interactions.use
 
         use.unsafePress()

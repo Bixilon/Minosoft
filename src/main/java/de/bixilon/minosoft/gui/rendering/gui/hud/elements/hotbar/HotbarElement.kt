@@ -150,7 +150,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
-            currentItem?.displayName?.let { itemText._chatComponent = it;itemText.forceSilentApply() }
+            currentItem?.getDisplayName(context.session.language)?.let { itemText._chatComponent = it; itemText.forceSilentApply() }
             if (currentItem == null) {
                 itemText.hide()
             } else {

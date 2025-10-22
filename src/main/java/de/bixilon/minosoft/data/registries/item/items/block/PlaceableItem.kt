@@ -34,7 +34,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
     fun getPlacementState(session: PlaySession, target: BlockTarget, stack: ItemStack): BlockState
 
 
-    fun place(player: LocalPlayerEntity, target: BlockTarget, stack: ItemStack): InteractionResults {
+    fun place(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!player.gamemode.canBuild) {
             return InteractionResults.INVALID
         }
@@ -75,7 +75,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
 
 
         if (player.gamemode != Gamemodes.CREATIVE) {
-            stack.item.decreaseCount()
+            player.items.inventory[hand] = stack.with(count = stack.count - 1)
         }
         DefaultThreadPool += {
             world[placePosition] = state
@@ -93,6 +93,6 @@ interface PlaceableItem : ItemInteractBlockHandler {
 
 
     override fun interactBlock(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        return place(player, target, stack)
+        return place(player, target, hand, stack)
     }
 }

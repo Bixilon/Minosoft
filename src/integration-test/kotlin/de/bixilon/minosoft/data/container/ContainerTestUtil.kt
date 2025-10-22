@@ -40,19 +40,19 @@ object ContainerTestUtil {
     }
 
     fun createContainer(session: PlaySession = createSession()): Container {
-        val container = UnknownContainer(session, this.container)
+        val container = UnknownContainer(session, this.container, id = 9)
         session.player.items.containers[9] = container
         return container
     }
 
     fun createChest(session: PlaySession = createSession()): Generic9x3Container {
-        val container = Generic9x3Container(session, this.chest, null)
+        val container = Generic9x3Container(session, this.chest, null, id = 9)
         session.player.items.containers[9] = container
         return container
     }
 
     fun createFurnace(session: PlaySession = createSession()): FurnaceContainer {
-        val container = FurnaceContainer(session, this.furnace, null)
+        val container = FurnaceContainer(session, this.furnace, null, id = 9)
         session.player.items.containers[9] = container
         return container
     }
@@ -60,8 +60,8 @@ object ContainerTestUtil {
     private object GenericContainerFactory : ContainerFactory<Container> {
         override val identifier: ResourceLocation = minosoft("test")
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): Container {
-            return UnknownContainer(session, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): Container {
+            return UnknownContainer(session, type, title, id)
         }
     }
 }

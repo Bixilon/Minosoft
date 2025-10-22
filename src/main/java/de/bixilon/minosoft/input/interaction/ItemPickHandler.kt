@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
@@ -32,41 +33,35 @@ class ItemPickHandler(
     private val session = interactions.session
     val rateLimiter = RateLimiter()
 
-    fun pickItem(copyNBT: Boolean) {
-        if (session.player.gamemode != Gamemodes.CREATIVE) {
-            return
-        }
-        val target = session.camera.target.target ?: return
+    private fun getStack(copyNBT: Boolean): ItemStack? {
+        val target = session.camera.target.target ?: return null
 
         if (target.distance >= session.player.reachDistance) {
-            return
+            return null
         }
-
-        val stack: ItemStack?
 
         when (target) {
             is BlockTarget -> {
                 val block = target.state.block
-
-                stack = if (block is BlockWithItem<*>) ItemStackUtil.of(block.item, count = 1, session = session) else null
-
-                if (copyNBT && stack != null) {
-                    val blockEntity = session.world.getBlockEntity(target.blockPosition)
-                    blockEntity?.nbt?.toMutableMap()?.let { stack.updateNbt(it) }
-                }
+                if (block !is BlockWithItem<*>) return null
+                val nbt = if (copyNBT) session.world.getBlockEntity(target.blockPosition)?.nbt?.toMutableJsonObject() else null
+                return ItemStackUtil.of(block.item, 1, session, nbt = nbt)
             }
 
             is EntityTarget -> {
                 val entity = target.entity
-                stack = entity.type.spawnEgg?.let { ItemStackUtil.of(it, session = session) } ?: entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)?.copy()
+                return entity.type.spawnEgg?.let { ItemStackUtil.of(it) } ?: entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)
             }
 
-            else -> stack = null
+            else -> return null
         }
+    }
 
-        if (stack == null) {
+    fun pickItem(copyNBT: Boolean) {
+        if (session.player.gamemode != Gamemodes.CREATIVE) {
             return
         }
+        val stack = getStack(copyNBT) ?: return
         for (i in 0 until PlayerInventory.HOTBAR_SLOTS) {
             val slot = session.player.items.inventory.getHotbarSlot(i) ?: continue
             if (!slot.matches(stack)) {
@@ -89,7 +84,7 @@ class ItemPickHandler(
         val selectedSlot = session.player.items.hotbar + PlayerInventory.HOTBAR_OFFSET
 
         rateLimiter += { session.connection.send(ItemStackCreateC2SP(selectedSlot, stack)) }
-        session.player.items.inventory[selectedSlot] = stack
+        session.player.items.inventory.items[selectedSlot] = stack
 
         // ToDo: Use ItemPickC2SP
     }

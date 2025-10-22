@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.stack.property
+package de.bixilon.minosoft.data.container.stack.properties
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.data.registries.registries.Registries
 
-class HolderProperty(
-    val session: PlaySession? = null,
-    var container: Container? = null,
+@JvmInline
+value class NbtProperty(
+    val nbt: JsonObject = emptyMap(),
 ) : Property {
 
-    override fun isDefault(): Boolean = false
+    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+        nbt.putAll(this.nbt) // TODO: merge
+    }
+
+    companion object {
+        val DEFAULT = NbtProperty()
+
+        fun of(nbt: MutableJsonObject): NbtProperty {
+            if (nbt.isEmpty()) return DEFAULT
+
+            return NbtProperty(nbt)
+        }
+    }
 }

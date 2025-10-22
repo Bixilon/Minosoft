@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,13 +25,12 @@ class ItemParticleData(val stack: ItemStack?, type: ParticleType) : ParticleData
     }
 
     companion object : ParticleDataFactory<ItemParticleData> {
+
         override fun read(buffer: PlayInByteBuffer, type: ParticleType): ItemParticleData {
-            val itemId = if (buffer.versionId < ProtocolVersions.V_17W45A) {
-                buffer.readVarInt() shl 16 or buffer.readVarInt()
-            } else {
-                buffer.readVarInt()
-            }
-            return ItemParticleData(ItemStackUtil.of(buffer.session.registries.item[itemId], session = buffer.session), type)
+            val itemId = if (buffer.versionId < ProtocolVersions.V_17W45A) (buffer.readVarInt() shl 16) or buffer.readVarInt() else buffer.readVarInt()
+            val item = buffer.session.registries.item[itemId]
+
+            return ItemParticleData(ItemStackUtil.of(item), type)
         }
     }
 }

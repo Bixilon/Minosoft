@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,17 +24,19 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.handler.item.LongItemUseHandler
 import de.bixilon.minosoft.data.registries.item.handler.item.LongUseResults
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.weapon.attack.range.RangeWeapon
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class BowItem(identifier: ResourceLocation = this.identifier) : RangeWeapon(identifier), LongItemUseHandler {
+open class BowItem(identifier: ResourceLocation = this.identifier) : RangeWeapon(identifier), LongItemUseHandler, DurableItem {
+    override val maxDurability get() = 384
 
     override fun startUse(player: LocalPlayerEntity, hand: Hands, stack: ItemStack): LongUseResults {
         if (player.gamemode == Gamemodes.CREATIVE) {
             // infinite arrows
             return LongUseResults.START
         }
-        if (stack._enchanting?.enchantments?.get(WeaponEnchantment.Infinity) != null) {
+        if (stack.enchanting?.enchantments?.get(WeaponEnchantment.Infinity) != null) {
             return LongUseResults.START
         }
         // TODO: check if player has arrows

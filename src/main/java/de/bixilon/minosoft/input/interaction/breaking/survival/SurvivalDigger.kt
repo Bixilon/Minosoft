@@ -66,15 +66,15 @@ class SurvivalDigger(
         val toolRequired = if (block is PixLyzerBlock) block.requiresTool else (block is ToolRequirement && block !is HandBreakable)
         var isBestTool = !toolRequired
 
-        if (stack != null && stack.item.item is MiningTool) {
-            isBestTool = isBestTool || stack.item.item.isSuitableFor(session, target.state, stack)
-            toolSpeed = stack.item.item.getMiningSpeed(session, target.state, stack)
+        if (stack != null && stack.item is MiningTool) {
+            isBestTool = isBestTool || stack.item.isSuitableFor(session, target.state, stack)
+            toolSpeed = stack.item.getMiningSpeed(session, target.state, stack)
             speed *= toolSpeed
         }
 
 
         if (toolSpeed > 1.0f) {
-            stack?._enchanting?.enchantments?.get(MiningEnchantment.Efficiency)?.let {
+            stack?.enchanting?.enchantments?.get(MiningEnchantment.Efficiency)?.let {
                 speed += it * it + 1.0f
             }
         }

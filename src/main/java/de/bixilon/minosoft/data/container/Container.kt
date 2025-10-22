@@ -14,186 +14,61 @@
 package de.bixilon.minosoft.data.container
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
-import de.bixilon.minosoft.data.container.actions.ContainerActions
+import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.actions.types.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.container.stack.property.HolderProperty
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
+import de.bixilon.minosoft.data.container.transaction.ContainerTransactionManager
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 abstract class Container(
     val session: PlaySession,
     val type: ContainerType,
     val title: ChatComponent? = null,
-) : Iterable<Map.Entry<Int, ItemStack>> {
-    @Deprecated("Should not be accessed directly")
-    val slots: MutableMap<Int, ItemStack> by observedMap(Int2ObjectOpenHashMap())
+    val id: Int,
+) {
     val lock = ReentrantRWLock()
-    var propertiesRevision by observed(0L)
-    var revision by observed(0L)
+    val items = ContainerItems(lock)
+    val transactions = ContainerTransactionManager(this)
     var serverRevision = 0
-    var floatingItem: ItemStack? by observed(null)
-    val actions = ContainerActions(this)
-
-    val id: Int?
-        get() = session.player.items.containers.getKey(this)
+    var floating: ItemStack? by observed(null)
 
     open val sections: Array<ContainerSection> get() = emptyArray()
-
-    var edit: ContainerEdit? = null
-
-    init {
-        this::floatingItem.observe(this) { it?.holder?.container = this }
-    }
-
 
     open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
     open fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? = null
     open fun readProperty(property: Int, value: Int) = Unit
 
 
-    open fun getSection(slotId: Int): Int? {
-        for ((index, section) in sections.withIndex()) {
-            if (slotId in section) {
-                return index
-            }
+    open fun getSection(slotId: Int): ContainerSection? {
+        for (section in sections) {
+            if (slotId !in section) continue
+
+            return section
         }
         return null
     }
 
-
-    fun validate() {
-        lock.lock()
-
-        if (floatingItem?._valid == false) {
-            floatingItem = null
-            edit?.addChange()
-        }
-        val iterator = slots.iterator()
-        for ((slot, stack) in iterator) {
-            if (stack._valid) {
-                continue
-            }
-            stack.holder?.container = null
-            iterator.remove()
-            onRemove(slot, stack)
-            edit?.addChange()
-        }
-
-        commitChange()
+    internal open fun onOpen() = Unit
+    protected open fun onClose() {
+        floating = null // ToDo: They are dropped, but not in all versions
     }
 
-    operator fun get(slotId: Int): ItemStack? {
-        try {
-            lock.acquire()
-            return slots[slotId]
-        } finally {
-            lock.release()
-        }
-    }
-
-
-    protected open fun onRemove(slotId: Int, stack: ItemStack) = Unit
-
-    private fun _remove(slotId: Int): ItemStack? {
-        val stack = slots.remove(slotId) ?: return null
-        onRemove(slotId, stack)
-        stack.holder?.container = null
-        edit?.addChange()
-        return stack
-    }
-
-    fun remove(slotId: Int): ItemStack? {
-        lock.lock()
-        val remove = _remove(slotId)
-        commitChange()
-        return remove
-    }
-
-    operator fun minusAssign(slotId: Int) {
-        remove(slotId)
-    }
-
-    open operator fun set(slotId: Int, stack: ItemStack?) {
-        lock.lock()
-        if (_set(slotId, stack)) {
-            edit?.addChange()
-        }
-        commitChange()
-    }
-
-    protected open fun onSet(slotId: Int, stack: ItemStack?) = Unit
-
-    protected fun _set(slotId: Int, stack: ItemStack?): Boolean {
-        val previous = slots[slotId]
-        if (stack == null) {
-            // remove item
-            if (previous == null) {
-                return false
-            }
-            _remove(slotId)
-            return true
-        }
-        if (previous == stack) {
-            return false
-        }
-        slots[slotId] = stack // ToDo: Check for changes
-        var holder = stack.holder
-        if (holder == null) {
-            holder = HolderProperty(session, this)
-            stack.holder = holder
-        } else {
-            holder.container = this
-        }
-        onSet(slotId, stack)
-
-        return true
-    }
-
-    fun set(vararg slots: Pair<Int, ItemStack?>) {
-        if (slots.isEmpty()) {
-            return
-        }
-        lock.lock()
-        for ((slotId, stack) in slots) {
-            if (_set(slotId, stack)) {
-                edit?.addChange()
-            }
-        }
-        commitChange()
-    }
-
-    fun _clear() {
-        if (slots.isEmpty()) return
-        for (stack in slots.values) {
-            stack.holder?.container = null
-        }
-        slots.clear()
-        edit?.addChange()
-    }
-
-    fun clear() {
-        lock.lock()
-        edit = ContainerEdit()
-        _clear()
-        commitChange()
-    }
+    protected open fun onAdd(slotId: Int, stack: ItemStack) = true
+    protected open fun onSet(slotId: Int, previous: ItemStack, next: ItemStack) = true
+    protected open fun onRemove(slotId: Int, stack: ItemStack) = true
 
     fun close(force: Boolean = false) {
         onClose()
-
-        val id = id ?: return
 
         if (id != PlayerInventory.CONTAINER_ID && this !is ClientContainer) {
             session.player.items.containers -= id
@@ -208,41 +83,8 @@ abstract class Container(
         session.events.fire(ContainerCloseEvent(session, this))
     }
 
-    protected open fun onClose() {
-        floatingItem = null // ToDo: Does not seem correct
-    }
-
-    open fun onOpen() = Unit
-
-    fun lock() {
-        lock.lock()
-        if (edit == null) {
-            edit = ContainerEdit()
-        }
-    }
-
-    fun commitChange() {
-        val edit = this.edit
-        lock.unlock()
-        if (edit == null) {
-            revision++
-        }
-    }
-
-    fun commit() {
-        val edit = this.edit ?: throw IllegalStateException("Not in bulk edit mode!")
-        validate()
-        this.edit = null
-        lock.unlock()
-        if (edit.changes > 0) {
-            for (slot in edit.slots) {
-                slot.revision++
-            }
-            revision++
-        }
-    }
-
-    override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
-        return slots.iterator()
+    fun execute(action: ContainerAction) {
+        val transaction = ContainerTransaction(this)
+        action.execute(session, this, transaction)
     }
 }

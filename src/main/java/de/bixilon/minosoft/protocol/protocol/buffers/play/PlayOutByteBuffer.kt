@@ -51,31 +51,28 @@ class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
     }
 
     fun writeLegacyItemStack(stack: ItemStack?) {
-        if (stack == null || !stack._valid) {
+        if (stack == null) {
             writeShort(-1)
             return
         }
-        val item = stack.item.item
+        val item = stack.item
         val id = session.registries.item.getId(item)
         writeShort(id shr MetaTypes.ITEM.bits)
-        writeByte(stack.item.count)
+        writeByte(stack.count)
         writeShort(if (item is ItemWithMeta) item.getMeta(id, stack) else 0)
-        writeNBT(stack.getNBT())
+        writeNBT(stack.toNbt(session.registries))
     }
 
     fun writeItemStack(stack: ItemStack?) {
         if (versionId < ProtocolVersions.V_1_13_2_PRE1) {
             return writeLegacyItemStack(stack)
         }
-        val valid = stack != null && stack._valid
+        val valid = stack != null
         writeBoolean(valid)
-        if (!valid) {
-            return
-        }
-        stack!!
-        writeVarInt(session.registries.item.getId(stack.item.item))
-        writeByte(stack.item.count)
-        writeNBT(stack.getNBT())
+        if (!valid) return
+        writeVarInt(session.registries.item.getId(stack.item))
+        writeByte(stack.count)
+        writeNBT(stack.toNbt(session.registries))
     }
 
     fun writeEntityId(entityId: Int) {

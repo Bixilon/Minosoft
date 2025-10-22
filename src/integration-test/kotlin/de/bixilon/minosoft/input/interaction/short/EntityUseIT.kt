@@ -18,6 +18,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.data.container.TestItem3
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
@@ -63,7 +64,7 @@ class EntityUseIT {
         val session = InteractionTestUtil.createSession()
         val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
         session.world.entities.add(10, null, entity)
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem3)
         session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
         val use = session.camera.interactions.use
 
@@ -81,7 +82,7 @@ class EntityUseIT {
         val session = InteractionTestUtil.createSession()
         val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
         session.world.entities.add(10, null, entity)
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem3)
         session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
         val use = session.camera.interactions.use
 
@@ -99,8 +100,8 @@ class EntityUseIT {
         val session = InteractionTestUtil.createSession()
         val entity = Pig(session, this.pig, EntityData(session), Vec3d.EMPTY, EntityRotation.EMPTY)
         session.world.entities.add(10, null, entity)
-        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
-        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
+        session.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(TestItem3)
+        session.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(TestItem3)
         session.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
         val use = session.camera.interactions.use
 

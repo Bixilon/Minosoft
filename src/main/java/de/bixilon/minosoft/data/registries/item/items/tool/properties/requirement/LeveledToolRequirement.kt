@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ interface LeveledToolRequirement : ToolRequirement {
 
     override fun canMine(stack: ItemStack): Boolean {
         if (!super.canMine(stack)) return false
-        val item = stack.item.item
+        val item = stack.item
         if (item is LeveledToolItem && item.level < level) {
             return false
         }

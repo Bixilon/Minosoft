@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,7 +51,7 @@ class LongUseIT {
         use.tick(10)
 
         assertEquals(session.player.using, ItemUsing(Hands.MAIN, 10))
-        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is BowItem)
+        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item is BowItem)
 
 
         session.assertPacket(PositionRotationC2SP::class.java)
@@ -70,7 +70,7 @@ class LongUseIT {
         use.tick(10)
 
         assertEquals(session.player.using, ItemUsing(Hands.OFF, 10))
-        assertTrue(session.player.items.inventory[EquipmentSlots.OFF_HAND]?.item?.item is BowItem)
+        assertTrue(session.player.items.inventory[EquipmentSlots.OFF_HAND]?.item is BowItem)
 
 
         session.assertPacket(PositionRotationC2SP::class.java)
@@ -109,7 +109,7 @@ class LongUseIT {
         use.unsafeRelease()
 
         assertNull(session.player.using)
-        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is BowItem)
+        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item is BowItem)
 
 
         session.assertPacket(PositionRotationC2SP::class.java)
@@ -148,7 +148,7 @@ class LongUseIT {
         use.tick(10)
 
         assertEquals(session.player.using, ItemUsing(Hands.OFF, 110))
-        assertTrue(session.player.items.inventory[EquipmentSlots.OFF_HAND]?.item?.item is BowItem)
+        assertTrue(session.player.items.inventory[EquipmentSlots.OFF_HAND]?.item is BowItem)
 
 
         session.assertPacket(PositionRotationC2SP::class.java)
@@ -204,7 +204,7 @@ class LongUseIT {
         use.unsafeRelease()
 
         assertNull(session.player.using)
-        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is AppleItem.GoldenAppleItem)
+        assertTrue(session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item is AppleItem.GoldenAppleItem)
 
         session.assertPacket(PositionRotationC2SP::class.java)
         session.assertUseItem(Hands.MAIN)

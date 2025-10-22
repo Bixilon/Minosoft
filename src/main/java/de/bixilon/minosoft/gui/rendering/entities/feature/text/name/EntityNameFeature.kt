@@ -88,7 +88,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         if (!isTargeted()) return null
         val item = this.item ?: return null
 
-        return item._display?._customDisplayName
+        return item.display.displayName
     }
 
     private fun getEntityName(): ChatComponent? {

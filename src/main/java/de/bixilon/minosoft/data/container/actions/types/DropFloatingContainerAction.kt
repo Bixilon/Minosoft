@@ -15,45 +15,32 @@ package de.bixilon.minosoft.data.container.actions.types
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
-import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 
-class DropContainerAction(
-    val slot: Int,
-    val stack: Boolean,
+class DropFloatingContainerAction(
+    val count: SlotCounts,
 ) : ContainerAction {
-    private var previousStack: ItemStack? = null
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
-        val item = container[slot] ?: return
-        if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
-            return
-        }
-        container.lock()
-        previousStack = item.copy()
-        if (stack) {
-            item.item.count = 0
-        } else {
-            item.item.decreaseCount()
-        }
 
-        val actionId = container.actions.createId(this)
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+        val floating = container.floating ?: return
+        val next = when (this.count) {
+            SlotCounts.ALL -> null
+            SlotCounts.PART -> floating.copy(count = floating.count - 1)
+        }
+        transaction.floating = next
+
+        val (id, changes) = transaction.commit()
 
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-            session.connection += ItemStackCreateC2SP(-1, if (stack) previousStack else item.copy(count = 1))
-            session.connection += ItemStackCreateC2SP(slot, item)
+            session.connection += ItemStackCreateC2SP(-1, if (count == SlotCounts.ALL) floating else floating.copy(count = 1))
         } else {
-            session.connection += ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, actionId, slotsOf(slot to item), null)
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, -999, 0, count.ordinal, id, changes, null)
         }
-        container.commit()
-    }
-
-    override fun revert(session: PlaySession, containerId: Int, container: Container) {
-        container[slot] = previousStack
     }
 }

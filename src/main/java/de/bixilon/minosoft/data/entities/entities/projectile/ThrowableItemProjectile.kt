@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.container.ItemStackUtil
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -25,14 +24,11 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class ThrowableItemProjectile(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableProjectile(session, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData
-    open val item: ItemStack?
-        get() = data.get<ItemStack?>(ITEM_DATA, null) ?: defaultItem
-
     abstract val defaultItemType: ResourceLocation
 
-    open val defaultItem: ItemStack?
-        get() = ItemStackUtil.of(session.registries.item[defaultItemType]!!, session = session)
+    @get:SynchronizedEntityData
+    open val item get() = data.get(ITEM_DATA, defaultItem)
+    open val defaultItem get() = session.registries.item[defaultItemType]?.let { ItemStackUtil.of(it) }
 
 
     companion object {

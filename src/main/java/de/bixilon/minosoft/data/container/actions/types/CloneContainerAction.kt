@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
-import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -27,26 +27,19 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 class CloneContainerAction(
     val slot: Int,
 ) : ContainerAction {
-    private var copied: ItemStack? = null
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
-        container.floatingItem?.let { return }
-        val clicked = container[slot] ?: return
-        val stack = clicked.copy(count = if (clicked.item.item is StackableItem) clicked.item.item.maxStackSize else 1)
-        this.copied = stack
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
+        if (container.floating != null) return
+        val clicked = transaction[slot] ?: return
+        val stack = clicked.copy(count = if (clicked.item is StackableItem) clicked.item.maxStackSize else 1)
 
+        transaction.floating = stack
+
+        val (id, _) = transaction.commit()
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
             session.connection += ItemStackCreateC2SP(this.slot, stack)
         } else {
-            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
-        }
-
-        container.floatingItem = stack
-    }
-
-    override fun revert(session: PlaySession, containerId: Int, container: Container) {
-        if (container.floatingItem == copied) {
-            container.floatingItem = null
+            session.connection.send(ContainerClickC2SP(container.id, container.serverRevision, this.slot, 3, 0, id, slotsOf(), stack))
         }
     }
 }

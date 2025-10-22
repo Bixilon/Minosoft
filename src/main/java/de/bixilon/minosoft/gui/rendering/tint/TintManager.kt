@@ -97,7 +97,7 @@ class TintManager(val session: PlaySession) {
     }
 
     fun getItemTint(stack: ItemStack): RGBArray? {
-        val tintProvider = stack.item.item.getTintProvider() ?: return null
+        val tintProvider = stack.item.getTintProvider() ?: return null
         val tints = RGBArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 
         for (tintIndex in tints.array.indices) {

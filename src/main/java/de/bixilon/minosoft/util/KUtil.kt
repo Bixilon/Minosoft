@@ -20,7 +20,6 @@ import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
@@ -36,7 +35,6 @@ import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
 import de.bixilon.minosoft.data.registries.effects.IntegratedStatusEffects
@@ -78,14 +76,13 @@ object KUtil {
         return BitSet.valueOf(longArrayOf(long))
     }
 
-    fun Any?.toResourceLocation(): ResourceLocation {
-        return when (this) {
-            is String -> ResourceLocation.of(this)
-            is ResourceLocation -> this
-            else -> throw IllegalArgumentException("Don't know how to turn $this into a resource location!")
-        }
+    fun Any?.toResourceLocation() = when (this) {
+        is String -> ResourceLocation.of(this)
+        is ResourceLocation -> this
+        else -> throw IllegalArgumentException("Don't know how to turn $this into a resource location!")
     }
 
+    @Deprecated("sheet")
     fun <T> T.synchronizedDeepCopy(): T {
         return when (this) {
             is Map<*, *> -> {
@@ -95,16 +92,6 @@ object KUtil {
                     map[key.synchronizedDeepCopy()] = value.synchronizedDeepCopy()
                 }
                 map.unsafeCast()
-            }
-
-            is List<*> -> {
-                val list: MutableList<Any?> = synchronizedListOf()
-
-                for (key in this) {
-                    list += key.synchronizedDeepCopy()
-                }
-
-                list.unsafeCast()
             }
 
             is Set<*> -> {
@@ -117,17 +104,9 @@ object KUtil {
                 set.unsafeCast()
             }
 
-            is ItemStack -> this.copy().unsafeCast()
-            is ChatComponent -> this
-            is String -> this
-            is Number -> this
-            is Boolean -> this
             null -> null.unsafeCast()
             else -> TODO("Don't know how to copy ${(this as T)!!::class.java.name}")
         }
-    }
-
-    fun pause() {
     }
 
     fun Collection<Int>.entities(session: PlaySession): Set<Entity> {

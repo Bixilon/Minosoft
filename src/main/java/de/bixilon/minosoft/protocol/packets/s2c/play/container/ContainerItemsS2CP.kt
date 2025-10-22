@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,8 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.IncompleteContainer
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -22,7 +21,6 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.*
 
 class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
@@ -31,55 +29,19 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         -1
     }
-    val items: Array<ItemStack?> = buffer.readArray(
-        if (buffer.versionId >= V_1_17_1_PRE1) {
-            buffer.readVarInt()
-        } else {
-            buffer.readUnsignedShort()
-        }
-    ) { buffer.readItemStack() }
-    val floatingItem = if (buffer.versionId >= V_1_17_1_PRE1) {
-        buffer.readItemStack()?.let { Optional.of(it) } ?: Optional.empty()
-    } else {
-        null
-    }
-
-    private fun pushIncompleteContainer(session: PlaySession) {
-        val container = IncompleteContainer()
-
-
-        for ((slotId, stack) in this.items.withIndex()) {
-            if (stack == null) {
-                continue
-            }
-            container.slots[slotId] = stack
-        }
-        container.floating = floatingItem?.let { if (it.isEmpty) null else it.get() }
-
-        session.player.items.incomplete[containerId] = container
-    }
-
-    private fun updateContainer(container: Container) {
-        container.lock()
-        container.clear()
-
-        for ((slotId, stack) in this.items.withIndex()) {
-            if (stack == null) {
-                continue
-            }
-            container[slotId] = stack
-        }
-        container.serverRevision = revision
-        this.floatingItem?.let { container.floatingItem = if (it.isEmpty) null else it.get() }
-        container.commit()
-    }
+    val items: Array<ItemStack?> = buffer.readArray(if (buffer.versionId >= V_1_17_1_PRE1) buffer.readVarInt() else buffer.readUnsignedShort()) { buffer.readItemStack() }
+    val floatingItem = if (buffer.versionId >= V_1_17_1_PRE1) buffer.readItemStack() else null
 
     override fun handle(session: PlaySession) {
-        val container = session.player.items.containers[containerId]
-        if (container == null) {
-            pushIncompleteContainer(session)
-        } else {
-            updateContainer(container)
+        val container = session.player.items.containers[containerId] ?: return
+
+        container.lock.locked {
+            for ((slotId, stack) in this@ContainerItemsS2CP.items.withIndex()) {
+                if (stack == null) continue
+                items[slotId] = stack
+            }
+            container.serverRevision = revision
+            floatingItem?.let { container.floating = it }
         }
     }
 

@@ -46,28 +46,24 @@ class ItemInfoPopper(
 
     override fun forceSilentApply() {
         val text = BaseComponent(
-            stack.displayName,
+            stack.getDisplayName(context.session.language),
         )
-        stack._durability?.durability?.let {
-            if (stack.item.item !is DurableItem) return@let
-            val max = stack.item.item.maxDurability
+        stack.durability?.durability?.let {
+            if (stack.item !is DurableItem) return@let
+            val max = stack.item.maxDurability
             if (it in 0 until max) {
                 text += TextComponent(" (${it}/${max})", color = ChatColors.DARK_GRAY)
             }
         }
-        stack._display?.lore?.let {
-            if (it.isEmpty()) {
-                return@let
-            }
+        stack.display?.lore?.let {
+            if (it.isEmpty()) return@let
             for (line in it) {
                 text += "\n"
                 text += line
             }
         }
-        stack._enchanting?.enchantments?.let {
-            if (it.isEmpty()) {
-                return@let
-            }
+        stack.enchanting?.enchantments?.let {
+            if (it.isEmpty()) return@let
             text += "\n"
             val language = context.session.language
             for ((enchantment, level) in it) {
@@ -80,7 +76,7 @@ class ItemInfoPopper(
             }
         }
         text += "\n\n"
-        text += TextComponent(stack.item.item.identifier, color = ChatColors.DARK_GRAY)
+        text += TextComponent(stack.item.identifier, color = ChatColors.DARK_GRAY)
         textElement._chatComponent = text
         textElement.forceSilentApply()
         recalculateSize()

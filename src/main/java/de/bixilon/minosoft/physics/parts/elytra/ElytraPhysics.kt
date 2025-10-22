@@ -41,7 +41,7 @@ object ElytraPhysics {
         if (isClimbing()) return false
 
         val chestplate = entity.equipment[EquipmentSlots.CHEST]
-        val item = chestplate?.item?.item
+        val item = chestplate?.item
         if (item !is ElytraItem || !item.isUsable(chestplate)) {
             return false
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,6 +31,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class DiamondBoots(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), BootsItem {
         override val defense: Int get() = 3
+        override val maxDurability get() = 429
 
         companion object : ItemFactory<DiamondBoots> {
             override val identifier = minecraft("diamond_boots")
@@ -41,6 +42,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class DiamondLeggings(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), LeggingsItem {
         override val defense: Int get() = 6
+        override val maxDurability get() = 495
 
         companion object : ItemFactory<DiamondLeggings> {
             override val identifier = minecraft("diamond_leggings")
@@ -51,6 +53,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class DiamondChestplate(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), ChestplateItem {
         override val defense: Int get() = 8
+        override val maxDurability get() = 528
 
         companion object : ItemFactory<DiamondChestplate> {
             override val identifier = minecraft("diamond_chestplate")
@@ -61,6 +64,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
 
     open class DiamondHelmet(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 3
+        override val maxDurability get() = 363
 
         companion object : ItemFactory<DiamondHelmet> {
             override val identifier = minecraft("diamond_helmet")

@@ -165,13 +165,8 @@ class PlayInByteBuffer : InByteBuffer {
         }
         val nbt = readNBT()?.toMutableJsonObject()
         val item = session.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
-        return ItemStackUtil.of(
-            item = item,
-            session = session,
-            count = count,
-            meta = meta,
-            nbt = nbt ?: mutableMapOf(),
-        )
+
+        return ItemStackUtil.of(item, count, meta, session, nbt ?: mutableMapOf())
     }
 
     fun readItemStack(): ItemStack? {
@@ -179,14 +174,7 @@ class PlayInByteBuffer : InByteBuffer {
             return readLegacyItemStack()
         }
 
-        return readOptional {
-            ItemStackUtil.of(
-                item = session.registries.item[readVarInt()],
-                session = session,
-                count = readUnsignedByte(),
-                nbt = readNBT()?.toMutableJsonObject() ?: mutableMapOf(),
-            )
-        }
+        return readOptional { ItemStackUtil.of(readRegistryItem(session.registries.item), readUnsignedByte(), session, readNBT()?.toMutableJsonObject() ?: mutableMapOf()) }
     }
 
     fun readEntityData(): Int2ObjectOpenHashMap<Any?> {

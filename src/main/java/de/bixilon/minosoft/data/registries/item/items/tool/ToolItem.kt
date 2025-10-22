@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,7 +69,7 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
 
         if (state.block !is ToolRequirement) return speed
 
-        if (!state.block.isCorrectTool(stack.item.item)) return 1.0f
+        if (!state.block.isCorrectTool(stack.item)) return 1.0f
 
         return speed
     }

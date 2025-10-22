@@ -18,96 +18,101 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntArrayList
 
 class FastMoveContainerAction(
     val slot: Int,
 ) : ContainerAction {
-    // ToDo: Action reverting
 
-    override fun invoke(session: PlaySession, containerId: Int, container: Container) {
+    private fun getTargets(sourceSection: ContainerSection?, source: ItemStack, container: Container): Map<ContainerSection, IntArrayList> {
+        // loop over all sections and get the lowest slot in the lowest section that fits best
+
+        val targets: MutableMap<ContainerSection, IntArrayList> = mutableMapOf()
+        for (section in container.sections) {
+            if (section == sourceSection) continue // we don't want to swap into the same section, that is just useless
+            if (section.count == 0) continue
+            val list = IntArrayList()
+
+            for (slot in section) {
+                val content = container.items[slot]
+                if (content != null && !source.matches(content)) { // only check slots that are not empty
+                    continue
+                }
+                val type = container.getSlotType(slot) ?: continue
+                if (!type.canPut(container, slot, source)) {
+                    // this item is not allowed in this slot (e.g. blocks in armor slot)
+                    continue
+                }
+                list += slot
+            }
+            if (list.isEmpty) continue
+            targets[section] = list
+        }
+
+        return targets
+    }
+
+    private fun merge(source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
+        val maxStack = if (source.item is StackableItem) source.item.maxStackSize else 1
+
+        var left = source.count
+        for ((section, list) in targets) {
+            val putting = if (section.fillReversed) list.reversed().iterator() else list.intIterator()
+            for (slot in putting) {
+                val content = transaction[slot] ?: continue // filling will be done one step afterwards
+                val count = if (left + content.count > maxStack) maxStack - content.count else left
+                if (count == 0) continue
+
+                left -= count
+                transaction[slot] = content.with(count = content.count + count)
+                if (left <= 0) {
+                    transaction -= this.slot
+                    return
+                }
+            }
+        }
+
+        transaction[this.slot] = source.with(count = left)
+    }
+
+    private fun move(source: ItemStack, transaction: ContainerTransaction, targets: Map<ContainerSection, IntArrayList>) {
+        if (source.count <= 0) return
+
+        for ((section, list) in targets) {
+            val putting = if (section.fillReversed) list.reversed().iterator() else list.intIterator()
+            for (slot in putting) {
+                val content = transaction[slot]
+                if (content != null) continue
+
+                transaction[slot] = source
+                transaction[this.slot] = null
+                return
+            }
+        }
+    }
+
+    override fun execute(session: PlaySession, container: Container, transaction: ContainerTransaction) {
         // ToDo: minecraft always sends a packet
-        val source = container.slots[slot] ?: return
-        container.lock()
-        try {
-            val sourceSection = container.getSection(slot) ?: Int.MAX_VALUE
+        val source = transaction[slot] ?: return
 
-            // loop over all sections and get the lowest slot in the lowest section that fits best
-            val targets: MutableList<Pair<ContainerSection, IntArrayList>> = mutableListOf()
-            for ((index, section) in container.sections.withIndex()) {
-                if (index == sourceSection) {
-                    // we don't want to swap into the same section, that is just useless
-                    continue
-                }
-                if (section.count == 0) {
-                    continue
-                }
-                val list = IntArrayList()
-                targets += Pair(section, list)
-                for (slot in section.iterator()) {
-                    val content = container[slot]
-                    if (content != null && !source.matches(content)) { // only check slots that are not empty
-                        continue
-                    }
-                    val type = container.getSlotType(slot) ?: continue
-                    if (!type.canPut(container, slot, source)) {
-                        // this item is not allowed in this slot (e.g. blocks in armor slot)
-                        continue
-                    }
-                    list += slot
-                }
-            }
-            val maxStack = if (source.item.item is StackableItem) source.item.item.maxStackSize else 1
-            val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
-            sections@ for ((type, list) in targets) {
-                val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
-                for (slot in putting) {
-                    val content = container[slot] ?: continue // filling will be done one step afterwards
-                    val countToPut = if (source.item.count + content.item.count > maxStack) maxStack - content.item.count else source.item.count
-                    source.item.count -= countToPut
-                    content.item.count += countToPut
-                    changes[slot] = content
-                    if (source.item.count <= 0) {
-                        changes[this.slot] = null
-                        break@sections
-                    }
-                    changes[this.slot] = source
-                }
-            }
+        val targets = getTargets(container.getSection(slot), source, container)
 
-            sections@ for ((type, list) in targets) {
-                if (source.item.count <= 0) {
-                    break
-                }
-                val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
-                for (slot in putting) {
-                    val content = container[slot]
-                    if (content != null) {
-                        continue
-                    }
-                    changes[slot] = source
-                    changes[this.slot] = null
-                    container[slot] = source
-                    container[this.slot] = null
-                    break@sections
-                }
-            }
+        merge(source, transaction, targets)
+        transaction[slot]?.let { move(it, transaction, targets) }
 
-            if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
-                for ((slot, item) in changes) {
-                    session.connection += ItemStackCreateC2SP(slot, item)
-                }
-            } else {
-                session.connection += ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.actions.createId(this), changes, null)
+        val (id, changes) = transaction.commit()
+        if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
+            for ((slot, item) in changes) {
+                session.connection += ItemStackCreateC2SP(slot, item)
             }
-        } finally {
-            container.commit()
+        } else {
+            session.connection += ContainerClickC2SP(container.id, container.serverRevision, this.slot, 1, 0, id, changes, null)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,15 +20,18 @@ class DropHandler(
     private val interactions: InteractionManager,
 ) {
     private val session = interactions.session
+    private val inventory = session.player.items.inventory
     private val rateLimiter = RateLimiter()
 
     fun dropItem(stack: Boolean) {
-        val type = if (stack) {
-            session.player.items.inventory.getHotbarSlot()?.item?.count = 0
-            PlayerActionC2SP.Actions.DROP_ITEM_STACK
-        } else {
-            session.player.items.inventory.getHotbarSlot()?.item?.decreaseCount()
-            PlayerActionC2SP.Actions.DROP_ITEM
+        val type = if (stack) PlayerActionC2SP.Actions.DROP_ITEM_STACK else PlayerActionC2SP.Actions.DROP_ITEM
+
+        val slot = inventory.manager.hotbar
+
+        val item = inventory.getHotbarSlot(slot)
+
+        if (item != null) {
+            inventory.setHotbarSlot(slot, item.with(count = if (stack) 0 else item.count - 1))
         }
         rateLimiter += { session.connection.send(PlayerActionC2SP(type)) }
     }

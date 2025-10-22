@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container.types
 
+import de.bixilon.kutil.observer.array.ArrayObserver.Companion.observedArray
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
@@ -36,23 +37,21 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerButtonC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
+class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS), id = id) {
     override val sections: Array<ContainerSection> get() = SECTIONS
-    val costs = IntArray(ENCHANTING_OPTIONS) { -1 }
-    val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
-    var enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }
+    val costs by observedArray(Array(ENCHANTING_OPTIONS) { -1 })
+    val enchantments by observedArray(Array<Enchantment?>(ENCHANTING_OPTIONS) { null })
+    val enchantmentLevels by observedArray(Array(ENCHANTING_OPTIONS) { -1 })
     var seed = -1
         private set
 
-    val lapislazuli: Int get() = this[LAPISLAZULI_SLOT]?.item?._count ?: 0
+    val lapislazuli: Int get() = items[LAPISLAZULI_SLOT]?.count ?: 0
 
-    override fun getSlotType(slotId: Int): SlotType? {
-        return when (slotId) {
-            0 -> EnchantableSlotType
-            1 -> LapislazuliSlot
-            in ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS -> DefaultSlotType
-            else -> null
-        }
+    override fun getSlotType(slotId: Int) = when (slotId) {
+        0 -> EnchantableSlotType
+        1 -> LapislazuliSlot
+        in ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS -> DefaultSlotType
+        else -> null
     }
 
     override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? {
@@ -64,10 +63,10 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
 
     override fun readProperty(property: Int, value: Int) {
         when (property) {
-            0, 1, 2 -> costs[property] = value
-            3 -> seed = value
-            4, 5, 6 -> enchantments[property - 4] = session.registries.enchantment.getOrNull(value)
-            7, 8, 9 -> enchantmentLevels[property - 7] = value
+            PROPERTY_OFFSET_COST + 0, PROPERTY_OFFSET_COST + 1, PROPERTY_OFFSET_COST + 2 -> costs[property - PROPERTY_OFFSET_COST] = value
+            PROPERTY_SEED -> seed = value
+            PROPERTY_OFFSET_ENCHANTMENT + 0, PROPERTY_OFFSET_ENCHANTMENT + 1, PROPERTY_OFFSET_ENCHANTMENT + 2 -> enchantments[property - PROPERTY_OFFSET_ENCHANTMENT] = session.registries.enchantment.getOrNull(value)
+            PROPERTY_OFFSET_LEVEL + 0, PROPERTY_OFFSET_LEVEL + 1, PROPERTY_OFFSET_LEVEL + 2 -> enchantmentLevels[property - PROPERTY_OFFSET_LEVEL] = value
         }
     }
 
@@ -92,19 +91,17 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
 
 
     fun selectEnchantment(index: Int) {
-        if (index < 0 || index > 2) {
-            throw IllegalArgumentException("Index out of bounds: $index")
-        }
+        assert(index > 0 && index < ENCHANTING_OPTIONS)
         if (!canEnchant(index)) {
             throw IllegalStateException("Can not enchant $index!")
         }
-        val id = this.id ?: return
+        val id = this.id
         session.connection.send(ContainerButtonC2SP(id, index))
     }
 
     private object LapislazuliSlot : SlotType {
         override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-            return stack.item.item.identifier == MinecraftItems.LAPISLAZULI
+            return stack.item.identifier == MinecraftItems.LAPISLAZULI
         }
     }
 
@@ -116,6 +113,11 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3
 
+        private const val PROPERTY_OFFSET_COST = 0
+        private const val PROPERTY_SEED = 3
+        private const val PROPERTY_OFFSET_ENCHANTMENT = 4
+        private const val PROPERTY_OFFSET_LEVEL = 7
+
 
         private val SECTIONS: Array<ContainerSection> = arrayOf(
             RangeSection(0, ENCHANTING_SLOTS),
@@ -123,8 +125,8 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
             PassiveInventorySection(ENCHANTING_SLOTS),
         )
 
-        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int): EnchantingContainer {
-            return EnchantingContainer(session, type, title)
+        override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): EnchantingContainer {
+            return EnchantingContainer(session, type, title, id)
         }
     }
 }

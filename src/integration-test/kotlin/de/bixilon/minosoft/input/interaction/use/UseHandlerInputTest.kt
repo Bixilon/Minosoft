@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.input.interaction.use
 
+import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil
