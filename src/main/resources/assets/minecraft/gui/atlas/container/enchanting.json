@@ -260,7 +260,7 @@
     },
     "18": {
       "resolution": [16, 16],
-      "texture": "gui/sprites/container/enchanting_table/level_1_disabled"
+      "texture": "gui/sprites/container/enchanting_table/level_2_disabled"
     }
   },
   "level_3": {
