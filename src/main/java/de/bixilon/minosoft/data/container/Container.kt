@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.container.actions.ContainerAction
@@ -82,6 +83,6 @@ abstract class Container(
 
     fun execute(action: ContainerAction) {
         val transaction = ContainerTransaction(this)
-        action.execute(session, this, transaction)
+        lock.locked { action.execute(session, this, transaction) }
     }
 }
