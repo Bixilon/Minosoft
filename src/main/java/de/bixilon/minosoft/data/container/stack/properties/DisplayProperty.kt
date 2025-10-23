@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.container.stack.properties
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -39,7 +40,7 @@ data class DisplayProperty(
         this.displayName?.let { display[DISPLAY_MAME_TAG] = it.toNbt() }
         this.lore.takeIf { it.isNotEmpty() }?.let { display[DISPLAY_LORE_TAG] = it.map(ChatComponent::toNbt) }
 
-        this.dyeColor?.let { display[DISPLAY_COLOR_TAG] = it.rgb } // TODO: only if item is dyeable?
+        this.dyeColor?.let { display[DISPLAY_COLOR_TAG] = "#${it.rgb.toHex(6)}" } // TODO: only if item is dyeable?
 
         nbt[DISPLAY_TAG] = display
     }
