@@ -15,14 +15,16 @@ package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.versions.Version
 
 @JvmInline
 value class NbtProperty(
     val nbt: JsonObject = emptyMap(),
 ) : Property {
 
-    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+    override fun writeNbt(item: Item, version: Version, registries: Registries, nbt: MutableJsonObject) {
         nbt.putAll(this.nbt) // TODO: merge
     }
 

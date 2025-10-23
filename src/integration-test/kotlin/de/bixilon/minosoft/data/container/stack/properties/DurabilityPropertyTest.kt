@@ -14,20 +14,40 @@
 package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.MutableJsonObject
-import kotlin.test.assertEquals
+import de.bixilon.minosoft.data.container.DurableTestItem1
+import de.bixilon.minosoft.test.IT
+import org.testng.AssertJUnit.assertEquals
+import org.testng.annotations.Test
 
+@Test(groups = ["item_stack"], dependsOnGroups = ["item"])
 class DurabilityPropertyTest {
 
-    fun `unbreakable property`() {
+    fun `deserialize unbreakable`() {
         val nbt: MutableJsonObject = mutableMapOf("unbreakable" to 1.toByte())
 
 
-        val actual = DurabilityProperty.of(DurableTestItem, nbt)
+        val actual = DurabilityProperty.of(DurableTestItem1, nbt)
         val expected = DurabilityProperty(durability = 100, unbreakable = true)
 
         assertEquals(actual, expected)
-        assertEquals(nbt, emptyMap())
+        assertEquals(nbt.size, 0)
     }
 
+    fun `serialize without damage`() {
+        val property = DurabilityProperty(durability = 100, unbreakable = true)
+        val actual = mutableMapOf<String, Any>().apply { property.writeNbt(DurableTestItem1, IT.VERSION, IT.REGISTRIES, this) }
 
+        val expected: MutableJsonObject = mutableMapOf("Damage" to 0, "unbreakable" to 1.toByte())
+
+        assertEquals(actual, expected)
+    }
+
+    fun `serialize with damage`() {
+        val property = DurabilityProperty(durability = 10)
+        val actual = mutableMapOf<String, Any>().apply { property.writeNbt(DurableTestItem1, IT.VERSION, IT.REGISTRIES, this) }
+
+        val expected = mutableMapOf("Damage" to 90)
+
+        assertEquals(actual, expected)
+    }
 }

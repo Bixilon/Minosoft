@@ -16,7 +16,9 @@ package de.bixilon.minosoft.data.container.stack.properties
 import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.versions.Version
 
 @JvmInline
 value class HideProperty(
@@ -36,9 +38,9 @@ value class HideProperty(
     val otherInformation get() = hideFlags.isBit(OTHER_INFORMATION_BIT)
     val leatherDyeColor get() = hideFlags.isBit(LEATHER_DYE_COLOR_BIT)
 
-    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
+    override fun writeNbt(item: Item, version: Version, registries: Registries, nbt: MutableJsonObject) {
         if (hideFlags != DEFAULT.hideFlags) {
-            nbt[HIDE_FLAGS_TAG] = hideFlags // TODO: datatype?
+            nbt[HIDE_FLAGS_TAG] = hideFlags
         }
     }
 

@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.versions.Version
 
 interface Property {
 
-    fun writeNbt(registries: Registries, nbt: MutableJsonObject)
-    fun toNbt(registries: Registries) = mutableMapOf<String, Any>().apply { writeNbt(registries, this) }
+    fun writeNbt(item: Item, version: Version, registries: Registries, nbt: MutableJsonObject)
 }

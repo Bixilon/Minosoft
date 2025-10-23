@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.versions.Version
 
 data class ItemStack(
     val item: Item,
@@ -64,15 +65,15 @@ data class ItemStack(
         return ChatComponent.of(toString())
     }
 
-    fun toNbt(registries: Registries): JsonObject {
+    fun toNbt(version: Version, registries: Registries): JsonObject {
         val nbt: MutableJsonObject = mutableMapOf()
 
         // TODO: merge, not overwrite
-        this.display.writeNbt(registries, nbt)
-        this.durability?.writeNbt(registries, nbt)
-        this.enchanting.writeNbt(registries, nbt)
-        this.hide.writeNbt(registries, nbt)
-        this.nbt.writeNbt(registries, nbt)
+        this.display.writeNbt(item, version, registries, nbt)
+        this.durability?.writeNbt(item, version, registries, nbt)
+        this.enchanting.writeNbt(item, version, registries, nbt)
+        this.hide.writeNbt(item, version, registries, nbt)
+        this.nbt.writeNbt(item, version, registries, nbt)
 
         return nbt
     }

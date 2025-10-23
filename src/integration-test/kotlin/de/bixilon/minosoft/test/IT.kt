@@ -26,9 +26,12 @@ object IT {
     const val TEST_VERSION_NAME = "1.19.3"
     var VERSION: Version = unsafeNull()
     var REGISTRIES: Registries = unsafeNull()
-    var REGISTRIES_PRE_FLATTENING: Registries = unsafeNull()
     var FALLBACK_TAGS: TagManager = unsafeNull()
     val NULL_CONNECTION = OBJENESIS.newInstance(PlaySession::class.java)
+
+
+    var VERSION_LEGACY: Version = unsafeNull()
+    var REGISTRIES_LEGACY: Registries = unsafeNull()
 
 
     val BLOCK_1: BlockState = unsafeNull()

@@ -15,13 +15,12 @@ package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.text.TextComponent
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.testng.AssertJUnit.assertEquals
+import org.testng.annotations.Test
 
+@Test(groups = ["item_stack"], dependsOnGroups = ["item"])
 class DisplayPropertyTest {
 
-
-    @Test
     fun `display properties`() {
         val nbt: MutableJsonObject = mutableMapOf("display" to mutableMapOf(
             "Name" to "display name",
@@ -39,6 +38,6 @@ class DisplayPropertyTest {
 
 
         assertEquals(property, expected)
-        assertEquals(nbt, emptyMap())
+        assertEquals(nbt.size, 0)
     }
 }

@@ -110,7 +110,7 @@ open class TextComponent(
             return builder.toString()
         }
 
-    override fun getJson(): Any {
+    override fun toJson(): Any {
         if (message.isEmpty()) {
             return emptyMap<String, Any>()
         }

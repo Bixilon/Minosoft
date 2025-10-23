@@ -45,7 +45,8 @@ interface ChatComponent {
     val message: String
 
 
-    fun getJson(): Any
+    fun toJson(): Any
+    fun toNbt() = toJson()
 
     val textFlow: TextFlow
         get() {

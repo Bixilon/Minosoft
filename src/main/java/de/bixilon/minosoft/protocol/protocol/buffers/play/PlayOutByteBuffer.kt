@@ -60,7 +60,7 @@ class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
         writeShort(id shr MetaTypes.ITEM.bits)
         writeByte(stack.count)
         writeShort(if (item is ItemWithMeta) item.getMeta(id, stack) else 0)
-        writeNBT(stack.toNbt(session.registries))
+        writeNBT(stack.toNbt(session.version, session.registries))
     }
 
     fun writeItemStack(stack: ItemStack?) {
@@ -72,7 +72,7 @@ class PlayOutByteBuffer(val session: PlaySession) : OutByteBuffer() {
         if (!valid) return
         writeVarInt(session.registries.item.getId(stack.item))
         writeByte(stack.count)
-        writeNBT(stack.toNbt(session.registries))
+        writeNBT(stack.toNbt(session.version, session.registries))
     }
 
     fun writeEntityId(entityId: Int) {

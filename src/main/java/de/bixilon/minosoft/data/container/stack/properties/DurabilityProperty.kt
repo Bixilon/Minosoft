@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.data.container.stack.properties
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.versions.Version
 
 data class DurabilityProperty(
     val durability: Int,
@@ -29,8 +31,10 @@ data class DurabilityProperty(
         assert(durability > 0) { "Invalid durability: $durability" }
     }
 
-    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
-        // TODO: durability
+    override fun writeNbt(item: Item, version: Version, registries: Registries, nbt: MutableJsonObject) {
+        val max = item.unsafeCast<DurableItem>().maxDurability
+        nbt[DAMAGE_TAG] = (max - durability).toInt()
+
         if (unbreakable) {
             nbt[UNBREAKABLE_TAG] = 1.toByte()
         }

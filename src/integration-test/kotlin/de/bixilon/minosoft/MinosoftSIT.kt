@@ -81,6 +81,9 @@ internal object MinosoftSIT {
         MinosoftBoot.LATCH.await()
 
         loadPixlyzerData()
+        IT.VERSION_LEGACY = Versions["1.12.2"]!!
+        IT.REGISTRIES_LEGACY = ITUtil.loadPreFlatteningData(IT.VERSION_LEGACY)
+
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
     }
 
@@ -88,7 +91,6 @@ internal object MinosoftSIT {
         val (version, registries) = ITUtil.loadPixlyzerData(IT.TEST_VERSION_NAME)
         IT.VERSION = version
         IT.REGISTRIES = registries
-        ITUtil.loadPreFlatteningData(Versions["1.12.2"]!!).let { IT.REGISTRIES_PRE_FLATTENING = it }
         IT.FALLBACK_TAGS = FallbackTags.map(registries)
 
         IT::BLOCK_1.forceSet(registries.block[StoneBlock.Block]!!.states.default)

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.stack.properties
 
 import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.data.container.TestItem1
 import de.bixilon.minosoft.data.registries.enchantment.tool.ToolEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
 import de.bixilon.minosoft.test.IT
@@ -23,7 +24,7 @@ import org.testng.annotations.Test
 @Test(groups = ["item_stack"], dependsOnGroups = ["item"])
 class EnchantingPropertyTest {
 
-    fun `modern enchantments`() {
+    fun `deserialize modern enchantments`() {
         val nbt: MutableJsonObject = mutableMapOf("Enchantments" to listOf(
             mapOf("id" to "minecraft:sharpness", "lvl" to 3.toShort()),
             mapOf("id" to "minecraft:unbreaking", "lvl" to 4.toShort()),
@@ -36,16 +37,42 @@ class EnchantingPropertyTest {
         assertEquals(nbt, emptyMap<String, Any>())
     }
 
-    fun `pre flattening enchantments`() {
+    fun `serialize modern enchantments`() {
+        val property = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
+        val actual = mutableMapOf<String, Any>().apply { property.writeNbt(TestItem1, IT.VERSION, IT.REGISTRIES, this) }
+
+
+        val expected: MutableJsonObject = mutableMapOf("Enchantments" to listOf(
+            mapOf("id" to "minecraft:sharpness", "lvl" to 3.toShort()),
+            mapOf("id" to "minecraft:unbreaking", "lvl" to 4.toShort()),
+        ))
+
+        assertEquals(actual, expected)
+    }
+
+    fun `deserialize legacy enchantments`() {
         val nbt: MutableJsonObject = mutableMapOf("ench" to listOf(
             mapOf("id" to 16, "lvl" to 3.toShort()),
             mapOf("id" to 34, "lvl" to 4.toShort()),
         ))
 
-        val property = EnchantingProperty.of(IT.REGISTRIES_PRE_FLATTENING.enchantment, nbt)
+        val property = EnchantingProperty.of(IT.REGISTRIES_LEGACY.enchantment, nbt)
         val expected = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
 
         assertEquals(property, expected)
         assertEquals(nbt, emptyMap<String, Any>())
+    }
+
+    fun `serialize legacy enchantments`() {
+        val property = EnchantingProperty(mapOf(WeaponEnchantment.Sharpness to 3, ToolEnchantment.Unbreaking to 4))
+        val actual = mutableMapOf<String, Any>().apply { property.writeNbt(TestItem1, IT.VERSION_LEGACY, IT.REGISTRIES_LEGACY, this) }
+
+
+        val expected: MutableJsonObject = mutableMapOf("ench" to listOf(
+            mapOf<String, Any>("id" to 16, "lvl" to 3.toShort()),
+            mapOf<String, Any>("id" to 34, "lvl" to 4.toShort()),
+        ))
+
+        assertEquals(actual, expected)
     }
 }

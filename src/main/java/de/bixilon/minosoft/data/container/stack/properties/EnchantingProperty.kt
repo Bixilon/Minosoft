@@ -17,8 +17,10 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.remove
 
@@ -28,11 +30,21 @@ data class EnchantingProperty(
 ) : Property {
 
     init {
-        assert(repairCost >= 0) { "Repair cost can not be negative" } // TODO: Too expensive?
+        assert(repairCost >= 0) { "Repair cost can not be negative" }
     }
 
-    override fun writeNbt(registries: Registries, nbt: MutableJsonObject) {
-        // TODO
+    override fun writeNbt(item: Item, version: Version, registries: Registries, nbt: MutableJsonObject) {
+        if (repairCost != DEFAULT.repairCost) {
+            nbt[REPAIR_COST_TAG] = repairCost
+        }
+
+        if (enchantments.isEmpty()) return
+
+        if (!version.flattened) {
+            nbt[ENCHANTMENTS_LEGACY_TAG] = this.enchantments.map { mapOf<String, Any>(ENCHANTMENT_ID_TAG to registries.enchantment.getId(it.key), ENCHANTMENT_LEVEL_TAG to it.value.toShort()) }
+        } else {
+            nbt[ENCHANTMENTS_TAG] = this.enchantments.map { mapOf(ENCHANTMENT_ID_TAG to it.key.identifier.toString(), ENCHANTMENT_LEVEL_TAG to it.value.toShort()) }
+        }
     }
 
 
@@ -50,9 +62,9 @@ data class EnchantingProperty(
         val DEFAULT = EnchantingProperty()
         private const val REPAIR_COST_TAG = "RepairCost"
 
-        private const val ENCHANTMENT_FLATTENING_TAG = "Enchantments"
-        private const val ENCHANTMENT_PRE_FLATTENING_TAG = "ench"
-        private val ENCHANTMENTS_TAG = arrayOf(ENCHANTMENT_FLATTENING_TAG, ENCHANTMENT_PRE_FLATTENING_TAG)
+        private const val ENCHANTMENTS_TAG = "Enchantments"
+        private const val ENCHANTMENTS_LEGACY_TAG = "ench"
+        private val ENCHANTMENTS_TAG_LIST = arrayOf(ENCHANTMENTS_TAG, ENCHANTMENTS_LEGACY_TAG)
 
         private const val ENCHANTMENT_ID_TAG = "id"
         private const val ENCHANTMENT_LEVEL_TAG = "lvl"
@@ -61,7 +73,7 @@ data class EnchantingProperty(
         fun of(registry: Registry<Enchantment>, nbt: MutableJsonObject): EnchantingProperty {
             val repairCost = nbt.remove(REPAIR_COST_TAG)?.toInt() ?: 0
 
-            val enchantments = nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.takeIf { it.isNotEmpty() }?.let {
+            val enchantments = nbt.remove(*ENCHANTMENTS_TAG_LIST)?.listCast<JsonObject>()?.takeIf { it.isNotEmpty() }?.let {
                 val enchantments = HashMap<Enchantment, Int>(it.size)
                 for (tag in it) {
                     val name = tag[ENCHANTMENT_ID_TAG]

@@ -97,16 +97,16 @@ class BaseComponent : ChatComponent, Iterable<ChatComponent> {
         }
     }
 
-    override fun getJson(): Any {
+    override fun toJson(): Any {
         if (parts.isEmpty()) {
             return emptyList<Any>()
         }
         if (parts.size == 1) {
-            return parts.first().getJson()
+            return parts.first().toJson()
         }
         val list = mutableListOf<Any>()
         for (part in parts) {
-            list += part.getJson()
+            list += part.toJson()
         }
         return list
     }

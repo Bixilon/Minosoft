@@ -20,7 +20,7 @@ object EmptyComponent : ChatComponent {
     override val legacy: String get() = ""
     override val message: String get() = ""
 
-    override fun getJson(): Any = emptyList<Any>()
+    override fun toJson(): Any = emptyList<Any>()
 
     override fun setFallbackColor(color: RGBAColor) = this
 

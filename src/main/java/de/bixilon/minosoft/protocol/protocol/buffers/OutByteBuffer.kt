@@ -34,7 +34,7 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
     }
 
     fun writeChatComponent(chatComponent: ChatComponent) {
-        writeJson(chatComponent.getJson())
+        writeJson(chatComponent.toJson())
     }
 
 
