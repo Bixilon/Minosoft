@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 
 class LightningBolt(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d) : Entity(session, entityType, data, position, EntityRotation(0.0f, 0.0f)) {
-    val duration = random.nextInt(100, 250).ticks
+    val duration = random.nextInt(50, 150).ticks
 
     companion object : EntityFactory<LightningBolt> {
         override val identifier: ResourceLocation = minecraft("lightning_bolt")
