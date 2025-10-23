@@ -71,8 +71,7 @@ class ContainerItemsElement(
         }
         container::floating.observe(this) {
             this.floatingItem?.close()
-            this.floatingItem = null
-            this.floatingItem = FloatingItem(guiRenderer, stack = it ?: return@observe, container = container).apply { show() }
+            this.floatingItem = it?.let { FloatingItem(guiRenderer, stack = it, container = container).apply { show() } }
         }
     }
 

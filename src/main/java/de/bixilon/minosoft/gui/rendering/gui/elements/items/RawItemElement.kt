@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -73,6 +74,11 @@ class RawItemElement(
 
         val item = stack.item
         val model = item.getModel(guiRenderer.session)
+
+        if (stack.enchanting.enchantments.isNotEmpty()) {
+            ImageElement(guiRenderer, context.textures.whiteTexture.texture, size = this.size, tint = ENCHANTED_COLOR).forceRender(offset, consumer, options)
+        }
+
         if (model != null) {
             val tints = context.tints.getItemTint(stack)
             model.render(guiRenderer, offset, consumer, options, textureSize, stack, tints)
@@ -103,6 +109,7 @@ class RawItemElement(
 
     companion object {
         private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
+        private val ENCHANTED_COLOR = ChatColors.AQUA.with(alpha = 0.3f)
 
         val DEFAULT_SIZE = Vec2f(17, 17) // 16x16 for the item and 1px for the count offset
     }
