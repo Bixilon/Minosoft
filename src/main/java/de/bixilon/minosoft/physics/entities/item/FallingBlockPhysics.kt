@@ -26,7 +26,7 @@ class FallingBlockPhysics(entity: FallingBlockEntity) : EntityPhysics<FallingBlo
             this.velocity.y += GRAVITY
         }
 
-        this.move()
+        this.move(this.velocity.unsafe)
 
         this.velocity *= PhysicsConstants.AIR_RESISTANCE
     }
