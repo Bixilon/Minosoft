@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 
 class PlayerItemManager(private val player: LocalPlayerEntity) {
     val inventory = PlayerInventory(this, player.session)
@@ -50,10 +49,7 @@ class PlayerItemManager(private val player: LocalPlayerEntity) {
         cooldown.clear()
         inventory.items.clear()
         inventory.floating = null
-        opened?.let {
-            opened = null
-            player.session.events.fire(ContainerCloseEvent(player.session, it))
-        }
+        opened = null
 
         inventory.transactions.clear()
 

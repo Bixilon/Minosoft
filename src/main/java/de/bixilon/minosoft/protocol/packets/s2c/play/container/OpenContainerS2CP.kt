@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.datafixer.rls.ContainerTypeFixer
-import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B
@@ -53,8 +52,6 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         session.player.items.containers[id] = container
         session.player.items.opened = container
-
-        session.events.fire(ContainerOpenEvent(session, container))
     }
 
     override fun log(reducedLog: Boolean) {

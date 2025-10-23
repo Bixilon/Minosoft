@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.container.transaction.ContainerTransactionManage
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 
@@ -75,12 +74,10 @@ abstract class Container(
         }
 
 
-        if (!force && session.player.items.opened == this) {
+        if (!force && session.player.items.opened === this) {
             session.player.items.opened = null
             session.connection.send(CloseContainerC2SP(id))
         }
-
-        session.events.fire(ContainerCloseEvent(session, this))
     }
 
     fun execute(action: ContainerAction) {
