@@ -75,7 +75,7 @@ object FileAssetsUtil {
     fun verify(hash: String, type: String, lazy: Boolean = true, compress: Boolean = true): Boolean {
         val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
 
-        if (!file.verify()) return false
+        if (!file.isNotEmpty()) return false
 
         if (lazy) return true
 
@@ -96,7 +96,7 @@ object FileAssetsUtil {
     fun read(hash: String, type: String, verify: Boolean = true, compress: Boolean = true): ByteArray {
         val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
 
-        if (!file.verify()) throw IOException("Invalid file: $file")
+        if (!file.isNotEmpty()) throw IOException("Invalid file: $file")
 
         val digest = hash.hashType.createDigest()
         val stream = FileInputStream(file).upgrade(compress)
@@ -117,7 +117,7 @@ object FileAssetsUtil {
     fun readOrNull(hash: String, type: String, verify: Boolean = true, compress: Boolean = true): ByteArray? {
         val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
 
-        if (!file.verify()) return null
+        if (!file.isNotEmpty()) return null
 
         val digest = hash.hashType.createDigest()
         val stream = FileInputStream(file).upgrade(compress)
@@ -173,12 +173,12 @@ object FileAssetsUtil {
         return this
     }
 
-    private fun File.verify(): Boolean {
+    private fun File.isNotEmpty(): Boolean {
         if (!exists() || !isFile) {
             return false
         }
         val size = length()
-        if (size < 0) {
+        if (size <= 0) {
             delete()
             return false
         }

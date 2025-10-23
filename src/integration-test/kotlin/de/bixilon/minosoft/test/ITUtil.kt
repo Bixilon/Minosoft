@@ -16,34 +16,22 @@ package de.bixilon.minosoft.test
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.assets.properties.version.PreFlattening
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.data.registries.VersionRegistry
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.protocol.versions.Versions
 import org.objenesis.ObjenesisStd
 import org.testng.SkipException
 
 object ITUtil {
-    private val profile = createResourcesProfile()
+    private val profile = ResourcesProfile()
     private val registries: MutableMap<Version, Registries> = mutableMapOf()
     private val objenesis = ObjenesisStd()
 
 
-    fun createResourcesProfile(): ResourcesProfile {
-        return ResourcesProfile()
-    }
-
-    fun loadPixlyzerData(name: String): VersionRegistry {
-        val version = Versions[name]!!
-        val registries = loadPixlyzerData(version)
-        return VersionRegistry(version, registries)
-    }
-
     fun loadPixlyzerData(version: Version): Registries {
         val registries = Registries(false)
 
-        val data = PixLyzerUtil.loadPixlyzerData(profile, version)
+        val data = PixLyzerUtil.load(profile, version)
 
         registries.load(version, data, SimpleLatch(0))
 

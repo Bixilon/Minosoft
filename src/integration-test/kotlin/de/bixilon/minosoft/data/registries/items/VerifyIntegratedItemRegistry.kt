@@ -47,7 +47,7 @@ object VerifyIntegratedItemRegistry {
 
     fun verify(registries: Registries, version: Version) {
         val error = StringBuilder()
-        val data = PixLyzerUtil.loadPixlyzerData(ResourcesProfile(), version)["items"]!!.unsafeCast<Map<String, JsonObject>>()
+        val data = PixLyzerUtil.load(ResourcesProfile(), version)["items"]!!.unsafeCast<Map<String, JsonObject>>()
 
         for ((id, value) in data) {
             if (value["class"] == "AirBlock") {

@@ -44,8 +44,6 @@ open class ItemFeature(
             unload()
         }
 
-    // TODO: observe stack
-
     override val layer get() = EntityLayer.Translucent // TODO
 
     override fun update(time: ValueTimeMark, delta: Float) {
