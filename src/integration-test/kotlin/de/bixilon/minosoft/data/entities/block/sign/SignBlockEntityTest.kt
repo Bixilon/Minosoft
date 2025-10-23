@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -28,7 +28,7 @@ import org.testng.annotations.Test
 class SignBlockEntityTest {
 
     private fun create(): SignBlockEntity {
-        val session = IT.OBJENESIS.newInstance(PlaySession::class.java)
+        val session = PlaySession::class.java.allocate()
         session::language.forceSet(LanguageFile("", Namespaces.MINECRAFT, mutableMapOf()))
         return SignBlockEntity(session)
     }

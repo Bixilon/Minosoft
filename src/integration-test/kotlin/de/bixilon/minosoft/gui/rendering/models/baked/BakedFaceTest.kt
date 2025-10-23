@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
-import de.bixilon.minosoft.test.IT.OBJENESIS
+import de.bixilon.minosoft.test.ITUtil.allocate
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -43,7 +43,7 @@ class BakedFaceTest {
     }
 
     private fun singleMesh(): ChunkMesh {
-        val mesh = OBJENESIS.newInstance(ChunkMesh::class.java)
+        val mesh = ChunkMesh::class.java.allocate()
         mesh::primitive.forceSet(PrimitiveTypes.QUAD)
         mesh::order.forceSet(MeshOrder.QUAD)
 
@@ -55,7 +55,7 @@ class BakedFaceTest {
     }
 
     private fun mesh(): ChunkMeshesBuilder {
-        val mesh = OBJENESIS.newInstance(ChunkMeshesBuilder::class.java)
+        val mesh = ChunkMeshesBuilder::class.java.allocate()
         mesh::opaque.forceSet(singleMesh())
 
         return mesh

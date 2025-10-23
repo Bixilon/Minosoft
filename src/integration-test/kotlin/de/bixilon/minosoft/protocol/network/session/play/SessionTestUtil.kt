@@ -40,8 +40,8 @@ import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.tags.TagManager
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.IT.FALLBACK_TAGS
-import de.bixilon.minosoft.test.IT.OBJENESIS
 import de.bixilon.minosoft.test.ITUtil
+import de.bixilon.minosoft.test.ITUtil.allocate
 import de.bixilon.minosoft.util.KUtil.startInit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -70,12 +70,12 @@ object SessionTestUtil {
     private val TAB_LIST = PlaySession::tabList.field
 
     private val language = LanguageManager()
-    private val signature = OBJENESIS.newInstance(SignatureKeyManagement::class.java)
+    private val signature = SignatureKeyManagement::class.java.allocate()
 
 
     fun createSession(worldSize: Int = 0, light: Boolean = false, version: String? = null, dimension: DimensionProperties? = null): PlaySession {
         // TODO: Init with local world
-        val session = OBJENESIS.newInstance(PlaySession::class.java)
+        val session = PlaySession::class.java.allocate()
         LANGUAGE.set(session, language)
         val version = if (version == null) IT.VERSION else Versions[version] ?: throw IllegalArgumentException("Can not find version: $version")
         SEQUENCE.set(session, AtomicInteger(1))
@@ -83,7 +83,7 @@ object SessionTestUtil {
         VERSION.set(session, version)
         REGISTRIES.set(session, Registries())
         session.registries.updateFlattened(version.flattened)
-        session.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadRegistries(version)
+        session.registries.parent = ITUtil.loadRegistries(version)
         WORLD.set(session, createWorld(session, light, (worldSize * 2 + 1).pow(2), dimension))
         PLAYER.set(session, LocalPlayerEntity(session.account, session, signature))
         session.player.startInit()

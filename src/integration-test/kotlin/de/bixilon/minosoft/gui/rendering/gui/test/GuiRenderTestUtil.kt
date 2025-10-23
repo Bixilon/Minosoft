@@ -26,13 +26,13 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
-import de.bixilon.minosoft.test.IT.OBJENESIS
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 
 object GuiRenderTestUtil {
 
     private fun createContext(): RenderContext {
-        val context = OBJENESIS.newInstance(RenderContext::class.java)
+        val context = RenderContext::class.java.allocate()
         context.font = FontManager(DummyFontType)
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(DummyTextureManager(context))
@@ -43,7 +43,7 @@ object GuiRenderTestUtil {
     }
 
     fun create(size: Vec2f = Vec2f(1920.0f, 1080.0f)): GUIRenderer {
-        val renderer = OBJENESIS.newInstance(GUIRenderer::class.java)
+        val renderer = GUIRenderer::class.java.allocate()
         renderer::scaledSize.forceSet(DataObserver(size))
         renderer::halfSize.forceSet((size / 2.0f)._0)
 

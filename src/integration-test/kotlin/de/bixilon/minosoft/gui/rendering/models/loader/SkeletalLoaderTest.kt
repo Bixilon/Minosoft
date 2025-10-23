@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -40,7 +40,7 @@ class SkeletalLoaderTest {
 
 
     private fun createContext(): RenderContext {
-        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        val context = RenderContext::class.java.allocate()
         context::session.forceSet(SessionTestUtil.createSession())
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(DummyTextureManager(context))

@@ -13,28 +13,37 @@
 
 package de.bixilon.minosoft.test
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.MinosoftSIT
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Andesite
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Cobblestone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
+import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.tags.TagManager
-import org.objenesis.ObjenesisStd
+import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.test.ITUtil.allocate
 
 object IT {
-    val OBJENESIS = ObjenesisStd()
-    const val TEST_VERSION_NAME = "1.19.3"
-    var VERSION: Version = unsafeNull()
-    var REGISTRIES: Registries = unsafeNull()
-    var FALLBACK_TAGS: TagManager = unsafeNull()
-    val NULL_CONNECTION = OBJENESIS.newInstance(PlaySession::class.java)
+
+    init {
+        MinosoftSIT.setup()
+    }
 
 
-    var VERSION_LEGACY: Version = unsafeNull()
-    var REGISTRIES_LEGACY: Registries = unsafeNull()
+    var VERSION = Versions["1.19.3"]!!
+    var REGISTRIES = ITUtil.loadRegistries(VERSION)
 
 
-    val BLOCK_1: BlockState = unsafeNull()
-    val BLOCK_2: BlockState = unsafeNull()
-    val BLOCK_3: BlockState = unsafeNull()
+    var VERSION_LEGACY = Versions["1.12.2"]!!
+    var REGISTRIES_LEGACY = ITUtil.loadRegistries(VERSION_LEGACY)
+
+
+    var FALLBACK_TAGS = FallbackTags.map(REGISTRIES)
+
+
+    val BLOCK_1 = REGISTRIES.block[StoneBlock.Block]!!.states.default
+    val BLOCK_2 = REGISTRIES.block[Cobblestone.Block]!!.states.default
+    val BLOCK_3 = REGISTRIES.block[Andesite.Block]!!.states.default
+
+
+    val NULL_CONNECTION = PlaySession::class.java.allocate()
 }

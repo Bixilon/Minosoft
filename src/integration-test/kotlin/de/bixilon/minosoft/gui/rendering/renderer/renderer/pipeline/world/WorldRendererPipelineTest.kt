@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -190,13 +190,13 @@ class WorldRendererPipelineTest {
     }
 
     private fun context(): RenderContext {
-        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        val context = RenderContext::class.java.allocate()
         context.font = FontManager(DummyFontType)
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(DummyTextureManager(context))
 
-        val framebuffer = IT.OBJENESIS.newInstance(FramebufferManager::class.java)
-        framebuffer::world.forceSet(IT.OBJENESIS.newInstance(WorldFramebuffer::class.java).apply {
+        val framebuffer = FramebufferManager::class.java.allocate()
+        framebuffer::world.forceSet(WorldFramebuffer::class.java.allocate().apply {
             this::polygonMode.forceSet(PolygonModes.FILL)
             this::size.forceSet(Vec2i(1, 1)._0)
             this::scale.forceSet(1.0f)

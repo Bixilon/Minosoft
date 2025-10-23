@@ -43,7 +43,7 @@ import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import java.util.*
 
 object EntityRendererTestUtil {
@@ -53,7 +53,7 @@ object EntityRendererTestUtil {
         val session = SessionTestUtil.createSession()
         session::scoreboard.forceSet(ScoreboardManager(session))
         session::tabList.forceSet(TabList())
-        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        val context = RenderContext::class.java.allocate()
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(context.system.createTextureManager())
         context::shaders.forceSet(ShaderManager(context))
@@ -70,7 +70,7 @@ object EntityRendererTestUtil {
 
     fun create(): EntitiesRenderer {
         val context = createContext()
-        val renderer = IT.OBJENESIS.newInstance(EntitiesRenderer::class.java)
+        val renderer = EntitiesRenderer::class.java.allocate()
         renderer::context.forceSet(context)
         renderer::queue.forceSet(Queue())
         renderer::session.forceSet(context.session)

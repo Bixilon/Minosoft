@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,15 +24,15 @@ import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ModelTestUtil {
     private val cache = BlockLoader::class.java.getFieldOrNull("cache")!!
 
     fun createLoader(): ModelLoader {
-        val instance = IT.OBJENESIS.newInstance(ModelLoader::class.java)
-        instance::block.forceSet(IT.OBJENESIS.newInstance(BlockLoader::class.java))
+        val instance = ModelLoader::class.java.allocate()
+        instance::block.forceSet(BlockLoader::class.java.allocate())
         cache[instance.block] = HashMap<Any, Any>()
 
 

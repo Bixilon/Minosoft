@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.bindi
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.keysPressed
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import java.util.*
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -41,12 +41,12 @@ object InputTestUtil {
 
 
     fun create(): InputManager {
-        val manager = IT.OBJENESIS.newInstance(InputManager::class.java)
-        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        val manager = InputManager::class.java.allocate()
+        val context = RenderContext::class.java.allocate()
         context::window.forceSet(DummyWindow())
         manager::context.forceSet(context)
 
-        val bindings = IT.OBJENESIS.newInstance(BindingsManager::class.java)
+        val bindings = BindingsManager::class.java.allocate()
         bindings::input.forceSet(manager)
         bindingsPressed[bindings] = mutableSetOf<ResourceLocation>()
         profile[bindings] = ControlsProfile()

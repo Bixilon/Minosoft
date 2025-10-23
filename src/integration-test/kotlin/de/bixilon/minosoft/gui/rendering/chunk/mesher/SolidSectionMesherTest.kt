@@ -54,6 +54,7 @@ import de.bixilon.minosoft.gui.rendering.tint.tints.StaticTintProvider
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -61,7 +62,7 @@ import org.testng.annotations.Test
 class SolidSectionMesherTest {
 
     private fun createContext(session: PlaySession): RenderContext {
-        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        val context = RenderContext::class.java.allocate()
         context::session.forceSet(session)
         context::system.forceSet(DummyRenderSystem(context))
         context::camera.forceSet(Camera(context))

@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
-import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -44,7 +43,7 @@ import kotlin.reflect.full.companionObject
 
 @Test(groups = ["rendering", "textures"]) // TODO: flip skin correctly
 class SkinManagerTest {
-    val skin = IT.OBJENESIS.newInstance(SkinManager::class.java)
+    val skin = SkinManager::class.java.allocate()
     val readSkin = SkinManager::class.java.getDeclaredMethod("readSkin", ByteArray::class.java).apply { setUnsafeAccessible() }
     val isReallyWide = SkinManager::class.companionObject!!.java.getDeclaredMethod("isReallyWide", TextureBuffer::class.java).apply { setUnsafeAccessible() }
 

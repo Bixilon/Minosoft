@@ -20,20 +20,13 @@ import de.bixilon.kutil.file.PathUtil.toPath
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.profile.ProfileOptions
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Andesite
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Cobblestone
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
-import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.main.MinosoftBoot
-import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.test.IT
-import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -44,11 +37,12 @@ import java.nio.file.Path
 
 
 internal object MinosoftSIT {
+    private var loaded = false
 
     private fun setupEnv() {
         LogOptions.async = false
         LogOptions.verbose = true
-        RunConfiguration.APPLICATION_NAME = "Minosoft it"
+        RunConfiguration.APPLICATION_NAME = "Minosoft Integration Test"
 
         if (Environment.isInCI()) {
             RunConfiguration::home.forceSet(Path.of("./it"))
@@ -60,41 +54,39 @@ internal object MinosoftSIT {
         RenderSystemFactory.factory = DummyRenderSystem
     }
 
-    @BeforeSuite
-    fun setup() {
-        setupEnv()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is java version ${System.getProperty("java.version")}" }
-        KUtil.initBootClasses()
-        KUtil.initPlayClasses()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
-
-        IntegratedAssets.DEFAULT.load()
-
+    private fun boot() {
         val worker = TaskWorker()
         MinosoftBoot.register(worker)
         worker -= BootTasks.PROFILES
         worker -= BootTasks.LAN_SERVERS
         worker -= BootTasks.MODS
         worker -= BootTasks.CLI
+
         worker.work(MinosoftBoot.LATCH)
+
         MinosoftBoot.LATCH.dec()
         MinosoftBoot.LATCH.await()
-
-        loadPixlyzerData()
-        IT.VERSION_LEGACY = Versions["1.12.2"]!!
-        IT.REGISTRIES_LEGACY = ITUtil.loadPreFlatteningData(IT.VERSION_LEGACY)
-
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
     }
 
-    fun loadPixlyzerData() {
-        val (version, registries) = ITUtil.loadPixlyzerData(IT.TEST_VERSION_NAME)
-        IT.VERSION = version
-        IT.REGISTRIES = registries
-        IT.FALLBACK_TAGS = FallbackTags.map(registries)
 
-        IT::BLOCK_1.forceSet(registries.block[StoneBlock.Block]!!.states.default)
-        IT::BLOCK_2.forceSet(registries.block[Cobblestone.Block]!!.states.default)
-        IT::BLOCK_3.forceSet(registries.block[Andesite.Block]!!.states.default)
+    @BeforeSuite
+    @Synchronized
+    fun setup() {
+        if (loaded) return
+        setupEnv()
+        Log.init()
+
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is java version ${System.getProperty("java.version")}" }
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
+
+        IntegratedAssets.DEFAULT.load()
+        KUtil.init()
+
+        boot()
+
+
+
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
+        loaded = true
     }
 }

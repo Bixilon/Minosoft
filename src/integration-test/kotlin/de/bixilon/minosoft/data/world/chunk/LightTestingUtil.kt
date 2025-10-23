@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.objenesis.ObjenesisStd
 
 const val SECTIONS = 16
@@ -45,7 +46,7 @@ object LightTestingUtil {
 
     fun createWorld(): World {
         val objenesis = ObjenesisStd()
-        val world = objenesis.newInstance(World::class.java)
+        val world = World::class.java.allocate()
         world::dimension.forceSet(DataObserver(DimensionProperties(skyLight = true)))
         world::session.forceSet(createSession())
         world::biomes.forceSet(WorldBiomes(world))
@@ -54,8 +55,7 @@ object LightTestingUtil {
     }
 
     fun createEmptyChunk(position: ChunkPosition): Chunk {
-        val objenesis = ObjenesisStd()
-        val chunk = objenesis.newInstance(Chunk::class.java)
+        val chunk = Chunk::class.java.allocate()
         chunk::lock.forceSet(RWLock.rwlock())
         chunk::position.forceSet(position.raw)
         chunk::world.forceSet(world)

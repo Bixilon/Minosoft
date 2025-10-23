@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,11 +21,13 @@ import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
+import org.objenesis.ObjenesisStd
 import org.testng.SkipException
 
 object ITUtil {
     private val profile = createResourcesProfile()
-    private val pixlyzer: MutableMap<Version, Registries> = mutableMapOf()
+    private val registries: MutableMap<Version, Registries> = mutableMapOf()
+    private val objenesis = ObjenesisStd()
 
 
     fun createResourcesProfile(): ResourcesProfile {
@@ -39,13 +41,11 @@ object ITUtil {
     }
 
     fun loadPixlyzerData(version: Version): Registries {
-        pixlyzer[version]?.let { return it }
         val registries = Registries(false)
 
         val data = PixLyzerUtil.loadPixlyzerData(profile, version)
 
         registries.load(version, data, SimpleLatch(0))
-        pixlyzer[version] = registries
 
         return registries
     }
@@ -54,9 +54,8 @@ object ITUtil {
         return PreFlattening.loadRegistry(profile, version, SimpleLatch(0))
     }
 
-    fun loadRegistries(version: Version): Registries {
-        if (version.flattened) return loadPixlyzerData(version)
-        return loadPreFlatteningData(version)
+    fun loadRegistries(version: Version) = registries.getOrPut(version) {
+        if (version.flattened) loadPixlyzerData(version) else loadPreFlatteningData(version)
     }
 
     @Deprecated("Its not implemented")
@@ -65,6 +64,6 @@ object ITUtil {
     }
 
     fun <T> Class<T>.allocate(): T {
-        return IT.OBJENESIS.newInstance(this)
+        return objenesis.newInstance(this)
     }
 }

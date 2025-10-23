@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.insta
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -30,8 +30,8 @@ import org.testng.annotations.Test
 class OpenCloseAnimationTest {
 
     private fun create(): Animation {
-        val mesh = IT.OBJENESIS.newInstance(SkeletalMesh::class.java)
-        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        val mesh = SkeletalMesh::class.java.allocate()
+        val context = RenderContext::class.java.allocate()
         val model = BakedSkeletalModel(mesh, BakedSkeletalTransform(0, Vec3f.EMPTY, emptyMap()), 1, emptyMap())
         val instance = model.createInstance(context)
 

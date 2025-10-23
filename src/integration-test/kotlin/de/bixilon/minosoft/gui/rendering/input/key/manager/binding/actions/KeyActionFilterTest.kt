@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
-import de.bixilon.minosoft.test.IT.OBJENESIS
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -45,8 +45,8 @@ val InputManager.times: EnumMap<KeyCodes, ValueTimeMark> get() = TIMES.get(this)
 
 
 fun input(): InputManager {
-    val manager = OBJENESIS.newInstance(InputManager::class.java)
-    val bindings = OBJENESIS.newInstance(BindingsManager::class.java)
+    val manager = InputManager::class.java.allocate()
+    val bindings = BindingsManager::class.java.allocate()
     bindingsPressed[bindings] = mutableSetOf<ResourceLocation>()
     manager::bindings.forceSet(bindings)
     TIMES[manager] = EnumMap<KeyCodes, ValueTimeMark>(KeyCodes::class.java)

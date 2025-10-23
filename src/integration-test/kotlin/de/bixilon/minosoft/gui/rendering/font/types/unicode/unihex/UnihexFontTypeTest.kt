@@ -19,7 +19,7 @@ import de.bixilon.kutil.buffer.ByteBufferUtil.readRemaining
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
-import de.bixilon.minosoft.test.IT.OBJENESIS
+import de.bixilon.minosoft.test.ITUtil.allocate
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
@@ -81,7 +81,7 @@ class UnihexFontTypeTest {
     fun `basic rasterizing`() {
         val pixels = byteArrayOf(0x00, 0x00, 0x00, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E, 0x00, 0x0E)
 
-        val rasterizer = OBJENESIS.newInstance(UnifontRasterizer::class.java)
+        val rasterizer = UnifontRasterizer::class.java.allocate()
 
         val texture = UnifontTexture(1)
         assertEquals(texture.size, Vec2i(16, 16))

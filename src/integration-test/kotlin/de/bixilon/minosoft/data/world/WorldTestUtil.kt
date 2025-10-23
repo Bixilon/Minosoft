@@ -34,13 +34,13 @@ import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 
 object WorldTestUtil {
 
 
     fun createWorld(session: PlaySession?, light: Boolean = false, capacity: Int = 0, dimension: DimensionProperties? = null): World {
-        val world = IT.OBJENESIS.newInstance(World::class.java)
+        val world = World::class.java.allocate()
         world::occlusion.forceSet(DataObserver(0))
         world::lock.forceSet(RWLock.rwlock())
         world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity), 0))
