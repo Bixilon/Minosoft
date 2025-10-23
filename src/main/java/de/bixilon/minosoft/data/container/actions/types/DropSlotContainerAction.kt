@@ -40,7 +40,7 @@ class DropSlotContainerAction(
 
         if (session.player.gamemode == Gamemodes.CREATIVE && container is PlayerInventory) {
             session.connection += ItemStackCreateC2SP(-1, if (stack) item else item.with(count = DECREASE_AMOUNT))
-            session.connection += ItemStackCreateC2SP(slot, item)
+            session.connection += ItemStackCreateC2SP(slot, next)
         } else {
             session.connection += ContainerClickC2SP(container.id, container.serverRevision, slot, 4, if (stack) 1 else 0, id, changes, null)
         }
