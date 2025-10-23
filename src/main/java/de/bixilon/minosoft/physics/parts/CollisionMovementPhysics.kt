@@ -46,7 +46,7 @@ object CollisionMovementPhysics {
 
     fun collide(movement: Vec3d, aabb: AABB, collisions: Shape): MVec3d {
         val length2 = movement.length2()
-        if (movement.length2() < 1.0E-7) return MVec3d.EMPTY
+        if (length2 < 1.0E-7) return MVec3d.EMPTY
 
         val adjustedAABB = AABB(aabb)
         val adjusted = MVec3d(movement)
@@ -67,7 +67,7 @@ object CollisionMovementPhysics {
 
 
         if (adjusted.length2() > length2) {
-            return MVec3d.EMPTY
+            adjusted.clear()
         }
 
         return adjusted
