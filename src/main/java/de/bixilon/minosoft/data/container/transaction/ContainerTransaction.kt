@@ -41,14 +41,13 @@ class ContainerTransaction(
             field = value
         }
 
-    fun commit(): CommittedAction {
+    fun unsafeCommit(): Int2ObjectOpenHashMap<ItemStack?> {
         assert(state == TransactionState.PENDING)
-        val id = container.transactions.create(this)
 
         container.lock.locked {
             for ((slotId, next) in this.changes) {
                 val previous = container.items[slotId]
-                if (previous == next) continue
+                if (previous == next) continue // TODO: remove from changeset
                 this.previous.items[slotId] = previous
 
                 container.items[slotId] = next
@@ -60,8 +59,14 @@ class ContainerTransaction(
         }
 
         state = TransactionState.COMMITTED
+        return this.changes
+    }
 
-        return CommittedAction(id, this.changes)
+    fun commit(): CommittedAction {
+        val changes = unsafeCommit()
+        val id = container.transactions.create(this)
+
+        return CommittedAction(id, changes)
     }
 
     fun drop() {

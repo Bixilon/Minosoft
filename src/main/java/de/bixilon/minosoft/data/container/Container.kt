@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.container.transaction.ContainerTransaction
 import de.bixilon.minosoft.data.container.transaction.ContainerTransactionManager
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
@@ -79,6 +80,50 @@ abstract class Container(
             session.player.items.opened = null
             session.connection.send(CloseContainerC2SP(id))
         }
+    }
+
+
+    fun add(stack: ItemStack): ContainerTransaction = lock.locked {
+        val existing = ArrayList<Int>()
+        var next: Int? = null
+        val max = if (stack.item is StackableItem) stack.item.maxStackSize else 1
+
+        for (section in sections) {
+            for (slot in section) {
+                val item = items[slot]
+                if (item == null) {
+                    if (next == null) {
+                        next = slot
+                    }
+                    if (max == 1) break
+                    continue
+                }
+
+                if (item.matches(stack) && max > 1) {
+                    existing += slot
+                }
+            }
+        }
+
+        val transaction = ContainerTransaction(this)
+        var left = stack.count
+
+        for (slot in existing) {
+            val existing = items[slot]!!
+            val merge = minOf(left, max - existing.count)
+            if (merge <= 0) break
+
+            transaction[slot] = existing.copy(count = merge)
+            left -= merge
+
+            if (left <= 0) break
+        }
+
+        if (left > 0 && next != null) {
+            transaction[next] = stack.copy(count = left)
+        }
+
+        return transaction
     }
 
     fun execute(action: ContainerAction) {
