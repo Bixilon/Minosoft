@@ -15,10 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 
-class GUIVertexOptions(
+data class GUIVertexOptions(
     val tintColor: RGBAColor? = null,
     val alpha: Float = 1.0f,
 ) {
+
     companion object {
 
         fun GUIVertexOptions?.copy(tintColor: RGBAColor? = null, alpha: Float = 1.0f): GUIVertexOptions? {
