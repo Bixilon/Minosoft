@@ -62,8 +62,7 @@ class ItemInfoPopper(
                 text += line
             }
         }
-        stack.enchanting?.enchantments?.let {
-            if (it.isEmpty()) return@let
+        stack.enchanting.enchantments.takeIf { it.isNotEmpty() }?.let {
             text += "\n"
             val language = context.session.language
             for ((enchantment, level) in it) {

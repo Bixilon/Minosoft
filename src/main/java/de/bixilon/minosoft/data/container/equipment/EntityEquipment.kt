@@ -54,7 +54,7 @@ class EntityEquipment(
             if (enchantment is SlotSpecificEnchantment && !enchantment.canApply(entity, slot, item)) {
                 continue
             }
-            val level = item.enchanting?.enchantments?.get(enchantment) ?: continue
+            val level = item.enchanting.enchantments[enchantment] ?: continue
             if (level > maxLevel) {
                 maxLevel = level
             }

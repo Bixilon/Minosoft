@@ -36,7 +36,7 @@ open class BowItem(identifier: ResourceLocation = this.identifier) : RangeWeapon
             // infinite arrows
             return LongUseResults.START
         }
-        if (stack.enchanting?.enchantments?.get(WeaponEnchantment.Infinity) != null) {
+        if (stack.enchanting.enchantments[WeaponEnchantment.Infinity] != null) {
             return LongUseResults.START
         }
         // TODO: check if player has arrows
