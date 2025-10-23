@@ -37,8 +37,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         container.lock.locked {
             for ((slotId, stack) in this@ContainerItemsS2CP.items.withIndex()) {
-                if (stack == null) continue
-                items[slotId] = stack
+                container.items[slotId] = stack
             }
             container.serverRevision = revision
             floatingItem?.let { container.floating = it }
