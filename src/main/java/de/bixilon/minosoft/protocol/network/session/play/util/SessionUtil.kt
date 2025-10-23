@@ -23,14 +23,12 @@ import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
-import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
-import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

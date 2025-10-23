@@ -17,11 +17,11 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
-import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferColorTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferDepthTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import org.lwjgl.opengl.GL30.*
 
 class OpenGLFramebuffer(

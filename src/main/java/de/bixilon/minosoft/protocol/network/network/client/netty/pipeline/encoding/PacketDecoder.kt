@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.Pack
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotImplementedException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.UnknownPacketIdException
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.packets.registry.PacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping

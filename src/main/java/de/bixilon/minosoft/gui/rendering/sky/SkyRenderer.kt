@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.sky.planet.MoonRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.scatter.SunScatterRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession

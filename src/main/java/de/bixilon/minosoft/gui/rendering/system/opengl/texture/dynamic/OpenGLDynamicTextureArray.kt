@@ -19,8 +19,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType

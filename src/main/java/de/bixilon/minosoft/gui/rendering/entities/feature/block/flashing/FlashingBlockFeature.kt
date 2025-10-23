@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh

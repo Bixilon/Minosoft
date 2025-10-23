@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader

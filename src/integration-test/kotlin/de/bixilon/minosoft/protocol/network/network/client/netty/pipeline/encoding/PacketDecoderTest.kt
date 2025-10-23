@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.s2c.play.PongS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates

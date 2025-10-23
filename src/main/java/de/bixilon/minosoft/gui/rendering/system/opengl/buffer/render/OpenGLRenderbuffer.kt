@@ -17,8 +17,8 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferStates
-import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import org.lwjgl.opengl.GL30.*
 
 class OpenGLRenderbuffer(

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.physics.enchantments
 
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.container.stack.properties.EnchantingProperty
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.IronArmor

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyTestUtil.toArray
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import org.testng.Assert
 import org.testng.annotations.Test
 

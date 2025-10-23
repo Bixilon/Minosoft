@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
 import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
-import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder

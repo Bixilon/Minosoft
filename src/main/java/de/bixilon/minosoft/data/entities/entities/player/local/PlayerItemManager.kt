@@ -15,13 +15,11 @@ package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.IncompleteContainer
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.items.Item

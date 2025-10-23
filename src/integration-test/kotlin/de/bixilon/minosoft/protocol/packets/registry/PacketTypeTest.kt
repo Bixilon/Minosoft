@@ -13,13 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.bytes.`in`.ByteBufferUnderflowException
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.NetworkConnection
-import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferOverflowException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.buffer.PacketBufferUnderflowException
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
-import de.bixilon.kutil.buffer.bytes.`in`.ByteBufferUnderflowException
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.protocol.packets.registry.factory.PacketFactory

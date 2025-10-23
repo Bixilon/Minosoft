@@ -52,7 +52,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
-import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.recipes.RecipeFactories

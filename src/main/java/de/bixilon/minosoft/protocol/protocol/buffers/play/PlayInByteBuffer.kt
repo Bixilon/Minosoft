@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
@@ -38,7 +39,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

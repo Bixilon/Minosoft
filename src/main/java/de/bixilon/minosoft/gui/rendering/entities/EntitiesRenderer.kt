@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class EntitiesRenderer(

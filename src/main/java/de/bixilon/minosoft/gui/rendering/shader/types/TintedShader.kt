@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.types
 
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 

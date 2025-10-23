@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
+import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongSessionTypeException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotAvailableException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.type.PacketNotFoundException
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket

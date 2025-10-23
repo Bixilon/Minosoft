@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
-import de.bixilon.minosoft.data.container.IncompleteContainer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
