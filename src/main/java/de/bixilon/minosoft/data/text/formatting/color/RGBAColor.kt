@@ -67,6 +67,7 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
     override inline fun rgba() = this
 
     fun mix(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
+    fun mixRGB(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, alpha * other.alpha)
 
 
     fun toVec3f() = Vec3f(redf, greenf, bluef)

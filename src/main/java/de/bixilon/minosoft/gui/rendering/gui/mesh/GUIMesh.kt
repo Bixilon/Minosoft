@@ -79,19 +79,19 @@ class GUIMesh(
             var color = tint
 
             if (options != null) {
-                options.tintColor?.let { color = tint.mix(it) }
+                options.tintColor?.let { color = tint.mixRGB(it) }
 
                 if (options.alpha != 1.0f) {
-                    color = color.with(alpha = color.alpha * options.alpha)
+                    color = color.with(alpha = color.alphaf * options.alpha)
                 }
             }
 
-            data.add(x)
-            data.add(y)
-            data.add(u)
-            data.add(v)
-            data.add(textureId)
-            data.add(color.rgba.buffer())
+            data.add(
+                x, y,
+                u, v,
+                textureId,
+                color.rgba.buffer(),
+            )
         }
     }
 
