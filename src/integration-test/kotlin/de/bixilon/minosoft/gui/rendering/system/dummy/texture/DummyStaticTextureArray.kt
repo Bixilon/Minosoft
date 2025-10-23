@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
@@ -46,5 +47,5 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
     override fun findResolution(size: Vec2i) = size
 
     override fun activate() = Unit
-    override fun use(shader: NativeShader, name: String) = Unit
+    override fun use(shader: TextureShader, name: String) = Unit
 }

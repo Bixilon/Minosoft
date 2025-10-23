@@ -21,6 +21,6 @@ interface FogShader : AbstractShader, CameraPositionShader {
     var fog: FogManager
 
     fun fog(default: FogManager = native.context.camera.fog): AnyShaderUniform<FogManager> {
-        return uniform("fog", default) { native, _, value -> value.use(native) }
+        return uniform("fog", default) { native, _, value -> value.use(this) }
     }
 }

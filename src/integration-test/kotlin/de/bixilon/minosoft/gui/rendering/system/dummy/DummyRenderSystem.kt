@@ -42,7 +42,7 @@ class DummyRenderSystem(
 ) : RenderSystem {
     override val shaders: MutableSet<Shader> = mutableSetOf()
     override lateinit var vendor: GPUVendor
-    override var shader: NativeShader? = null
+    override var shader: Shader? = null
     override var framebuffer: Framebuffer? = null
     override val active: Boolean = true
 

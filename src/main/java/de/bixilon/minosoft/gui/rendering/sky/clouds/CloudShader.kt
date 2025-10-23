@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class CloudShader(
-    override val native: NativeShader,
-) : Shader(), ViewProjectionShader, FogShader {
+    native: NativeShader,
+) : Shader(native), ViewProjectionShader, FogShader {
     override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
     override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()

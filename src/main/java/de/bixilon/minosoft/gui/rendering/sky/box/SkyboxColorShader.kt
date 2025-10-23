@@ -19,8 +19,8 @@ import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class SkyboxColorShader(
-    override val native: NativeShader,
-) : Shader() {
+    native: NativeShader,
+) : Shader(native) {
     var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())
     var skyColor by uniform("uSkyColor", ChatColors.BLACK)
 }

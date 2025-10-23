@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class GenericTextureShader(
-    override val native: NativeShader,
-) : Shader(), TextureShader, AnimatedShader, ViewProjectionShader {
+    native: NativeShader,
+) : Shader(native), TextureShader, AnimatedShader, ViewProjectionShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
 }

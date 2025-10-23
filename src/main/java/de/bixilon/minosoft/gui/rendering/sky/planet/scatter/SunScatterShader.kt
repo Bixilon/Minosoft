@@ -19,8 +19,8 @@ import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class SunScatterShader(
-    override val native: NativeShader,
-) : Shader() {
+    native: NativeShader,
+) : Shader(native) {
     var scatterMatrix by uniform("uScatterMatrix", Mat4f())
     var sunPosition by uniform("uSunPosition", Vec3f())
     var intensity by uniform("uIntensity", 0.0f)

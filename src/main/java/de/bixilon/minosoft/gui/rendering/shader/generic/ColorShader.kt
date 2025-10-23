@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class ColorShader(
-    override val native: NativeShader,
-) : Shader(), ViewProjectionShader {
+    native: NativeShader,
+) : Shader(native), ViewProjectionShader {
     override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
 }

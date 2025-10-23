@@ -18,7 +18,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.CodeTexturePart
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
@@ -53,7 +53,7 @@ abstract class TextureManager {
         skins.initialize(session.account, session.assetsManager)
     }
 
-    fun use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES) {
+    fun use(shader: TextureShader, name: String = ShaderUniforms.TEXTURES) {
         static.use(shader, name)
         dynamic.use(shader, name)
         font.use(shader, name)

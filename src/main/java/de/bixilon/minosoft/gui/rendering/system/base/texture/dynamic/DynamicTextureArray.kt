@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
@@ -36,7 +36,7 @@ abstract class DynamicTextureArray(
     val mipmaps: Int,
 ) : TextureArray {
     protected var textures: Array<WeakReference<DynamicTexture>?> = arrayOfNulls(initialSize)
-    protected val shaders: MutableSet<NativeShader> = mutableSetOf()
+    protected val shaders: MutableSet<TextureShader> = mutableSetOf()
     private val lock = ReentrantRWLock()
     private var reload = false
 
@@ -112,7 +112,7 @@ abstract class DynamicTextureArray(
     }
 
 
-    override fun use(shader: NativeShader, name: String) {
+    override fun use(shader: TextureShader, name: String) {
         shaders += shader
         unsafeUse(shader, name)
     }
@@ -170,6 +170,6 @@ abstract class DynamicTextureArray(
     protected abstract fun upload(index: Int, texture: DynamicTexture)
     protected abstract fun upload()
     protected abstract fun unload()
-    protected abstract fun unsafeUse(shader: NativeShader, name: String = ShaderUniforms.TEXTURES)
+    protected abstract fun unsafeUse(shader: TextureShader, name: String = ShaderUniforms.TEXTURES)
     protected abstract fun createTexture(identifier: Any, index: Int): DynamicTexture
 }

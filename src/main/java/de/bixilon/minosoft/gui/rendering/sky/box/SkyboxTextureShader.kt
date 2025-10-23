@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class SkyboxTextureShader(
-    override val native: NativeShader,
-) : Shader(), TextureShader, TintedShader {
+    native: NativeShader,
+) : Shader(native), TextureShader, TintedShader {
     override var textures: TextureManager by textureManager()
 
     var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())

@@ -15,10 +15,11 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLNativeShader
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
@@ -104,12 +105,13 @@ class OpenGLDynamicTextureArray(
         glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
     }
 
-    override fun unsafeUse(shader: NativeShader, name: String) {
+    override fun unsafeUse(shader: TextureShader, name: String) {
         if (handle <= 0) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         context.system.unsafeCast<OpenGLRenderSystem>().log { "Binding dynamic textures to $shader" }
+        val native = shader.native.unsafeCast<OpenGLNativeShader>()
         shader.use()
         activate()
-        shader.setTexture("$name[$index]", index)
+        native.setTexture("$name[$index]", index)
     }
 
     override fun unload() {

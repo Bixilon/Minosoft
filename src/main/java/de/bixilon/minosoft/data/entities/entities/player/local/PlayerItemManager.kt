@@ -21,6 +21,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.item.items.Item
 

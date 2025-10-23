@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
@@ -78,13 +79,13 @@ class OpenGLFontTextureArray(
         glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
     }
 
-    override fun use(shader: NativeShader, name: String) {
+    override fun use(shader: TextureShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         shader.use()
         activate()
 
         glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
-        shader.setTexture("$name[$index]", index)
+        shader.native.setTexture("$name[$index]", index)
     }
 
 

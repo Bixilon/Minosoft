@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.light
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
+import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
 class LightmapBuffer(renderSystem: RenderSystem) {
@@ -64,7 +64,7 @@ class LightmapBuffer(renderSystem: RenderSystem) {
         upload = false
     }
 
-    fun use(shader: NativeShader, name: String) {
+    fun use(shader: LightShader, name: String) {
         buffer.use(shader, name)
     }
 

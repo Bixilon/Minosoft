@@ -16,6 +16,6 @@ package de.bixilon.minosoft.gui.rendering.framebuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-open class FramebufferShader(override val native: NativeShader) : Shader() {
+open class FramebufferShader(native: NativeShader) : Shader(native) {
     var texture by uniform("uTexture", 0, NativeShader::setInt) // TODO: sampler2D
 }

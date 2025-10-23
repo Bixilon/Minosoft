@@ -21,6 +21,6 @@ interface LightShader : AbstractShader {
     val lightmap: LightmapBuffer
 
     fun lightmap(name: String = "uLightMapBuffer", buffer: LightmapBuffer = native.context.light.map.buffer): AnyShaderUniform<LightmapBuffer> {
-        return uniform(name, buffer) { native, name, value -> value.use(native, name) }
+        return uniform(name, buffer) { _, name, value -> value.use(this, name) }
     }
 }

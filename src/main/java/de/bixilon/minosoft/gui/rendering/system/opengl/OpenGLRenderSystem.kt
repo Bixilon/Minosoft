@@ -73,21 +73,22 @@ class OpenGLRenderSystem(
     var uniformBufferBindingIndex = 0
     var textureBindingIndex = 0
 
-    override var shader: NativeShader? = null
+    override var shader: Shader? = null
         set(value) {
-            if (value === field) return
+            if (value?.native === field?.native) return
 
             if (value == null) {
                 glUseProgram(0)
                 field = null
                 return
             }
+            val native = value.native
 
-            check(value is OpenGLNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
-            check(value.loaded) { "Shader not loaded!" }
-            check(this === value.system) { "Shader not part of this context!" }
+            check(native is OpenGLNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
+            check(native.loaded) { "Shader not loaded!" }
+            check(this === native.system) { "Shader not part of this context!" }
 
-            value.unsafeUse()
+            native.unsafeUse()
 
             field = value
         }

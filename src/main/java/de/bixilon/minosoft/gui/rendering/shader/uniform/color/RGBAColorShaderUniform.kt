@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.shader.uniform.color
 
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.reflect.KProperty
 
 class RGBAColorShaderUniform(
-    native: NativeShader,
+    native: AbstractShader,
     default: RGBAColor,
     name: String,
 ) : ShaderUniform(native, name) {
@@ -27,7 +29,7 @@ class RGBAColorShaderUniform(
 
     override fun upload() {
         super.upload()
-        native.setRGBAColor(name, value)
+        shader.native.setRGBAColor(name, value)
     }
 
     operator fun getValue(thisRef: Any, property: KProperty<*>): RGBAColor {
@@ -35,7 +37,7 @@ class RGBAColorShaderUniform(
     }
 
     operator fun setValue(thisRef: Any, property: KProperty<*>, value: RGBAColor) {
-        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        assert(Thread.currentThread() == shader.native.context.thread) { "Can not call shader setters from other threads!" }
         if (this.value == value) {
             return
         }

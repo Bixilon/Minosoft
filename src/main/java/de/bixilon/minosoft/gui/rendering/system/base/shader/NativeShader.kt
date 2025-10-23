@@ -36,11 +36,6 @@ interface NativeShader {
 
     fun reload()
 
-    fun use(): NativeShader {
-        context.system.shader = this
-        return this
-    }
-
     fun setBoolean(uniform: String, boolean: Boolean)
     fun setFloat(uniform: String, value: Float)
 

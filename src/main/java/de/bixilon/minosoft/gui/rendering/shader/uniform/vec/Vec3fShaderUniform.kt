@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.shader.uniform.vec
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.reflect.KProperty
 
 class Vec3fShaderUniform(
-    native: NativeShader,
+    native: AbstractShader,
     default: Vec3f,
     name: String,
 ) : ShaderUniform(native, name) {
@@ -27,7 +28,7 @@ class Vec3fShaderUniform(
 
     override fun upload() {
         super.upload()
-        native.setVec3f(name, value)
+        shader.native.setVec3f(name, value)
     }
 
     operator fun getValue(thisRef: Any, property: KProperty<*>): Vec3f {
@@ -35,7 +36,7 @@ class Vec3fShaderUniform(
     }
 
     operator fun setValue(thisRef: Any, property: KProperty<*>, value: Vec3f) {
-        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        assert(Thread.currentThread() == shader.native.context.thread) { "Can not call shader setters from other threads!" }
         if (this.value == value) return
         this.value = value
         upload()

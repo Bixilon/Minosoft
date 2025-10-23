@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 
 abstract class ShaderUniform(
-    protected val native: NativeShader,
+    protected val shader: AbstractShader,
     val name: String,
 ) {
 
     open fun upload() {
-        native.use()
+        shader.use()
     }
 }

@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.shader
 
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-abstract class Shader : AbstractShader {
+abstract class Shader(override val native: NativeShader) : AbstractShader {
     private val uniforms: MutableMap<String, ShaderUniform> = mutableMapOf()
 
     fun unload() {
@@ -31,8 +32,8 @@ abstract class Shader : AbstractShader {
         }
     }
 
-    fun use() {
-        native.use()
+    override fun use() {
+        native.context.system.shader = this
     }
 
     fun reload() {

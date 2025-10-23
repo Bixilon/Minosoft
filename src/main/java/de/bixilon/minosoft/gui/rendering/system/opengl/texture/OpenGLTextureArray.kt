@@ -18,6 +18,8 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
@@ -59,7 +61,7 @@ class OpenGLTextureArray(
         }
     }
 
-    override fun use(shader: NativeShader, name: String) {
+    override fun use(shader: TextureShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         context.system.unsafeCast<OpenGLRenderSystem>().log { "Binding static textures to $shader" }
         shader.use()
@@ -71,7 +73,7 @@ class OpenGLTextureArray(
             }
 
             glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
-            shader.setTexture("$name[$index]", index)
+            shader.native.setTexture("$name[$index]", index)
         }
     }
 

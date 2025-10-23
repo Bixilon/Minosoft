@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.time.Duration.Companion.milliseconds
@@ -134,12 +136,12 @@ class FogManager(
             if (shader !is FogShader || shader.fog != this) {
                 continue
             }
-            shader.native.update(start, end, distance, color, flags)
+            shader.update(start, end, distance, color, flags)
         }
         this.shaderRevision = revision
     }
 
-    fun use(shader: NativeShader) {
+    fun use(shader: AbstractShader) {
         val start = state.start * state.start
         val end = state.end * state.end
         val distance = end - start
@@ -149,15 +151,17 @@ class FogManager(
         shader.update(start, end, distance, color, flags)
     }
 
-    private fun NativeShader.update(start: Float, end: Float, distance: Float, color: RGBAColor?, flags: Int) {
+    private fun AbstractShader.update(start: Float, end: Float, distance: Float, color: RGBAColor?, flags: Int) {
         use()
 
-        this["uFogStart"] = start
-        this["uFogEnd"] = end
-        this["uFogDistance"] = distance
+        val native = native
 
-        color?.let { this["uFogColor"] = it }
-        this.setUInt("uFogFlags", flags)
+        native["uFogStart"] = start
+        native["uFogEnd"] = end
+        native["uFogDistance"] = distance
+
+        color?.let { native["uFogColor"] = it }
+        native.setUInt("uFogFlags", flags)
     }
 
 

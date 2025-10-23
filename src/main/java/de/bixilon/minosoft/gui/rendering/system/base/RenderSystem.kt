@@ -35,7 +35,7 @@ import java.nio.FloatBuffer
 interface RenderSystem {
     val shaders: MutableSet<Shader>
     val vendor: GPUVendor
-    var shader: NativeShader?
+    var shader: Shader?
     var framebuffer: Framebuffer?
 
     val active: Boolean

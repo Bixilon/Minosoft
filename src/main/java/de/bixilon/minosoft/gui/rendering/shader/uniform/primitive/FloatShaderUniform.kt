@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.uniform.primitive
 
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.reflect.KProperty
 
 class FloatShaderUniform(
-    native: NativeShader,
+    native: AbstractShader,
     default: Float,
     name: String,
 ) : ShaderUniform(native, name) {
@@ -26,7 +27,7 @@ class FloatShaderUniform(
 
     override fun upload() {
         super.upload()
-        native.setFloat(name, value)
+        shader.native.setFloat(name, value)
     }
 
     operator fun getValue(thisRef: Any, property: KProperty<*>): Float {
@@ -34,7 +35,7 @@ class FloatShaderUniform(
     }
 
     operator fun setValue(thisRef: Any, property: KProperty<*>, value: Float) {
-        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        assert(Thread.currentThread() == shader.native.context.thread) { "Can not call shader setters from other threads!" }
         if (this.value == value) {
             return
         }

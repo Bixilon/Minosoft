@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.shader.types.TintedShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-class ArmShader(override val native: NativeShader) : Shader(), TintedShader, TextureShader {
+class ArmShader(native: NativeShader) : Shader(native), TintedShader, TextureShader {
     override var textures: TextureManager by textureManager()
     var texture by uniform("uIndexLayerAnimation", 0x00, NativeShader::setUInt)
     override var tint by uniform("uTintColor", ChatColors.WHITE.rgb())

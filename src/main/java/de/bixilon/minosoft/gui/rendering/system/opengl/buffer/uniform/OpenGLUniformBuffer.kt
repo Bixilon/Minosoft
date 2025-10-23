@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderableBuffer
 import org.lwjgl.opengl.GL30.glBindBufferBase
@@ -38,11 +38,11 @@ abstract class OpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, override va
     }
 
 
-    override fun use(shader: NativeShader, bufferName: String) {
+    override fun use(shader: AbstractShader, bufferName: String) {
         if (this.state != RenderableBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         shader.use()
 
-        shader[bufferName] = this
+        shader.native[bufferName] = this
         glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, id)
     }
 }

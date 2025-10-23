@@ -26,9 +26,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 abstract class BaseSkeletalShader(
-    override val native: NativeShader,
+    native: NativeShader,
     buffer: FloatUniformBuffer,
-) : Shader(), TextureShader, ViewProjectionShader, FogShader {
+) : Shader(native), TextureShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()
     override var cameraPosition: Vec3f by cameraPosition()

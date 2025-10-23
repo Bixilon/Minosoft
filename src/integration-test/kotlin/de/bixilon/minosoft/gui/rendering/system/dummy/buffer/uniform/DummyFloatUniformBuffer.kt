@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform
 
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
@@ -30,7 +31,7 @@ class DummyFloatUniformBuffer(
     override fun upload() {
     }
 
-    override fun use(shader: NativeShader, bufferName: String) {
+    override fun use(shader: AbstractShader, bufferName: String) {
     }
 
     override val state: RenderableBufferStates = RenderableBufferStates.UPLOADED

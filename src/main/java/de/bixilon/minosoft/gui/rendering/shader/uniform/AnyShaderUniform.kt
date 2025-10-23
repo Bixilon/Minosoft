@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.uniform
 
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.ShaderSetter
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class AnyShaderUniform<T>(
-    native: NativeShader,
+    native: AbstractShader,
     default: T,
     name: String,
     private val setter: ShaderSetter<T>,
@@ -28,7 +30,7 @@ class AnyShaderUniform<T>(
 
     override fun upload() {
         super.upload()
-        setter.set(native, name, value)
+        setter.set(shader.native, name, value)
     }
 
     override fun getValue(thisRef: Any, property: KProperty<*>): T {
@@ -36,7 +38,7 @@ class AnyShaderUniform<T>(
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        assert(Thread.currentThread() == native.context.thread) { "Can not call shader setters from other threads!" }
+        assert(Thread.currentThread() == shader.native.context.thread) { "Can not call shader setters from other threads!" }
         if (this.value == value) { // TODO: This is a hack, because mostly matrices are set unsafe (they are mutable) and the check is then always false
             return
         }

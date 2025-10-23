@@ -33,19 +33,21 @@ interface AbstractShader {
     val native: NativeShader
 
     fun <T : ShaderUniform> uniform(uniform: T): T
-    fun <T> uniform(name: String, default: T, type: ShaderSetter<T>) = uniform(AnyShaderUniform(native, default, name, type))
+    fun <T> uniform(name: String, default: T, type: ShaderSetter<T>) = uniform(AnyShaderUniform(this, default, name, type))
 
-    fun uniform(name: String, default: Float) = uniform(FloatShaderUniform(native, default, name))
+    fun uniform(name: String, default: Float) = uniform(FloatShaderUniform(this, default, name))
     fun uniform(name: String, default: Boolean) = uniform(name, default, NativeShader::set)
 
-    fun uniform(name: String, default: RGBColor) = uniform(RGBColorShaderUniform(native, default, name))
-    fun uniform(name: String, default: RGBAColor) = uniform(RGBAColorShaderUniform(native, default, name))
+    fun uniform(name: String, default: RGBColor) = uniform(RGBColorShaderUniform(this, default, name))
+    fun uniform(name: String, default: RGBAColor) = uniform(RGBAColorShaderUniform(this, default, name))
 
     fun uniform(name: String, default: Vec2f) = uniform(name, default, NativeShader::set)
-    fun uniform(name: String, default: Vec3f) = uniform(Vec3fShaderUniform(native, default, name))
+    fun uniform(name: String, default: Vec3f) = uniform(Vec3fShaderUniform(this, default, name))
     fun uniform(name: String, default: Vec4f) = uniform(name, default, NativeShader::set)
 
-    fun uniform(name: String, default: Mat4f) = uniform(Mat4fShaderUniform(native, default, name))
+    fun uniform(name: String, default: Mat4f) = uniform(Mat4fShaderUniform(this, default, name))
 
     fun uniform(name: String, default: UniformBuffer) = uniform(name, default, NativeShader::set)
+
+    fun use()
 }

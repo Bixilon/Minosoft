@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.light.updater.DebugLightUpdater
 import de.bixilon.minosoft.gui.rendering.light.updater.FullbrightLightUpdater
 import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
 import de.bixilon.minosoft.gui.rendering.light.updater.normal.NormalLightmapUpdater
+import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
@@ -56,7 +57,7 @@ class Lightmap(private val light: RenderLight) {
         return defaultUpdater
     }
 
-    fun use(shader: NativeShader, bufferName: String = "uLightMapBuffer") {
+    fun use(shader: LightShader, bufferName: String = "uLightMapBuffer") {
         buffer.use(shader, bufferName)
     }
 
