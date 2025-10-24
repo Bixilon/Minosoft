@@ -25,12 +25,12 @@ import org.lwjgl.opengl.GL30.*
 import java.nio.FloatBuffer
 
 class FloatOpenGlVertexBuffer(
-    renderSystem: OpenGlRenderSystem,
+    system: OpenGlRenderSystem,
     override val struct: MeshStruct,
     data: FloatBuffer,
-    override val primitiveType: PrimitiveTypes,
-) : FloatOpenGlBuffer(renderSystem, data), FloatVertexBuffer {
-    private val vao = OpenGlVao(renderSystem, struct)
+    override val primitive: PrimitiveTypes,
+) : FloatOpenGlBuffer(system, data), FloatVertexBuffer {
+    private val vao = OpenGlVao(system, struct)
     override var vertices = -1
         private set
 
@@ -62,7 +62,7 @@ class FloatOpenGlVertexBuffer(
     override fun draw() {
         check(state == GpuBufferStates.UPLOADED) { "Vertex buffer is not uploaded: $state" }
         bindVao()
-        gl { glDrawArrays(primitiveType.gl, 0, if (EMPTY_BUFFERS) 0 else vertices) }
+        gl { glDrawArrays(primitive.gl, 0, if (EMPTY_BUFFERS) 0 else vertices) }
     }
 
     override fun unload() {
@@ -75,13 +75,11 @@ class FloatOpenGlVertexBuffer(
     private companion object {
 
         val PrimitiveTypes.gl: Int
-            get() {
-                return when (this) {
+            get() = when (this) {
                     PrimitiveTypes.POINT -> GL_POINTS
                     PrimitiveTypes.LINE -> GL_LINES
                     PrimitiveTypes.TRIANGLE -> GL_TRIANGLES
                     PrimitiveTypes.QUAD -> GL_QUADS
-                }
             }
     }
 }

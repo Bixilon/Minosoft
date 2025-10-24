@@ -28,7 +28,6 @@ class DummyNativeShader(
 ) : NativeShader {
     override val loaded: Boolean = true
     override val defines: MutableMap<String, Any> = mutableMapOf()
-    override val log: String = ""
 
     override fun load() = Unit
 

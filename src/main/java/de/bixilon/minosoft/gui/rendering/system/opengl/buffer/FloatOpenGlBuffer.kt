@@ -15,35 +15,34 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import org.lwjgl.opengl.GL15.glBufferSubData
+import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress0
 import java.nio.FloatBuffer
 
-open class FloatOpenGlBuffer(renderSystem: OpenGlRenderSystem, protected var _data: FloatBuffer?) : OpenGlRenderableBuffer(renderSystem, GpuBufferTypes.ARRAY_BUFFER), RenderFloatBuffer {
+open class FloatOpenGlBuffer(system: OpenGlRenderSystem, protected var _data: FloatBuffer?) : OpenGlGpuBuffer(system), RenderFloatBuffer {
     override var buffer: FloatBuffer
         get() = _data!!
         set(value) {
             _data = value
         }
-    override val drawTypes: RenderableBufferDrawTypes = RenderableBufferDrawTypes.STATIC
+
+    override val glType get() = GL_ARRAY_BUFFER
 
     override fun initialUpload() {
         bind()
         val position = buffer.position()
-        gl { nglBufferData(type.gl, buffer, if (EMPTY_BUFFERS) 0 else position, drawTypes.gl) }
+        gl { nglBufferData(glType, buffer, if (EMPTY_BUFFERS) 0 else position, GL_STATIC_DRAW) }
         state = GpuBufferStates.UPLOADED
         unbind()
     }
 
     override fun upload() {
         bind()
-        gl { glBufferSubData(type.gl, 0, buffer) }
+        gl { glBufferSubData(glType, 0, buffer) }
         unbind()
     }
 

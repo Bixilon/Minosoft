@@ -31,10 +31,10 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGlFrameb
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGlUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGlUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGlVertexBuffer
-import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGLError
-import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGLException
-import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGLShaderManagement
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlError
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlException
+import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlShaderManagement
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGlVendor
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -52,7 +52,7 @@ class OpenGlRenderSystem(
     val context: RenderContext,
     val log: Boolean = LogOptions.verbose,
 ) : RenderSystem {
-    override val shader = OpenGLShaderManagement(this)
+    override val shader = OpenGlShaderManagement(this)
     private var thread: Thread? = null
     private val capabilities: MutableSet<RenderingCapabilities> = RenderingCapabilities.set()
     override lateinit var vendor: OpenGlVendor
@@ -243,9 +243,7 @@ class OpenGlRenderSystem(
         return OpenGlFramebuffer(this, size, scale, texture, depth, stencil)
     }
 
-    override fun createTextureManager(): OpenGLTextureManager {
-        return OpenGLTextureManager(context)
-    }
+    override fun createTextureManager() = OpenGlTextureManager(this)
 
     override var clearColor: RGBAColor = Colors.TRUE_BLACK.rgba()
         set(value) {
@@ -265,12 +263,12 @@ class OpenGlRenderSystem(
         gl { glClear(bits) }
     }
 
-    override fun getErrors(): List<OpenGLError> {
+    override fun getErrors(): List<OpenGlError> {
         val error = glGetError()
 
         if (error == GL_NO_ERROR) return emptyList()
         // opengl only supports single error
-        return listOf(OpenGLError(error))
+        return listOf(OpenGlError(error))
     }
 
     private var polygonOffsetFactor: Float = 0.0f
@@ -310,87 +308,75 @@ class OpenGlRenderSystem(
         override fun create(context: RenderContext) = OpenGlRenderSystem(context)
 
         private val RenderingCapabilities.gl: Int
-            get() {
-                return when (this) {
-                    RenderingCapabilities.BLENDING -> GL_BLEND
-                    RenderingCapabilities.DEPTH_TEST -> GL_DEPTH_TEST
-                    RenderingCapabilities.FACE_CULLING -> GL_CULL_FACE
-                    RenderingCapabilities.POLYGON_OFFSET -> GL_POLYGON_OFFSET_FILL
-                    else -> throw IllegalArgumentException("OpenGL does not support capability: $this")
-                }
+            get() = when (this) {
+                RenderingCapabilities.BLENDING -> GL_BLEND
+                RenderingCapabilities.DEPTH_TEST -> GL_DEPTH_TEST
+                RenderingCapabilities.FACE_CULLING -> GL_CULL_FACE
+                RenderingCapabilities.POLYGON_OFFSET -> GL_POLYGON_OFFSET_FILL
+                else -> throw IllegalArgumentException("OpenGL does not support capability: $this")
             }
 
         private val BlendingFunctions.gl: Int
-            get() {
-                return when (this) {
-                    BlendingFunctions.ZERO -> GL_ZERO
-                    BlendingFunctions.ONE -> GL_ONE
-                    BlendingFunctions.SOURCE_COLOR -> GL_SRC_COLOR
-                    BlendingFunctions.ONE_MINUS_SOURCE_COLOR -> GL_ONE_MINUS_SRC_COLOR
-                    BlendingFunctions.DESTINATION_COLOR -> GL_DST_COLOR
-                    BlendingFunctions.ONE_MINUS_DESTINATION_COLOR -> GL_ONE_MINUS_DST_COLOR
-                    BlendingFunctions.SOURCE_ALPHA -> GL_SRC_ALPHA
-                    BlendingFunctions.ONE_MINUS_SOURCE_ALPHA -> GL_ONE_MINUS_SRC_ALPHA
-                    BlendingFunctions.DESTINATION_ALPHA -> GL_DST_ALPHA
-                    BlendingFunctions.ONE_MINUS_DESTINATION_ALPHA -> GL_ONE_MINUS_DST_ALPHA
-                    BlendingFunctions.CONSTANT_COLOR -> GL_CONSTANT_COLOR
-                    BlendingFunctions.ONE_MINUS_CONSTANT_COLOR -> GL_ONE_MINUS_CONSTANT_COLOR
-                    BlendingFunctions.CONSTANT_ALPHA -> GL_CONSTANT_ALPHA
-                    BlendingFunctions.ONE_MINUS_CONSTANT_ALPHA -> GL_ONE_MINUS_CONSTANT_ALPHA
-                    else -> throw IllegalArgumentException("OpenGL does not support blending function: $this")
-                }
+            get() = when (this) {
+                BlendingFunctions.ZERO -> GL_ZERO
+                BlendingFunctions.ONE -> GL_ONE
+                BlendingFunctions.SOURCE_COLOR -> GL_SRC_COLOR
+                BlendingFunctions.ONE_MINUS_SOURCE_COLOR -> GL_ONE_MINUS_SRC_COLOR
+                BlendingFunctions.DESTINATION_COLOR -> GL_DST_COLOR
+                BlendingFunctions.ONE_MINUS_DESTINATION_COLOR -> GL_ONE_MINUS_DST_COLOR
+                BlendingFunctions.SOURCE_ALPHA -> GL_SRC_ALPHA
+                BlendingFunctions.ONE_MINUS_SOURCE_ALPHA -> GL_ONE_MINUS_SRC_ALPHA
+                BlendingFunctions.DESTINATION_ALPHA -> GL_DST_ALPHA
+                BlendingFunctions.ONE_MINUS_DESTINATION_ALPHA -> GL_ONE_MINUS_DST_ALPHA
+                BlendingFunctions.CONSTANT_COLOR -> GL_CONSTANT_COLOR
+                BlendingFunctions.ONE_MINUS_CONSTANT_COLOR -> GL_ONE_MINUS_CONSTANT_COLOR
+                BlendingFunctions.CONSTANT_ALPHA -> GL_CONSTANT_ALPHA
+                BlendingFunctions.ONE_MINUS_CONSTANT_ALPHA -> GL_ONE_MINUS_CONSTANT_ALPHA
+                else -> throw IllegalArgumentException("OpenGL does not support blending function: $this")
             }
 
         private val DepthFunctions.gl: Int
-            get() {
-                return when (this) {
-                    DepthFunctions.NEVER -> GL_NEVER
-                    DepthFunctions.LESS -> GL_LESS
-                    DepthFunctions.EQUAL -> GL_EQUAL
-                    DepthFunctions.LESS_OR_EQUAL -> GL_LEQUAL
-                    DepthFunctions.GREATER -> GL_GREATER
-                    DepthFunctions.NOT_EQUAL -> GL_NOTEQUAL
-                    DepthFunctions.GREATER_OR_EQUAL -> GL_GEQUAL
-                    DepthFunctions.ALWAYS -> GL_ALWAYS
-                    else -> throw IllegalArgumentException("OpenGL does not support depth function: $this")
-                }
+            get() = when (this) {
+                DepthFunctions.NEVER -> GL_NEVER
+                DepthFunctions.LESS -> GL_LESS
+                DepthFunctions.EQUAL -> GL_EQUAL
+                DepthFunctions.LESS_OR_EQUAL -> GL_LEQUAL
+                DepthFunctions.GREATER -> GL_GREATER
+                DepthFunctions.NOT_EQUAL -> GL_NOTEQUAL
+                DepthFunctions.GREATER_OR_EQUAL -> GL_GEQUAL
+                DepthFunctions.ALWAYS -> GL_ALWAYS
+                else -> throw IllegalArgumentException("OpenGL does not support depth function: $this")
             }
 
         private val PolygonModes.gl: Int
-            get() {
-                return when (this) {
-                    PolygonModes.FILL -> GL_FILL
-                    PolygonModes.LINE -> GL_LINE
-                    PolygonModes.POINT -> GL_POINT
-                    else -> throw IllegalArgumentException("OpenGL does not support polygon mode: $this")
-                }
+            get() = when (this) {
+                PolygonModes.FILL -> GL_FILL
+                PolygonModes.LINE -> GL_LINE
+                PolygonModes.POINT -> GL_POINT
+                else -> throw IllegalArgumentException("OpenGL does not support polygon mode: $this")
             }
 
         private val FaceTypes.gl: Int
-            get() {
-                return when (this) {
-                    FaceTypes.FRONT_LEFT -> GL_FRONT_LEFT
-                    FaceTypes.FRONT_RIGHT -> GL_FRONT_RIGHT
-                    FaceTypes.BACK_LEFT -> GL_BACK_LEFT
-                    FaceTypes.BACK_RIGHT -> GL_BACK_RIGHT
-                    FaceTypes.FRONT -> GL_FRONT
-                    FaceTypes.BACK -> GL_BACK
-                    FaceTypes.LEFT -> GL_LEFT
-                    FaceTypes.RIGHT -> GL_RIGHT
-                    FaceTypes.FRONT_AND_BACK -> GL_FRONT_AND_BACK
-                    else -> throw IllegalArgumentException("OpenGL does not support face type: $this")
-                }
+            get() = when (this) {
+                FaceTypes.FRONT_LEFT -> GL_FRONT_LEFT
+                FaceTypes.FRONT_RIGHT -> GL_FRONT_RIGHT
+                FaceTypes.BACK_LEFT -> GL_BACK_LEFT
+                FaceTypes.BACK_RIGHT -> GL_BACK_RIGHT
+                FaceTypes.FRONT -> GL_FRONT
+                FaceTypes.BACK -> GL_BACK
+                FaceTypes.LEFT -> GL_LEFT
+                FaceTypes.RIGHT -> GL_RIGHT
+                FaceTypes.FRONT_AND_BACK -> GL_FRONT_AND_BACK
+                else -> throw IllegalArgumentException("OpenGL does not support face type: $this")
             }
 
         private val IntegratedBufferTypes.gl: Int
-            get() {
-                return when (this) {
-                    IntegratedBufferTypes.DEPTH_BUFFER -> GL_DEPTH_BUFFER_BIT
-                    IntegratedBufferTypes.ACCUM_BUFFER -> GL_ACCUM_BUFFER_BIT
-                    IntegratedBufferTypes.STENCIL_BUFFER -> GL_STENCIL_BUFFER_BIT
-                    IntegratedBufferTypes.COLOR_BUFFER -> GL_COLOR_BUFFER_BIT
-                    else -> throw IllegalArgumentException("OpenGL does not support integrated buffer type: $this")
-                }
+            get() = when (this) {
+                IntegratedBufferTypes.DEPTH_BUFFER -> GL_DEPTH_BUFFER_BIT
+                IntegratedBufferTypes.ACCUM_BUFFER -> GL_ACCUM_BUFFER_BIT
+                IntegratedBufferTypes.STENCIL_BUFFER -> GL_STENCIL_BUFFER_BIT
+                IntegratedBufferTypes.COLOR_BUFFER -> GL_COLOR_BUFFER_BIT
+                else -> throw IllegalArgumentException("OpenGL does not support integrated buffer type: $this")
             }
 
         inline fun <T> gl(runnable: () -> T): T {
@@ -399,12 +385,12 @@ class OpenGlRenderSystem(
             }
             if (OpenGlOptions.CHECK_ERRORS_BEFORE_CALL) {
                 val error = glGetError()
-                if (error != GL_NO_ERROR) throw OpenGLException(OpenGLError(error))
+                if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
             }
             val result = runnable.invoke()
             if (OpenGlOptions.CHECK_ERRORS_AFTER_CALL) {
                 val error = glGetError()
-                if (error != GL_NO_ERROR) throw OpenGLException(OpenGLError(error))
+                if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
             }
             return result
         }

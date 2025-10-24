@@ -13,6 +13,5 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
 
-interface FloatVertexBuffer : RenderFloatBuffer, GpuBuffer, VertexBuffer
+interface FloatVertexBuffer : VertexBuffer, RenderFloatBuffer

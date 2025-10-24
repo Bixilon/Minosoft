@@ -14,18 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGLNativeShader
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
+import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlNativeShader
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glFormat
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -37,14 +36,13 @@ import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import java.nio.ByteBuffer
 
-class OpenGLDynamicTextureArray(
-    context: RenderContext,
-    val renderSystem: OpenGlRenderSystem,
-    val index: Int = renderSystem.textureBindingIndex++,
+class OpenGlDynamicTextureArray(
+    val system: OpenGlRenderSystem,
+    val index: Int = system.textureBindingIndex++,
     initialSize: Int = 32,
     val resolution: Int,
     mipmaps: Int,
-) : DynamicTextureArray(context, initialSize, mipmaps) {
+) : DynamicTextureArray(system.context, initialSize, mipmaps) {
     private val empty = IntArray(resolution * resolution) { 0x00 }
     private var handle = -1
 
@@ -79,8 +77,8 @@ class OpenGLDynamicTextureArray(
 
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Uploading dynamic textures" }
-        val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
+        system.log { "Uploading dynamic textures" }
+        val handle = OpenGlTextureUtil.createTextureArray(mipmaps)
         for (level in 0..mipmaps) {
             gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         }
@@ -101,15 +99,15 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun activate() {
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Activating dynamic textures" }
+        system.log { "Activating dynamic textures" }
         gl { glActiveTexture(GL_TEXTURE0 + index) }
         gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
     }
 
     override fun unsafeUse(shader: TextureShader, name: String) {
         if (handle <= 0) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Binding dynamic textures to $shader" }
-        val native = shader.native.unsafeCast<OpenGLNativeShader>()
+        system.log { "Binding dynamic textures to $shader" }
+        val native = shader.native.unsafeCast<OpenGlNativeShader>()
         shader.use()
         activate()
         native.setTexture("$name[$index]", index)
@@ -127,6 +125,6 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun createTexture(identifier: Any, index: Int): DynamicTexture {
-        return OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
+        return OpenGlDynamicTexture(identifier, createShaderIdentifier(index = index))
     }
 }

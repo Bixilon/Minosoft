@@ -15,10 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.shader
 
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGLNativeShader
 
 class DummyShaderManagement(val system: DummyRenderSystem) : ShaderManagement {
     private val shaders: MutableSet<Shader> = mutableSetOf()

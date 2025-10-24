@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.dummy.buffer
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -23,7 +22,6 @@ import java.nio.FloatBuffer
 class DummyVertexBuffer(
     override val struct: MeshStruct,
     override var buffer: FloatBuffer,
-    override val type: GpuBufferTypes = GpuBufferTypes.ARRAY_BUFFER,
 ) : FloatVertexBuffer {
     override val state: GpuBufferStates = GpuBufferStates.PREPARING
 
@@ -38,7 +36,7 @@ class DummyVertexBuffer(
     }
 
     override val vertices: Int = 0
-    override val primitiveType: PrimitiveTypes = PrimitiveTypes.QUAD
+    override val primitive: PrimitiveTypes = PrimitiveTypes.QUAD
 
     override fun draw() {
     }

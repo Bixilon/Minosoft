@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import java.nio.FloatBuffer
 
@@ -34,7 +33,6 @@ class DummyFloatUniformBuffer(
     }
 
     override val state: GpuBufferStates = GpuBufferStates.UPLOADED
-    override val type: GpuBufferTypes = GpuBufferTypes.UNIFORM_BUFFER
 
     override fun init() {
     }

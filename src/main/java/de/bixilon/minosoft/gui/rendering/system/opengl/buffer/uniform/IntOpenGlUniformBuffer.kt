@@ -17,8 +17,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import org.lwjgl.opengl.GL15.glBufferData
-import org.lwjgl.opengl.GL15.glBufferSubData
+import org.lwjgl.opengl.GL15.*
 
 class IntOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGlUniformBuffer(renderSystem, bindingIndex), IntUniformBuffer {
     override val size: Int
@@ -26,7 +25,7 @@ class IntOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int
 
     override fun initialUpload() {
         bind()
-        gl { glBufferData(type.gl, data, drawTypes.gl) }
+        gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) }
         state = GpuBufferStates.UPLOADED
         unbind()
     }
@@ -34,7 +33,7 @@ class IntOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        gl { glBufferSubData(type.gl, 0, data) }
+        gl { glBufferSubData(glType, 0, data) }
         unbind()
     }
 

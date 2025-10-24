@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LEVEL
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 
-object OpenGLTextureUtil {
+object OpenGlTextureUtil {
 
     fun createTextureArray(mipmaps: Int): Int {
         val textureId = gl { glGenTextures() }

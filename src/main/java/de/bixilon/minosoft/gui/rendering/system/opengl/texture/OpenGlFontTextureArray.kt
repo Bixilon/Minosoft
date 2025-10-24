@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glFormat
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -36,17 +36,17 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL33.GL_TEXTURE_SWIZZLE_RGBA
 import java.nio.ByteBuffer
 
-class OpenGLFontTextureArray(
-    context: RenderContext,
+class OpenGlFontTextureArray(
+    val system: OpenGlRenderSystem,
     compressed: FontCompressions,
-) : FontTextureArray(context, RESOLUTION, compressed) {
-    val index = context.system.unsafeCast<OpenGlRenderSystem>().textureBindingIndex++
+) : FontTextureArray(system.context, RESOLUTION, compressed) {
+    val index = system.textureBindingIndex++
     private var handle = -1
     private var textureIndex = 0
 
 
     override fun upload(latch: AbstractLatch?) {
-        this.handle = OpenGLTextureUtil.createTextureArray(0)
+        this.handle = OpenGlTextureUtil.createTextureArray(0)
         // Texture alpha format is also available in OpenGL compatibility profile and WebGL but was removed in OpenGL core profile. An alternative is to rely on texture red format and texture swizzle as shown with the following code samples. (see https://www.g-truc.net/post-0734.html)
         val format = when (compression) {
             FontCompressions.NONE -> GL_RGBA8
@@ -60,7 +60,7 @@ class OpenGLFontTextureArray(
         gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
 
         for (texture in textures) {
-            val renderData = texture.renderData as OpenGLTextureData
+            val renderData = texture.renderData as OpenGlTextureData
             val buffer = texture.data.buffer
             buffer.data.position(0)
             buffer.data.limit(buffer.data.capacity())
@@ -97,14 +97,14 @@ class OpenGLFontTextureArray(
         val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
         val array = TextureArrayProperties(uvEnd, resolution, pixel)
 
-        texture.renderData = OpenGLTextureData(this.index, textureIndex++, uvEnd, -1)
+        texture.renderData = OpenGlTextureData(this.index, textureIndex++, uvEnd, -1)
         texture.array = array
 
     }
 
     override fun load(latch: AbstractLatch?) {
         if (state != TextureArrayStates.PREPARING) throw IllegalStateException("Already loaded!")
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Loading font texture" }
+        system.log { "Loading font texture" }
         for (texture in textures) {
             load(texture)
         }

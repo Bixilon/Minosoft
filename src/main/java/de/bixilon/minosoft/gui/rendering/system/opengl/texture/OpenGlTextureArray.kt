@@ -26,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glFormat
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -35,22 +35,22 @@ import org.lwjgl.opengl.GL13.*
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import java.nio.ByteBuffer
 
-class OpenGLTextureArray(
-    context: RenderContext,
+class OpenGlTextureArray(
+    val system: OpenGlRenderSystem,
     async: Boolean,
     mipmaps: Int,
-) : StaticTextureArray(context, async, mipmaps) {
+) : StaticTextureArray(system.context, async, mipmaps) {
     private var handles = IntArray(RESOLUTIONS.size) { -1 }
 
     private val resolution = Array<MutableList<Texture>>(RESOLUTIONS.size) { mutableListOf() }
     private val lastTextureId = IntArray(RESOLUTIONS.size)
 
     init {
-        context.system.unsafeCast<OpenGlRenderSystem>().textureBindingIndex += RESOLUTIONS.size
+        system.textureBindingIndex += RESOLUTIONS.size
     }
 
     override fun activate() {
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Activating static texture array" }
+        system.log { "Activating static texture array" }
         for ((index, textureId) in handles.withIndex()) {
             if (textureId == -1) {
                 continue
@@ -62,7 +62,7 @@ class OpenGLTextureArray(
 
     override fun use(shader: TextureShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Binding static textures to $shader" }
+        system.log { "Binding static textures to $shader" }
         shader.use()
         activate()
 
@@ -103,15 +103,15 @@ class OpenGLTextureArray(
         val animation = texture.animation
         if (animation == null) {
             this.resolution[arrayId] += texture
-            texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
+            texture.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
             texture.array = array
             return
         }
 
-        texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animation.animationData)
+        texture.renderData = OpenGlTextureData(-1, -1, uvEnd, animation.animationData)
 
         for (sprite in animation.sprites) {
-            sprite.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animation.animationData)
+            sprite.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animation.animationData)
             sprite.array = array
             this.resolution[arrayId] += sprite
         }
@@ -119,15 +119,15 @@ class OpenGLTextureArray(
 
 
     private fun upload(resolution: Int, textures: List<Texture>): Int {
-        context.system.unsafeCast<OpenGlRenderSystem>().log { "Uploading ${resolution}x${resolution} static textures" }
-        val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
+        system.log { "Uploading ${resolution}x${resolution} static textures" }
+        val handle = OpenGlTextureUtil.createTextureArray(mipmaps)
 
         for (level in 0..mipmaps) {
             gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         }
 
         for (texture in textures) {
-            val renderData = texture.renderData as OpenGLTextureData
+            val renderData = texture.renderData as OpenGlTextureData
             for ((level, buffer) in texture.data.collect().withIndex()) {
                 if (level > this.mipmaps) break
                 buffer.data.position(0)

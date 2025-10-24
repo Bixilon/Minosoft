@@ -11,18 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer
+package de.bixilon.minosoft.gui.rendering.system.opengl.error
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-
-enum class GpuBufferTypes {
-    UNIFORM_BUFFER,
-    ARRAY_BUFFER,
-    ;
-
-    companion object : ValuesEnum<GpuBufferTypes> {
-        override val VALUES: Array<GpuBufferTypes> = values()
-        override val NAME_MAP: Map<String, GpuBufferTypes> = EnumUtil.getEnumValues(VALUES)
-    }
-}
+class OpenGlException(val error: OpenGlError) : Exception("OpenGL error: $error")

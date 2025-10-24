@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL30.glUseProgram
 
-class OpenGLShaderManagement(val system: OpenGlRenderSystem) : ShaderManagement {
+class OpenGlShaderManagement(val system: OpenGlRenderSystem) : ShaderManagement {
     private val shaders: MutableSet<Shader> = mutableSetOf()
 
     override var shader: Shader? = null
@@ -35,7 +35,7 @@ class OpenGLShaderManagement(val system: OpenGlRenderSystem) : ShaderManagement 
             }
             val native = value.native
 
-            check(native is OpenGLNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
+            check(native is OpenGlNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
             check(native.loaded) { "Shader not loaded!" }
             check(system === native.system) { "Shader not part of this context!" }
 
@@ -45,8 +45,8 @@ class OpenGLShaderManagement(val system: OpenGlRenderSystem) : ShaderManagement 
         }
 
 
-    override fun create(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLNativeShader {
-        return OpenGLNativeShader(system.context, vertex.shader(), geometry?.shader(), fragment.shader())
+    override fun create(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGlNativeShader {
+        return OpenGlNativeShader(system, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
     override fun plusAssign(shader: Shader) {

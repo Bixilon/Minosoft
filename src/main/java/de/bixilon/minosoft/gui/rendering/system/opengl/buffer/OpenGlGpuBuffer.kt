@@ -15,24 +15,22 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
-abstract class OpenGlRenderableBuffer(
+abstract class OpenGlGpuBuffer(
     protected var system: OpenGlRenderSystem,
-    override val type: GpuBufferTypes,
 ) : GpuBuffer {
     override var state: GpuBufferStates = GpuBufferStates.PREPARING
-    abstract val drawTypes: RenderableBufferDrawTypes
 
     protected var id: Int = -1
         private set
+
+    protected abstract val glType: Int
 
     override fun init() {
         if (this.state != GpuBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
@@ -46,7 +44,7 @@ abstract class OpenGlRenderableBuffer(
         if (system.boundBuffer == id) {
             return
         }
-        gl { glBindBuffer(type.gl, id) }
+        gl { glBindBuffer(glType, id) }
         system.boundBuffer = id
     }
 
@@ -56,7 +54,7 @@ abstract class OpenGlRenderableBuffer(
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
         }
-        gl { glBindBuffer(type.gl, 0) }
+        gl { glBindBuffer(glType, 0) }
     }
 
     override fun unload() {
@@ -73,25 +71,5 @@ abstract class OpenGlRenderableBuffer(
         if (state == GpuBufferStates.UPLOADED && system.active) {
             throw MemoryLeakException("Buffer has not been unloaded!")
         }
-    }
-
-    protected companion object {
-        val GpuBufferTypes.gl: Int
-            get() {
-                return when (this) {
-                    GpuBufferTypes.UNIFORM_BUFFER -> GL_UNIFORM_BUFFER
-                    GpuBufferTypes.ARRAY_BUFFER -> GL_ARRAY_BUFFER
-                    else -> throw IllegalArgumentException("OpenGL does not support buffer type: $this")
-                }
-            }
-
-        val RenderableBufferDrawTypes.gl: Int
-            get() {
-                return when (this) {
-                    RenderableBufferDrawTypes.DYNAMIC -> GL_DYNAMIC_DRAW
-                    RenderableBufferDrawTypes.STATIC -> GL_STATIC_DRAW
-                    else -> throw IllegalArgumentException("OpenGL does not support buffer draw type: $this")
-                }
-            }
     }
 }

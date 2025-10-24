@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.GL_INVALID_FRAMEBUFFER_OPERATION
 import org.lwjgl.opengl.GL45.GL_CONTEXT_LOST
 
-class OpenGLError(
+class OpenGlError(
     val id: Int,
 ) : RenderSystemError {
     val type = OpenGLErrors.CODES[id]

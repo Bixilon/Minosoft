@@ -60,27 +60,25 @@ abstract class MeshStruct(struct: KClass<*>) {
             get() = (this.type.classifier as KClass<*>).BYTES
 
         val KClass<*>.BYTES: Int
-            get() {
-                return when (this) {
-                    Mat4f::class -> Mat4f.LENGTH * Float.SIZE_BYTES
+            get() = when (this) {
+                Mat4f::class -> Mat4f.LENGTH * Float.SIZE_BYTES
 
-                    Vec3d::class -> Vec3d.LENGTH * Double.SIZE_BYTES
-                    Vec3f::class -> Vec3f.LENGTH * Float.SIZE_BYTES
-                    Vec3i::class -> Vec3i.LENGTH * Int.SIZE_BYTES
+                Vec3d::class -> Vec3d.LENGTH * Double.SIZE_BYTES
+                Vec3f::class -> Vec3f.LENGTH * Float.SIZE_BYTES
+                Vec3i::class -> Vec3i.LENGTH * Int.SIZE_BYTES
 
-                    Vec2d::class -> Vec2d.LENGTH * Double.SIZE_BYTES
-                    Vec2f::class -> Vec2f.LENGTH * Float.SIZE_BYTES
-                    Vec2i::class -> Vec2i.LENGTH * Int.SIZE_BYTES
+                Vec2d::class -> Vec2d.LENGTH * Double.SIZE_BYTES
+                Vec2f::class -> Vec2f.LENGTH * Float.SIZE_BYTES
+                Vec2i::class -> Vec2i.LENGTH * Int.SIZE_BYTES
 
-                    Float::class -> Float.SIZE_BYTES
-                    Int::class -> Int.SIZE_BYTES
+                Float::class -> Float.SIZE_BYTES
+                Int::class -> Int.SIZE_BYTES
 
-                    UnpackedUV::class -> 2 * Float.SIZE_BYTES
-                    PackedUV::class -> Float.SIZE_BYTES
+                UnpackedUV::class -> 2 * Float.SIZE_BYTES
+                PackedUV::class -> Float.SIZE_BYTES
 
-                    RGBColor::class -> Int.SIZE_BYTES
-                    else -> TODO("Can not find $this")
-                }
+                RGBColor::class -> Int.SIZE_BYTES
+                else -> TODO("Can not find $this")
             }
     }
 }

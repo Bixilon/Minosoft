@@ -14,7 +14,6 @@ package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
 interface GpuBuffer {
     val state: GpuBufferStates
-    val type: GpuBufferTypes
 
     fun init()
     fun upload()

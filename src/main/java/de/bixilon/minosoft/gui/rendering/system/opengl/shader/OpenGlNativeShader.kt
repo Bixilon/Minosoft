@@ -41,13 +41,13 @@ import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
 import java.io.FileNotFoundException
 
-class OpenGLNativeShader(
-    override val context: RenderContext,
+class OpenGlNativeShader(
+    val system: OpenGlRenderSystem,
     private val vertex: ResourceLocation,
     private val geometry: ResourceLocation?,
     private val fragment: ResourceLocation,
-    val system: OpenGlRenderSystem = context.system.unsafeCast(),
 ) : NativeShader {
+    override val context get() = system.context
     override var loaded: Boolean = false
         private set
     override val defines: MutableMap<String, Any> = mutableMapOf()
@@ -131,19 +131,16 @@ class OpenGLNativeShader(
     }
 
 
-    private fun getUniformLocation(uniform: String): Int {
-        val location = uniformLocations.getOrPut(uniform) {
-            val location = gl { glGetUniformLocation(handler, uniform) }
-            if (location < 0) {
-                val error = "No uniform named $uniform in $this, maybe you use something that has been optimized out? Check your shader code!"
-                if (!context.profile.advanced.allowUniformErrors) {
-                    throw IllegalArgumentException(error)
-                }
-                Log.log(LogMessageType.RENDERING, LogLevels.WARN, error)
+    private fun getUniformLocation(uniform: String) = uniformLocations.getOrPut(uniform) {
+        val location = gl { glGetUniformLocation(handler, uniform) }
+        if (location < 0) {
+            val error = "No uniform named $uniform in $this, maybe you use something that has been optimized out? Check your shader code!"
+            if (!context.profile.advanced.allowUniformErrors) {
+                throw IllegalArgumentException(error)
             }
-            return@getOrPut location
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN, error)
         }
-        return location
+        return@getOrPut location
     }
 
     override fun setFloat(uniform: String, value: Float) {
@@ -204,10 +201,6 @@ class OpenGLNativeShader(
     fun unsafeUse() {
         gl { glUseProgram(handler) }
     }
-
-    override val log: String
-        get() = TODO()
-
 
     override fun toString(): String {
         return "OpenGLShader: $vertex:$geometry:$fragment"

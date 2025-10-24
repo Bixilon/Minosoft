@@ -29,8 +29,6 @@ interface NativeShader {
     val context: RenderContext
     val defines: MutableMap<String, Any>
 
-    val log: String
-
     fun load()
     fun unload()
 

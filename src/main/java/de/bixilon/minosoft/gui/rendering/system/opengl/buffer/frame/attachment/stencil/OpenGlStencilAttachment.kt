@@ -30,11 +30,9 @@ class OpenGlStencilAttachment(
 
     companion object {
         val StencilModes.gl: Int
-            get() {
-                return when (this) {
+            get() = when (this) {
                     StencilModes.INDEX8 -> GL_STENCIL_INDEX8
                     else -> throw IllegalArgumentException("OpenGL does not support stencil mode: $this")
                 }
-            }
     }
 }

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRend
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-class OpenGLTextureData(
+class OpenGlTextureData(
     val array: Int,
     val index: Int,
     val uvEnd: Vec2f?,

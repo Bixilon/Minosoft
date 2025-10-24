@@ -14,27 +14,26 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlRenderableBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlGpuBuffer
 import org.lwjgl.opengl.GL30.glBindBufferBase
 import org.lwjgl.opengl.GL30.glBindBufferRange
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
-abstract class OpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, override val bindingIndex: Int) : OpenGlRenderableBuffer(renderSystem, GpuBufferTypes.UNIFORM_BUFFER), UniformBuffer {
-    override val drawTypes: RenderableBufferDrawTypes = RenderableBufferDrawTypes.DYNAMIC
+abstract class OpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, override val bindingIndex: Int) : OpenGlGpuBuffer(renderSystem), UniformBuffer {
     protected abstract val size: Int
     protected var initialSize = -1
+
+    override val glType get() = GL_UNIFORM_BUFFER
 
 
     override fun init() {
         super.init()
         initialUpload()
-        gl { glBindBufferRange(GL_UNIFORM_BUFFER, bindingIndex, id, 0, size.toLong()) }
+        gl { glBindBufferRange(glType, bindingIndex, id, 0, size.toLong()) }
         initialSize = size
     }
 
@@ -44,6 +43,6 @@ abstract class OpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, override va
         shader.use()
 
         shader.native[bufferName] = this
-        gl { glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, id) }
+        gl { glBindBufferBase(glType, bindingIndex, id) }
     }
 }
