@@ -174,7 +174,15 @@ class PlayInByteBuffer : InByteBuffer {
             return readLegacyItemStack()
         }
 
-        return readOptional { ItemStackUtil.of(readRegistryItem(session.registries.item), readUnsignedByte(), session, readNBT()?.toMutableJsonObject() ?: mutableMapOf()) }
+        return readOptional {
+            val item = readRegistryItemOrNull(session.registries.item)
+            val count = readUnsignedByte()
+            val nbt = readNBT()?.toMutableJsonObject()
+
+            if (item == null) return null
+
+            ItemStackUtil.of(item, count, session, nbt ?: mutableMapOf())
+        }
     }
 
     fun readEntityData(): Int2ObjectOpenHashMap<Any?> {
@@ -270,6 +278,10 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun <T> readRegistryItem(registry: AbstractRegistry<T>): T {
         return registry[readVarInt()]
+    }
+
+    fun <T> readRegistryItemOrNull(registry: AbstractRegistry<T>): T? {
+        return registry.getOrNull(readVarInt())
     }
 
     fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>, fixer: ResourceLocationFixer? = null): T? {
