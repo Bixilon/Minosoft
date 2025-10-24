@@ -11,37 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
+package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
-import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.RenderGpuBuffer
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import org.lwjgl.opengl.GL15.*
-import org.lwjgl.opengl.GL15C
-import org.lwjgl.system.MemoryUtil.memAddress0
-import java.nio.FloatBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlGpuBuffer
+import org.lwjgl.opengl.GL30.*
 
-open class FloatOpenGlBuffer(system: OpenGlRenderSystem, override val data: FloatBuffer) : OpenGlGpuBuffer(system), RenderGpuBuffer {
+class OpenGlIndexBuffer(
+    system: OpenGlRenderSystem,
+    private val data: IntArray,
+) : OpenGlGpuBuffer(system) {
+    override val glType get() = GL_ELEMENT_ARRAY_BUFFER
 
-    override val glType get() = GL_ARRAY_BUFFER
 
     override fun initialUpload() {
         bind()
-        val position = data.position()
-        gl { nglBufferData(glType, data, if (EMPTY_BUFFERS) 0 else position, GL_STATIC_DRAW) }
+        gl { glBufferData(glType, data, GL_STATIC_DRAW) }
         state = GpuBufferStates.UPLOADED
+        this::data.forceSet(null)
         unbind()
     }
 
     override fun upload() {
+        throw IllegalStateException("Can not reupload index buffer!")
         bind()
         gl { glBufferSubData(glType, 0, data) }
         unbind()
-    }
-
-    private fun nglBufferData(target: Int, buffer: FloatBuffer, length: Int, usage: Int) {
-        gl { GL15C.nglBufferData(target, Integer.toUnsignedLong(length) shl 2, memAddress0(buffer), usage) }
     }
 }

@@ -23,7 +23,7 @@ import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.FloatBuffer
 
-class FloatOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: FloatBuffer = memAllocFloat(0)) : OpenGlUniformBuffer(renderSystem, bindingIndex), FloatUniformBuffer {
+class FloatOpenGlUniformBuffer(system: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: FloatBuffer = memAllocFloat(0)) : OpenGlUniformBuffer(system, bindingIndex), FloatUniformBuffer {
     override val size get() = data.limit()
 
     override fun initialUpload() {

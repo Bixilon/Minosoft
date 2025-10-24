@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.*
 
-class IntOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGlUniformBuffer(renderSystem, bindingIndex), IntUniformBuffer {
+class IntOpenGlUniformBuffer(system: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGlUniformBuffer(system, bindingIndex), IntUniformBuffer {
     override val size get() = data.size
 
     override fun initialUpload() {

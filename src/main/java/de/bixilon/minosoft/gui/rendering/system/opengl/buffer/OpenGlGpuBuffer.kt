@@ -39,28 +39,29 @@ abstract class OpenGlGpuBuffer(
 
     protected abstract fun initialUpload()
 
-    protected open fun bind() {
-        if (system.boundBuffer == id) {
+    open fun bind() {
+        if (system.boundBuffer[glType] == id) {
             return
         }
         gl { glBindBuffer(glType, id) }
-        system.boundBuffer = id
+        system.boundBuffer[glType] = id
     }
 
-    protected open fun unbind() {
+    open fun unbind() {
         if (this.state != GpuBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
         }
-        gl { glBindBuffer(glType, 0) }
+        gl { glBindBuffer(glType, -1) }
+        system.boundBuffer -= glType
     }
 
     override fun unload() {
         if (this.state != GpuBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         gl { glDeleteBuffers(id) }
-        if (system.boundBuffer == id) {
-            system.boundBuffer = -1
+        if (system.boundBuffer[glType] == id) {
+            system.boundBuffer -= glType
         }
         id = -1
         state = GpuBufferStates.UNLOADED

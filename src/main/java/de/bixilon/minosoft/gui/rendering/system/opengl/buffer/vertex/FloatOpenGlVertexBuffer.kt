@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.util.KUtil.format
 import org.lwjgl.opengl.GL30.*
 import java.nio.FloatBuffer
 
@@ -29,10 +31,13 @@ class FloatOpenGlVertexBuffer(
     override val struct: MeshStruct,
     data: FloatBuffer,
     override val primitive: PrimitiveTypes,
+    index: IntArray?,
 ) : FloatOpenGlBuffer(system, data), FloatVertexBuffer {
     private val vao = OpenGlVao(system, struct)
+    private val index = index?.let { OpenGlIndexBuffer(system, index) }
     override var vertices = -1
         private set
+
 
     override fun init() {
         val floatsPerVertex = struct.BYTES_PER_VERTEX / Float.SIZE_BYTES
@@ -41,8 +46,9 @@ class FloatOpenGlVertexBuffer(
         super.init()
         bind()
         vao.init()
+        index?.init()
         super.initialUpload()
-        _data = null
+        this::data.forceSet(null)
 
 
         unbind()
@@ -53,20 +59,26 @@ class FloatOpenGlVertexBuffer(
         vao.unbind()
     }
 
-    fun bindVao() {
-        if (this.state != GpuBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
-        super.bind()
-        vao.bind()
-    }
 
     override fun draw() {
         check(state == GpuBufferStates.UPLOADED) { "Vertex buffer is not uploaded: $state" }
-        bindVao()
-        gl { glDrawArrays(primitive.gl, 0, if (EMPTY_BUFFERS) 0 else vertices) }
+
+        bind()
+        vao.bind()
+        index?.bind()
+
+        val count = if (EMPTY_BUFFERS) 0 else vertices
+
+        if (index == null) {
+            gl { glDrawArrays(primitive.gl, 0, count) }
+        } else {
+            gl { glDrawElements(primitive.gl, count, GL_UNSIGNED_INT, 0); }
+        }
     }
 
     override fun unload() {
         vao.unload()
+        index?.unload()
         super.unload()
     }
 
@@ -76,10 +88,10 @@ class FloatOpenGlVertexBuffer(
 
         val PrimitiveTypes.gl: Int
             get() = when (this) {
-                    PrimitiveTypes.POINT -> GL_POINTS
-                    PrimitiveTypes.LINE -> GL_LINES
-                    PrimitiveTypes.TRIANGLE -> GL_TRIANGLES
-                    PrimitiveTypes.QUAD -> GL_QUADS
+                PrimitiveTypes.POINT -> GL_POINTS
+                PrimitiveTypes.LINE -> GL_LINES
+                PrimitiveTypes.TRIANGLE -> GL_TRIANGLES
+                PrimitiveTypes.QUAD -> GL_QUADS
             }
     }
 }

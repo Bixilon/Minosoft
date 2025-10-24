@@ -38,7 +38,7 @@ import java.nio.ByteBuffer
 
 class OpenGlDynamicTextureArray(
     val system: OpenGlRenderSystem,
-    val index: Int = system.textureBindingIndex++,
+    val index: Int = system.nextTextureIndex++,
     initialSize: Int = 32,
     val resolution: Int,
     mipmaps: Int,

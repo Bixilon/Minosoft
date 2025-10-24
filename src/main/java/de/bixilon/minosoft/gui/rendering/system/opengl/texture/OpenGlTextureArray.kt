@@ -15,9 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
@@ -46,7 +44,7 @@ class OpenGlTextureArray(
     private val lastTextureId = IntArray(RESOLUTIONS.size)
 
     init {
-        system.textureBindingIndex += RESOLUTIONS.size
+        system.nextTextureIndex += RESOLUTIONS.size
     }
 
     override fun activate() {

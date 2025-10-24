@@ -14,9 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
@@ -40,7 +38,7 @@ class OpenGlFontTextureArray(
     val system: OpenGlRenderSystem,
     compressed: FontCompressions,
 ) : FontTextureArray(system.context, RESOLUTION, compressed) {
-    val index = system.textureBindingIndex++
+    val index = system.nextTextureIndex++
     private var handle = -1
     private var textureIndex = 0
 

@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL30.glBindBufferBase
 import org.lwjgl.opengl.GL30.glBindBufferRange
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
-abstract class OpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, override val bindingIndex: Int) : OpenGlGpuBuffer(renderSystem), UniformBuffer {
+abstract class OpenGlUniformBuffer(system: OpenGlRenderSystem, override val bindingIndex: Int) : OpenGlGpuBuffer(system), UniformBuffer {
     protected abstract val size: Int
     protected var initialSize = -1
 

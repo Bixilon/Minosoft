@@ -42,6 +42,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.logging.LogOptions
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
@@ -68,10 +69,12 @@ class OpenGlRenderSystem(
     override var quadType: PrimitiveTypes = if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE
     override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
     override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
+
     var boundVao = -1
-    var boundBuffer = -1
-    var uniformBufferBindingIndex = 0
-    var textureBindingIndex = 0
+    var boundBuffer = Int2IntOpenHashMap(3).apply { defaultReturnValue(-1) }
+
+    var nextUniformBufferIndex = 0
+    var nextTextureIndex = 0
 
     override var framebuffer: Framebuffer? = null
         set(value) {
@@ -223,16 +226,16 @@ class OpenGlRenderSystem(
         return buffer
     }
 
-    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes): FloatOpenGlVertexBuffer {
-        return FloatOpenGlVertexBuffer(this, struct, data, primitive)
+    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntArray?): FloatOpenGlVertexBuffer {
+        return FloatOpenGlVertexBuffer(this, struct, data, primitive, index)
     }
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGlUniformBuffer {
-        return FloatOpenGlUniformBuffer(this, uniformBufferBindingIndex++, data)
+        return FloatOpenGlUniformBuffer(this, nextUniformBufferIndex++, data)
     }
 
     override fun createIntUniformBuffer(data: IntArray): IntOpenGlUniformBuffer {
-        return IntOpenGlUniformBuffer(this, uniformBufferBindingIndex++, data)
+        return IntOpenGlUniformBuffer(this, nextUniformBufferIndex++, data)
     }
 
     override fun createFramebuffer(size: Vec2i, scale: Float, texture: TextureModes?, depth: DepthModes?, stencil: StencilModes?): OpenGlFramebuffer {

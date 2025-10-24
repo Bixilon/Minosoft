@@ -120,10 +120,10 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
 
-    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType): FloatVertexBuffer
-    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType) = when {
-        data is DirectArrayFloatList -> createVertexBuffer(struct, data.toBuffer(), primitive)
-        else -> createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitive)
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntArray? = null): FloatVertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType, index: IntArray? = null) = when {
+        data is DirectArrayFloatList -> createVertexBuffer(struct, data.toBuffer(), primitive, index)
+        else -> createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitive, index)
     }
 
     fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
