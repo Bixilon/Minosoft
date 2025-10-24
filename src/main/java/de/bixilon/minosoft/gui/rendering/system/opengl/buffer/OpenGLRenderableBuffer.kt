@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDraw
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
@@ -36,7 +37,7 @@ abstract class OpenGLRenderableBuffer(
     override fun init() {
         if (this.state != RenderableBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
         system.log { "Init renderable buffer $this" }
-        id = glGenBuffers()
+        id = gl { glGenBuffers() }
     }
 
     protected abstract fun initialUpload()
@@ -45,7 +46,7 @@ abstract class OpenGLRenderableBuffer(
         if (system.boundBuffer == id) {
             return
         }
-        glBindBuffer(type.gl, id)
+        gl { glBindBuffer(type.gl, id) }
         system.boundBuffer = id
     }
 
@@ -55,12 +56,12 @@ abstract class OpenGLRenderableBuffer(
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
         }
-        glBindBuffer(type.gl, 0)
+        gl { glBindBuffer(type.gl, 0) }
     }
 
     override fun unload() {
         if (this.state != RenderableBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
-        glDeleteBuffers(id)
+        gl { glDeleteBuffers(id) }
         if (system.boundBuffer == id) {
             system.boundBuffer = -1
         }

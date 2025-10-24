@@ -19,8 +19,9 @@ import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLNativeShader
+import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGLNativeShader
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
@@ -52,7 +53,7 @@ class OpenGLDynamicTextureArray(
             context.queue += { upload(index, texture) }
             return
         }
-        glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
+        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
 
         unsafeUpload(index, texture)
         context.textures.static.activate() // TODO: why?
@@ -68,11 +69,11 @@ class OpenGLDynamicTextureArray(
         for ((level, buffer) in data.collect().withIndex()) {
             if (data.size.x != resolution || data.size.y != resolution) {
                 // clear first
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, empty)
+                gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, empty) }
             }
             buffer.data.position(0)
             buffer.data.limit(buffer.data.capacity())
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
+            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
         }
     }
 
@@ -81,7 +82,7 @@ class OpenGLDynamicTextureArray(
         context.system.unsafeCast<OpenGLRenderSystem>().log { "Uploading dynamic textures" }
         val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
         for (level in 0..mipmaps) {
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+            gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         }
 
         for ((index, textureReference) in textures.withIndex()) {
@@ -101,8 +102,8 @@ class OpenGLDynamicTextureArray(
 
     override fun activate() {
         context.system.unsafeCast<OpenGLRenderSystem>().log { "Activating dynamic textures" }
-        glActiveTexture(GL_TEXTURE0 + index)
-        glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
+        gl { glActiveTexture(GL_TEXTURE0 + index) }
+        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
     }
 
     override fun unsafeUse(shader: TextureShader, name: String) {
@@ -116,7 +117,7 @@ class OpenGLDynamicTextureArray(
 
     override fun unload() {
         if (handle < 0) throw IllegalStateException("Not loaded!")
-        glDeleteTextures(handle)
+        gl { glDeleteTextures(handle) }
         this.handle = -1
     }
 

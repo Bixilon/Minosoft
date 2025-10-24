@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferStates
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import org.lwjgl.opengl.GL30.*
 
@@ -33,9 +34,9 @@ class OpenGLRenderbuffer(
 
     override fun init() {
         check(state == RenderbufferStates.PREPARING) { "Can not init renderbuffer in $state" }
-        id = glGenRenderbuffers()
+        id = gl { glGenRenderbuffers() }
         unsafeBind()
-        glRenderbufferStorage(GL_RENDERBUFFER, mode.gl, size.x, size.y)
+        gl { glRenderbufferStorage(GL_RENDERBUFFER, mode.gl, size.x, size.y) }
         state = RenderbufferStates.GENERATED
     }
 
@@ -45,12 +46,12 @@ class OpenGLRenderbuffer(
     }
 
     fun unsafeBind() {
-        glBindRenderbuffer(GL_RENDERBUFFER, id)
+        gl { glBindRenderbuffer(GL_RENDERBUFFER, id) }
     }
 
     override fun unload() {
         check(state == RenderbufferStates.GENERATED) { "Can not unload renderbuffer in $state" }
-        glDeleteRenderbuffers(id)
+        gl { glDeleteRenderbuffers(id) }
         id = -1
         state = RenderbufferStates.UNLOADED
     }

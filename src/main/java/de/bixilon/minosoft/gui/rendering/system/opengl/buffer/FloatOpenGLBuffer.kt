@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDraw
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.glBufferSubData
 import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress
@@ -36,7 +37,7 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
         bind()
         val position = buffer.position()
         buffer.position(0)
-        nglBufferData(type.gl, buffer, if (EMPTY_BUFFERS) 0 else position, drawTypes.gl)
+        gl { nglBufferData(type.gl, buffer, if (EMPTY_BUFFERS) 0 else position, drawTypes.gl) }
         buffer.position(position)
         state = RenderableBufferStates.UPLOADED
         unbind()
@@ -44,11 +45,11 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
 
     override fun upload() {
         bind()
-        glBufferSubData(type.gl, 0, buffer)
+        gl { glBufferSubData(type.gl, 0, buffer) }
         unbind()
     }
 
     private fun nglBufferData(target: Int, buffer: FloatBuffer, length: Int, usage: Int) {
-        GL15C.nglBufferData(target, Integer.toUnsignedLong(length) shl 2, memAddress(buffer), usage)
+        gl { GL15C.nglBufferData(target, Integer.toUnsignedLong(length) shl 2, memAddress(buffer), usage) }
     }
 }

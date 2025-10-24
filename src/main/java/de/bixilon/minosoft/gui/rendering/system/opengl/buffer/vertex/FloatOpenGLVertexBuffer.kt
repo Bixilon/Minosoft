@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStat
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import org.lwjgl.opengl.GL30.*
@@ -61,7 +62,7 @@ class FloatOpenGLVertexBuffer(
     override fun draw() {
         check(state == RenderableBufferStates.UPLOADED) { "Vertex buffer is not uploaded: $state" }
         bindVao()
-        glDrawArrays(primitiveType.gl, 0, if (EMPTY_BUFFERS) 0 else vertices)
+        gl { glDrawArrays(primitiveType.gl, 0, if (EMPTY_BUFFERS) 0 else vertices) }
     }
 
     override fun unload() {

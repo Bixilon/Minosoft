@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 
@@ -25,7 +26,7 @@ class IntOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: Int
 
     override fun initialUpload() {
         bind()
-        glBufferData(type.gl, data, drawTypes.gl)
+        gl { glBufferData(type.gl, data, drawTypes.gl) }
         state = RenderableBufferStates.UPLOADED
         unbind()
     }
@@ -33,7 +34,7 @@ class IntOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: Int
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        glBufferSubData(type.gl, 0, data)
+        gl { glBufferSubData(type.gl, 0, data) }
         unbind()
     }
 

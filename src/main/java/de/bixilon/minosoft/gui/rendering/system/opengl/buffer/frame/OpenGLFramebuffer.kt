@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferColorTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferDepthTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
@@ -51,7 +52,7 @@ class OpenGLFramebuffer(
     override fun init() {
         check(state == FramebufferState.PREPARING) { "Framebuffer was already initialized!" }
         system.log { "Init framebuffer $this" }
-        id = glGenFramebuffers()
+        id = gl { glGenFramebuffers() }
         unsafeBind()
 
         this.scaled = if (scale == 1.0f) size else Vec2i((size.x * scale).toInt(), (size.y * scale).toInt())
@@ -74,7 +75,7 @@ class OpenGLFramebuffer(
         //depthTexture.init()
         //attach(depthTexture)
 
-        val state = glCheckFramebufferStatus(GL_FRAMEBUFFER)
+        val state = gl { glCheckFramebufferStatus(GL_FRAMEBUFFER) }
         check(state == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete: $state" }
         this.state = FramebufferState.COMPLETE
     }
@@ -87,19 +88,19 @@ class OpenGLFramebuffer(
 
     private fun unsafeBind() {
         system.log { "Binding framebuffer $this" }
-        glBindFramebuffer(GL_FRAMEBUFFER, id)
+        gl { glBindFramebuffer(GL_FRAMEBUFFER, id) }
     }
 
     private fun attach(renderbuffer: OpenGLRenderbuffer) {
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.id)
+        gl { glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.id) }
     }
 
     private fun attach(texture: OpenGLFramebufferDepthTexture) {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture.id, 0)
+        gl { glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture.id, 0) }
     }
 
     private fun attach(texture: OpenGLFramebufferColorTexture) {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0)
+        gl { glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0) }
     }
 
     override fun delete() {
@@ -108,7 +109,7 @@ class OpenGLFramebuffer(
         colorTexture?.unload()
         depthBuffer?.unload()
 
-        glDeleteFramebuffers(id)
+        gl { glDeleteFramebuffers(id) }
         id = -1
         state = FramebufferState.DELETED
     }

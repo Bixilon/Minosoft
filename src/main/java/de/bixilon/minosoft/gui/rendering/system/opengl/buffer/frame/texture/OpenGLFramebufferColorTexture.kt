@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL30.*
 import java.nio.ByteBuffer
 
@@ -25,11 +26,11 @@ class OpenGLFramebufferColorTexture(
     override fun init() {
         if (state != OpenGLTextureStates.PREPARING) throw IllegalStateException("Already initialized (state=$state)")
 
-        id = glGenTextures()
-        glBindTexture(GL_TEXTURE_2D, id)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        id = gl { glGenTextures() }
+        gl { glBindTexture(GL_TEXTURE_2D, id) }
+        gl { glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
 
         state = OpenGLTextureStates.INITIALIZED
     }

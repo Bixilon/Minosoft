@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
@@ -28,12 +29,12 @@ class OpenGLVAO(
 
     fun init() {
         if (handle >= 0) throw IllegalArgumentException("VAO already loaded!")
-        handle = glGenVertexArrays()
+        handle = gl { glGenVertexArrays() }
         bind()
 
         for (attribute in struct.attributes) {
-            glVertexAttribPointer(attribute.index, attribute.size, GL_FLOAT, false, struct.BYTES_PER_VERTEX, attribute.stride)
-            glEnableVertexAttribArray(attribute.index)
+            gl { glVertexAttribPointer(attribute.index, attribute.size, GL_FLOAT, false, struct.BYTES_PER_VERTEX, attribute.stride) }
+            gl { glEnableVertexAttribArray(attribute.index) }
         }
         unbind()
     }
@@ -43,7 +44,7 @@ class OpenGLVAO(
         if (system.boundVao == handle) {
             return
         }
-        glBindVertexArray(handle)
+        gl { glBindVertexArray(handle) }
         system.boundVao = handle
     }
 
@@ -52,13 +53,13 @@ class OpenGLVAO(
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             return
         }
-        glBindVertexArray(-1)
+        gl { glBindVertexArray(-1) }
         system.boundVao = -1
     }
 
     fun unload() {
         if (handle < 0) throw IllegalArgumentException("VAO not initialized!")
-        glDeleteVertexArrays(handle)
+        gl { glDeleteVertexArrays(handle) }
         if (system.boundVao == handle) {
             system.boundVao = -1
         }

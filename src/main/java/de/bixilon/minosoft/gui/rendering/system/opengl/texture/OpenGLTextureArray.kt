@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayS
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
@@ -56,8 +57,8 @@ class OpenGLTextureArray(
             if (textureId == -1) {
                 continue
             }
-            glActiveTexture(GL_TEXTURE0 + index)
-            glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+            gl { glActiveTexture(GL_TEXTURE0 + index) }
+            gl { glBindTexture(GL_TEXTURE_2D_ARRAY, textureId) }
         }
     }
 
@@ -72,7 +73,7 @@ class OpenGLTextureArray(
                 continue
             }
 
-            glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+            gl { glBindTexture(GL_TEXTURE_2D_ARRAY, textureId) }
             shader.native.setTexture("$name[$index]", index)
         }
     }
@@ -124,7 +125,7 @@ class OpenGLTextureArray(
         val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
 
         for (level in 0..mipmaps) {
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+            gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         }
 
         for (texture in textures) {
@@ -133,7 +134,7 @@ class OpenGLTextureArray(
                 if (level > this.mipmaps) break
                 buffer.data.position(0)
                 buffer.data.limit(buffer.data.capacity())
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
+                gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
             }
 
             texture.data = TextureData.NULL

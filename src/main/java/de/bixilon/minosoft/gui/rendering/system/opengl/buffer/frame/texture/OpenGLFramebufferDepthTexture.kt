@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer.Companion.gl
 import org.lwjgl.opengl.GL30.*
 import java.nio.ByteBuffer
@@ -28,17 +29,17 @@ class OpenGLFramebufferDepthTexture(
     override fun init() {
         if (state != OpenGLTextureStates.PREPARING) throw IllegalStateException("Already initialized (state=$state)")
 
-        id = glGenTextures()
-        glBindTexture(GL_TEXTURE_2D, id)
-        glTexImage2D(GL_TEXTURE_2D, 0, mode.gl, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, null as ByteBuffer?)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE)
+        id = gl { glGenTextures() }
+        gl { glBindTexture(GL_TEXTURE_2D, id) }
+        gl { glTexImage2D(GL_TEXTURE_2D, 0, mode.gl, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, null as ByteBuffer?) }
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL) }
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE) }
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) }
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) }
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
+        gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
 
         state = OpenGLTextureStates.INITIALIZED
     }

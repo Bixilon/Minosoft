@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture
 
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
@@ -28,13 +29,13 @@ abstract class OpenGLTexture {
     fun bind(target: Int) {
         if (state != OpenGLTextureStates.INITIALIZED) throw IllegalStateException("Not loaded (state=$state)")
         check(target in 0 until 12)
-        glActiveTexture(GL_TEXTURE0 + target)
-        glBindTexture(GL_TEXTURE_2D, id)
+        gl { glActiveTexture(GL_TEXTURE0 + target) }
+        gl { glBindTexture(GL_TEXTURE_2D, id) }
     }
 
     fun unload() {
         if (state != OpenGLTextureStates.INITIALIZED) throw IllegalStateException("Not loaded (state=$state)")
-        glDeleteTextures(id)
+        gl { glDeleteTextures(id) }
         id = -1
     }
 }

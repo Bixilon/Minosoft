@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStat
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderableBuffer
 import org.lwjgl.opengl.GL30.glBindBufferBase
 import org.lwjgl.opengl.GL30.glBindBufferRange
@@ -33,7 +34,7 @@ abstract class OpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, override va
     override fun init() {
         super.init()
         initialUpload()
-        glBindBufferRange(GL_UNIFORM_BUFFER, bindingIndex, id, 0, size.toLong())
+        gl { glBindBufferRange(GL_UNIFORM_BUFFER, bindingIndex, id, 0, size.toLong()) }
         initialSize = size
     }
 
@@ -43,6 +44,6 @@ abstract class OpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, override va
         shader.use()
 
         shader.native[bufferName] = this
-        glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, id)
+        gl { glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, id) }
     }
 }

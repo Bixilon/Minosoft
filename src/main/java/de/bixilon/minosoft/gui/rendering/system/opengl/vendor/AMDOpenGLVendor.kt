@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
 import org.lwjgl.opengl.GL11.glGetInteger
 
@@ -21,7 +22,7 @@ object AMDOpenGLVendor : OpenGLVendor {
     override val shaderDefine: String = "__AMD"
 
     override val availableVRAM: Long
-        get() = glGetInteger(GL_VBO_FREE_MEMORY_ATI).toLong() * 1024
+        get() = gl { glGetInteger(GL_VBO_FREE_MEMORY_ATI) }.toLong() * 1024
 
 
     override val hacks = DriverHacks.set(

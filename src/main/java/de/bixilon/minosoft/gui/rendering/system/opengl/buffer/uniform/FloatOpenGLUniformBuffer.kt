@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 import org.lwjgl.opengl.GL15C.nglBufferSubData
@@ -30,7 +31,7 @@ class FloatOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: I
     override fun initialUpload() {
         bind()
         buffer.position(0)
-        glBufferData(type.gl, buffer, drawTypes.gl)
+        gl { glBufferData(type.gl, buffer, drawTypes.gl) }
         state = RenderableBufferStates.UPLOADED
         unbind()
     }
@@ -38,7 +39,7 @@ class FloatOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: I
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        glBufferSubData(type.gl, 0, buffer)
+        gl { glBufferSubData(type.gl, 0, buffer) }
         unbind()
     }
 
@@ -48,7 +49,7 @@ class FloatOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: I
             throw IndexOutOfBoundsException(start)
         }
         bind()
-        nglBufferSubData(type.gl, start * 4L, Integer.toUnsignedLong(((end + 1) - start) * 4), MemoryUtil.memAddress(buffer, start))
+        gl { nglBufferSubData(type.gl, start * 4L, Integer.toUnsignedLong(((end + 1) - start) * 4), MemoryUtil.memAddress(buffer, start)) }
         unbind()
     }
 }

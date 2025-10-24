@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
@@ -54,10 +55,10 @@ class OpenGLFontTextureArray(
             FontCompressions.COMPRESSED_ALPHA -> GL_COMPRESSED_RED
         }
         if (compression != FontCompressions.NONE) {
-            glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_ONE, GL_ONE, GL_ONE, GL_RED))
+            gl { glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_ONE, GL_ONE, GL_ONE, GL_RED)) }
         }
 
-        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
 
         for (texture in textures) {
             val renderData = texture.renderData as OpenGLTextureData
@@ -67,7 +68,7 @@ class OpenGLFontTextureArray(
             if (compression != FontCompressions.NONE && texture is PNGTexture) {
                 buffer.data.copyAlphaToRGB()
             }
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
+            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
         }
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${textures.size} font textures" }
@@ -75,8 +76,8 @@ class OpenGLFontTextureArray(
     }
 
     override fun activate() {
-        glActiveTexture(GL_TEXTURE0 + index)
-        glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
+        gl { glActiveTexture(GL_TEXTURE0 + index) }
+        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
     }
 
     override fun use(shader: TextureShader, name: String) {
@@ -84,7 +85,7 @@ class OpenGLFontTextureArray(
         shader.use()
         activate()
 
-        glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
+        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
         shader.native.setTexture("$name[$index]", index)
     }
 
