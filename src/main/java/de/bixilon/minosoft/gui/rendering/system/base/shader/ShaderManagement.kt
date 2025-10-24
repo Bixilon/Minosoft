@@ -11,29 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
+package de.bixilon.minosoft.gui.rendering.system.base.shader
 
-import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-interface FunEffect : Identified {
-    val context: RenderContext
-    val shader: FramebufferShader
-
-    fun update() {}
-    fun preDraw() {}
+interface ShaderManagement : Iterable<Shader> {
+    var shader: Shader?
 
 
-    fun <T : FramebufferShader> createShader(vertex: ResourceLocation = "minosoft:framebuffer/world.vsh".toResourceLocation(), fragment: ResourceLocation = "minosoft:framebuffer/world.fsh".toResourceLocation(), creator: (NativeShader) -> T): T {
-        val native = context.system.shader.create(vertex = vertex, fragment = fragment)
-        val shader = creator(native)
-        shader.load()
-        shader.use()
+    fun create(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): NativeShader
 
-        return shader
+    fun create(path: ResourceLocation) = create(
+        vertex = "$path.vsh".toResourceLocation(),
+        geometry = "$path.gsh".toResourceLocation(),
+        fragment = "$path.fsh".toResourceLocation(),
+    )
+
+
+    fun <T : Shader> create(path: ResourceLocation, creator: (native: NativeShader) -> T): T {
+        return creator.invoke(create(path))
+    }
+
+    operator fun plusAssign(shader: Shader)
+    operator fun minusAssign(shader: Shader)
+
+
+    fun reload() {
+        for (shader in this) {
+            shader.reload()
+        }
     }
 }

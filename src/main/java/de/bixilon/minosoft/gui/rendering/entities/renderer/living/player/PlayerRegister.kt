@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.FeatureRegister
 
 class PlayerRegister(private val renderer: EntitiesRenderer) : FeatureRegister {
-    val shader = renderer.context.system.createShader(minosoft("entities/player")) { PlayerShader(it, renderer.context.skeletal.buffer) }
+    val shader = renderer.context.system.shader.create(minosoft("entities/player")) { PlayerShader(it, renderer.context.skeletal.buffer) }
 
     override fun postInit() {
         shader.load()

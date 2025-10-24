@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class GUIFramebuffer(
     override val context: RenderContext,
 ) : IntegratedFramebuffer {
-    override val shader = context.system.createShader("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
+    override val shader = context.system.shader.create("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
     override var framebuffer: Framebuffer = unsafeNull()
     override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT

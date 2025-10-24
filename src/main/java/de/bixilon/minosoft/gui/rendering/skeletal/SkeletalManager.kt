@@ -25,8 +25,8 @@ class SkeletalManager(
     val context: RenderContext,
 ) {
     val buffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4f.LENGTH))
-    val shader = context.system.createShader(minosoft("skeletal/normal")) { SkeletalShader(it, buffer) }
-    val lightmapShader = context.system.createShader(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, buffer) }
+    val shader = context.system.shader.create(minosoft("skeletal/normal")) { SkeletalShader(it, buffer) }
+    val lightmapShader = context.system.shader.create(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, buffer) }
 
     fun init() {
         buffer.init()

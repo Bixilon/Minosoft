@@ -21,19 +21,19 @@ abstract class Shader(override val native: NativeShader) : AbstractShader {
 
     fun unload() {
         native.unload()
-        native.context.system.shaders -= this
+        native.context.system.shader -= this
     }
 
     fun load() {
         native.load()
-        native.context.system.shaders += this
+        native.context.system.shader += this
         for (uniform in uniforms.values) {
             uniform.upload()
         }
     }
 
     override fun use() {
-        native.context.system.shader = this
+        native.context.system.shader.shader = this
     }
 
     fun reload() {

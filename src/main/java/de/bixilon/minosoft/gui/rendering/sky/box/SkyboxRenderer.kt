@@ -38,8 +38,8 @@ class SkyboxRenderer(
 ) : SkyChildRenderer {
     val color = SkyboxColor(sky)
     private val textureCache: MutableMap<ResourceLocation, Texture> = mutableMapOf()
-    private val colorShader = sky.context.system.createShader(minosoft("sky/skybox")) { SkyboxColorShader(it) }
-    private val textureShader = sky.context.system.createShader(minosoft("sky/skybox/texture")) { SkyboxTextureShader(it) }
+    private val colorShader = sky.context.system.shader.create(minosoft("sky/skybox")) { SkyboxColorShader(it) }
+    private val textureShader = sky.context.system.shader.create(minosoft("sky/skybox/texture")) { SkyboxTextureShader(it) }
     private val colorMesh = SkyboxMesh(sky.context)
     private val textureMesh = SkyboxTextureMesh(sky.context)
     private var updateTexture = true

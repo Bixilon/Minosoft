@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl
+package de.bixilon.minosoft.gui.rendering.system.opengl.shader
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -74,7 +75,7 @@ class OpenGLNativeShader(
         gl { glCompileShader(program) }
 
         if (gl { glGetShaderi(program, GL_COMPILE_STATUS) } == GL_FALSE) {
-            throw ShaderLoadingException("Can not load shader: $file:\n" + glGetShaderInfoLog(program), glsl)
+            throw ShaderLoadingException("Can not load shader: $file:\n" + gl { glGetShaderInfoLog(program) }, glsl)
         }
 
         return program

@@ -132,7 +132,7 @@ class FogManager(
         val color = state.color
         val flags = state.flags()
 
-        for (shader in context.system.shaders) {
+        for (shader in context.system.shader) {
             if (shader !is FogShader || shader.fog != this) {
                 continue
             }

@@ -14,18 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
@@ -34,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLU
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGLError
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGLException
+import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGLShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGLVendor
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
@@ -49,11 +46,11 @@ import org.lwjgl.opengl.GL43.glDebugMessageCallback
 import java.nio.FloatBuffer
 
 class OpenGLRenderSystem(
-    private val context: RenderContext,
+    val context: RenderContext,
     val log: Boolean = LogOptions.verbose,
 ) : RenderSystem {
+    override val shader = OpenGLShaderManagement(this)
     private var thread: Thread? = null
-    override val shaders: MutableSet<Shader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = RenderingCapabilities.set()
     override lateinit var vendor: OpenGLVendor
         private set
@@ -73,32 +70,13 @@ class OpenGLRenderSystem(
     var uniformBufferBindingIndex = 0
     var textureBindingIndex = 0
 
-    override var shader: Shader? = null
-        set(value) {
-            if (value?.native === field?.native) return
-
-            if (value == null) {
-                glUseProgram(0)
-                field = null
-                return
-            }
-            val native = value.native
-
-            check(native is OpenGLNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
-            check(native.loaded) { "Shader not loaded!" }
-            check(this === native.system) { "Shader not part of this context!" }
-
-            native.unsafeUse()
-
-            field = value
-        }
     override var framebuffer: Framebuffer? = null
         set(value) {
             if (value == field) {
                 return
             }
             if (value == null) {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0)
+                gl { glBindFramebuffer(GL_FRAMEBUFFER, 0) }
                 viewport = context.window.size
             } else {
                 check(value is OpenGLFramebuffer) { "Can not use non OpenGL framebuffer!" }
@@ -116,7 +94,7 @@ class OpenGLRenderSystem(
         thread = Thread.currentThread()
         GL.createCapabilities()
 
-        this.vendorString = glGetString(GL_VENDOR) ?: "UNKNOWN"
+        this.vendorString = gl { glGetString(GL_VENDOR) } ?: "UNKNOWN"
         val vendorString = vendorString.lowercase()
 
         vendor = OpenGLVendor.of(vendorString.lowercase())
@@ -124,14 +102,16 @@ class OpenGLRenderSystem(
             throw IllegalStateException("Your GPU driver does not support the `prefer_quads` config option!")
         }
 
-        this.version = glGetString(GL_VERSION) ?: "UNKNOWN"
-        this.gpuType = glGetString(GL_RENDERER) ?: "UNKNOWN"
+        this.version = gl { glGetString(GL_VERSION) } ?: "UNKNOWN"
+        this.gpuType = gl { glGetString(GL_RENDERER) } ?: "UNKNOWN"
 
         if (DEBUG_MODE) {
-            glEnable(GL_DEBUG_OUTPUT)
-            glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
-                Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
-            }, 0)
+            gl { glEnable(GL_DEBUG_OUTPUT) }
+            gl {
+                glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
+                    Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
+                }, 0)
+            }
         }
         active = true
     }
@@ -149,7 +129,7 @@ class OpenGLRenderSystem(
     }
 
     override fun set(capability: RenderingCapabilities, status: Boolean) {
-        val enabled = capabilities.contains(capability)
+        val enabled = capability in capabilities
         if (enabled == status) {
             return
         }
@@ -157,16 +137,16 @@ class OpenGLRenderSystem(
         val glCapability = capability.gl
 
         if (status) {
-            glEnable(glCapability)
+            gl { glEnable(glCapability) }
             capabilities += capability
         } else {
-            glDisable(glCapability)
+            gl { glDisable(glCapability) }
             capabilities -= capability
         }
     }
 
     override fun get(capability: RenderingCapabilities): Boolean {
-        return capabilities.contains(capability)
+        return capability in capabilities
     }
 
     override fun set(source: BlendingFunctions, destination: BlendingFunctions) {
@@ -175,7 +155,7 @@ class OpenGLRenderSystem(
         }
         blendingSource = source
         blendingDestination = destination
-        glBlendFunc(source.gl, destination.gl)
+        gl { glBlendFunc(source.gl, destination.gl) }
     }
 
     private var sourceRGB: BlendingFunctions = BlendingFunctions.ONE
@@ -187,7 +167,7 @@ class OpenGLRenderSystem(
         if (this.sourceRGB == sourceRGB && this.destinationRGB == destinationRGB && this.sourceAlpha == sourceAlpha && this.destinationAlpha == destinationAlpha) {
             return
         }
-        glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlpha.gl, destinationAlpha.gl)
+        gl { glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlpha.gl, destinationAlpha.gl) }
         this.sourceRGB = sourceRGB
         this.destinationRGB = destinationRGB
         this.sourceAlpha = sourceAlpha
@@ -199,7 +179,7 @@ class OpenGLRenderSystem(
             if (field == value) {
                 return
             }
-            glDepthFunc(value.gl)
+            gl { glDepthFunc(value.gl) }
             field = value
         }
 
@@ -208,7 +188,7 @@ class OpenGLRenderSystem(
             if (field == value) {
                 return
             }
-            glDepthMask(value)
+            gl { glDepthMask(value) }
             field = value
         }
 
@@ -217,7 +197,7 @@ class OpenGLRenderSystem(
             if (field == value) {
                 return
             }
-            glPolygonMode(FaceTypes.FRONT_AND_BACK.gl, value.gl)
+            gl { glPolygonMode(FaceTypes.FRONT_AND_BACK.gl, value.gl) }
             field = value
         }
 
@@ -240,12 +220,8 @@ class OpenGLRenderSystem(
     override fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer {
         val size = Vec2i(size.x - start.x, size.y - start.y)
         val buffer = RGB8Buffer(size)
-        glReadPixels(start.x, start.y, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, buffer.data)
+        gl { glReadPixels(start.x, start.y, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, buffer.data) }
         return buffer
-    }
-
-    override fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLNativeShader {
-        return OpenGLNativeShader(context, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
     override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {
@@ -273,7 +249,7 @@ class OpenGLRenderSystem(
             if (value == field) {
                 return
             }
-            glClearColor(value.redf, value.greenf, value.bluef, value.alphaf)
+            gl { glClearColor(value.redf, value.greenf, value.bluef, value.alphaf) }
 
             field = value
         }
@@ -283,7 +259,7 @@ class OpenGLRenderSystem(
         for (buffer in buffers) {
             bits = bits or buffer.gl
         }
-        glClear(bits)
+        gl { glClear(bits) }
     }
 
     override fun getErrors(): List<OpenGLError> {
@@ -296,9 +272,10 @@ class OpenGLRenderSystem(
 
     private var polygonOffsetFactor: Float = 0.0f
     private var polygonOffsetUnit: Float = 0.0f
+
     override fun polygonOffset(factor: Float, unit: Float) {
         if (this.polygonOffsetFactor != factor || this.polygonOffsetUnit != unit) {
-            glPolygonOffset(factor, unit)
+            gl { glPolygonOffset(factor, unit) }
             this.polygonOffsetFactor = factor
             this.polygonOffsetUnit = unit
         }
@@ -321,7 +298,7 @@ class OpenGLRenderSystem(
         set(value) {
             if (field == value) return
             field = value
-            glViewport(0, 0, viewport.x, viewport.y)
+            gl { glViewport(0, 0, viewport.x, viewport.y) }
         }
 
     companion object : RenderSystemFactory {

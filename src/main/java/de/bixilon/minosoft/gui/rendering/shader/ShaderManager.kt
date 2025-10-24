@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,9 +22,9 @@ import de.bixilon.minosoft.gui.rendering.shader.generic.GenericTextureShader
 class ShaderManager(
     val context: RenderContext,
 ) {
-    val genericColorShader = context.system.createShader(minosoft("generic/color")) { ColorShader(it) }
-    val genericTextureShader = context.system.createShader(minosoft("generic/texture")) { GenericTextureShader(it) }
-    val genericTexture2dShader = context.system.createShader(minosoft("generic/texture_2d")) { Generic2dTextureShader(it) }
+    val genericColorShader = context.system.shader.create(minosoft("generic/color")) { ColorShader(it) }
+    val genericTextureShader = context.system.shader.create(minosoft("generic/texture")) { GenericTextureShader(it) }
+    val genericTexture2dShader = context.system.shader.create(minosoft("generic/texture_2d")) { Generic2dTextureShader(it) }
 
 
     fun postInit() {

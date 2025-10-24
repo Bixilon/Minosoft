@@ -49,7 +49,7 @@ class GUIRenderer(
         private set
     var resolutionUpdate = true
     override val framebuffer: IntegratedFramebuffer get() = context.framebuffer.gui
-    val shader = context.system.createShader(minosoft("gui")) { GUIShader(it) }
+    val shader = context.system.shader.create(minosoft("gui")) { GUIShader(it) }
     val atlas = AtlasManager(context)
 
     var currentMousePosition: Vec2f by observed(Vec2f.EMPTY)

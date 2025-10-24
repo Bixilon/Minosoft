@@ -47,7 +47,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             BiomePrecipitation.SNOW -> snow
         }
 
-    private val shader = context.system.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
+    private val shader = context.system.shader.create(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
     private var mesh = WeatherOverlayMesh(context)
     private var windowSize = Vec2f.EMPTY
 

@@ -44,7 +44,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
     private var perspective = Mat4f()
     override val framebuffer get() = context.framebuffer.gui
-    val shader = context.system.createShader(minosoft("entities/player/arm")) { ArmShader(it) }
+    val shader = context.system.shader.create(minosoft("entities/player/arm")) { ArmShader(it) }
 
     override fun init(latch: AbstractLatch) {
         registerModels()

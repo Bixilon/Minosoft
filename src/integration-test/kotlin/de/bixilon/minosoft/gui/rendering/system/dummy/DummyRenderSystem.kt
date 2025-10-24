@@ -32,17 +32,17 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyFloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyIntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyNativeShader
+import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import java.nio.FloatBuffer
 
 class DummyRenderSystem(
-    private val context: RenderContext,
+    val context: RenderContext,
 ) : RenderSystem {
-    override val shaders: MutableSet<Shader> = mutableSetOf()
+    override val shader = DummyShaderManagement(this)
     override lateinit var vendor: GPUVendor
-    override var shader: Shader? = null
     override var framebuffer: Framebuffer? = null
     override val active: Boolean = true
 
@@ -85,10 +85,6 @@ class DummyRenderSystem(
 
     override fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer {
         TODO("Not yet implemented")
-    }
-
-    override fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): NativeShader {
-        return DummyNativeShader(context)
     }
 
     override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {

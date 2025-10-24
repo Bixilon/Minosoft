@@ -44,7 +44,7 @@ class ParticleRenderer(
     override val random = Random()
     override val layers = LayerSettings()
     private val profile = session.profiles.particle
-    private val shader = context.system.createShader(minosoft("particle")) { ParticleShader(it) }
+    private val shader = context.system.shader.create(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
     var mesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))

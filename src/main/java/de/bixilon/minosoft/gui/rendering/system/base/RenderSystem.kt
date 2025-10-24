@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -33,9 +34,8 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import java.nio.FloatBuffer
 
 interface RenderSystem {
-    val shaders: MutableSet<Shader>
+    val shader: ShaderManagement
     val vendor: GPUVendor
-    var shader: Shader?
     var framebuffer: Framebuffer?
 
     val active: Boolean
@@ -120,18 +120,6 @@ interface RenderSystem {
 
     fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
-    fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): NativeShader
-
-    fun createNativeShader(path: ResourceLocation) = createNativeShader(
-        vertex = "$path.vsh".toResourceLocation(),
-        geometry = "$path.gsh".toResourceLocation(),
-        fragment = "$path.fsh".toResourceLocation(),
-    )
-
-
-    fun <T : Shader> createShader(path: ResourceLocation, creator: (native: NativeShader) -> T): T {
-        return creator(createNativeShader(path))
-    }
 
     fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer
     fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer {
@@ -157,18 +145,5 @@ interface RenderSystem {
     fun resetBlending() {
         disable(RenderingCapabilities.BLENDING)
         setBlendFunction(BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO)
-    }
-
-    fun reloadShaders() {
-        val copy = shaders.toMutableSet()
-        for (shader in copy) {
-            shader.reload()
-        }
-    }
-
-    fun assertErrors() {
-        val errors = getErrors()
-        if (errors.isEmpty()) return
-        throw Exception(errors.first().toString())
     }
 }

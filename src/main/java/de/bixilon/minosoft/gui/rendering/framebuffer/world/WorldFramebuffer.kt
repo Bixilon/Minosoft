@@ -31,7 +31,7 @@ class WorldFramebuffer(
 ) : IntegratedFramebuffer {
     private val overlay = OverlayManager(context)
     val `fun` = FunEffectManager(context)
-    private val defaultShader = context.system.createShader("minosoft:framebuffer/world".toResourceLocation()) { FramebufferShader(it) }
+    private val defaultShader = context.system.shader.create("minosoft:framebuffer/world".toResourceLocation()) { FramebufferShader(it) }
     override val shader: FramebufferShader
         get() = `fun`.shader ?: defaultShader
     override var framebuffer: Framebuffer = unsafeNull()
