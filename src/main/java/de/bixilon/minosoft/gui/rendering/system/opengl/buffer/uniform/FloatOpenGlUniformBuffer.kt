@@ -23,14 +23,13 @@ import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.FloatBuffer
 
-class FloatOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int = 0, override var buffer: FloatBuffer = memAllocFloat(0)) : OpenGlUniformBuffer(renderSystem, bindingIndex), FloatUniformBuffer {
-    override val size: Int
-        get() = buffer.limit()
+class FloatOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: FloatBuffer = memAllocFloat(0)) : OpenGlUniformBuffer(renderSystem, bindingIndex), FloatUniformBuffer {
+    override val size get() = data.limit()
 
     override fun initialUpload() {
         bind()
-        buffer.position(0)
-        gl { glBufferData(glType, buffer, GL_DYNAMIC_DRAW) }
+        data.position(0)
+        gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) }
         state = GpuBufferStates.UPLOADED
         unbind()
     }
@@ -38,7 +37,7 @@ class FloatOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: I
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        gl { glBufferSubData(glType, 0, buffer) }
+        gl { glBufferSubData(glType, 0, data) }
         unbind()
     }
 
@@ -48,7 +47,7 @@ class FloatOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: I
             throw IndexOutOfBoundsException(start)
         }
         bind()
-        gl { nglBufferSubData(glType, start * 4L, Integer.toUnsignedLong(((end + 1) - start) * 4), MemoryUtil.memAddress(buffer, start)) }
+        gl { nglBufferSubData(glType, start * 4L, Integer.toUnsignedLong(((end + 1) - start) * 4), MemoryUtil.memAddress(data, start)) }
         unbind()
     }
 }

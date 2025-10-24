@@ -89,11 +89,8 @@ class OpenGlRenderSystem(
         }
 
 
-    @Synchronized
     override fun init() {
-        if (thread != null) {
-            throw IllegalStateException("Context is thread bound!")
-        }
+        if (thread != null) throw IllegalStateException("Already initialized!")
         thread = Thread.currentThread()
         GL.createCapabilities()
 
@@ -221,14 +218,13 @@ class OpenGlRenderSystem(
         private set
 
     override fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer {
-        val size = Vec2i(size.x - start.x, size.y - start.y)
         val buffer = RGB8Buffer(size)
         gl { glReadPixels(start.x, start.y, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, buffer.data) }
         return buffer
     }
 
-    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGlVertexBuffer {
-        return FloatOpenGlVertexBuffer(this, struct, data, primitiveType)
+    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes): FloatOpenGlVertexBuffer {
+        return FloatOpenGlVertexBuffer(this, struct, data, primitive)
     }
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGlUniformBuffer {

@@ -43,7 +43,7 @@ class LightmapDebugWindow(private val lightmap: Lightmap) : JavaFXWindowControll
         if (!show) {
             return
         }
-        val buffer = lightmap.buffer.buffer.buffer
+        val buffer = lightmap.buffer.buffer.data
 
         for (sky in 0 until LightLevel.LEVELS) {
             for (block in 0 until LightLevel.LEVELS) {

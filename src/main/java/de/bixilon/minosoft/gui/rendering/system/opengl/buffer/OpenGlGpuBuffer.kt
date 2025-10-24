@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import org.lwjgl.opengl.GL15.*
-import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
 abstract class OpenGlGpuBuffer(
     protected var system: OpenGlRenderSystem,

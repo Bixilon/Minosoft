@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniform
 import java.nio.FloatBuffer
 
 class DummyFloatUniformBuffer(
-    override var buffer: FloatBuffer,
+    override var data: FloatBuffer,
 ) : FloatUniformBuffer {
     override val bindingIndex: Int = 0
 

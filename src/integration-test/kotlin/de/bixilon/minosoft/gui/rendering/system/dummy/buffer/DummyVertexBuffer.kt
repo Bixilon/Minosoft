@@ -21,7 +21,7 @@ import java.nio.FloatBuffer
 
 class DummyVertexBuffer(
     override val struct: MeshStruct,
-    override var buffer: FloatBuffer,
+    override var data: FloatBuffer,
 ) : FloatVertexBuffer {
     override val state: GpuBufferStates = GpuBufferStates.PREPARING
 

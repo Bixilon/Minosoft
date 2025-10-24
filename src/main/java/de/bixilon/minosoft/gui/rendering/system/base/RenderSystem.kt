@@ -15,9 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilModes
@@ -27,13 +25,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGlFramebuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import java.nio.FloatBuffer
 
@@ -125,12 +120,10 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
 
-    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer
-    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer {
-        if (data is DirectArrayFloatList) {
-            return createVertexBuffer(struct, data.toBuffer(), primitiveType)
-        }
-        return createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitiveType)
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType): FloatVertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType) = when {
+        data is DirectArrayFloatList -> createVertexBuffer(struct, data.toBuffer(), primitive)
+        else -> createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitive)
     }
 
     fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
@@ -141,6 +134,7 @@ interface RenderSystem {
 
     fun clear(vararg buffers: IntegratedBufferTypes)
 
+    @Deprecated("There should not be any errors, or they should directly crash the render system")
     fun getErrors(): List<RenderSystemError>
 
 

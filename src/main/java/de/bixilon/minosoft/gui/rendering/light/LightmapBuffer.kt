@@ -27,7 +27,7 @@ class LightmapBuffer(renderSystem: RenderSystem) {
     fun init() {
         // Set Alpha for all of them
         for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
-            buffer.buffer.put(i * 4 + 3, 1.0f)
+            buffer.data.put(i * 4 + 3, 1.0f)
         }
         buffer.init()
         buffer.upload()
@@ -36,16 +36,16 @@ class LightmapBuffer(renderSystem: RenderSystem) {
     operator fun set(sky: Int, block: Int, color: Vec3f) {
         val index = ((sky shl 4) or block) * 4
 
-        if (upload || buffer.buffer.get(index + 0) != color.x) {
-            buffer.buffer.put(index + 0, color.x)
+        if (upload || buffer.data.get(index + 0) != color.x) {
+            buffer.data.put(index + 0, color.x)
             upload = true
         }
-        if (upload || buffer.buffer.get(index + 1) != color.y) {
-            buffer.buffer.put(index + 1, color.y)
+        if (upload || buffer.data.get(index + 1) != color.y) {
+            buffer.data.put(index + 1, color.y)
             upload = true
         }
-        if (upload || buffer.buffer.get(index + 2) != color.z) {
-            buffer.buffer.put(index + 2, color.z)
+        if (upload || buffer.data.get(index + 2) != color.z) {
+            buffer.data.put(index + 2, color.z)
             upload = true
         }
     }
@@ -53,7 +53,7 @@ class LightmapBuffer(renderSystem: RenderSystem) {
     operator fun get(sky: Int, block: Int) = get((sky shl 4) or block)
     operator fun get(light: Int): RGBColor {
         val offset = light * 4
-        return RGBColor(buffer.buffer.get(offset + 0), buffer.buffer.get(offset + 1), buffer.buffer.get(offset + 2))
+        return RGBColor(buffer.data.get(offset + 0), buffer.data.get(offset + 1), buffer.data.get(offset + 2))
     }
 
     fun upload() {

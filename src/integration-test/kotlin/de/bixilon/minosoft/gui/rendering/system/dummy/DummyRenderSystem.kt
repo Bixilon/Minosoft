@@ -90,7 +90,7 @@ class DummyRenderSystem(
         TODO("Not yet implemented")
     }
 
-    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {
+    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes): FloatVertexBuffer {
         return DummyVertexBuffer(struct, data)
     }
 

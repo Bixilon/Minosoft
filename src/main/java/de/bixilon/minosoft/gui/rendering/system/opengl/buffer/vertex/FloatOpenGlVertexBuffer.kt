@@ -37,7 +37,7 @@ class FloatOpenGlVertexBuffer(
     override fun init() {
         val floatsPerVertex = struct.BYTES_PER_VERTEX / Float.SIZE_BYTES
 
-        vertices = buffer.position() / floatsPerVertex
+        vertices = data.position() / floatsPerVertex
         super.init()
         bind()
         vao.init()
