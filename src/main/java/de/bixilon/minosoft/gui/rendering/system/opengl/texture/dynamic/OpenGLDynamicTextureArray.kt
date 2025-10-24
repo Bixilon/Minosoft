@@ -20,8 +20,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGLNativeShader
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
@@ -39,7 +39,7 @@ import java.nio.ByteBuffer
 
 class OpenGLDynamicTextureArray(
     context: RenderContext,
-    val renderSystem: OpenGLRenderSystem,
+    val renderSystem: OpenGlRenderSystem,
     val index: Int = renderSystem.textureBindingIndex++,
     initialSize: Int = 32,
     val resolution: Int,
@@ -79,7 +79,7 @@ class OpenGLDynamicTextureArray(
 
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Uploading dynamic textures" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Uploading dynamic textures" }
         val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
         for (level in 0..mipmaps) {
             gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
@@ -101,14 +101,14 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun activate() {
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Activating dynamic textures" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Activating dynamic textures" }
         gl { glActiveTexture(GL_TEXTURE0 + index) }
         gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
     }
 
     override fun unsafeUse(shader: TextureShader, name: String) {
         if (handle <= 0) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Binding dynamic textures to $shader" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Binding dynamic textures to $shader" }
         val native = shader.native.unsafeCast<OpenGLNativeShader>()
         shader.use()
         activate()

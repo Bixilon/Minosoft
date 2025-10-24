@@ -11,25 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.frame
+package de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthAttachment
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilAttachment
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureAttachment
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.FramebufferAttachment
 
-interface Framebuffer {
-    val state: FramebufferState
-
-    val depth: DepthAttachment?
-    val stencil: StencilAttachment?
-    val texture: TextureAttachment?
-
-    val size: Vec2i
-    val scale: Float
-
-    fun init()
-    fun delete()
-
-    fun bindTexture()
+interface TextureAttachment : FramebufferAttachment {
+    val mode: TextureModes
 }

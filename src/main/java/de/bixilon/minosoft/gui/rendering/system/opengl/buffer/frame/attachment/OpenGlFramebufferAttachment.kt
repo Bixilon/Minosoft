@@ -11,19 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base
+package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.attachment
 
-import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.AttachmentStates
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.FramebufferAttachment
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 
-interface RenderSystemFactory {
+abstract class OpenGlFramebufferAttachment(
+    protected val system: OpenGlRenderSystem,
+    override val size: Vec2i,
+) : FramebufferAttachment {
+    override var state = AttachmentStates.PREPARING
+        protected set
 
-    fun create(context: RenderContext): RenderSystem
 
-    companion object {
-        val FACTORIES: Map<String, RenderSystemFactory> = mapOf(
-            "gl" to OpenGlRenderSystem
-        )
-        var factory: RenderSystemFactory? = OpenGlRenderSystem
+    protected fun finalize() {
+        if (state == AttachmentStates.GENERATED && system.active) {
+            throw MemoryLeakException("Renderbuffer has not been unloaded!")
+        }
     }
 }

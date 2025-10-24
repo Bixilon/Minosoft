@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
 
-interface UniformBuffer : RenderableBuffer {
+interface UniformBuffer : GpuBuffer {
     val bindingIndex: Int
 
     fun upload(start: Int, end: Int)

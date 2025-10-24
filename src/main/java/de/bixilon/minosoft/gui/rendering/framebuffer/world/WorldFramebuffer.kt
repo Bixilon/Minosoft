@@ -24,6 +24,8 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectManage
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthModes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldFramebuffer(
@@ -48,7 +50,7 @@ class WorldFramebuffer(
         context.session.profiles.rendering.quality.resolution::worldScale.observe(this, instant = true) { this.scale = it }
     }
 
-    override fun create() = context.system.createFramebuffer(this.size, this.scale, color = true, depth = true)
+    override fun create() = context.system.createFramebuffer(this.size, this.scale, texture = TextureModes.NEAREST, depth = DepthModes.DEPTH24)
 
     override fun postInit() {
         super.postInit()

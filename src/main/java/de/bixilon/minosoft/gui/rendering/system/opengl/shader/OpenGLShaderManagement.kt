@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderManagement
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL30.glUseProgram
 
-class OpenGLShaderManagement(val system: OpenGLRenderSystem) : ShaderManagement {
+class OpenGLShaderManagement(val system: OpenGlRenderSystem) : ShaderManagement {
     private val shaders: MutableSet<Shader> = mutableSetOf()
 
     override var shader: Shader? = null

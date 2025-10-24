@@ -11,25 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.frame
+package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthAttachment
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilAttachment
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureAttachment
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-interface Framebuffer {
-    val state: FramebufferState
+enum class GpuBufferTypes {
+    UNIFORM_BUFFER,
+    ARRAY_BUFFER,
+    ;
 
-    val depth: DepthAttachment?
-    val stencil: StencilAttachment?
-    val texture: TextureAttachment?
-
-    val size: Vec2i
-    val scale: Float
-
-    fun init()
-    fun delete()
-
-    fun bindTexture()
+    companion object : ValuesEnum<GpuBufferTypes> {
+        override val VALUES: Array<GpuBufferTypes> = values()
+        override val NAME_MAP: Map<String, GpuBufferTypes> = EnumUtil.getEnumValues(VALUES)
+    }
 }

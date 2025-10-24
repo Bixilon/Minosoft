@@ -11,25 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.frame
+package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthAttachment
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilAttachment
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureAttachment
+import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
+import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
+import org.lwjgl.opengl.GL11.glGetInteger
 
-interface Framebuffer {
-    val state: FramebufferState
+object AmdOpenGlVendor : OpenGlVendor {
+    override val shaderDefine: String = "__AMD"
 
-    val depth: DepthAttachment?
-    val stencil: StencilAttachment?
-    val texture: TextureAttachment?
+    override val availableVRAM: Long
+        get() = gl { glGetInteger(GL_VBO_FREE_MEMORY_ATI) }.toLong() * 1024
 
-    val size: Vec2i
-    val scale: Float
 
-    fun init()
-    fun delete()
+    override val hacks = DriverHacks.set(
+        DriverHacks.USE_QUADS_OVER_TRIANGLE,
+    )
 
-    fun bindTexture()
+    override fun toString() = "amd"
 }

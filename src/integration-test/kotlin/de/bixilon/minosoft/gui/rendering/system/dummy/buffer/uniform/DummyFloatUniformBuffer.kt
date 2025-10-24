@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import java.nio.FloatBuffer
 
 class DummyFloatUniformBuffer(
@@ -34,8 +33,8 @@ class DummyFloatUniformBuffer(
     override fun use(shader: AbstractShader, bufferName: String) {
     }
 
-    override val state: RenderableBufferStates = RenderableBufferStates.UPLOADED
-    override val type: RenderableBufferTypes = RenderableBufferTypes.UNIFORM_BUFFER
+    override val state: GpuBufferStates = GpuBufferStates.UPLOADED
+    override val type: GpuBufferTypes = GpuBufferTypes.UNIFORM_BUFFER
 
     override fun init() {
     }

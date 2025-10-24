@@ -22,6 +22,8 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthModes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GUIFramebuffer(
@@ -40,7 +42,7 @@ class GUIFramebuffer(
         context.session.profiles.rendering.quality.resolution::guiScale.observe(this, instant = true) { this.scale = it }
     }
 
-    override fun create() = context.system.createFramebuffer(this.size, this.scale, color = true, depth = false)
+    override fun create() = context.system.createFramebuffer(this.size, this.scale, texture = TextureModes.NEAREST)
 
     override fun draw() {
         super.draw()

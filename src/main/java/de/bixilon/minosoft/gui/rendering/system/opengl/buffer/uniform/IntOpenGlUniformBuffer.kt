@@ -11,33 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform
+package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
+import org.lwjgl.opengl.GL15.glBufferData
+import org.lwjgl.opengl.GL15.glBufferSubData
 
-class DummyIntUniformBuffer(
-    override var data: IntArray,
-) : IntUniformBuffer {
-    override val bindingIndex: Int = 0
+class IntOpenGlUniformBuffer(renderSystem: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGlUniformBuffer(renderSystem, bindingIndex), IntUniformBuffer {
+    override val size: Int
+        get() = data.size
 
-    override fun upload(start: Int, end: Int) {
+    override fun initialUpload() {
+        bind()
+        gl { glBufferData(type.gl, data, drawTypes.gl) }
+        state = GpuBufferStates.UPLOADED
+        unbind()
     }
 
     override fun upload() {
+        check(initialSize == size) { "Can not change buffer size!" }
+        bind()
+        gl { glBufferSubData(type.gl, 0, data) }
+        unbind()
     }
 
-    override fun use(shader: AbstractShader, bufferName: String) {
-    }
-
-    override val state: GpuBufferStates = GpuBufferStates.UPLOADED
-    override val type: GpuBufferTypes = GpuBufferTypes.UNIFORM_BUFFER
-
-    override fun init() {
-    }
-
-    override fun unload() {
-    }
+    override fun upload(start: Int, end: Int) = TODO("Unsupported")
 }

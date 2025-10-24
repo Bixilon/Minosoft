@@ -18,7 +18,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
@@ -26,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontComp
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
@@ -41,7 +40,7 @@ class OpenGLFontTextureArray(
     context: RenderContext,
     compressed: FontCompressions,
 ) : FontTextureArray(context, RESOLUTION, compressed) {
-    val index = context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex++
+    val index = context.system.unsafeCast<OpenGlRenderSystem>().textureBindingIndex++
     private var handle = -1
     private var textureIndex = 0
 
@@ -105,7 +104,7 @@ class OpenGLFontTextureArray(
 
     override fun load(latch: AbstractLatch?) {
         if (state != TextureArrayStates.PREPARING) throw IllegalStateException("Already loaded!")
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Loading font texture" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Loading font texture" }
         for (texture in textures) {
             load(texture)
         }

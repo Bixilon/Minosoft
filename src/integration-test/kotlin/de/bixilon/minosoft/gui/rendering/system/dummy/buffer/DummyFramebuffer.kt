@@ -16,12 +16,19 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.buffer
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthAttachment
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilAttachment
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureAttachment
 
 class DummyFramebuffer(
     override val size: Vec2i = Vec2i(1, 1),
     override val scale: Float = 1.0f,
 ) : Framebuffer {
     override val state: FramebufferState = FramebufferState.COMPLETE
+
+    override val depth: DepthAttachment? get() = null
+    override val stencil: StencilAttachment? get() = null
+    override val texture: TextureAttachment? get() = null
 
     override fun init() {
     }

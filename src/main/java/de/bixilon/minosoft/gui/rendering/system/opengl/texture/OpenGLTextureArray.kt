@@ -18,16 +18,14 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem.Companion.gl
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
 import de.bixilon.minosoft.util.logging.Log
@@ -48,11 +46,11 @@ class OpenGLTextureArray(
     private val lastTextureId = IntArray(RESOLUTIONS.size)
 
     init {
-        context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex += RESOLUTIONS.size
+        context.system.unsafeCast<OpenGlRenderSystem>().textureBindingIndex += RESOLUTIONS.size
     }
 
     override fun activate() {
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Activating static texture array" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Activating static texture array" }
         for ((index, textureId) in handles.withIndex()) {
             if (textureId == -1) {
                 continue
@@ -64,7 +62,7 @@ class OpenGLTextureArray(
 
     override fun use(shader: TextureShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Binding static textures to $shader" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Binding static textures to $shader" }
         shader.use()
         activate()
 
@@ -121,7 +119,7 @@ class OpenGLTextureArray(
 
 
     private fun upload(resolution: Int, textures: List<Texture>): Int {
-        context.system.unsafeCast<OpenGLRenderSystem>().log { "Uploading ${resolution}x${resolution} static textures" }
+        context.system.unsafeCast<OpenGlRenderSystem>().log { "Uploading ${resolution}x${resolution} static textures" }
         val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
 
         for (level in 0..mipmaps) {
