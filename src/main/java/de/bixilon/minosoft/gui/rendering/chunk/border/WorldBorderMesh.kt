@@ -14,99 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
 import de.bixilon.kmath.vec.vec2.d.Vec2d
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.border.WorldBorder
-import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class WorldBorderMesh(
-    context: RenderContext,
-    val offset: BlockPosition,
+    val offset: BlockPosition, // TODO: compare offset?
     val center: Vec2d,
     val radius: Double,
-) : Mesh(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.floats) {
-
-
-    private fun width(): Float {
-        return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
-    }
-
-    private fun positions(width: Float, center: Double): Array<Vec2f> {
-        val left = (center - width).toFloat()
-        val right = (center + width).toFloat()
-
-        return arrayOf(
-            Vec2f(left, -1.0f),
-            Vec2f(left, +1.0f),
-            Vec2f(right, +1.0f),
-            Vec2f(right, -1.0f),
-        )
-    }
-
-    private fun textureIndex(index: Int): Int {
-        return when (index) {
-            1 -> 2
-            2 -> 1
-            3 -> 0
-            else -> 3
-        }
-    }
-
-    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
-        order.iterate { position, uv -> // TODO: fucked up
-            val (z, y) = positions[position]
-            val texture = if (rotated) textureIndex(uv + 1) else uv + 1
-            addVertex(x, y, z, textureIndex(texture), width)
-        }
-    }
-
-    private fun x(width: Float) {
-        val positions = positions(width, center.y)
-        addVertexX((maxOf(-WorldBorder.MAX_RADIUS, center.x - radius) - offset.x).toFloat(), width, positions, false)
-        addVertexX((minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat(), width, positions, true)
-    }
-
-    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
-        order.iterate { position, uv -> // TODO: fucked up
-            val (x, y) = positions[position]
-            val texture = if (rotated) textureIndex(uv + 1) else uv + 1
-            addVertex(x, y, z, textureIndex(texture), width)
-        }
-    }
-
-    private fun z(width: Float) {
-        val positions = positions(width, center.x)
-
-        addVertexZ((maxOf(-WorldBorder.MAX_RADIUS, center.y - radius) - offset.z).toFloat(), width, positions, true)
-        addVertexZ((minOf(WorldBorder.MAX_RADIUS, center.y + radius) - offset.z).toFloat(), width, positions, false)
-    }
-
-    fun build() {
-        val width = width()
-        x(width)
-        z(width)
-    }
-
-    private fun addVertex(x: Float, y: Float, z: Float, uvIndex: Int, width: Float) {
-        data.add(x)
-        data.add(y)
-        data.add(z)
-        data.add(uvIndex.buffer())
-        data.add(width)
-    }
-
-
-    data class WorldBorderMeshStruct(
-        val position: Vec3f,
-        val uvIndex: Int,
-        val width: Float,
-    ) {
-        companion object : MeshStruct(WorldBorderMeshStruct::class)
-    }
-}
+    buffer: VertexBuffer,
+) : Mesh(buffer)

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
-import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextMesh
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextMeshBuilder
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -77,6 +77,6 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
     companion object {
         const val RENDER_DISTANCE = 10
         const val UPDATE_INTERVAL = 0.5f
-        val NAME_OFFSET = DEFAULT_OFFSET + (PROPERTIES.lineHeight + 1) * BillboardTextMesh.SCALE
+        val NAME_OFFSET = DEFAULT_OFFSET + (PROPERTIES.lineHeight + 1) * BillboardTextMeshBuilder.SCALE
     }
 }

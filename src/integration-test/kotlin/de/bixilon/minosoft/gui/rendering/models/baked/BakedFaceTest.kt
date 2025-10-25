@@ -17,7 +17,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import de.bixilon.minosoft.test.ITUtil.allocate
@@ -42,8 +42,8 @@ class BakedFaceTest {
         return manager.static.create(texture.toResourceLocation())
     }
 
-    private fun singleMesh(): ChunkMesh {
-        val mesh = ChunkMesh::class.java.allocate()
+    private fun singleMesh(): ChunkMeshBuilder {
+        val mesh = ChunkMeshBuilder::class.java.allocate()
         mesh::primitive.forceSet(PrimitiveTypes.QUAD)
         mesh::order.forceSet(MeshOrder.QUAD)
 

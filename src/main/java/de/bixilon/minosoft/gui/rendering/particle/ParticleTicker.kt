@@ -44,7 +44,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
         ignoreAll { tryTick(millis) }
     }
 
-    fun tick(collect: Boolean) {
+    fun tick(mesh: ParticleMeshBuilder?, translucent: ParticleMeshBuilder?) {
         if (!canTick()) return
 
         val camera = context.session.camera.entity.physics.positionInfo
@@ -66,8 +66,8 @@ class ParticleTicker(val renderer: ParticleRenderer) {
                 iterator.remove()
                 continue
             }
-            if (collect) {
-                particle.addVertex(renderer.mesh, renderer.translucentMesh, time)
+            if (mesh != null && translucent != null) {
+                particle.addVertex(mesh, translucent, time)
             }
             if (index % 1000 == 0) { // don't spam the os with time calls
                 time = now()
@@ -82,7 +82,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
     }
 
     fun init() {
-        context.session.ticker += { tick(false) }
+        context.session.ticker += { tick(null, null) }
     }
 
     companion object {

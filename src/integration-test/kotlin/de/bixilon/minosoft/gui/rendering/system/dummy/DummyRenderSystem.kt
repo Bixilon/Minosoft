@@ -33,8 +33,8 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyFloatU
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyIntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import java.nio.FloatBuffer
 
 class DummyRenderSystem(

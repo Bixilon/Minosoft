@@ -26,15 +26,16 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CustomHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug.DebugHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 
 class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
     private val profile = guiRenderer.session.profiles.gui
     private val crosshairProfile = profile.hud.crosshair
     private var crosshairAtlasElement: AtlasElement? = null
-    private var mesh: GUIMesh? = null
+    private var mesh: Mesh? = null
     private var previousDebugEnabled: Boolean? = true
     private var reapply = true
     private var previousNeedsDraw = needsDraw
@@ -91,15 +92,14 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh?.unload()
         this.mesh = null
 
-        val mesh = GUIMesh(context, guiRenderer.halfSize, BufferedArrayFloatList(42))
+        val mesh = GUIMeshBuilder(context, guiRenderer.halfSize, BufferedArrayFloatList(42))
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color.rgba(), null)
 
 
         // ToDo: Attack indicator
 
-        mesh.load()
-        this.mesh = mesh
+        this.mesh = mesh.bake().apply { load() }
         this.reapply = false
     }
 

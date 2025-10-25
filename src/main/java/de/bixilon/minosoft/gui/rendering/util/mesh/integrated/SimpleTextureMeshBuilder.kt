@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.mesh
+package de.bixilon.minosoft.gui.rendering.util.mesh.integrated
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
@@ -22,15 +22,19 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.floats) {
+open class SimpleTextureMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : MeshBuilder(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.floats) {
 
     fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f, tintColor: RGBAColor?) {
-        data.add(position.x, position.y, position.z)
-        data.add(uv.x, uv.y)
-        data.add(texture.renderData.shaderTextureId.buffer())
-        data.add((tintColor ?: Colors.WHITE_RGBA).rgba.buffer())
+        data.add(
+            position.x, position.y, position.z,
+            uv.x, uv.y,
+            texture.renderData.shaderTextureId.buffer(),
+            (tintColor ?: Colors.WHITE_RGBA).rgba.buffer()
+        )
     }
 
 

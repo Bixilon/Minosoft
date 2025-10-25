@@ -37,21 +37,22 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.LineMeshBuilder
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class BlockOutlineRenderer(
     val session: PlaySession,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, MeshSwapper {
+) : WorldRenderer, AsyncRenderer, MeshSwapper<Mesh> {
     override val layers = LayerSettings()
     private val profile = session.profiles.block.outline
 
     private var position: BlockPosition? = null
     private var state: BlockState? = null
 
-    override var mesh: LineMesh? = null
+    override var mesh: Mesh? = null
 
     /**
      * Unloads the current mesh and creates a new one
@@ -59,7 +60,7 @@ class BlockOutlineRenderer(
      */
     private var reload = false
 
-    override var nextMesh: LineMesh? = null
+    override var nextMesh: Mesh? = null
     override var unload: Boolean = false
 
     override fun registerLayers() {
@@ -126,7 +127,7 @@ class BlockOutlineRenderer(
             return
         }
 
-        val mesh = LineMesh(context)
+        val mesh = LineMeshBuilder(context)
 
         val blockOffset = MVec3d(target.blockPosition)
         if (target.state.block is OffsetBlock) {
@@ -141,7 +142,7 @@ class BlockOutlineRenderer(
             target.state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
         }
 
-        this.nextMesh = mesh
+        this.nextMesh = mesh.bake()
 
 
         this.position = offsetPosition

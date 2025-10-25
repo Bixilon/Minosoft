@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -31,7 +31,7 @@ open class ImageElement(
     uvEnd: Vec2f = Vec2f(1.0f, 1.0f),
     size: Vec2f = texture?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.floats * 6) {
+) : Element(guiRenderer, GUIMeshBuilder.GUIMeshStruct.floats * 6) {
     var texture: Texture? = texture
         set(value) {
             field = value

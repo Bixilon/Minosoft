@@ -80,10 +80,10 @@ class PopperManager(
             popper.postPrepare()
 
             guiRenderer.setup()
-            if (!popper.enabled || popper.mesh.data.isEmpty) {
+            if (!popper.enabled) {
                 continue
             }
-            popper.mesh.draw()
+            popper.mesh?.draw()
         }
     }
 

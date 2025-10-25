@@ -35,7 +35,7 @@ class SunScatterRenderer(
     private val sun: SunRenderer,
 ) : SkyChildRenderer {
     private val shader = sky.context.system.shader.create(minosoft("sky/scatter/sun")) { SunScatterShader(it) }
-    private val mesh = SunScatterMesh(sky.context)
+    private val mesh = SunScatterMeshBuilder(sky.context).bake()
     private var timeUpdate = true
     private var skyMatrix = Mat4f()
 

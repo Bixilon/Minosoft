@@ -20,31 +20,32 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.SimpleTextureMeshBuilder
 
 abstract class SimpleOverlay(
     protected val context: RenderContext,
 ) : Overlay {
     protected abstract val texture: Texture
     protected open val shader = context.shaders.genericTexture2dShader
-    private var mesh = SimpleTextureMesh(context)
+    private var mesh: Mesh? = null
     protected var tintColor: RGBAColor? = null
     protected open var uvStart = Vec2f(0.0f, 0.0f)
     protected open var uvEnd = Vec2f(1.0f, 1.0f)
 
 
-    protected fun updateMesh() {
-        if (mesh.state == Mesh.MeshStates.LOADED) {
-            mesh.unload()
-        }
-        mesh = SimpleTextureMesh(context)
+    protected fun updateMesh(): Mesh {
+        val mesh = SimpleTextureMeshBuilder(context)
 
         mesh.addZQuad(Vec2f(-1.0f, -1.0f), OverlayManager.OVERLAY_Z, Vec2f(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
-        mesh.load()
+
+        return mesh.bake().apply { load() }
     }
 
     override fun draw() {
-        updateMesh() // ToDo: Don't update every time
+        mesh?.unload()
+        val mesh = updateMesh() // ToDo: Don't update every time
+        this.mesh = mesh
+
         shader.use()
         mesh.draw()
     }

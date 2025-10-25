@@ -110,9 +110,6 @@ class HUDManager(
 
         for (element in this.hudElements.toSynchronizedMap().values) {
             element.postInit()
-            if (element is LayoutedGUIElement<*>) {
-                element.initMesh()
-            }
         }
     }
 

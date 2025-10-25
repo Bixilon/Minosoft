@@ -21,11 +21,11 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockVertexConsumer {
+class BlockMeshBuilder(context: RenderContext) : MeshBuilder(context, BlockMeshStruct), BlockVertexConsumer {
     override val order = context.system.quadOrder
     val offset = MVec3f()
 

@@ -33,7 +33,8 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.LineMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.format
@@ -42,16 +43,16 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkBorderRenderer(
     val session: PlaySession,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, MeshSwapper {
+) : WorldRenderer, AsyncRenderer, MeshSwapper<Mesh> {
     override val layers = LayerSettings()
     private val profile = session.profiles.rendering
     private var offset = BlockPosition()
     private var chunkPosition: ChunkPosition? = null
     private var sectionHeight: Int = Int.MIN_VALUE
 
-    override var mesh: LineMesh? = null
+    override var mesh: Mesh? = null
 
-    override var nextMesh: LineMesh? = null
+    override var nextMesh: Mesh? = null
     override var unload = false
 
     override fun registerLayers() {
@@ -84,7 +85,7 @@ class ChunkBorderRenderer(
             return
         }
         unload = true
-        val mesh = LineMesh(context)
+        val mesh = LineMeshBuilder(context)
 
         val dimension = context.session.world.dimension
         val basePosition = (chunkPosition * ChunkSize.SECTION_WIDTH_X) - ChunkPosition(offset.x, offset.z)
@@ -100,10 +101,10 @@ class ChunkBorderRenderer(
         this.chunkPosition = chunkPosition
         this.sectionHeight = sectionHeight
         this.offset = offset
-        this.nextMesh = mesh
+        this.nextMesh = mesh.bake()
     }
 
-    private fun LineMesh.drawOuterChunkLines(chunkPosition: ChunkPosition, offset: BlockPosition, dimension: DimensionProperties) {
+    private fun LineMeshBuilder.drawOuterChunkLines(chunkPosition: ChunkPosition, offset: BlockPosition, dimension: DimensionProperties) {
         for (x in -OUTER_CHUNK_SIZE..OUTER_CHUNK_SIZE + 1) {
             for (z in -OUTER_CHUNK_SIZE..OUTER_CHUNK_SIZE + 1) {
                 if ((x == 0 || x == 1) && (z == 0 || z == 1)) {
@@ -115,7 +116,7 @@ class ChunkBorderRenderer(
         }
     }
 
-    private fun LineMesh.drawInnerChunkLines(basePosition: Vec3i, dimension: DimensionProperties) {
+    private fun LineMeshBuilder.drawInnerChunkLines(basePosition: Vec3i, dimension: DimensionProperties) {
         drawLine(Vec3f(basePosition.x + 0, basePosition.y + dimension.minY, basePosition.z), Vec3f(basePosition.x + 0, basePosition.y + dimension.maxY + 1, basePosition.z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
         drawLine(Vec3f(basePosition.x, basePosition.y + dimension.minY, basePosition.z + ChunkSize.SECTION_WIDTH_Z), Vec3f(basePosition.x, basePosition.y + dimension.maxY + 1, basePosition.z + ChunkSize.SECTION_WIDTH_Z), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
         drawLine(Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.minY, basePosition.z + 0), Vec3f(basePosition.x + ChunkSize.SECTION_WIDTH_X, basePosition.y + dimension.maxY + 1, basePosition.z + 0), INNER_CHUNK_LINE_WIDTH, INNER_CHUNK_COLOR)
@@ -130,7 +131,7 @@ class ChunkBorderRenderer(
         }
     }
 
-    private fun LineMesh.drawSectionLines(basePosition: Vec3i) {
+    private fun LineMeshBuilder.drawSectionLines(basePosition: Vec3i) {
         // vertical lines
         for (x in 1..ChunkSize.SECTION_MAX_X) {
             val color = when {

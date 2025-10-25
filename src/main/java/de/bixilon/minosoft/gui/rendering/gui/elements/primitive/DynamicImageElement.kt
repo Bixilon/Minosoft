@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
@@ -34,7 +34,7 @@ open class DynamicImageElement(
     size: Vec2f = Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
     parent: Element? = null,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.floats * 6), DynamicTextureListener {
+) : Element(guiRenderer, GUIMeshBuilder.GUIMeshStruct.floats * 6), DynamicTextureListener {
 
     var texture: DynamicTexture? = null
         set(value) {

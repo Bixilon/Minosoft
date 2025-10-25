@@ -17,7 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.particle.ParticleMeshBuilder
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -27,7 +27,7 @@ abstract class AdvancedTextureParticle(session: PlaySession, position: Vec3d, ve
     var minUV: Vec2f = Vec2f(0.0f, 0.0f)
     var maxUV: Vec2f = Vec2f(1.0f, 1.0f)
 
-    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) {
+    override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) {
         val light = light
 
         val texture = texture ?: return

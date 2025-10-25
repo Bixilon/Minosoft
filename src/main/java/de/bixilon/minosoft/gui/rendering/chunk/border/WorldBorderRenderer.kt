@@ -17,6 +17,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
@@ -32,9 +33,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.time.Duration.Companion.seconds
 
 class WorldBorderRenderer(
@@ -42,7 +42,7 @@ class WorldBorderRenderer(
 ) : WorldRenderer, AsyncRenderer, SkipAll {
     override val layers = LayerSettings()
     private val shader = context.system.shader.create(minosoft("world/border")) { WorldBorderShader(it) }
-    private var borderMesh: WorldBorderMesh? = null
+    private var mesh: WorldBorderMesh? = null
     private val border = context.session.world.border
     private lateinit var texture: Texture
     private var offsetReset = now()
@@ -51,7 +51,7 @@ class WorldBorderRenderer(
     private var reload = false
 
     override fun registerLayers() {
-        layers.register(WorldBorderLayer, shader, this::draw) { this.borderMesh == null }
+        layers.register(WorldBorderLayer, shader, this::draw) { this.mesh == null }
     }
 
     override fun init(latch: AbstractLatch) {
@@ -79,7 +79,7 @@ class WorldBorderRenderer(
     }
 
     private fun update() {
-        if (this.borderMesh == null) return
+        if (this.mesh == null) return
 
         val time = now()
         if (offsetReset - time > ANIMATION_SPEED) {
@@ -98,25 +98,25 @@ class WorldBorderRenderer(
         val center = border.center
         val radius = border.area.radius()
 
-        val previous = this.borderMesh
+        val previous = this.mesh
         if (previous != null && !reload && center == previous.center && radius == previous.radius) return
 
-        context.queue += { previous?.unload() }
+        previous?.let { context.queue += { it.unload() } }
 
         val offset = context.camera.offset.offset
 
-        val mesh = WorldBorderMesh(context, offset, center, radius)
+        val mesh = WorldBorderMeshBuilder(context, offset, center, radius)
         mesh.build()
 
-        this.borderMesh = mesh
+        this.mesh = mesh.bake()
         this.reload = false
     }
 
     private fun draw() {
-        val mesh = this.borderMesh ?: return
+        val mesh = this.mesh ?: return
         update()
 
-        if (mesh.state == Mesh.MeshStates.WAITING) {
+        if (mesh.state == MeshStates.PREPARING) {
             mesh.load()
         }
         mesh.draw()
@@ -144,10 +144,8 @@ class WorldBorderRenderer(
         val ANIMATION_SPEED = 2.seconds
         const val MAX_DISTANCE = 100.0f
 
-        private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
+        private val TEXTURE = minecraft("misc/forcefield").texture()
 
-        override fun build(session: PlaySession, context: RenderContext): WorldBorderRenderer {
-            return WorldBorderRenderer(context)
-        }
+        override fun build(session: PlaySession, context: RenderContext) = WorldBorderRenderer(context)
     }
 }

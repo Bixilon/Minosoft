@@ -28,13 +28,14 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BillboardTextFeature(
     renderer: EntityRenderer<*>,
     text: ChatComponent?,
     offset: Float = DEFAULT_OFFSET,
-) : MeshedFeature<BillboardTextMesh>(renderer) {
+) : MeshedFeature<Mesh>(renderer) {
     override val priority: Int get() = 10000
     private var info: TextRenderInfo? = null
     private var matrix = MMat4f()
@@ -68,10 +69,10 @@ open class BillboardTextFeature(
     }
 
     private fun createMesh(text: ChatComponent) {
-        val mesh = BillboardTextMesh(renderer.renderer.context)
+        val mesh = BillboardTextMeshBuilder(renderer.renderer.context)
         val info = ChatComponentRenderer.render3d(renderer.renderer.context, PROPERTIES, MAX_SIZE, mesh, text)
 
-        this.mesh = mesh
+        this.mesh = mesh.bake()
         this.info = info
     }
 
@@ -84,13 +85,13 @@ open class BillboardTextFeature(
             translateYAssign(renderer.entity.dimensions.y + offset)
             rotateYAssign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
             rotateXAssign((180.0f - mat.pitch).rad)
-            translateXAssign(width / -2.0f * BillboardTextMesh.SCALE); translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
+            translateXAssign(width / -2.0f * BillboardTextMeshBuilder.SCALE); translateYAssign(-PROPERTIES.lineHeight * BillboardTextMeshBuilder.SCALE)
         }
 
         this.matrix = renderer.matrix * matrix
     }
 
-    override fun draw(mesh: BillboardTextMesh) {
+    override fun draw(mesh: Mesh) {
         renderer.renderer.context.system.reset(
             blending = true,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,

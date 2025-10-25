@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.particle.ParticleMeshBuilder
 import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -27,7 +27,7 @@ abstract class TextureParticle(session: PlaySession, position: Vec3d, velocity: 
     abstract val texture: Texture?
 
 
-    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) {
+    override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) {
         val light = light
 
         val texture = texture ?: return

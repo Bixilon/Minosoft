@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 class DummyVertexBuffer(
     override val struct: MeshStruct,

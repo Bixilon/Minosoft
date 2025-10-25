@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
-import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 class HitboxFeatureTest {
     private val mesh = MeshedFeature::class.java.getFieldOrNull("mesh")!!
 
-    val HitboxFeature.mesh: LineMesh? get() = this@HitboxFeatureTest.mesh.get(this).unsafeCast()
+    val HitboxFeature.mesh: Mesh? get() = this@HitboxFeatureTest.mesh.get(this).unsafeCast()
 
     private fun create(entity: EntityFactory<*>): HitboxFeature {
         val renderer = create().create(entity)

@@ -19,10 +19,10 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize) {
+class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMeshBuilder(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize) {
 
     private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUV, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
         data.add(

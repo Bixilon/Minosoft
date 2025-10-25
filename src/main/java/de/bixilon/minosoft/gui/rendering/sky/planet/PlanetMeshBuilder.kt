@@ -11,34 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather
+package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-open class WeatherOverlayMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.floats) {
+open class PlanetMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : MeshBuilder(context, SunMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SunMeshStruct.floats) {
 
-    fun addVertex(position: Vec3f, uv: Vec2f, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
+    fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f) {
         data.add(position.x, position.y, position.z)
         data.add(uv.x, uv.y)
-        data.add(offset)
-        data.add(offsetMultiplicator)
-        data.add(alphaMultiplicator)
+        data.add(texture.renderData.shaderTextureId.buffer())
     }
 
 
-    data class WeatherOverlayMeshStruct(
+    data class SunMeshStruct(
         val position: Vec3f,
         val uv: UnpackedUV,
-        val offset: Float,
-        val vinOffsetMultiplier: Float,
-        val alphaMultiplier: Float,
+        val indexLayerAnimation: Int,
     ) {
-        companion object : MeshStruct(WeatherOverlayMeshStruct::class)
+        companion object : MeshStruct(SunMeshStruct::class)
     }
 }

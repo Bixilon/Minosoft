@@ -31,13 +31,6 @@ class ChunkMeshes(
 ) {
     val center: Vec3f = Vec3f(BlockPosition.of(position, InSectionPosition(8, 8, 8)))
 
-
-    fun preload() {
-        this.opaque?.preload()
-        this.translucent?.preload()
-        this.text?.preload()
-    }
-
     fun load() {
         this.opaque?.load()
         this.translucent?.load()

@@ -35,7 +35,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
@@ -77,7 +77,7 @@ class SignBlockEntityRenderer(
         // TODO
     }
 
-    private fun renderText(state: BlockState, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMesh, light: Int) {
+    private fun renderText(state: BlockState, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMeshBuilder, light: Int) {
         when (state.block) {
             is StandingSignBlock -> renderStandingText(state.getRotation(), sign, offset, mesh, light)
             is WallSignBlock -> renderWallText(state.getFacing(), sign, offset, mesh, light)
@@ -85,15 +85,15 @@ class SignBlockEntityRenderer(
         }
     }
 
-    private fun ChunkMesh.ensureSize(text: SignBlockEntity.SignTextProperties) {
+    private fun ChunkMeshBuilder.ensureSize(text: SignBlockEntity.SignTextProperties) {
         var primitives = 0
         for (line in text.text) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
-        data.ensureSize(primitives * order.size * ChunkMesh.ChunkMeshStruct.floats)
+        data.ensureSize(primitives * order.size * ChunkMeshBuilder.ChunkMeshStruct.floats)
     }
 
-    private fun renderText(offset: Vec3f, text: SignBlockEntity.SignTextProperties, blockOffset: Vec3f, yRotation: Float, mesh: ChunkMesh, light: Int) {
+    private fun renderText(offset: Vec3f, text: SignBlockEntity.SignTextProperties, blockOffset: Vec3f, yRotation: Float, mesh: ChunkMeshBuilder, light: Int) {
         val textPosition = (offset + blockOffset).unsafe
         val light = if (text.glowing) 0xFF else light
         val rotation = Vec3f(0.0f, -yRotation, 0.0f)
@@ -108,7 +108,7 @@ class SignBlockEntityRenderer(
         }
     }
 
-    private fun renderStandingText(rotation: Float, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMesh, light: Int) {
+    private fun renderStandingText(rotation: Float, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMeshBuilder, light: Int) {
         val frontOffset = MVec3f(STANDING_FRONT_OFFSET).apply { signRotate(rotation) }.unsafe
         renderText(offset, sign.front, frontOffset, rotation, mesh, light)
 
@@ -116,7 +116,7 @@ class SignBlockEntityRenderer(
         renderText(offset, sign.back, backOffset, rotation - 180.0f.rad, mesh, light)
     }
 
-    private fun renderWallText(facing: Directions, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMesh, light: Int) {
+    private fun renderWallText(facing: Directions, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMeshBuilder, light: Int) {
         val rotation = WALL_ROTATIONS[facing.ordinal - Directions.SIDE_OFFSET]
         val blockOffset = MVec3f(WALL_OFFSET).apply { signRotate(rotation) }.unsafe
 

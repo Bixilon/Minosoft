@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
@@ -52,7 +52,7 @@ open class TextElement(
     background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
-) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.floats), Labeled {
+) : Element(guiRenderer, text.charCount * 6 * GUIMeshBuilder.GUIMeshStruct.floats), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var info: TextRenderInfo
         private set
@@ -165,7 +165,7 @@ open class TextElement(
             textOffset += it.size.offset
         }
 
-        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMesh.GUIMeshStruct.floats
+        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMeshBuilder.GUIMeshStruct.floats
         if (properties.shadow) {
             vertices *= 2
         }

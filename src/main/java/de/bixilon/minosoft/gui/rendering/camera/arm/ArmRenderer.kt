@@ -61,11 +61,11 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
         val skeletal = context.models.skeletal
         val override = mapOf(SKIN to context.textures.debugTexture) // disable textures, they all dynamic
 
-        skeletal.register(LEFT_ARM_WIDE, WIDE, override) { ArmMesh(context, Arms.LEFT) }
-        skeletal.register(RIGHT_ARM_WIDE, WIDE, override) { ArmMesh(context, Arms.RIGHT) }
+        skeletal.register(LEFT_ARM_WIDE, WIDE, override) { ArmMeshBuilder(context, Arms.LEFT) }
+        skeletal.register(RIGHT_ARM_WIDE, WIDE, override) { ArmMeshBuilder(context, Arms.RIGHT) }
 
-        skeletal.register(LEFT_ARM_SLIM, SLIM, override) { ArmMesh(context, Arms.LEFT) }
-        skeletal.register(RIGHT_ARM_SLIM, SLIM, override) { ArmMesh(context, Arms.RIGHT) }
+        skeletal.register(LEFT_ARM_SLIM, SLIM, override) { ArmMeshBuilder(context, Arms.LEFT) }
+        skeletal.register(RIGHT_ARM_SLIM, SLIM, override) { ArmMeshBuilder(context, Arms.RIGHT) }
     }
 
 

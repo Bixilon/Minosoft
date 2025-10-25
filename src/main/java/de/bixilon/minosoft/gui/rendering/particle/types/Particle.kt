@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.collision.CollisionShape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.particle.ParticleMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
@@ -235,7 +235,7 @@ abstract class Particle(
         }
     }
 
-    abstract fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark)
+    abstract fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark)
 
     companion object {
         private const val MAGIC_VELOCITY_CONSTANT = 0.4

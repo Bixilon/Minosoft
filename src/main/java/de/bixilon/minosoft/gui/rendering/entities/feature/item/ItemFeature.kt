@@ -17,7 +17,7 @@ import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
+import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMeshBuilder
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature.ItemRenderDistance.Companion.getCount
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import java.util.*
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -33,7 +34,7 @@ open class ItemFeature(
     stack: ItemStack?,
     val display: DisplayPositions,
     val many: Boolean = true,
-) : MeshedFeature<BlockMesh>(renderer) {
+) : MeshedFeature<Mesh>(renderer) {
     private var matrix = MMat4f()
     private var displayMatrix = Mat4f.EMPTY
     private var distance: ItemRenderDistance? = null
@@ -68,7 +69,7 @@ open class ItemFeature(
         val model = stack.item.getModel(renderer.renderer.session) ?: return
         val display = model.getDisplay(display)
         this.displayMatrix = display?.matrix ?: Mat4f.EMPTY
-        val mesh = BlockMesh(renderer.renderer.context)
+        val mesh = BlockMeshBuilder(renderer.renderer.context)
 
         val tint = renderer.renderer.context.tints.getItemTint(stack)
 
@@ -89,7 +90,7 @@ open class ItemFeature(
         }
         // TODO: enchantment glint, ...
 
-        this.mesh = mesh
+        this.mesh = mesh.bake()
     }
 
     private fun updateMatrix() {
@@ -104,14 +105,14 @@ open class ItemFeature(
         }
     }
 
-    override fun draw(mesh: BlockMesh) {
+    override fun draw(mesh: Mesh) {
         renderer.renderer.context.system.set(layer.settings)
         val shader = renderer.renderer.features.block.shader
         draw(mesh, shader)
     }
 
 
-    protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
+    protected open fun draw(mesh: Mesh, shader: BlockShader) {
         shader.use()
         shader.matrix = matrix.unsafe
         shader.tint = renderer.light.value

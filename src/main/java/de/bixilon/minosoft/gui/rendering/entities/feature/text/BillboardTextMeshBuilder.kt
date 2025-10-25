@@ -23,11 +23,11 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMeshStruct), GUIVertexConsumer {
+class BillboardTextMeshBuilder(context: RenderContext) : MeshBuilder(context, BillboardTextMeshStruct), GUIVertexConsumer {
     override val order = context.system.quadOrder
 
     override fun ensureSize(size: Int) {

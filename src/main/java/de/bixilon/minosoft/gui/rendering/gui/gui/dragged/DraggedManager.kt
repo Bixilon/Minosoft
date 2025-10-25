@@ -93,10 +93,7 @@ class DraggedManager(
         element.postPrepare()
 
         guiRenderer.setup()
-        if (element.mesh.data.isEmpty) {
-            return
-        }
-        element.mesh.draw()
+        element.mesh?.draw()
     }
 
     override fun onCharPress(char: Int): Boolean {

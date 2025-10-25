@@ -59,7 +59,6 @@ class ChunkMesher(
             return renderer.unload(item)
         }
         if (Thread.interrupted()) throw InterruptedException()
-        mesh.preload()
         item.mesh = mesh
         renderer.loadingQueue.queue(mesh)
     }

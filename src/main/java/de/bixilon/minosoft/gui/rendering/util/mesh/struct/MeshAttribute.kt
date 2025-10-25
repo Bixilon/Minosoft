@@ -11,13 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.mesh
+package de.bixilon.minosoft.gui.rendering.util.mesh.struct
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-
-
-data class PositionOnlyMeshStruct(
-    val position: Vec3f,
-) {
-    companion object : MeshStruct(PositionOnlyMeshStruct::class)
-}
+data class MeshAttribute(
+    val index: Int,
+    val size: Int,
+    val stride: Int,
+)

@@ -23,14 +23,14 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.BaseDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
-import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
@@ -40,8 +40,8 @@ open class GUIMeshElement<T : Element>(
     override val guiRenderer: GUIRenderer = element.guiRenderer
     override val context: RenderContext = guiRenderer.context
     private val clickCounter = MouseClickCounter()
-    private var _mesh: GUIMesh? = null
-    var mesh: GUIMesh = GUIMesh(context, guiRenderer.halfSize, FloatListUtil.direct(1024))
+    private val data = FloatListUtil.direct(1024)
+    var mesh: Mesh? = null
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
     protected var lastRevision = 0L
@@ -67,7 +67,7 @@ open class GUIMeshElement<T : Element>(
         get() = element.canPop
 
     init {
-        element.cache.data = mesh.data
+        element.cache.data = data
     }
 
     override fun tick() {
@@ -86,32 +86,24 @@ open class GUIMeshElement<T : Element>(
         }
     }
 
-    protected fun createNewMesh() {
-        if (this._mesh != null) throw MemoryLeakException("Mesh to unload is already set!")
-        this._mesh = this.mesh
-        this.mesh = GUIMesh(context, guiRenderer.halfSize, mesh.data)
-        this.mesh.preload()
-    }
-
     fun prepare() = Unit
 
     fun prepareAsync(offset: Vec2f) {
-        element.render(offset, mesh, null)
+        this.data.clear()
+        val builder = GUIMeshBuilder(context, guiRenderer.halfSize, this.data)
+        element.render(offset, builder, null)
         val revision = element.cache.revision
         if (revision != lastRevision) {
-            createNewMesh()
+            this.mesh?.let { context.queue += { it.unload() } }
+            this.mesh = if (builder.data.isEmpty) null else builder.bake()
             this.lastRevision = revision
         }
     }
 
     open fun postPrepare() {
-        val _mesh = this._mesh ?: return
-        if (_mesh.state == Mesh.MeshStates.LOADED) {
-            _mesh.unload()
-        }
-        this._mesh = null
+        val mesh = this.mesh ?: return
 
-        if (this.mesh.state == Mesh.MeshStates.PRELOADED) {
+        if (mesh.state == MeshStates.PREPARING) {
             mesh.load()
         }
     }
@@ -130,10 +122,6 @@ open class GUIMeshElement<T : Element>(
         if (element is AsyncDrawable) {
             element.drawAsync()
         }
-    }
-
-    fun initMesh() {
-        mesh.load()
     }
 
     override fun onCharPress(char: Int): Boolean {

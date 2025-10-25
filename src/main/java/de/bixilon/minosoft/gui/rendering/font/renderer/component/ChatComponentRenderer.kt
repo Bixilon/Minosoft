@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -51,7 +51,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             else -> TODO("Don't know how to render ${text::class.java}")
         }
 
-        fun render3d(context: RenderContext, position: Vec3f, properties: TextRenderProperties, rotation: Vec3f, maxSize: Vec2f, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
+        fun render3d(context: RenderContext, position: Vec3f, properties: TextRenderProperties, rotation: Vec3f, maxSize: Vec2f, mesh: ChunkMeshBuilder, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = MMat4f().apply {
                 translateAssign(position)
                 rotateRadAssign(rotation)
@@ -59,7 +59,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
 
             val primitives = calculatePrimitiveCount(text)
-            mesh.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.floats)
+            mesh.ensureSize(primitives * mesh.order.size * ChunkMeshBuilder.ChunkMeshStruct.floats)
 
             val consumer = WorldGUIConsumer(mesh, matrix.unsafe, light)
             return render3d(context, properties, maxSize, consumer, text, null)

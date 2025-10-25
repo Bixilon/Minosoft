@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.AbstractVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.AbstractVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
@@ -31,7 +31,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
 
 
     fun addQuad(offset: Vec3f, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
-        ensureSize(ChunkMesh.ChunkMeshStruct.floats * order.size)
+        ensureSize(ChunkMeshBuilder.ChunkMeshStruct.floats * order.size)
 
         order.iterate { position, uv ->
             val vertexOffset = position * Vec3f.LENGTH
@@ -48,7 +48,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
     }
 
     fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
-        ensureSize(ChunkMesh.ChunkMeshStruct.floats * order.size)
+        ensureSize(ChunkMeshBuilder.ChunkMeshStruct.floats * order.size)
 
         order.iterate { position, uv ->
             val vertexOffset = position * Vec3f.LENGTH

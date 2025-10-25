@@ -38,8 +38,8 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlException
 import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGlVendor
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateCornerHeights
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateFluidHeights
@@ -98,7 +98,7 @@ class FluidSectionMesher(
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
     }
 
-    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMesh, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
+    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMeshBuilder, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
         if (cull == FluidCull.CULLED) return
         packedUV[2] = PackedUV.pack(0.5f, (1.0f - height1) * 0.5f)
         packedUV[3] = PackedUV.pack(0.0f, (1.0f - height2) * 0.5f)

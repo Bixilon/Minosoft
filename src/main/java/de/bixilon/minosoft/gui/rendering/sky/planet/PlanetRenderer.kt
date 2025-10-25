@@ -26,13 +26,14 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
 ) : SkyChildRenderer {
     protected abstract val texture: Texture
     protected val shader = sky.context.system.shader.create(minosoft("sky/planet")) { PlanetShader(it) }
-    private var mesh = PlanetMesh(sky.context)
+    private lateinit var mesh: Mesh
     protected var day = -1L
     protected var matrix = Mat4f()
     private var matrixUpdate = true
@@ -44,6 +45,7 @@ abstract class PlanetRenderer(
     open var uvEnd = Vec2f(1.0f, 1.0f)
 
     private fun prepareMesh() {
+        val mesh = PlanetMeshBuilder(sky.context)
         mesh.addYQuad(
             start = Vec2f(-0.2f, -0.2f),
             y = 1f,
@@ -59,7 +61,8 @@ abstract class PlanetRenderer(
             }
         )
 
-        mesh.load()
+        this.mesh = mesh.bake()
+        this.mesh.load()
         this.meshInvalid = false
     }
 
@@ -115,7 +118,6 @@ abstract class PlanetRenderer(
         }
         if (meshInvalid) {
             this.mesh.unload()
-            this.mesh = PlanetMesh(sky.context)
             prepareMesh()
         }
 

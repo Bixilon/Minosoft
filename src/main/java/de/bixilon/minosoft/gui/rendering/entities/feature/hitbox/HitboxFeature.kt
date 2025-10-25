@@ -23,13 +23,14 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.LineMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(renderer) {
+class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer) {
     private val manager = renderer.renderer.features.hitbox
 
     private var aabb = AABB.EMPTY
@@ -93,7 +94,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
     }
 
     private fun createMesh() {
-        val mesh = LineMesh(renderer.renderer.context)
+        val mesh = LineMeshBuilder(renderer.renderer.context)
 
         val color = color.value
         if (manager.profile.lazy) {
@@ -110,11 +111,11 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
 
         mesh.drawLine(eyePosition, eyePosition + rotation.front * 5.0f, color = ChatColors.BLUE)
 
-        this.mesh = mesh
+        this.mesh = mesh.bake()
     }
 
 
-    override fun draw(mesh: LineMesh) {
+    override fun draw(mesh: Mesh) {
         // TODO: update position with shader uniform
         val system = renderer.renderer.context.system
         if (manager.profile.showThroughWalls) {

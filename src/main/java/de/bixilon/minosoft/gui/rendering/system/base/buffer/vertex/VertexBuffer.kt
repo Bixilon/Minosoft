@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 interface VertexBuffer : GpuBuffer {
     val vertices: Int

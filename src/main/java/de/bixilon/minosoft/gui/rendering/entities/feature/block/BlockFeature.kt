@@ -20,13 +20,14 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
     var scale: Vec3f = DEFAULT_SCALE,
-) : MeshedFeature<BlockMesh>(renderer) {
+) : MeshedFeature<Mesh>(renderer) {
     private var matrix = MMat4f()
     var state: BlockState? = state
         set(value) {
@@ -47,7 +48,7 @@ open class BlockFeature(
     }
 
     private fun createMesh(state: BlockState) {
-        val mesh = BlockMesh(renderer.renderer.context)
+        val mesh = BlockMeshBuilder(renderer.renderer.context)
         val model = (state.block.model ?: state.model) ?: return
         // TODO: block entity support?
 
@@ -55,7 +56,7 @@ open class BlockFeature(
 
         model.render(mesh, state, tint)
 
-        this.mesh = mesh
+        this.mesh = mesh.bake()
     }
 
     private fun updateMatrix() {
@@ -70,13 +71,13 @@ open class BlockFeature(
         this.matrix = renderer.matrix * matrix
     }
 
-    override fun draw(mesh: BlockMesh) {
+    override fun draw(mesh: Mesh) {
         renderer.renderer.context.system.set(layer.settings)
         val shader = renderer.renderer.features.block.shader
         draw(mesh, shader)
     }
 
-    protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
+    protected open fun draw(mesh: Mesh, shader: BlockShader) {
         shader.use()
         shader.matrix = matrix.unsafe
         shader.tint = renderer.light.value

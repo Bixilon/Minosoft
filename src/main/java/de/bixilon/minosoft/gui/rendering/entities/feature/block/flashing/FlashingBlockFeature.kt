@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
-import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import kotlin.math.abs
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -50,7 +50,7 @@ open class FlashingBlockFeature(
         }
     }
 
-    override fun draw(mesh: BlockMesh, shader: BlockShader) {
+    override fun draw(mesh: Mesh, shader: BlockShader) {
         val shader = renderer.renderer.features.block.flashing
         shader.use()
         shader.flashColor = flashColor

@@ -18,14 +18,14 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMeshBuilder
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-open class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, PlayerMeshStruct, initialCacheSize = initialCacheSize) {
+open class PlayerModelMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMeshBuilder(context, PlayerMeshStruct, initialCacheSize = initialCacheSize) {
     override val order = context.system.quadOrder
 
     private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUV, uvOffset: Int, partTransformNormal: Float) {

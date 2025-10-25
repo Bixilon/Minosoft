@@ -137,7 +137,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         private const val SNEAKING_OFFSET = -0.125f
 
         override fun create(renderer: EntitiesRenderer, entity: PlayerEntity) = PlayerRenderer(renderer, entity)
-        override fun buildMesh(context: RenderContext) = PlayerModelMesh(context)
+        override fun buildMesh(context: RenderContext) = PlayerModelMeshBuilder(context)
 
         override fun register(loader: ModelLoader) {
             val override = mapOf(SKIN to loader.context.textures.debugTexture) // disable textures, they all dynamic

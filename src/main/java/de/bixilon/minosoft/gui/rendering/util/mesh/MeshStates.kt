@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-data class MeshAttribute(
-    val index: Int,
-    val size: Int,
-    val stride: Int,
-)
+enum class MeshStates {
+    PREPARING,
+    LOADED,
+    UNLOADED,
+}

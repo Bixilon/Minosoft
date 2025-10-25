@@ -21,19 +21,19 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-class GUIMesh(
+class GUIMeshBuilder(
     context: RenderContext,
     val halfSize: Vec2f,
     data: AbstractFloatList,
-) : Mesh(context, GUIMeshStruct, initialCacheSize = 32768, data = data), GUIVertexConsumer {
+) : MeshBuilder(context, GUIMeshStruct, initialCacheSize = 32768, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
     override val order = context.system.quadOrder
 
-    override fun clear() = Unit
+    override fun drop() = Unit
 
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {

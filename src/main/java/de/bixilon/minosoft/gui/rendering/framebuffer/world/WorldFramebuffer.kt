@@ -17,7 +17,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
+import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMeshBuilder
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectManager
@@ -37,7 +37,7 @@ class WorldFramebuffer(
     override val shader: FramebufferShader
         get() = `fun`.shader ?: defaultShader
     override var framebuffer: Framebuffer = unsafeNull()
-    override val mesh = FramebufferMesh(context)
+    override val mesh = FramebufferMeshBuilder(context).bake()
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 
     override var size = Vec2i(1, 1)

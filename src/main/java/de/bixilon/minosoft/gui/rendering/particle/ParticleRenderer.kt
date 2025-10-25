@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
@@ -47,8 +48,10 @@ class ParticleRenderer(
     private val shader = context.system.shader.create(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    var mesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.floats))
-    var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.floats))
+    private val meshData = BufferedArrayFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
+    private val translucentData = BufferedArrayFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
+    var mesh: Mesh? = null
+    var translucentMesh: Mesh? = null
 
     val particles = ParticleList(profile.maxAmount)
     val queue = ParticleQueue(this)
@@ -81,8 +84,8 @@ class ParticleRenderer(
         get() = particles.size
 
     override fun registerLayers() {
-        layers.register(OpaqueLayer, shader, renderer = { mesh.draw() })
-        layers.register(TranslucentLayer, shader, renderer = { translucentMesh.draw() })
+        layers.register(OpaqueLayer, shader, renderer = { mesh?.draw() }, skip = { mesh != null })
+        layers.register(TranslucentLayer, shader, renderer = { translucentMesh?.draw() }, skip = { translucentMesh != null })
     }
 
     private fun loadTextures() {
@@ -103,8 +106,6 @@ class ParticleRenderer(
 
         session.events.listen<CameraMatrixChangeEvent> { matrixUpdate = true }
 
-        mesh.load()
-        translucentMesh.load()
 
         loadTextures()
         DefaultParticleBehavior.register(session, this)
@@ -140,25 +141,23 @@ class ParticleRenderer(
             updateShader()
             matrixUpdate = false
         }
-        mesh.unload()
-        translucentMesh.unload()
-    }
-
-    private fun prepareMesh() {
-        mesh.data.clear()
-        translucentMesh.data.clear()
-        mesh = ParticleMesh(context, mesh.data)
-        translucentMesh = ParticleMesh(context, translucentMesh.data)
+        mesh?.unload()
+        translucentMesh?.unload()
     }
 
     override fun prepareDrawAsync() {
-        prepareMesh()
-        ticker.tick(true)
+        this.meshData.clear()
+        this.translucentData.clear()
+
+        val mesh = ParticleMeshBuilder(context, this.meshData)
+        val translucent = ParticleMeshBuilder(context, this.translucentData)
+
+        ticker.tick(mesh, translucent)
     }
 
     override fun postPrepareDraw() {
-        mesh.load()
-        translucentMesh.load()
+        mesh?.load()
+        translucentMesh?.load()
     }
 
     override fun removeAllParticles() {

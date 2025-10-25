@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.sky.planet.scatter
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshStruct
 
-class SunScatterMesh(context: RenderContext) : Mesh(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.floats) {
+class SunScatterMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.floats) {
 
     init {
         data.add(

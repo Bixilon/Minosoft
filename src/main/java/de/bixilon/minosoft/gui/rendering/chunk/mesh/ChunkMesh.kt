@@ -13,60 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
-class ChunkMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, ChunkMeshStruct, initialCacheSize = initialCacheSize), BlockVertexConsumer, Comparable<ChunkMesh> {
-    var distance: Float = 0.0f // Used for sorting
-
-    override val order = context.system.quadOrder
-
-    override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
-        data.ensureSize(ChunkMeshStruct.floats)
-        val transformedUV = texture.transformUV(uv)
-        data.add(position.x, position.y, position.z)
-        data.add(PackedUV.pack(transformedUV.x, transformedUV.y))
-        data.add(
-            texture.shaderId.buffer(),
-            (((lightIndex shl 24) or tintColor.rgb).buffer())
-        )
-    }
-
-    override inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) {
-        data.add(
-            x, y, z,
-            PackedUV.pack(u, v),
-            textureId, lightTint,
-        )
-    }
-
-    override inline fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) {
-        data.add(
-            x, y, z,
-            uv,
-            textureId, lightTint,
-        )
-    }
+class ChunkMesh(buffer: VertexBuffer) : Mesh(buffer), Comparable<ChunkMesh> {
+    var distance: Float = 0.0f
 
     override fun compareTo(other: ChunkMesh): Int {
         if (distance < other.distance) return -1
         if (distance > other.distance) return 1
         return 0
-    }
-
-    data class ChunkMeshStruct(
-        val position: Vec3f,
-        val uv: PackedUV,
-        val indexLayerAnimation: Int,
-        val lightTint: Int,
-    ) {
-        companion object : MeshStruct(ChunkMeshStruct::class)
     }
 }

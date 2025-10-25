@@ -23,7 +23,8 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.SimpleTextureMeshBuilder
 
 class FireOverlay(
     private val context: RenderContext,
@@ -46,12 +47,12 @@ class FireOverlay(
             }
             return player.isOnFire
         }
-    private lateinit var mesh: SimpleTextureMesh
+    private lateinit var mesh: Mesh
     private val tintColor = RGBAColor(1.0f, 1.0f, 1.0f, 0.9f)
 
 
-    override fun postInit() {
-        mesh = SimpleTextureMesh(context)
+    private fun updateMesh() {
+        val mesh = SimpleTextureMeshBuilder(context)
 
         // ToDo: Minecraft does this completely different...
         mesh.addQuad(arrayOf(
@@ -68,14 +69,18 @@ class FireOverlay(
             Vec3f(+2.0f, -2.4f, +0.0f),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
 
+        this.mesh = mesh.bake()
+        this.mesh.load()
+    }
 
-        mesh.load()
+    override fun postInit() {
+        updateMesh()
     }
 
 
     override fun draw() {
         mesh.unload()
-        postInit()
+        updateMesh()
         context.system.reset(blending = true, depthTest = false)
         shader.use()
         mesh.draw()

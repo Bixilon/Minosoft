@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -147,7 +147,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
     open fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val offset = offset
         var directRendering = false
-        if (consumer is GUIMesh && consumer.data == cache.data) {
+        if (consumer is GUIMeshBuilder && consumer.data == cache.data) {
             directRendering = true
         }
         if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.properties
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class MeshedFeature<M : Mesh>(
@@ -38,7 +39,7 @@ abstract class MeshedFeature<M : Mesh>(
 
     override fun draw() {
         val mesh = this.mesh ?: return
-        if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
+        if (mesh.state != MeshStates.LOADED) mesh.load()
         draw(mesh)
     }
 

@@ -59,6 +59,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
         blockState = context.session.world[position]
     }
 
+
     override fun draw() {
         random.setSeed(position.hash)
         texture = blockState?.model?.getParticleTexture(random, position) ?: return

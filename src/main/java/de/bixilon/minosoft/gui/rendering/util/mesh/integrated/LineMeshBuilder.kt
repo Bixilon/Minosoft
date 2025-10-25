@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.mesh
+package de.bixilon.minosoft.gui.rendering.util.mesh.integrated
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.MVec3f
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 
-open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMesh(context, initialCacheSize = initialCacheSize) {
+open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMeshBuilder(context, initialCacheSize = initialCacheSize) {
 
     fun drawLine(start: Vec3f, end: Vec3f, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
         drawLine(start.x, start.y, start.z, end.x, end.y, end.z, lineWidth, color)
@@ -103,8 +103,8 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         data.ensureSize(6 * order.size * GenericColorMeshStruct.floats)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
-            val from = Vec3f(aabb.min - offset)
-            val to = Vec3f(aabb.max - offset)
+            val from = Vec3f.Companion(aabb.min - offset)
+            val to = Vec3f.Companion(aabb.max - offset)
             val positions = CuboidUtil.positions(direction, from, to)
 
             order.iterate { position, _ -> addVertex(positions, position * Vec3f.LENGTH, color) }
@@ -114,8 +114,8 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
         data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.floats)
         val offset = context.camera.offset.offset
-        val min = Vec3f(aabb.min) - margin - offset
-        val max = Vec3f(aabb.max) + margin - offset
+        val min = Vec3f.Companion(aabb.min) - margin - offset
+        val max = Vec3f.Companion(aabb.max) + margin - offset
 
         // left quad
         tryDrawLine(min.x, min.y, min.z, min.x, max.y, min.z, lineWidth, color, shape)
@@ -145,4 +145,3 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         }
     }
 }
-

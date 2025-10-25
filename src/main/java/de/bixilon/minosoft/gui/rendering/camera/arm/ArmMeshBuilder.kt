@@ -11,18 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.mesh
+package de.bixilon.minosoft.gui.rendering.camera.arm
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerModelMeshBuilder
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-abstract class AbstractSkeletalMesh(context: RenderContext, struct: MeshStruct, initialCacheSize: Int) : Mesh(context, struct, initialCacheSize = initialCacheSize) {
-    override val order = context.system.quadOrder
+class ArmMeshBuilder(
+    context: RenderContext,
+    val arm: Arms,
+) : PlayerModelMeshBuilder(context) {
 
-    abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String)
+
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
+        val arm = path.getArm() ?: return
+        if (arm != this.arm) return
+        super.addQuad(positions, uv, 0, normal, texture, path)
+    }
+
+    private fun String.getArm() = when {
+        this.startsWith("left_arm") -> Arms.LEFT
+        this.startsWith("right_arm") -> Arms.RIGHT
+        else -> null
+    }
 }

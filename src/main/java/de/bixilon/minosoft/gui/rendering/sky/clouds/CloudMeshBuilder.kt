@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
-class CloudMesh(context: RenderContext) : Mesh(context, CloudMeshStruct, context.system.quadType) {
+class CloudMeshBuilder(context: RenderContext) : MeshBuilder(context, CloudMeshStruct, context.system.quadType) {
 
     fun addVertex(start: Vec3f, side: Directions) {
         data.add(start.x, start.y, start.z)

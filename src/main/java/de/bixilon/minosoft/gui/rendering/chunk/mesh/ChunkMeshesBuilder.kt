@@ -31,9 +31,9 @@ class ChunkMeshesBuilder(
     smallMesh: Boolean = false,
     entities: Int,
 ) : BlockVertexConsumer { // TODO: Don't inherit
-    var opaque = ChunkMesh(context, if (smallMesh) 8192 else 65536)
-    var translucent = ChunkMesh(context, if (smallMesh) 4096 else 16384)
-    var text = ChunkMesh(context, if (smallMesh) 1024 else 4096)
+    var opaque = ChunkMeshBuilder(context, if (smallMesh) 8192 else 65536)
+    var translucent = ChunkMeshBuilder(context, if (smallMesh) 4096 else 16384)
+    var text = ChunkMeshBuilder(context, if (smallMesh) 1024 else 4096)
     var entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(entities)
 
     // used for frustum culling
@@ -63,7 +63,7 @@ class ChunkMeshesBuilder(
         }
     }
 
-    private fun ChunkMesh.takeIfNotEmpty(): ChunkMesh? {
+    private fun ChunkMeshBuilder.takeIfNotEmpty(): ChunkMeshBuilder? {
         val data = data
         if (data.isEmpty) {
             if (data is DirectArrayFloatList) {
@@ -77,9 +77,9 @@ class ChunkMeshesBuilder(
 
 
     fun build(position: SectionPosition): ChunkMeshes? {
-        val opaque = opaque.takeIfNotEmpty()
-        val translucent = translucent.takeIfNotEmpty()
-        val text = text.takeIfNotEmpty()
+        val opaque = opaque.takeIfNotEmpty()?.bake()
+        val translucent = translucent.takeIfNotEmpty()?.bake()
+        val text = text.takeIfNotEmpty()?.bake()
         val entities = entities.takeIf { it.isNotEmpty() }?.toTypedArray()
 
         if (opaque == null && translucent == null && text == null && entities == null) {
@@ -89,9 +89,9 @@ class ChunkMeshesBuilder(
     }
 
     fun drop() {
-        opaque.unload()
-        translucent.unload()
-        text.unload()
+        opaque.drop()
+        translucent.drop()
+        text.drop()
         entities.forEach { it.unload() }
     }
 

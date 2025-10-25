@@ -140,7 +140,7 @@ class ParticleRendererTest {
             tryTicks++
         }
 
-        override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: ValueTimeMark) {
+        override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) {
             vertices++
         }
 

@@ -85,9 +85,6 @@ class GUIManager(
 
         for (element in elementCache.values) {
             element.postInit()
-            if (element is LayoutedGUIElement<*>) {
-                element.initMesh()
-            }
         }
     }
 
@@ -167,10 +164,10 @@ class GUIManager(
             }
 
             guiRenderer.setup()
-            if (element !is LayoutedGUIElement<*> || !element.enabled || element.mesh.data.isEmpty) {
+            if (element !is LayoutedGUIElement<*> || !element.enabled) {
                 continue
             }
-            element.mesh.draw()
+            element.mesh?.draw()
         }
     }
 
