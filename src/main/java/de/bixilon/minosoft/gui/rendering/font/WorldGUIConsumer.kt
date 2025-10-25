@@ -14,9 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.kmath.mat.mat4.f._Mat4f
 import de.bixilon.kmath.vec.vec2.f.MVec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
@@ -32,11 +31,12 @@ class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val lig
     private val whiteTexture = mesh.context.textures.whiteTexture
     override val order: RenderOrder get() = mesh.order
     private val uv = MVec2f() // temporary
+    private val transformed = MVec3f() // temporary
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        val transformed = transform.fastTimes(x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
+        times(this.transform, x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, transformed)
         this.uv.x = u; this.uv.y = v
-        mesh.addVertex(transformed, this.uv.unsafe, texture ?: whiteTexture.texture, tint.rgb(), light)
+        mesh.addVertex(transformed.unsafe, this.uv.unsafe, texture ?: whiteTexture.texture, tint.rgb(), light)
     }
 
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
@@ -48,9 +48,9 @@ class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val lig
         mesh.data.ensureSize(size)
     }
 
-    private inline fun _Mat4f.fastTimes(x: Float, y: Float) = Vec3f(
-        this[0, 0] * x + this[1, 0] * y + this[2, 0] + this[3, 0],
-        this[0, 1] * x + this[1, 1] * y + this[2, 1] + this[3, 1],
-        this[0, 2] * x + this[1, 2] * y + this[2, 2] + this[3, 2],
-    )
+    private fun times(mat: Mat4f, x: Float, y: Float, result: MVec3f) {
+        result.x = mat[0, 0] * x + mat[0, 1] * y + mat[0, 2] + mat[0, 3]
+        result.y = mat[1, 0] * x + mat[1, 1] * y + mat[1, 2] + mat[1, 3]
+        result.z = mat[2, 0] * x + mat[2, 1] * y + mat[2, 2] + mat[2, 3]
+    }
 }
