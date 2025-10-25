@@ -50,6 +50,7 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
 import org.lwjgl.opengl.GL43.glDebugMessageCallback
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 class OpenGlRenderSystem(
     val context: RenderContext,
@@ -238,7 +239,7 @@ class OpenGlRenderSystem(
         return FloatOpenGlUniformBuffer(this, nextUniformBufferIndex++, data)
     }
 
-    override fun createIntUniformBuffer(data: IntArray): IntOpenGlUniformBuffer {
+    override fun createIntUniformBuffer(data: IntBuffer): IntOpenGlUniformBuffer {
         return IntOpenGlUniformBuffer(this, nextUniformBufferIndex++, data)
     }
 

@@ -36,6 +36,7 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManage
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 class DummyRenderSystem(
     val context: RenderContext,
@@ -90,7 +91,7 @@ class DummyRenderSystem(
         return DummyVertexBuffer(struct)
     }
 
-    override fun createIntUniformBuffer(data: IntArray): IntUniformBuffer {
+    override fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer {
         return DummyIntUniformBuffer(data)
     }
 

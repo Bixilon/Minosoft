@@ -21,7 +21,6 @@ import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
@@ -31,6 +30,8 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import org.lwjgl.system.MemoryUtil.memAllocInt
+import java.nio.IntBuffer
 import kotlin.time.Duration
 
 class SpriteAnimator(val context: RenderContext) {
@@ -49,7 +50,7 @@ class SpriteAnimator(val context: RenderContext) {
 
     private fun createBuffer(): IntUniformBuffer {
         if (buffer != null) throw IllegalStateException("Already initialized")
-        val buffer = context.system.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
+        val buffer = context.system.createIntUniformBuffer(memAllocInt(animations.size * INTS_PER_ANIMATED_TEXTURE))
         buffer.init()
 
         return buffer
@@ -65,6 +66,10 @@ class SpriteAnimator(val context: RenderContext) {
         val delta = now - previous
         update(delta)
         previous = now
+    }
+
+    private operator fun IntBuffer.set(offset: Int, value: Int) {
+        put(offset, value)
     }
 
     fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {

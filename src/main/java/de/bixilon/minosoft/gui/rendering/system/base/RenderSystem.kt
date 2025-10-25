@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 interface RenderSystem {
     val shader: ShaderManagement
@@ -121,12 +122,12 @@ interface RenderSystem {
 
 
     fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntArray? = null): VertexBuffer
-    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType, index: IntArray? = null) = when {
+    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType, index: IntArray? = null) = when { // TODO: only allow native buffers
         data is DirectArrayFloatList -> createVertexBuffer(struct, data.toBuffer(), primitive, index)
         else -> createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitive, index)
     }
 
-    fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
+    fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer
     fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer
     fun createFramebuffer(size: Vec2i, scale: Float, texture: TextureModes? = null, depth: DepthModes? = null, stencil: StencilModes? = null): Framebuffer
 

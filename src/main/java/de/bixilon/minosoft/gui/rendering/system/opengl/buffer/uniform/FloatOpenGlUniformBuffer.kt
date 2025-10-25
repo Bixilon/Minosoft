@@ -46,7 +46,7 @@ class FloatOpenGlUniformBuffer(
             throw IndexOutOfBoundsException(start)
         }
         bind()
-        gl { nglBufferSubData(glType, start * 4L, Integer.toUnsignedLong(((end + 1) - start) * 4), MemoryUtil.memAddress(data, start)) }
+        gl { nglBufferSubData(glType, start.toLong() * Float.SIZE_BYTES, Integer.toUnsignedLong(((end + 1) - start) * Float.SIZE_BYTES), MemoryUtil.memAddress(data, start)) }
         unbind()
     }
 }

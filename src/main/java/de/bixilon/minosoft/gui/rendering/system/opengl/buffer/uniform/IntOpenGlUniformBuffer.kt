@@ -17,15 +17,19 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.*
+import org.lwjgl.opengl.GL15C
+import org.lwjgl.system.MemoryUtil
+import java.nio.IntBuffer
 
 class IntOpenGlUniformBuffer(
     system: OpenGlRenderSystem,
     bindingIndex: Int,
-    override var data: IntArray,
+    override var data: IntBuffer,
 ) : OpenGlUniformBuffer(system, bindingIndex), IntUniformBuffer {
-    override val size get() = data.size
+    override val size get() = data.limit()
 
     override fun initialUpload() {
+        data.position(0)
         gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) } // TODO: GL_STREAM_DRAW
     }
 
@@ -36,5 +40,13 @@ class IntOpenGlUniformBuffer(
         unbind()
     }
 
-    override fun upload(start: Int, end: Int) = TODO("Unsupported")
+    override fun upload(start: Int, end: Int) {
+        check(initialSize == size) { "Can not change buffer size!" }
+        if (start < 0 || end >= size) {
+            throw IndexOutOfBoundsException(start)
+        }
+        bind()
+        gl { nglBufferSubData(glType, start.toLong() * Int.SIZE_BYTES, Integer.toUnsignedLong(((end + 1) - start) * Int.SIZE_BYTES), MemoryUtil.memAddress(data, start)) }
+        unbind()
+    }
 }

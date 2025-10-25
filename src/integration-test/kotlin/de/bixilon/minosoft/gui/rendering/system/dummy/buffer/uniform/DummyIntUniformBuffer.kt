@@ -16,9 +16,10 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
+import java.nio.IntBuffer
 
 class DummyIntUniformBuffer(
-    override var data: IntArray,
+    override var data: IntBuffer,
 ) : IntUniformBuffer {
     override val bindingIndex: Int = 0
 
