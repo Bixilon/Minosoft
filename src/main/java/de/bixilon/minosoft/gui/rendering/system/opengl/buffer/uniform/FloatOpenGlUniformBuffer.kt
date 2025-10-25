@@ -19,10 +19,13 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Compan
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL15C.nglBufferSubData
 import org.lwjgl.system.MemoryUtil
-import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.FloatBuffer
 
-class FloatOpenGlUniformBuffer(system: OpenGlRenderSystem, bindingIndex: Int = 0, override var data: FloatBuffer = memAllocFloat(0)) : OpenGlUniformBuffer(system, bindingIndex), FloatUniformBuffer {
+class FloatOpenGlUniformBuffer(
+    system: OpenGlRenderSystem,
+    bindingIndex: Int,
+    override var data: FloatBuffer,
+) : OpenGlUniformBuffer(system, bindingIndex), FloatUniformBuffer {
     override val size get() = data.limit()
 
     override fun initialUpload() {

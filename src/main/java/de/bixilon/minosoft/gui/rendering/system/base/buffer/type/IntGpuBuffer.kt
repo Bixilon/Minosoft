@@ -13,5 +13,5 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.type
 
 interface IntGpuBuffer {
-    val data: IntArray
+    val data: IntArray // TODO: IntBuffer
 }

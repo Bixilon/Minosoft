@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress0
 import java.nio.FloatBuffer
 
-open class FloatOpenGlBuffer(system: OpenGlRenderSystem, override val data: FloatBuffer) : OpenGlGpuBuffer(system), FloatGpuBuffer {
+class FloatOpenGlBuffer(system: OpenGlRenderSystem, override val data: FloatBuffer) : OpenGlGpuBuffer(system), FloatGpuBuffer {
 
     override val glType get() = GL_ARRAY_BUFFER
 
