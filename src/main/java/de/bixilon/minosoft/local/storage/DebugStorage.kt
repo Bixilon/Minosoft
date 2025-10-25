@@ -21,7 +21,7 @@ import kotlin.math.sqrt
 
 class DebugStorage(session: PlaySession) : MemoryStorage(session) {
 
-    override fun loadWorld(world: World) {
+    override fun load(world: World) {
         val size = (sqrt(session.registries.blockState.size.toFloat())).toInt() + 1
 
         world.border.area = StaticBorderArea(size.toDouble())

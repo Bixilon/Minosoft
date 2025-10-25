@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.registries.misc.event.game.DefaultGameEventHandlers
-import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -26,11 +25,6 @@ class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val data: Float = buffer.readFloat()
 
     override fun handle(session: PlaySession) {
-        val event = GameEventChangeEvent(session, this)
-        if (session.events.fire(event)) {
-            return
-        }
-
         DefaultGameEventHandlers[this.event]?.handle(data, session)
     }
 

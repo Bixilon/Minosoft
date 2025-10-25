@@ -95,7 +95,7 @@ class LocalConnection(
 
 
         Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loading local world" }
-        chunks.storage.loadWorld(session.world)
+        chunks.storage.load(session.world)
         DefaultThreadPool += { chunks.update() }
         Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loaded local world!" }
     }
