@@ -27,10 +27,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGlFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGlUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGlUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGlVertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlIndexBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlError
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlException
 import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlShaderManagement
@@ -226,8 +228,10 @@ class OpenGlRenderSystem(
         return buffer
     }
 
-    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntArray?): FloatOpenGlVertexBuffer {
-        return FloatOpenGlVertexBuffer(this, struct, data, primitive, index)
+    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntArray?): OpenGlVertexBuffer {
+        val buffer = FloatOpenGlBuffer(this, data)
+        val index = index?.let { OpenGlIndexBuffer(this, it) }
+        return OpenGlVertexBuffer(this, primitive, struct, buffer, index)
     }
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGlUniformBuffer {

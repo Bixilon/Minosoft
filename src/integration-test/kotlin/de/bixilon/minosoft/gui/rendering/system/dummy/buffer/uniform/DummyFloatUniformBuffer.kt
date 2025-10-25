@@ -32,7 +32,7 @@ class DummyFloatUniformBuffer(
     override fun use(shader: AbstractShader, bufferName: String) {
     }
 
-    override val state: GpuBufferStates = GpuBufferStates.UPLOADED
+    override val state: GpuBufferStates = GpuBufferStates.INITIALIZED
 
     override fun init() {
     }

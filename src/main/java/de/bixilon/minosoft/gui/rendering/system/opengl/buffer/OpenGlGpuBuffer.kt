@@ -33,8 +33,9 @@ abstract class OpenGlGpuBuffer(
 
     override fun init() {
         if (this.state != GpuBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
-        system.log { "Init renderable buffer $this" }
+        system.log { "Init gpu buffer $this" }
         id = gl { glGenBuffers() }
+        initialUpload()
     }
 
     protected abstract fun initialUpload()
@@ -48,7 +49,7 @@ abstract class OpenGlGpuBuffer(
     }
 
     open fun unbind() {
-        if (this.state != GpuBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
+        if (this.state != GpuBufferStates.INITIALIZED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
@@ -58,7 +59,7 @@ abstract class OpenGlGpuBuffer(
     }
 
     override fun unload() {
-        if (this.state != GpuBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
+        if (this.state != GpuBufferStates.INITIALIZED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         gl { glDeleteBuffers(id) }
         if (system.boundBuffer[glType] == id) {
             system.boundBuffer -= glType
@@ -68,7 +69,7 @@ abstract class OpenGlGpuBuffer(
     }
 
     protected fun finalize() {
-        if (state == GpuBufferStates.UPLOADED && system.active) {
+        if (state == GpuBufferStates.INITIALIZED && system.active) {
             throw MemoryLeakException("Buffer has not been unloaded!")
         }
     }

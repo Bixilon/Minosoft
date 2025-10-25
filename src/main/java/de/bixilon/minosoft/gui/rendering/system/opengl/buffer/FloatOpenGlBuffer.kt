@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.RenderGpuBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.RenderGpuBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import org.lwjgl.opengl.GL15.*
+import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
+import org.lwjgl.opengl.GL15.GL_STATIC_DRAW
 import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress0
 import java.nio.FloatBuffer
@@ -31,15 +32,10 @@ open class FloatOpenGlBuffer(system: OpenGlRenderSystem, override val data: Floa
         bind()
         val position = data.position()
         gl { nglBufferData(glType, data, if (EMPTY_BUFFERS) 0 else position, GL_STATIC_DRAW) }
-        state = GpuBufferStates.UPLOADED
+        state = GpuBufferStates.INITIALIZED
         unbind()
     }
 
-    override fun upload() {
-        bind()
-        gl { glBufferSubData(glType, 0, data) }
-        unbind()
-    }
 
     private fun nglBufferData(target: Int, buffer: FloatBuffer, length: Int, usage: Int) {
         gl { GL15C.nglBufferData(target, Integer.toUnsignedLong(length) shl 2, memAddress0(buffer), usage) }

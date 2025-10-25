@@ -32,14 +32,13 @@ abstract class OpenGlUniformBuffer(system: OpenGlRenderSystem, override val bind
 
     override fun init() {
         super.init()
-        initialUpload()
         gl { glBindBufferRange(glType, bindingIndex, id, 0, size.toLong()) }
         initialSize = size
     }
 
 
     override fun use(shader: AbstractShader, bufferName: String) {
-        if (this.state != GpuBufferStates.UPLOADED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
+        if (this.state != GpuBufferStates.INITIALIZED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
         shader.use()
 
         shader.native[bufferName] = this

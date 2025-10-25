@@ -13,76 +13,84 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.util.KUtil.format
 import org.lwjgl.opengl.GL30.*
-import java.nio.FloatBuffer
 
-class FloatOpenGlVertexBuffer(
+class OpenGlVertexBuffer(
     system: OpenGlRenderSystem,
-    override val struct: MeshStruct,
-    data: FloatBuffer,
     override val primitive: PrimitiveTypes,
-    index: IntArray?,
-) : FloatOpenGlBuffer(system, data), FloatVertexBuffer {
-    private val vao = OpenGlVao(system, struct)
-    private val index = index?.let { OpenGlIndexBuffer(system, index) }
+    override val struct: MeshStruct,
+    val data: FloatOpenGlBuffer,
+    val index: OpenGlIndexBuffer?,
+) : VertexBuffer {
+    override var state = GpuBufferStates.PREPARING
+        private set
+    private val vao = OpenGlVao(system, struct) // TODO: cache globally
     override var vertices = -1
         private set
 
 
     override fun init() {
+        assert(state == GpuBufferStates.PREPARING)
         val floatsPerVertex = struct.BYTES_PER_VERTEX / Float.SIZE_BYTES
 
-        vertices = data.position() / floatsPerVertex
-        super.init()
-        bind()
+        vertices = if (EMPTY_BUFFERS) 0 else data.data.position() / floatsPerVertex
+
+        data.init()
         vao.init()
         index?.init()
-        super.initialUpload()
-        this::data.forceSet(null)
 
+        // TODO: this::data.forceSet(null)
 
         unbind()
+        state = GpuBufferStates.INITIALIZED
     }
 
-    override fun unbind() {
-        super.unbind()
+    private fun bind() {
+        data.bind()
+        vao.bind()
+        index?.bind()
+    }
+
+    private fun unbind() {
+        data.unbind()
         vao.unbind()
+        index?.unbind()
     }
 
 
     override fun draw() {
-        check(state == GpuBufferStates.UPLOADED) { "Vertex buffer is not uploaded: $state" }
+        check(state == GpuBufferStates.INITIALIZED) { "Vertex buffer is not uploaded: $state" }
 
         bind()
         vao.bind()
         index?.bind()
 
-        val count = if (EMPTY_BUFFERS) 0 else vertices
-
         if (index == null) {
-            gl { glDrawArrays(primitive.gl, 0, count) }
+            gl { glDrawArrays(primitive.gl, 0, vertices) }
         } else {
-            gl { glDrawElements(primitive.gl, count, GL_UNSIGNED_INT, 0); }
+            gl { glDrawElements(primitive.gl, vertices, GL_UNSIGNED_INT, 0); }
         }
+        unbind()
     }
 
     override fun unload() {
+        check(state == GpuBufferStates.INITIALIZED) { "Vertex buffer is not uploaded: $state" }
+        data.unload()
         vao.unload()
         index?.unload()
-        super.unload()
+
+        state = GpuBufferStates.UNLOADED
     }
 
-    override fun toString() = "FloatOpenGLVertexBuffer(vertices=$vertices, state=$state)"
+    override fun toString() = "OpenGlVertexBuffer(vertices=$vertices, state=$state)"
 
     private companion object {
 

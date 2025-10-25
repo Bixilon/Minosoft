@@ -14,22 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.system.dummy.buffer
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import java.nio.FloatBuffer
 
 class DummyVertexBuffer(
     override val struct: MeshStruct,
-    override var data: FloatBuffer,
-) : FloatVertexBuffer {
+) : VertexBuffer {
     override val state: GpuBufferStates = GpuBufferStates.PREPARING
 
     override fun init() {
         // TODO: memFree buffer
-    }
-
-    override fun upload() {
     }
 
     override fun unload() {

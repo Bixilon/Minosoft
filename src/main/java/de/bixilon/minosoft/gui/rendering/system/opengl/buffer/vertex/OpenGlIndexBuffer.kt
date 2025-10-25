@@ -30,15 +30,8 @@ class OpenGlIndexBuffer(
     override fun initialUpload() {
         bind()
         gl { glBufferData(glType, data, GL_STATIC_DRAW) }
-        state = GpuBufferStates.UPLOADED
+        state = GpuBufferStates.INITIALIZED
         this::data.forceSet(null)
-        unbind()
-    }
-
-    override fun upload() {
-        throw IllegalStateException("Can not reupload index buffer!")
-        bind()
-        gl { glBufferSubData(glType, 0, data) }
         unbind()
     }
 }

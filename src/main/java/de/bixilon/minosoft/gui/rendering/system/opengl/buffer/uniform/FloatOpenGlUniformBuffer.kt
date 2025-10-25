@@ -29,8 +29,8 @@ class FloatOpenGlUniformBuffer(system: OpenGlRenderSystem, bindingIndex: Int = 0
     override fun initialUpload() {
         bind()
         data.position(0)
-        gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) }
-        state = GpuBufferStates.UPLOADED
+        gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) } // TODO: GL_STREAM_DRAW
+        state = GpuBufferStates.INITIALIZED
         unbind()
     }
 

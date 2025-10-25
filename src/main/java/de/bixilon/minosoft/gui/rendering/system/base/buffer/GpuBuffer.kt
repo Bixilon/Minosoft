@@ -16,7 +16,6 @@ interface GpuBuffer {
     val state: GpuBufferStates
 
     fun init()
-    fun upload()
 
     fun unload()
 }

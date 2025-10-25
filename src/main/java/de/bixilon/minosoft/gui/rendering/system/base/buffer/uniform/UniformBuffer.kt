@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
 interface UniformBuffer : GpuBuffer {
     val bindingIndex: Int
 
+    fun upload()
     fun upload(start: Int, end: Int)
 
     fun use(shader: AbstractShader, bufferName: String)

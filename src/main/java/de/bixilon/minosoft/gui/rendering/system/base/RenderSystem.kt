@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.ste
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
@@ -120,7 +120,7 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
 
-    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntArray? = null): FloatVertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntArray? = null): VertexBuffer
     fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType, index: IntArray? = null) = when {
         data is DirectArrayFloatList -> createVertexBuffer(struct, data.toBuffer(), primitive, index)
         else -> createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitive, index)
