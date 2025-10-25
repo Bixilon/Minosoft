@@ -16,8 +16,7 @@ package de.bixilon.minosoft.util.collections.floats
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil.copy
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil.finish
-import org.lwjgl.system.MemoryUtil.memAllocFloat
-import org.lwjgl.system.MemoryUtil.memFree
+import org.lwjgl.system.MemoryUtil.*
 import java.nio.FloatBuffer
 
 class BufferedArrayFloatList(
@@ -39,8 +38,7 @@ class BufferedArrayFloatList(
         else -> initialSize
     }
 
-    private var output: FloatArray = FloatArray(0)
-    private var outputUpToDate = false
+    private var output: FloatArray? = null
 
     override fun ensureSize(needed: Int) {
         checkFinished()
@@ -57,11 +55,8 @@ class BufferedArrayFloatList(
     }
 
     private fun grow(size: Int) {
-        val buffer = buffer
-        this.buffer = memAllocFloat(size)
+        this.buffer = memRealloc(buffer, size)
         limit = size
-        buffer.copy(this.buffer)
-        memFree(buffer)
     }
 
     override fun add(value: Float) {
@@ -94,20 +89,16 @@ class BufferedArrayFloatList(
         invalidateOutput()
     }
 
-    private fun checkOutputArray() {
-        if (outputUpToDate) {
-            return
-        }
+    override fun toArray(): FloatArray {
+        output?.let { return it }
+
         val position = buffer.position()
-        output = FloatArray(position)
+        val output = FloatArray(position)
         buffer.position(0)
         buffer.get(output, 0, position)
         buffer.position(position)
-        outputUpToDate = true
-    }
+        this.output = output
 
-    override fun toArray(): FloatArray {
-        checkOutputArray()
         return output
     }
 
@@ -120,9 +111,6 @@ class BufferedArrayFloatList(
 
     override fun clear() {
         buffer.clear()
-        if (output.isNotEmpty()) {
-            output = FloatArray(0)
-        }
         invalidateOutput()
     }
 
@@ -140,12 +128,10 @@ class BufferedArrayFloatList(
     }
 
     override fun toBuffer(): FloatBuffer {
-        return this.buffer
+        return this.buffer // TODO: Bad! We should only hand a copy of the buffer, the caller is responsible for it now
     }
 
     private fun invalidateOutput() {
-        if (outputUpToDate) {
-            outputUpToDate = false
-        }
+        output = null
     }
 }
