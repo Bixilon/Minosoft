@@ -31,7 +31,7 @@ open class ImageElement(
     uvEnd: Vec2f = Vec2f(1.0f, 1.0f),
     size: Vec2f = texture?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.floats * 6) {
     var texture: Texture? = texture
         set(value) {
             field = value

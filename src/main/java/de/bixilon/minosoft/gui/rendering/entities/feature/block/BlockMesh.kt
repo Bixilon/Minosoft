@@ -34,7 +34,7 @@ class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockV
     }
 
     override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
-        data.ensureSize(BlockMeshStruct.FLOATS_PER_VERTEX)
+        data.ensureSize(BlockMeshStruct.floats)
         val transformedUV = texture.transformUV(uv)
         data.add(position.x + offset.x, position.y + offset.y, position.z + offset.z)
         data.add(transformedUV.x, transformedUV.y)

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -25,31 +26,37 @@ class OpenGlVao(
     val system: OpenGlRenderSystem,
     val struct: MeshStruct
 ) {
+    var state = GpuBufferStates.PREPARING
+        private set
     private var handle = -1
 
     fun init() {
-        if (handle >= 0) throw IllegalArgumentException("VAO already loaded!")
+        assert(state == GpuBufferStates.PREPARING)
         handle = gl { glGenVertexArrays() }
-        bind()
+        unsafeBind()
 
         for (attribute in struct.attributes) {
-            gl { glVertexAttribPointer(attribute.index, attribute.size, GL_FLOAT, false, struct.BYTES_PER_VERTEX, attribute.stride) }
+            gl { glVertexAttribPointer(attribute.index, attribute.size, GL_FLOAT, false, struct.bytes, attribute.stride.toLong()) }
             gl { glEnableVertexAttribArray(attribute.index) }
         }
-        unbind()
+        unsafeUnbind()
+        state = GpuBufferStates.INITIALIZED
     }
 
-    fun bind() {
-        if (handle < 0) throw IllegalArgumentException("VAO not initialized!")
-        if (system.boundVao == handle) {
-            return
-        }
+    private fun unsafeBind() {
+        assert(handle >= 0)
         gl { glBindVertexArray(handle) }
         system.boundVao = handle
     }
 
-    fun unbind() {
-        if (handle < 0) throw IllegalArgumentException("VAO not initialized!")
+    fun bind() {
+        assert(state == GpuBufferStates.INITIALIZED)
+
+        if (system.boundVao == handle) return
+        unsafeBind()
+    }
+
+    private fun unsafeUnbind() {
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             return
         }
@@ -57,12 +64,18 @@ class OpenGlVao(
         system.boundVao = -1
     }
 
+    fun unbind() {
+        assert(state == GpuBufferStates.INITIALIZED)
+        unsafeUnbind()
+    }
+
     fun unload() {
-        if (handle < 0) throw IllegalArgumentException("VAO not initialized!")
+        assert(state == GpuBufferStates.INITIALIZED)
         gl { glDeleteVertexArrays(handle) }
         if (system.boundVao == handle) {
             system.boundVao = -1
         }
         handle = -1
+        this.state = GpuBufferStates.UNLOADED
     }
 }

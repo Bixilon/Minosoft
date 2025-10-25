@@ -24,7 +24,8 @@ import org.lwjgl.opengl.GL15.*
 abstract class OpenGlGpuBuffer(
     protected var system: OpenGlRenderSystem,
 ) : GpuBuffer {
-    override var state: GpuBufferStates = GpuBufferStates.PREPARING
+    final override var state: GpuBufferStates = GpuBufferStates.PREPARING
+        private set
 
     protected var id: Int = -1
         private set
@@ -35,12 +36,17 @@ abstract class OpenGlGpuBuffer(
         if (this.state != GpuBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
         system.log { "Init gpu buffer $this" }
         id = gl { glGenBuffers() }
+
+        unsafeBind()
         initialUpload()
+        unsafeUnbind()
+
+        state = GpuBufferStates.INITIALIZED
     }
 
     protected abstract fun initialUpload()
 
-    open fun bind() {
+    protected fun unsafeBind() {
         if (system.boundBuffer[glType] == id) {
             return
         }
@@ -48,14 +54,24 @@ abstract class OpenGlGpuBuffer(
         system.boundBuffer[glType] = id
     }
 
-    open fun unbind() {
-        if (this.state != GpuBufferStates.INITIALIZED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
+
+    open fun bind() {
+        assert(state == GpuBufferStates.INITIALIZED)
+        unsafeBind()
+    }
+
+    protected fun unsafeUnbind() {
         if (RenderConstants.DIRTY_BUFFER_UNBIND) {
             // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
             return
         }
         gl { glBindBuffer(glType, -1) }
         system.boundBuffer -= glType
+    }
+
+    open fun unbind() {
+        if (this.state != GpuBufferStates.INITIALIZED) throw IllegalStateException("Not uploaded (buffer=$this, state=$state)")
+        unsafeUnbind()
     }
 
     override fun unload() {

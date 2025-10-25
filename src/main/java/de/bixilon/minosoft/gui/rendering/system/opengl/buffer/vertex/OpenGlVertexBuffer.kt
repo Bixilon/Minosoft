@@ -32,22 +32,20 @@ class OpenGlVertexBuffer(
 ) : VertexBuffer {
     override var state = GpuBufferStates.PREPARING
         private set
-    private val vao = OpenGlVao(system, struct) // TODO: cache globally
+    private val vao = OpenGlVao(system, struct)
     override var vertices = -1
         private set
 
 
     override fun init() {
         assert(state == GpuBufferStates.PREPARING)
-        val floatsPerVertex = struct.BYTES_PER_VERTEX / Float.SIZE_BYTES
+        val floatsPerVertex = struct.bytes / Float.SIZE_BYTES
 
         vertices = if (EMPTY_BUFFERS) 0 else data.data.position() / floatsPerVertex
 
         data.init()
         vao.init()
         index?.init()
-
-        // TODO: this::data.forceSet(null)
 
         unbind()
         state = GpuBufferStates.INITIALIZED
@@ -70,14 +68,13 @@ class OpenGlVertexBuffer(
         check(state == GpuBufferStates.INITIALIZED) { "Vertex buffer is not uploaded: $state" }
 
         bind()
-        vao.bind()
-        index?.bind()
 
         if (index == null) {
             gl { glDrawArrays(primitive.gl, 0, vertices) }
         } else {
             gl { glDrawElements(primitive.gl, vertices, GL_UNSIGNED_INT, 0); }
         }
+
         unbind()
     }
 

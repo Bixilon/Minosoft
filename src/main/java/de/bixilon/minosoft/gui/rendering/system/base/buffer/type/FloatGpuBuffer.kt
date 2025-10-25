@@ -15,6 +15,6 @@ package de.bixilon.minosoft.gui.rendering.system.base.buffer.type
 
 import java.nio.FloatBuffer
 
-interface RenderGpuBuffer {
+interface FloatGpuBuffer {
     val data: FloatBuffer
 }

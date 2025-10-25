@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
 
-class SunScatterMesh(context: RenderContext) : Mesh(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.FLOATS_PER_VERTEX) {
+class SunScatterMesh(context: RenderContext) : Mesh(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.floats) {
 
     init {
         data.add(

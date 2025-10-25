@@ -47,8 +47,8 @@ class ParticleRenderer(
     private val shader = context.system.shader.create(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    var mesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
-    var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    var mesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.floats))
+    var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.floats))
 
     val particles = ParticleList(profile.maxAmount)
     val queue = ParticleQueue(this)

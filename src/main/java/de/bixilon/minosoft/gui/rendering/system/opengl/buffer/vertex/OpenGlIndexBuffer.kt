@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlGpuBuffer
@@ -28,10 +27,7 @@ class OpenGlIndexBuffer(
 
 
     override fun initialUpload() {
-        bind()
         gl { glBufferData(glType, data, GL_STATIC_DRAW) }
-        state = GpuBufferStates.INITIALIZED
         this::data.forceSet(null)
-        unbind()
     }
 }

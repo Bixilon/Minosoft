@@ -26,6 +26,7 @@ import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 abstract class OpenGlUniformBuffer(system: OpenGlRenderSystem, override val bindingIndex: Int) : OpenGlGpuBuffer(system), UniformBuffer {
     protected abstract val size: Int
     protected var initialSize = -1
+        private set
 
     override val glType get() = GL_UNIFORM_BUFFER
 

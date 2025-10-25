@@ -30,7 +30,7 @@ class WorldBorderMesh(
     val offset: BlockPosition,
     val center: Vec2d,
     val radius: Double,
-) : Mesh(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.FLOATS_PER_VERTEX) {
+) : Mesh(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.floats) {
 
 
     private fun width(): Float {

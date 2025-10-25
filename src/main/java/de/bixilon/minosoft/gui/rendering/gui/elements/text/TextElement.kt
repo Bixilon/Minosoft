@@ -52,7 +52,7 @@ open class TextElement(
     background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
-) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
+) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.floats), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var info: TextRenderInfo
         private set
@@ -165,7 +165,7 @@ open class TextElement(
             textOffset += it.size.offset
         }
 
-        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX
+        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMesh.GUIMeshStruct.floats
         if (properties.shadow) {
             vertices *= 2
         }

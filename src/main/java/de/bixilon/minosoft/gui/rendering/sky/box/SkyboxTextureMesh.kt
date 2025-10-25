@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkyboxTextureMesh(context: RenderContext) : Mesh(context, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * SkyboxTextureMeshStruct.FLOATS_PER_VERTEX) {
+class SkyboxTextureMesh(context: RenderContext) : Mesh(context, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * SkyboxTextureMeshStruct.floats) {
 
     init {
         data.add(

@@ -28,38 +28,32 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
 
 abstract class MeshStruct(struct: KClass<*>) {
-    val BYTES_PER_VERTEX: Int = calculateBytesPerVertex(struct)
-    val FLOATS_PER_VERTEX: Int = BYTES_PER_VERTEX / Float.SIZE_BYTES
+    val bytes: Int
+    val floats: Int
     val attributes: List<MeshAttribute>
 
     init {
         val attributes: MutableList<MeshAttribute> = mutableListOf()
-        var stride = 0L
+        var stride = 0
 
         for ((index, parameter) in struct.primaryConstructor!!.parameters.withIndex()) {
-            val bytes = parameter.BYTES
+            val bytes = parameter.bytes
             attributes += MeshAttribute(index, bytes / Float.SIZE_BYTES, stride)
             stride += bytes
         }
+
+        this.bytes = stride
+        this.floats = this.bytes / Float.SIZE_BYTES
 
         this.attributes = attributes
     }
 
     companion object {
 
-        fun calculateBytesPerVertex(clazz: KClass<*>): Int {
-            var bytes = 0
+        val KParameter.bytes: Int
+            get() = (this.type.classifier as KClass<*>).bytes
 
-            for (type in clazz.primaryConstructor!!.parameters) {
-                bytes += type.BYTES
-            }
-            return bytes
-        }
-
-        val KParameter.BYTES: Int
-            get() = (this.type.classifier as KClass<*>).BYTES
-
-        val KClass<*>.BYTES: Int
+        val KClass<*>.bytes: Int
             get() = when (this) {
                 Mat4f::class -> Mat4f.LENGTH * Float.SIZE_BYTES
 

@@ -31,7 +31,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
 
 
     fun addQuad(offset: Vec3f, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
-        ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
+        ensureSize(ChunkMesh.ChunkMeshStruct.floats * order.size)
 
         order.iterate { position, uv ->
             val vertexOffset = position * Vec3f.LENGTH
@@ -48,7 +48,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
     }
 
     fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
-        ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
+        ensureSize(ChunkMesh.ChunkMeshStruct.floats * order.size)
 
         order.iterate { position, uv ->
             val vertexOffset = position * Vec3f.LENGTH

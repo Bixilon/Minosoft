@@ -59,7 +59,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
 
             val primitives = calculatePrimitiveCount(text)
-            mesh.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
+            mesh.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.floats)
 
             val consumer = WorldGUIConsumer(mesh, matrix.unsafe, light)
             return render3d(context, properties, maxSize, consumer, text, null)

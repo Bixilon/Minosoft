@@ -30,7 +30,7 @@ open class AtlasImageElement(
     texturePart: TexturePart?,
     size: Vec2f = texturePart?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.floats * 6) {
     var texture: Texture? = texturePart?.texture
         set(value) {
             field = value

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
@@ -27,11 +26,8 @@ class FloatOpenGlUniformBuffer(system: OpenGlRenderSystem, bindingIndex: Int = 0
     override val size get() = data.limit()
 
     override fun initialUpload() {
-        bind()
         data.position(0)
         gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) } // TODO: GL_STREAM_DRAW
-        state = GpuBufferStates.INITIALIZED
-        unbind()
     }
 
     override fun upload() {

@@ -33,7 +33,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     }
 
     fun drawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
-        data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
+        data.ensureSize(4 * order.size * GenericColorMeshStruct.floats)
 
         val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).apply { normalizeAssign() }
         val normal1 = MVec3f(direction.z, direction.z, direction.x - direction.y)
@@ -100,7 +100,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBAColor) {
-        data.ensureSize(6 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
+        data.ensureSize(6 * order.size * GenericColorMeshStruct.floats)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
             val from = Vec3f(aabb.min - offset)
@@ -112,7 +112,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     }
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
-        data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
+        data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.floats)
         val offset = context.camera.offset.offset
         val min = Vec3f(aabb.min) - margin - offset
         val max = Vec3f(aabb.max) + margin - offset

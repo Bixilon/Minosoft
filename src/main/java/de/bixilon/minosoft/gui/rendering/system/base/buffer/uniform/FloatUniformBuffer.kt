@@ -13,6 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.RenderGpuBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.FloatGpuBuffer
 
-interface FloatUniformBuffer : UniformBuffer, RenderGpuBuffer
+interface FloatUniformBuffer : UniformBuffer, FloatGpuBuffer
