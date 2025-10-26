@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 class ParticleMeshBuilder(context: RenderContext, data: FloatList) : MeshBuilder(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
 
-    override fun drop() = Unit
+    override fun drop(free: Boolean) = Unit
 
     fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) texture.transformUVPacked(ZERO) else texture.transformUVPacked(uvMin)

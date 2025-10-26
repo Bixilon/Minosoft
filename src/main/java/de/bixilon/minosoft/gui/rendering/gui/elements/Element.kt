@@ -63,7 +63,6 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             }
         }
 
-    @Deprecated("Warning: Should not be directly accessed!")
     open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.quadOrder, context, initialCacheSize)
 
     private var previousMaxSize = Vec2f.EMPTY
@@ -146,20 +145,22 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      */
     open fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val offset = offset
-        var directRendering = false
+        var direct = false
         if (consumer is GUIMeshBuilder && consumer.data == cache.data) {
-            directRendering = true
+            direct = true
         }
+
         if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
-            if (directRendering) {
+            if (direct) {
                 cache.clear()
             }
             forceRender(offset, consumer, options)
-            if (directRendering) {
+            if (direct) {
                 cache.revision++
             }
             return
         }
+
         if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize != guiRenderer.halfSize) {
             this.cache.clear()
             cache.halfSize = guiRenderer.halfSize
@@ -168,7 +169,8 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             forceRender(offset, cache, options)
             cacheUpToDate = true
         }
-        if (!directRendering) {
+
+        if (!direct) {
             consumer.addCache(cache)
         }
     }

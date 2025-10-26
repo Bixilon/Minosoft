@@ -46,12 +46,12 @@ abstract class MeshBuilder(
 
     private fun createNativeData(): FloatBuffer {
         val data = this.data
-        _data = null
 
-        data.toUnsafeNativeBuffer()?.let { it.limit(data.size); it.position(0); return it }
+        val native = data.toUnsafeNativeBuffer()
+        val buffer = native ?: data.toBuffer { memAllocFloat(it) }
+        drop(native == null)
 
-        val buffer = data.toBuffer { memAllocFloat(it) }
-        data.free()
+        buffer.limit(data.size); buffer.position(0)
 
         return buffer
     }
@@ -68,7 +68,7 @@ abstract class MeshBuilder(
 
     open fun bake() = Mesh(create())
 
-    open fun drop() {
+    open fun drop(free: Boolean = true) {
         data.free()
         _data = null
     }
