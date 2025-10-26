@@ -71,14 +71,14 @@ class Rendering(private val session: PlaySession) {
     private fun startRenderWindow(latch: AbstractLatch) {
         try {
             Thread.currentThread().priority = Thread.MAX_PRIORITY
-            CONTEXT_MAP[Thread.currentThread()] = context
+            contexts.set(context)
             context.load(latch)
             latch.dec()
             val loop = RenderLoop(context)
             context.awaitPlaying()
             loop.startLoop()
         } catch (exception: Throwable) {
-            CONTEXT_MAP -= Thread.currentThread()
+            contexts.remove()
             exception.printStackTrace()
             try {
                 context.window.destroy()
@@ -91,8 +91,8 @@ class Rendering(private val session: PlaySession) {
     }
 
     companion object {
-        private val CONTEXT_MAP: MutableMap<Thread, RenderContext> = mutableMapOf()
+        private val contexts = ThreadLocal<RenderContext>()
 
-        val currentContext get() = CONTEXT_MAP[Thread.currentThread()]
+        val currentContext get() = contexts.get()
     }
 }
