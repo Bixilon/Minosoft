@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 abstract class AbstractSkeletalMeshBuilder(context: RenderContext, struct: MeshStruct, initialCacheSize: Int) : MeshBuilder(context, struct, initialCacheSize = initialCacheSize) {
-    override val order = context.system.quadOrder
 
     abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String)
 }

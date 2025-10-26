@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshStruct
 
 class SunScatterMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.floats) {
+    override val order = context.system.legacyQuadOrder
 
     init {
         data += floatArrayOf(

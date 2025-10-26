@@ -21,15 +21,10 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 
 class FramebufferMeshBuilder(context: RenderContext) : MeshBuilder(context, DefaultFramebufferMeshStruct) {
+    override val order = context.system.legacyQuadOrder
 
     init {
-        val vertices = arrayOf(
-            Vec2f(-1.0f, -1.0f) to Vec2f(0.0f, 1.0f),
-            Vec2f(-1.0f, +1.0f) to Vec2f(0.0f, 0.0f),
-            Vec2f(+1.0f, +1.0f) to Vec2f(1.0f, 0.0f),
-            Vec2f(+1.0f, -1.0f) to Vec2f(1.0f, 1.0f),
-        )
-        order.iterate { position, uv -> addVertex(vertices[position].first, vertices[uv].second) }
+        order.iterate { position, uv -> addVertex(VERTICES[position].first, VERTICES[uv].second) }
     }
 
     private fun addVertex(position: Vec2f, uv: Vec2f) {
@@ -42,5 +37,14 @@ class FramebufferMeshBuilder(context: RenderContext) : MeshBuilder(context, Defa
         val uv: UnpackedUV,
     ) {
         companion object : MeshStruct(DefaultFramebufferMeshStruct::class)
+    }
+
+    companion object {
+        val VERTICES = arrayOf(
+            Vec2f(-1.0f, -1.0f) to Vec2f(0.0f, 1.0f),
+            Vec2f(-1.0f, +1.0f) to Vec2f(0.0f, 0.0f),
+            Vec2f(+1.0f, +1.0f) to Vec2f(1.0f, 0.0f),
+            Vec2f(+1.0f, -1.0f) to Vec2f(1.0f, 1.0f),
+        )
     }
 }

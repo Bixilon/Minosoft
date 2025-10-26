@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 class SkyboxTextureMeshBuilder(context: RenderContext) : MeshBuilder(context, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * SkyboxTextureMeshStruct.floats) {
+    override val order = context.system.legacyQuadOrder
 
     init {
         data += floatArrayOf(

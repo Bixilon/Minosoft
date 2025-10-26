@@ -28,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BillboardTextMeshBuilder(context: RenderContext) : MeshBuilder(context, BillboardTextMeshStruct), GUIVertexConsumer {
-    override val order = context.system.quadOrder
 
     override fun ensureSize(size: Int) {
         data.ensureSize(size)

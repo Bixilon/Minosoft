@@ -31,6 +31,7 @@ class WorldBorderMeshBuilder(
     val center: Vec2d,
     val radius: Double,
 ) : MeshBuilder(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.floats) {
+    override val order = context.system.legacyQuadOrder
 
 
     private fun width(): Float {

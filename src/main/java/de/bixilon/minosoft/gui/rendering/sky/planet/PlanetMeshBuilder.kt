@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class PlanetMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : MeshBuilder(context, SunMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SunMeshStruct.floats) {
+    override val order = context.system.legacyQuadOrder
 
     fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f) {
         data.add(

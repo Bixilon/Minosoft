@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 
 open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMeshBuilder(context, initialCacheSize = initialCacheSize) {
+    override val order = context.system.legacyQuadOrder
 
     fun drawLine(start: Vec3f, end: Vec3f, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
         drawLine(start.x, start.y, start.z, end.x, end.y, end.z, lineWidth, color)

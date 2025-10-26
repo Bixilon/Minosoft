@@ -34,7 +34,7 @@ abstract class MeshBuilder(
     var initialCacheSize: Int = 8192,
     data: FloatList? = null,
 ) : AbstractVertexConsumer {
-    override val order = context.system.legacyQuadOrder
+    override val order = context.system.quadOrder
     var _data = data
     val data: FloatList
         get() {

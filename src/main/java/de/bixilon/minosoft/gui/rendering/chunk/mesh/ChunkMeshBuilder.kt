@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 class ChunkMeshBuilder(context: RenderContext, approximateFaceCount: Int) : MeshBuilder(context, ChunkMeshStruct, initialCacheSize = approximateFaceCount * ChunkMeshStruct.floats * context.system.quadOrder.size), BlockVertexConsumer {
-    override val order = context.system.quadOrder
 
     override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
         val transformedUV = texture.transformUV(uv)

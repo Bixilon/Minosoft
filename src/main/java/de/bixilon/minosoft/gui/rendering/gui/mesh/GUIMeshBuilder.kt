@@ -31,7 +31,6 @@ class GUIMeshBuilder(
     data: FloatList,
 ) : MeshBuilder(context, GUIMeshStruct, initialCacheSize = 32768, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
-    override val order = context.system.quadOrder
 
     override val reused get() = true
 

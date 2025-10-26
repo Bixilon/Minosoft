@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BlockMeshBuilder(context: RenderContext) : MeshBuilder(context, BlockMeshStruct), BlockVertexConsumer {
-    override val order = context.system.quadOrder
     val offset = MVec3f()
 
     override fun ensureSize(size: Int) {
