@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
@@ -58,9 +57,9 @@ class BlockGUIConsumer(
             val vertexOffset = p * Vec3f.LENGTH
             val uvOffset = uv * Vec2f.LENGTH
 
-            val xyzw = Vec4f(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
+            val xyz = Vec3f(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2])
 
-            val out = matrix * xyzw
+            val out = matrix * xyz
 
             val x = ((out.x + 0.8f) * size.x) + offset.x + 1.0f
             val y = ((-out.y + 0.81f) * size.y) + offset.y
@@ -68,6 +67,11 @@ class BlockGUIConsumer(
 
             consumer.addVertex(x, y, textureId, uvData.raw[uvOffset], uvData.raw[uvOffset + 1], tint, options)
         }
+        consumer.addIndexQuad()
+    }
+
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
+        consumer.addIndexQuad(front, reverse)
     }
 
     companion object {

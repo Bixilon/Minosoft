@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base
 
-class RenderOrder(
-    @JvmField val order: IntArray,
+@JvmInline
+value class RenderOrder(
+    val order: IntArray,
 ) {
-    val size = order.size / 2
+    val size get() = order.size / 2
 
     init {
         if (order.size % 2 != 0) throw IllegalStateException("Order must be position=>uv, ...")
@@ -35,8 +36,6 @@ class RenderOrder(
     }
 
     inline fun iterateReverse(vertex: (position: Int, uv: Int) -> Unit) {
-        if (size == 0) return
-
         var index = order.size - 1 - 1 // index, element alignment
         while (index >= 0) {
             this.vertex(index, vertex)

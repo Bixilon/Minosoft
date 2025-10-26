@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
+import de.bixilon.minosoft.util.collections.ints.IntListUtil
 
 open class GUIMeshElement<T : Element>(
     val element: T,
@@ -42,6 +43,7 @@ open class GUIMeshElement<T : Element>(
     override val context: RenderContext = guiRenderer.context
     private val clickCounter = MouseClickCounter()
     private val data = FloatListUtil.direct(1024, false)
+    private val index = IntListUtil.direct(1024 / 4, false)
     var mesh: Mesh? = null
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
@@ -69,6 +71,7 @@ open class GUIMeshElement<T : Element>(
 
     init {
         element.cache.data = data
+        element.cache.index = index
     }
 
     override fun tick() {
@@ -91,7 +94,8 @@ open class GUIMeshElement<T : Element>(
 
     fun prepareAsync(offset: Vec2f) {
         this.data.clear()
-        val builder = GUIMeshBuilder(context, guiRenderer.halfSize, this.data)
+        this.index.clear()
+        val builder = GUIMeshBuilder(context, guiRenderer.halfSize, this.data, this.index)
         element.render(offset, builder, null)
         val revision = element.cache.revision
         if (revision != lastRevision) {
@@ -201,5 +205,8 @@ open class GUIMeshElement<T : Element>(
     override fun unload() {
         this.data.free()
         this::data.forceSet(null)
+
+        this.index.free()
+        this::index.forceSet(null)
     }
 }

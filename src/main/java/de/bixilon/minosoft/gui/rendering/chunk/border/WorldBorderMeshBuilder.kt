@@ -63,6 +63,7 @@ class WorldBorderMeshBuilder(
             val texture = if (rotated) textureIndex(uv + 1) else uv + 1
             addVertex(x, y, z, textureIndex(texture), width)
         }
+        addIndexQuad()
     }
 
     private fun x(width: Float) {
@@ -77,6 +78,7 @@ class WorldBorderMeshBuilder(
             val texture = if (rotated) textureIndex(uv + 1) else uv + 1
             addVertex(x, y, z, textureIndex(texture), width)
         }
+        addIndexQuad()
     }
 
     private fun z(width: Float) {

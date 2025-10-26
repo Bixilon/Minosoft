@@ -45,6 +45,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
                 lightTint = lightTint,
             )
         }
+        addIndexQuad()
     }
 
     fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
@@ -61,6 +62,7 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
                 lightTint = lightTint,
             )
         }
+        addIndexQuad()
     }
 
     operator fun get(transparency: TextureTransparencies): BlockVertexConsumer = this

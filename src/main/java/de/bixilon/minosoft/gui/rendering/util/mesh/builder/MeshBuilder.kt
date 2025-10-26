@@ -17,15 +17,18 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.primitive.floats.FloatList
+import de.bixilon.kutil.collections.primitive.ints.IntList
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
+import de.bixilon.minosoft.util.collections.ints.IntListUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import org.lwjgl.system.MemoryUtil.memAllocInt
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 abstract class MeshBuilder(
     val context: RenderContext,
@@ -33,6 +36,7 @@ abstract class MeshBuilder(
     val primitive: PrimitiveTypes = context.system.quadType,
     var initialCacheSize: Int = 8192,
     data: FloatList? = null,
+    index: IntList? = null,
 ) : AbstractVertexConsumer {
     override val order = context.system.quadOrder
     var _data = data
@@ -44,6 +48,16 @@ abstract class MeshBuilder(
             return _data.unsafeCast()
         }
 
+    var _index = index
+    val index: IntList
+        get() {
+            if (_index == null) {
+                _index = IntListUtil.direct(initialCacheSize)
+            }
+            return _index.unsafeCast()
+        }
+
+
     protected open val reused: Boolean = false
 
     private fun createNativeData(): FloatBuffer {
@@ -54,29 +68,51 @@ abstract class MeshBuilder(
 
         buffer.limit(data?.size ?: 0); buffer.position(0)
 
-        drop(native == null)
+        dropData(native == null)
+
+        return buffer
+    }
+
+    private fun createIndexNativeData(): IntBuffer? {
+        val index = this._index ?: return null
+        if (index.isEmpty) return null
+
+        val native = index.toUnsafeNativeBuffer()
+        val buffer = native ?: index.toBuffer { memAllocInt(it) }
+
+        buffer.limit(index.size); buffer.position(0)
+
+        dropIndex(native == null)
 
         return buffer
     }
 
     protected fun create(): VertexBuffer {
-        val data = this.data
-        val index = memAllocInt(data.size / struct.floats)
-        for (i in 0 until index.limit()) {
-            index.put(i, i)
-        }
-        val native = createNativeData()
-        return context.system.createVertexBuffer(struct, native, primitive, index, reused)
+        val data = createNativeData()
+        val index = createIndexNativeData()
+
+        return context.system.createVertexBuffer(struct, data, primitive, index, reused)
     }
 
     open fun bake() = Mesh(create())
 
-    open fun drop(free: Boolean = true) {
-        val data = _data ?: return
+    protected fun dropIndex(free: Boolean) {
         if (free && !reused) {
-            data.free()
+            _index?.free()
+        }
+        this._index = null
+    }
+
+    protected fun dropData(free: Boolean) {
+        if (free && !reused) {
+            _data?.free()
         }
         this._data = null
+    }
+
+    open fun drop(free: Boolean = true) {
+        dropIndex(free)
+        dropData(free)
     }
 
 
@@ -118,6 +154,11 @@ abstract class MeshBuilder(
             Vec2f(uvEnd.x, uvStart.y),
         )
         order.iterate { position, uv -> vertexConsumer.invoke(positions[position], texturePositions[uv]) }
+        addIndexQuad()
+    }
+
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
+        IndexUtil.addIndexQuad(index, front, reverse)
     }
 
     override fun ensureSize(floats: Int) {

@@ -85,7 +85,7 @@ class FluidSectionMesher(
         val mesh = meshes[texture.transparency]
 
         mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
-        mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.addIndexQuad(true, true)
     }
 
     private fun renderDown(model: FluidModel, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Float) {
@@ -96,6 +96,7 @@ class FluidSectionMesher(
         val mesh = meshes[texture.transparency]
 
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.addIndexQuad(false, true)
     }
 
     inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMeshBuilder, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
@@ -118,9 +119,7 @@ class FluidSectionMesher(
 
         val textureId = texture.renderData.shaderTextureId.buffer()
         mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
-        if (backface) {
-            mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
-        }
+        mesh.addIndexQuad(true, backface)
     }
 
     fun mesh(chunk: Chunk, section: ChunkSection, mesh: ChunkMeshesBuilder) {

@@ -30,11 +30,13 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
+import de.bixilon.minosoft.util.collections.ints.IntListUtil
 
 class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
     private val profile = guiRenderer.session.profiles.gui
     private val crosshairProfile = profile.hud.crosshair
     private val data = FloatListUtil.direct(42, false)
+    private val index = IntListUtil.direct(42, false) // TODO
     private var crosshairAtlasElement: AtlasElement? = null
     private var mesh: Mesh? = null
     private var previousDebugEnabled: Boolean? = true
@@ -94,7 +96,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         this.mesh = null
 
         this.data.clear()
-        val mesh = GUIMeshBuilder(context, guiRenderer.halfSize, this.data)
+        val mesh = GUIMeshBuilder(context, guiRenderer.halfSize, this.data, this.index)
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color.rgba(), null)
 

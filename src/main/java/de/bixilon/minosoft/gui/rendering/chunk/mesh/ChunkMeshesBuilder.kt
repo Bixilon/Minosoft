@@ -97,6 +97,7 @@ class ChunkMeshesBuilder(
     override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken()
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Broken()
 
     override fun get(transparency: TextureTransparencies) = when (transparency) {
         TextureTransparencies.TRANSLUCENT -> translucent

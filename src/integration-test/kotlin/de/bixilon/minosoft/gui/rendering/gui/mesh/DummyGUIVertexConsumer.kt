@@ -38,4 +38,5 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
     }
 
     open fun addChar(start: Vec2f, end: Vec2f, index: Int): Unit = Broken()
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
 }

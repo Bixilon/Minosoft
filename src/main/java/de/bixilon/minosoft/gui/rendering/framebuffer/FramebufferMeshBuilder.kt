@@ -25,6 +25,7 @@ class FramebufferMeshBuilder(context: RenderContext) : MeshBuilder(context, Defa
 
     init {
         order.iterate { position, uv -> addVertex(VERTICES[position].first, VERTICES[uv].second) }
+        addIndexQuad()
     }
 
     private fun addVertex(position: Vec2f, uv: Vec2f) {

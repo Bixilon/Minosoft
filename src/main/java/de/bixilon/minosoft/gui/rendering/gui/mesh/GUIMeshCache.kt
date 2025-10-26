@@ -16,10 +16,13 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
+import de.bixilon.kutil.collections.primitive.ints.HeapIntList
+import de.bixilon.kutil.collections.primitive.ints.IntList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.IndexUtil
 
 class GUIMeshCache(
     var halfSize: Vec2f,
@@ -27,6 +30,7 @@ class GUIMeshCache(
     val context: RenderContext,
     initialCacheSize: Int = 1000,
     var data: FloatList = HeapFloatList(initialCacheSize),
+    var index: IntList = HeapIntList(initialCacheSize / GUIMeshBuilder.GUIMeshStruct.floats),
 ) : GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
@@ -36,6 +40,7 @@ class GUIMeshCache(
 
     fun clear() {
         data.clear()
+        index.clear()
     }
 
 
@@ -51,10 +56,15 @@ class GUIMeshCache(
 
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
+        index += cache.index
         revision++
     }
 
     override fun ensureSize(size: Int) {
         data.ensureSize(size)
+    }
+
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
+        IndexUtil.addIndexQuad(index, front, reverse)
     }
 }

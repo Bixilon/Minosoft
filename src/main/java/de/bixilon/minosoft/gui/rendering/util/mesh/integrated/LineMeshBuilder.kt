@@ -94,6 +94,7 @@ open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000)
             }
             addVertex(position.x + normal.x, position.y + normal.y, position.z + normal.z, color)
         }
+        addIndexQuad()
     }
 
     fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
@@ -109,6 +110,7 @@ open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000)
             val positions = CuboidUtil.positions(direction, from, to)
 
             order.iterate { position, _ -> addVertex(positions, position * Vec3f.LENGTH, color) }
+            addIndexQuad()
         }
     }
 

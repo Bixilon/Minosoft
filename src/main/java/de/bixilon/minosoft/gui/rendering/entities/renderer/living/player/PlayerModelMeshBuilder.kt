@@ -44,6 +44,7 @@ open class PlayerModelMeshBuilder(context: RenderContext, initialCacheSize: Int 
         order.iterate { position, uvIndex ->
             addVertex(positions, position * Vec3f.LENGTH, uv, uvIndex * Vec2f.LENGTH, partTransformNormal)
         }
+        addIndexQuad()
     }
 
     private fun String.getSkinPart(): SkinParts? = when (this) {

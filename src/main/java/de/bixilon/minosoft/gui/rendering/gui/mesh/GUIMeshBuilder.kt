@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.FloatList
+import de.bixilon.kutil.collections.primitive.ints.IntList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -29,7 +30,8 @@ class GUIMeshBuilder(
     context: RenderContext,
     val halfSize: Vec2f,
     data: FloatList,
-) : MeshBuilder(context, GUIMeshStruct, initialCacheSize = 32768, data = data), GUIVertexConsumer {
+    index: IntList,
+) : MeshBuilder(context, GUIMeshStruct, initialCacheSize = 0, data = data, index = index), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
     override val reused get() = true

@@ -73,5 +73,6 @@ class BlockGUIConsumerTest {
 
         override fun addCache(cache: GUIMeshCache) = Broken()
         override fun ensureSize(size: Int) = Unit
+        override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
     }
 }

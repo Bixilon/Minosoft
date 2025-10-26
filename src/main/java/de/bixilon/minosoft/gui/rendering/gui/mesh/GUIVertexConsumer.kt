@@ -18,13 +18,12 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.AbstractVertexConsumer
 
-interface GUIVertexConsumer {
-    val order: RenderOrder
+interface GUIVertexConsumer : AbstractVertexConsumer {
 
     fun addVertex(position: Vec2f, texture: ShaderTexture?, uv: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) = addVertex(position.x, position.y, texture, uv.x, uv.y, tint, options)
     fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?)
@@ -42,6 +41,7 @@ interface GUIVertexConsumer {
                 tint, options,
             )
         }
+        addIndexQuad()
     }
 
     fun addQuad(start: Vec2f, end: Vec2f, texture: TexturePart, tint: RGBAColor, options: GUIVertexOptions?) {
@@ -71,11 +71,10 @@ interface GUIVertexConsumer {
                 tint, options,
             )
         }
+        addIndexQuad()
     }
 
     fun addCache(cache: GUIMeshCache)
-
-    fun ensureSize(size: Int)
 
     companion object {
         val UV_START = Vec2f(0.0f, 0.0f)

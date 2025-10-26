@@ -48,6 +48,10 @@ class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val lig
         mesh.data.ensureSize(size)
     }
 
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
+        mesh.addIndexQuad(front, reverse)
+    }
+
     private fun times(mat: Mat4f, x: Float, y: Float, result: MVec3f) {
         result.x = mat[0, 0] * x + mat[0, 1] * y + mat[0, 2] + mat[0, 3]
         result.y = mat[1, 0] * x + mat[1, 1] * y + mat[1, 2] + mat[1, 3]

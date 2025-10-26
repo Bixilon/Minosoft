@@ -13,13 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.builder
 
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
+import de.bixilon.kutil.collections.primitive.ints.IntList
 
-interface AbstractVertexConsumer {
-    val order: RenderOrder
+object IndexUtil {
 
-    fun ensureSize(floats: Int) = Unit
-
-    fun addIndexQuad(front: Boolean, reverse: Boolean)
-    fun addIndexQuad() = addIndexQuad(true, false)
+    fun addIndexQuad(list: IntList, front: Boolean, reverse: Boolean) {
+        val size = list.size
+        if (front) {
+            list.add(size + 0, size + 1, size + 2, size + 3, size + 4, size + 5)
+        }
+        if (reverse) {
+            list.add(size + 5, size + 4, size + 3, size + 2, size + 1, size + 0)
+        }
+    }
 }

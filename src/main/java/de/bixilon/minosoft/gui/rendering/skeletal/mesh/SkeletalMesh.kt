@@ -40,6 +40,7 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : Abstr
         order.iterate { position, uvIndex ->
             addVertex(positions, position * Vec3f.LENGTH, uv, uvIndex * Vec2f.LENGTH, transformNormal, textureShaderId)
         }
+        addIndexQuad()
     }
 
 

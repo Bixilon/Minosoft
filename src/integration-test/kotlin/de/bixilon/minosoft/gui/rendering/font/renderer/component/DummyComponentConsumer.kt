@@ -43,6 +43,8 @@ class DummyComponentConsumer : GUIVertexConsumer {
     data class RenderedCodePoint(val start: Vec2f)
     data class RenderedQuad(val start: Vec2f, val end: Vec2f)
 
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
+
 
     inner class ConsumerCodePointRenderer(val width: Float) : CodePointRenderer {
         override fun calculateWidth(scale: Float, shadow: Boolean): Float {
