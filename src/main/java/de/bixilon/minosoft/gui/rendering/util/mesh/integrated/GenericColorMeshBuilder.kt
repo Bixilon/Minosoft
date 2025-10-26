@@ -27,13 +27,17 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 open class GenericColorMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType, initialCacheSize: Int = 1000) : MeshBuilder(context, GenericColorMeshStruct, primitiveType, initialCacheSize) {
 
     fun addVertex(position: Vec3f, color: RGBAColor?) {
-        data.add(position.x, position.y, position.z)
-        data.add((color ?: ChatColors.WHITE).rgba.buffer())
+        data.add(
+            position.x, position.y, position.z,
+            (color ?: ChatColors.WHITE).rgba.buffer()
+        )
     }
 
     fun addVertex(position: Vec3f, color: Float) {
-        data.add(position.x, position.y, position.z)
-        data.add(color)
+        data.add(
+            position.x, position.y, position.z,
+            color,
+        )
     }
 
     fun addVertex(x: Float, y: Float, z: Float, color: Float) {

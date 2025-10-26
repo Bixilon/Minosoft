@@ -40,8 +40,9 @@ abstract class DirectFloatListTest : AbstractFloatListTest() {
     }
 
 
-    // @Test
+    @Test
     fun benchmark() {
+        println(this::class.simpleName)
         BenchmarkUtil.benchmark(1000) {
             val list = create(1024)
 

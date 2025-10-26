@@ -24,11 +24,13 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 open class WeatherOverlayMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : MeshBuilder(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.floats) {
 
     fun addVertex(position: Vec3f, uv: Vec2f, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
-        data.add(position.x, position.y, position.z)
-        data.add(uv.x, uv.y)
-        data.add(offset)
-        data.add(offsetMultiplicator)
-        data.add(alphaMultiplicator)
+        data.add(
+            position.x, position.y, position.z,
+            uv.x, uv.y,
+            offset,
+            offsetMultiplicator,
+            alphaMultiplicator,
+        )
     }
 
 

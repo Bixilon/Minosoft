@@ -26,8 +26,10 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 class CloudMeshBuilder(context: RenderContext) : MeshBuilder(context, CloudMeshStruct, context.system.quadType) {
 
     fun addVertex(start: Vec3f, side: Directions) {
-        data.add(start.x, start.y, start.z)
-        data.add(side.ordinal.buffer())
+        data.add(
+            start.x, start.y, start.z,
+            side.ordinal.buffer(),
+        )
     }
 
 

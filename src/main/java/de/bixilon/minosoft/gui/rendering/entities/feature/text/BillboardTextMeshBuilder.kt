@@ -35,10 +35,12 @@ class BillboardTextMeshBuilder(context: RenderContext) : MeshBuilder(context, Bi
     }
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        data.add(x * SCALE, y * SCALE)
-        data.add(u, v)
-        data.add((texture?.shaderId ?: context.textures.whiteTexture.texture.shaderId).buffer())
-        data.add(tint.rgba.buffer())
+        data.add(
+            x * SCALE, y * SCALE,
+            u, v,
+            (texture?.shaderId ?: context.textures.whiteTexture.texture.shaderId).buffer(),
+            tint.rgba.buffer(),
+        )
     }
 
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
