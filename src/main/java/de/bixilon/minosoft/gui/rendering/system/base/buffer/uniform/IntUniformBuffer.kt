@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.IntGpuBuffer
+import java.nio.IntBuffer
 
-interface IntUniformBuffer : UniformBuffer, IntGpuBuffer
+interface IntUniformBuffer : UniformBuffer {
+    val data: IntBuffer
+}

@@ -73,7 +73,6 @@ class SpriteAnimator(val context: RenderContext) {
     }
 
     fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {
-        // TODO: Is that opengl specific?
         val buffer = buffer!!
         val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
         buffer.data[offset + 0] = first.renderData.shaderTextureId

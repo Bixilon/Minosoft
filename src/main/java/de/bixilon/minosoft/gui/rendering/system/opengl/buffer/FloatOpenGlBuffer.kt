@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.FloatGpuBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
@@ -24,7 +23,10 @@ import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress0
 import java.nio.FloatBuffer
 
-class FloatOpenGlBuffer(system: OpenGlRenderSystem, override val data: FloatBuffer) : OpenGlGpuBuffer(system), FloatGpuBuffer {
+class FloatOpenGlBuffer(
+    system: OpenGlRenderSystem,
+    val data: FloatBuffer,
+) : OpenGlGpuBuffer(system) {
 
     override val glType get() = GL_ARRAY_BUFFER
 

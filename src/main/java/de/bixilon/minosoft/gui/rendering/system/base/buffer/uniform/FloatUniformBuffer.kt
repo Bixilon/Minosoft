@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.type.FloatGpuBuffer
+import java.nio.FloatBuffer
 
-interface FloatUniformBuffer : UniformBuffer, FloatGpuBuffer
+interface FloatUniformBuffer : UniformBuffer {
+    val data: FloatBuffer
+
+}
