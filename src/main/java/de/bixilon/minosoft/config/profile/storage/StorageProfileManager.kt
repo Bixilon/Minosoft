@@ -91,7 +91,12 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
         stream.close()
         val storage = FileStorage(name, this, path)
-        return load(storage, content)
+        try {
+            return load(storage, content)
+        } catch (error: Throwable) {
+            Log.log(LogMessageType.PROFILES, LogLevels.FATAL) { "Error loading profile: $path: $error" }
+            throw error
+        }
     }
 
     private fun loadSelected(root: File): String? {
