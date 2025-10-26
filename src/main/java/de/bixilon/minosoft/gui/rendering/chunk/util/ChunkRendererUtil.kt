@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.util
 
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -34,6 +32,4 @@ object ChunkRendererUtil {
             return MOVING_LOADING_TIME
         }
 
-
-    val ChunkSection.smallMesh: Boolean get() = blocks.count < ChunkSize.SECTION_MAX_X * ChunkSize.SECTION_MAX_Z
 }

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidSectionMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
-import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
 
 class ChunkMesher(
     private val renderer: ChunkRenderer,
@@ -37,7 +36,7 @@ class ChunkMesher(
         if (!neighbours.complete || sectionNeighbours == null) {
             return null
         }
-        val mesh = ChunkMeshesBuilder(renderer.context, item.section.smallMesh, item.section.blockEntities.count)
+        val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.blockEntities.count)
         try {
             solid.mesh(item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
 

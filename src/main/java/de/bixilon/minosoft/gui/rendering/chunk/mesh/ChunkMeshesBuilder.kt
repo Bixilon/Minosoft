@@ -27,12 +27,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 
 class ChunkMeshesBuilder(
     context: RenderContext,
-    smallMesh: Boolean = false,
+    count: Int,
     entities: Int,
 ) : BlockVertexConsumer { // TODO: Don't inherit
-    var opaque = ChunkMeshBuilder(context, if (smallMesh) 8192 else 65536)
-    var translucent = ChunkMeshBuilder(context, if (smallMesh) 4096 else 16384)
-    var text = ChunkMeshBuilder(context, if (smallMesh) 1024 else 4096)
+    var opaque = ChunkMeshBuilder(context, count.opaqueCount()) // TODO: * floatsPerVertex * vertex per side
+    var translucent = ChunkMeshBuilder(context, count.translucentCount())
+    var text = ChunkMeshBuilder(context, 128)
     var entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(entities)
 
     // used for frustum culling
@@ -101,5 +101,22 @@ class ChunkMeshesBuilder(
     override fun get(transparency: TextureTransparencies) = when (transparency) {
         TextureTransparencies.TRANSLUCENT -> translucent
         else -> opaque
+    }
+
+    companion object {
+        private fun Int.opaqueCount() = when { // Rounded mean counts of faces in a normal world
+            this <= 32 -> 32
+            this <= 128 -> 300
+            this <= 512 -> 600
+            this <= 3584 -> 1024
+            this <= 4064 -> 512
+            else -> 280
+        }
+
+        private fun Int.translucentCount() = when {
+            this <= 32 -> 32
+            this <= 4064 -> 256
+            else -> 32
+        }
     }
 }
