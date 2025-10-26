@@ -17,7 +17,7 @@ import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
 import java.nio.FloatBuffer
 
 object FloatListUtil {
-    const val PREFER_FRAGMENTED = true
+    const val PREFER_FRAGMENTED = false // realloc is SO fast, the kernel just swaps the page table entries.
     const val ALLOW_NATIVE = true
 
     const val DEFAULT_INITIAL_SIZE = 1024
