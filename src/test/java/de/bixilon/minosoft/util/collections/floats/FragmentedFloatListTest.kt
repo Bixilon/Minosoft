@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
+import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
@@ -93,5 +94,17 @@ class FragmentedFloatListTest : DirectFloatListTest() {
         val expected = FloatArray(700) { it.toFloat() }
         val array = list.toArray()
         assertContentEquals(expected, array)
+    }
+
+    // @Test
+    fun benchmark() {
+        BenchmarkUtil.benchmark(1000) {
+            val list = FragmentedArrayFloatList(1024)
+
+            for (i in 0 until 100000) {
+                list.add(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f)
+            }
+            list.unload()
+        }.println()
     }
 }
