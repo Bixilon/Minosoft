@@ -11,31 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.collections.floats
+package de.bixilon.minosoft.util.collections.ints
 
 import de.bixilon.kutil.benchmark.BenchmarkUtil
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-abstract class DirectFloatListTest : AbstractFloatListTest() {
+abstract class DirectIntListTest : AbstractIntListTest() {
 
     @Test
     fun singleToBuffer() {
         val list = create()
-        list.add(189.0f)
+        list.add(189)
         val buffer = list.toBuffer()
-        Assertions.assertEquals(buffer.get(0), 189.0f)
+        Assertions.assertEquals(buffer.get(0), 189)
         Assertions.assertEquals(buffer.position(), 1)
     }
 
     @Test
     fun multipleToBuffer() {
         val list = create()
-        list.add(189.0f)
-        list.add(289.0f)
+        list.add(189)
+        list.add(289)
         val buffer = list.toBuffer()
-        Assertions.assertEquals(buffer.get(0), 189.0f)
-        Assertions.assertEquals(buffer.get(1), 289.0f)
+        Assertions.assertEquals(buffer.get(0), 189)
+        Assertions.assertEquals(buffer.get(1), 289)
         Assertions.assertEquals(buffer.position(), 2)
     }
 
@@ -47,7 +47,7 @@ abstract class DirectFloatListTest : AbstractFloatListTest() {
             val list = create(1024)
 
             for (i in 0 until 100000) {
-                list.add(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f)
+                list.add(1, 2, 3, 4, 5, 6, 7)
             }
             list.free()
         }.println()
