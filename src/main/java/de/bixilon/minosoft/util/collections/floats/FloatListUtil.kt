@@ -22,9 +22,9 @@ object FloatListUtil {
 
     const val DEFAULT_INITIAL_SIZE = 1024
 
-    fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE) = when {
+    fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE, fragmented: Boolean = PREFER_FRAGMENTED) = when {
         !ALLOW_NATIVE -> HeapFloatList(initialSize)
-        PREFER_FRAGMENTED -> FragmentedFloatList(initialSize)
+        fragmented -> FragmentedFloatList(initialSize)
         else -> BufferFloatList(initialSize)
     }
 

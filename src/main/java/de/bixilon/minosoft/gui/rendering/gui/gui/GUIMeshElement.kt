@@ -41,7 +41,7 @@ open class GUIMeshElement<T : Element>(
     override val guiRenderer: GUIRenderer = element.guiRenderer
     override val context: RenderContext = guiRenderer.context
     private val clickCounter = MouseClickCounter()
-    private val data = FloatListUtil.direct(1024)
+    private val data = FloatListUtil.direct(1024, false)
     var mesh: Mesh? = null
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false

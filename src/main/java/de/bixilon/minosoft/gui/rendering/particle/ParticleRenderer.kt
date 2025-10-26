@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.particle.mesh.ParticleMeshBuilder
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -34,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.collections.floats.BufferFloatList
+import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 import java.util.*
 
 
@@ -48,8 +49,9 @@ class ParticleRenderer(
     private val shader = context.system.shader.create(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private val meshData = BufferFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
-    private val translucentData = BufferFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
+
+    private val meshData = FloatListUtil.direct(1024 * ParticleMeshBuilder.ParticleMeshStruct.floats, false)
+    private val translucentData = FloatListUtil.direct(512 * ParticleMeshBuilder.ParticleMeshStruct.floats, false)
     var mesh: Mesh? = null
     var translucentMesh: Mesh? = null
 
