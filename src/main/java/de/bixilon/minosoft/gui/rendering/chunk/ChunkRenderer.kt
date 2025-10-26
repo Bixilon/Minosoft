@@ -276,6 +276,10 @@ class ChunkRenderer(
         this.visible = visible
     }
 
+    override fun unload() {
+        loadingQueue.clear(true)
+    }
+
 
     private object TextLayer : RenderLayer {
         override val settings = RenderSettings(blending = true, depth = DepthFunctions.LESS_OR_EQUAL, polygonOffset = true, polygonOffsetFactor = -2.5f, polygonOffsetUnit = -2.5f)

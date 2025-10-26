@@ -68,6 +68,10 @@ class LightmapBuffer(renderSystem: RenderSystem) {
         buffer.use(shader, name)
     }
 
+    fun unload() {
+        buffer.unload()
+    }
+
 
     private companion object {
         private const val UNIFORM_BUFFER_SIZE = LightLevel.LEVELS * LightLevel.LEVELS * 4 // skyLight * blockLight * RGBA

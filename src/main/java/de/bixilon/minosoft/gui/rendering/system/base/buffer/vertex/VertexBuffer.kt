@@ -22,4 +22,6 @@ interface VertexBuffer : GpuBuffer {
     val struct: MeshStruct
 
     fun draw()
+
+    fun drop()
 }

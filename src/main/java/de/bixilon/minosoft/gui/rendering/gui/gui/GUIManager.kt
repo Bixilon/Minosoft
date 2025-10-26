@@ -359,6 +359,18 @@ class GUIManager(
         context.input.handler.handler = null
     }
 
+    fun unload() {
+        clear()
+        orderLock.lock()
+        val iterator = elementCache.entries.iterator()
+
+        while (iterator.hasNext()) {
+            val (_, element) = iterator.next()
+            iterator.remove()
+            element.unload()
+        }
+    }
+
     operator fun <T : GUIElement> get(builder: GUIBuilder<T>): T {
         return elementCache.getOrPut(builder) {
             if (builder is HUDBuilder<*>) {

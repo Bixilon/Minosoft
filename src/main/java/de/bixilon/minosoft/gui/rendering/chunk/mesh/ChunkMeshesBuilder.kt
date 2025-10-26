@@ -89,7 +89,7 @@ class ChunkMeshesBuilder(
         opaque.drop()
         translucent.drop()
         text.drop()
-        entities.forEach { it.unload() }
+        entities.forEach { it.drop() }
     }
 
     override val order get() = Broken()

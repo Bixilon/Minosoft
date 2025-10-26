@@ -134,6 +134,11 @@ class GUIRenderer(
         }
     }
 
+    override fun unload() {
+        hud.unload()
+        gui.unload()
+    }
+
     fun Vec2f.scale(systemScale: Vec2f = context.window.systemScale, scale: Float = profile.scale): Vec2f {
         val totalScale = systemScale * scale
         return this / totalScale

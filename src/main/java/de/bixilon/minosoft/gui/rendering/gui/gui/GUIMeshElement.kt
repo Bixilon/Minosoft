@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -194,5 +195,10 @@ open class GUIMeshElement<T : Element>(
         state = ElementStates.HIDDEN
         element.onHide()
         element.onMouseLeave()
+    }
+
+    override fun unload() {
+        this.data.free()
+        this::data.forceSet(null)
     }
 }

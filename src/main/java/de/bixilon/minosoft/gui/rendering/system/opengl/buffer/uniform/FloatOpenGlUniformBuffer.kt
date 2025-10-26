@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL15C.nglBufferSubData
 import org.lwjgl.system.MemoryUtil
+import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
 
 class FloatOpenGlUniformBuffer(
@@ -48,5 +50,10 @@ class FloatOpenGlUniformBuffer(
         bind()
         gl { nglBufferSubData(glType, start.toLong() * Float.SIZE_BYTES, Integer.toUnsignedLong(((end + 1) - start) * Float.SIZE_BYTES), MemoryUtil.memAddress(data, start)) }
         unbind()
+    }
+
+    override fun unsafeDrop() {
+        memFree(data)
+        this::data.forceSet(null)
     }
 }

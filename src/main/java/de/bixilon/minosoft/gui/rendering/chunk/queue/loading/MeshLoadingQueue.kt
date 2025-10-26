@@ -34,11 +34,8 @@ class MeshLoadingQueue(
 
 
     fun work() {
+        if (meshes.isEmpty()) return
         lock()
-        if (meshes.isEmpty()) {
-            unlock()
-            return
-        }
 
         var count = 0
         val start = now()
@@ -89,7 +86,7 @@ class MeshLoadingQueue(
         lock()
         if (!this.positions.add(QueuePosition(mesh))) {
             // already inside, remove
-            meshes.remove(mesh)
+            meshes.dropAll { it.position == mesh.position }
         }
         if (mesh.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
             // still higher priority
@@ -110,14 +107,14 @@ class MeshLoadingQueue(
             positions += it
             return@removeAll true
         }
-        this.meshes.removeAll { QueuePosition(it.position) in positions }
+        this.meshes.removeAll { QueuePosition(it) in positions }
         if (lock) unlock()
     }
 
     fun abort(position: QueuePosition, lock: Boolean = true) {
         if (lock) lock()
         if (this.positions.remove(position)) {
-            this.meshes.removeAll { it.position == position.position }
+            this.meshes.dropAll { it.position == position.position }
         }
         if (lock) unlock()
     }
@@ -135,14 +132,23 @@ class MeshLoadingQueue(
             return@removeAll true
         }
 
-        this.meshes.removeAll { QueuePosition(it) in remove; }
+        this.meshes.dropAll { QueuePosition(it) in remove }
         if (lock) unlock()
+    }
+
+    private inline fun MutableList<ChunkMeshes>.dropAll(crossinline predicate: (ChunkMeshes) -> Boolean) = removeIf {
+        if (predicate.invoke(it)) return@removeIf false
+        it.drop()
+        return@removeIf true
     }
 
     fun clear(lock: Boolean) {
         if (lock) lock()
         this.positions.clear()
-        this.meshes.clear()
+        while (meshes.isNotEmpty()) {
+            val mesh = meshes.removeAt(0)
+            mesh.drop()
+        }
         if (lock) unlock()
     }
 

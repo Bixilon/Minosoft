@@ -122,4 +122,8 @@ class RendererManager(
     override fun iterator(): Iterator<Renderer> {
         return list.iterator()
     }
+
+    fun unload() {
+        list.forEach { it.unload() }
+    }
 }

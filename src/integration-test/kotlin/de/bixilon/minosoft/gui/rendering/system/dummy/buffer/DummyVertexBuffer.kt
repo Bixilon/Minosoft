@@ -35,4 +35,6 @@ class DummyVertexBuffer(
 
     override fun draw() {
     }
+
+    override fun drop() = Unit
 }

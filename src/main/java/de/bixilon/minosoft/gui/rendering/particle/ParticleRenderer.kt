@@ -165,6 +165,11 @@ class ParticleRenderer(
         queue.clear()
     }
 
+    override fun unload() {
+        meshData.free()
+        translucentData.free()
+    }
+
     companion object : RendererBuilder<ParticleRenderer> {
         const val MAXIMUM_AMOUNT = 50000
 

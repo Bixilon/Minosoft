@@ -78,6 +78,14 @@ class OpenGlVertexBuffer(
         unbind()
     }
 
+    override fun drop() {
+        assert(state == GpuBufferStates.PREPARING)
+        data.drop()
+        index?.drop()
+
+        state = GpuBufferStates.UNLOADED
+    }
+
     override fun unload() {
         check(state == GpuBufferStates.INITIALIZED) { "Vertex buffer is not uploaded: $state" }
         data.unload()

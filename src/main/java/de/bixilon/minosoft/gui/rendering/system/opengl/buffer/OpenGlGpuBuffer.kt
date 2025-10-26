@@ -45,6 +45,7 @@ abstract class OpenGlGpuBuffer(
     }
 
     protected abstract fun initialUpload()
+    protected abstract fun unsafeDrop()
 
     protected fun unsafeBind() {
         if (system.boundBuffer[glType] == id) {
@@ -82,6 +83,12 @@ abstract class OpenGlGpuBuffer(
         }
         id = -1
         state = GpuBufferStates.UNLOADED
+    }
+
+    fun drop() {
+        assert(state == GpuBufferStates.PREPARING)
+        unsafeDrop()
+        this.state = GpuBufferStates.UNLOADED
     }
 
     protected fun finalize() {

@@ -439,7 +439,7 @@ class GlfwWindow(
         val image = GLFWImage.create()
         image.set(buffer.size.x, buffer.size.y, buffer.data)
 
-        val images = GLFWImage.malloc(1)
+        val images = GLFWImage.malloc(1) // TODO: free again
         images.put(0, image)
         glfwSetWindowIcon(window, images)
     }

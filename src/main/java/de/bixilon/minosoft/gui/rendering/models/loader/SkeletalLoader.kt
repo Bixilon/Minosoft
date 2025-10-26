@@ -82,6 +82,12 @@ class SkeletalLoader(private val loader: ModelLoader) {
         if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
     }
 
+    fun unload() {
+        for ((_, baked) in this.baked) {
+            baked.unload()
+        }
+    }
+
     private data class RegisteredModel(
         val template: ResourceLocation,
         val override: SkeletalTextureMap,

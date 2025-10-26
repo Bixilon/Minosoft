@@ -15,8 +15,7 @@ package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import org.lwjgl.system.MemoryUtil.memAllocFloat
-import org.lwjgl.system.MemoryUtil.memRealloc
+import org.lwjgl.system.MemoryUtil.*
 import java.nio.FloatBuffer
 
 
@@ -159,6 +158,7 @@ class BufferFloatList(
 
 
     override fun free() {
+        memFree(buffer)
         BUFFER[this] = null
     }
 

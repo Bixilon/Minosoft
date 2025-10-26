@@ -461,6 +461,11 @@ class SolidSectionMesherTest {
                     init {
                         entities.add(TestQueue.RenderedEntity(position, state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
                     }
+
+                    override fun drop() = Broken()
+                    override fun load() = Broken()
+                    override fun unload() = Broken()
+                    override fun draw(context: RenderContext) = Broken()
                 }
             }
         }

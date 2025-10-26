@@ -80,6 +80,10 @@ class ModelLoader(
         skeletal.cleanup()
     }
 
+    fun unload() {
+        skeletal.unload()
+    }
+
     companion object {
 
         fun ResourceLocation.model(): ResourceLocation {

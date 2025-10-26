@@ -18,6 +18,7 @@ import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.gui.RenderLoop
 import de.bixilon.minosoft.gui.rendering.RenderLoader.awaitPlaying
 import de.bixilon.minosoft.gui.rendering.RenderLoader.load
+import de.bixilon.minosoft.gui.rendering.RenderUtil.unload
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -53,13 +54,15 @@ class Rendering(private val session: PlaySession) {
                 audioPlayer.exit()
             } catch (exception: Throwable) {
                 exception.printStackTrace()
+                latch.minus(audioLatch.count)
+            } finally {
                 try {
                     audioPlayer.exit()
-                } catch (ignored: Throwable) {
+                } catch (error: Throwable) {
+                    error.printStackTrace()
                 }
+
                 session.terminate()
-                session.error = exception
-                latch.minus(audioLatch.count)
             }
         }, "Audio#${session.id}").start()
     }
@@ -78,15 +81,31 @@ class Rendering(private val session: PlaySession) {
             context.awaitPlaying()
             loop.startLoop()
         } catch (exception: Throwable) {
-            contexts.remove()
             exception.printStackTrace()
             try {
-                context.window.destroy()
                 session.events.fire(WindowCloseEvent(context, window = context.window))
             } catch (_: Throwable) {
             }
             session.error = exception
-            session.terminate()
+        } finally {
+            Log.log(LogMessageType.RENDERING) { "Destroying render window..." }
+            context.state = RenderingStates.STOPPED
+            context.window.forceClose()
+
+            try {
+                context.unload()
+            } catch (error: Throwable) {
+                error.printStackTrace()
+            }
+
+            context.system.destroy()
+            context.window.destroy()
+            Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
+
+            // disconnect
+            context.session.terminate()
+
+            contexts.remove()
         }
     }
 

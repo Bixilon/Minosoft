@@ -45,4 +45,11 @@ class ChunkMeshes(
 
         entities?.forEach { it.unload() }
     }
+
+    fun drop() {
+        this.opaque?.drop()
+        this.translucent?.drop()
+        this.text?.drop()
+        entities?.forEach { it.drop() }
+    }
 }

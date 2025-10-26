@@ -125,6 +125,15 @@ class HUDManager(
         drawElements(values)
     }
 
+    fun unload() {
+        val iterator = hudElements.entries.iterator()
+        while (iterator.hasNext()) {
+            val (_, element) = iterator.next()
+            iterator.remove()
+            element.unload()
+        }
+    }
+
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {
         return hudElements[hudBuilder.identifier]?.unsafeCast()
     }

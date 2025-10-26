@@ -28,5 +28,5 @@ interface Renderer {
     fun prePrepareDraw() = Unit
     fun postPrepareDraw() = Unit
 
-    // TODO: fun unload() = Unit
+    fun unload() = Unit
 }

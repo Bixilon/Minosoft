@@ -42,6 +42,10 @@ class SkeletalManager(
         buffer.upload(0, instance.model.transformCount * Mat4f.LENGTH)
     }
 
+    fun unload() {
+        buffer.unload()
+    }
+
     companion object {
         const val MAX_TRANSFORMS = 64
     }

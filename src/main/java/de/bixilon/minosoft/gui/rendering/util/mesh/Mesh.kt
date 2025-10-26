@@ -37,4 +37,10 @@ open class Mesh(
         assert(state == MeshStates.LOADED)
         buffer.draw()
     }
+
+    fun drop() {
+        assert(state == MeshStates.PREPARING)
+        buffer.drop()
+        state = MeshStates.UNLOADED
+    }
 }

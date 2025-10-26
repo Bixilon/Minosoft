@@ -123,6 +123,10 @@ class SpriteAnimator(val context: RenderContext) {
         return Pair(data, animation)
     }
 
+    fun unload() {
+        buffer?.unload()
+    }
+
     companion object {
         const val MAX_ANIMATED_TEXTURES = 1024 // 16kb / 4 (ints per animation) / 4 bytes per int
         private const val INTS_PER_ANIMATED_TEXTURE = 4

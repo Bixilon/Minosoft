@@ -34,6 +34,10 @@ class FloatOpenGlBuffer(
 
     override fun initialUpload() {
         gl { nglBufferData(glType, data, if (EMPTY_BUFFERS) 0 else data.limit(), GL_STATIC_DRAW) }
+        unsafeDrop()
+    }
+
+    override fun unsafeDrop() {
         memFree(this.data)
         this::data.forceSet(null)
     }

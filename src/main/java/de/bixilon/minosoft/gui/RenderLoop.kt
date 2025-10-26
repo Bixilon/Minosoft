@@ -116,14 +116,5 @@ class RenderLoop(
             }
             context.renderStats.endFrame()
         }
-
-        Log.log(LogMessageType.RENDERING) { "Destroying render window..." }
-        context.state = RenderingStates.STOPPED
-        context.window.forceClose()
-        context.system.destroy()
-        context.window.destroy()
-        Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
-        // disconnect
-        context.session.terminate()
     }
 }

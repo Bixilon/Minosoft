@@ -51,4 +51,15 @@ object RenderUtil {
         if (x < 1.0f && x > UV_ADD) x -= UV_ADD
         if (y < 1.0f && y > UV_ADD) y -= UV_ADD
     }
+
+    fun RenderContext.unload() {
+        renderer.unload()
+        models.unload()
+        skeletal.unload()
+
+        light.unload()
+        textures.unload()
+
+        queue.work()
+    }
 }

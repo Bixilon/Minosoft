@@ -45,4 +45,9 @@ abstract class OpenGlUniformBuffer(system: OpenGlRenderSystem, override val bind
         shader.native[bufferName] = this
         gl { glBindBufferBase(glType, bindingIndex, id) }
     }
+
+    override fun unload() {
+        super.unload()
+        unsafeDrop()
+    }
 }
