@@ -69,7 +69,9 @@ abstract class MeshBuilder(
     open fun bake() = Mesh(create())
 
     open fun drop(free: Boolean = true) {
-        data.free()
+        if (free) {
+            data.free()
+        }
         _data = null
     }
 
