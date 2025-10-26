@@ -92,8 +92,7 @@ class ChunkMeshesBuilder(
         entities.forEach { it.drop() }
     }
 
-    override val order get() = Broken()
-    override fun ensureSize(floats: Int) = Unit
+    override fun ensureSize(vertices: Int) = Unit
     override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
     override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken()

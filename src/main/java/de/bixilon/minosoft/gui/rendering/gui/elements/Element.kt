@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.vertical
 
-abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
+abstract class Element(val guiRenderer: GUIRenderer, estimate: Int = 32) : InputElement, DragTarget {
     var ignoreDisplaySize = false
     val context = guiRenderer.context
     open val activeWhenHidden = false
@@ -63,7 +63,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             }
         }
 
-    open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.quadOrder, context, initialCacheSize)
+    open val cache = GUIMeshCache(guiRenderer.halfSize, context, estimate)
 
     private var previousMaxSize = Vec2f.EMPTY
 

@@ -20,11 +20,10 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
-open class GenericColorMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType, initialCacheSize: Int = 1000) : MeshBuilder(context, GenericColorMeshStruct, primitiveType, initialCacheSize) {
+open class GenericColorMeshBuilder(context: RenderContext, estimate: Int = 100) : QuadMeshBuilder(context, GenericColorMeshStruct, estimate) {
     override val order = context.system.legacyQuadOrder
 
     fun addVertex(position: Vec3f, color: RGBAColor?) {

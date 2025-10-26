@@ -38,7 +38,6 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlException
 import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGlVendor
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -69,9 +68,6 @@ class OpenGlRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
-    override var quadType: PrimitiveTypes = if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE
-    override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
-    override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
 
     var boundVao = -1
     var boundBuffer = Int2IntOpenHashMap(3).apply { defaultReturnValue(-1) }

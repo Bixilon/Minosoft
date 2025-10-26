@@ -11,15 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.mesh.builder
+package de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad
 
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.VertexConsumer
 
-interface AbstractVertexConsumer {
-    val order: RenderOrder
-
-    fun ensureSize(floats: Int) = Unit
+interface QuadConsumer : VertexConsumer {
+    fun addIndexQuad() = addIndexQuad(true, false)
 
     fun addIndexQuad(front: Boolean, reverse: Boolean)
-    fun addIndexQuad() = addIndexQuad(true, false)
 }

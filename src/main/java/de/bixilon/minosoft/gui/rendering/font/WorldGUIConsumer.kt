@@ -23,13 +23,11 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRe
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 
 class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val light: Int) : GUIVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
-    override val order: RenderOrder get() = mesh.order
     private val uv = MVec2f() // temporary
     private val transformed = MVec3f() // temporary
 
@@ -44,8 +42,8 @@ class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val lig
         throw IllegalStateException("This is not hud!")
     }
 
-    override fun ensureSize(size: Int) {
-        mesh.data.ensureSize(size)
+    override fun ensureSize(vertices: Int) {
+        mesh.data.ensureSize(vertices)
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {

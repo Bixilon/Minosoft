@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 
-open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMeshBuilder(context, initialCacheSize = initialCacheSize) {
+open class LineMeshBuilder(context: RenderContext, initial broken: Int = 1000) : GenericColorMeshBuilder(context, initial broken = initial broken) {
     override val order = context.system.legacyQuadOrder
 
     fun drawLine(start: Vec3f, end: Vec3f, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
@@ -34,7 +34,7 @@ open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000)
     }
 
     fun drawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
-        data.ensureSize(4 * order.size * GenericColorMeshStruct.floats)
+        data.ensureSize(4 * order.vertices * GenericColorMeshStruct.floats)
 
         val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).apply { normalizeAssign() }
         val normal1 = MVec3f(direction.z, direction.z, direction.x - direction.y)
@@ -102,7 +102,7 @@ open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000)
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBAColor) {
-        data.ensureSize(6 * order.size * GenericColorMeshStruct.floats)
+        data.ensureSize(6 * order.vertices * GenericColorMeshStruct.floats)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
             val from = Vec3f.Companion(aabb.min - offset)
@@ -115,7 +115,7 @@ open class LineMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000)
     }
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
-        data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.floats)
+        data.ensureSize(12 * 4 * order.vertices * GenericColorMeshStruct.floats)
         val offset = context.camera.offset.offset
         val min = Vec3f.Companion(aabb.min) - margin - offset
         val max = Vec3f.Companion(aabb.max) + margin - offset

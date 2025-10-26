@@ -37,7 +37,6 @@ class BlockGUIConsumer(
     val size: Vec2f,
 ) : BlockVertexConsumer {
     private val matrix = VIEW_MATRIX * display.matrix
-    override val order = consumer.order
 
 
     @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)

@@ -16,18 +16,15 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
-    override val order: RenderOrder get() = MeshOrder.QUAD
     var char = 0
 
     override fun addCache(cache: GUIMeshCache) = Broken()
 
-    override fun ensureSize(size: Int) = Broken()
+    override fun ensureSize(vertices: Int) = Broken()
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 

@@ -17,11 +17,11 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-abstract class AbstractSkeletalMeshBuilder(context: RenderContext, struct: MeshStruct, initialCacheSize: Int) : MeshBuilder(context, struct, initialCacheSize = initialCacheSize) {
+abstract class AbstractSkeletalMeshBuilder(context: RenderContext, struct: MeshStruct, estimate: Int) : QuadMeshBuilder(context, struct, estimate) {
 
     abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String)
 }

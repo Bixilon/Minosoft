@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.builder
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.kutil.collections.primitive.ints.IntList
@@ -33,17 +31,16 @@ import java.nio.IntBuffer
 abstract class MeshBuilder(
     val context: RenderContext,
     private val struct: MeshStruct,
-    val primitive: PrimitiveTypes = context.system.quadType,
-    var initialCacheSize: Int = 8192,
+    val primitive: PrimitiveTypes,
+    var estimate: Int = 8192,
     data: FloatList? = null,
     index: IntList? = null,
-) : AbstractVertexConsumer {
-    override val order = context.system.quadOrder
+) : VertexConsumer {
     var _data = data
     val data: FloatList
         get() {
             if (_data == null) {
-                _data = FloatListUtil.direct(initialCacheSize)
+                _data = FloatListUtil.direct(estimate * primitive.vertices * struct.floats)
             }
             return _data.unsafeCast()
         }
@@ -52,7 +49,7 @@ abstract class MeshBuilder(
     val index: IntList
         get() {
             if (_index == null) {
-                _index = IntListUtil.direct(initialCacheSize)
+                _index = IntListUtil.direct(estimate * primitive.vertices)
             }
             return _index.unsafeCast()
         }
@@ -115,53 +112,7 @@ abstract class MeshBuilder(
         dropData(free)
     }
 
-
-    inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
-        val positions = arrayOf(
-            Vec3f(x, start.x, start.y),
-            Vec3f(x, start.x, end.y),
-            Vec3f(x, end.x, end.y),
-            Vec3f(x, end.x, start.y),
-        )
-        addQuad(positions, uvStart, uvEnd, vertexConsumer)
-    }
-
-    inline fun addYQuad(start: Vec2f, y: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
-        val positions = arrayOf(
-            Vec3f(start.x, y, end.y),
-            Vec3f(end.x, y, end.y),
-            Vec3f(end.x, y, start.y),
-            Vec3f(start.x, y, start.y),
-        )
-        addQuad(positions, uvStart, uvEnd, vertexConsumer)
-    }
-
-    inline fun addZQuad(start: Vec2f, z: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
-        val positions = arrayOf(
-            Vec3f(start.x, start.y, z),
-            Vec3f(start.x, end.y, z),
-            Vec3f(end.x, end.y, z),
-            Vec3f(end.x, start.y, z),
-        )
-        addQuad(positions, uvStart, uvEnd, vertexConsumer)
-    }
-
-    inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
-        val texturePositions = arrayOf(
-            uvStart,
-            Vec2f(uvStart.x, uvEnd.y),
-            uvEnd,
-            Vec2f(uvEnd.x, uvStart.y),
-        )
-        order.iterate { position, uv -> vertexConsumer.invoke(positions[position], texturePositions[uv]) }
-        addIndexQuad()
-    }
-
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        IndexUtil.addIndexQuad(index, front, reverse)
-    }
-
-    override fun ensureSize(floats: Int) {
-        data.ensureSize(floats)
+    override fun ensureSize(vertices: Int) {
+        data.ensureSize(vertices * primitive.vertices * struct.floats)
     }
 }

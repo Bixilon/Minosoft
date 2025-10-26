@@ -21,9 +21,9 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProp
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.AbstractVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer
 
-interface GUIVertexConsumer : AbstractVertexConsumer {
+interface GUIVertexConsumer : QuadConsumer {
 
     fun addVertex(position: Vec2f, texture: ShaderTexture?, uv: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) = addVertex(position.x, position.y, texture, uv.x, uv.y, tint, options)
     fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?)

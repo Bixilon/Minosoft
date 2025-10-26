@@ -108,18 +108,12 @@ interface RenderSystem {
 
     var clearColor: RGBAColor
 
-    var quadType: PrimitiveTypes
-
-    var quadOrder: RenderOrder
-    @Deprecated("legacy") var legacyQuadOrder: RenderOrder
-
-
     var viewport: Vec2i
 
     fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
 
-    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntBuffer? = null, reused: Boolean = false): VertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntBuffer? = null, reused: Boolean = false): VertexBuffer
 
     fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer
     fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer

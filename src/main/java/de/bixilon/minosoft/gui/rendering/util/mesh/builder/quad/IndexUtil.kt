@@ -1,0 +1,41 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2025 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad
+
+import de.bixilon.kutil.collections.primitive.ints.IntList
+
+object IndexUtil {
+
+    fun addTriangleQuad(list: IntList, front: Boolean, reverse: Boolean) {
+        val offset = list.size
+
+        if (front) {
+            list.add(offset + 0, offset + 3, offset + 2, offset + 2, offset + 1, offset + 0)
+        }
+        if (reverse) {
+            list.add(offset + 0, offset + 1, offset + 2, offset + 2, offset + 3, offset + 0)
+        }
+    }
+
+    fun addNativeQuad(list: IntList, front: Boolean, reverse: Boolean) {
+        val offset = list.size
+
+        if (front) {
+            list.add(offset + 0, offset + 1, offset + 2, offset + 3)
+        }
+        if (reverse) {
+            list.add(offset + 3, offset + 2, offset + 1, offset + 0)
+        }
+    }
+}

@@ -16,13 +16,11 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.wea
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-open class WeatherOverlayMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : MeshBuilder(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.floats) {
-    override val order = context.system.legacyQuadOrder
+open class WeatherOverlayMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, WeatherOverlayMeshStruct, 1) {
 
     fun addVertex(position: Vec3f, uv: Vec2f, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
         data.add(

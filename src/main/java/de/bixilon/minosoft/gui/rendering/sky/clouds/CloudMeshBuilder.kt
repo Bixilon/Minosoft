@@ -20,11 +20,10 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
-class CloudMeshBuilder(context: RenderContext) : MeshBuilder(context, CloudMeshStruct, context.system.quadType) {
-    override val order = context.system.legacyQuadOrder
+class CloudMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, CloudMeshStruct) {
 
     fun addVertex(start: Vec3f, side: Directions) {
         data.add(

@@ -17,14 +17,12 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-open class PlanetMeshBuilder(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : MeshBuilder(context, SunMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SunMeshStruct.floats) {
-    override val order = context.system.legacyQuadOrder
+open class PlanetMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, SunMeshStruct, 1) {
 
     fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f) {
         data.add(

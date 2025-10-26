@@ -20,17 +20,16 @@ import de.bixilon.kutil.collections.primitive.ints.HeapIntList
 import de.bixilon.kutil.collections.primitive.ints.IntList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.IndexUtil
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.IndexUtil
 
 class GUIMeshCache(
     var halfSize: Vec2f,
-    override val order: RenderOrder,
     val context: RenderContext,
-    initialCacheSize: Int = 1000,
-    var data: FloatList = HeapFloatList(initialCacheSize),
-    var index: IntList = HeapIntList(initialCacheSize / GUIMeshBuilder.GUIMeshStruct.floats),
+    estimate: Int = 12,
+    var data: FloatList = HeapFloatList(estimate * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats),
+    var index: IntList = HeapIntList(estimate),
 ) : GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
@@ -60,11 +59,11 @@ class GUIMeshCache(
         revision++
     }
 
-    override fun ensureSize(size: Int) {
-        data.ensureSize(size)
+    override fun ensureSize(vertices: Int) {
+        data.ensureSize(vertices)
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        IndexUtil.addIndexQuad(index, front, reverse)
+        IndexUtil.addTriangleQuad(index, front, reverse)
     }
 }

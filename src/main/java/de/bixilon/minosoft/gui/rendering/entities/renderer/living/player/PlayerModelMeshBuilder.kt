@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-open class PlayerModelMeshBuilder(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMeshBuilder(context, PlayerMeshStruct, initialCacheSize = initialCacheSize) {
+open class PlayerModelMeshBuilder(context: RenderContext) : AbstractSkeletalMeshBuilder(context, PlayerMeshStruct, 6 * 2 * 6) {
 
     private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUV, uvOffset: Int, partTransformNormal: Float) {
         data.add(

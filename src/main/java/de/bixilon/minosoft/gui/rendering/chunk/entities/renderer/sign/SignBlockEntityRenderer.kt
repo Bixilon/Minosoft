@@ -90,7 +90,7 @@ class SignBlockEntityRenderer(
         for (line in text.text) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
-        data.ensureSize(primitives * order.size * ChunkMeshBuilder.ChunkMeshStruct.floats)
+        ensureSize(primitives)
     }
 
     private fun renderText(offset: Vec3f, text: SignBlockEntity.SignTextProperties, blockOffset: Vec3f, yRotation: Float, mesh: ChunkMeshBuilder, light: Int) {

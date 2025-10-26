@@ -13,17 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.builder
 
-import de.bixilon.kutil.collections.primitive.ints.IntList
-
-object IndexUtil {
-
-    fun addIndexQuad(list: IntList, front: Boolean, reverse: Boolean) {
-        val size = list.size
-        if (front) {
-            list.add(size + 0, size + 1, size + 2, size + 3, size + 4, size + 5)
-        }
-        if (reverse) {
-            list.add(size + 5, size + 4, size + 3, size + 2, size + 1, size + 0)
-        }
-    }
+interface VertexConsumer {
+    fun ensureSize(vertices: Int) = Unit
 }

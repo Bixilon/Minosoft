@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 class WorldBorderMeshBuilder(
@@ -30,9 +30,7 @@ class WorldBorderMeshBuilder(
     val offset: BlockPosition,
     val center: Vec2d,
     val radius: Double,
-) : MeshBuilder(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.floats) {
-    override val order = context.system.legacyQuadOrder
-
+) : QuadMeshBuilder(context, WorldBorderMeshStruct, 4) {
 
     private fun width(): Float {
         return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)

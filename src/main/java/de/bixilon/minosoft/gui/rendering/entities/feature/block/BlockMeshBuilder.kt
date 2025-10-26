@@ -21,16 +21,13 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
-class BlockMeshBuilder(context: RenderContext) : MeshBuilder(context, BlockMeshStruct), BlockVertexConsumer {
+class BlockMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BlockMeshStruct), BlockVertexConsumer {
     val offset = MVec3f()
 
-    override fun ensureSize(size: Int) {
-        data.ensureSize(size)
-    }
 
     override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
         data.ensureSize(BlockMeshStruct.floats)

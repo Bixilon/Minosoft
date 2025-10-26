@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
-class ChunkMeshBuilder(context: RenderContext, approximateFaceCount: Int) : MeshBuilder(context, ChunkMeshStruct, initialCacheSize = approximateFaceCount * ChunkMeshStruct.floats * context.system.quadOrder.size), BlockVertexConsumer {
+class ChunkMeshBuilder(context: RenderContext, estimate: Int) : QuadMeshBuilder(context, ChunkMeshStruct, estimate), BlockVertexConsumer {
 
     override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) {
         val transformedUV = texture.transformUV(uv)

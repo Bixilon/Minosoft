@@ -18,11 +18,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshStruct
 
-class SkyboxMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.floats) {
-    override val order = context.system.legacyQuadOrder
+class SkyboxMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, 6) {
 
     init {
         data += floatArrayOf(
+            // TODO: convert to index buffers
             -1.0f, +1.0f, -1.0f,
             -1.0f, -1.0f, -1.0f,
             +1.0f, -1.0f, -1.0f,

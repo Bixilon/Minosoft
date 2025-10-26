@@ -165,11 +165,11 @@ open class TextElement(
             textOffset += it.size.offset
         }
 
-        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMeshBuilder.GUIMeshStruct.floats
+        var primitives = ChatComponentRenderer.calculatePrimitiveCount(chatComponent)
         if (properties.shadow) {
-            vertices *= 2
+            primitives *= 2
         }
-        consumer.ensureSize(vertices)
+        consumer.ensureSize(primitives)
 
         ChatComponentRenderer.render(TextOffset(textOffset.unsafe), context.font, properties, info, consumer, options, chatComponent)
         info.rewind()

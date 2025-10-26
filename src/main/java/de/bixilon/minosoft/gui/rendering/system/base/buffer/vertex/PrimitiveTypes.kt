@@ -17,8 +17,6 @@ enum class PrimitiveTypes(val vertices: Int) {
     POINT(1),
     LINE(2),
     TRIANGLE(3),
-
-    @Deprecated("Dubious share, all drivers convert that to TRIANGLE")
     QUAD(4),
     ;
 }

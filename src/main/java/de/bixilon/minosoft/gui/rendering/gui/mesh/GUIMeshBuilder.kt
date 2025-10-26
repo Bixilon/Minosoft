@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
@@ -31,7 +31,7 @@ class GUIMeshBuilder(
     val halfSize: Vec2f,
     data: FloatList,
     index: IntList,
-) : MeshBuilder(context, GUIMeshStruct, initialCacheSize = 0, data = data, index = index), GUIVertexConsumer {
+) : QuadMeshBuilder(context, GUIMeshStruct, 0, data = data, index = index), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
     override val reused get() = true
@@ -47,6 +47,7 @@ class GUIMeshBuilder(
 
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
+        index += cache.index
     }
 
     data class GUIMeshStruct(
@@ -94,9 +95,5 @@ class GUIMeshBuilder(
                 color.rgba.buffer(),
             )
         }
-    }
-
-    override fun ensureSize(size: Int) {
-        data.ensureSize(size)
     }
 }

@@ -49,7 +49,7 @@ class BakedFaceTest {
 
         mesh::class.java.getFieldOrNull("_data")!!.forceSet(mesh, HeapFloatList(1000))
 
-        mesh::initialCacheSize.forceSet(1000)
+        mesh::initial broken . forceSet (1000)
 
         return mesh
     }
