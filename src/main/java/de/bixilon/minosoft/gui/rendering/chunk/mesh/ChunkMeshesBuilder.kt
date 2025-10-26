@@ -63,9 +63,9 @@ class ChunkMeshesBuilder(
     }
 
     private fun ChunkMeshBuilder.takeIfNotEmpty(): ChunkMeshBuilder? {
-        val data = data
+        val data = _data ?: return null
         if (data.isEmpty) {
-            data.free()
+            drop(true)
             return null
         }
 

@@ -96,7 +96,8 @@ open class GUIMeshElement<T : Element>(
         val revision = element.cache.revision
         if (revision != lastRevision) {
             this.mesh?.let { context.queue += { it.unload() } }
-            this.mesh = if (builder.data.isEmpty) null else builder.bake()
+            val data = builder._data
+            this.mesh = if (data == null || data.isEmpty) null else builder.bake()
             this.lastRevision = revision
         }
     }

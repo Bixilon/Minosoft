@@ -35,7 +35,7 @@ abstract class MeshBuilder(
     data: FloatList? = null,
 ) : AbstractVertexConsumer {
     override val order = context.system.legacyQuadOrder
-    private var _data = data
+    var _data = data
     val data: FloatList
         get() {
             if (_data == null) {
@@ -45,13 +45,14 @@ abstract class MeshBuilder(
         }
 
     private fun createNativeData(): FloatBuffer {
-        val data = this.data
+        val data = this._data
 
-        val native = data.toUnsafeNativeBuffer()
-        val buffer = native ?: data.toBuffer { memAllocFloat(it) }
+        val native = data?.toUnsafeNativeBuffer()
+        val buffer = native ?: data?.toBuffer { memAllocFloat(it) } ?: memAllocFloat(0)
+
+        buffer.limit(data?.size ?: 0); buffer.position(0)
+
         drop(native == null)
-
-        buffer.limit(data.size); buffer.position(0)
 
         return buffer
     }
@@ -69,10 +70,11 @@ abstract class MeshBuilder(
     open fun bake() = Mesh(create())
 
     open fun drop(free: Boolean = true) {
+        val data = _data ?: return
         if (free) {
             data.free()
         }
-        _data = null
+        this._data = null
     }
 
 
