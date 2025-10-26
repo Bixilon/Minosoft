@@ -229,7 +229,7 @@ class OpenGlRenderSystem(
         return buffer
     }
 
-    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntArray?): OpenGlVertexBuffer {
+    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntBuffer?): OpenGlVertexBuffer {
         val buffer = FloatOpenGlBuffer(this, data)
         val index = index?.let { OpenGlIndexBuffer(this, it) }
         return OpenGlVertexBuffer(this, primitive, struct, buffer, index)

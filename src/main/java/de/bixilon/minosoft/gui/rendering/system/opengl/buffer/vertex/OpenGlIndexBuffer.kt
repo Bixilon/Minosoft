@@ -18,10 +18,12 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlGpuBuffer
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.system.MemoryUtil.memFree
+import java.nio.IntBuffer
 
 class OpenGlIndexBuffer(
     system: OpenGlRenderSystem,
-    private val data: IntArray,
+    private val data: IntBuffer,
 ) : OpenGlGpuBuffer(system) {
     override val glType get() = GL_ELEMENT_ARRAY_BUFFER
 

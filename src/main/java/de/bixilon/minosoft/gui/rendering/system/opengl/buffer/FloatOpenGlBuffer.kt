@@ -21,6 +21,7 @@ import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
 import org.lwjgl.opengl.GL15.GL_STATIC_DRAW
 import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress0
+import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
 
 class FloatOpenGlBuffer(

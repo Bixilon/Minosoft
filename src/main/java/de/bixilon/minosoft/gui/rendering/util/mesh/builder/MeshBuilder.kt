@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
+import org.lwjgl.system.MemoryUtil.memAllocInt
 import java.nio.FloatBuffer
 
 abstract class MeshBuilder(
@@ -57,7 +58,10 @@ abstract class MeshBuilder(
 
     protected fun create(): VertexBuffer {
         val data = this.data
-        val index = IntArray(data.size / struct.floats) { it }
+        val index = memAllocInt(data.size / struct.floats)
+        for (i in 0 until index.limit()) {
+            index.put(i, i)
+        }
         val native = createNativeData()
         return context.system.createVertexBuffer(struct, native, primitive, index)
     }
