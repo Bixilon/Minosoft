@@ -75,6 +75,10 @@ object Minosoft {
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "We are running on ${PlatformInfo.OS.name.lowercase()} with an ${PlatformInfo.ARCHITECTURE.name.lowercase()} cpu. Java version is ${Runtime.version()}!" }
 
+        if (!Minosoft::class.java.desiredAssertionStatus()) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Java assertions are disabled! This might lead to a performance improvement, but errors might not be detected!" }
+        }
+
         val latch = SimpleLatch(1)
         assets.await()
         DefaultThreadPool += ForcePooledRunnable { MinosoftPropertiesLoader.load(); latch.dec() }
