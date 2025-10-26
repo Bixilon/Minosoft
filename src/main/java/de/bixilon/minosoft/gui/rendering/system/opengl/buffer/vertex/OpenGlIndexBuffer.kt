@@ -30,6 +30,7 @@ class OpenGlIndexBuffer(
 
     override fun initialUpload() {
         gl { glBufferData(glType, data, GL_STATIC_DRAW) }
+        memFree(this.data)
         this::data.forceSet(null)
     }
 }

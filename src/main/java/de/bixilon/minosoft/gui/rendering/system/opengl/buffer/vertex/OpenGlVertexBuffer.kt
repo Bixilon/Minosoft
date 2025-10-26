@@ -41,7 +41,7 @@ class OpenGlVertexBuffer(
         assert(state == GpuBufferStates.PREPARING)
         val floatsPerVertex = struct.bytes / Float.SIZE_BYTES
 
-        vertices = if (EMPTY_BUFFERS) 0 else data.data.position() / floatsPerVertex
+        vertices = if (EMPTY_BUFFERS) 0 else data.data.limit() / floatsPerVertex
 
         data.init()
         vao.init()
