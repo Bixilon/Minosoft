@@ -42,7 +42,7 @@ I will still bring up fixes from time to time, might do some changes but don't e
 - RAM: Minimum 500 MiB, 1 GiB recommended
 - Disk space: 80 MiB + assets (~ 300 MiB per version)
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
-- Java 11+, 16+ recommended (Java 8 is **not** supported).
+- Java 11+ (Java 8 is **not** supported).
 - A minecraft server (local or online)
 
 ## Rendering

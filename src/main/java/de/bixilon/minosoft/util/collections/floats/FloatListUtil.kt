@@ -14,15 +14,12 @@
 package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
-import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import java.nio.FloatBuffer
 
 object FloatListUtil {
     const val PREFER_FRAGMENTED = true
     const val ALLOW_NATIVE = true
 
-    @Deprecated("can be archived in < java16")
-    private val FLOAT_PUT_METHOD = catchAll { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
     const val DEFAULT_INITIAL_SIZE = 1024
 
     fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE) = when {
@@ -33,23 +30,20 @@ object FloatListUtil {
 
     fun FloatBuffer.copy(sourceOffset: Int, destination: FloatBuffer, destinationOffset: Int, length: Int) {
         if (length == 0) return
-        if (FLOAT_PUT_METHOD == null) { // Java < 16
-            val sourceLimit = this.limit()
-            val sourcePosition = this.position()
 
-            val destinationLimit = destination.limit()
-            val destinationPositon = destination.position()
+        val sourceLimit = this.limit()
+        val sourcePosition = this.position()
 
-            this.limit(sourceOffset + length); this.position(sourceOffset)
-            destination.limit(destinationOffset + length); destination.position(destinationOffset)
+        val destinationLimit = destination.limit()
+        val destinationPositon = destination.position()
 
-            destination.put(this)
+        this.limit(sourceOffset + length); this.position(sourceOffset)
+        destination.limit(destinationOffset + length); destination.position(destinationOffset)
 
-            this.limit(sourceLimit); this.position(sourcePosition)
-            destination.limit(destinationLimit); destination.position(destinationPositon)
-        } else {
-            FLOAT_PUT_METHOD.invoke(destination, destinationOffset, this, sourceOffset, length)
-        }
+        destination.put(this)
+
+        this.limit(sourceLimit); this.position(sourcePosition)
+        destination.limit(destinationLimit); destination.position(destinationPositon)
     }
 
     fun FloatArray.copy(sourceOffset: Int, destination: FloatBuffer, destinationOffset: Int, length: Int) {
