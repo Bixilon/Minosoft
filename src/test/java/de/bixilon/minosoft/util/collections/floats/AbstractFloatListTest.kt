@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
-import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
+import de.bixilon.kutil.collections.primitive.floats.FloatList
+import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.FloatBuffer
@@ -22,7 +22,7 @@ import kotlin.test.assertContentEquals
 
 abstract class AbstractFloatListTest {
 
-    abstract fun create(initialSize: Int = 1): AbstractFloatList
+    abstract fun create(initialSize: Int = 1): FloatList
 
     @Test
     fun initialListSize() {
@@ -157,7 +157,7 @@ abstract class AbstractFloatListTest {
     @Test
     fun addSingleHeapList() {
         val list = create()
-        list.add(HeapArrayFloatList(1).apply { add(189.0f) })
+        list.add(HeapFloatList(1).apply { add(189.0f) })
         assertEquals(1, list.size)
         val array = list.toArray()
         assertContentEquals(floatArrayOf(189.0f), array)
@@ -166,9 +166,9 @@ abstract class AbstractFloatListTest {
     @Test
     fun addMultipleHeapLists() {
         val list = create()
-        list.add(HeapArrayFloatList(1).apply { add(189.0f) })
-        list.add(HeapArrayFloatList(1).apply { add(289.0f) })
-        list.add(HeapArrayFloatList(1).apply { add(389.0f) })
+        list.add(HeapFloatList(1).apply { add(189.0f) })
+        list.add(HeapFloatList(1).apply { add(289.0f) })
+        list.add(HeapFloatList(1).apply { add(389.0f) })
         assertEquals(3, list.size)
         val array = list.toArray()
         assertContentEquals(floatArrayOf(189.0f, 289.0f, 389.0f), array)
@@ -177,9 +177,9 @@ abstract class AbstractFloatListTest {
     @Test
     fun addMultipleBigHeapLists() {
         val list = create()
-        list.add(HeapArrayFloatList(1).apply { add(189.0f) })
-        list.add(HeapArrayFloatList(1).apply { add(289.0f); add(389.0f) })
-        list.add(HeapArrayFloatList(1).apply { add(489.0f); add(589.0f); add(689.0f) })
+        list.add(HeapFloatList(1).apply { add(189.0f) })
+        list.add(HeapFloatList(1).apply { add(289.0f); add(389.0f) })
+        list.add(HeapFloatList(1).apply { add(489.0f); add(589.0f); add(689.0f) })
 
         assertEquals(6, list.size)
         val array = list.toArray()
@@ -191,7 +191,7 @@ abstract class AbstractFloatListTest {
         val list = create()
 
         for (i in 0 until 1000) {
-            list.add(HeapArrayFloatList(1).apply { add(i.toFloat() * 2.0f) })
+            list.add(HeapFloatList(1).apply { add(i.toFloat() * 2.0f) })
         }
         assertEquals(1000, list.size)
         val array = list.toArray()
@@ -204,7 +204,7 @@ abstract class AbstractFloatListTest {
     @Test
     fun addSingleBufferedList() {
         val list = create()
-        list.add(BufferedArrayFloatList(1).apply { add(189.0f) })
+        list.add(BufferFloatList(1).apply { add(189.0f) })
         assertEquals(1, list.size)
         val array = list.toArray()
         assertContentEquals(floatArrayOf(189.0f), array)
@@ -213,9 +213,9 @@ abstract class AbstractFloatListTest {
     @Test
     fun addMultipleBufferedLists() {
         val list = create()
-        list.add(BufferedArrayFloatList(1).apply { add(189.0f) })
-        list.add(BufferedArrayFloatList(1).apply { add(289.0f) })
-        list.add(BufferedArrayFloatList(1).apply { add(389.0f) })
+        list.add(BufferFloatList(1).apply { add(189.0f) })
+        list.add(BufferFloatList(1).apply { add(289.0f) })
+        list.add(BufferFloatList(1).apply { add(389.0f) })
         assertEquals(3, list.size)
         val array = list.toArray()
         assertContentEquals(floatArrayOf(189.0f, 289.0f, 389.0f), array)
@@ -224,9 +224,9 @@ abstract class AbstractFloatListTest {
     @Test
     fun addMultipleBigBufferedLists() {
         val list = create()
-        list.add(BufferedArrayFloatList(1).apply { add(189.0f) })
-        list.add(BufferedArrayFloatList(1).apply { add(289.0f); add(389.0f) })
-        list.add(BufferedArrayFloatList(1).apply { add(489.0f); add(589.0f); add(689.0f) })
+        list.add(BufferFloatList(1).apply { add(189.0f) })
+        list.add(BufferFloatList(1).apply { add(289.0f); add(389.0f) })
+        list.add(BufferFloatList(1).apply { add(489.0f); add(589.0f); add(689.0f) })
 
         assertEquals(6, list.size)
         val array = list.toArray()
@@ -238,7 +238,7 @@ abstract class AbstractFloatListTest {
         val list = create()
 
         for (i in 0 until 1000) {
-            list.add(BufferedArrayFloatList(1).apply { add(i.toFloat() * 2.0f) })
+            list.add(BufferFloatList(1).apply { add(i.toFloat() * 2.0f) })
         }
         assertEquals(1000, list.size)
         val array = list.toArray()
@@ -250,7 +250,7 @@ abstract class AbstractFloatListTest {
     @Test
     fun addSingleFragmentedList() {
         val list = create()
-        list.add(FragmentedArrayFloatList(1).apply { add(189.0f) })
+        list.add(FragmentedFloatList(1).apply { add(189.0f) })
         assertEquals(1, list.size)
         val array = list.toArray()
         assertContentEquals(floatArrayOf(189.0f), array)
@@ -259,9 +259,9 @@ abstract class AbstractFloatListTest {
     @Test
     fun addMultipleFragmentedLists() {
         val list = create()
-        list.add(FragmentedArrayFloatList(1).apply { add(189.0f) })
-        list.add(FragmentedArrayFloatList(1).apply { add(289.0f) })
-        list.add(FragmentedArrayFloatList(1).apply { add(389.0f) })
+        list.add(FragmentedFloatList(1).apply { add(189.0f) })
+        list.add(FragmentedFloatList(1).apply { add(289.0f) })
+        list.add(FragmentedFloatList(1).apply { add(389.0f) })
         assertEquals(3, list.size)
         val array = list.toArray()
         assertContentEquals(floatArrayOf(189.0f, 289.0f, 389.0f), array)
@@ -270,9 +270,9 @@ abstract class AbstractFloatListTest {
     @Test
     fun addMultipleBigFragmentedLists() {
         val list = create()
-        list.add(FragmentedArrayFloatList(1).apply { add(189.0f) })
-        list.add(FragmentedArrayFloatList(1).apply { add(289.0f); add(389.0f) })
-        list.add(FragmentedArrayFloatList(1).apply { add(489.0f); add(589.0f); add(689.0f) })
+        list.add(FragmentedFloatList(1).apply { add(189.0f) })
+        list.add(FragmentedFloatList(1).apply { add(289.0f); add(389.0f) })
+        list.add(FragmentedFloatList(1).apply { add(489.0f); add(589.0f); add(689.0f) })
 
         assertEquals(6, list.size)
         val array = list.toArray()
@@ -284,7 +284,7 @@ abstract class AbstractFloatListTest {
         val list = create()
 
         for (i in 0 until 1000) {
-            list.add(FragmentedArrayFloatList(1).apply { add(i.toFloat() * 2.0f) })
+            list.add(FragmentedFloatList(1).apply { add(i.toFloat() * 2.0f) })
         }
         assertEquals(1000, list.size)
         val array = list.toArray()
@@ -322,8 +322,8 @@ abstract class AbstractFloatListTest {
     @Test
     fun fragmentedHeapList() {
         val list = create(120)
-        list.add(HeapArrayFloatList().apply { add(FloatArray(110) { it.toFloat() * 2 }) })
-        list.add(HeapArrayFloatList().apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
+        list.add(HeapFloatList().apply { add(FloatArray(110) { it.toFloat() * 2 }) })
+        list.add(HeapFloatList().apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
         list.add(320.0f)
 
         val array = list.toArray()
@@ -335,8 +335,8 @@ abstract class AbstractFloatListTest {
     @Test
     fun fragmentedBufferedList() {
         val list = create(120)
-        list.add(BufferedArrayFloatList().apply { add(FloatArray(110) { it.toFloat() * 2 }) })
-        list.add(BufferedArrayFloatList().apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
+        list.add(BufferFloatList().apply { add(FloatArray(110) { it.toFloat() * 2 }) })
+        list.add(BufferFloatList().apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
         list.add(320.0f)
 
         val array = list.toArray()
@@ -348,8 +348,8 @@ abstract class AbstractFloatListTest {
     @Test
     fun fragmentedFragmentedList() {
         val list = create(120)
-        list.add(FragmentedArrayFloatList().apply { add(FloatArray(110) { it.toFloat() * 2 }) })
-        list.add(FragmentedArrayFloatList().apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
+        list.add(FragmentedFloatList().apply { add(FloatArray(110) { it.toFloat() * 2 }) })
+        list.add(FragmentedFloatList().apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
         list.add(320.0f)
 
         val array = list.toArray()
@@ -361,8 +361,8 @@ abstract class AbstractFloatListTest {
     @Test
     fun fragmentedFragmentedList2() {
         val list = create(120)
-        list.add(FragmentedArrayFloatList(10).apply { add(FloatArray(110) { it.toFloat() * 2 }) })
-        list.add(FragmentedArrayFloatList(14).apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
+        list.add(FragmentedFloatList(10).apply { add(FloatArray(110) { it.toFloat() * 2 }) })
+        list.add(FragmentedFloatList(14).apply { add(FloatArray(50) { 220 + it.toFloat() * 2 }) })
         list.add(320.0f)
 
         val array = list.toArray()
@@ -406,7 +406,7 @@ abstract class AbstractFloatListTest {
         list.add(0.0f)
         list.ensureSize(1000)
         list.ensureSize(2000)
-        list.add(HeapArrayFloatList().apply { add(FloatArray(1000) { 2.0f + it.toFloat() * 2 }) })
+        list.add(HeapFloatList().apply { add(FloatArray(1000) { 2.0f + it.toFloat() * 2 }) })
 
         val array = list.toArray()
         for (i in 0 until 1001) {
@@ -420,7 +420,7 @@ abstract class AbstractFloatListTest {
         list.add(0.0f)
         list.ensureSize(1000)
         list.ensureSize(2000)
-        list.add(BufferedArrayFloatList().apply { add(FloatArray(1000) { 2.0f + it.toFloat() * 2 }) })
+        list.add(BufferFloatList().apply { add(FloatArray(1000) { 2.0f + it.toFloat() * 2 }) })
 
         val array = list.toArray()
         for (i in 0 until 1001) {
@@ -434,7 +434,7 @@ abstract class AbstractFloatListTest {
         list.add(0.0f)
         list.ensureSize(1000)
         list.ensureSize(2000)
-        list.add(FragmentedArrayFloatList().apply { add(FloatArray(1000) { 2.0f + it.toFloat() * 2 }) })
+        list.add(FragmentedFloatList().apply { add(FloatArray(1000) { 2.0f + it.toFloat() * 2 }) })
 
         val array = list.toArray()
         for (i in 0 until 1001) {
@@ -469,7 +469,6 @@ abstract class AbstractFloatListTest {
 
     private fun wrap(vararg array: Float): FloatBuffer {
         val buffer = FloatBuffer.wrap(array)
-        buffer.position(array.size)
 
         return buffer
     }

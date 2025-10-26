@@ -17,5 +17,4 @@ import java.nio.FloatBuffer
 
 interface FloatUniformBuffer : UniformBuffer {
     val data: FloatBuffer
-
 }

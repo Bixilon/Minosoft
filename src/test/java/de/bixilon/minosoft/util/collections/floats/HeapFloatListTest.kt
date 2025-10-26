@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,12 +13,9 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
-import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
+import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
 
 class HeapFloatListTest : AbstractFloatListTest() {
 
-    override fun create(initialSize: Int): AbstractFloatList {
-        return HeapArrayFloatList(initialSize)
-    }
+    override fun create(initialSize: Int) = HeapFloatList(initialSize)
 }

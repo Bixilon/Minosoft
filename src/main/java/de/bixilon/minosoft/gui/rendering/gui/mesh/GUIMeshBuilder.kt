@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
+import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 class GUIMeshBuilder(
     context: RenderContext,
     val halfSize: Vec2f,
-    data: AbstractFloatList,
+    data: FloatList,
 ) : MeshBuilder(context, GUIMeshStruct, initialCacheSize = 32768, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
     override val order = context.system.quadOrder
@@ -67,11 +67,11 @@ class GUIMeshBuilder(
             return res.unsafe
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2f, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+        fun addVertex(data: FloatList, halfSize: Vec2f, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
             addVertex(data, halfSize, x, y, texture.shaderId.buffer(), u, v, tint, options)
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2f, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+        fun addVertex(data: FloatList, halfSize: Vec2f, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
             val x = x / halfSize.x - 1.0f // TODO (performance): inverse
             val y = 1.0f - y / halfSize.y // TODO (performance): inverse
 

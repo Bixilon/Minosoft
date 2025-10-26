@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthModes
@@ -29,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
@@ -122,10 +120,6 @@ interface RenderSystem {
 
 
     fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntArray? = null): VertexBuffer
-    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitive: PrimitiveTypes = quadType, index: IntArray? = null) = when { // TODO: only allow native buffers
-        data is DirectArrayFloatList -> createVertexBuffer(struct, data.toBuffer(), primitive, index)
-        else -> createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitive, index)
-    }
 
     fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer
     fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer

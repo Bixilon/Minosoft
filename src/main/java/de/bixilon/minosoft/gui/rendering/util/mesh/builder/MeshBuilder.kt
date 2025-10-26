@@ -16,25 +16,26 @@ package de.bixilon.minosoft.gui.rendering.util.mesh.builder
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
+import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
+import org.lwjgl.system.MemoryUtil.memAllocFloat
+import java.nio.FloatBuffer
 
 abstract class MeshBuilder(
     val context: RenderContext,
     private val struct: MeshStruct,
     val primitive: PrimitiveTypes = context.system.quadType,
     var initialCacheSize: Int = 8192,
-    data: AbstractFloatList? = null,
+    data: FloatList? = null,
 ) : AbstractVertexConsumer {
     override val order = context.system.legacyQuadOrder
     private var _data = data
-    val data: AbstractFloatList
+    val data: FloatList
         get() {
             if (_data == null) {
                 _data = FloatListUtil.direct(initialCacheSize)
@@ -42,24 +43,29 @@ abstract class MeshBuilder(
             return _data.unsafeCast()
         }
 
+    private fun createNativeData(): FloatBuffer {
+        val data = this.data
+        _data = null
+
+        data.toUnsafeNativeBuffer()?.let { it.limit(data.size); it.position(0); return it }
+
+        val buffer = data.toBuffer { memAllocFloat(it) }
+        data.free()
+
+        return buffer
+    }
 
     protected fun create(): VertexBuffer {
         val data = this.data
         val index = IntArray(data.size / struct.floats) { it }
-        val buffer = context.system.createVertexBuffer(struct, data, primitive, index)
-
-        drop()
-
-        return buffer
+        val native = createNativeData()
+        return context.system.createVertexBuffer(struct, native, primitive, index)
     }
 
     open fun bake() = Mesh(create())
 
     open fun drop() {
-        val data = data
-        if (data is DirectArrayFloatList) {
-            data.unload()
-        }
+        data.free()
         _data = null
     }
 

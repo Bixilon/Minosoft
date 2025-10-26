@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class ChunkMeshesBuilder(
     context: RenderContext,
@@ -66,9 +65,7 @@ class ChunkMeshesBuilder(
     private fun ChunkMeshBuilder.takeIfNotEmpty(): ChunkMeshBuilder? {
         val data = data
         if (data.isEmpty) {
-            if (data is DirectArrayFloatList) {
-                data.unload()
-            }
+            data.free()
             return null
         }
 

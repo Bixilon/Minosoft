@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
+import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
@@ -47,7 +47,7 @@ class BakedFaceTest {
         mesh::primitive.forceSet(PrimitiveTypes.QUAD)
         mesh::order.forceSet(MeshOrder.QUAD)
 
-        mesh::class.java.getFieldOrNull("_data")!!.forceSet(mesh, HeapArrayFloatList(1000))
+        mesh::class.java.getFieldOrNull("_data")!!.forceSet(mesh, HeapFloatList(1000))
 
         mesh::initialCacheSize.forceSet(1000)
 

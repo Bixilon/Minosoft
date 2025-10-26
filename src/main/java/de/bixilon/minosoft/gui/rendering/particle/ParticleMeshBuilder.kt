@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
+import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
-class ParticleMeshBuilder(context: RenderContext, data: AbstractFloatList) : MeshBuilder(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
+class ParticleMeshBuilder(context: RenderContext, data: FloatList) : MeshBuilder(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
 
     override fun drop() = Unit
 

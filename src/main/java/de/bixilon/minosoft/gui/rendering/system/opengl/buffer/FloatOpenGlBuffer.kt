@@ -32,8 +32,7 @@ class FloatOpenGlBuffer(
 
 
     override fun initialUpload() {
-        val position = data.position()
-        gl { nglBufferData(glType, data, if (EMPTY_BUFFERS) 0 else position, GL_STATIC_DRAW) }
+        gl { nglBufferData(glType, data, if (EMPTY_BUFFERS) 0 else data.limit(), GL_STATIC_DRAW) }
         this::data.forceSet(null)
     }
 

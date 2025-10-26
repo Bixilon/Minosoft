@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.BufferFloatList
 import java.util.*
 
 
@@ -48,8 +48,8 @@ class ParticleRenderer(
     private val shader = context.system.shader.create(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private val meshData = BufferedArrayFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
-    private val translucentData = BufferedArrayFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
+    private val meshData = BufferFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
+    private val translucentData = BufferFloatList(profile.maxAmount * ParticleMeshBuilder.ParticleMeshStruct.floats)
     var mesh: Mesh? = null
     var translucentMesh: Mesh? = null
 

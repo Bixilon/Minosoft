@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
-import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
+import de.bixilon.kutil.collections.primitive.floats.FloatList
+import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
@@ -26,7 +26,7 @@ class GUIMeshCache(
     override val order: RenderOrder,
     val context: RenderContext,
     initialCacheSize: Int = 1000,
-    var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
+    var data: FloatList = HeapFloatList(initialCacheSize),
 ) : GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
