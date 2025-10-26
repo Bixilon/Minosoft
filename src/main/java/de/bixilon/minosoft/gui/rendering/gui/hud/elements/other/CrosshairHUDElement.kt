@@ -29,11 +29,12 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug.DebugHUDEl
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.util.collections.floats.BufferFloatList
+import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
 class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
     private val profile = guiRenderer.session.profiles.gui
     private val crosshairProfile = profile.hud.crosshair
+    private val data = FloatListUtil.direct(42, false)
     private var crosshairAtlasElement: AtlasElement? = null
     private var mesh: Mesh? = null
     private var previousDebugEnabled: Boolean? = true
@@ -92,7 +93,8 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh?.unload()
         this.mesh = null
 
-        val mesh = GUIMeshBuilder(context, guiRenderer.halfSize, BufferFloatList(42))
+        this.data.clear()
+        val mesh = GUIMeshBuilder(context, guiRenderer.halfSize, this.data)
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color.rgba(), null)
 
@@ -101,6 +103,10 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
         this.mesh = mesh.bake().apply { load() }
         this.reapply = false
+    }
+
+    override fun unload() {
+        data.free()
     }
 
 
