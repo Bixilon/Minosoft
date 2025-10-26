@@ -27,6 +27,7 @@ import java.nio.FloatBuffer
 class FloatOpenGlBuffer(
     system: OpenGlRenderSystem,
     val data: FloatBuffer,
+    val free: Boolean,
 ) : OpenGlGpuBuffer(system) {
 
     override val glType get() = GL_ARRAY_BUFFER
@@ -38,7 +39,7 @@ class FloatOpenGlBuffer(
     }
 
     override fun unsafeDrop() {
-        memFree(this.data)
+        if (free) memFree(this.data)
         this::data.forceSet(null)
     }
 

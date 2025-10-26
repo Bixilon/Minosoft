@@ -119,7 +119,7 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, size: Vec2i): TextureBuffer
 
 
-    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntBuffer? = null): VertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes = quadType, index: IntBuffer? = null, reused: Boolean = false): VertexBuffer
 
     fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer
     fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer

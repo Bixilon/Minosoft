@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle.types.norender
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.ParticleMeshBuilder
+import de.bixilon.minosoft.gui.rendering.particle.mesh.ParticleMeshBuilder
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark

@@ -44,6 +44,8 @@ abstract class MeshBuilder(
             return _data.unsafeCast()
         }
 
+    protected open val reused: Boolean = false
+
     private fun createNativeData(): FloatBuffer {
         val data = this._data
 
@@ -64,14 +66,14 @@ abstract class MeshBuilder(
             index.put(i, i)
         }
         val native = createNativeData()
-        return context.system.createVertexBuffer(struct, native, primitive, index)
+        return context.system.createVertexBuffer(struct, native, primitive, index, reused)
     }
 
     open fun bake() = Mesh(create())
 
     open fun drop(free: Boolean = true) {
         val data = _data ?: return
-        if (free) {
+        if (free && !reused) {
             data.free()
         }
         this._data = null

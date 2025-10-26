@@ -33,7 +33,7 @@ class GUIMeshBuilder(
     private val whiteTexture = context.textures.whiteTexture
     override val order = context.system.quadOrder
 
-    override fun drop(free: Boolean) = super.drop(false)
+    override val reused get() = true
 
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
