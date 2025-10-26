@@ -80,6 +80,7 @@ logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase(
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
 }
 

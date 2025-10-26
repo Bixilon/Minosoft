@@ -45,7 +45,7 @@ class GUIMeshBuilder(
     }
 
     override fun addCache(cache: GUIMeshCache) {
-        data.add(cache.data)
+        data += cache.data
     }
 
     data class GUIMeshStruct(

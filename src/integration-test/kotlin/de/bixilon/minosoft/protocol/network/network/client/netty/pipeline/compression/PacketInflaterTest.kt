@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -21,22 +21,22 @@ import org.testng.annotations.Test
 @Test(groups = ["network"])
 class PacketInflaterTest {
 
-    private fun ArbitraryByteBuffer.decode(): ArbitraryByteBuffer {
+    private fun ArbitraryByteArray.decode(): ArbitraryByteArray {
         val inflater = PacketInflater(0xFF)
         return inflater.decode(this)
     }
 
     fun `uncompressed packet without data`() {
-        val data = ArbitraryByteBuffer(0, 2, byteArrayOf(0, 1))
+        val data = ArbitraryByteArray(0, 2, byteArrayOf(0, 1))
         val decoded = data.decode()
 
-        assertSame(decoded.buffer, data.buffer)
+        assertSame(decoded.array, data.array)
         assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 1)
     }
 
     fun `uncompressed packet with data`() {
-        val data = ArbitraryByteBuffer(0, 4, byteArrayOf(0, 1, 2, 3))
+        val data = ArbitraryByteArray(0, 4, byteArrayOf(0, 1, 2, 3))
         val decoded = data.decode()
 
         assertEquals(decoded.size, 3)
@@ -44,7 +44,7 @@ class PacketInflaterTest {
     }
 
     fun `uncompressed packet with offset`() {
-        val data = ArbitraryByteBuffer(2, 2, byteArrayOf(5, 1, 0, 3, 4))
+        val data = ArbitraryByteArray(2, 2, byteArrayOf(5, 1, 0, 3, 4))
         val decoded = data.decode()
 
         assertEquals(decoded.size, 1)
@@ -53,20 +53,20 @@ class PacketInflaterTest {
 
     fun `compressed single byte`() {
         val compressed = byteArrayOf(0x01).compress()
-        val data = ArbitraryByteBuffer(0, 1 + compressed.size, byteArrayOf(0x01) + compressed)
+        val data = ArbitraryByteArray(0, 1 + compressed.size, byteArrayOf(0x01) + compressed)
         val decoded = data.decode()
 
-        assertNotSame(decoded.buffer, data.buffer)
+        assertNotSame(decoded.array, data.array)
         assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 0)
     }
 
     fun `compressed single byte offset`() {
         val compressed = byteArrayOf(0x01).compress()
-        val data = ArbitraryByteBuffer(2, 1 + compressed.size, byteArrayOf(0x7A, 0x7B, 0x01) + compressed + byteArrayOf(0x7C, 0x7D))
+        val data = ArbitraryByteArray(2, 1 + compressed.size, byteArrayOf(0x7A, 0x7B, 0x01) + compressed + byteArrayOf(0x7C, 0x7D))
         val decoded = data.decode()
 
-        assertNotSame(decoded.buffer, data.buffer)
+        assertNotSame(decoded.array, data.array)
         assertEquals(decoded.size, 1)
         assertEquals(decoded.offset, 0)
     }

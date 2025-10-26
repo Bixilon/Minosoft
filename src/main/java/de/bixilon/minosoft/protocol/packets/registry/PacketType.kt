@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.protocol.network.NetworkConnection
@@ -36,7 +36,7 @@ class PacketType(
     var factory: PacketFactory?,
 ) {
 
-    fun create(data: ArbitraryByteBuffer, session: Session): Packet {
+    fun create(data: ArbitraryByteArray, session: Session): Packet {
         val connection = session.nullCast<StatusSession>()?.connection ?: session.nullCast<PlaySession>()?.connection?.nullCast<NetworkConnection>() ?: Broken("No connection?")
         val factory = this.factory ?: throw PacketNotImplementedException(name, connection.state!!, session.version)
 

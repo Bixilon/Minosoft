@@ -21,29 +21,27 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshSt
 class SunScatterMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.floats) {
 
     init {
-        data.add(
-            floatArrayOf(
-                -1.0f, +0.2f, -1.0f,
-                -1.0f, -0.2f, -1.0f,
-                +1.0f, -0.2f, -0.3f,
-                +1.0f, -0.2f, -0.3f,
-                +1.0f, +0.2f, -0.3f,
-                -1.0f, +0.2f, -1.0f,
+        data += floatArrayOf(
+            -1.0f, +0.2f, -1.0f,
+            -1.0f, -0.2f, -1.0f,
+            +1.0f, -0.2f, -0.3f,
+            +1.0f, -0.2f, -0.3f,
+            +1.0f, +0.2f, -0.3f,
+            -1.0f, +0.2f, -1.0f,
 
-                +1.0f, -0.2f, -0.3f,
-                +1.0f, -0.2f, +0.3f,
-                +1.0f, +0.2f, +0.3f,
-                +1.0f, +0.2f, +0.3f,
-                +1.0f, +0.2f, -0.3f,
-                +1.0f, -0.2f, -0.3f,
+            +1.0f, -0.2f, -0.3f,
+            +1.0f, -0.2f, +0.3f,
+            +1.0f, +0.2f, +0.3f,
+            +1.0f, +0.2f, +0.3f,
+            +1.0f, +0.2f, -0.3f,
+            +1.0f, -0.2f, -0.3f,
 
-                -1.0f, -0.2f, +1.0f,
-                -1.0f, +0.2f, +1.0f,
-                +1.0f, +0.2f, +0.3f,
-                +1.0f, +0.2f, +0.3f,
-                +1.0f, -0.2f, +0.3f,
-                -1.0f, -0.2f, +1.0f,
-            )
+            -1.0f, -0.2f, +1.0f,
+            -1.0f, +0.2f, +1.0f,
+            +1.0f, +0.2f, +0.3f,
+            +1.0f, +0.2f, +0.3f,
+            +1.0f, -0.2f, +0.3f,
+            -1.0f, -0.2f, +1.0f,
         )
     }
 }

@@ -49,7 +49,7 @@ class GUIMeshCache(
     }
 
     override fun addCache(cache: GUIMeshCache) {
-        data.add(cache.data)
+        data += cache.data
         revision++
     }
 

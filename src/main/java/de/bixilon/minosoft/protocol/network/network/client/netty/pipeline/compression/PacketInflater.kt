@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
 import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.InvalidPacketSizeError
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression.exception.SizeMismatchInflaterException
@@ -26,10 +26,10 @@ import java.util.zip.Inflater
 
 class PacketInflater(
     private val maxPacketSize: Int,
-) : MessageToMessageDecoder<ArbitraryByteBuffer>() {
+) : MessageToMessageDecoder<ArbitraryByteArray>() {
 
-    fun decode(data: ArbitraryByteBuffer): ArbitraryByteBuffer {
-        val buffer = InByteBuffer(data.buffer).apply { offset = data.offset }
+    fun decode(data: ArbitraryByteArray): ArbitraryByteArray {
+        val buffer = InByteBuffer(data.array).apply { offset = data.offset }
 
         val length = buffer.readVarInt() // uncompressed
         val offset = buffer.offset
@@ -37,18 +37,18 @@ class PacketInflater(
 
         if (length == 0) { // TODO: uncompressed if length < threshold?
             // uncompressed
-            return ArbitraryByteBuffer(offset, left, data.buffer)
+            return ArbitraryByteArray(offset, left, data.array)
         }
 
         if (length > maxPacketSize) throw InvalidPacketSizeError(length, maxPacketSize)
         val decompressed = NetworkAllocator.allocate(length)
-        val decompressedLength = data.buffer.decompress(decompressed, offset, left)
-        NetworkAllocator.free(data.buffer)
+        val decompressedLength = data.array.decompress(decompressed, offset, left)
+        NetworkAllocator.free(data.array)
 
 
         if (length != decompressedLength) throw SizeMismatchInflaterException()
 
-        return ArbitraryByteBuffer(0, length, decompressed)
+        return ArbitraryByteArray(0, length, decompressed)
     }
 
     private fun ByteArray.decompress(output: ByteArray, offset: Int, size: Int): Int {
@@ -65,7 +65,7 @@ class PacketInflater(
         return pointer
     }
 
-    override fun decode(context: ChannelHandlerContext?, data: ArbitraryByteBuffer, out: MutableList<Any>) {
+    override fun decode(context: ChannelHandlerContext?, data: ArbitraryByteArray, out: MutableList<Any>) {
         out += decode(data)
     }
 

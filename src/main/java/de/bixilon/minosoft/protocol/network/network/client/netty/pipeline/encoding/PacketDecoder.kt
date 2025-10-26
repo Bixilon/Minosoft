@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
@@ -33,14 +33,14 @@ import java.lang.reflect.InvocationTargetException
 
 class PacketDecoder(
     private val client: NettyClient,
-) : MessageToMessageDecoder<ArbitraryByteBuffer>() {
+) : MessageToMessageDecoder<ArbitraryByteArray>() {
     private val version: Version? = client.session.version
 
-    override fun decode(context: ChannelHandlerContext, array: ArbitraryByteBuffer, out: MutableList<Any>) {
+    override fun decode(context: ChannelHandlerContext, array: ArbitraryByteArray, out: MutableList<Any>) {
         out += decode(array) ?: return
     }
 
-    fun decode(data: ArbitraryByteBuffer): QueuedS2CP<S2CPacket>? {
+    fun decode(data: ArbitraryByteArray): QueuedS2CP<S2CPacket>? {
         val buffer = InByteBuffer(data)
         val packetId = buffer.readVarInt()
 
@@ -49,13 +49,13 @@ class PacketDecoder(
 
         val length = data.size - (buffer.offset - data.offset)
         try {
-            return decode(type, ArbitraryByteBuffer(buffer.offset, length, data.buffer))
+            return decode(type, ArbitraryByteArray(buffer.offset, length, data.array))
         } finally {
-            NetworkAllocator.free(data.buffer)
+            NetworkAllocator.free(data.array)
         }
     }
 
-    private fun decode(type: PacketType, buffer: ArbitraryByteBuffer): QueuedS2CP<S2CPacket>? {
+    private fun decode(type: PacketType, buffer: ArbitraryByteArray): QueuedS2CP<S2CPacket>? {
         if (type.extra != null && type.extra.skip(client.session)) {
             return null
         }

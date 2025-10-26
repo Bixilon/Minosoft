@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression
 
 import de.bixilon.kutil.buffer.ByteBufferUtil.createBuffer
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.minosoft.protocol.network.network.client.netty.NetworkAllocator
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import io.netty.channel.ChannelHandlerContext
@@ -25,33 +25,33 @@ import java.util.zip.Deflater
 
 class PacketDeflater(
     var threshold: Int,
-) : MessageToMessageEncoder<ArbitraryByteBuffer>() {
+) : MessageToMessageEncoder<ArbitraryByteArray>() {
 
-    fun encode(data: ArbitraryByteBuffer): ArbitraryByteBuffer {
+    fun encode(data: ArbitraryByteArray): ArbitraryByteArray {
         val compress = data.size >= threshold
 
         if (compress) {
             val uncompressedLength = OutByteBuffer().apply { writeVarInt(data.size) }.toArray()
-            val compressed = data.buffer.compress(data.offset, data.size) // TODO: don't double allocate
-            NetworkAllocator.free(data.buffer)
+            val compressed = data.array.compress(data.offset, data.size) // TODO: don't double allocate
+            NetworkAllocator.free(data.array)
 
             val size = uncompressedLength.size + compressed.size
             val final = NetworkAllocator.allocate(size)
             System.arraycopy(uncompressedLength, 0, final, 0, uncompressedLength.size)
             System.arraycopy(compressed, 0, final, uncompressedLength.size, compressed.size)
 
-            return ArbitraryByteBuffer(0, size, final)
+            return ArbitraryByteArray(0, size, final)
         }
 
         val final = NetworkAllocator.allocate(1 + data.size)
         final[0] = 0x00 // uncompressed var int length
-        System.arraycopy(data.buffer, data.offset, final, 1, data.size)
-        NetworkAllocator.free(data.buffer)
+        System.arraycopy(data.array, data.offset, final, 1, data.size)
+        NetworkAllocator.free(data.array)
 
-        return ArbitraryByteBuffer(0, 1 + data.size, final)
+        return ArbitraryByteArray(0, 1 + data.size, final)
     }
 
-    override fun encode(context: ChannelHandlerContext, data: ArbitraryByteBuffer, out: MutableList<Any>) {
+    override fun encode(context: ChannelHandlerContext, data: ArbitraryByteArray, out: MutableList<Any>) {
         out += encode(data)
     }
 

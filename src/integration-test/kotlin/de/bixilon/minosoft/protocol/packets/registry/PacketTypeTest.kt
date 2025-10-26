@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.buffer.bytes.`in`.ByteBufferUnderflowException
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.address.ServerAddress
@@ -47,32 +47,32 @@ class PacketTypeTest {
     }
 
     fun `read directly`() {
-        val data = ArbitraryByteBuffer(0, 2, byteArrayOf(0x12, 0x34))
+        val data = ArbitraryByteArray(0, 2, byteArrayOf(0x12, 0x34))
         type.create(data, session())
     }
 
     fun `read wrong data`() {
-        val data = ArbitraryByteBuffer(0, 2, byteArrayOf(0x7A, 0x34))
+        val data = ArbitraryByteArray(0, 2, byteArrayOf(0x7A, 0x34))
         assertThrows { type.create(data, session()) }
     }
 
     fun `read with offset`() {
-        val data = ArbitraryByteBuffer(1, 2, byteArrayOf(0x22, 0x12, 0x34))
+        val data = ArbitraryByteArray(1, 2, byteArrayOf(0x22, 0x12, 0x34))
         type.create(data, session())
     }
 
     fun `read with offset and trailing data`() {
-        val data = ArbitraryByteBuffer(1, 2, byteArrayOf(0x22, 0x12, 0x34, 0x23))
+        val data = ArbitraryByteArray(1, 2, byteArrayOf(0x22, 0x12, 0x34, 0x23))
         type.create(data, session())
     }
 
     fun `read und underflow`() {
-        val data = ArbitraryByteBuffer(1, 3, byteArrayOf(0x22, 0x12, 0x34, 0x23, 0x45))
+        val data = ArbitraryByteArray(1, 3, byteArrayOf(0x22, 0x12, 0x34, 0x23, 0x45))
         assertThrows(PacketBufferUnderflowException::class.java) { type.create(data, session()) }
     }
 
     fun `read und overflow`() {
-        val data = ArbitraryByteBuffer(1, 1, byteArrayOf(0x22, 0x12, 0x34, 0x23))
+        val data = ArbitraryByteArray(1, 1, byteArrayOf(0x22, 0x12, 0x34, 0x23))
         assertThrows(ByteBufferUnderflowException::class.java) { type.create(data, session()) }
     }
 }

@@ -17,7 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.config.DebugOptions
@@ -40,7 +40,7 @@ import java.nio.charset.StandardCharsets
 
 open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
 
-    constructor(data: ArbitraryByteBuffer) : super(data)
+    constructor(data: ArbitraryByteArray) : super(data)
     constructor(data: ByteArray) : super(data)
 
     fun readFixedPointNumberInt(): Double {

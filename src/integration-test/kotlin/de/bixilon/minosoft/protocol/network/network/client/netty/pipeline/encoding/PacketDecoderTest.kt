@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.protocol.address.ServerAddress
@@ -30,7 +30,7 @@ import org.testng.annotations.Test
 class PacketDecoderTest {
     private val payload = byteArrayOf(0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88.toByte())
 
-    private fun ArbitraryByteBuffer.decode(): QueuedS2CP<PongS2CP> {
+    private fun ArbitraryByteArray.decode(): QueuedS2CP<PongS2CP> {
         val connection = NetworkConnection(ServerAddress("test"), false)
         val session = createSession(version = "1.20.3-pre1")
         session::connection.forceSet(connection)
@@ -42,14 +42,14 @@ class PacketDecoderTest {
     }
 
     fun `decode no offset`() {
-        val data = ArbitraryByteBuffer(0, 9, byteArrayOf(0x34) + payload)
+        val data = ArbitraryByteArray(0, 9, byteArrayOf(0x34) + payload)
         val decoded = data.decode().packet
 
         assertEquals(decoded.payload, 0x1122334455667788)
     }
 
     fun `decode offset, trailing`() {
-        val data = ArbitraryByteBuffer(1, 9, byteArrayOf(0x7A, 0x34) + payload + byteArrayOf(0x12))
+        val data = ArbitraryByteArray(1, 9, byteArrayOf(0x7A, 0x34) + payload + byteArrayOf(0x12))
         val decoded = data.decode().packet
 
         assertEquals(decoded.payload, 0x1122334455667788)

@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
@@ -70,7 +70,7 @@ class PlayInByteBuffer : InByteBuffer {
     val session: PlaySession
     val versionId: Int
 
-    constructor(data: ArbitraryByteBuffer, session: PlaySession) : super(data) {
+    constructor(data: ArbitraryByteArray, session: PlaySession) : super(data) {
         this.session = session
         versionId = session.version.versionId
     }

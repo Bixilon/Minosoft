@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.length
 
-import de.bixilon.kutil.buffer.bytes.ArbitraryByteBuffer
+import de.bixilon.kutil.buffer.arbitrary.ArbitraryByteArray
 import io.netty.buffer.Unpooled
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 @Test(groups = ["network"])
 class LengthDecoderTest {
 
-    private fun ByteArray.decode(): ArbitraryByteBuffer? {
+    private fun ByteArray.decode(): ArbitraryByteArray? {
         val decoder = LengthDecoder(1 shl 16)
         return decoder.read(Unpooled.wrappedBuffer(this))
     }
