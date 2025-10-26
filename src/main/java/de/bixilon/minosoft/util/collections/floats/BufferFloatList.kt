@@ -35,6 +35,7 @@ class BufferFloatList(
 
     override fun clear() {
         buffer.position(0)
+        buffer.limit(buffer.capacity())
     }
 
     private fun grow(size: Int) {
