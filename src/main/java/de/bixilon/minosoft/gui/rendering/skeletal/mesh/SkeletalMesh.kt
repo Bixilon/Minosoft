@@ -38,7 +38,6 @@ class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeleta
         val transformNormal = ((transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
         val textureShaderId = texture.shaderId.buffer()
 
-        // TODO: verify render order
         iterate { addVertex(positions, it * Vec3f.LENGTH, uv, it * Vec2f.LENGTH, transformNormal, textureShaderId) }
         addIndexQuad()
     }

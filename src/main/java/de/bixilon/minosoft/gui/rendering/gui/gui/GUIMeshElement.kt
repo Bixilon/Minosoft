@@ -92,14 +92,13 @@ open class GUIMeshElement<T : Element>(
     fun prepare() = Unit
 
     fun prepareAsync(offset: Vec2f) {
-        this.data.clear()
         val builder = GUIMeshBuilder(context, guiRenderer.halfSize, this.data, this.index)
         element.render(offset, builder, null)
 
-        builder.fixIndex()
 
         val revision = element.cache.revision
         if (revision != lastRevision) {
+            builder.fixIndex()
             this.mesh?.let { context.queue += { it.unload() } }
             val data = builder._data
             this.mesh = if (data == null || data.isEmpty) null else builder.bake()

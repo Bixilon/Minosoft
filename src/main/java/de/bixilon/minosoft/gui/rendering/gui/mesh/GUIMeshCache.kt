@@ -34,7 +34,6 @@ class GUIMeshCache(
     var options: GUIVertexOptions? = null
 
     fun clear() {
-        if (data.isEmpty) return
         data.clear()
         revision++
     }

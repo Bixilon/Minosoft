@@ -47,6 +47,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val target = context.session.camera.target.target
 
         if (target == null) {
+            if (this.element == null) return
             this.element = null
             forceSilentApply()
             return
