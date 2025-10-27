@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.queue
 
 import de.bixilon.kutil.concurrent.lock.RWLock
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -80,7 +80,7 @@ class CulledQueue(
     }
 
 
-    fun collect(): MutableList<Pair<Chunk, Int>> {
+    fun collect(): MutableList<ChunkSection> {
         renderer.lock.acquire()
         lock.acquire() // The queue method needs the full lock of the culledQueue
 
@@ -88,7 +88,7 @@ class CulledQueue(
 
         world.lock.acquire()
 
-        val list: MutableList<Pair<Chunk, Int>> = mutableListOf()
+        val list: MutableList<ChunkSection> = mutableListOf()
 
         val queueIterator = this.queue.iterator()
         for ((chunkPosition, sectionHeights) in queueIterator) {
@@ -96,6 +96,7 @@ class CulledQueue(
                 continue
             }
             val chunk = world.chunks.chunks.unsafe[chunkPosition] ?: continue
+            if (!chunk.neighbours.complete) continue
 
             val heightIterator = sectionHeights.intIterator()
             for (sectionHeight in heightIterator) {
@@ -103,7 +104,7 @@ class CulledQueue(
                 if (!renderer.visibility.isSectionVisible(section)) {
                     continue
                 }
-                list += Pair(chunk, sectionHeight)
+                list += section
                 heightIterator.remove()
             }
             if (sectionHeights.isEmpty()) {
