@@ -19,4 +19,14 @@ interface QuadConsumer : VertexConsumer {
     fun addIndexQuad() = addIndexQuad(true, false)
 
     fun addIndexQuad(front: Boolean, reverse: Boolean)
+
+
+    companion object {
+        inline fun QuadConsumer.iterate(consumer: (Int) -> Unit) {
+            consumer.invoke(0)
+            consumer.invoke(1)
+            consumer.invoke(2)
+            consumer.invoke(3)
+        }
+    }
 }

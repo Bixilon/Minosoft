@@ -21,6 +21,9 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL30.*
 
 class OpenGlVertexBuffer(
@@ -41,7 +44,15 @@ class OpenGlVertexBuffer(
         assert(state == GpuBufferStates.PREPARING)
         val floatsPerVertex = struct.bytes / Float.SIZE_BYTES
 
-        vertices = if (EMPTY_BUFFERS) 0 else data.data.limit() / floatsPerVertex
+        vertices = when {
+            EMPTY_BUFFERS -> 0
+            index != null -> index.data.limit()
+            else -> data.data.limit() / floatsPerVertex
+        }
+
+        if (vertices == 0) {
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Empty vertex buffer: $this" }
+        }
 
         data.init()
         vao.init()

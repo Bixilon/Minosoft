@@ -53,6 +53,7 @@ interface Window {
         resizable = true
         profile.advanced::swapInterval.observeRendering(this, true) { swapInterval = it }
 
+        cursorMode = CursorModes.NORMAL
         if (!RenderingOptions.cursorCatch) {
             cursorMode = CursorModes.DISABLED
         }

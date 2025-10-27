@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
@@ -37,9 +38,8 @@ class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeleta
         val transformNormal = ((transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
         val textureShaderId = texture.shaderId.buffer()
 
-        order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3f.LENGTH, uv, uvIndex * Vec2f.LENGTH, transformNormal, textureShaderId)
-        }
+        // TODO: verify render order
+        iterate { addVertex(positions, it * Vec3f.LENGTH, uv, it * Vec2f.LENGTH, transformNormal, textureShaderId) }
         addIndexQuad()
     }
 

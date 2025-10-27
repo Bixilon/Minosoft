@@ -70,7 +70,7 @@ class BlockGUIConsumerTest {
         override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 
         override fun addCache(cache: GUIMeshCache) = Broken()
-        override fun ensureSize(vertices: Int) = Unit
+        override fun ensureSize(primitives: Int) = Unit
         override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
     }
 }

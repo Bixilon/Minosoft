@@ -17,9 +17,7 @@ import de.bixilon.kutil.collections.primitive.ints.IntList
 
 object IndexUtil {
 
-    fun addTriangleQuad(list: IntList, front: Boolean, reverse: Boolean) {
-        val offset = list.size
-
+    fun addTriangleQuad(list: IntList, offset: Int, front: Boolean, reverse: Boolean) {
         if (front) {
             list.add(offset + 0, offset + 3, offset + 2, offset + 2, offset + 1, offset + 0)
         }
@@ -28,14 +26,12 @@ object IndexUtil {
         }
     }
 
-    fun addNativeQuad(list: IntList, front: Boolean, reverse: Boolean) {
-        val offset = list.size
-
+    fun addNativeQuad(list: IntList, offset: Int, front: Boolean, reverse: Boolean) {
         if (front) {
-            list.add(offset + 0, offset + 1, offset + 2, offset + 3)
+            list.add(offset + 0, offset + 3, offset + 2, offset + 1)
         }
         if (reverse) {
-            list.add(offset + 3, offset + 2, offset + 1, offset + 0)
+            list.add(offset + 0, offset + 1, offset + 2, offset + 3)
         }
     }
 }

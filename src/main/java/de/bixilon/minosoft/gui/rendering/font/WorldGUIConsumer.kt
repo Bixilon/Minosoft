@@ -42,8 +42,8 @@ class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val lig
         throw IllegalStateException("This is not hud!")
     }
 
-    override fun ensureSize(vertices: Int) {
-        mesh.data.ensureSize(vertices)
+    override fun ensureSize(primitives: Int) {
+        mesh.ensureSize(primitives)
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {

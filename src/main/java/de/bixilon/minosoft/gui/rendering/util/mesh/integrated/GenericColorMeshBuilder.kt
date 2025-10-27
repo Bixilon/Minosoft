@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 open class GenericColorMeshBuilder(context: RenderContext, estimate: Int = 100) : QuadMeshBuilder(context, GenericColorMeshStruct, estimate) {
-    override val order = context.system.legacyQuadOrder
 
     fun addVertex(position: Vec3f, color: RGBAColor?) {
         data.add(

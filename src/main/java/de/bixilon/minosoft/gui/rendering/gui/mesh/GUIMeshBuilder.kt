@@ -47,7 +47,7 @@ class GUIMeshBuilder(
 
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
-        index += cache.index
+        index += cache.index // TODO: That is terribly broken, the indices don't match at all
     }
 
     data class GUIMeshStruct(

@@ -15,21 +15,25 @@ package de.bixilon.minosoft.gui.rendering.framebuffer
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 
-class FramebufferMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, DefaultFramebufferMeshStruct, 4) {
+class FramebufferMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, DefaultFramebufferMeshStruct, 1) {
 
     init {
-        order.iterate { position, uv -> addVertex(VERTICES[position].first, VERTICES[uv].second) }
+        // TODO: verify render order
+        iterate { addVertex(VERTICES[it].first, VERTICES[it].second) }
         addIndexQuad()
     }
 
     private fun addVertex(position: Vec2f, uv: Vec2f) {
-        data.add(position.x, position.y)
-        data.add(uv.x, uv.y)
+        data.add(
+            position.x, position.y,
+            uv.x, uv.y,
+        )
     }
 
     data class DefaultFramebufferMeshStruct(
@@ -41,10 +45,10 @@ class FramebufferMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, 
 
     companion object {
         val VERTICES = arrayOf(
-            Vec2f(-1.0f, -1.0f) to Vec2f(0.0f, 1.0f),
-            Vec2f(-1.0f, +1.0f) to Vec2f(0.0f, 0.0f),
-            Vec2f(+1.0f, +1.0f) to Vec2f(1.0f, 0.0f),
-            Vec2f(+1.0f, -1.0f) to Vec2f(1.0f, 1.0f),
+            Vec2f(-1.0f, -1.0f) to Vec2f(0.0f, 0.0f),
+            Vec2f(-1.0f, +1.0f) to Vec2f(0.0f, 1.0f),
+            Vec2f(+1.0f, +1.0f) to Vec2f(1.0f, 1.0f),
+            Vec2f(+1.0f, -1.0f) to Vec2f(1.0f, 0.0f),
         )
     }
 }

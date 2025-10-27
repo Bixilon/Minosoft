@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
@@ -56,9 +57,9 @@ class WorldBorderMeshBuilder(
     }
 
     private fun addVertexX(x: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
-        order.iterate { position, uv -> // TODO: fucked up
-            val (z, y) = positions[position]
-            val texture = if (rotated) textureIndex(uv + 1) else uv + 1
+        iterate {  // TODO: verify render order
+            val (z, y) = positions[it]
+            val texture = if (rotated) textureIndex(it + 1) else it + 1
             addVertex(x, y, z, textureIndex(texture), width)
         }
         addIndexQuad()
@@ -71,9 +72,9 @@ class WorldBorderMeshBuilder(
     }
 
     private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
-        order.iterate { position, uv -> // TODO: fucked up
-            val (x, y) = positions[position]
-            val texture = if (rotated) textureIndex(uv + 1) else uv + 1
+        iterate { // TODO: verify render order
+            val (x, y) = positions[it]
+            val texture = if (rotated) textureIndex(it + 1) else it + 1
             addVertex(x, y, z, textureIndex(texture), width)
         }
         addIndexQuad()

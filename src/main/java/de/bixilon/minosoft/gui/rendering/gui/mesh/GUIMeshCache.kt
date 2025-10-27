@@ -31,6 +31,7 @@ class GUIMeshCache(
     var data: FloatList = HeapFloatList(estimate * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats),
     var index: IntList = HeapIntList(estimate),
 ) : GUIVertexConsumer {
+    private val remap = !context.preferQuads
     private val whiteTexture = context.textures.whiteTexture
 
     var revision = 0L
@@ -55,15 +56,23 @@ class GUIMeshCache(
 
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
-        index += cache.index
+        index += cache.index // TODO: That is terribly broken, the indices don't match at all
         revision++
     }
 
-    override fun ensureSize(vertices: Int) {
-        data.ensureSize(vertices)
+    override fun ensureSize(primitives: Int) {
+        data.ensureSize(primitives * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats)
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        IndexUtil.addTriangleQuad(index, front, reverse)
+        var offset = data.size / GUIMeshBuilder.GUIMeshStruct.floats // TODO: cleanup
+        offset -= PrimitiveTypes.QUAD.vertices
+        assert(offset >= 0)
+
+        if (remap) {
+            IndexUtil.addTriangleQuad(index, offset, front, reverse)
+        } else {
+            IndexUtil.addNativeQuad(index, offset, front, reverse)
+        }
     }
 }

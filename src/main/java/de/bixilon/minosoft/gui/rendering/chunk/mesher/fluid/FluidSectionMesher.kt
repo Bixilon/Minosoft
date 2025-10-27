@@ -40,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCulling.canFlui
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import kotlin.math.atan2
@@ -84,7 +85,7 @@ class FluidSectionMesher(
 
         val mesh = meshes[texture.transparency]
 
-        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y + heights[position], offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y + heights[it], offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[it]), textureId, lightTint) }
         mesh.addIndexQuad(true, true)
     }
 
@@ -95,7 +96,7 @@ class FluidSectionMesher(
         val textureId = texture.shaderId.buffer()
         val mesh = meshes[texture.transparency]
 
-        mesh.order.iterateReverse { position, uv -> mesh.addVertex(offset.x + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[position * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[it]), textureId, lightTint) }
         mesh.addIndexQuad(false, true)
     }
 
@@ -118,7 +119,7 @@ class FluidSectionMesher(
         }
 
         val textureId = texture.renderData.shaderTextureId.buffer()
-        mesh.order.iterate { position, uv -> mesh.addVertex(offset.x + positions[position * Vec3f.LENGTH + 0], offset.y + positions[position * Vec3f.LENGTH + 1], offset.z + positions[position * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[uv]), textureId, lightTint) }
+        mesh.iterate { mesh.addVertex(offset.x + positions[it * Vec3f.LENGTH + 0], offset.y + positions[it * Vec3f.LENGTH + 1], offset.z + positions[it * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[it]), textureId, lightTint) }
         mesh.addIndexQuad(true, backface)
     }
 

@@ -24,7 +24,7 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
 
     override fun addCache(cache: GUIMeshCache) = Broken()
 
-    override fun ensureSize(vertices: Int) = Broken()
+    override fun ensureSize(primitives: Int) = Broken()
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 

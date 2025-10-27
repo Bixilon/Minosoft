@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.util.mesh.integrated
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
@@ -25,16 +24,16 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 
-open class LineMeshBuilder(context: RenderContext, initial broken: Int = 1000) : GenericColorMeshBuilder(context, initial broken = initial broken) {
-    override val order = context.system.legacyQuadOrder
+open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericColorMeshBuilder(context, estimate) {
 
     fun drawLine(start: Vec3f, end: Vec3f, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
         drawLine(start.x, start.y, start.z, end.x, end.y, end.z, lineWidth, color)
     }
 
     fun drawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
-        data.ensureSize(4 * order.vertices * GenericColorMeshStruct.floats)
+        data.ensureSize(4)
 
         val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).apply { normalizeAssign() }
         val normal1 = MVec3f(direction.z, direction.z, direction.x - direction.y)
@@ -81,19 +80,13 @@ open class LineMeshBuilder(context: RenderContext, initial broken: Int = 1000) :
         val a = Vec3f(startX - directionWidth.x, startY - directionWidth.y, startZ - directionWidth.z)
         val b = Vec3f(endX + directionWidth.x, endY + directionWidth.y, endZ + directionWidth.z)
 
-        order.iterate { position, _ ->
-            val normal = when (position) {
-                0, 3 -> normal2
-                1, 2 -> normal1
-                else -> Broken()
-            }
-            val position = when (position) {
-                0, 1 -> a
-                2, 3 -> b
-                else -> Broken()
-            }
-            addVertex(position.x + normal.x, position.y + normal.y, position.z + normal.z, color)
-        }
+
+        addVertex(a.x + normal2.x, a.y + normal2.y, a.z + normal2.z, color)
+        addVertex(a.x + normal1.x, a.y + normal1.y, a.z + normal1.z, color)
+        addVertex(b.x + normal1.x, b.y + normal1.y, b.z + normal1.z, color)
+        addVertex(b.x + normal2.x, b.y + normal2.y, b.z + normal2.z, color)
+
+
         addIndexQuad()
     }
 
@@ -102,20 +95,20 @@ open class LineMeshBuilder(context: RenderContext, initial broken: Int = 1000) :
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBAColor) {
-        data.ensureSize(6 * order.vertices * GenericColorMeshStruct.floats)
+        data.ensureSize(1)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
             val from = Vec3f.Companion(aabb.min - offset)
             val to = Vec3f.Companion(aabb.max - offset)
             val positions = CuboidUtil.positions(direction, from, to)
 
-            order.iterate { position, _ -> addVertex(positions, position * Vec3f.LENGTH, color) }
+            iterate { addVertex(positions, it * Vec3f.LENGTH, color) }
             addIndexQuad()
         }
     }
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
-        data.ensureSize(12 * 4 * order.vertices * GenericColorMeshStruct.floats)
+        data.ensureSize(12)
         val offset = context.camera.offset.offset
         val min = Vec3f.Companion(aabb.min) - margin - offset
         val max = Vec3f.Companion(aabb.max) + margin - offset

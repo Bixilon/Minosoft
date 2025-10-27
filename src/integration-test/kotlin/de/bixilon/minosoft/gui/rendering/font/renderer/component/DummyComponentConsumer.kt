@@ -32,7 +32,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken()
-    override fun ensureSize(vertices: Int) = Unit
+    override fun ensureSize(primitives: Int) = Unit
 
     override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
         quads += RenderedQuad(Vec2f(start.unsafe), Vec2f(end.unsafe)) // copy because unsafe

@@ -109,6 +109,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
     override fun unload() {
         data.free()
+        index.free()
     }
 
 

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMeshBuild
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
@@ -41,9 +42,8 @@ open class PlayerModelMeshBuilder(context: RenderContext) : AbstractSkeletalMesh
         val part = path.getSkinPart()?.ordinal?.inc() ?: 0x00
         val partTransformNormal = ((part shl 19) or (transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
 
-        order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3f.LENGTH, uv, uvIndex * Vec2f.LENGTH, partTransformNormal)
-        }
+        // TODO: verify render order
+        iterate { addVertex(positions, it * Vec3f.LENGTH, uv, it * Vec2f.LENGTH, partTransformNormal) }
         addIndexQuad()
     }
 

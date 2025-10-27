@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.gui.rendering.util.mesh.builder
 
 interface VertexConsumer {
-    fun ensureSize(vertices: Int) = Unit
+    fun ensureSize(primitives: Int) = Unit
 }

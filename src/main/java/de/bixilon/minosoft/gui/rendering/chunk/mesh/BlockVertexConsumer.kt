@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
@@ -33,11 +34,11 @@ interface BlockVertexConsumer : QuadConsumer {
     fun addQuad(offset: Vec3f, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
         ensureSize(1)
 
-        order.iterate { position, uv ->
-            val vertexOffset = position * Vec3f.LENGTH
+        iterate {
+            val vertexOffset = it * Vec3f.LENGTH
 
 
-            val aUV = Float.fromBits(uvData.raw[uv].toBits() or (ao[position] shl 24))
+            val aUV = Float.fromBits(uvData.raw[it].toBits() or (ao[it] shl 24))
             addVertex(
                 x = offset.x + positions[vertexOffset], y = offset.y + positions[vertexOffset + 1], z = offset.z + positions[vertexOffset + 2],
                 uv = aUV,
@@ -51,9 +52,9 @@ interface BlockVertexConsumer : QuadConsumer {
     fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
         ensureSize(1)
 
-        order.iterate { position, uv ->
-            val vertexOffset = position * Vec3f.LENGTH
-            val uvOffset = uv * Vec2f.LENGTH
+        iterate {
+            val vertexOffset = it * Vec3f.LENGTH
+            val uvOffset = it * Vec2f.LENGTH
             addVertex(
                 x = positions[vertexOffset], y = positions[vertexOffset + 1], z = positions[vertexOffset + 2],
                 u = uvData.raw[uvOffset],

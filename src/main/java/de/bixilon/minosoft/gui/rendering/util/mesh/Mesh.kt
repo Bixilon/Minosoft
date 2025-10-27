@@ -22,24 +22,24 @@ open class Mesh(
         private set
 
     fun load() {
-        assert(state == MeshStates.PREPARING)
+        assert(state == MeshStates.PREPARING) { "Invalid mesh state: $state" }
         buffer.init()
         state = MeshStates.LOADED
     }
 
     fun unload() {
-        assert(state == MeshStates.LOADED)
+        assert(state == MeshStates.LOADED) { "Invalid mesh state: $state" }
         buffer.unload()
         state = MeshStates.UNLOADED
     }
 
     fun draw() {
-        assert(state == MeshStates.LOADED)
+        assert(state == MeshStates.LOADED) { "Invalid mesh state: $state" }
         buffer.draw()
     }
 
     fun drop() {
-        assert(state == MeshStates.PREPARING)
+        assert(state == MeshStates.PREPARING) { "Invalid mesh state: $state" }
         buffer.drop()
         state = MeshStates.UNLOADED
     }

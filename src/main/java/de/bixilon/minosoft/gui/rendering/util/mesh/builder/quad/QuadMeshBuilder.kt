@@ -28,8 +28,8 @@ abstract class QuadMeshBuilder(
     estimate: Int = 8192,
     data: FloatList? = null,
     index: IntList? = null,
-) : MeshBuilder(context, struct, PrimitiveTypes.QUAD, estimate, data, index), QuadConsumer {
-    private val remap = context.preferQuads
+) : MeshBuilder(context, struct, if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE, estimate, data, index), QuadConsumer {
+    private val remap = !context.preferQuads
 
     inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
@@ -62,8 +62,7 @@ abstract class QuadMeshBuilder(
     }
 
     inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
-        assert(primitive == PrimitiveTypes.QUAD)
-
+        // TODO: verify render order
         vertexConsumer.invoke(positions[0], uvStart)
         vertexConsumer.invoke(positions[1], Vec2f(uvStart.x, uvEnd.y))
         vertexConsumer.invoke(positions[2], uvEnd)
@@ -73,10 +72,15 @@ abstract class QuadMeshBuilder(
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {
+        var offset = (_data?.size ?: (PrimitiveTypes.QUAD.vertices * struct.floats)) / struct.floats // TODO: cleanup
+        offset -= PrimitiveTypes.QUAD.vertices
+        assert(offset >= 0)
+
         if (remap) {
-            IndexUtil.addTriangleQuad(index, front, reverse)
+            IndexUtil.addTriangleQuad(index, offset, front, reverse)
         } else {
-            IndexUtil.addNativeQuad(index, front, reverse)
+            // That could be left out (=> no index buffer)
+            IndexUtil.addNativeQuad(index, offset, front, reverse)
         }
     }
 }

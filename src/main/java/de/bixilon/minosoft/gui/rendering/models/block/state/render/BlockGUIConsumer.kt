@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BlockGUIConsumer(
@@ -52,9 +53,9 @@ class BlockGUIConsumer(
     override fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
         val tint = RGBColor(lightTint.toBits()).rgba()
 
-        order.iterateReverse { p, uv ->
-            val vertexOffset = p * Vec3f.LENGTH
-            val uvOffset = uv * Vec2f.LENGTH
+        iterate {
+            val vertexOffset = it * Vec3f.LENGTH
+            val uvOffset = it * Vec2f.LENGTH
 
             val xyz = Vec3f(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2])
 
@@ -66,7 +67,7 @@ class BlockGUIConsumer(
 
             consumer.addVertex(x, y, textureId, uvData.raw[uvOffset], uvData.raw[uvOffset + 1], tint, options)
         }
-        consumer.addIndexQuad()
+        consumer.addIndexQuad(false, true)
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {

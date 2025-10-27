@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
@@ -33,14 +32,12 @@ interface GUIVertexConsumer : QuadConsumer {
         val uvStart = texture?.transformUV(uvStart) ?: uvStart
         val uvEnd = texture?.transformUV(uvEnd) ?: uvEnd
 
-        order.iterate { position, uv ->
-            addVertex(
-                if (position == 0 || position == 3) start.x else end.x, if (position <= 1) start.y else end.y,
-                texture,
-                if (uv == 0 || uv == 3) uvStart.x else uvEnd.x, if (uv <= 1) uvStart.y else uvEnd.y,
-                tint, options,
-            )
-        }
+        // TODO: That is reversed?
+        addVertex(start.x, start.y, texture, uvStart.x, uvStart.y, tint, options)
+        addVertex(end.x, start.y, texture, uvEnd.x, uvStart.y, tint, options)
+        addVertex(end.x, end.y, texture, uvEnd.x, uvEnd.y, tint, options)
+        addVertex(start.x, end.y, texture, uvStart.x, uvEnd.y, tint, options)
+
         addIndexQuad()
     }
 
@@ -56,21 +53,12 @@ interface GUIVertexConsumer : QuadConsumer {
     fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
         val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
 
-        order.iterate { position, uv ->
-            val x = when (position) {
-                0 -> start.x + topOffset
-                1 -> end.x + topOffset
-                2 -> end.x
-                3 -> start.x
-                else -> Broken()
-            }
-            addVertex(
-                x, if (position <= 1) start.y else end.y,
-                texture,
-                if (uv == 0 || uv == 3) uvStart.x else uvEnd.x, if (uv <= 1) uvStart.y else uvEnd.y,
-                tint, options,
-            )
-        }
+
+        addVertex(start.x + topOffset, start.y, texture, uvStart.x, uvStart.y, tint, options)
+        addVertex(end.x + topOffset, start.y, texture, uvEnd.x, uvStart.y, tint, options)
+        addVertex(end.x, end.y, texture, uvEnd.x, uvEnd.y, tint, options)
+        addVertex(start.x, end.y, texture, uvStart.x, uvEnd.y, tint, options)
+
         addIndexQuad()
     }
 

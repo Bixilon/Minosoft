@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class SimpleTextureMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, SimpleTextureMeshStruct, 1) {
-    override val order = context.system.legacyQuadOrder
 
     fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f, tintColor: RGBAColor?) {
         data.add(

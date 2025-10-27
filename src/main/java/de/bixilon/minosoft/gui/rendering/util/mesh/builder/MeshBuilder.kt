@@ -30,7 +30,7 @@ import java.nio.IntBuffer
 
 abstract class MeshBuilder(
     val context: RenderContext,
-    private val struct: MeshStruct,
+    val struct: MeshStruct,
     val primitive: PrimitiveTypes,
     var estimate: Int = 8192,
     data: FloatList? = null,
@@ -112,7 +112,7 @@ abstract class MeshBuilder(
         dropData(free)
     }
 
-    override fun ensureSize(vertices: Int) {
-        data.ensureSize(vertices * primitive.vertices * struct.floats)
+    override fun ensureSize(primitives: Int) {
+        data.ensureSize(primitives * primitive.vertices * struct.floats)
     }
 }

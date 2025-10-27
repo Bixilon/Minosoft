@@ -23,7 +23,8 @@ import java.nio.IntBuffer
 
 class OpenGlIndexBuffer(
     system: OpenGlRenderSystem,
-    private val data: IntBuffer,
+    val data: IntBuffer,
+    val free: Boolean,
 ) : OpenGlGpuBuffer(system) {
     override val glType get() = GL_ELEMENT_ARRAY_BUFFER
 
@@ -34,7 +35,7 @@ class OpenGlIndexBuffer(
     }
 
     override fun unsafeDrop() {
-        memFree(this.data)
+        if (free) memFree(this.data)
         this::data.forceSet(null)
     }
 }
