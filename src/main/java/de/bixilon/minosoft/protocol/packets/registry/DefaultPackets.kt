@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -283,7 +283,7 @@ object DefaultPackets {
             registerPlay("chunk_batch_start", ::ChunkBatchStartS2CP, threadSafe = false)
             registerPlay("chunk_biome", ::ChunkBiomeS2CP, lowPriority = true)
             registerPlay("chunk_center", ::ChunkCenterS2CP)
-            registerPlay("chunk_light", ::ChunkLightS2CP, lowPriority = true)
+            registerPlay("chunk_light", ::ChunkLightS2CP, lowPriority = true, extra = ChunkLightS2CP)
             registerPlay("chunk", ::ChunkS2CP, lowPriority = true)
             registerPlay("chunks", ::ChunksS2CP, lowPriority = true)
             registerPlay("simulation_distance", ::SimulationDistanceS2CP)
