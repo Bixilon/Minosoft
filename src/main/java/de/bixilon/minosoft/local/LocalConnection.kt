@@ -23,12 +23,15 @@ import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDa
 import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.local.storage.WorldStorage
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.ServerConnection
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -49,7 +52,6 @@ class LocalConnection(
     private var detached = false
     private lateinit var session: PlaySession
     lateinit var chunks: LocalChunkManager
-
 
     fun sendMessage(message: Any, type: ResourceLocation = DefaultMessageTypes.CHAT) {
         val type = session.registries.messageType[type]!!
@@ -92,6 +94,8 @@ class LocalConnection(
         session.state = PlaySessionStates.PLAYING
 
         sendMessage("§e${session.player.name} §ejoined the game!")
+
+        session.events.listen<ChatMessageSendEvent> { sendMessage(BaseComponent(session.player.name, "> ", it.message.replace('&', '§'))) }
 
 
         Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loading local world" }
