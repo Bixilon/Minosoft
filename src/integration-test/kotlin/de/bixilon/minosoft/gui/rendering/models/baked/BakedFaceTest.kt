@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import de.bixilon.minosoft.test.ITUtil.allocate
@@ -44,12 +43,13 @@ class BakedFaceTest {
 
     private fun singleMesh(): ChunkMeshBuilder {
         val mesh = ChunkMeshBuilder::class.java.allocate()
+
         mesh::primitive.forceSet(PrimitiveTypes.QUAD)
-        mesh::order.forceSet(MeshOrder.QUAD)
+        mesh::struct.forceSet(ChunkMeshBuilder.ChunkMeshStruct)
 
         mesh::class.java.getFieldOrNull("_data")!!.forceSet(mesh, HeapFloatList(1000))
 
-        mesh::initial broken . forceSet (1000)
+        mesh::estimate.forceSet(1000)
 
         return mesh
     }
@@ -72,12 +72,12 @@ class BakedFaceTest {
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
 
-        val data = mesh.opaque!!.data.toArray()
+        val data = mesh.opaque.data.toArray()
         val expected = floatArrayOf(
             0f, 1f, 2f, PackedUV.pack(-1f, -2f), texture, lightTint,
-            9f, 10f, 11f, PackedUV.pack(-7f, -8f), texture, lightTint,
-            6f, 7f, 8f, PackedUV.pack(-5f, -6f), texture, lightTint,
             3f, 4f, 5f, PackedUV.pack(-3f, -4f), texture, lightTint,
+            6f, 7f, 8f, PackedUV.pack(-5f, -6f), texture, lightTint,
+            9f, 10f, 11f, PackedUV.pack(-7f, -8f), texture, lightTint,
         )
 
 
@@ -94,12 +94,12 @@ class BakedFaceTest {
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
 
-        val data = mesh.opaque!!.data.toArray()
+        val data = mesh.opaque.data.toArray()
         val expected = floatArrayOf(
             0f, 0f, 0f, PackedUV.pack(0f, 0f), texture, lightTint,
-            0f, 0f, 1f, PackedUV.pack(1f, 0f), texture, lightTint,
-            0f, 1f, 1f, PackedUV.pack(1f, 1f), texture, lightTint,
             0f, 1f, 0f, PackedUV.pack(0f, 1f), texture, lightTint,
+            0f, 1f, 1f, PackedUV.pack(1f, 1f), texture, lightTint,
+            0f, 0f, 1f, PackedUV.pack(1f, 0f), texture, lightTint,
         )
 
 
