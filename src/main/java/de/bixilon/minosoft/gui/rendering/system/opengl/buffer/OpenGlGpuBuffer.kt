@@ -52,7 +52,7 @@ abstract class OpenGlGpuBuffer(
             return
         }
         gl { glBindBuffer(glType, id) }
-        system.boundBuffer[glType] = id
+        system.boundBuffer.put(glType, id) // operator fun allocates an int
     }
 
 
