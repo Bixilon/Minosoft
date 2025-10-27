@@ -31,7 +31,7 @@ class IntOpenGlUniformBuffer(
 
     override fun initialUpload() {
         data.position(0)
-        gl { glBufferData(glType, data, GL_DYNAMIC_DRAW) } // TODO: GL_STREAM_DRAW
+        gl { glBufferData(glType, data, GL_STREAM_DRAW) }
     }
 
     override fun upload() {
