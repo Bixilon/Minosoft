@@ -56,8 +56,6 @@ class ChunkQueueMaster(
         val chunk = chunk ?: section.chunk
         if (!chunk.neighbours.complete) return
 
-        if (!chunk.neighbours.complete) return
-
         if (queue(section, chunk, force)) {
             renderer.meshingQueue.sort()
             renderer.meshingQueue.work()

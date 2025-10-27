@@ -86,7 +86,7 @@ class MeshLoadingQueue(
         lock()
         if (!this.positions.add(QueuePosition(mesh))) {
             // already inside, remove
-            meshes.dropAll { it.position == mesh.position }
+            meshes.dropIf { it.position == mesh.position }
         }
         if (mesh.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
             // still higher priority
@@ -114,7 +114,7 @@ class MeshLoadingQueue(
     fun abort(position: QueuePosition, lock: Boolean = true) {
         if (lock) lock()
         if (this.positions.remove(position)) {
-            this.meshes.dropAll { it.position == position.position }
+            this.meshes.dropIf { it.position == position.position }
         }
         if (lock) unlock()
     }
@@ -132,12 +132,12 @@ class MeshLoadingQueue(
             return@removeAll true
         }
 
-        this.meshes.dropAll { QueuePosition(it) in remove }
+        this.meshes.dropIf { QueuePosition(it) in remove }
         if (lock) unlock()
     }
 
-    private inline fun MutableList<ChunkMeshes>.dropAll(crossinline predicate: (ChunkMeshes) -> Boolean) = removeIf {
-        if (predicate.invoke(it)) return@removeIf false
+    private inline fun MutableList<ChunkMeshes>.dropIf(crossinline predicate: (ChunkMeshes) -> Boolean) = removeIf {
+        if (!predicate.invoke(it)) return@removeIf false
         it.drop()
         return@removeIf true
     }

@@ -149,16 +149,15 @@ class ChunkMeshingQueue(
 
     fun queue(item: WorldQueueItem) {
         lock()
-        // TODO: don't remove and readd
-        if (set.remove(item)) {
-            queue -= item
+        if (set.add(item)) {
+            if (item.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
+                queue.add(0, item)
+            } else {
+                queue += item
+            }
         }
-        if (item.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
-            queue.add(0, item)
-        } else {
-            queue += item
-        }
-        set += item
+        // TODO: move to front if own chunk
+
         unlock()
     }
 }
