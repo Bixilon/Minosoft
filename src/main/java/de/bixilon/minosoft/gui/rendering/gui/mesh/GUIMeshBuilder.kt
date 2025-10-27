@@ -20,8 +20,10 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.IndexUtil
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
@@ -47,7 +49,33 @@ class GUIMeshBuilder(
 
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
-        index += cache.index // TODO: That is terribly broken, the indices don't match at all
+    }
+
+    fun fixIndex() {
+        val vertices = data.size / GUIMeshStruct.floats
+
+        val multiplier = (if (remap) (2 * PrimitiveTypes.TRIANGLE.vertices) else PrimitiveTypes.QUAD.vertices)
+        this.index.ensureSize(vertices * multiplier)
+
+        var start = index.size / multiplier
+        val native = index.toUnsafeNativeBuffer()
+        if (native == null) {
+            if (start > vertices) {
+                index.clear() // TODO: Optimize (just fake size down)
+                start = 0
+            }
+        } else {
+            native.limit(vertices * multiplier)
+        }
+
+        for (offset in start until vertices) {
+            if (remap) {
+                IndexUtil.addTriangleQuad(index, offset * PrimitiveTypes.QUAD.vertices, true, false)
+            } else {
+                // That could be left out (=> no index buffer)
+                IndexUtil.addNativeQuad(index, offset * PrimitiveTypes.QUAD.vertices, true, false)
+            }
+        }
     }
 
     data class GUIMeshStruct(

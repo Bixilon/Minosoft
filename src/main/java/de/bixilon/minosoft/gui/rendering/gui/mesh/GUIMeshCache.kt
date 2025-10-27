@@ -16,22 +16,17 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
-import de.bixilon.kutil.collections.primitive.ints.HeapIntList
-import de.bixilon.kutil.collections.primitive.ints.IntList
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.IndexUtil
 
 class GUIMeshCache(
     var halfSize: Vec2f,
     val context: RenderContext,
     estimate: Int = 12,
     var data: FloatList = HeapFloatList(estimate * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats),
-    var index: IntList = HeapIntList(estimate),
 ) : GUIVertexConsumer {
-    private val remap = !context.preferQuads
     private val whiteTexture = context.textures.whiteTexture
 
     var revision = 0L
@@ -40,7 +35,6 @@ class GUIMeshCache(
 
     fun clear() {
         data.clear()
-        index.clear()
     }
 
 
@@ -56,7 +50,6 @@ class GUIMeshCache(
 
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
-        index += cache.index // TODO: That is terribly broken, the indices don't match at all
         revision++
     }
 
@@ -64,15 +57,5 @@ class GUIMeshCache(
         data.ensureSize(primitives * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats)
     }
 
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        var offset = data.size / GUIMeshBuilder.GUIMeshStruct.floats // TODO: cleanup
-        offset -= PrimitiveTypes.QUAD.vertices
-        assert(offset >= 0)
-
-        if (remap) {
-            IndexUtil.addTriangleQuad(index, offset, front, reverse)
-        } else {
-            IndexUtil.addNativeQuad(index, offset, front, reverse)
-        }
-    }
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit // that gets calculated on demand
 }
