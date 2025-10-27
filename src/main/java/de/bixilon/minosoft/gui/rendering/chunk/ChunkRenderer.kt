@@ -259,7 +259,7 @@ class ChunkRenderer(
 
 
         for (section in nextQueue) {
-            master.tryQueue(section, force = true, chunk = section.chunk)
+            master.forceQueue(section)
         }
 
         if (nextQueue.isNotEmpty()) {

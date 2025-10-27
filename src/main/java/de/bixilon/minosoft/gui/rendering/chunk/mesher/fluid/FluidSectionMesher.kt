@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -123,8 +122,9 @@ class FluidSectionMesher(
         mesh.addIndexQuad(true, backface)
     }
 
-    fun mesh(chunk: Chunk, section: ChunkSection, mesh: ChunkMeshesBuilder) {
+    fun mesh(section: ChunkSection, mesh: ChunkMeshesBuilder) {
         val blocks = section.blocks
+        val chunk = section.chunk
 
         context.camera.offset.offset
 

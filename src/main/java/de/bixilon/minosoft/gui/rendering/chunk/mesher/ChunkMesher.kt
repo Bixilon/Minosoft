@@ -28,22 +28,21 @@ class ChunkMesher(
     private val fluid = FluidSectionMesher(renderer.context)
 
     private fun mesh(item: WorldQueueItem): ChunkMeshes? {
-        if (item.section.blocks.isEmpty) {
-            return null
-        }
-        val neighbours = item.chunk.neighbours
+        if (item.section.blocks.isEmpty) return null
+
+        val neighbours = item.section.chunk.neighbours
         val sectionNeighbours = item.section.neighbours
         if (!neighbours.complete || sectionNeighbours == null) {
-            return null
+            return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
         }
         val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.blockEntities.count)
         try {
-            solid.mesh(item.chunk, item.section, neighbours.neighbours, sectionNeighbours, mesh)
+            solid.mesh(item.section, neighbours.neighbours, sectionNeighbours, mesh)
 
             if (item.section.blocks.hasFluid) {
-                fluid.mesh(item.chunk, item.section, mesh)
+                fluid.mesh(item.section, mesh)
             }
-        } catch (exception: Exception) {
+        } catch (exception: Throwable) {
             mesh.drop()
             throw exception
         }

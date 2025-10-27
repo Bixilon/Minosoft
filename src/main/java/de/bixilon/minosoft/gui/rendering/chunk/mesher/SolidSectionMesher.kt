@@ -60,8 +60,10 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(chunk: Chunk, section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
+    fun mesh(section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
+
+        val chunk = section.chunk
 
 
         val isLowestSection = section.height == chunk.minSection
