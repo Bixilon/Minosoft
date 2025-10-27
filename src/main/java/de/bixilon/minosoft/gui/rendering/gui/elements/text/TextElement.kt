@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.component.TextRenderResults
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -250,13 +251,12 @@ open class TextElement(
 
 
         val cutInfo = TextRenderInfo(Vec2f(offset.x, properties.lineHeight))
-        val cut = ChatComponentRenderer.render(TextOffset(), context.font, properties, cutInfo, null, null, line.text)
+        val result = ChatComponentRenderer.render(TextOffset(), context.font, properties, cutInfo, null, null, line.text)
 
         val line0 = cutInfo.lines.getOrNull(0) ?: return null
         val message = line0.text.message
         var charToCheck = message.length
-        if (cut) {
-            // last char got cut off
+        if (result == TextRenderResults.CUT_OFF) {
             charToCheck++
         }
         val text = line.text.getTextAt(charToCheck)

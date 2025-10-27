@@ -34,10 +34,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 interface ChatComponentRenderer<T : ChatComponent> {
 
-    /**
-     * Returns true if the text exceeded the maximum size
-     */
-    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T): Boolean
+    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T): TextRenderResults
 
     fun calculatePrimitiveCount(text: T): Int
 
@@ -47,7 +44,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
         override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent) = when (text) {
             is BaseComponent -> BaseComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
             is TextComponent -> TextComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
-            is EmptyComponent -> false
+            is EmptyComponent -> TextRenderResults.OK
             else -> TODO("Don't know how to render ${text::class.java}")
         }
 

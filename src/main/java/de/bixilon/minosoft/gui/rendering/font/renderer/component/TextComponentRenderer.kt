@@ -89,8 +89,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
     }
 
 
-    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: TextComponent): Boolean {
-        if (text.message.isEmpty()) return false
+    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: TextComponent): TextRenderResults {
+        if (text.message.isEmpty()) return TextRenderResults.OK
 
 
         if (consumer != null && info.lineIndex == 0 && info.lines.isNotEmpty() && offset.offset.x == offset.initial.x) {
@@ -169,7 +169,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             info.lines[info.lineIndex].pushAndRender(lineStart.unsafe, text, line, offset.offset.x - lineStart.x, color, properties, consumer, options)
         }
 
-        return filled
+        return if (filled) TextRenderResults.CUT_OFF else TextRenderResults.OK
     }
 
     override fun calculatePrimitiveCount(text: TextComponent): Int {
