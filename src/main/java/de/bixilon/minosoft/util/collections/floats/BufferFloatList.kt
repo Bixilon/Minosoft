@@ -59,9 +59,9 @@ class BufferFloatList(
         buffer.put(value)
     }
 
-    override fun add(floats: FloatArray, offset: Int, length: Int) {
+    override fun add(array: FloatArray, offset: Int, length: Int) {
         ensureSize(length)
-        buffer.put(floats, offset, length)
+        buffer.put(array, offset, length)
     }
 
     override fun add(buffer: FloatBuffer, offset: Int, length: Int) {

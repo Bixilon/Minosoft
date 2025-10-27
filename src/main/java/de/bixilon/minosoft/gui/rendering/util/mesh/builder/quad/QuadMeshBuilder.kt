@@ -72,8 +72,8 @@ abstract class QuadMeshBuilder(
     }
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        var offset = (_data?.size ?: (PrimitiveTypes.QUAD.vertices * struct.floats)) / struct.floats // TODO: cleanup
-        offset -= PrimitiveTypes.QUAD.vertices
+        val data = _data
+        val offset = if (data != null) (data.size / struct.floats) - PrimitiveTypes.QUAD.vertices else 0
         assert(offset >= 0)
 
         if (remap) {
