@@ -96,7 +96,7 @@ object LightPacketUtil {
         val light = LightArray()
 
 
-        for (index in light.array.indices) {
+        for (index in blockLightArray.indices) {
             val blockLight = blockLightArray[index].toInt()
             val skyLight = skyLightArray[index].toInt()
 
