@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 interface TintProvider {
+    val count get() = 1
+
     fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor = Colors.WHITE_RGB
 
     fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): RGBColor {
