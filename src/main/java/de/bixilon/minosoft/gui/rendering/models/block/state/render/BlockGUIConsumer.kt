@@ -62,7 +62,7 @@ class BlockGUIConsumer(
             val out = matrix * xyz
 
             val x = ((out.x + 0.8f) * size.x) + offset.x + 1.0f
-            val y = ((-out.y + 0.81f) * size.y) + offset.y
+            val y = ((-out.y + 0.18f) * size.y) + offset.y
             // values fresh from my ass
 
             consumer.addVertex(x, y, textureId, uvData.raw[uvOffset], uvData.raw[uvOffset + 1], tint, options)
@@ -75,6 +75,6 @@ class BlockGUIConsumer(
     }
 
     companion object {
-        val VIEW_MATRIX = CameraUtil.lookAt(Vec3f(0.0f, 0.0f, -1.0f), Vec3f(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
+        val VIEW_MATRIX = CameraUtil.lookAt(Vec3f(0.0f, 2.5f, -1.0f), Vec3f(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
     }
 }
