@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion._isFullyOpaque
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 open class BlockState(
     @JvmField val block: Block,
@@ -35,6 +36,9 @@ open class BlockState(
         }
         if (block is CollidableBlock) {
             flags += BlockStateFlags.COLLISIONS
+        }
+        if (block is TintedBlock) {
+            flags += BlockStateFlags.TINTED
         }
         if (block is FluidHolder) {
             flags += BlockStateFlags.FLUID

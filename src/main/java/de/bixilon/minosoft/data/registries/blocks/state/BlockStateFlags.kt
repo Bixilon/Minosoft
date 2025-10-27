@@ -21,6 +21,7 @@ enum class BlockStateFlags {
     FLUID,
     WATERLOGGED,
     COLLISIONS,
+    TINTED,
     ;
 
     companion object : ValuesEnum<BlockStateFlags> {
