@@ -127,7 +127,7 @@ class BufferIntList(
 
     override fun add(value1: Int, value2: Int, value3: Int, value4: Int, value5: Int) {
         ensureSize(5)
-        buffer.put(value1); buffer.put(value2); buffer.put(value3); buffer.put(value4)
+        buffer.put(value1); buffer.put(value2); buffer.put(value3); buffer.put(value4); buffer.put(value5)
     }
 
     override fun add(value1: Int, value2: Int, value3: Int, value4: Int, value5: Int, value6: Int) {

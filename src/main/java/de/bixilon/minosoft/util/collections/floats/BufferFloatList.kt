@@ -127,7 +127,7 @@ class BufferFloatList(
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float) {
         ensureSize(5)
-        buffer.put(value1); buffer.put(value2); buffer.put(value3); buffer.put(value4)
+        buffer.put(value1); buffer.put(value2); buffer.put(value3); buffer.put(value4); buffer.put(value5)
     }
 
     override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float) {
