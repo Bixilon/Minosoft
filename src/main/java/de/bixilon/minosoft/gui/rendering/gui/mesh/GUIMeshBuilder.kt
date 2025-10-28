@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.IndexUtil
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class GUIMeshBuilder(
     context: RenderContext,
@@ -50,6 +49,8 @@ class GUIMeshBuilder(
     override fun addCache(cache: GUIMeshCache) {
         data += cache.data
     }
+
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
 
     fun fixIndex() {
         val vertices = data.size / GUIMeshStruct.floats
@@ -80,9 +81,9 @@ class GUIMeshBuilder(
 
     data class GUIMeshStruct(
         val position: Vec2f,
-        val uv: UnpackedUV,
-        val indexLayerAnimation: Int,
-        val tintColor: RGBColor,
+        val uv: Vec2f,
+        val texture: Int,
+        val tint: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
     }
@@ -109,7 +110,7 @@ class GUIMeshBuilder(
             var color = tint
 
             if (options != null) {
-                options.tintColor?.let { color = tint.mixRGB(it) }
+                options.tint?.let { color = tint.mixRGB(it) }
 
                 if (options.alpha != 1.0f) {
                     color = color.with(alpha = color.alphaf * options.alpha)

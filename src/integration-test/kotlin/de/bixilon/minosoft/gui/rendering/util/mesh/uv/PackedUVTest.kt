@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.uv
 
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -21,47 +23,47 @@ import org.testng.annotations.Test
 class PackedUVTest {
 
     fun `pack 0_0`() {
-        val packed = PackedUV.pack(0.0f, 0.0f)
+        val packed = PackedUVArray.pack(0.0f, 0.0f)
         assertEquals(packed.toBits(), 0x000_000)
     }
 
     fun `pack 1_0`() {
-        val packed = PackedUV.pack(1.0f, 0.0f)
+        val packed = PackedUVArray.pack(1.0f, 0.0f)
         assertEquals(packed.toBits(), 0xFFF_000)
     }
 
     fun `pack 0_1`() {
-        val packed = PackedUV.pack(0.0f, 1.0f)
+        val packed = PackedUVArray.pack(0.0f, 1.0f)
         assertEquals(packed.toBits(), 0x000_FFF)
     }
 
     fun `pack 1_1`() {
-        val packed = PackedUV.pack(1.0f, 1.0f)
+        val packed = PackedUVArray.pack(1.0f, 1.0f)
         assertEquals(packed.toBits(), 0xFFF_FFF)
     }
 
     fun `pack 0,5_0,5`() {
-        val packed = PackedUV.pack(0.5f, 0.5f)
+        val packed = PackedUVArray.pack(0.5f, 0.5f)
         assertEquals(packed.toBits(), 0x7FF_7FF)
     }
 
     fun `upack 0_0`() {
-        assertEquals(UnpackedUV.unpackU(Float.fromBits(0x000_000)), 0.0f)
-        assertEquals(UnpackedUV.unpackV(Float.fromBits(0x000_000)), 0.0f)
+        assertEquals(UnpackedUVArray.unpackU(Float.fromBits(0x000_000)), 0.0f)
+        assertEquals(UnpackedUVArray.unpackV(Float.fromBits(0x000_000)), 0.0f)
     }
 
     fun `upack 1_0`() {
-        assertEquals(UnpackedUV.unpackU(Float.fromBits(0xFFF_000)), 1.0f)
-        assertEquals(UnpackedUV.unpackV(Float.fromBits(0xFFF_000)), 0.0f)
+        assertEquals(UnpackedUVArray.unpackU(Float.fromBits(0xFFF_000)), 1.0f)
+        assertEquals(UnpackedUVArray.unpackV(Float.fromBits(0xFFF_000)), 0.0f)
     }
 
     fun `upack 0_1`() {
-        assertEquals(UnpackedUV.unpackU(Float.fromBits(0x000_FFF)), 0.0f)
-        assertEquals(UnpackedUV.unpackV(Float.fromBits(0x000_FFF)), 1.0f)
+        assertEquals(UnpackedUVArray.unpackU(Float.fromBits(0x000_FFF)), 0.0f)
+        assertEquals(UnpackedUVArray.unpackV(Float.fromBits(0x000_FFF)), 1.0f)
     }
 
     fun `upack 1_1`() {
-        assertEquals(UnpackedUV.unpackU(Float.fromBits(0xFFF_FFF)), 1.0f)
-        assertEquals(UnpackedUV.unpackV(Float.fromBits(0xFFF_FFF)), 1.0f)
+        assertEquals(UnpackedUVArray.unpackU(Float.fromBits(0xFFF_FFF)), 1.0f)
+        assertEquals(UnpackedUVArray.unpackV(Float.fromBits(0xFFF_FFF)), 1.0f)
     }
 }

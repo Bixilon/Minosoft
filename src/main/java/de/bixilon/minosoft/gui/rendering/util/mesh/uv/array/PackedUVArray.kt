@@ -11,16 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.shader
+package de.bixilon.minosoft.gui.rendering.util.mesh.uv.array
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
-interface ShaderTexture : ShaderIdentifiable {
-    val transparency: TextureTransparencies
+@JvmInline
+value class PackedUVArray(val raw: FloatArray) {
 
-    @Deprecated("packed uv")
-    fun transformUV(uv: Vec2f): Vec2f
-    fun transformUV(uv: PackedUV): PackedUV
+    constructor() : this(FloatArray(SIZE))
+
+    init {
+        if (raw.size != SIZE) throw IllegalArgumentException("UV is not packed!")
+    }
+
+    operator fun get(index: Int) = PackedUV(raw[index])
+    operator fun set(index: Int, uv: PackedUV) {
+        raw[index] = uv.raw
+    }
+
+    companion object {
+        const val COMPONENT_LENGTH = 1
+        const val COMPONENTS = 4
+        const val SIZE = COMPONENTS * COMPONENT_LENGTH
+    }
 }

@@ -17,7 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
 data class FaceUV(
     val start: Vec2f,
@@ -28,7 +28,7 @@ data class FaceUV(
     constructor(array: FloatArray) : this(array[0], array[1], array[2], array[3])
 
 
-    fun toArray(direction: Directions, rotation: Int): UnpackedUV {
+    fun toArray(direction: Directions, rotation: Int): UnpackedUVArray {
         var floats = when (direction) {
             // @formatter:off
             Directions.DOWN,
@@ -42,6 +42,6 @@ data class FaceUV(
         if (rotation != 0) {
             floats = floats.pushRight(2, rotation)
         }
-        return UnpackedUV(floats)
+        return UnpackedUVArray(floats)
     }
 }

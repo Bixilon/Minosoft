@@ -11,26 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.mesh.uv
+package de.bixilon.minosoft.gui.rendering.util.mesh.uv.array
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 @JvmInline
-value class UnpackedUV(val raw: FloatArray) {
+value class UnpackedUVArray(val raw: FloatArray) {
 
     init {
         if (raw.size != SIZE) throw IllegalArgumentException("UV is not packed!")
     }
 
-    fun pack(): PackedUV {
-        val packed = FloatArray(PackedUV.SIZE)
-        for (i in 0 until PackedUV.SIZE) {
+    fun pack(): PackedUVArray {
+        val packed = FloatArray(PackedUVArray.SIZE)
+        for (i in 0 until PackedUVArray.SIZE) {
             val u = raw[i * COMPONENT + 0]
             val v = raw[i * COMPONENT + 1]
 
-            packed[i] = PackedUV.pack(u, v)
+            packed[i] = PackedUV(u, v).raw
         }
-        return PackedUV(packed)
+        return PackedUVArray(packed)
     }
 
     companion object {
@@ -38,15 +39,5 @@ value class UnpackedUV(val raw: FloatArray) {
         const val COMPONENT_SIZE = 4
         const val SIZE = COMPONENT * COMPONENT_SIZE
 
-
-        inline fun unpackU(uv: Float): Float {
-            val raw = uv.toBits()
-            return ((raw shr PackedUV.BITS) and PackedUV.MASK).toFloat() / PackedUV.MASK
-        }
-
-        inline fun unpackV(uv: Float): Float {
-            val raw = uv.toBits()
-            return ((raw shr 0) and PackedUV.MASK).toFloat() / PackedUV.MASK
-        }
     }
 }

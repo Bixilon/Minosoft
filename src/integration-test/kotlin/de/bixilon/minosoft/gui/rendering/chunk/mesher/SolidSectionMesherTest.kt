@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -490,8 +491,8 @@ class SolidSectionMesherTest {
                     }
 
                     override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
-                    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
-                    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
+                    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
+                    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
                 }
             }
 
@@ -504,8 +505,8 @@ class SolidSectionMesherTest {
     private open class TestModel(val queue: TestQueue, val properties: SideProperties?) : BlockRender {
 
         override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
-        override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
-        override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
+        override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
+        override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
 
         override fun getProperties(direction: Directions) = this.properties
 

@@ -22,7 +22,7 @@ interface QuadConsumer : VertexConsumer {
 
 
     companion object {
-        inline fun QuadConsumer.iterate(consumer: (Int) -> Unit) {
+        inline fun VertexConsumer.iterate(consumer: (Int) -> Unit) {
             consumer.invoke(0)
             consumer.invoke(1)
             consumer.invoke(2)

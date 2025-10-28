@@ -41,7 +41,7 @@ class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
             return
         }
         this.render = true
-        tintColor = RGBAColor(1.0f, 1.0f, 1.0f, avg)
+        color = RGBAColor(1.0f, 1.0f, 1.0f, avg)
     }
 
 

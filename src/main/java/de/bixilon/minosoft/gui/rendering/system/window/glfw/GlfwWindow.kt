@@ -219,7 +219,7 @@ class GlfwWindow(
         if (window == MemoryUtil.NULL) {
             try {
                 destroy()
-            } catch (ignored: Throwable) {
+            } catch (_: Throwable) {
             }
             throw IllegalStateException("Failed to create the GLFW window. Check the console for details. BEFORE opening any issue check that your GPU supports OpenGL 3.3+ and the most recent drivers are installed!")
         }

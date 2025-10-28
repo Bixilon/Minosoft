@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 interface TextureRenderData {
     val shaderTextureId: Int
     val animationData: Int
 
-    fun transformUV(end: Vec2f): Vec2f
-    fun transformUVPacked(end: Vec2f): Float
-    fun transformUVPacked(end: Float): Float
+    @Deprecated("packed uv")
+    fun transformUV(uv: Vec2f): Vec2f
+    fun transformUV(uv: PackedUV): PackedUV
 }

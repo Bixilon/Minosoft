@@ -32,7 +32,7 @@ abstract class MeshBuilder(
     val context: RenderContext,
     val struct: MeshStruct,
     val primitive: PrimitiveTypes,
-    var estimate: Int = 8192,
+    var estimate: Int = 512,
     data: FloatList? = null,
     index: IntList? = null,
 ) : VertexConsumer {
@@ -61,7 +61,7 @@ abstract class MeshBuilder(
         val data = this._data
 
         val native = data?.toUnsafeNativeBuffer()
-        val buffer = native ?: data?.toBuffer { memAllocFloat(it) } ?: memAllocFloat(0)
+        val buffer = native ?: data?.toBuffer { memAllocFloat(it) } ?: memAllocFloat(0)  // TODO: Only if native is allowed
 
         buffer.limit(data?.size ?: 0); buffer.position(0)
 
@@ -75,7 +75,7 @@ abstract class MeshBuilder(
         if (index.isEmpty) return null
 
         val native = index.toUnsafeNativeBuffer()
-        val buffer = native ?: index.toBuffer { memAllocInt(it) }
+        val buffer = native ?: index.toBuffer { memAllocInt(it) } // TODO: Only if native is allowed
 
         buffer.limit(index.size); buffer.position(0)
 

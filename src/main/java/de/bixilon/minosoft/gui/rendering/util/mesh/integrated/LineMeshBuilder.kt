@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 
 open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericColorMeshBuilder(context, estimate) {
@@ -33,7 +32,7 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
     }
 
     fun drawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor) {
-        data.ensureSize(4)
+        ensureSize(4)
 
         val direction = MVec3f(endX - startX, endY - startY, endZ - startZ).apply { normalizeAssign() }
         val normal1 = MVec3f(direction.z, direction.z, direction.x - direction.y)
@@ -53,12 +52,11 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
         val invertedNormal1 = -normal1
         val invertedNormal2 = -normal2
 
-        val floatColor = color.rgba.buffer()
 
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal1.unsafe, normal2.unsafe, direction.unsafe, floatColor)
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal2.unsafe, normal1.unsafe, direction.unsafe, floatColor)
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal2.unsafe, invertedNormal1.unsafe, direction.unsafe, floatColor)
-        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal1.unsafe, invertedNormal2.unsafe, direction.unsafe, floatColor)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal1.unsafe, normal2.unsafe, direction.unsafe, color)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal2.unsafe, normal1.unsafe, direction.unsafe, color)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, normal2.unsafe, invertedNormal1.unsafe, direction.unsafe, color)
+        drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal1.unsafe, invertedNormal2.unsafe, direction.unsafe, color)
     }
 
     fun tryDrawLine(start: Vec3f, end: Vec3f, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {
@@ -75,7 +73,7 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
         drawLine(startX, startY, startZ, endX, endY, endZ, lineWidth, color)
     }
 
-    private fun drawLineQuad(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, normal1: Vec3f, normal2: Vec3f, directionWidth: Vec3f, color: Float) {
+    private fun drawLineQuad(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, normal1: Vec3f, normal2: Vec3f, directionWidth: Vec3f, color: RGBAColor) {
         // TODO: don't allocate those Vec3s, they are not cheap
         val a = Vec3f(startX - directionWidth.x, startY - directionWidth.y, startZ - directionWidth.z)
         val b = Vec3f(endX + directionWidth.x, endY + directionWidth.y, endZ + directionWidth.z)
@@ -95,7 +93,7 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBAColor) {
-        data.ensureSize(1)
+        ensureSize(6)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
             val from = Vec3f.Companion(aabb.min - offset)
@@ -108,7 +106,7 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
     }
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
-        data.ensureSize(12)
+        ensureSize(12)
         val offset = context.camera.offset.offset
         val min = Vec3f.Companion(aabb.min) - margin - offset
         val max = Vec3f.Companion(aabb.max) + margin - offset

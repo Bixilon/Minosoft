@@ -111,7 +111,7 @@ abstract class PlanetRenderer(
 
             val intensity = calculateIntensity()
             if (this.intensity != intensity) {
-                shader.tintColor = Vec4f(1.0f, 1.0f, 1.0f, intensity)
+                shader.tint = Vec4f(1.0f, 1.0f, 1.0f, intensity)
                 this.intensity = intensity
             }
             this.matrixUpdate = false

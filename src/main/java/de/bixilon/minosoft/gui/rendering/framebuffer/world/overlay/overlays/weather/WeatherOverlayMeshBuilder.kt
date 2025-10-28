@@ -18,7 +18,6 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class WeatherOverlayMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, WeatherOverlayMeshStruct, 1) {
 
@@ -35,7 +34,7 @@ open class WeatherOverlayMeshBuilder(context: RenderContext) : QuadMeshBuilder(c
 
     data class WeatherOverlayMeshStruct(
         val position: Vec3f,
-        val uv: UnpackedUV,
+        val uv: Vec2f,
         val offset: Float,
         val vinOffsetMultiplier: Float,
         val alphaMultiplier: Float,

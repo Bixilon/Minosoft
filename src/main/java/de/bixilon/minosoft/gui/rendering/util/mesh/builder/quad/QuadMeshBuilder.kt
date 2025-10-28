@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 abstract class QuadMeshBuilder(
     context: RenderContext,
     struct: MeshStruct,
-    estimate: Int = 8192,
+    estimate: Int = 512,
     data: FloatList? = null,
     index: IntList? = null,
 ) : MeshBuilder(context, struct, if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE, estimate, data, index), QuadConsumer {

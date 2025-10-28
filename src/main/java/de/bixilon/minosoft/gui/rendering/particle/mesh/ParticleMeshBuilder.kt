@@ -30,41 +30,41 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 class ParticleMeshBuilder(context: RenderContext, data: FloatList) : MeshBuilder(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
     override val reused get() = true
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
-        val minTransformedUV = if (uvMin == null) texture.transformUVPacked(ZERO) else texture.transformUVPacked(uvMin)
-        val maxTransformedUV = if (uvMax == null) texture.transformUVPacked(ONE) else texture.transformUVPacked(uvMax)
+    inline fun addVertex(x: Float, y: Float, z: Float, minUV: PackedUV, maxUV: PackedUV, texture: Texture, scale: Float, tint: RGBAColor, light: Int) = data.add(
+        x, y, z,
+        minUV.raw, maxUV.raw,
+        texture.shaderId.buffer(),
+        scale,
+        tint.rgba.buffer(),
+        light.buffer(),
+    )
+
+
+    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tint: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
+        val minTransformedUV = if (uvMin == null) texture.transformUV(PackedUV.ZERO) else texture.transformUV(PackedUV(uvMin))
+        val maxTransformedUV = if (uvMax == null) texture.transformUV(PackedUV.ONE) else texture.transformUV(PackedUV(uvMax))
         val offset = context.camera.offset.offset
 
-        data.add(
-            (position.x - offset.x).toFloat(),
-            (position.y - offset.y).toFloat(),
-            (position.z - offset.z).toFloat(),
-
-            minTransformedUV,
-            maxTransformedUV,
-
-            texture.renderData.shaderTextureId.buffer(),
+        addVertex(
+            (position.x - offset.x).toFloat(), (position.y - offset.y).toFloat(), (position.z - offset.z).toFloat(),
+            minTransformedUV, maxTransformedUV,
+            texture,
             scale,
-            tintColor.rgba.buffer(),
-            light.buffer(),
+            tint,
+            light,
         )
     }
 
 
     data class ParticleMeshStruct(
         val position: Vec3f,
-        val minUVCoordinates: PackedUV,
-        val maxUVCoordinates: PackedUV,
-        val indexLayerAnimation: Int,
+        val minUV: PackedUV,
+        val maxUV: PackedUV,
+        val texture: Int,
         val scale: Float,
-        val tintColor: RGBColor,
+        val tint: RGBColor,
         val light: Int,
     ) {
         companion object : MeshStruct(ParticleMeshStruct::class)
-    }
-
-    private companion object {
-        private val ZERO = PackedUV.pack(0.0f, 0.0f)
-        private val ONE = PackedUV.pack(1.0f, 1.0f)
     }
 }

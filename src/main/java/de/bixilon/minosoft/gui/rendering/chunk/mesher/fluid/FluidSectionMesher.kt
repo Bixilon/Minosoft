@@ -37,11 +37,11 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUti
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateFluidHeights
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCulling.canFluidCull
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import kotlin.math.atan2
 
 class FluidSectionMesher(
@@ -57,7 +57,7 @@ class FluidSectionMesher(
         else -> null
     }
 
-    private fun renderUp(model: FluidModel, velocity: Vec3d, heights: FloatArray, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Float, packedUV: FloatArray) {
+    private fun renderUp(model: FluidModel, velocity: Vec3d, heights: FloatArray, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Int, packedUV: PackedUVArray) {
         val texture: Texture
         var packedUV = packedUV
 
@@ -74,35 +74,31 @@ class FluidSectionMesher(
 
             val center = 1.0f / 2.0f
 
-            packedUV[0] = PackedUV.pack(center + -cos + sin, center + -cos - sin)
-            packedUV[1] = PackedUV.pack(center + +cos + sin, center + -cos + sin)
-            packedUV[2] = PackedUV.pack(center + +cos - sin, center + +cos + sin)
-            packedUV[3] = PackedUV.pack(center + -cos - sin, center + +cos - sin)
+            packedUV[0] = PackedUV(center + -cos + sin, center + -cos - sin)
+            packedUV[1] = PackedUV(center + +cos + sin, center + -cos + sin)
+            packedUV[2] = PackedUV(center + +cos - sin, center + +cos + sin)
+            packedUV[3] = PackedUV(center + -cos - sin, center + +cos - sin)
         }
-        val textureId = texture.shaderId.buffer()
-
-
         val mesh = meshes[texture.transparency]
 
-        mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y + heights[it], offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[it]), textureId, lightTint) }
+        mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y + heights[it], offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], packedUV[it].raw, texture, lightTint) }
         mesh.addIndexQuad(true, true)
     }
 
-    private fun renderDown(model: FluidModel, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Float) {
+    private fun renderDown(model: FluidModel, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Int) {
         val texture = model.still
         val packedUV = STILL_UV_TOP
 
-        val textureId = texture.shaderId.buffer()
         val mesh = meshes[texture.transparency]
 
-        mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], texture.transformUVPacked(packedUV[it]), textureId, lightTint) }
+        mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y, offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], texture.transformUV(packedUV[it]).raw, texture, lightTint) }
         mesh.addIndexQuad(false, true)
     }
 
-    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMeshBuilder, lightTint: Float, positions: FloatArray, packedUV: FloatArray) {
+    inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMeshBuilder, lightTint: Int, positions: FloatArray, packedUV: PackedUVArray) {
         if (cull == FluidCull.CULLED) return
-        packedUV[2] = PackedUV.pack(0.5f, (1.0f - height1) * 0.5f)
-        packedUV[3] = PackedUV.pack(0.0f, (1.0f - height2) * 0.5f)
+        packedUV[2] = PackedUV(0.5f, (1.0f - height1) * 0.5f)
+        packedUV[3] = PackedUV(0.0f, (1.0f - height2) * 0.5f)
 
 
         positions[0] = x1; positions[1] = 0.0f; positions[2] = z1
@@ -117,8 +113,7 @@ class FluidSectionMesher(
             texture = overlay
         }
 
-        val textureId = texture.renderData.shaderTextureId.buffer()
-        mesh.iterate { mesh.addVertex(offset.x + positions[it * Vec3f.LENGTH + 0], offset.y + positions[it * Vec3f.LENGTH + 1], offset.z + positions[it * Vec3f.LENGTH + 2], texture.transformUVPacked(packedUV[it]), textureId, lightTint) }
+        mesh.iterate { mesh.addVertex(offset.x + positions[it * Vec3f.LENGTH + 0], offset.y + positions[it * Vec3f.LENGTH + 1], offset.z + positions[it * Vec3f.LENGTH + 2], texture.transformUV(packedUV[it]).raw, texture, lightTint) }
         mesh.addIndexQuad(true, backface)
     }
 
@@ -134,7 +129,7 @@ class FluidSectionMesher(
         val heights = FloatArray(3 * 3)
         val corners = FloatArray(4)
         val velocity = MVec3d()
-        val packedUV = FloatArray(PackedUV.SIZE)
+        val packedUV = PackedUVArray()
         val positions = FloatArray(4 * Vec3f.LENGTH)
         val offsetPosition = MVec3f()
 
@@ -181,7 +176,7 @@ class FluidSectionMesher(
                         light = light.with(sky = LightLevel.MAX_LEVEL)
                     }
 
-                    val lightTint = (((light.index shl 24) or tint.rgb).buffer())
+                    val lightTint = (light.index shl 24) or tint.rgb
 
 
                     if (up) {
@@ -193,8 +188,8 @@ class FluidSectionMesher(
                     }
                     if (sides) {
                         val flowing = model.flowing
-                        packedUV[0] = PackedUV.pack(0.0f, 0.5f)
-                        packedUV[1] = PackedUV.pack(0.5f, 0.5f)
+                        packedUV[0] = PackedUV(0.0f, 0.5f)
+                        packedUV[1] = PackedUV(0.5f, 0.5f)
                         val mesh = mesh[flowing.transparency]
                         val overlay = model.overlay
 
@@ -220,6 +215,6 @@ class FluidSectionMesher(
             1.0f, 1.0f,
             0.0f, 1.0f,
         )
-        val STILL_UV_TOP = UnpackedUV(POSITIONS_TOP_STILL).pack().raw
+        val STILL_UV_TOP = UnpackedUVArray(POSITIONS_TOP_STILL).pack()
     }
 }

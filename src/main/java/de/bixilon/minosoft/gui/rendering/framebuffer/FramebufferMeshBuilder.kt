@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 
 class FramebufferMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, DefaultFramebufferMeshStruct, 1) {
@@ -38,7 +37,7 @@ class FramebufferMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, 
 
     data class DefaultFramebufferMeshStruct(
         val position: Vec2f,
-        val uv: UnpackedUV,
+        val uv: Vec2f,
     ) {
         companion object : MeshStruct(DefaultFramebufferMeshStruct::class)
     }

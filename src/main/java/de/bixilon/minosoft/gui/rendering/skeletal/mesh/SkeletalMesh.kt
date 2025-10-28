@@ -21,11 +21,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
 class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeletalMeshBuilder(context, SkeletalMeshStruct, estimate) {
 
-    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUV, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUVArray, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
         data.add(
             position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
             uv.raw[uvOffset + 0], uv.raw[uvOffset + 1],
@@ -34,7 +34,7 @@ class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeleta
         )
     }
 
-    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUVArray, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
         val transformNormal = ((transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
         val textureShaderId = texture.shaderId.buffer()
 
@@ -45,9 +45,9 @@ class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeleta
 
     data class SkeletalMeshStruct(
         val position: Vec3f,
-        val uv: UnpackedUV,
+        val uv: Vec2f,
         val transformNormal: Int,
-        val indexLayerAnimation: Int,
+        val texture: Int,
     ) {
         companion object : MeshStruct(SkeletalMeshStruct::class)
     }

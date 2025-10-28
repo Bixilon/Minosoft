@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 object DummyTextureRenderData : TextureRenderData {
     override val shaderTextureId: Int = 0
     override val animationData: Int = -1
 
-    override fun transformUV(end: Vec2f) = end
-    override fun transformUVPacked(end: Vec2f) = PackedUV.pack(end.x, end.y)
-    override fun transformUVPacked(end: Float) = end
+    override fun transformUV(uv: Vec2f) = uv
+    override fun transformUVPacked(end: Vec2f) = PackedUVArray.pack(end.x, end.y)
+    override fun transformUV(uv: PackedUV): PackedUV = uv
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -77,12 +78,12 @@ class WeightedBlockRender(
         models.first().model.render(gui, offset, consumer, options, size, stack, tints)
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        models.first().model.render(mesh, state, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
+        models.first().model.render(consumer, state, tints)
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
-        models.first().model.render(mesh, stack, tints)
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
+        models.first().model.render(offset, consumer, stack, tints)
     }
 
     override fun getDisplay(position: DisplayPositions): ModelDisplay? {

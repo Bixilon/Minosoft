@@ -64,7 +64,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
         random.setSeed(position.hash)
         texture = blockState?.model?.getParticleTexture(random, position) ?: return
 
-        tintColor = RGBAColor(0.1f, 0.1f, 0.1f, 1.0f)
+        color = RGBAColor(0.1f, 0.1f, 0.1f, 1.0f)
 
         super.draw()
     }

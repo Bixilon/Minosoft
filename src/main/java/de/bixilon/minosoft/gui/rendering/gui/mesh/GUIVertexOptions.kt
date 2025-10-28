@@ -16,17 +16,17 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 
 data class GUIVertexOptions(
-    val tintColor: RGBAColor? = null,
+    val tint: RGBAColor? = null,
     val alpha: Float = 1.0f,
 ) {
 
     companion object {
 
-        fun GUIVertexOptions?.copy(tintColor: RGBAColor? = null, alpha: Float = 1.0f): GUIVertexOptions? {
-            if (this == null) return GUIVertexOptions(tintColor, alpha)
-            var outColor = this.tintColor
-            if (tintColor != null) {
-                outColor = outColor?.mix(tintColor) ?: tintColor
+        fun GUIVertexOptions?.copy(tint: RGBAColor? = null, alpha: Float = 1.0f): GUIVertexOptions? {
+            if (this == null) return GUIVertexOptions(tint, alpha)
+            var outColor = this.tint
+            if (tint != null) {
+                outColor = outColor?.mix(tint) ?: tint
             }
             val outAlpha = this.alpha * alpha
             if (outColor == null && outAlpha == 1.0f) return null

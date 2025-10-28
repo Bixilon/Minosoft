@@ -69,11 +69,11 @@ class SignBlockEntityRenderer(
         return true
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        state.model?.render(mesh, state, tints) // render wood part
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
+        state.model?.render(consumer, state, tints) // render wood part
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
         // TODO
     }
 

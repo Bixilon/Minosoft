@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.util.mesh.integrated
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -23,24 +22,28 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class SimpleTextureMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, SimpleTextureMeshStruct, 1) {
 
-    fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f, tintColor: RGBAColor?) {
-        data.add(
-            position.x, position.y, position.z,
-            uv.x, uv.y,
-            texture.renderData.shaderTextureId.buffer(),
-            (tintColor ?: Colors.WHITE_RGBA).rgba.buffer()
-        )
-    }
+    inline fun addVertex(x: Float, y: Float, z: Float, texture: Texture, uv: Vec2f, color: RGBAColor) = data.add(
+        x, y, z,
+        uv.x, uv.y,
+        texture.shaderId.buffer(),
+        color.rgba.buffer()
+    )
+
+    fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f, color: RGBAColor) = addVertex(
+        position.x, position.y, position.z,
+        texture,
+        uv,
+        color,
+    )
 
 
     data class SimpleTextureMeshStruct(
         val position: Vec3f,
-        val uv: UnpackedUV,
-        val indexLayerAnimation: Int,
+        val uv: Vec2f,
+        val texture: Int,
         val tint: RGBColor,
     ) {
         companion object : MeshStruct(SimpleTextureMeshStruct::class)

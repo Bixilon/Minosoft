@@ -154,6 +154,7 @@ abstract class Element(val guiRenderer: GUIRenderer, estimate: Int = 32) : Input
             if (direct) {
                 cache.clear()
             }
+            this.cache.clear()
             forceRender(offset, consumer, options)
             if (direct) {
                 cache.revision++

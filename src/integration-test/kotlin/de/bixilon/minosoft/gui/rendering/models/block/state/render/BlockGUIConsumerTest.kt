@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.annotations.Test
 
@@ -57,7 +57,7 @@ class BlockGUIConsumerTest {
     fun `south quad with offset and specific size`() {
         val consumer = create()
         val position = CuboidUtil.positions(Directions.SOUTH, Vec3f(0, 0, 0), Vec3f(1, 1, 1))
-        val uv = UnpackedUV(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f))
+        val uv = UnpackedUVArray(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f))
         consumer.addQuad(position, uv, 0f, 0f)
 
         consumer.assertVertices(arrayOf(Vec2f())) // TODO

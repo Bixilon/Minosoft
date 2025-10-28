@@ -19,17 +19,17 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
 class BakedFace(
     val positions: FaceVertexData,
-    val uv: UnpackedUV,
+    val uv: UnpackedUVArray,
     val shade: Shades,
     val tintIndex: Int,
     cull: Directions?,
@@ -40,30 +40,25 @@ class BakedFace(
     private val lightIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 
 
-    constructor(positions: FaceVertexData, uv: UnpackedUV, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
+    constructor(positions: FaceVertexData, uv: UnpackedUVArray, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
 
     private fun color(tint: RGBColor): RGBColor {
         if (tint.rgb <= 0) return shade.color
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: Vec3f, mesh: BlockVertexConsumer, light: ByteArray, tints: RGBArray?, ao: IntArray) {
+    fun render(offset: Vec3f, consumer: BlockVertexConsumer, light: ByteArray, tints: RGBArray?, ao: IntArray) {
         val tint = color(tints.getOr0(tintIndex))
-        val lightTint = ((light[lightIndex].toInt() and 0xFF shl 24) or tint.rgb).buffer()
-        val textureId = this.texture.shaderId.buffer()
+        val light = light[lightIndex].toInt()
 
-
-        val mesh = mesh[texture.transparency]
-        mesh.addQuad(offset, this.positions, packedUV, textureId, lightTint, ao)
+        consumer.addQuad(offset, this.positions, packedUV, texture, light, tint, ao)
     }
 
-    fun render(mesh: BlockVertexConsumer, tints: RGBArray?) {
-        val tint = color(tints.getOr0(tintIndex))
-        val lightTint = tint.rgb.buffer()
-        val textureId = this.texture.shaderId.buffer()
 
-        val mesh = mesh[texture.transparency]
-        mesh.addQuad(this.positions, this.uv, textureId, lightTint)
+    fun render(offset: Vec3f, consumer: BlockVertexConsumer, tints: RGBArray?) {
+        val tint = color(tints.getOr0(tintIndex))
+
+        consumer.addQuad(offset, this.positions, packedUV, texture, 0xFF, tint, AmbientOcclusionUtil.EMPTY)
     }
 
 

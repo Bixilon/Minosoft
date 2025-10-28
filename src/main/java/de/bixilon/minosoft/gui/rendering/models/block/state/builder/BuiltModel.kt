@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -57,17 +58,17 @@ class BuiltModel(
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        model.render(mesh, state, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
+        model.render(consumer, state, tints)
         for (dynamic in this.dynamic) {
-            dynamic.render(mesh, state, tints)
+            dynamic.render(consumer, state, tints)
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
-        model.render(mesh, stack, tints)
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
+        model.render(offset, consumer, stack, tints)
         for (dynamic in this.dynamic) {
-            dynamic.render(mesh, stack, tints)
+            dynamic.render(offset, consumer, stack, tints)
         }
     }
 

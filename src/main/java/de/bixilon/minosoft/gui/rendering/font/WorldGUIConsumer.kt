@@ -23,7 +23,9 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRe
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 
 class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val light: Int) : GUIVertexConsumer {
@@ -34,7 +36,7 @@ class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val lig
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         times(this.transform, x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, transformed)
         this.uv.x = u; this.uv.y = v
-        mesh.addVertex(transformed.unsafe, this.uv.unsafe, texture ?: whiteTexture.texture, tint.rgb(), light)
+        mesh.addVertex(transformed.x, transformed.y, transformed.z, AmbientOcclusionUtil.LEVEL_NONE, PackedUV(this.uv.unsafe), texture ?: whiteTexture.texture, light, tint.rgb())
     }
 
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()

@@ -13,59 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.VertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
-interface BlockVertexConsumer : QuadConsumer {
+interface BlockVertexConsumer : VertexConsumer {
 
-    fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int)
-    fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float)
-    fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float)
-
-
-    fun addQuad(offset: Vec3f, positions: FaceVertexData, uvData: PackedUV, textureId: Float, lightTint: Float, ao: IntArray) {
-        ensureSize(1)
-
-        iterate {
-            val vertexOffset = it * Vec3f.LENGTH
-
-
-            val aUV = Float.fromBits(uvData.raw[it].toBits() or (ao[it] shl 24))
-            addVertex(
-                x = offset.x + positions[vertexOffset], y = offset.y + positions[vertexOffset + 1], z = offset.z + positions[vertexOffset + 2],
-                uv = aUV,
-                textureId = textureId,
-                lightTint = lightTint,
-            )
-        }
-        addIndexQuad()
-    }
-
-    fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
-        ensureSize(1)
-
-        iterate {
-            val vertexOffset = it * Vec3f.LENGTH
-            val uvOffset = it * Vec2f.LENGTH
-            addVertex(
-                x = positions[vertexOffset], y = positions[vertexOffset + 1], z = positions[vertexOffset + 2],
-                u = uvData.raw[uvOffset],
-                v = uvData.raw[uvOffset + 1],
-                textureId = textureId,
-                lightTint = lightTint,
-            )
-        }
-        addIndexQuad()
-    }
-
-    operator fun get(transparency: TextureTransparencies): BlockVertexConsumer = this
+    fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray)
 }
 

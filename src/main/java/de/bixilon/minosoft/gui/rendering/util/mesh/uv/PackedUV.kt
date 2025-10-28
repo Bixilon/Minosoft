@@ -13,23 +13,30 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh.uv
 
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 
 @JvmInline
-value class PackedUV(val raw: FloatArray) {
+value class PackedUV(val raw: Float) {
+    val u: Float get() = ((raw.toBits() shr 1 * BITS) and MASK).toFloat() / MASK
+    val v: Float get() = ((raw.toBits() shr 0 * BITS) and MASK).toFloat() / MASK
 
-    init {
-        if (raw.size != SIZE) throw IllegalArgumentException("UV is not packed!")
-    }
+
+    constructor(u: Float, v: Float) : this(pack(u, v))
+    constructor(uv: Vec2f) : this(pack(uv.x, uv.y))
+
+    @Deprecated("nothing", level = DeprecationLevel.ERROR)
+    fun copy(): PackedUV = Broken()
+    fun copy(u: Float = this.u, v: Float = this.v) = PackedUV(u, v)
 
     companion object {
         const val BITS = 12
         const val MASK = (1 shl BITS) - 1
 
-        const val COMPONENT_LENGTH = 1
-        const val COMPONENTS = 4
-        const val SIZE = COMPONENTS * COMPONENT_LENGTH
+        val ZERO = PackedUV(0.0f, 0.0f)
+        val ONE = PackedUV(1.0f, 1.0f)
 
 
         inline fun pack(u: Float, v: Float): Float {

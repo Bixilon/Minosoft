@@ -31,7 +31,7 @@ class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
     override fun draw() {
         // TODO: make brightness depend on ambient light (e.g. rain gradient, thunder gradient, time, ...)
         val brightness = context.session.world.getBrightness(context.session.player.physics.positionInfo.position) * 0.5f
-        tintColor = RGBAColor(brightness, brightness, brightness, 0.1f)
+        color = RGBAColor(brightness, brightness, brightness, 0.1f)
 
         // ToDo: Minecraft sets the uv coordinates according to the yaw and pitch (see InGameOverlayRenderer::renderUnderwaterOverlay)
 

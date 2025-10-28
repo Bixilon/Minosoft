@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class BillboardTextMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BillboardTextMeshStruct), GUIVertexConsumer {
 
@@ -43,8 +42,8 @@ class BillboardTextMeshBuilder(context: RenderContext) : QuadMeshBuilder(context
 
     data class BillboardTextMeshStruct(
         val position: Vec2f,
-        val uv: UnpackedUV,
-        val indexLayerAnimation: Int,
+        val uv: Vec2f,
+        val texture: Int,
         val tint: RGBColor,
     ) {
         companion object : MeshStruct(BillboardTextMeshStruct::class)

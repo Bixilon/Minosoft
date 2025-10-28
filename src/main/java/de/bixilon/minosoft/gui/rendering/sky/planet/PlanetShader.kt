@@ -24,6 +24,6 @@ class PlanetShader(
     native: NativeShader,
 ) : Shader(native), TextureShader {
     var matrix: Mat4f by uniform("uMatrix", Mat4f())
-    var tintColor: Vec4f by uniform("uTintColor", Vec4f(1.0f))
+    var tint: Vec4f by uniform("uTintColor", Vec4f(1.0f))
     override var textures: TextureManager by textureManager(animated = false)
 }

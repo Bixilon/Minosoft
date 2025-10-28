@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -35,13 +36,13 @@ interface BlockRender : ItemRender {
     fun getParticleTexture(random: Random?, position: BlockPosition): Texture? = null
 
     fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean
-    fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?)
+    fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?)
 
 
     override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) {
         val consumer = BlockGUIConsumer(gui, offset, consumer, options, getDisplay(DisplayPositions.GUI) ?: ModelDisplay.DEFAULT, size)
 
-        render(consumer, stack, tints)
+        render(Vec3f.EMPTY, consumer, stack, tints)
     }
 
     fun getProperties(direction: Directions): SideProperties? = null

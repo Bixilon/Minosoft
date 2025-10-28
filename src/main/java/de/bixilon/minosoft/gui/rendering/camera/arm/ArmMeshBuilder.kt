@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerModelMeshBuilder
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
 class ArmMeshBuilder(
     context: RenderContext,
@@ -27,7 +27,7 @@ class ArmMeshBuilder(
 ) : PlayerModelMeshBuilder(context) {
 
 
-    override fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
+    override fun addQuad(positions: FaceVertexData, uv: UnpackedUVArray, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
         val arm = path.getArm() ?: return
         if (arm != this.arm) return
         super.addQuad(positions, uv, 0, normal, texture, path)

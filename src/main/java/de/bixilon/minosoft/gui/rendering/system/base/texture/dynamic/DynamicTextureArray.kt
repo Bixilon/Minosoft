@@ -82,7 +82,9 @@ abstract class DynamicTextureArray(
             return
         }
 
-        this.data = MipmapTextureData(buffer, mipmaps)
+        val data = MipmapTextureData(buffer, mipmaps)
+        this.data = data
+        this.transparency = data.buffer.getTransparency()
         upload(index, this)
     }
 

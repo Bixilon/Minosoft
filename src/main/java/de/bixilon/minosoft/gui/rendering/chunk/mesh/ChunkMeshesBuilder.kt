@@ -13,24 +13,24 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 class ChunkMeshesBuilder(
     context: RenderContext,
     count: Int,
     entities: Int,
 ) : BlockVertexConsumer { // TODO: Don't inherit
-    var opaque = ChunkMeshBuilder(context, count.opaqueCount()) // TODO: * floatsPerVertex * vertex per side
+    var opaque = ChunkMeshBuilder(context, count.opaqueCount())
     var translucent = ChunkMeshBuilder(context, count.translucentCount())
     var text = ChunkMeshBuilder(context, 128)
     var entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(entities)
@@ -92,13 +92,12 @@ class ChunkMeshesBuilder(
         entities.forEach { it.drop() }
     }
 
-    override fun ensureSize(primitives: Int) = Unit
-    override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken()
-    override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
-    override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken()
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Broken()
+    override fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray) {
+        val mesh = this[texture.transparency]
+        mesh.addQuad(offset, positions, uv, texture, light, tint, ao)
+    }
 
-    override fun get(transparency: TextureTransparencies) = when (transparency) {
+    operator fun get(transparency: TextureTransparencies) = when (transparency) {
         TextureTransparencies.TRANSLUCENT -> translucent
         else -> opaque
     }

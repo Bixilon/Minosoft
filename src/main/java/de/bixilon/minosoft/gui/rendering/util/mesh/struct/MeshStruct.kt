@@ -22,7 +22,6 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
@@ -68,7 +67,6 @@ abstract class MeshStruct(struct: KClass<*>) {
                 Float::class -> Float.SIZE_BYTES
                 Int::class -> Int.SIZE_BYTES
 
-                UnpackedUV::class -> 2 * Float.SIZE_BYTES
                 PackedUV::class -> Float.SIZE_BYTES
 
                 RGBColor::class -> Int.SIZE_BYTES

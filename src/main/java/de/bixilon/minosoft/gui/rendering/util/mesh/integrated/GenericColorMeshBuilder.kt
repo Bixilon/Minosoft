@@ -25,30 +25,15 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 open class GenericColorMeshBuilder(context: RenderContext, estimate: Int = 100) : QuadMeshBuilder(context, GenericColorMeshStruct, estimate) {
 
-    fun addVertex(position: Vec3f, color: RGBAColor?) {
-        data.add(
-            position.x, position.y, position.z,
-            (color ?: ChatColors.WHITE).rgba.buffer()
-        )
-    }
+    inline fun addVertex(x: Float, y: Float, z: Float, color: RGBAColor) = data.add(
+        x, y, z,
+        color.rgba.buffer(),
+    )
 
-    fun addVertex(position: Vec3f, color: Float) {
-        data.add(
-            position.x, position.y, position.z,
-            color,
-        )
-    }
-
-    fun addVertex(x: Float, y: Float, z: Float, color: Float) {
-        data.add(x, y, z, color)
-    }
-
-    fun addVertex(position: FaceVertexData, offset: Int, color: RGBAColor?) {
-        data.add(
-            position[offset + 0], position[offset + 1], position[offset + 2],
-            (color ?: ChatColors.WHITE).rgba.buffer(),
-        )
-    }
+    fun addVertex(position: FaceVertexData, offset: Int, color: RGBAColor?) = addVertex(
+        position[offset + 0], position[offset + 1], position[offset + 2],
+        (color ?: ChatColors.WHITE),
+    )
 
     data class GenericColorMeshStruct(
         val position: Vec3f,

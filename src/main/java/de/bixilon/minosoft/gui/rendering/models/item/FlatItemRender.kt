@@ -25,9 +25,9 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class FlatItemRender(
@@ -42,17 +42,17 @@ class FlatItemRender(
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
         for ((index, layer) in layers.withIndex()) {
-            mesh.addQuad(POSITIONS, UV, layer.shaderId.buffer(), (tints?.get(index) ?: Colors.WHITE_RGB).rgb.buffer())
+            val tint = tints?.get(index) ?: Colors.WHITE_RGB
+            consumer.addQuad(offset, POSITIONS, UV, layer, 0xFF, tint, AmbientOcclusionUtil.EMPTY)
         }
         // TODO: items have depth
-        // TODO: light, ...
     }
 
 
     private companion object {
         val POSITIONS = CuboidUtil.positions(Directions.NORTH, Vec3f(0.3f, 0.0f, 0.5f), Vec3f(0.6f, 0.3f, 0.5f))
-        val UV = FaceUV(Vec2f(0.0f), Vec2f(1.0f)).toArray(Directions.NORTH, 2)
+        val UV = FaceUV(Vec2f(0.0f), Vec2f(1.0f)).toArray(Directions.NORTH, 2).pack()
     }
 }

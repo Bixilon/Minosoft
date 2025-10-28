@@ -19,9 +19,9 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
 abstract class AbstractSkeletalMeshBuilder(context: RenderContext, struct: MeshStruct, estimate: Int) : QuadMeshBuilder(context, struct, estimate) {
 
-    abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUV, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String)
+    abstract fun addQuad(positions: FaceVertexData, uv: UnpackedUVArray, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String)
 }

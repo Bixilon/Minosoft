@@ -25,12 +25,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 interface Texture : ShaderTexture {
     var array: TextureArrayProperties
     val state: TextureStates
     val size: Vec2i
-    val transparency: TextureTransparencies
+    override val transparency: TextureTransparencies
     val properties: ImageProperties
     val animation: TextureAnimation? get() = null
 
@@ -42,13 +43,11 @@ interface Texture : ShaderTexture {
 
     fun load(context: RenderContext)
 
-    override val shaderId: Int
-        get() = renderData.shaderTextureId
+    override val shaderId get() = renderData.shaderTextureId
 
 
-    override fun transformUV(end: Vec2f) = renderData.transformUV(end)
-    override fun transformUVPacked(end: Vec2f) = renderData.transformUVPacked(end)
-    override fun transformUVPacked(end: Float) = renderData.transformUVPacked(end)
+    override fun transformUV(uv: Vec2f) = renderData.transformUV(uv)
+    override fun transformUV(uv: PackedUV) = renderData.transformUV(uv)
 
     fun createData(mipmaps: Int = this.mipmaps, buffer: TextureBuffer): TextureData {
         if (mipmaps <= 0) return TextureData(buffer)

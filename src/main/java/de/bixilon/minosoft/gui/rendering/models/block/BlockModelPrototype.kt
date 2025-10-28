@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -32,14 +33,14 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderPr
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import java.util.*
 
+@Deprecated("That is the most goofy hack ever")
 open class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?) = prototype()
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = prototype()
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = prototype()
     override fun getParticleTexture(random: Random?, position: BlockPosition) = prototype()
     override fun getProperties(direction: Directions) = prototype()
     override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = prototype()
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = prototype()
-
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = prototype()
 
     private fun prototype(): Nothing = throw IllegalStateException("prototype")
 

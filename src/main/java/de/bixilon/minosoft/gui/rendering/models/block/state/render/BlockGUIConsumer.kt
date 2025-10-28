@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
 import de.bixilon.minosoft.gui.rendering.camera.CameraUtil
@@ -27,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 class BlockGUIConsumer(
     val gui: GUIRenderer,
@@ -39,23 +38,10 @@ class BlockGUIConsumer(
 ) : BlockVertexConsumer {
     private val matrix = VIEW_MATRIX * display.matrix
 
-
-    @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)
-    override fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture, tintColor: RGBColor, lightIndex: Int) = Broken("Not chunk rendering")
-
-    @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)
-    override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
-
-    @Deprecated("not chunk rendering", level = DeprecationLevel.ERROR)
-    override fun addVertex(x: Float, y: Float, z: Float, uv: Float, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
-
-
-    override fun addQuad(positions: FaceVertexData, uvData: UnpackedUV, textureId: Float, lightTint: Float) {
-        val tint = RGBColor(lightTint.toBits()).rgba()
+    override fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray) {
 
         iterate {
             val vertexOffset = it * Vec3f.LENGTH
-            val uvOffset = it * Vec2f.LENGTH
 
             val xyz = Vec3f(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2])
 
@@ -65,13 +51,12 @@ class BlockGUIConsumer(
             val y = ((-out.y + 0.18f) * size.y) + offset.y
             // values fresh from my ass
 
-            consumer.addVertex(x, y, textureId, uvData.raw[uvOffset], uvData.raw[uvOffset + 1], tint, options)
-        }
-        consumer.addIndexQuad(false, true)
-    }
+            val uv = uv[it]
 
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        consumer.addIndexQuad(front, reverse)
+            consumer.addVertex(x, y, texture, uv.u, uv.v, tint.rgba(), options)
+        }
+
+        consumer.addIndexQuad(false, true)
     }
 
     companion object {

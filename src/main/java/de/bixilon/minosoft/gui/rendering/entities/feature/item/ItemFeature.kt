@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.item
 
 import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMeshBuilder
@@ -70,22 +71,23 @@ open class ItemFeature(
         val display = model.getDisplay(display)
         this.displayMatrix = display?.matrix ?: Mat4f.EMPTY
         val mesh = BlockMeshBuilder(renderer.renderer.context)
+        val offset = MVec3f()
 
         val tint = renderer.renderer.context.tints.getItemTint(stack)
 
         val count = if (many) distance.getCount(stack.count) else 1
         val spread = maxOf(0.1f, count / 30.0f)
 
-        model.render(mesh, stack, tint) // 0 without offset
+        model.render(offset.unsafe, mesh, stack, tint) // 0 without offset
 
         if (count > 1) {
             val random = Random(1234567890123456789L)
             for (i in 0 until count - 1) {
-                mesh.offset.x = random.nextFloat(-spread, spread)
-                mesh.offset.y = random.nextFloat(-spread, spread)
-                mesh.offset.z = random.nextFloat(-spread, spread)
+                offset.x = random.nextFloat(-spread, spread)
+                offset.y = random.nextFloat(-spread, spread)
+                offset.z = random.nextFloat(-spread, spread)
 
-                model.render(mesh, stack, tint)
+                model.render(offset.unsafe, mesh, stack, tint)
             }
         }
         // TODO: enchantment glint, ...

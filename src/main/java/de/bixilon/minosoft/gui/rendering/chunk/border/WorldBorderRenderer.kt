@@ -64,7 +64,7 @@ class WorldBorderRenderer(
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         context.textures.static.use(shader)
-        shader.textureIndexLayer = texture.renderData.shaderTextureId
+        shader.textureIndexLayer = texture.shaderId
     }
 
     private fun calculateColor(): RGBAColor {

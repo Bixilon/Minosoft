@@ -27,7 +27,7 @@ class WorldBorderOverlay(context: RenderContext) : SimpleOverlay(context) {
         get() = config.worldBorder && context.session.world.border.isOutside(context.session.player.physics.position)
 
     override fun update() {
-        tintColor = RGBAColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
+        color = RGBAColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
     }
 
 

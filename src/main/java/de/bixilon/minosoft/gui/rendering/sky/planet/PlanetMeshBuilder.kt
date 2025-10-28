@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 open class PlanetMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, SunMeshStruct, 1) {
 
@@ -28,15 +27,15 @@ open class PlanetMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, 
         data.add(
             position.x, position.y, position.z,
             uv.x, uv.y,
-            texture.renderData.shaderTextureId.buffer(),
+            texture.shaderId.buffer(),
         )
     }
 
 
     data class SunMeshStruct(
         val position: Vec3f,
-        val uv: UnpackedUV,
-        val indexLayerAnimation: Int,
+        val uv: Vec2f,
+        val texture: Int,
     ) {
         companion object : MeshStruct(SunMeshStruct::class)
     }

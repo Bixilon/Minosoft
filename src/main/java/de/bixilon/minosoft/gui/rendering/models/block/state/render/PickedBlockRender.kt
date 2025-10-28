@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -44,12 +45,12 @@ interface PickedBlockRender : BlockRender {
         return pick(state, props.neighbours)?.render(props, position, state, entity, tints) ?: false
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        default?.render(mesh, state, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
+        default?.render(consumer, state, tints)
     }
 
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
-        default?.render(mesh, stack, tints)
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
+        default?.render(offset, consumer, stack, tints)
     }
 
     override fun getProperties(direction: Directions): SideProperties? {

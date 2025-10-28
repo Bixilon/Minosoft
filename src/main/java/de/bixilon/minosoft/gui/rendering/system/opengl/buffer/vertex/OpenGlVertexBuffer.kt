@@ -42,12 +42,11 @@ class OpenGlVertexBuffer(
 
     override fun init() {
         assert(state == GpuBufferStates.PREPARING)
-        val floatsPerVertex = struct.bytes / Float.SIZE_BYTES
 
         vertices = when {
             EMPTY_BUFFERS -> 0
             index != null -> index.data.limit()
-            else -> data.data.limit() / floatsPerVertex
+            else -> data.data.limit() / struct.floats
         }
 
         if (vertices == 0) {

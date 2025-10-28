@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -82,16 +83,16 @@ class BakedModel(
         return rendered
     }
 
-    private fun render(mesh: BlockVertexConsumer, tints: RGBArray?) {
+    private fun render(offset: Vec3f, mesh: BlockVertexConsumer, tints: RGBArray?) {
         for (side in this.faces) {
             for (face in side) {
-                face.render(mesh, tints)
+                face.render(offset, mesh, tints)
             }
         }
     }
 
-    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = render(mesh, tints)
-    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = render(mesh, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = render(Vec3f.EMPTY, consumer, tints)
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = render(offset, consumer, tints)
 
     override fun getDisplay(position: DisplayPositions): ModelDisplay? {
         return this.display?.get(position)

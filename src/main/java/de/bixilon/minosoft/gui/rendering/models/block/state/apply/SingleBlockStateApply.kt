@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.Face
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 data class SingleBlockStateApply(
@@ -181,7 +181,7 @@ data class SingleBlockStateApply(
 
 
             val faceProperties = if (rotation == null && this@SingleBlockStateApply.rotation == null) positions.properties(rotatedXY, texture) else null
-            val bakedFace = BakedFace(positions, UnpackedUV(uv), this.shade, face.tintIndex, texture, rotatedXY, faceProperties)
+            val bakedFace = BakedFace(positions, UnpackedUVArray(uv), this.shade, face.tintIndex, texture, rotatedXY, faceProperties)
 
             faces[rotatedXY.ordinal] += bakedFace
             properties[rotatedXY.ordinal] += faceProperties ?: continue

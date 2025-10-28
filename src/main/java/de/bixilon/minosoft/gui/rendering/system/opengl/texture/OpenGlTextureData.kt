@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.UnpackedUV
 
 class OpenGlTextureData(
     val array: Int,
@@ -26,24 +25,15 @@ class OpenGlTextureData(
 ) : TextureRenderData {
     override val shaderTextureId: Int = (array shl 28) or (index shl 12) or (animationData + 1)
 
-    override fun transformUV(end: Vec2f): Vec2f {
-        if (uvEnd == null) return end
+    override fun transformUV(uv: Vec2f): Vec2f {
+        if (uvEnd == null) return uv
 
-        return Vec2f(end.x * uvEnd.x, end.y * uvEnd.y)
+        return Vec2f(uv.x * uvEnd.x, uv.y * uvEnd.y)
     }
 
-    override fun transformUVPacked(end: Vec2f): Float {
-        if (uvEnd == null) return PackedUV.pack(end.x, end.y)
+    override fun transformUV(uv: PackedUV): PackedUV {
+        val uvEnd = this.uvEnd ?: return uv
 
-        return PackedUV.pack(end.x * uvEnd.x, end.y * uvEnd.y)
-    }
-
-    override fun transformUVPacked(end: Float): Float {
-        val uvEnd = this.uvEnd ?: return end
-
-        val u = UnpackedUV.unpackU(end)
-        val v = UnpackedUV.unpackV(end)
-
-        return PackedUV.pack(u * uvEnd.x, v * uvEnd.y)
+        return PackedUV(uv.u * uvEnd.x, uv.v * uvEnd.y)
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
@@ -25,6 +26,7 @@ abstract class DynamicTexture(
 ) : ShaderTexture {
     private val callbacks: MutableSet<DynamicTextureListener> = mutableSetOf()
     private val lock = RWLock.rwlock()
+    override var transparency = TextureTransparencies.OPAQUE
 
     var data: MipmapTextureData? = null
     var state: DynamicTextureState = DynamicTextureState.WAITING
@@ -48,12 +50,8 @@ abstract class DynamicTexture(
         return identifier.toString()
     }
 
-    override fun transformUV(end: Vec2f) = end // TODO
-    override fun transformUVPacked(end: Vec2f): Float {
-        return PackedUV.pack(end.x, end.y)  // TODO
-    }
-
-    override fun transformUVPacked(end: Float) = end
+    override fun transformUV(uv: Vec2f) = uv // TODO
+    override fun transformUV(uv: PackedUV) = uv // TODO
 
     operator fun plusAssign(callback: DynamicTextureListener) = addListener(callback)
     fun addListener(callback: DynamicTextureListener) {
