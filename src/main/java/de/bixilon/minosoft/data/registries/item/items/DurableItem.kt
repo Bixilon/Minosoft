@@ -20,6 +20,7 @@ interface DurableItem : ItemWithMeta {
     val maxDurability: Int
 
     override fun withMeta(stack: ItemStack, meta: Int): ItemStack? {
+        if (this.maxDurability == 0) return stack
         val durability = maxDurability - meta  // in <1.13 its damage not durability
         if (durability <= 0) return null
 
