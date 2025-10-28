@@ -28,7 +28,7 @@ abstract class RenderParticle(session: PlaySession, position: Vec3d, velocity: M
     protected var color: RGBAColor = ChatColors.WHITE
 
     open val emittingLight = 0
-    var light = retrieveLight()
+    var light = LightLevel.MAX
 
     override fun forceMove(delta: Vec3d) {
         super.forceMove(delta)
