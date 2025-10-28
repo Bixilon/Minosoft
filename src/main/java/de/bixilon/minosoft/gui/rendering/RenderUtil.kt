@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
-import de.bixilon.minosoft.gui.rendering.RenderConstants.UV_ADD
+import de.bixilon.minosoft.gui.rendering.RenderConstants.UV_PRECISION_CORRECTION
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 
@@ -43,13 +43,13 @@ object RenderUtil {
     }
 
     fun MVec2f.fixUVStart() {
-        if (x < 1.0f - UV_ADD && x > 0.0f) x += UV_ADD
-        if (y < 1.0f - UV_ADD && y > 0.0f) y += UV_ADD
+        if (x < 1.0f - UV_PRECISION_CORRECTION && x > 0.0f) x += UV_PRECISION_CORRECTION
+        if (y < 1.0f - UV_PRECISION_CORRECTION && y > 0.0f) y += UV_PRECISION_CORRECTION
     }
 
     fun MVec2f.fixUVEnd() {
-        if (x < 1.0f && x > UV_ADD) x -= UV_ADD
-        if (y < 1.0f && y > UV_ADD) y -= UV_ADD
+        if (x < 1.0f && x > UV_PRECISION_CORRECTION) x -= UV_PRECISION_CORRECTION
+        if (y < 1.0f && y > UV_PRECISION_CORRECTION) y -= UV_PRECISION_CORRECTION
     }
 
     fun RenderContext.unload() {
