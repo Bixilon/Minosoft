@@ -25,20 +25,24 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
 class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeletalMeshBuilder(context, SkeletalMeshStruct, estimate) {
 
-    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUVArray, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
-        data.add(
-            position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
-            uv.raw[uvOffset + 0], uv.raw[uvOffset + 1],
-            transformNormal,
-            textureShaderId,
-        )
-    }
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, transformNormal: Float, texture: ShaderTexture) = data.add(
+        x, y, z,
+        u, v,
+        transformNormal,
+        texture.shaderId.buffer()
+    )
+
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUVArray, uvOffset: Int, transformNormal: Float, texture: ShaderTexture) = addVertex(
+        position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
+        uv.raw[uvOffset + 0], uv.raw[uvOffset + 1],
+        transformNormal,
+        texture,
+    )
 
     override fun addQuad(positions: FaceVertexData, uv: UnpackedUVArray, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
         val transformNormal = ((transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
-        val textureShaderId = texture.shaderId.buffer()
 
-        iterate { addVertex(positions, it * Vec3f.LENGTH, uv, it * Vec2f.LENGTH, transformNormal, textureShaderId) }
+        iterate { addVertex(positions, it * Vec3f.LENGTH, uv, it * Vec2f.LENGTH, transformNormal, texture) }
         addIndexQuad()
     }
 

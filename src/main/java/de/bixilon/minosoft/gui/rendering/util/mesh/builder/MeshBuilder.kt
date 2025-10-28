@@ -53,6 +53,10 @@ abstract class MeshBuilder(
             return _index.unsafeCast()
         }
 
+    init {
+        assert(primitive in context.system.primitives) { "Primitive type not supported by render system: $primitive" }
+    }
+
 
     protected open val reused: Boolean = false
 

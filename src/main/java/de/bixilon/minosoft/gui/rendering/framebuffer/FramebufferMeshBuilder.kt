@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 class FramebufferMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, DefaultFramebufferMeshStruct, 1) {
 
     init {
-        // TODO: verify render order
         iterate { addVertex(VERTICES[it].first, VERTICES[it].second) }
         addIndexQuad()
     }

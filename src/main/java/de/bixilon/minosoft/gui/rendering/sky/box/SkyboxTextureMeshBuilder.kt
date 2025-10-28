@@ -22,51 +22,54 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 class SkyboxTextureMeshBuilder(context: RenderContext) : MeshBuilder(context, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, 6) {
 
+    inline fun addVertex(x: Float, y: Float, z: Float, textureIndex: Int) = data.add(
+        x, y, z,
+        textureIndex.buffer(),
+    )
+
     init {
-        data += floatArrayOf(
-            // TODO: convert to index buffers
-            -1.0f, +1.0f, -1.0f, 0.buffer(),
-            -1.0f, -1.0f, -1.0f, 3.buffer(),
-            +1.0f, -1.0f, -1.0f, 1.buffer(),
-            +1.0f, -1.0f, -1.0f, 1.buffer(),
-            +1.0f, +1.0f, -1.0f, 2.buffer(),
-            -1.0f, +1.0f, -1.0f, 0.buffer(),
+        // TODO: convert to index buffers
+        addVertex(-1.0f, +1.0f, -1.0f, 0)
+        addVertex(-1.0f, -1.0f, -1.0f, 3)
+        addVertex(+1.0f, -1.0f, -1.0f, 1)
+        addVertex(+1.0f, -1.0f, -1.0f, 1)
+        addVertex(+1.0f, +1.0f, -1.0f, 2)
+        addVertex(-1.0f, +1.0f, -1.0f, 0)
 
-            -1.0f, -1.0f, +1.0f, 1.buffer(),
-            -1.0f, -1.0f, -1.0f, 3.buffer(),
-            -1.0f, +1.0f, -1.0f, 0.buffer(),
-            -1.0f, +1.0f, -1.0f, 0.buffer(),
-            -1.0f, +1.0f, +1.0f, 2.buffer(),
-            -1.0f, -1.0f, +1.0f, 1.buffer(),
+        addVertex(-1.0f, -1.0f, +1.0f, 1)
+        addVertex(-1.0f, -1.0f, -1.0f, 3)
+        addVertex(-1.0f, +1.0f, -1.0f, 0)
+        addVertex(-1.0f, +1.0f, -1.0f, 0)
+        addVertex(-1.0f, +1.0f, +1.0f, 2)
+        addVertex(-1.0f, -1.0f, +1.0f, 1)
 
-            +1.0f, -1.0f, -1.0f, 3.buffer(),
-            +1.0f, -1.0f, +1.0f, 1.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, +1.0f, -1.0f, 0.buffer(),
-            +1.0f, -1.0f, -1.0f, 3.buffer(),
+        addVertex(+1.0f, -1.0f, -1.0f, 3)
+        addVertex(+1.0f, -1.0f, +1.0f, 1)
+        addVertex(+1.0f, +1.0f, +1.0f, 2)
+        addVertex(+1.0f, +1.0f, +1.0f, 2)
+        addVertex(+1.0f, +1.0f, -1.0f, 0)
+        addVertex(+1.0f, -1.0f, -1.0f, 3)
 
-            -1.0f, -1.0f, +1.0f, 3.buffer(),
-            -1.0f, +1.0f, +1.0f, 1.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, -1.0f, +1.0f, 0.buffer(),
-            -1.0f, -1.0f, +1.0f, 3.buffer(),
+        addVertex(-1.0f, -1.0f, +1.0f, 3)
+        addVertex(-1.0f, +1.0f, +1.0f, 1)
+        addVertex(+1.0f, +1.0f, +1.0f, 2)
+        addVertex(+1.0f, +1.0f, +1.0f, 2)
+        addVertex(+1.0f, -1.0f, +1.0f, 0)
+        addVertex(-1.0f, -1.0f, +1.0f, 3)
 
-            -1.0f, +1.0f, -1.0f, 3.buffer(),
-            +1.0f, +1.0f, -1.0f, 0.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            -1.0f, +1.0f, +1.0f, 1.buffer(),
-            -1.0f, +1.0f, -1.0f, 3.buffer(),
+        addVertex(-1.0f, +1.0f, -1.0f, 3)
+        addVertex(+1.0f, +1.0f, -1.0f, 0)
+        addVertex(+1.0f, +1.0f, +1.0f, 2)
+        addVertex(+1.0f, +1.0f, +1.0f, 2)
+        addVertex(-1.0f, +1.0f, +1.0f, 1)
+        addVertex(-1.0f, +1.0f, -1.0f, 3)
 
-            -1.0f, -1.0f, -1.0f, 3.buffer(),
-            -1.0f, -1.0f, +1.0f, 1.buffer(),
-            +1.0f, -1.0f, +1.0f, 2.buffer(),
-            +1.0f, -1.0f, +1.0f, 2.buffer(),
-            +1.0f, -1.0f, -1.0f, 0.buffer(),
-            -1.0f, -1.0f, -1.0f, 3.buffer(),
-        )
+        addVertex(-1.0f, -1.0f, -1.0f, 3)
+        addVertex(-1.0f, -1.0f, +1.0f, 1)
+        addVertex(+1.0f, -1.0f, +1.0f, 2)
+        addVertex(+1.0f, -1.0f, +1.0f, 2)
+        addVertex(+1.0f, -1.0f, -1.0f, 0)
+        addVertex(-1.0f, -1.0f, -1.0f, 3)
     }
 
     data class SkyboxTextureMeshStruct(

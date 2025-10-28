@@ -26,17 +26,19 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Com
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 
-open class PlayerModelMeshBuilder(context: RenderContext) : AbstractSkeletalMeshBuilder(context, PlayerMeshStruct, 6 * 2 * 6) {
+open class PlayerModelMeshBuilder(context: RenderContext) : AbstractSkeletalMeshBuilder(context, PlayerMeshStruct, 1) {
 
-    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUVArray, uvOffset: Int, partTransformNormal: Float) {
-        data.add(
-            position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
-        )
-        data.add(
-            uv.raw[uvOffset + 0], uv.raw[uvOffset + 1],
-            partTransformNormal,
-        )
-    }
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, partTransformNormal: Float) = data.add(
+        x, y, z,
+        u, v,
+        partTransformNormal,
+    )
+
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: UnpackedUVArray, uvOffset: Int, partTransformNormal: Float) = addVertex(
+        position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
+        uv.raw[uvOffset + 0], uv.raw[uvOffset + 1],
+        partTransformNormal,
+    )
 
     override fun addQuad(positions: FaceVertexData, uv: UnpackedUVArray, transform: Int, normal: Vec3f, texture: ShaderTexture, path: String) {
         val part = path.getSkinPart()?.ordinal?.inc() ?: 0x00

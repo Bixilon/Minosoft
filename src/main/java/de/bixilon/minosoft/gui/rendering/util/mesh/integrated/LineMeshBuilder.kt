@@ -74,16 +74,10 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
     }
 
     private fun drawLineQuad(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, normal1: Vec3f, normal2: Vec3f, directionWidth: Vec3f, color: RGBAColor) {
-        // TODO: don't allocate those Vec3s, they are not cheap
-        val a = Vec3f(startX - directionWidth.x, startY - directionWidth.y, startZ - directionWidth.z)
-        val b = Vec3f(endX + directionWidth.x, endY + directionWidth.y, endZ + directionWidth.z)
-
-
-        addVertex(a.x + normal2.x, a.y + normal2.y, a.z + normal2.z, color)
-        addVertex(a.x + normal1.x, a.y + normal1.y, a.z + normal1.z, color)
-        addVertex(b.x + normal1.x, b.y + normal1.y, b.z + normal1.z, color)
-        addVertex(b.x + normal2.x, b.y + normal2.y, b.z + normal2.z, color)
-
+        addVertex(startX - directionWidth.x + normal2.x, startY - directionWidth.y + normal2.y, startZ - directionWidth.z + normal2.z, color)
+        addVertex(startX - directionWidth.x + normal1.x, startY - directionWidth.y + normal1.y, startZ - directionWidth.z + normal1.z, color)
+        addVertex(endX + directionWidth.x + normal1.x, endY + directionWidth.y + normal1.y, endZ + directionWidth.z + normal1.z, color)
+        addVertex(endX + directionWidth.x + normal2.x, endY + directionWidth.y + normal2.y, endZ + directionWidth.z + normal2.z, color)
 
         addIndexQuad()
     }
@@ -96,8 +90,8 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
         ensureSize(6)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
-            val from = Vec3f.Companion(aabb.min - offset)
-            val to = Vec3f.Companion(aabb.max - offset)
+            val from = Vec3f(aabb.min - offset)
+            val to = Vec3f(aabb.max - offset)
             val positions = CuboidUtil.positions(direction, from, to)
 
             iterate { addVertex(positions, it * Vec3f.LENGTH, color) }

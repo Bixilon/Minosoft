@@ -55,8 +55,8 @@ abstract class PlanetRenderer(
             vertexConsumer = { position, uv ->
                 mesh.addVertex(
                     position = position,
-                    texture = texture,
                     uv = uv,
+                    texture = texture,
                 )
             }
         )

@@ -20,29 +20,31 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshSt
 
 class SunScatterMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, 3) {
 
+    inline fun addVertex(x: Float, y: Float, z: Float) = data.add(
+        x, y, z,
+    )
+
     init {
-        data += floatArrayOf(
-            // TODO: convert to index buffers
-            -1.0f, +0.2f, -1.0f,
-            -1.0f, -0.2f, -1.0f,
-            +1.0f, -0.2f, -0.3f,
-            +1.0f, -0.2f, -0.3f,
-            +1.0f, +0.2f, -0.3f,
-            -1.0f, +0.2f, -1.0f,
+        // TODO: index buffers
+        addVertex(-1.0f, +0.2f, -1.0f)
+        addVertex(-1.0f, -0.2f, -1.0f)
+        addVertex(+1.0f, -0.2f, -0.3f)
+        addVertex(+1.0f, -0.2f, -0.3f)
+        addVertex(+1.0f, +0.2f, -0.3f)
+        addVertex(-1.0f, +0.2f, -1.0f)
 
-            +1.0f, -0.2f, -0.3f,
-            +1.0f, -0.2f, +0.3f,
-            +1.0f, +0.2f, +0.3f,
-            +1.0f, +0.2f, +0.3f,
-            +1.0f, +0.2f, -0.3f,
-            +1.0f, -0.2f, -0.3f,
+        addVertex(+1.0f, -0.2f, -0.3f)
+        addVertex(+1.0f, -0.2f, +0.3f)
+        addVertex(+1.0f, +0.2f, +0.3f)
+        addVertex(+1.0f, +0.2f, +0.3f)
+        addVertex(+1.0f, +0.2f, -0.3f)
+        addVertex(+1.0f, -0.2f, -0.3f)
 
-            -1.0f, -0.2f, +1.0f,
-            -1.0f, +0.2f, +1.0f,
-            +1.0f, +0.2f, +0.3f,
-            +1.0f, +0.2f, +0.3f,
-            +1.0f, -0.2f, +0.3f,
-            -1.0f, -0.2f, +1.0f,
-        )
+        addVertex(-1.0f, -0.2f, +1.0f)
+        addVertex(-1.0f, +0.2f, +1.0f)
+        addVertex(+1.0f, +0.2f, +0.3f)
+        addVertex(+1.0f, +0.2f, +0.3f)
+        addVertex(+1.0f, -0.2f, +0.3f)
+        addVertex(-1.0f, -0.2f, +1.0f)
     }
 }

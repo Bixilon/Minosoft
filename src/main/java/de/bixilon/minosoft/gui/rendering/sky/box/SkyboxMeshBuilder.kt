@@ -14,56 +14,52 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshStruct
 
-class SkyboxMeshBuilder(context: RenderContext) : MeshBuilder(context, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, 6) {
+class SkyboxMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, PositionOnlyMeshStruct, 6) {
+
+    private inline fun addVertex(x: Float, y: Float, z: Float) = data.add(
+        x, y, z,
+    )
 
     init {
-        data += floatArrayOf(
-            // TODO: convert to index buffers
-            -1.0f, +1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            +1.0f, -1.0f, -1.0f,
-            +1.0f, -1.0f, -1.0f,
-            +1.0f, +1.0f, -1.0f,
-            -1.0f, +1.0f, -1.0f,
+        addVertex(-1.0f, -1.0f, -1.0f)
+        addVertex(-1.0f, -1.0f, +1.0f)
+        addVertex(+1.0f, -1.0f, +1.0f)
+        addVertex(+1.0f, -1.0f, -1.0f)
+        addIndexQuad(false, true)
 
-            -1.0f, -1.0f, +1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, +1.0f, -1.0f,
-            -1.0f, +1.0f, -1.0f,
-            -1.0f, +1.0f, +1.0f,
-            -1.0f, -1.0f, +1.0f,
+        addVertex(-1.0f, +1.0f, -1.0f)
+        addVertex(-1.0f, +1.0f, +1.0f)
+        addVertex(+1.0f, +1.0f, +1.0f)
+        addVertex(+1.0f, +1.0f, -1.0f)
+        addIndexQuad(false, true)
 
-            +1.0f, -1.0f, -1.0f,
-            +1.0f, -1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, -1.0f,
-            +1.0f, -1.0f, -1.0f,
 
-            -1.0f, -1.0f, +1.0f,
-            -1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, -1.0f, +1.0f,
-            -1.0f, -1.0f, +1.0f,
+        addVertex(-1.0f, -1.0f, -1.0f)
+        addVertex(-1.0f, +1.0f, -1.0f)
+        addVertex(+1.0f, +1.0f, -1.0f)
+        addVertex(+1.0f, -1.0f, -1.0f)
+        addIndexQuad(false, true)
 
-            -1.0f, +1.0f, -1.0f,
-            +1.0f, +1.0f, -1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            -1.0f, +1.0f, +1.0f,
-            -1.0f, +1.0f, -1.0f,
+        addVertex(-1.0f, -1.0f, +1.0f)
+        addVertex(-1.0f, +1.0f, +1.0f)
+        addVertex(+1.0f, +1.0f, +1.0f)
+        addVertex(+1.0f, -1.0f, +1.0f)
+        addIndexQuad(false, true)
 
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, +1.0f,
-            +1.0f, -1.0f, +1.0f,
-            +1.0f, -1.0f, +1.0f,
-            +1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-        )
+
+        addVertex(-1.0f, -1.0f, -1.0f)
+        addVertex(-1.0f, -1.0f, +1.0f)
+        addVertex(-1.0f, +1.0f, +1.0f)
+        addVertex(-1.0f, +1.0f, -1.0f)
+        addIndexQuad(false, true)
+
+        addVertex(+1.0f, -1.0f, -1.0f)
+        addVertex(+1.0f, -1.0f, +1.0f)
+        addVertex(+1.0f, +1.0f, +1.0f)
+        addVertex(+1.0f, +1.0f, -1.0f)
+        addIndexQuad(false, true)
     }
 }

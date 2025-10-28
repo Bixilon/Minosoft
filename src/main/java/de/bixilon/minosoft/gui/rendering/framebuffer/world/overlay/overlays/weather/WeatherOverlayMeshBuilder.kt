@@ -21,22 +21,28 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 open class WeatherOverlayMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, WeatherOverlayMeshStruct, 1) {
 
-    fun addVertex(position: Vec3f, uv: Vec2f, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
-        data.add(
-            position.x, position.y, position.z,
-            uv.x, uv.y,
-            offset,
-            offsetMultiplicator,
-            alphaMultiplicator,
-        )
-    }
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) = data.add(
+        x, y, z,
+        u, v,
+        offset,
+        offsetMultiplicator,
+        alphaMultiplicator,
+    )
+
+    fun addVertex(position: Vec3f, uv: Vec2f, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) = addVertex(
+        position.x, position.y, position.z,
+        uv.x, uv.y,
+        offset,
+        offsetMultiplicator,
+        alphaMultiplicator,
+    )
 
 
     data class WeatherOverlayMeshStruct(
         val position: Vec3f,
         val uv: Vec2f,
         val offset: Float,
-        val vinOffsetMultiplier: Float,
+        val offsetMultiplier: Float,
         val alphaMultiplier: Float,
     ) {
         companion object : MeshStruct(WeatherOverlayMeshStruct::class)

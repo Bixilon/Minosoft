@@ -42,8 +42,6 @@ class BlockMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BlockM
         iterate {
             val vertexOffset = it * Vec3f.LENGTH
 
-
-            val aUV = uv[it].raw
             addVertex(
                 offset.x + positions[vertexOffset], offset.y + positions[vertexOffset + 1], offset.z + positions[vertexOffset + 2],
                 uv[it],

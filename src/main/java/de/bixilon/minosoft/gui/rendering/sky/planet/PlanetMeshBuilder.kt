@@ -23,13 +23,17 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 open class PlanetMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, SunMeshStruct, 1) {
 
-    fun addVertex(position: Vec3f, texture: ShaderTexture, uv: Vec2f) {
-        data.add(
-            position.x, position.y, position.z,
-            uv.x, uv.y,
-            texture.shaderId.buffer(),
-        )
-    }
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, texture: ShaderTexture) = data.add(
+        x, y, z,
+        u, v,
+        texture.shaderId.buffer(),
+    )
+
+    fun addVertex(position: Vec3f, uv: Vec2f, texture: ShaderTexture) = addVertex(
+        position.x, position.y, position.z,
+        uv.x, uv.y,
+        texture,
+    )
 
 
     data class SunMeshStruct(

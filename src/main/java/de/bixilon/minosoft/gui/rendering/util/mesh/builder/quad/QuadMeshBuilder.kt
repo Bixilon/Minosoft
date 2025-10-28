@@ -31,6 +31,7 @@ abstract class QuadMeshBuilder(
 ) : MeshBuilder(context, struct, if (PrimitiveTypes.QUAD in context.system.primitives) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE, estimate, data, index), QuadConsumer {
     protected val remap = this.primitive == PrimitiveTypes.TRIANGLE
 
+    @Deprecated("They are just stupid")
     inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
             Vec3f(x, start.x, start.y),
@@ -41,6 +42,7 @@ abstract class QuadMeshBuilder(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
+    @Deprecated("They are just stupid")
     inline fun addYQuad(start: Vec2f, y: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
             Vec3f(start.x, y, end.y),
@@ -51,6 +53,7 @@ abstract class QuadMeshBuilder(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
+    @Deprecated("They are just stupid")
     inline fun addZQuad(start: Vec2f, z: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(
             Vec3f(start.x, start.y, z),
@@ -61,12 +64,13 @@ abstract class QuadMeshBuilder(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
+    @Deprecated("They are just stupid")
+    inline fun addQuad(positions: Array<Vec3f>, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, consumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         // TODO: verify render order
-        vertexConsumer.invoke(positions[0], uvStart)
-        vertexConsumer.invoke(positions[1], Vec2f(uvStart.x, uvEnd.y))
-        vertexConsumer.invoke(positions[2], uvEnd)
-        vertexConsumer.invoke(positions[3], Vec2f(uvEnd.x, uvStart.y))
+        consumer.invoke(positions[0], uvStart)
+        consumer.invoke(positions[1], Vec2f(uvStart.x, uvEnd.y))
+        consumer.invoke(positions[2], uvEnd)
+        consumer.invoke(positions[3], Vec2f(uvEnd.x, uvStart.y))
 
         addIndexQuad()
     }
