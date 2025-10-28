@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.util.Stopwatch
+import de.bixilon.minosoft.util.collections.MemoryOptions
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -51,6 +52,10 @@ object RenderLoader {
     }
 
     fun RenderContext.load(latch: AbstractLatch) {
+        if (!MemoryOptions.native) {
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Native memory is disabled! Performance will be degraded!" }
+        }
+
         val renderLatch = ParentLatch(1, latch)
         setThread()
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating window..." }

@@ -21,10 +21,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
+import de.bixilon.minosoft.util.collections.MemoryOptions
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 import de.bixilon.minosoft.util.collections.ints.IntListUtil
-import org.lwjgl.system.MemoryUtil.memAllocFloat
-import org.lwjgl.system.MemoryUtil.memAllocInt
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
@@ -61,7 +60,7 @@ abstract class MeshBuilder(
         val data = this._data
 
         val native = data?.toUnsafeNativeBuffer()
-        val buffer = native ?: data?.toBuffer { memAllocFloat(it) } ?: memAllocFloat(0)  // TODO: Only if native is allowed
+        val buffer = native ?: data?.toBuffer { MemoryOptions.allocateFloat(it) } ?: MemoryOptions.allocateFloat(0)
 
         buffer.limit(data?.size ?: 0); buffer.position(0)
 
@@ -75,7 +74,7 @@ abstract class MeshBuilder(
         if (index.isEmpty) return null
 
         val native = index.toUnsafeNativeBuffer()
-        val buffer = native ?: index.toBuffer { memAllocInt(it) } // TODO: Only if native is allowed
+        val buffer = native ?: index.toBuffer { MemoryOptions.allocateInt(it) }
 
         buffer.limit(index.size); buffer.position(0)
 

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.terminal.arguments.AppliedArgument
+import de.bixilon.minosoft.util.collections.MemoryOptions
 
 class RenderingArgument : OptionGroup(), AppliedArgument {
     private val _disable by option("--disable_rendering").flag(default = RenderingOptions.disabled).deprecated("--disable_rendering is deprecated, use --no-rendering instead")
@@ -29,11 +30,15 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
     val windowApi by option("--window-api").choice(choices = WindowFactory.FACTORIES.map { it.key }.toTypedArray()).convert { WindowFactory.FACTORIES[it] ?: fail("No such window api: $it") }.defaultLazy { WindowFactory.factory!! }
     val renderApi by option("--render-api").choice(choices = RenderSystemFactory.FACTORIES.map { it.key }.toTypedArray()).convert { RenderSystemFactory.FACTORIES[it] ?: fail("No such render api: $it") }.defaultLazy { RenderSystemFactory.factory!! }
 
+    val noNativeMemory by option("--no-native-memory").flag(default = !MemoryOptions.native)
+
 
     override fun apply() {
         RenderingOptions.disabled = _disable || disable
         RenderingOptions.cursorCatch = !(_noCursorCatch || noCursorCatch)
         WindowFactory.factory = windowApi
         RenderSystemFactory.factory = renderApi
+
+        MemoryOptions.native = !noNativeMemory
     }
 }

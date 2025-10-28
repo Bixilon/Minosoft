@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
+import de.bixilon.minosoft.util.collections.MemoryOptions
 import java.nio.FloatBuffer
 
 object FloatListUtil {
     const val PREFER_FRAGMENTED = false // realloc is SO fast, the kernel just swaps the page table entries.
-    const val ALLOW_NATIVE = true
 
     const val DEFAULT_INITIAL_SIZE = 1024
 
     fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE, fragmented: Boolean = PREFER_FRAGMENTED) = when {
-        !ALLOW_NATIVE -> HeapFloatList(initialSize)
+        !MemoryOptions.native -> HeapFloatList(initialSize)
         fragmented -> FragmentedFloatList(initialSize)
         else -> BufferFloatList(initialSize)
     }

@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlGpuBuffer
+import org.lwjgl.opengl.GL15C
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.system.MemoryUtil.memAddress0
 import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.IntBuffer
 
@@ -30,12 +33,21 @@ class OpenGlIndexBuffer(
 
 
     override fun initialUpload() {
-        gl { glBufferData(glType, data, GL_STATIC_DRAW) }
+        gl { nglBufferData(glType, data, if (EMPTY_BUFFERS) 0 else data.limit(), GL_STATIC_DRAW) }
         unsafeDrop()
     }
 
     override fun unsafeDrop() {
-        if (free) memFree(this.data)
+        if (free && data.isDirect) memFree(this.data)
         this::data.forceSet(null)
+    }
+
+    private fun nglBufferData(target: Int, buffer: IntBuffer, length: Int, usage: Int) {
+        if (buffer.isDirect) {
+            gl { GL15C.nglBufferData(target, Integer.toUnsignedLong(length) * Int.SIZE_BYTES, memAddress0(buffer), usage) }
+        } else {
+            val array = if (length == 0) IntArray(0) else buffer.array() // TODO: support length
+            gl { glBufferData(target, array, usage) }
+        }
     }
 }

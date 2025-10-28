@@ -53,7 +53,7 @@ class FloatOpenGlUniformBuffer(
     }
 
     override fun unsafeDrop() {
-        memFree(data)
+        if (data.isDirect) memFree(data)
         this::data.forceSet(null)
     }
 }

@@ -17,8 +17,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
-import org.lwjgl.opengl.GL15.GL_STATIC_DRAW
+import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL15C
 import org.lwjgl.system.MemoryUtil.memAddress0
 import org.lwjgl.system.MemoryUtil.memFree
@@ -39,12 +38,17 @@ class FloatOpenGlBuffer(
     }
 
     override fun unsafeDrop() {
-        if (free) memFree(this.data)
+        if (free && data.isDirect) memFree(this.data)
         this::data.forceSet(null)
     }
 
 
     private fun nglBufferData(target: Int, buffer: FloatBuffer, length: Int, usage: Int) {
-        gl { GL15C.nglBufferData(target, Integer.toUnsignedLong(length) shl 2, memAddress0(buffer), usage) }
+        if (buffer.isDirect) {
+            gl { GL15C.nglBufferData(target, Integer.toUnsignedLong(length) * Float.SIZE_BYTES, memAddress0(buffer), usage) }
+        } else {
+            val array = if (length == 0) FloatArray(0) else buffer.array() // TODO: support length
+            gl { glBufferData(target, array, usage) }
+        }
     }
 }

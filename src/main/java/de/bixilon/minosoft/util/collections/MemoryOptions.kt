@@ -11,18 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.collections.ints
+package de.bixilon.minosoft.util.collections
 
-import de.bixilon.kutil.collections.primitive.ints.HeapIntList
-import de.bixilon.minosoft.util.collections.MemoryOptions
+import org.lwjgl.system.MemoryUtil.memAllocFloat
+import org.lwjgl.system.MemoryUtil.memAllocInt
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
-object IntListUtil {
-    const val PREFER_FRAGMENTED = false // realloc is SO fast, the kernel just swaps the page table entries.
+object MemoryOptions {
+    var native = true
 
-    const val DEFAULT_INITIAL_SIZE = 1024
+    fun allocateFloat(size: Int) = when {
+        native -> memAllocFloat(size)
+        else -> FloatBuffer.allocate(size)
+    }
 
-    fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE, fragmented: Boolean = PREFER_FRAGMENTED) = when {
-        !MemoryOptions.native -> HeapIntList(initialSize)
-        else -> BufferIntList(initialSize)
+    fun allocateInt(size: Int) = when {
+        native -> memAllocInt(size)
+        else -> IntBuffer.allocate(size)
     }
 }
