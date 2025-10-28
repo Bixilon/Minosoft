@@ -93,4 +93,17 @@ class SignBlockEntityTest {
         assertEquals(entity.front.color, ChatColors.RED)
         assertEquals(entity.front.text, arrayOf(TextComponent("Very long line"), ChatComponent.of(""), ChatComponent.of(""), ChatComponent.of("")))
     }
+
+    fun `nbt 1_12_2`() {
+        val nbt = mapOf(
+            "Text1" to """{"text":"This is the front"}""",
+            "Text2" to """{"text":"text"}""",
+            "Text3" to """{"text":"of"}""",
+            "Text4" to """{"text":"this sign."}""",
+        )
+        val entity = create()
+        entity.updateNBT(nbt)
+
+        assertEquals(entity.front.text, arrayOf(ChatComponent.of("This is the front"), ChatComponent.of("text"), ChatComponent.of("of"), ChatComponent.of("this sign.")))
+    }
 }

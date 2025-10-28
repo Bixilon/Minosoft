@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,8 +21,11 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<SignBlockEntity>(resourceLocation, registries, data), ModelChooser {
+
+    override fun createBlockEntity(session: PlaySession) = SignBlockEntity(session)
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
         super.bakeModel(context, model)
