@@ -145,7 +145,7 @@ class SignBlockEntityRenderer(
 
 
         const val STANDING_ROTATION_STEPS = 16
-        val STANDING_ROTATIONS = FloatArray(STANDING_ROTATION_STEPS) { -it * (2 * PIf) / STANDING_ROTATION_STEPS }
+        val STANDING_ROTATIONS = FloatArray(STANDING_ROTATION_STEPS) { it * (2 * PIf) / STANDING_ROTATION_STEPS }
         const val STANDING_BOARD_HEIGHT = 17.5f / BLOCK_SIZE
         const val STANDING_FRONT_DISTANCE = 9.0f / BLOCK_SIZE
         const val STANDING_BACK_DISTANCE = 7.0f / BLOCK_SIZE

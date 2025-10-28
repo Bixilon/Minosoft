@@ -1,67 +1,68 @@
 {
   "variants": {
     "rotation=0": {
-      "model": "block/sign/jungle/standing"
+      "model": "block/sign/jungle/standing",
+      "y": 0.0
     },
     "rotation=1": {
       "model": "block/sign/jungle/standing",
-      "y": 22.5
+      "y": -22.5
     },
     "rotation=2": {
       "model": "block/sign/jungle/standing",
-      "y": 45
+      "y": -45
     },
     "rotation=3": {
       "model": "block/sign/jungle/standing",
-      "y": 67.5
+      "y": -67.5
     },
     "rotation=4": {
       "model": "block/sign/jungle/standing",
-      "y": 90
+      "y": -90
     },
     "rotation=5": {
       "model": "block/sign/jungle/standing",
-      "y": 112.5
+      "y": -112.5
     },
     "rotation=6": {
       "model": "block/sign/jungle/standing",
-      "y": 135
+      "y": -135
     },
     "rotation=7": {
       "model": "block/sign/jungle/standing",
-      "y": 157.5
+      "y": -157.5
     },
     "rotation=8": {
       "model": "block/sign/jungle/standing",
-      "y": 180
+      "y": -180
     },
     "rotation=9": {
       "model": "block/sign/jungle/standing",
-      "y": 202.5
+      "y": -202.5
     },
     "rotation=10": {
       "model": "block/sign/jungle/standing",
-      "y": 225
+      "y": -225
     },
     "rotation=11": {
       "model": "block/sign/jungle/standing",
-      "y": 247.5
+      "y": -247.5
     },
     "rotation=12": {
       "model": "block/sign/jungle/standing",
-      "y": 270
+      "y": -270
     },
     "rotation=13": {
       "model": "block/sign/jungle/standing",
-      "y": 292.5
+      "y": -292.5
     },
     "rotation=14": {
       "model": "block/sign/jungle/standing",
-      "y": 315
+      "y": -315
     },
     "rotation=15": {
       "model": "block/sign/jungle/standing",
-      "y": 337.5
+      "y": -337.5
     }
   }
 }
