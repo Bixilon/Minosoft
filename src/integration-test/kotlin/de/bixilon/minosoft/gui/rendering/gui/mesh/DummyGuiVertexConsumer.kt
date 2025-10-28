@@ -18,23 +18,20 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 open class DummyGuiVertexConsumer : GuiVertexConsumer {
     var char = 0
 
-    override fun addCache(cache: GuiMeshCache) = Broken()
-
     override fun ensureSize(primitives: Int) = Broken()
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
+    open fun addChar(start: Vec2f, end: Vec2f, index: Int): Unit = Broken()
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-
-    override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
-        addChar(start, end, this.char++)
+    override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+        addChar(Vec2f(start.unsafe), Vec2f(end.unsafe), this.char++)
     }
 
-    open fun addChar(start: Vec2f, end: Vec2f, index: Int): Unit = Broken()
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
+    override fun addQuad(startX: Float, startY: Float, endX: Float, endY: Float, texture: ShaderTexture, uvStartX: Float, uvStartY: Float, uvEndX: Float, uvEndY: Float, tint: RGBAColor, options: GUIVertexOptions?) {}
+
+    override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {}
+
 }

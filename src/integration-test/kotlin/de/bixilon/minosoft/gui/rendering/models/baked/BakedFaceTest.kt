@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import de.bixilon.minosoft.test.ITUtil.allocate
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -74,10 +74,10 @@ class BakedFaceTest {
 
         val data = mesh.opaque.data.toArray()
         val expected = floatArrayOf(
-            0f, 1f, 2f, PackedUVArray.pack(-1f, -2f), texture, lightTint,
-            3f, 4f, 5f, PackedUVArray.pack(-3f, -4f), texture, lightTint,
-            6f, 7f, 8f, PackedUVArray.pack(-5f, -6f), texture, lightTint,
-            9f, 10f, 11f, PackedUVArray.pack(-7f, -8f), texture, lightTint,
+            0f, 1f, 2f, PackedUV(-1f, -2f).raw, texture, lightTint,
+            3f, 4f, 5f, PackedUV(-3f, -4f).raw, texture, lightTint,
+            6f, 7f, 8f, PackedUV(-5f, -6f).raw, texture, lightTint,
+            9f, 10f, 11f, PackedUV(-7f, -8f).raw, texture, lightTint,
         )
 
 
@@ -96,10 +96,10 @@ class BakedFaceTest {
 
         val data = mesh.opaque.data.toArray()
         val expected = floatArrayOf(
-            0f, 0f, 0f, PackedUVArray.pack(0f, 0f), texture, lightTint,
-            0f, 1f, 0f, PackedUVArray.pack(0f, 1f), texture, lightTint,
-            0f, 1f, 1f, PackedUVArray.pack(1f, 1f), texture, lightTint,
-            0f, 0f, 1f, PackedUVArray.pack(1f, 0f), texture, lightTint,
+            0f, 0f, 0f, PackedUV(0f, 0f).raw, texture, lightTint,
+            0f, 1f, 0f, PackedUV(0f, 1f).raw, texture, lightTint,
+            0f, 1f, 1f, PackedUV(1f, 1f).raw, texture, lightTint,
+            0f, 0f, 1f, PackedUV(1f, 0f).raw, texture, lightTint,
         )
 
 

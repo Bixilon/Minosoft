@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -30,19 +29,20 @@ class DummyComponentConsumer : GuiVertexConsumer {
     val chars: MutableList<RenderedCodePoint> = mutableListOf()
     val quads: MutableList<RenderedQuad> = mutableListOf()
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-    override fun addCache(cache: GuiMeshCache) = Broken()
     override fun ensureSize(primitives: Int) = Unit
 
-    override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
-        quads += RenderedQuad(Vec2f(start.unsafe), Vec2f(end.unsafe)) // copy because unsafe
+    override fun addQuad(startX: Float, startY: Float, endX: Float, endY: Float, texture: ShaderTexture, uvStartX: Float, uvStartY: Float, uvEndX: Float, uvEndY: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+        quads += RenderedQuad(Vec2f(startX, startY), Vec2f(endX, endY))
     }
+
+    override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
+        quads += RenderedQuad(Vec2f(start.unsafe), Vec2f(end.unsafe))
+    }
+
+    override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) = Broken() // dummy code point renderer (below)
 
     data class RenderedCodePoint(val start: Vec2f)
     data class RenderedQuad(val start: Vec2f, val end: Vec2f)
-
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
 
 
     inner class ConsumerCodePointRenderer(val width: Float) : CodePointRenderer {

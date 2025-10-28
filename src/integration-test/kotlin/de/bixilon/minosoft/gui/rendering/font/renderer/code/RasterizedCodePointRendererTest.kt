@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
@@ -30,7 +30,7 @@ class RasterizedCodePointRendererTest {
 
     fun verifySimpleSetup() {
         val consumer = object : DummyGuiVertexConsumer() {
-            override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 this.char++
                 assertEquals(tint, ChatColors.BLUE)
                 assertEquals(uvStart, Vec2f(0.1f, 0.2f))
@@ -48,7 +48,7 @@ class RasterizedCodePointRendererTest {
     fun verifyComplexSetup() {
         var chars = 0
         val consumer = object : DummyGuiVertexConsumer() {
-            override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2f, end: Vec2f, index: Int) {
                 chars++
             }
         }
@@ -85,7 +85,7 @@ class RasterizedCodePointRendererTest {
 
     fun scaled() {
         val consumer = object : DummyGuiVertexConsumer() {
-            override fun addChar(start: Vec2f, end: Vec2f, texture: Texture?, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+            override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
                 assertEquals(start, Vec2f(10.0f, 13.5f)) // top spacing
                 assertEquals(end, Vec2f(17.5f, 25.5f)) // start + width | start + height
 

@@ -511,7 +511,7 @@ class SolidSectionMesherTest {
         override fun getProperties(direction: Directions) = this.properties
 
         override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
-            (props.mesh as ChunkMeshesBuilder).opaque.addVertex(1f, 1f, 1f, 1f, 1f, 1f)
+            (props.mesh as ChunkMeshesBuilder).opaque.data.add(1f)
             queue.blocks.add(TestQueue.RenderedBlock(position, state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }

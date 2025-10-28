@@ -18,14 +18,16 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
+import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.annotations.Test
@@ -57,8 +59,8 @@ class BlockGUIConsumerTest {
     fun `south quad with offset and specific size`() {
         val consumer = create()
         val position = CuboidUtil.positions(Directions.SOUTH, Vec3f(0, 0, 0), Vec3f(1, 1, 1))
-        val uv = UnpackedUVArray(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f))
-        consumer.addQuad(position, uv, 0f, 0f)
+        val uv = UnpackedUVArray(floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f)).pack()
+        consumer.addQuad(Vec3f.EMPTY, position, uv, DummyTexture(), 0, ChatColors.WHITE.rgb(), AmbientOcclusionUtil.EMPTY)
 
         consumer.assertVertices(arrayOf(Vec2f())) // TODO
     }
@@ -66,11 +68,11 @@ class BlockGUIConsumerTest {
     private class GuiConsumer : GuiVertexConsumer {
         val vertices: MutableList<Vec2f> = mutableListOf()
 
-        override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-        override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
+        override fun addQuad(startX: Float, startY: Float, endX: Float, endY: Float, texture: ShaderTexture, uvStartX: Float, uvStartY: Float, uvEndX: Float, uvEndY: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 
-        override fun addCache(cache: GuiMeshCache) = Broken()
         override fun ensureSize(primitives: Int) = Unit
-        override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
+        override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
+
+        override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     }
 }
