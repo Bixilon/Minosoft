@@ -58,7 +58,7 @@ class BlockMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BlockM
     data class BlockMeshStruct(
         val position: Vec3f,
         val uv: PackedUV,
-        val texture: Int,
+        val texture: ShaderTexture,
         val tint: RGBColor,
     ) {
         companion object : MeshStruct(BlockMeshStruct::class)

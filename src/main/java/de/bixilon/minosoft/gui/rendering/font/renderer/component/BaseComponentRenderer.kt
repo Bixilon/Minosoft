@@ -18,12 +18,12 @@ import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
-    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: BaseComponent): TextRenderResults {
+    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: CharVertexConsumer?, options: GUIVertexOptions?, text: BaseComponent): TextRenderResults {
         for (part in text.parts) {
             val result = ChatComponentRenderer.render(offset, fontManager, properties, info, consumer, options, part)
             if (result == TextRenderResults.CUT_OFF) return TextRenderResults.CUT_OFF

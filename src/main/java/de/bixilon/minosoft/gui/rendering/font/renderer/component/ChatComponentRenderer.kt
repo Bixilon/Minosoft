@@ -24,24 +24,24 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
-import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
+import de.bixilon.minosoft.gui.rendering.font.WorldCharConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 
 interface ChatComponentRenderer<T : ChatComponent> {
 
-    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T): TextRenderResults
+    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: CharVertexConsumer?, options: GUIVertexOptions?, text: T): TextRenderResults
 
     fun calculatePrimitiveCount(text: T): Int
 
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
 
-        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent) = when (text) {
+        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: CharVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent) = when (text) {
             is BaseComponent -> BaseComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
             is TextComponent -> TextComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
             is EmptyComponent -> TextRenderResults.OK
@@ -58,11 +58,11 @@ interface ChatComponentRenderer<T : ChatComponent> {
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives)
 
-            val consumer = WorldGUIConsumer(mesh, matrix.unsafe, light)
+            val consumer = WorldCharConsumer(mesh, matrix.unsafe, light)
             return render3d(context, properties, maxSize, consumer, text, null)
         }
 
-        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2f, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBAColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
+        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2f, mesh: CharVertexConsumer, text: ChatComponent, background: RGBAColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives)
 

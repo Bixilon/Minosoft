@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 class ScoreboardScoreElement(
     guiRenderer: GUIRenderer,
@@ -42,7 +42,7 @@ class ScoreboardScoreElement(
         _parent = parent
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         nameElement.render(offset, consumer, options)
 
         scoreElement.render(offset + Vec2f(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0.0f), consumer, options)

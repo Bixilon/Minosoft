@@ -24,8 +24,8 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2f, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
@@ -67,7 +67,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2f, val inpu
         }
 
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
         for ((index, suggestion) in suggestionText.withIndex()) {
             if (index >= textCount) {

@@ -18,15 +18,15 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.spaceSize
 
 class ZLayout(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         for (child in children.toSynchronizedList()) {
             child.render(margin.offset + offset, consumer, options)
         }

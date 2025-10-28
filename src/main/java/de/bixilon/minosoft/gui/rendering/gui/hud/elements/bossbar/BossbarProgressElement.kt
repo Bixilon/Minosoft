@@ -18,8 +18,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.util.ProgressElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 open class BossbarProgressElement(
     guiRenderer: GUIRenderer,
@@ -34,7 +34,7 @@ open class BossbarProgressElement(
 
     constructor(guiRenderer: GUIRenderer, progressElements: Array<AtlasElement>, notchesElements: Array<AtlasElement>?, progress: Float = 0.0f) : this(guiRenderer, progressElements[0], progressElements[1], notchesElements?.get(0), notchesElements?.get(1), progress)
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         emptyImage.render(offset, consumer, options)
         emptyNotchesImage?.render(offset, consumer, options)
         progressImage?.render(offset, consumer, options)

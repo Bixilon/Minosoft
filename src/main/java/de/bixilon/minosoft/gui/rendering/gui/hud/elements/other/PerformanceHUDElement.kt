@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug.DebugHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Pollable {
@@ -36,7 +36,7 @@ class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     private var hide: Boolean = false
 
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         if (hide) {
             return
         }

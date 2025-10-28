@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.AbstractHotbarHealthElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import java.lang.Float.max
 import java.lang.Float.min
 
@@ -46,7 +46,7 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     private var maxHealth = 0.0f
     override var totalMaxHealth = 0.0f
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         if (text) {
             return super.forceRender(offset, consumer, options)
         }

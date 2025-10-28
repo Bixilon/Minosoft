@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block.BlockWawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity.EntityWawlaElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -64,7 +64,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val element = this.element ?: return
         val size = element.size
         ColorElement(guiRenderer, size + BACKGROUND_SIZE * 2, 0x3c05aa.rgb().rgba()).render(offset, consumer, options)

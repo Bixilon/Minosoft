@@ -19,19 +19,20 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshCache
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import org.testng.Assert.assertEquals
 
-class DummyComponentConsumer : GUIVertexConsumer {
+class DummyComponentConsumer : GuiVertexConsumer {
     val chars: MutableList<RenderedCodePoint> = mutableListOf()
     val quads: MutableList<RenderedQuad> = mutableListOf()
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-    override fun addCache(cache: GUIMeshCache) = Broken()
+    override fun addCache(cache: GuiMeshCache) = Broken()
     override fun ensureSize(primitives: Int) = Unit
 
     override fun addQuad(start: Vec2f, end: Vec2f, texture: ShaderTexture?, uvStart: Vec2f, uvEnd: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
@@ -49,7 +50,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
             return width * scale
         }
 
-        override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: CharVertexConsumer, options: GUIVertexOptions?) {
             chars += RenderedCodePoint(Vec2f(position.x, position.y)) // copy because unsafe
         }
     }

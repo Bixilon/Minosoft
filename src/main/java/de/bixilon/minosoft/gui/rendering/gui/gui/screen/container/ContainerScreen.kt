@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 
@@ -36,7 +36,7 @@ abstract class ContainerScreen<C : Container>(
     override var activeDragElement: Element? = null
     protected open val customRenderer: Boolean = false
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
         if (customRenderer) {
             return
@@ -44,7 +44,7 @@ abstract class ContainerScreen<C : Container>(
         forceRenderContainerScreen(offset, consumer, options)
     }
 
-    protected open fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    protected open fun forceRenderContainerScreen(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         containerElement.render(offset, consumer, options)
     }
 

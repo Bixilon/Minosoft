@@ -20,7 +20,9 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
@@ -70,6 +72,10 @@ abstract class MeshStruct(struct: KClass<*>) {
                 PackedUV::class -> Float.SIZE_BYTES
 
                 RGBColor::class -> Int.SIZE_BYTES
+                RGBAColor::class -> Int.SIZE_BYTES
+
+                ShaderTexture::class -> Int.SIZE_BYTES
+
                 else -> TODO("Can not find $this")
             }
     }

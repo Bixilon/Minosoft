@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
@@ -30,7 +30,7 @@ open class AtlasImageElement(
     texturePart: TexturePart?,
     size: Vec2f = texturePart?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
-) : Element(guiRenderer, GUIMeshBuilder.GUIMeshStruct.floats * 6) {
+) : Element(guiRenderer, GuiMeshBuilder.GUIMeshStruct.floats * 6) {
     var texture: Texture? = texturePart?.texture
         set(value) {
             field = value
@@ -92,7 +92,7 @@ open class AtlasImageElement(
     ) : this(guiRenderer, texturePart, Vec2f(size), tint)
 
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val texture = texture ?: return
         val textureLike = texturePart ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)

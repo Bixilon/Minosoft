@@ -14,42 +14,56 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.kmath.vec.vec2.f.MVec2f
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 
-class WorldGUIConsumer(val mesh: ChunkMeshBuilder, val transform: Mat4f, val light: Int) : GUIVertexConsumer {
+class WorldCharConsumer(
+    val mesh: ChunkMeshBuilder,
+    val transform: Mat4f,
+    val light: Int,
+) : CharVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
-    private val uv = MVec2f() // temporary
     private val transformed = MVec3f() // temporary
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
+
+    private inline fun addVertex(x: Float, y: Float, u: Float, v: Float, texture: ShaderTexture?, tint: RGBAColor) {
         times(this.transform, x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, transformed)
-        this.uv.x = u; this.uv.y = v
-        mesh.addVertex(transformed.x, transformed.y, transformed.z, AmbientOcclusionUtil.LEVEL_NONE, PackedUV(this.uv.unsafe), texture ?: whiteTexture.texture, light, tint.rgb())
+
+        mesh.addVertex(transformed.x, transformed.y, transformed.z, AmbientOcclusionUtil.LEVEL_NONE, PackedUV(u, v), texture ?: whiteTexture.texture, light, tint.rgb())
     }
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-    override fun addCache(cache: GUIMeshCache) {
-        throw IllegalStateException("This is not hud!")
+    override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+        val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
+
+        // uv is already pretransformed
+
+        addVertex(start.x + topOffset, start.y, uvStart.x, uvStart.y, texture, tint)
+        addVertex(start.x, end.y, uvStart.x, uvEnd.y, texture, tint)
+        addVertex(end.x, end.y, uvEnd.x, uvEnd.y, texture, tint)
+        addVertex(end.x + topOffset, start.y, uvEnd.x, uvStart.y, texture, tint)
+
+        mesh.addIndexQuad()
     }
 
-    override fun ensureSize(primitives: Int) {
-        mesh.ensureSize(primitives)
-    }
 
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) {
-        mesh.addIndexQuad(front, reverse)
+    override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
+        addVertex(start.x, start.y, 0.0f, 0.0f, null, tint)
+        addVertex(start.x, end.y, 0.0f, 0.0f, null, tint)
+        addVertex(end.x, end.y, 0.0f, 0.0f, null, tint)
+        addVertex(end.x, start.y, 0.0f, 0.0f, null, tint)
+
+        mesh.addIndexQuad()
     }
 
     private fun times(mat: Mat4f, x: Float, y: Float, result: MVec3f) {

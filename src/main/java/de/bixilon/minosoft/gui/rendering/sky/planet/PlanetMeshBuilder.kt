@@ -17,13 +17,13 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
 open class PlanetMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, SunMeshStruct, 1) {
 
-    fun addVertex(position: Vec3f, texture: Texture, uv: Vec2f) {
+    fun addVertex(position: Vec3f, texture: ShaderTexture, uv: Vec2f) {
         data.add(
             position.x, position.y, position.z,
             uv.x, uv.y,
@@ -35,7 +35,7 @@ open class PlanetMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, 
     data class SunMeshStruct(
         val position: Vec3f,
         val uv: Vec2f,
-        val texture: Int,
+        val texture: ShaderTexture,
     ) {
         companion object : MeshStruct(SunMeshStruct::class)
     }

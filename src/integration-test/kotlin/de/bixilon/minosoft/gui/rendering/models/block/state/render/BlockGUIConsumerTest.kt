@@ -20,9 +20,9 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshCache
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -35,13 +35,13 @@ class BlockGUIConsumerTest {
 
     private fun create(): BlockGUIConsumer {
         val gui = GUIRenderer::class.java.allocate()
-        val consumer = GUIConsumer()
+        val consumer = GuiConsumer()
 
         return BlockGUIConsumer(gui, Vec2f(11, 12), consumer, null, ModelDisplay.DEFAULT, Vec2f(45))
     }
 
     private fun BlockGUIConsumer.assertVertices(expected: Array<Vec2f>) {
-        val consumer = this.consumer.unsafeCast<GUIConsumer>()
+        val consumer = this.consumer.unsafeCast<GuiConsumer>()
 
         if (consumer.vertices.size != expected.size) throw AssertionError("Size mismatch")
 
@@ -63,13 +63,13 @@ class BlockGUIConsumerTest {
         consumer.assertVertices(arrayOf(Vec2f())) // TODO
     }
 
-    private class GUIConsumer : GUIVertexConsumer {
+    private class GuiConsumer : GuiVertexConsumer {
         val vertices: MutableList<Vec2f> = mutableListOf()
 
         override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
         override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 
-        override fun addCache(cache: GUIMeshCache) = Broken()
+        override fun addCache(cache: GuiMeshCache) = Broken()
         override fun ensureSize(primitives: Int) = Unit
         override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
     }

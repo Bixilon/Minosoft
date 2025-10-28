@@ -29,8 +29,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.AbstractButto
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarExperienceBarElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 class EnchantmentButtonElement(
     guiRenderer: GUIRenderer,
@@ -44,7 +44,7 @@ class EnchantmentButtonElement(
     override val hoveredAtlas = container.atlas["card_hovered"]
     private val levelText = TextElement(guiRenderer, ChatComponent.EMPTY, background = null)
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         val level = AtlasImageElement(guiRenderer, if (disabled) disabledLevelAtlas else levelAtlas)

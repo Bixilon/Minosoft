@@ -16,44 +16,31 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.kutil.collections.primitive.ints.IntList
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CachedGuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.IndexUtil
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
-class GUIMeshBuilder(
+class GuiMeshBuilder(
     context: RenderContext,
-    val halfSize: Vec2f,
+    override val halfSize: Vec2f,
     data: FloatList,
     index: IntList,
-) : QuadMeshBuilder(context, GUIMeshStruct, 0, data = data, index = index), GUIVertexConsumer {
-    private val whiteTexture = context.textures.whiteTexture
+) : QuadMeshBuilder(context, GUIMeshStruct, 0, data = data, index = index), CachedGuiVertexConsumer {
+    override val white = context.textures.whiteTexture.texture
 
     override val reused get() = true
 
-
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
-    }
-
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        addVertex(data, halfSize, x, y, textureId, u, v, tint, options)
-    }
-
-    override fun addCache(cache: GUIMeshCache) {
-        data += cache.data
-    }
-
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit
+    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Broken("Who dares?")
 
     fun fixIndex() {
-        val vertices = data.size / GUIMeshStruct.floats
+        val vertices = data.size / struct.floats
 
         val multiplier = (if (remap) (2 * PrimitiveTypes.TRIANGLE.vertices) else PrimitiveTypes.QUAD.vertices)
         this.index.ensureSize(vertices * multiplier)
@@ -81,48 +68,10 @@ class GUIMeshBuilder(
 
     data class GUIMeshStruct(
         val position: Vec2f,
-        val uv: Vec2f,
-        val texture: Int,
-        val tint: RGBColor,
+        val uv: PackedUV,
+        val texture: ShaderTexture,
+        val tint: RGBAColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
-    }
-
-    companion object {
-
-        fun transformPosition(position: Vec2f, halfSize: Vec2f): Vec2f {
-            val res = position.mutable()
-            res /= halfSize
-            res.x -= 1.0f
-            res.y = 1.0f - res.y
-            return res.unsafe
-        }
-
-        fun addVertex(data: FloatList, halfSize: Vec2f, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-            addVertex(data, halfSize, x, y, texture.shaderId.buffer(), u, v, tint, options)
-        }
-
-        fun addVertex(data: FloatList, halfSize: Vec2f, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-            val x = x / halfSize.x - 1.0f // TODO (performance): inverse
-            val y = 1.0f - y / halfSize.y // TODO (performance): inverse
-
-
-            var color = tint
-
-            if (options != null) {
-                options.tint?.let { color = tint.mixRGB(it) }
-
-                if (options.alpha != 1.0f) {
-                    color = color.with(alpha = color.alphaf * options.alpha)
-                }
-            }
-
-            data.add(
-                x, y,
-                u, v,
-                textureId,
-                color.rgba.buffer(),
-            )
-        }
     }
 }

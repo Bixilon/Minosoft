@@ -52,6 +52,7 @@ abstract class DynamicTexture(
 
     override fun transformUV(uv: Vec2f) = uv // TODO
     override fun transformUV(uv: PackedUV) = uv // TODO
+    override fun transformUV(u: Float, v: Float) = PackedUV(u, v)
 
     operator fun plusAssign(callback: DynamicTextureListener) = addListener(callback)
     fun addListener(callback: DynamicTextureListener) {

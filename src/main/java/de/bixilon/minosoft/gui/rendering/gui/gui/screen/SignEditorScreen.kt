@@ -44,8 +44,8 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout.Companion.getAtC
 import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
@@ -90,7 +90,7 @@ class SignEditorScreen(
         return ImageElement(guiRenderer, texture, uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
         lengthLimitSwitch.render(offset + VerticalAlignments.BOTTOM.getOffset(size, lengthLimitSwitch.size), consumer, options)
 

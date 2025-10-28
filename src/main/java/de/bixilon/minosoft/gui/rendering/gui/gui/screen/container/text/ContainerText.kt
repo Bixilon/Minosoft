@@ -21,14 +21,14 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 class ContainerText(
     var text: TextElement,
     private var offset: Vec2f = Vec2f.EMPTY,
 ) {
-    fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    fun render(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         text.render(offset + this.offset, consumer, options)
     }
 

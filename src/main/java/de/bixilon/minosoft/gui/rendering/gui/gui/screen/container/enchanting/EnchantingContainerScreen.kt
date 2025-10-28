@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.LabeledContainerScreen
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import kotlin.reflect.KClass
@@ -40,7 +40,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
         container::costs.observeArray(this) { forceApply() }
     }
 
-    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
         for ((index, card) in cards.withIndex()) {

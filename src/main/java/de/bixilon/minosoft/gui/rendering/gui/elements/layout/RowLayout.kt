@@ -20,8 +20,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.left
@@ -61,7 +61,7 @@ open class RowLayout(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         var childYOffset = 0.0f
 
         fun exceedsY(y: Float): Boolean {

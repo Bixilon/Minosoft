@@ -14,37 +14,61 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
-class BillboardTextMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BillboardTextMeshStruct), GUIVertexConsumer {
+class BillboardTextMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BillboardTextMeshStruct), CharVertexConsumer {
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        data.add(
-            x * SCALE, y * SCALE,
-            u, v,
-            (texture?.shaderId ?: context.textures.whiteTexture.texture.shaderId).buffer(),
-            tint.rgba.buffer(),
-        )
+    inline fun addVertex(x: Float, y: Float, u: Float, v: Float, texture: ShaderTexture, tint: RGBAColor) = data.add(
+        x, y,
+        u, v,
+        texture.shaderId.buffer(),
+        tint.rgba.buffer(),
+    )
+
+    override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
+        val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
+
+        // uv is already pretransformed
+
+        addVertex(start.x + topOffset, start.y, uvStart.x, uvStart.y, texture, tint)
+        addVertex(start.x, end.y, uvStart.x, uvEnd.y, texture, tint)
+        addVertex(end.x, end.y, uvEnd.x, uvEnd.y, texture, tint)
+        addVertex(end.x + topOffset, start.y, uvEnd.x, uvStart.y, texture, tint)
+
+        addIndexQuad()
     }
 
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
-    override fun addCache(cache: GUIMeshCache) = Broken("This is not a text only consumer!")
+    inline fun addVertex(x: Float, y: Float, tint: RGBAColor) = data.add(
+        x, y,
+        0.0f, 0.0f,
+        context.textures.whiteTexture.texture.shaderId.buffer(),
+        tint.rgba.buffer(),
+    )
+
+    override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
+        addVertex(start.x, start.y, tint)
+        addVertex(start.x, end.y, tint)
+        addVertex(end.x, end.y, tint)
+        addVertex(end.x, start.y, tint)
+
+        addIndexQuad()
+    }
+
 
     data class BillboardTextMeshStruct(
         val position: Vec2f,
         val uv: Vec2f,
-        val texture: Int,
-        val tint: RGBColor,
+        val texture: ShaderTexture,
+        val tint: RGBAColor,
     ) {
         companion object : MeshStruct(BillboardTextMeshStruct::class)
     }

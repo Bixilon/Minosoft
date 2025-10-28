@@ -20,8 +20,8 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.BOLD_OFFSET
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_COLOR
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_OFFSET
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 interface RasterizedCodePointRenderer : CodePointRenderer {
@@ -42,7 +42,7 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
         return width * scale
     }
 
-    override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: CharVertexConsumer, options: GUIVertexOptions?) {
         if (shadow) {
             render(position + (SHADOW_OFFSET * scale), properties, color * SHADOW_COLOR, bold, italic, scale, consumer, options)
         }
@@ -64,7 +64,7 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
         return position
     }
 
-    private fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    private fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, bold: Boolean, italic: Boolean, scale: Float, consumer: CharVertexConsumer, options: GUIVertexOptions?) {
         val startPosition = calculateStart(properties, position, scale)
         val endPosition = calculateEnd(properties, startPosition.unsafe, scale)
 

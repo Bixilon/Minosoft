@@ -18,9 +18,9 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshCache
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 class GridCell(
     guiRenderer: GUIRenderer,
@@ -35,7 +35,7 @@ class GridCell(
     override var size: Vec2f by child::size
     override var margin: Vec4f by child::margin
     override var prefSize: Vec2f by child::prefSize
-    override val cache: GUIMeshCache by child::cache
+    override val cache: GuiMeshCache by child::cache
 
     init {
         _parent = parent
@@ -56,11 +56,11 @@ class GridCell(
         child.parent = this
     }
 
-    override fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         return child.render(offset, consumer, options)
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         return child.forceRender(offset, consumer, options)
     }
 

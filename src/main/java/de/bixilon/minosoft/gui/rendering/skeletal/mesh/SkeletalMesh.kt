@@ -47,7 +47,7 @@ class SkeletalMesh(context: RenderContext, estimate: Int = 12) : AbstractSkeleta
         val position: Vec3f,
         val uv: Vec2f,
         val transformNormal: Int,
-        val texture: Int,
+        val texture: ShaderTexture,
     ) {
         companion object : MeshStruct(SkeletalMeshStruct::class)
     }

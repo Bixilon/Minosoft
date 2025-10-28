@@ -17,8 +17,8 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.input.interaction.breaking.survival.BlockBreakProductivity
 
 class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRenderer) {
@@ -30,7 +30,7 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         if (status == null) {
             return
         }

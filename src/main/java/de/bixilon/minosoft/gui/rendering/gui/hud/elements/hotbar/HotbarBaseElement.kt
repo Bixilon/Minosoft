@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
@@ -46,7 +46,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
         containerElement.parent = this
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         base.render(offset + HORIZONTAL_MARGIN, consumer, options)
 
         baseAtlasElement?.slots?.get(selectedSlot + PlayerInventory.HOTBAR_OFFSET)?.let {

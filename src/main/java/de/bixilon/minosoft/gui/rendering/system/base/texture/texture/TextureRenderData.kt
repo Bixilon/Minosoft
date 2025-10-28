@@ -22,5 +22,6 @@ interface TextureRenderData {
 
     @Deprecated("packed uv")
     fun transformUV(uv: Vec2f): Vec2f
+    fun transformUV(u: Float, v: Float): PackedUV
     fun transformUV(uv: PackedUV): PackedUV
 }

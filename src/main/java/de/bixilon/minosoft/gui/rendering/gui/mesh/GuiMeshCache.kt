@@ -16,18 +16,17 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.primitive.floats.FloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapFloatList
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CachedGuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
-class GUIMeshCache(
-    var halfSize: Vec2f,
+class GuiMeshCache(
     val context: RenderContext,
+    override var halfSize: Vec2f,
     estimate: Int = 12,
-    var data: FloatList = HeapFloatList(estimate * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats),
-) : GUIVertexConsumer {
-    private val whiteTexture = context.textures.whiteTexture
+    override var data: FloatList = HeapFloatList(estimate * PrimitiveTypes.QUAD.vertices * GuiMeshBuilder.GUIMeshStruct.floats),
+) : CachedGuiVertexConsumer {
+    override val white = context.textures.whiteTexture.texture
 
     var revision = 0L
     var offset: Vec2f = Vec2f.EMPTY
@@ -38,25 +37,7 @@ class GUIMeshCache(
         revision++
     }
 
-
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        GUIMeshBuilder.addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
-        revision++
-    }
-
-    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: RGBAColor, options: GUIVertexOptions?) {
-        GUIMeshBuilder.addVertex(data, halfSize, x, y, textureId, u, v, tint, options)
-        revision++
-    }
-
-    override fun addCache(cache: GUIMeshCache) {
-        data += cache.data
-        revision++
-    }
-
     override fun ensureSize(primitives: Int) {
-        data.ensureSize(primitives * PrimitiveTypes.QUAD.vertices * GUIMeshBuilder.GUIMeshStruct.floats)
+        data.ensureSize(primitives * PrimitiveTypes.QUAD.vertices * GuiMeshBuilder.GUIMeshStruct.floats)
     }
-
-    override fun addIndexQuad(front: Boolean, reverse: Boolean) = Unit // that gets calculated on demand
 }

@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HotbarHealthElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HotbarVehicleHealthElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.copy
 
 class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
@@ -76,7 +76,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val offset = MVec2f(offset)
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)

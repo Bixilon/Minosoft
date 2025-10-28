@@ -22,9 +22,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadePhase.Companion.createPhase
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FadingTextElement(
@@ -80,7 +80,7 @@ class FadingTextElement(
         parent?.onChildChange(this)
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         if (phase == null) return
         val millis = now()
         this.updatePhase(millis)

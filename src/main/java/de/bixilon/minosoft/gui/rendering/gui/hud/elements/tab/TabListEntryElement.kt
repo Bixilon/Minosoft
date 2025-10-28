@@ -30,8 +30,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.DynamicImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.util.KUtil.nullCompare
 import java.util.*
@@ -85,7 +85,7 @@ class TabListEntryElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
         skinElement.render(offset + Vec2f(PADDING, PADDING), consumer, options)
         nameElement.render(offset + Vec2f(skinElement.size.x + PADDING * 3, PADDING), consumer, options)

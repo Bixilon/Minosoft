@@ -20,8 +20,8 @@ import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
 import de.bixilon.minosoft.gui.rendering.camera.CameraUtil
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -31,15 +31,16 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 class BlockGUIConsumer(
     val gui: GUIRenderer,
     val offset: Vec2f,
-    val consumer: GUIVertexConsumer,
+    val consumer: GuiVertexConsumer,
     val options: GUIVertexOptions?,
     val display: ModelDisplay,
     val size: Vec2f,
 ) : BlockVertexConsumer {
     private val matrix = VIEW_MATRIX * display.matrix
 
-    override fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray) {
 
+    override fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray) {
+        // TODO: use quad
         iterate {
             val vertexOffset = it * Vec3f.LENGTH
 
@@ -53,10 +54,10 @@ class BlockGUIConsumer(
 
             val uv = uv[it]
 
-            consumer.addVertex(x, y, texture, uv.u, uv.v, tint.rgba(), options)
+            //   consumer.addVertex(x, y, texture, uv.u, uv.v, tint.rgba(), options)
         }
 
-        consumer.addIndexQuad(false, true)
+        //      consumer.addIndexQuad(false, true)
     }
 
     companion object {

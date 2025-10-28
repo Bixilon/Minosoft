@@ -35,8 +35,8 @@ object RenderUtil {
                 runnable()
             } catch (error: Throwable) {
                 window.cursorMode = CursorModes.NORMAL
-                window.destroy()
                 error.printStackTrace()
+                this.session.error = error
                 Exception("Exception in rendering: ${session.id}", error).crash()
             }
         }

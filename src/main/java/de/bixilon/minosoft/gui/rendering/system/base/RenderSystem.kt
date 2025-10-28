@@ -62,7 +62,7 @@ interface RenderSystem {
         setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending
-        this[RenderingCapabilities.FACE_CULLING] = faceCulling
+        this[RenderingCapabilities.FACE_CULLING] = false
         this[RenderingCapabilities.POLYGON_OFFSET] = polygonOffset
         this.depth = depth
         this.depthMask = depthMask
@@ -75,7 +75,7 @@ interface RenderSystem {
         setBlendFunction(settings.sourceRGB, settings.destinationRGB, settings.sourceAlpha, settings.destinationAlpha)
         this[RenderingCapabilities.DEPTH_TEST] = settings.depthTest
         this[RenderingCapabilities.BLENDING] = settings.blending
-        this[RenderingCapabilities.FACE_CULLING] = settings.faceCulling
+        this[RenderingCapabilities.FACE_CULLING] = false
         this[RenderingCapabilities.POLYGON_OFFSET] = settings.polygonOffset
         this.depth = settings.depth
         this.depthMask = settings.depthMask

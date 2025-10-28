@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGuiVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -34,7 +34,7 @@ import org.testng.annotations.Test
 class ChatComponentRendererTest {
     private val fontManager = FontManager(DummyFontType)
 
-    private fun render(text: ChatComponent, fontManager: FontManager = this.fontManager, properties: TextRenderProperties = TextRenderProperties(shadow = false), maxSize: Vec2f = Vec2f.MAX, consumer: GUIVertexConsumer? = null): TextRenderInfo {
+    private fun render(text: ChatComponent, fontManager: FontManager = this.fontManager, properties: TextRenderProperties = TextRenderProperties(shadow = false), maxSize: Vec2f = Vec2f.MAX, consumer: GuiVertexConsumer? = null): TextRenderInfo {
         val info = TextRenderInfo(maxSize)
         ChatComponentRenderer.render(TextOffset(Vec2f(10, 10)), fontManager, properties, info, null, null, text)
         if (consumer != null) {
@@ -230,7 +230,7 @@ class ChatComponentRendererTest {
     }
 
     fun `no space y with consumer`() {
-        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2f(Float.MAX_VALUE, 10.0f), consumer = DummyGUIVertexConsumer())
+        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2f(Float.MAX_VALUE, 10.0f), consumer = DummyGuiVertexConsumer())
         info.assert(
             lineIndex = 0,
             lines = listOf(),

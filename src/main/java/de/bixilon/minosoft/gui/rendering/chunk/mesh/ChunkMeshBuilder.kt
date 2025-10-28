@@ -68,7 +68,7 @@ class ChunkMeshBuilder(context: RenderContext, estimate: Int) : QuadMeshBuilder(
     data class ChunkMeshStruct(
         val position: Vec3f,
         val uv: PackedUV,
-        val texture: Int,
+        val texture: ShaderTexture,
         val lightTint: Int,
     ) {
         companion object : MeshStruct(ChunkMeshStruct::class)

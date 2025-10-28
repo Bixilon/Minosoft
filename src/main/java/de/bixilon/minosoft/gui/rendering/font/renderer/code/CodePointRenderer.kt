@@ -23,14 +23,14 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_OFFSET
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 
 interface CodePointRenderer {
 
     fun calculateWidth(scale: Float, shadow: Boolean): Float
 
-    fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
+    fun render(position: Vec2f, properties: TextRenderProperties, color: RGBAColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: CharVertexConsumer, options: GUIVertexOptions?)
 
     private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties, info: TextRenderInfo, align: Boolean): Float {
         var lineStart = offset.initial.x
@@ -48,7 +48,7 @@ interface CodePointRenderer {
     }
 
 
-    fun render(offset: TextOffset, color: RGBAColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: BitEnumSet<FormattingCodes>, codePoint: Int, consumer: GUIVertexConsumer?, options: GUIVertexOptions?): CodePointAddResult {
+    fun render(offset: TextOffset, color: RGBAColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: BitEnumSet<FormattingCodes>, codePoint: Int, consumer: CharVertexConsumer?, options: GUIVertexOptions?): CodePointAddResult {
         val width = calculateWidth(properties.scale, properties.shadow)
         var spacing = getVerticalSpacing(offset, properties, info, consumer != null)
         val height = offset.getNextLineHeight(properties)

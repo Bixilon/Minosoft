@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.ProcessingContainerScreen
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 abstract class SmeltingContainerScreen<C : SmeltingContainer>(
     guiRenderer: GUIRenderer,
@@ -37,7 +37,7 @@ abstract class SmeltingContainerScreen<C : SmeltingContainer>(
     private var fuel = 0.0f
     private var process = 0.0f
 
-    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
         if (fuelArea != null) {

@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 class MarkTextElement(
@@ -72,7 +72,7 @@ class MarkTextElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         if (markStartPosition >= 0) {
             val message = chatComponent.message // ToDo: This does not include formatting
             val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), properties = properties, parent = _parent)

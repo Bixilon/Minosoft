@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 
 abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     abstract val totalHealth: Float
@@ -55,7 +55,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
         cacheUpToDate = false
     }
 
-    protected fun drawCanisters(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement?) {
+    protected fun drawCanisters(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement?) {
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW
@@ -66,7 +66,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
         }
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         textElement.render(offset, consumer, options)
     }
 

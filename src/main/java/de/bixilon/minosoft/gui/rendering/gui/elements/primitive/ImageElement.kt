@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 open class ImageElement(
@@ -31,7 +31,7 @@ open class ImageElement(
     uvEnd: Vec2f = Vec2f(1.0f, 1.0f),
     size: Vec2f = texture?.size?.let { Vec2f(it) } ?: Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
-) : Element(guiRenderer, GUIMeshBuilder.GUIMeshStruct.floats * 6) {
+) : Element(guiRenderer, GuiMeshBuilder.GUIMeshStruct.floats * 6) {
     var texture: Texture? = texture
         set(value) {
             field = value
@@ -74,7 +74,7 @@ open class ImageElement(
 
     constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2f = Vec2f(texture.size), tint: RGBAColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2f(uvStart) * texture.array.pixel, Vec2f(uvEnd) * texture.array.pixel, size, tint)
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)
     }
 

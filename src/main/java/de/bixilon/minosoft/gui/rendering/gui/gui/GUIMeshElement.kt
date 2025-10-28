@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
 import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.BaseDrawable
@@ -92,7 +92,7 @@ open class GUIMeshElement<T : Element>(
     fun prepare() = Unit
 
     fun prepareAsync(offset: Vec2f) {
-        val builder = GUIMeshBuilder(context, guiRenderer.halfSize, this.data, this.index)
+        val builder = GuiMeshBuilder(context, guiRenderer.halfSize, this.data, this.index)
         element.render(offset, builder, null)
 
 

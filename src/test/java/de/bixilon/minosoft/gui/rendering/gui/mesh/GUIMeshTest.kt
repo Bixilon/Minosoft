@@ -24,7 +24,7 @@ class GUIMeshTest {
         val position = Vec2f(0, 0)
         val halfSize = Vec2f(1000, 1000) / 2
 
-        assertEquals(Vec2f(-1.0f, 1.0f), GUIMeshBuilder.transformPosition(position, halfSize))
+        assertEquals(Vec2f(-1.0f, 1.0f), GuiMeshBuilder.transformPosition(position, halfSize))
     }
 
     @Test
@@ -32,7 +32,7 @@ class GUIMeshTest {
         val position = Vec2f(400, 600)
         val halfSize = Vec2f(1000, 1000) / 2
 
-        assertEquals(Vec2f(-0.19999999f, -0.20000005f), GUIMeshBuilder.transformPosition(position, halfSize))
+        assertEquals(Vec2f(-0.19999999f, -0.20000005f), GuiMeshBuilder.transformPosition(position, halfSize))
     }
 
     @Test
@@ -40,6 +40,6 @@ class GUIMeshTest {
         val position = Vec2f(1000, 1000)
         val halfSize = Vec2f(1000, 1000) / 2
 
-        assertEquals(Vec2f(1.0f, -1.0f), GUIMeshBuilder.transformPosition(position, halfSize))
+        assertEquals(Vec2f(1.0f, -1.0f), GuiMeshBuilder.transformPosition(position, halfSize))
     }
 }

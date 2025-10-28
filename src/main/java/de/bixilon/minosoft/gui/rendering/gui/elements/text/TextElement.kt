@@ -33,9 +33,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
@@ -53,7 +53,7 @@ open class TextElement(
     background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
-) : Element(guiRenderer, text.charCount * 6 * GUIMeshBuilder.GUIMeshStruct.floats), Labeled {
+) : Element(guiRenderer, text.charCount * 6 * GuiMeshBuilder.GUIMeshStruct.floats), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var info: TextRenderInfo
         private set
@@ -136,7 +136,7 @@ open class TextElement(
 
     override fun onChildChange(child: Element) = Broken("A TextElement can not have a child!")
 
-    private fun GUIVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2f, options: GUIVertexOptions?) {
+    private fun GuiVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2f, options: GUIVertexOptions?) {
         val start = MVec2f()
         val end = MVec2f()
 
@@ -154,7 +154,7 @@ open class TextElement(
         }
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         if (empty) return
         val info = this.info
         val properties = this.properties

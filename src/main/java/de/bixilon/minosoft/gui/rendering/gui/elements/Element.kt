@@ -20,10 +20,11 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshCache
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CachedGuiVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
@@ -63,7 +64,7 @@ abstract class Element(val guiRenderer: GUIRenderer, estimate: Int = 32) : Input
             }
         }
 
-    open val cache = GUIMeshCache(guiRenderer.halfSize, context, estimate)
+    open val cache = GuiMeshCache(context, guiRenderer.halfSize, estimate)
 
     private var previousMaxSize = Vec2f.EMPTY
 
@@ -143,14 +144,14 @@ abstract class Element(val guiRenderer: GUIRenderer, estimate: Int = 32) : Input
      *
      * @return The number of z layers used
      */
-    open fun render(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    open fun render(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val offset = offset
         var direct = false
-        if (consumer is GUIMeshBuilder && consumer.data == cache.data) {
+        if (consumer is GuiMeshBuilder && consumer.data == cache.data) {
             direct = true
         }
 
-        if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
+        if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled || consumer !is CachedGuiVertexConsumer) {
             if (direct) {
                 cache.clear()
             }
@@ -172,7 +173,7 @@ abstract class Element(val guiRenderer: GUIRenderer, estimate: Int = 32) : Input
         }
 
         if (!direct) {
-            consumer.addCache(cache)
+            consumer.add(cache)
         }
     }
 
@@ -181,7 +182,7 @@ abstract class Element(val guiRenderer: GUIRenderer, estimate: Int = 32) : Input
      *
      * @return The number of z layers used
      */
-    abstract fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
+    abstract fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?)
 
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change

@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElemen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text.ContainerText
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import kotlin.reflect.KClass
@@ -57,7 +57,7 @@ open class GenericContainerScreen(
     private val inventoryTitle = ContainerText.createInventoryTitle(guiRenderer, footerAtlas?.areas?.get("text"))
 
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = MVec2f((size - containerSize) / 2)
         val initialOffset = centerOffset.final()
 

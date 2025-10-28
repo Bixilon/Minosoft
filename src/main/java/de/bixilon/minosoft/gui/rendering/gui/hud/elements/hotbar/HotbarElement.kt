@@ -33,8 +33,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTimes
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HeartAtlas
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
@@ -75,7 +75,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         val offset = MVec2f(offset)
 

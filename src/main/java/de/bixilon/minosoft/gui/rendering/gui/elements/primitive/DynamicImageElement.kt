@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshBuilder
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
@@ -34,7 +34,7 @@ open class DynamicImageElement(
     size: Vec2f = Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
     parent: Element? = null,
-) : Element(guiRenderer, GUIMeshBuilder.GUIMeshStruct.floats * 6), DynamicTextureListener {
+) : Element(guiRenderer, GuiMeshBuilder.GUIMeshStruct.floats * 6), DynamicTextureListener {
 
     var texture: DynamicTexture? = null
         set(value) {
@@ -87,7 +87,7 @@ open class DynamicImageElement(
         return texture
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, getAvailableTexture(), uvStart, uvEnd, tint, options)
     }
 

@@ -18,8 +18,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.Initializable
 import kotlin.time.Duration.Companion.seconds
@@ -31,7 +31,7 @@ abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRender
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         messages.render(offset + Vec2f(ChatElement.CHAT_INPUT_MARGIN, 0f), consumer, options)
     }
 

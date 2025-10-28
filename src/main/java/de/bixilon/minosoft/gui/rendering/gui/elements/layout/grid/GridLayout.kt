@@ -18,8 +18,8 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
 
@@ -141,7 +141,7 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
     }
 
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue

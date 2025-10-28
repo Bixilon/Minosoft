@@ -31,6 +31,12 @@ class OpenGlTextureData(
         return Vec2f(uv.x * uvEnd.x, uv.y * uvEnd.y)
     }
 
+    override fun transformUV(u: Float, v: Float): PackedUV {
+        val uvEnd = this.uvEnd ?: return PackedUV(u, v)
+
+        return PackedUV(uvEnd.x * u, uvEnd.y * v)
+    }
+
     override fun transformUV(uv: PackedUV): PackedUV {
         val uvEnd = this.uvEnd ?: return uv
 

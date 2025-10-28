@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.MeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 class ParticleMeshBuilder(context: RenderContext, data: FloatList) : MeshBuilder(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
     override val reused get() = true
 
-    inline fun addVertex(x: Float, y: Float, z: Float, minUV: PackedUV, maxUV: PackedUV, texture: Texture, scale: Float, tint: RGBAColor, light: Int) = data.add(
+    inline fun addVertex(x: Float, y: Float, z: Float, minUV: PackedUV, maxUV: PackedUV, texture: ShaderTexture, scale: Float, tint: RGBAColor, light: Int) = data.add(
         x, y, z,
         minUV.raw, maxUV.raw,
         texture.shaderId.buffer(),
@@ -40,7 +40,7 @@ class ParticleMeshBuilder(context: RenderContext, data: FloatList) : MeshBuilder
     )
 
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tint: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
+    fun addVertex(position: Vec3d, scale: Float, texture: ShaderTexture, tint: RGBAColor, uvMin: Vec2f? = null, uvMax: Vec2f? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) texture.transformUV(PackedUV.ZERO) else texture.transformUV(PackedUV(uvMin))
         val maxTransformedUV = if (uvMax == null) texture.transformUV(PackedUV.ONE) else texture.transformUV(PackedUV(uvMax))
         val offset = context.camera.offset.offset
@@ -60,7 +60,7 @@ class ParticleMeshBuilder(context: RenderContext, data: FloatList) : MeshBuilder
         val position: Vec3f,
         val minUV: PackedUV,
         val maxUV: PackedUV,
-        val texture: Int,
+        val texture: ShaderTexture,
         val scale: Float,
         val tint: RGBColor,
         val light: Int,

@@ -41,8 +41,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
@@ -490,7 +490,7 @@ class SolidSectionMesherTest {
                         return true
                     }
 
-                    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
+                    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
                     override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
                     override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
                 }
@@ -504,7 +504,7 @@ class SolidSectionMesherTest {
 
     private open class TestModel(val queue: TestQueue, val properties: SideProperties?) : BlockRender {
 
-        override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
+        override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) = Broken()
         override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = Broken()
         override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = Broken()
 

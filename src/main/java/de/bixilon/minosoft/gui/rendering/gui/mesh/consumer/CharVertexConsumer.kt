@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.gui.rendering.gui.mesh.consumer
 
-layout (location = 0) in vec2 vinPosition;
-layout (location = 1) in float vinUV;
-layout (location = 2) in float vinIndexLayerAnimation;
-layout (location = 3) in float vinTintColor;
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.builder.VertexConsumer
+
+interface CharVertexConsumer : VertexConsumer {
 
 
-#include "minosoft:vsh"
-#include "minosoft:tint"
-#include "minosoft:color"
-#include "minosoft:animation"
-
-void main() {
-    gl_Position = vec4(vinPosition.xy, 0.0f, 1.0f);
-    finTintColor = getRGBAColor(floatBitsToUint(vinTintColor));
-
-    vec2 uv = uv_unpack(floatBitsToUint(vinUV));
-
-    setTexture(uv, vinIndexLayerAnimation);
+    fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?)
+    fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?)
 }

@@ -26,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTextElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTimes
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.modding.event.events.title.*
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
@@ -72,7 +72,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         times = DEFAULT_TIMES
     }
 
-    override fun forceRender(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         title.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0.0f), consumer, options)
         subtitle.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)

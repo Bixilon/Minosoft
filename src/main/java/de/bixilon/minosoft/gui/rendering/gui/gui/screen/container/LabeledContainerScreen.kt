@@ -19,8 +19,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text.ContainerText
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -33,7 +33,7 @@ abstract class LabeledContainerScreen<C : Container>(
     protected val titleText = ContainerText.of(guiRenderer, atlasElement?.areas?.get("title"), container.title)
     protected val inventoryTitleText = ContainerText.createInventoryTitle(guiRenderer, atlasElement?.areas?.get("inventory_text"))
 
-    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRenderContainerScreen(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
         if (container.title != null) {
