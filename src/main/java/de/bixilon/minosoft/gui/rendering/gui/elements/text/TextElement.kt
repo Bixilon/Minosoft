@@ -34,14 +34,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackgr
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.vertical
-import de.bixilon.minosoft.util.KUtil.charCount
 
 /**
  * A simple UI element that draws text on the screen
@@ -49,11 +47,11 @@ import de.bixilon.minosoft.util.KUtil.charCount
  */
 open class TextElement(
     guiRenderer: GUIRenderer,
-    text: Any,
+    text: ChatComponent,
     background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
-) : Element(guiRenderer, text.charCount * 6 * GuiMeshBuilder.GUIMeshStruct.floats), Labeled {
+) : Element(guiRenderer, ChatComponentRenderer.calculatePrimitiveCount(text)), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var info: TextRenderInfo
         private set
@@ -84,6 +82,14 @@ open class TextElement(
             chatComponent = ChatComponent.of(value, translator = IntegratedLanguage.LANGUAGE /*guiRenderer.session.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
             field = value
         }
+
+    constructor(
+        guiRenderer: GUIRenderer,
+        text: Any,
+        background: TextBackground? = TextBackground.DEFAULT,
+        parent: Element? = null,
+        properties: TextRenderProperties = TextRenderProperties.DEFAULT
+    ) : this(guiRenderer, ChatComponent.of(text), background, parent, properties)
 
     private var empty: Boolean = true
 

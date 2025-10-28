@@ -34,7 +34,7 @@ open class DynamicImageElement(
     size: Vec2f = Vec2f.EMPTY,
     tint: RGBAColor = ChatColors.WHITE,
     parent: Element? = null,
-) : Element(guiRenderer, GuiMeshBuilder.GUIMeshStruct.floats * 6), DynamicTextureListener {
+) : Element(guiRenderer, 1), DynamicTextureListener {
 
     var texture: DynamicTexture? = null
         set(value) {
