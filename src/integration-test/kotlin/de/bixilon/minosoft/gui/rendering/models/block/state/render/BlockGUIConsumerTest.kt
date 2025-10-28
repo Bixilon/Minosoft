@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.UnpackedUVArray
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.annotations.Test
@@ -74,5 +75,6 @@ class BlockGUIConsumerTest {
         override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 
         override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
+        override fun addQuad(positions: FloatArray, uv: PackedUVArray, texture: ShaderTexture, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
     }
 }

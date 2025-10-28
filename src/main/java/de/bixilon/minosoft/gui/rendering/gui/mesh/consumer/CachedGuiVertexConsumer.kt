@@ -22,11 +22,21 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 interface CachedGuiVertexConsumer : GuiVertexConsumer {
     val data: FloatList
     val halfSize: Vec2f
     val white: ShaderTexture
+
+    override fun addQuad(positions: FloatArray, uv: PackedUVArray, texture: ShaderTexture, tint: RGBAColor, options: GUIVertexOptions?) {
+        val color = options.finalTint(tint)
+
+        addVertex(positions[0 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[0 * Vec2f.LENGTH + 1] / halfSize.y, uv[0], texture, color)
+        addVertex(positions[1 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[1 * Vec2f.LENGTH + 1] / halfSize.y, uv[1], texture, color)
+        addVertex(positions[2 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[2 * Vec2f.LENGTH + 1] / halfSize.y, uv[2], texture, color)
+        addVertex(positions[3 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[3 * Vec2f.LENGTH + 1] / halfSize.y, uv[3], texture, color)
+    }
 
     override fun addQuad(startX: Float, startY: Float, endX: Float, endY: Float, texture: ShaderTexture, uvStartX: Float, uvStartY: Float, uvEndX: Float, uvEndY: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         val startX = startX / halfSize.x - 1.0f

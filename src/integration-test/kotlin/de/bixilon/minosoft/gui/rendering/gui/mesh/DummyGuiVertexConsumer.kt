@@ -18,6 +18,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 open class DummyGuiVertexConsumer : GuiVertexConsumer {
     var char = 0
@@ -25,6 +26,8 @@ open class DummyGuiVertexConsumer : GuiVertexConsumer {
     override fun ensureSize(primitives: Int) = Broken()
 
     open fun addChar(start: Vec2f, end: Vec2f, index: Int): Unit = Broken()
+    override fun addQuad(positions: FloatArray, uv: PackedUVArray, texture: ShaderTexture, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
+
 
     override fun addChar(start: Vec2f, end: Vec2f, texture: ShaderTexture, uvStart: Vec2f, uvEnd: Vec2f, italic: Boolean, tint: RGBAColor, options: GUIVertexOptions?) {
         addChar(Vec2f(start.unsafe), Vec2f(end.unsafe), this.char++)

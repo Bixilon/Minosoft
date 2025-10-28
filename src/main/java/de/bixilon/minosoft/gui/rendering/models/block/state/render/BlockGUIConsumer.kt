@@ -24,8 +24,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 class BlockGUIConsumer(
@@ -37,27 +37,28 @@ class BlockGUIConsumer(
     val size: Vec2f,
 ) : BlockVertexConsumer {
     private val matrix = VIEW_MATRIX * display.matrix
+    private val positions = FloatArray(PrimitiveTypes.QUAD.vertices * Vec2f.LENGTH)
 
+    private fun transform(index: Int, positions: FaceVertexData) {
+        val offset = index * Vec3f.LENGTH
+        val xyz = Vec3f(positions[offset + 0], positions[offset + 1], positions[offset + 2])
+
+        val out = matrix * xyz
+
+        val x = ((out.x + 0.8f) * size.x) + this.offset.x + 1.0f
+        val y = ((-out.y + 0.18f) * size.y) + this.offset.y
+        // values fresh from my ass
+
+        this.positions[index * Vec2f.LENGTH + 0] = x
+        this.positions[index * Vec2f.LENGTH + 1] = y
+    }
 
     override fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray) {
-        // TODO: use quad
-        iterate {
-            val vertexOffset = it * Vec3f.LENGTH
-
-            val xyz = Vec3f(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2])
-
-            val out = matrix * xyz
-
-            val x = ((out.x + 0.8f) * size.x) + offset.x + 1.0f
-            val y = ((-out.y + 0.18f) * size.y) + offset.y
-            // values fresh from my ass
-
-            val uv = uv[it]
-
-            //   consumer.addVertex(x, y, texture, uv.u, uv.v, tint.rgba(), options)
-        }
-
-        //      consumer.addIndexQuad(false, true)
+        transform(0, positions)
+        transform(1, positions)
+        transform(2, positions)
+        transform(3, positions)
+        consumer.addQuad(this.positions, uv, texture, tint.rgba(), this.options)
     }
 
     companion object {

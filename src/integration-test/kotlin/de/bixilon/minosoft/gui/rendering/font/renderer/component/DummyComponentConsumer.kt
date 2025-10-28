@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.CharVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 import org.testng.Assert.assertEquals
 
 class DummyComponentConsumer : GuiVertexConsumer {
@@ -30,6 +31,7 @@ class DummyComponentConsumer : GuiVertexConsumer {
     val quads: MutableList<RenderedQuad> = mutableListOf()
 
     override fun ensureSize(primitives: Int) = Unit
+    override fun addQuad(positions: FloatArray, uv: PackedUVArray, texture: ShaderTexture, tint: RGBAColor, options: GUIVertexOptions?) = Broken()
 
     override fun addQuad(startX: Float, startY: Float, endX: Float, endY: Float, texture: ShaderTexture, uvStartX: Float, uvStartY: Float, uvEndX: Float, uvEndY: Float, tint: RGBAColor, options: GUIVertexOptions?) {
         quads += RenderedQuad(Vec2f(startX, startY), Vec2f(endX, endY))
