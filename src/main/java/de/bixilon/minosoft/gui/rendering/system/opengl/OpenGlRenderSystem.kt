@@ -62,6 +62,7 @@ class OpenGlRenderSystem(
         private set
     override var active: Boolean = false
         private set
+    override val primitives = PrimitiveTypes.set(PrimitiveTypes.POINT, PrimitiveTypes.LINE, PrimitiveTypes.TRIANGLE)
 
     var blendingSource = BlendingFunctions.ONE
         private set
@@ -100,8 +101,12 @@ class OpenGlRenderSystem(
         val vendorString = vendorString.lowercase()
 
         vendor = OpenGlVendor.of(vendorString.lowercase())
-        if (context.preferQuads && DriverHacks.USE_QUADS_OVER_TRIANGLE !in vendor.hacks) {
-            throw IllegalStateException("Your GPU driver does not support the `prefer_quads` config option!")
+        if (context.profile.advanced.preferQuads) {
+            if (DriverHacks.USE_QUADS_OVER_TRIANGLE in vendor.hacks) {
+                primitives += PrimitiveTypes.QUAD
+            } else {
+                Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "You requested to prefer GL_QUADS over GL_TRIANGLES, but your driver does not support it. Disabling..." }
+            }
         }
 
         this.version = gl { glGetString(GL_VERSION) } ?: "UNKNOWN"

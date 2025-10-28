@@ -13,10 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
 
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
+
 enum class PrimitiveTypes(val vertices: Int) {
     POINT(1),
     LINE(2),
     TRIANGLE(3),
     QUAD(4),
     ;
+
+    companion object : ValuesEnum<PrimitiveTypes> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
+    }
 }

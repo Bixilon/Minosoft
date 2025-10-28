@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,6 @@ enum class DriverHacks {
      * GPUs can't really do quads, its a hack in most drivers. Some of them still disallow using them, when binding to modern context.
      * Will only work and AMD and NVIDIA. Disabled by default.
      */
-    @Deprecated("implement index buffers")
     USE_QUADS_OVER_TRIANGLE,
     ;
 

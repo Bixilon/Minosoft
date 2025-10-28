@@ -35,6 +35,7 @@ interface RenderSystem {
     val shader: ShaderManagement
     val vendor: GPUVendor
     var framebuffer: Framebuffer?
+    val primitives: Set<PrimitiveTypes>
 
     val active: Boolean
 

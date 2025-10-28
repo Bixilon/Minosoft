@@ -44,6 +44,7 @@ class DummyRenderSystem(
     override lateinit var vendor: GPUVendor
     override var framebuffer: Framebuffer? = null
     override val active: Boolean = true
+    override val primitives = PrimitiveTypes.setOfAll()
 
     override var viewport = Vec2i.EMPTY
 

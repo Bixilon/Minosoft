@@ -28,8 +28,8 @@ abstract class QuadMeshBuilder(
     estimate: Int = 512,
     data: FloatList? = null,
     index: IntList? = null,
-) : MeshBuilder(context, struct, if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE, estimate, data, index), QuadConsumer {
-    protected val remap = !context.preferQuads
+) : MeshBuilder(context, struct, if (PrimitiveTypes.QUAD in context.system.primitives) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE, estimate, data, index), QuadConsumer {
+    protected val remap = this.primitive == PrimitiveTypes.TRIANGLE
 
     inline fun addXQuad(start: Vec2f, x: Float, end: Vec2f, uvStart: Vec2f = Vec2f.EMPTY, uvEnd: Vec2f = Vec2f.ONE, vertexConsumer: (position: Vec3f, uv: Vec2f) -> Unit) {
         val positions = arrayOf(

@@ -40,7 +40,6 @@ class RenderContext(
     val rendering: Rendering,
 ) {
     val profile = session.profiles.rendering
-    val preferQuads = profile.advanced.preferQuads
 
     val window = WindowFactory.factory?.create(this) ?: throw IllegalStateException("Expected a window factory, but none is set.")
     val system = RenderSystemFactory.factory?.create(this) ?: throw IllegalStateException("Expected a rendering api factory, but none is set.")
