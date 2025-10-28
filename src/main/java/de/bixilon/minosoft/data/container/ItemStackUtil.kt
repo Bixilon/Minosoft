@@ -44,7 +44,7 @@ object ItemStackUtil {
 
         val property = when {
             nbt == null || nbt.isEmpty() -> DurabilityProperty(durability = durability)
-            else -> DurabilityProperty.of(item, nbt).copy(durability = durability)
+            else -> DurabilityProperty.of(item, nbt)?.copy(durability = durability)
         }
 
         return of(item, count, session, nbt, durability = property)
