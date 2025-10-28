@@ -35,6 +35,10 @@ class GuiMeshBuilder(
 ) : QuadMeshBuilder(context, GUIMeshStruct, 0, data = data, index = index), CachedGuiVertexConsumer {
     override val white = context.textures.whiteTexture.texture
 
+    init {
+        this.data.clear()
+    }
+
     override val reused get() = true
 
     override fun addIndexQuad(front: Boolean, reverse: Boolean) = Broken("Who dares?")

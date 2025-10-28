@@ -95,10 +95,10 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh?.unload()
         this.mesh = null
 
-        this.data.clear()
         val mesh = GuiMeshBuilder(context, guiRenderer.halfSize, this.data, this.index)
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color.rgba(), null)
+        mesh.fixIndex()
 
 
         // ToDo: Attack indicator
