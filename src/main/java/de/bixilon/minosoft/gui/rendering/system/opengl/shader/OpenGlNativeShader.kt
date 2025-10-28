@@ -17,13 +17,11 @@ import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLinkingException
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
@@ -31,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.OpenGlUniformBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -188,14 +187,15 @@ class OpenGlNativeShader(
     }
 
     override fun setUniformBuffer(uniform: String, buffer: UniformBuffer) {
-        val index = uniformLocations.getOrPut(uniform) {
+        if (buffer !is OpenGlUniformBuffer) throw IllegalArgumentException("Not an opengl buffer: $buffer")
+        val location = uniformLocations.getOrPut(uniform) {
             val index = gl { glGetUniformBlockIndex(handler, uniform) }
             if (index < 0) {
                 throw IllegalArgumentException("No uniform buffer called $uniform")
             }
             return@getOrPut index
         }
-        gl { glUniformBlockBinding(handler, index, buffer.bindingIndex) }
+        gl { glUniformBlockBinding(handler, location, buffer.bindingIndex) }
     }
 
     fun unsafeUse() {

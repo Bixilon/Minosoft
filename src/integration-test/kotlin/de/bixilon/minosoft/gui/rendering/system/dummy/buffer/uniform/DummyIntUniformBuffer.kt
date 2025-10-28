@@ -21,7 +21,6 @@ import java.nio.IntBuffer
 class DummyIntUniformBuffer(
     override var data: IntBuffer,
 ) : IntUniformBuffer {
-    override val bindingIndex: Int = 0
 
     override fun upload(start: Int, end: Int) {
     }

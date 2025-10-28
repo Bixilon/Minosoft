@@ -21,7 +21,6 @@ import java.nio.FloatBuffer
 class DummyFloatUniformBuffer(
     override var data: FloatBuffer,
 ) : FloatUniformBuffer {
-    override val bindingIndex: Int = 0
 
     override fun upload(start: Int, end: Int) {
     }

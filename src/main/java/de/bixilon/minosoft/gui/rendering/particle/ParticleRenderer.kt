@@ -48,8 +48,6 @@ class ParticleRenderer(
     private val profile = session.profiles.particle
     private val shader = context.system.shader.create(minosoft("particle")) { ParticleShader(it) }
 
-    // There is no opaque mesh because it is simply not needed (every particle has transparency)
-
     private val meshData = FloatListUtil.direct(1024 * ParticleMeshBuilder.ParticleMeshStruct.floats, false)
     private val translucentData = FloatListUtil.direct(512 * ParticleMeshBuilder.ParticleMeshStruct.floats, false)
     var mesh: Mesh? = null
