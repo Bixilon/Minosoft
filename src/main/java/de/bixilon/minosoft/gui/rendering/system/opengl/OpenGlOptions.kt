@@ -15,6 +15,6 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 
 object OpenGlOptions {
     const val ASSERT_THREAD = false
-    const val CHECK_ERRORS_BEFORE_CALL = true
-    const val CHECK_ERRORS_AFTER_CALL = true
+    const val CHECK_ERRORS_BEFORE_CALL = false
+    const val CHECK_ERRORS_AFTER_CALL = false
 }
