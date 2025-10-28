@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.mat.mat4.f.Mat4Operations
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -88,7 +89,7 @@ open class BillboardTextFeature(
             translateXAssign(width / -2.0f * BillboardTextMeshBuilder.SCALE); translateYAssign(-PROPERTIES.lineHeight * BillboardTextMeshBuilder.SCALE)
         }
 
-        this.matrix = renderer.matrix * matrix
+        Mat4Operations.times(renderer.matrix.unsafe, matrix.unsafe, matrix)
     }
 
     override fun draw(mesh: Mesh) {

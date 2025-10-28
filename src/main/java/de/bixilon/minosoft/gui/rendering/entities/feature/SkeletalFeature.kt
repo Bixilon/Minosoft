@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
@@ -28,6 +30,7 @@ open class SkeletalFeature(
     val instance: SkeletalInstance,
 ) : EntityRenderFeature(renderer) {
     protected val manager = renderer.renderer.context.skeletal
+    private val rotation = MVec3f()
 
     protected var position = Vec3d.EMPTY
     protected var yaw = 0.0f
@@ -57,8 +60,8 @@ open class SkeletalFeature(
     }
 
     protected open fun updateInstance() {
-        val rotation = Vec3f(0.0f, -yaw.rad, 0.0f)
-        instance.update(rotation, renderer.matrix.unsafe)
+        this.rotation.y = -yaw.rad
+        instance.update(this.rotation.unsafe, renderer.matrix.unsafe)
     }
 
     override fun update(time: ValueTimeMark, delta: Float) {
