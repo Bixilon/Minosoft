@@ -60,7 +60,7 @@ open class ItemFeature(
     }
 
     private fun updateDistance() {
-        val distance = ItemRenderDistance.of(renderer.distance)
+        val distance = ItemRenderDistance.of(renderer.distance2)
         if (distance == this.distance) return
         unload()
         this.distance = distance

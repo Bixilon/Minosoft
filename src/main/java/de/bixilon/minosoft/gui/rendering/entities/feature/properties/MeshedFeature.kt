@@ -30,8 +30,6 @@ abstract class MeshedFeature<M : Mesh>(
             super.enabled = value
         }
 
-    override val sort = this::class.java.hashCode()
-
     protected fun unloadMesh() {
         val mesh = this.mesh ?: return
         renderer.renderer.queue += { mesh.unload() }

@@ -35,8 +35,6 @@ open class SkeletalFeature(
     protected var position = Vec3d.EMPTY
     protected var yaw = 0.0f
 
-    override val sort = this::class.java.hashCode()
-
     constructor(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : this(renderer, model.createInstance(renderer.renderer.context))
 
 

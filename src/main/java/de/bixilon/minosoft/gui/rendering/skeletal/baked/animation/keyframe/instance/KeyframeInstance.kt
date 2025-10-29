@@ -17,14 +17,15 @@ import de.bixilon.kutil.time.DurationUtil.rem
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.KeyframeData
 import java.util.*
 import kotlin.time.Duration
 
 abstract class KeyframeInstance<T>(
-    private val data: SortedMap<Duration, T>,
+    private val data: List<KeyframeData<T>>,
     private val loop: AnimationLoops,
 ) {
-    private val length = data.lastKey()
+    private val length = data.last().time
     private var iterator = data.iterator()
 
     private var current: T? = null

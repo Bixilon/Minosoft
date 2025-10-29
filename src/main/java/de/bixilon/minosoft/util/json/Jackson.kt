@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.type.MapType
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import de.bixilon.minosoft.util.json.time.DurationSerializer
+import de.bixilon.minosoft.util.json.time.InstantSerializer
 import de.bixilon.minosoft.util.json.vec.Vec2fSerializer
 import de.bixilon.minosoft.util.json.vec.Vec2iSerializer
 import de.bixilon.minosoft.util.json.vec.Vec3fSerializer
@@ -58,6 +60,7 @@ object Jackson {
         .registerModule(Vec4fSerializer)
 
         .registerModule(InstantSerializer)
+        .registerModule(DurationSerializer)
         .setDefaultMergeable(true)
         .apply {
             propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE

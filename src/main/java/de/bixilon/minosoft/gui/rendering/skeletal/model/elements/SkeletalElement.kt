@@ -19,8 +19,8 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
-import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
-import de.bixilon.minosoft.util.json.SkeletalRotationDeserializer
+import de.bixilon.minosoft.util.json.skeltal.SkeletalFaceDeserializer
+import de.bixilon.minosoft.util.json.skeltal.SkeletalRotationDeserializer
 
 data class SkeletalElement(
     val from: Vec3f,

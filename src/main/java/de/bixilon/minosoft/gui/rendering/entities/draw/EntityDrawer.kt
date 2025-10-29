@@ -39,7 +39,8 @@ class EntityDrawer(
             var sort = a.compareTo(b)
             if (sort != 0) return@sortWith sort
 
-            // TODO: compare by distance (in respect with order)
+            sort = a.distance2.compareTo(b.distance2) * order.sign
+            if (sort != 0) return@sortWith sort
 
             return@sortWith 0
 

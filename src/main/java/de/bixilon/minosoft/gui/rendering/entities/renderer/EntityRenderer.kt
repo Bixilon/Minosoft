@@ -41,7 +41,7 @@ abstract class EntityRenderer<E : Entity>(
     private var update = TimeUtil.NULL
     val features = FeatureManager(this)
     val info = entity.renderInfo
-    var distance = 0.0
+    var distance2 = 0.0
     var isInvisible = false
 
     val hitbox = HitboxFeature(this).register()
@@ -89,7 +89,7 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun updateRenderInfo(time: ValueTimeMark) {
         entity.draw(time)
-        this.distance = Vec3dUtil.distance2(entity.renderInfo.eyePosition, renderer.session.camera.entity.renderInfo.eyePosition)
+        this.distance2 = Vec3dUtil.distance2(entity.renderInfo.eyePosition, renderer.session.camera.entity.renderInfo.eyePosition)
     }
 
     private fun getCurrentLight(): LightLevel {

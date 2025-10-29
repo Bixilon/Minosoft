@@ -31,9 +31,9 @@ interface EntityLayer : RenderLayer {
         override val sort get() = EntitySortOrders.FURTHEST_FIRST
     }
 
-    enum class EntitySortOrders {
-        NEAREST_FIRST,
-        FURTHEST_FIRST,
+    enum class EntitySortOrders(val sign: Int) {
+        NEAREST_FIRST(+1),
+        FURTHEST_FIRST(-1),
     }
 
     companion object {

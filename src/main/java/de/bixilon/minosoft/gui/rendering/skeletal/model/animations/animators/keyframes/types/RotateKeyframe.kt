@@ -19,17 +19,16 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
-import java.util.*
-import kotlin.time.Duration
 
 data class RotateKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
     override val loop: AnimationLoops,
-    val data: TreeMap<Duration, Vec3f>,
+    val data: ArrayList<KeyframeData<Vec3f>>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
     init {
+        data.sort()
         if (data.size < 2) throw IllegalArgumentException("Must have at least 2 keyframes!")
     }
 

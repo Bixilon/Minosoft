@@ -11,27 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import org.junit.jupiter.api.Test
+import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
-interface FeatureDrawable : Comparable<FeatureDrawable> {
-    val layer: EntityLayer get() = EntityLayer.Opaque
-    val priority: Int get() = 0
-    val sort: Int // sorting purposes
-    val distance2: Double
+class KeyframeDataTest {
 
-    fun prepare() = Unit
-
-    fun draw()
-
-    override fun compareTo(other: FeatureDrawable): Int {
-        var compare = priority.compareTo(other.priority)
-        if (compare != 0) return compare
-
-        compare = sort.compareTo(other.sort)
-        if (compare != 0) return compare
-
-        return 0
+    @Test
+    fun `sort ascending`() {
+        val a = KeyframeData(0.1.seconds, Unit)
+        val b = KeyframeData(0.3.seconds, Unit)
+        assertTrue(a < b)
     }
 }

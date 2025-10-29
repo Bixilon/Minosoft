@@ -56,7 +56,7 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
     }
 
     private fun renderScore(): Boolean {
-        if (renderer.distance > RENDER_DISTANCE * RENDER_DISTANCE) return false
+        if (renderer.distance2 > RENDER_DISTANCE * RENDER_DISTANCE) return false
         val renderer = renderer.renderer
         val profile = renderer.profile.features.score
         if (!profile.enabled) return false

@@ -11,27 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import kotlin.time.Duration
 
-interface FeatureDrawable : Comparable<FeatureDrawable> {
-    val layer: EntityLayer get() = EntityLayer.Opaque
-    val priority: Int get() = 0
-    val sort: Int // sorting purposes
-    val distance2: Double
+data class KeyframeData<T>(
+    val time: Duration,
+    val data: T,
+) : Comparable<KeyframeData<*>> {
 
-    fun prepare() = Unit
-
-    fun draw()
-
-    override fun compareTo(other: FeatureDrawable): Int {
-        var compare = priority.compareTo(other.priority)
-        if (compare != 0) return compare
-
-        compare = sort.compareTo(other.sort)
-        if (compare != 0) return compare
-
-        return 0
-    }
+    override fun compareTo(other: KeyframeData<*>) = time.compareTo(other.time)
 }

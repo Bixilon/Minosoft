@@ -13,7 +13,7 @@
 
 @file:OptIn(ExperimentalTime::class)
 
-package de.bixilon.minosoft.util.json
+package de.bixilon.minosoft.util.json.time
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser

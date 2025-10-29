@@ -68,7 +68,7 @@ open class BillboardTextFeature(
     }
 
     protected open fun isInRenderDistance(): Boolean {
-        return renderer.distance <= (RENDER_DISTANCE * RENDER_DISTANCE)
+        return renderer.distance2 <= (RENDER_DISTANCE * RENDER_DISTANCE)
     }
 
     private fun createMesh(text: ChatComponent) {

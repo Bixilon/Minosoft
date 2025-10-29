@@ -18,6 +18,7 @@ import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.KeyframeData
 import it.unimi.dsi.fastutil.floats.FloatArrayList
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -243,7 +244,7 @@ class KeyframeInstanceTest {
     }
 
 
-    private class Instance(loop: AnimationLoops, data: Map<Float, Float>) : KeyframeInstance<Float>(data.entries.associate { it.key.toDouble().seconds to it.value }.toSortedMap(), loop) {
+    private class Instance(loop: AnimationLoops, data: Map<Float, Float>) : KeyframeInstance<Float>(data.entries.map { KeyframeData(it.key.toDouble().seconds, it.value) }.sorted(), loop) {
         val entries = FloatArrayList()
 
         override fun apply(value: Float, transform: TransformInstance) {

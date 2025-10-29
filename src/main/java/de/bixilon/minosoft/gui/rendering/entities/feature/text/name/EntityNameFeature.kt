@@ -100,7 +100,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         val entity = renderer.entity
 
         val distance = if (entity is LivingEntity && entity.pose == Poses.SNEAKING) SNEAKING_DISTANCE * SNEAKING_DISTANCE else RENDER_DISTANCE * RENDER_DISTANCE
-        if (renderer.distance >= distance) return null
+        if (renderer.distance2 >= distance) return null
 
         val invisible = isInvisible()
 

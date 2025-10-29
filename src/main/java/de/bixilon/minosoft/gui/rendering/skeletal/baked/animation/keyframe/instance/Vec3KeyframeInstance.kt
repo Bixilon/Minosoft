@@ -16,13 +16,14 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.inst
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.KeyframeData
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateSine
 import java.util.*
 import kotlin.time.Duration
 
 abstract class Vec3KeyframeInstance(
-    data: TreeMap<Duration, Vec3f>,
+    data: List<KeyframeData<Vec3f>>,
     loop: AnimationLoops,
     val interpolation: KeyframeInterpolation,
 ) : KeyframeInstance<Vec3f>(data, loop) {

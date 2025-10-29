@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
+import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["skeletal", "block_entity_rendering"])
@@ -36,6 +37,10 @@ class OpenCloseAnimationTest {
         val instance = model.createInstance(context)
 
         return Animation(instance)
+    }
+
+    private fun assertMatches(actual: Float, expected: Float) {
+        assertTrue(abs(actual - expected) < 0.003f, "Values don't match: actual=$actual, expected=$expected")
     }
 
     fun `create animation`() {
@@ -57,28 +62,28 @@ class OpenCloseAnimationTest {
         val animation = create()
         animation.open()
 
-        assertEquals(animation.getProgress(), 0.0f)
+        assertMatches(animation.getProgress(), 0.0f)
         assertEquals(animation.draw(0.1.seconds), AnimationResult.CONTINUE)
-        assertEquals(animation.getProgress(), 0.2f)
+        assertMatches(animation.getProgress(), 0.2f)
         assertEquals(animation.draw(0.2.seconds), AnimationResult.CONTINUE)
-        assertEquals(animation.getProgress(), 0.6f)
+        assertMatches(animation.getProgress(), 0.6f)
         assertEquals(animation.draw(0.3.seconds), AnimationResult.CONTINUE)
-        assertEquals(animation.getProgress(), 1.0f)
+        assertMatches(animation.getProgress(), 1.0f)
 
         assertEquals(animation.draw(0.3.seconds), AnimationResult.CONTINUE)
-        assertEquals(animation.getProgress(), 1.0f)
+        assertMatches(animation.getProgress(), 1.0f)
 
         animation.close()
 
         assertEquals(animation.draw(0.1.seconds), AnimationResult.CONTINUE)
-        assertEquals(animation.getProgress(), 2.0f / 3.0f)
+        assertMatches(animation.getProgress(), 2.0f / 3.0f)
         assertEquals(animation.draw(0.1.seconds), AnimationResult.CONTINUE)
-        assertTrue(animation.getProgress().matches(1.0f / 3.0f))
+        assertMatches(animation.getProgress(), 1.0f / 3.0f)
         assertEquals(animation.draw(0.05.seconds), AnimationResult.CONTINUE)
-        assertTrue(animation.getProgress().matches(1.0f / 6.0f))
+        assertMatches(animation.getProgress(), 1.0f / 6.0f)
 
         assertEquals(animation.draw(0.06.seconds), AnimationResult.ENDED)
-        assertEquals(animation.getProgress(), 0.0f)
+        assertMatches(animation.getProgress(), 0.0f)
     }
 
     private class Animation(
