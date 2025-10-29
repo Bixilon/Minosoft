@@ -163,14 +163,7 @@ class PlaySession(
                         connection.send(StartC2SP(this.player, this.sessionId))
                     }
 
-                    ProtocolStates.PLAY -> {
-                        this.state = PlaySessionStates.JOINING
-
-                        if (CLI.session == null) {
-                            CLI.session = this
-                        }
-                    }
-
+                    ProtocolStates.PLAY -> this.state = PlaySessionStates.JOINING
                     else -> Unit
                 }
             }
@@ -186,6 +179,9 @@ class PlaySession(
                 else -> ""
             }
             Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, prefix = ChatComponent.of(additionalPrefix)) { it.message.text }
+        }
+        if (CLI.session == null) {
+            CLI.session = this
         }
     }
 
