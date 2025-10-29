@@ -153,6 +153,9 @@ class ParticleRenderer(
         val translucent = ParticleMeshBuilder(context, this.translucentData)
 
         ticker.tick(mesh, translucent)
+
+        this.mesh = mesh.bake()
+        this.translucentMesh = translucent.bake()
     }
 
     override fun postPrepareDraw() {
