@@ -24,11 +24,11 @@ data class BakedSkeletalModel(
     val transformCount: Int,
     val animations: Map<String, SkeletalAnimation>,
 ) {
-    private var state = SkeletalModelStates.DECLARED
+    private var state = SkeletalModelStates.PREPARING
 
 
     fun load() {
-        if (state != SkeletalModelStates.DECLARED) throw IllegalStateException("Can not load model!")
+        if (state != SkeletalModelStates.PREPARING) throw IllegalStateException("Can not load model!")
         mesh.load()
         state = SkeletalModelStates.LOADED
     }

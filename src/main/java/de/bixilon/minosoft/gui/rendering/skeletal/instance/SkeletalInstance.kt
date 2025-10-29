@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class SkeletalInstance(
@@ -33,10 +34,23 @@ class SkeletalInstance(
 ) {
     val animation = AnimationManager(this)
     var matrix = MMat4f()
+    var state = SkeletalModelStates.PREPARING
+        private set
 
-    fun load() = Unit
-    fun unload() = Unit
-    fun drop() = Unit
+    fun load() {
+        assert(state == SkeletalModelStates.PREPARING)
+        state = SkeletalModelStates.LOADED
+    }
+
+    fun unload() {
+        assert(state == SkeletalModelStates.LOADED)
+        state = SkeletalModelStates.UNLOADED
+    }
+
+    fun drop() {
+        assert(state == SkeletalModelStates.PREPARING)
+        state = SkeletalModelStates.UNLOADED
+    }
 
     fun draw(light: Int) {
         context.system.reset(faceCulling = false)
@@ -55,6 +69,7 @@ class SkeletalInstance(
     }
 
     fun draw(shader: Shader) {
+        assert(state == SkeletalModelStates.LOADED) { "Model not loaded: $state" }
         shader.use()
 
         context.skeletal.upload(this)
