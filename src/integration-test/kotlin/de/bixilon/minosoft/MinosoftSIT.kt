@@ -22,12 +22,14 @@ import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlOptions
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.collections.MemoryOptions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -52,6 +54,8 @@ internal object MinosoftSIT {
 
         WindowFactory.factory = DummyWindow
         RenderSystemFactory.factory = DummyRenderSystem
+
+        MemoryOptions.native = false // prevent excessive memory usage in tests
     }
 
     private fun boot() {
