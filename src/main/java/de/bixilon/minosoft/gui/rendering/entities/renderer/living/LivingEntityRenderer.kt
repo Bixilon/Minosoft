@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DamageListener {
@@ -41,7 +42,7 @@ abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer
         if (damage.delta >= 1.0f) {
             damage.push(ChatColors.WHITE.rgb())
         }
-        damage.add(delta, 0.1f)
+        damage.add((delta / 1.seconds).toFloat(), 0.1f) // TODO: 1 second?
         super.update(time, delta)
     }
 

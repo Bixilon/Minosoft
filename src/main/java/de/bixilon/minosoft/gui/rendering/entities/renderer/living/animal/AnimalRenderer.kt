@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class AnimalRenderer<E : AgeableMob>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity) {
@@ -32,7 +33,7 @@ abstract class AnimalRenderer<E : AgeableMob>(renderer: EntitiesRenderer, entity
         entity.data.observe<Boolean>(AgeableMob.BABY) { unload() }
     }
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
         if (model == null) {
             updateModel()
         }

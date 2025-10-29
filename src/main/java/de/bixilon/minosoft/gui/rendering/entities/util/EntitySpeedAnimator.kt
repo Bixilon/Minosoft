@@ -17,6 +17,7 @@ import de.bixilon.kutil.math.MathConstants
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class EntitySpeedAnimator(
     val speed: EntitySpeed,
@@ -39,7 +40,7 @@ class EntitySpeedAnimator(
         if (angle > 1.0f) angle = 1.0f
         if (angle < 0.0f) angle = 0.0f
 
-        this.progress += delta * SPEED_AMPLIFIER * maxOf(speed, MIN_SPEED)
+        this.progress += (delta / 1.seconds).toFloat() * SPEED_AMPLIFIER * maxOf(speed, MIN_SPEED) // TODO: 1 second?
         this.progress %= 2.0f
     }
 

@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFe
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class EntityRenderer<E : Entity>(
@@ -106,7 +107,7 @@ abstract class EntityRenderer<E : Entity>(
             val rgb = renderer.context.light.map.buffer[getCurrentLight().index]
             this.light.push(rgb)
         }
-        this.light.add(delta, 0.1f)
+        light.add((delta / 1.seconds).toFloat(), 0.1f) // TODO: 1 second?
     }
 
     open fun unload() {

@@ -15,14 +15,13 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.inst
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import it.unimi.dsi.fastutil.floats.FloatArrayList
 import org.testng.Assert.assertEquals
-import org.testng.Assert.assertFalse
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["skeletal", "rendering"])
 class KeyframeInstanceTest {
@@ -39,14 +38,14 @@ class KeyframeInstanceTest {
             2.0f to 5.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(0.2f),
             instance.transform(0.5f),
             instance.transform(1.0f),
             instance.transform(2.0f),
         )
-        over.assertOver()
+        ended.assertEnded()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -64,14 +63,14 @@ class KeyframeInstanceTest {
             3.0f to 10.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(2.0f),
             instance.transform(2.5f),
             instance.transform(3.0f),
         )
-        over.assertOver()
+        ended.assertEnded()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -88,14 +87,14 @@ class KeyframeInstanceTest {
             2.0f to 5.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(2.0f),
             instance.transform(3.0f),
             instance.transform(300.0f),
         )
-        over.assertNotOver()
+        ended.assertNotOver()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -113,7 +112,7 @@ class KeyframeInstanceTest {
             3.0f to 7.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(2.0f),
@@ -122,7 +121,7 @@ class KeyframeInstanceTest {
             instance.transform(4.0f),
             instance.transform(300.0f),
         )
-        over.assertNotOver()
+        ended.assertNotOver()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -141,7 +140,7 @@ class KeyframeInstanceTest {
             2.0f to 5.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(2.0f),
@@ -152,7 +151,7 @@ class KeyframeInstanceTest {
             instance.transform(5.0f),
             instance.transform(5.5f),
         )
-        over.assertNotOver()
+        ended.assertNotOver()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -175,7 +174,7 @@ class KeyframeInstanceTest {
             4.0f to 0.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(2.0f),
@@ -189,7 +188,7 @@ class KeyframeInstanceTest {
 
             instance.transform(9.0f),
         )
-        over.assertNotOver()
+        ended.assertNotOver()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -212,7 +211,7 @@ class KeyframeInstanceTest {
             12.0f to 5.0f,
         ))
 
-        val over = booleanArrayOf(
+        val ended = arrayOf(
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(9.9f),
@@ -220,7 +219,7 @@ class KeyframeInstanceTest {
             instance.transform(11.0f),
             instance.transform(12.0f),
         )
-        over.assertOver()
+        ended.assertEnded()
 
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
@@ -228,23 +227,23 @@ class KeyframeInstanceTest {
         ))
     }
 
-    private fun BooleanArray.assertNotOver() {
+    private fun Array<AnimationResult>.assertNotOver() {
         for (entry in this) {
-            assertFalse(entry)
+            assertEquals(entry, AnimationResult.CONTINUE)
         }
     }
 
-    private fun BooleanArray.assertOver() {
+    private fun Array<AnimationResult>.assertEnded() {
         if (this.isEmpty()) throw IllegalArgumentException("Empty!")
         for ((index, entry) in this.withIndex()) {
             if (index + 1 == this.size) break
-            assertEquals(entry, NOT_OVER, "Expected animation to not be over yet at $index")
+            assertEquals(entry, AnimationResult.CONTINUE, "Expected animation to not have ended yet at $index")
         }
-        assertEquals(this.last(), OVER, "Expected animation to be over!")
+        assertEquals(this.last(), AnimationResult.ENDED, "Expected animation to have ended!")
     }
 
 
-    private class Instance(loop: AnimationLoops, data: Map<Float, Float>) : KeyframeInstance<Float>(data.toSortedMap(), loop) {
+    private class Instance(loop: AnimationLoops, data: Map<Float, Float>) : KeyframeInstance<Float>(data.entries.associate { it.key.toDouble().seconds to it.value }.toSortedMap(), loop) {
         val entries = FloatArrayList()
 
         override fun apply(value: Float, transform: TransformInstance) {
@@ -255,8 +254,8 @@ class KeyframeInstanceTest {
             return interpolateLinear(delta, previous, next)
         }
 
-        fun transform(time: Float): Boolean {
-            return transform(time, TransformInstance(0, Vec3f.EMPTY, emptyMap()))
+        fun transform(seconds: Float): AnimationResult {
+            return transform(seconds.toDouble().seconds, TransformInstance(0, Vec3f.EMPTY, emptyMap()))
         }
     }
 }

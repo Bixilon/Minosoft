@@ -49,50 +49,50 @@ class HitboxFeatureTest {
 
     fun `create simple hitbox`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(now(), 0.0f)
+        hitbox.update(now(), 0.0.seconds)
         assertNotNull(hitbox.mesh)
     }
 
     fun `unload if entity is invisible`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(now(), 0.0f)
+        hitbox.update(now(), 0.0.seconds)
         hitbox.renderer.entity.isInvisible(true)
-        hitbox.update(now(), 0.0f)
+        hitbox.update(now(), 0.0.seconds)
         assertNull(hitbox.mesh)
     }
 
     fun `entity is invisible but invisibles are shown`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(now(), 0.0f)
+        hitbox.update(now(), 0.0.seconds)
         hitbox.renderer.entity.isInvisible(true)
         hitbox.renderer.renderer.profile.features.hitbox.showInvisible = true
-        hitbox.update(now(), 0.0f)
+        hitbox.update(now(), 0.0.seconds)
         assertNotNull(hitbox.mesh)
     }
 
     fun `profile disabled`() {
         val hitbox = create(RemotePlayerEntity)
         hitbox.renderer.renderer.profile.features.hitbox.enabled = false
-        hitbox.update(now(), 0.0f)
+        hitbox.update(now(), 0.0.seconds)
         assertNull(hitbox.mesh)
     }
 
     fun `don't update hitbox if unchanged`() {
         val hitbox = create(RemotePlayerEntity)
-        hitbox.update(now(), 1.0f)
+        hitbox.update(now(), 1.0.seconds)
         val mesh = hitbox.mesh
-        hitbox.update(now(), 1.0f)
+        hitbox.update(now(), 1.0.seconds)
         assertSame(mesh, hitbox.mesh)
     }
 
     fun `update hitbox if entity moved`() {
         val hitbox = create(RemotePlayerEntity)
         val start = now()
-        hitbox.update(start, 0.0f)
+        hitbox.update(start, 0.0.seconds)
         val mesh = hitbox.mesh
         hitbox.renderer.entity.physics.forceMove(Vec3d(0.5))
         hitbox.renderer.entity.draw(start + 1.seconds)
-        hitbox.update(start + 1.seconds, 1.0f)
+        hitbox.update(start + 1.seconds, 1.0.seconds)
         assertNotSame(mesh, hitbox.mesh)
     }
 

@@ -81,7 +81,7 @@ class EntitySpeed(val entity: Entity) {
         if (rapid || this.interpolator.delta >= 1.0f) {
             push(step)
         }
-        this.interpolator.add(delta, step)
+        this.interpolator.add((delta / 1.seconds).toFloat(), step) // TODO: 1 second?
     }
 
     private companion object {

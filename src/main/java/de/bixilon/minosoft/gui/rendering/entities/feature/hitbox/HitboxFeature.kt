@@ -85,12 +85,12 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
         if (color.delta >= 1.0f) {
             this.color.push(renderer.entity.hitboxColor ?: ChatColors.WHITE)
         }
-        this.color.add(delta, 0.3f)
+        this.color.add((delta / 1.seconds).toFloat(), 0.3f)
 
         if (velocity.delta >= 1.0f) {
             this.velocity.push(Vec3f(renderer.entity.physics.velocity))
         }
-        this.velocity.add(delta, (TickUtil.TIME_PER_TICK / 1.seconds).toFloat())
+        this.velocity.add((delta / 1.seconds).toFloat(), (TickUtil.TIME_PER_TICK / 1.seconds).toFloat())
 
 
         return !this.color.identical || !this.velocity.identical
