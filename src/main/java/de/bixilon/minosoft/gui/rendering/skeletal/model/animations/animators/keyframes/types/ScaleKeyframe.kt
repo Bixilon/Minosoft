@@ -20,11 +20,12 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.Ani
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
 import java.util.*
+import kotlin.time.Duration
 
 data class ScaleKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
     override val loop: AnimationLoops,
-    val data: TreeMap<Float, Vec3f>,
+    val data: TreeMap<Duration, Vec3f>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 

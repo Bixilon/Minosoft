@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import java.util.*
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class ItemFeature(
@@ -48,7 +49,7 @@ open class ItemFeature(
 
     override val layer get() = EntityLayer.Translucent // TODO
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
         if (!_enabled) return unload()
         updateDistance()
         if (this.mesh == null) {

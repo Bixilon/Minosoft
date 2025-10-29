@@ -18,13 +18,13 @@ import de.bixilon.kutil.primitive.FloatUtil.matches
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
+import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["skeletal", "block_entity_rendering"])
 class OpenCloseAnimationTest {
@@ -49,7 +49,7 @@ class OpenCloseAnimationTest {
         assertTrue(animation.getInstance().animation.isPlaying(animation))
         animation.close()
         assertTrue(animation.getInstance().animation.isPlaying(animation))
-        assertEquals(animation.draw(0.3f), OVER)
+        assertEquals(animation.draw(0.3.seconds), AnimationResult.ENDED)
         // assertFalse(animation.getInstance().animation.isPlaying(animation)) // animation is drawn directly, that is part of the animation manager
     }
 
@@ -58,26 +58,26 @@ class OpenCloseAnimationTest {
         animation.open()
 
         assertEquals(animation.getProgress(), 0.0f)
-        assertEquals(animation.draw(0.1f), NOT_OVER)
+        assertEquals(animation.draw(0.1.seconds), AnimationResult.CONTINUE)
         assertEquals(animation.getProgress(), 0.2f)
-        assertEquals(animation.draw(0.2f), NOT_OVER)
+        assertEquals(animation.draw(0.2.seconds), AnimationResult.CONTINUE)
         assertEquals(animation.getProgress(), 0.6f)
-        assertEquals(animation.draw(0.3f), NOT_OVER)
+        assertEquals(animation.draw(0.3.seconds), AnimationResult.CONTINUE)
         assertEquals(animation.getProgress(), 1.0f)
 
-        assertEquals(animation.draw(0.3f), NOT_OVER)
+        assertEquals(animation.draw(0.3.seconds), AnimationResult.CONTINUE)
         assertEquals(animation.getProgress(), 1.0f)
 
         animation.close()
 
-        assertEquals(animation.draw(0.1f), NOT_OVER)
+        assertEquals(animation.draw(0.1.seconds), AnimationResult.CONTINUE)
         assertEquals(animation.getProgress(), 2.0f / 3.0f)
-        assertEquals(animation.draw(0.1f), NOT_OVER)
+        assertEquals(animation.draw(0.1.seconds), AnimationResult.CONTINUE)
         assertTrue(animation.getProgress().matches(1.0f / 3.0f))
-        assertEquals(animation.draw(0.05f), NOT_OVER)
+        assertEquals(animation.draw(0.05.seconds), AnimationResult.CONTINUE)
         assertTrue(animation.getProgress().matches(1.0f / 6.0f))
 
-        assertEquals(animation.draw(0.06f), OVER)
+        assertEquals(animation.draw(0.06.seconds), AnimationResult.ENDED)
         assertEquals(animation.getProgress(), 0.0f)
     }
 
@@ -88,8 +88,8 @@ class OpenCloseAnimationTest {
 
         override val name get() = "dummy"
 
-        override val closingDuration get() = 0.3f
-        override val openingDuration get() = 0.5f
+        override val closingDuration get() = 0.3.seconds
+        override val openingDuration get() = 0.5.seconds
 
 
         override fun transform() = Unit

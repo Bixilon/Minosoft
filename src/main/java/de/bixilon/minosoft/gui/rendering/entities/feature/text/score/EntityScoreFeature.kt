@@ -22,20 +22,22 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFe
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextMeshBuilder
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null), InvisibleFeature {
-    private var delta = 0.0f
+    private var delta = Duration.ZERO
     private val manager = renderer.renderer.features.score
     override val renderInvisible get() = true
 
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
         this.delta += delta
         if (this.delta >= UPDATE_INTERVAL) {
             updateScore()
             updateNameOffset()
-            this.delta = 0.0f
+            this.delta = Duration.ZERO
         }
         super.update(time, delta)
     }
@@ -76,7 +78,7 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
 
     companion object {
         const val RENDER_DISTANCE = 10
-        const val UPDATE_INTERVAL = 0.5f
+        val UPDATE_INTERVAL = 500.milliseconds
         val NAME_OFFSET = DEFAULT_OFFSET + (PROPERTIES.lineHeight + 1) * BillboardTextMeshBuilder.SCALE
     }
 }

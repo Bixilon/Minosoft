@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureDrawable
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
@@ -29,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.LineMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -42,7 +42,8 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
     private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorInterpolation::interpolateRGBA)
     private var velocity = Interpolator(Vec3f.EMPTY, Vec3fUtil::interpolateLinear)
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
+        super.update(time, delta)
         if (!manager.enabled) return unload()
         if (!_enabled) return unload()
         if (renderer.entity.isInvisible(renderer.renderer.session.camera.entity) && !manager.profile.showInvisible) return unload()
@@ -80,7 +81,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
         return changes > 0
     }
 
-    private fun interpolate(delta: Float): Boolean {
+    private fun interpolate(delta: Duration): Boolean {
         if (color.delta >= 1.0f) {
             this.color.push(renderer.entity.hitboxColor ?: ChatColors.WHITE)
         }

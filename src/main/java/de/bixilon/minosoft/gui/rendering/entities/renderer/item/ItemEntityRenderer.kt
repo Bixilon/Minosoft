@@ -23,6 +23,8 @@ import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelF
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : EntityRenderer<ItemEntity>(renderer, entity) {
@@ -34,20 +36,20 @@ class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : Entit
         entity::stack.observe(this, true) { item.stack = it }
     }
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
         updateFloatingRotation(delta)
         super.update(time, delta)
     }
 
-    private fun updateFloatingRotation(delta: Float) {
-        floating += delta / 3.0f
+    private fun updateFloatingRotation(delta: Duration) {
+        floating += (delta / 3.seconds).toFloat()
         if (floating > 1.0f) floating %= 1.0f
 
-        rotation += delta / CIRCLE
+        rotation += (delta / CIRCLE.toDouble().seconds).toFloat()
         if (rotation > 1.0f) rotation %= 1.0f
     }
 
-    override fun updateMatrix(delta: Float) {
+    override fun updateMatrix(delta: Duration) {
         super.updateMatrix(delta)
 
         this.matrix.apply {

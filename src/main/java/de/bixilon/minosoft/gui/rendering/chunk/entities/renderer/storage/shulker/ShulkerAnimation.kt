@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenClo
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
+import kotlin.time.Duration.Companion.milliseconds
 
 class ShulkerAnimation(
     instance: SkeletalInstance,
@@ -26,8 +27,8 @@ class ShulkerAnimation(
 
     override val name get() = NAME
 
-    override val closingDuration get() = 0.5f
-    override val openingDuration get() = 0.5f
+    override val closingDuration get() = 500.milliseconds
+    override val openingDuration get() = 500.milliseconds
 
     override fun transform() {
         val rotation = interpolateLinear(this.progress, ROTATION_CLOSED, ROTATION_OPENED)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,25 +13,25 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
+import kotlin.time.Duration
 
 class KeyframeAnimator(
     val transform: TransformInstance,
     val keyframes: Array<KeyframeInstance<*>>,
 ) {
 
-    fun draw(time: Float): Boolean {
-        var over = OVER
+    fun draw(time: Duration): AnimationResult {
+        var ended = AnimationResult.ENDED
 
         for (frame in keyframes) {
-            if (frame.transform(time, transform) == NOT_OVER) {
-                over = NOT_OVER
+            if (frame.transform(time, transform) == AnimationResult.CONTINUE) {
+                ended = AnimationResult.CONTINUE
             }
         }
 
-        return over
+        return ended
     }
 }

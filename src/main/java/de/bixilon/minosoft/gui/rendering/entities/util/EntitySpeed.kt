@@ -19,6 +19,7 @@ import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import kotlin.math.sqrt
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class EntitySpeed(val entity: Entity) {
@@ -60,14 +61,14 @@ class EntitySpeed(val entity: Entity) {
         this.interpolator.push(value)
     }
 
-    fun update(delta: Float) {
+    fun update(delta: Duration) {
         val age = entity.age
         if (age == this.age) return
         this.age = age
 
         val previous = this.length2
         updateLength2()
-        if (age < 0 || delta <= 0.0f) {
+        if (age < 0 || delta <= Duration.ZERO) {
             length2 = 0.0f // don't move when initializing
         }
 

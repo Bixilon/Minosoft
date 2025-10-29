@@ -31,21 +31,23 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null), InvisibleFeature {
-    private var delta = 0.0f
+    private var delta = Duration.ZERO
     override val renderInvisible get() = true
 
     init {
-        renderer.entity::customName.observe(this) { delta = 0.0f }
+        renderer.entity::customName.observe(this) { delta = Duration.ZERO }
     }
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
         this.delta += delta
         if (this.delta >= UPDATE_INTERVAL) {
             updateName()
-            this.delta = 0.0f
+            this.delta = Duration.ZERO
         }
         super.update(time, delta)
     }
@@ -149,6 +151,6 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
 
     companion object {
         const val SNEAKING_DISTANCE = 32
-        const val UPDATE_INTERVAL = 0.2f
+        val UPDATE_INTERVAL = 200.milliseconds
     }
 }

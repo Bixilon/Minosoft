@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFeature> {
@@ -33,7 +34,7 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         this.features -= feature
     }
 
-    fun update(time: ValueTimeMark, delta: Float) {
+    fun update(time: ValueTimeMark, delta: Duration) {
         for (feature in features) {
             if (feature.isInvisible()) continue
             feature.update(time, delta)

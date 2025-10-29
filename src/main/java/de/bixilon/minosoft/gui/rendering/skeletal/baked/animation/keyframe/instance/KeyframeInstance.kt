@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,21 +13,24 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance
 
+import de.bixilon.kutil.time.DurationUtil.rem
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import java.util.*
+import kotlin.time.Duration
 
 abstract class KeyframeInstance<T>(
-    private val data: SortedMap<Float, T>,
+    private val data: SortedMap<Duration, T>,
     private val loop: AnimationLoops,
 ) {
     private val length = data.lastKey()
     private var iterator = data.iterator()
 
     private var current: T? = null
-    private var currentTime = 0.0f
+    private var currentTime = Duration.ZERO
     private var next: T? = null
-    private var nextTime = 0.0f
+    private var nextTime = Duration.ZERO
 
     init {
         val pushed = push() or push() // fill times and values
@@ -39,15 +42,15 @@ abstract class KeyframeInstance<T>(
     abstract fun apply(value: T, transform: TransformInstance)
 
 
-    fun transform(time: Float, transform: TransformInstance): Boolean {
-        if (this.data.size < 2) return OVER // must have at least 2 data points
-        if (current == null) return OVER // illegal state
+    fun transform(time: Duration, transform: TransformInstance): AnimationResult {
+        if (this.data.size < 2) return AnimationResult.ENDED // must have at least 2 data points
+        if (current == null) return AnimationResult.ENDED // illegal state
 
 
         when (loop) {
             AnimationLoops.ONCE -> return once(time, transform)
             AnimationLoops.HOLD -> {
-                if (once(time, transform) == OVER) {
+                if (once(time, transform) == AnimationResult.ENDED) {
                     apply(current!!, transform)
                 }
             }
@@ -58,27 +61,27 @@ abstract class KeyframeInstance<T>(
                 once(time, transform)
             }
         }
-        return NOT_OVER
+        return AnimationResult.CONTINUE
     }
 
-    private fun once(time: Float, transform: TransformInstance): Boolean {
-        if (time < currentTime) return NOT_OVER
+    private fun once(time: Duration, transform: TransformInstance): AnimationResult {
+        if (time < currentTime) return AnimationResult.CONTINUE
         if (currentTime >= nextTime) {
-            return OVER
+            return AnimationResult.ENDED
         }
         while (time >= nextTime) {
             if (!push()) {
-                return OVER
+                return AnimationResult.ENDED
             }
         }
         interpolate(time, transform)
-        return NOT_OVER
+        return AnimationResult.CONTINUE
     }
 
-    private fun interpolate(time: Float, transform: TransformInstance) {
+    private fun interpolate(time: Duration, transform: TransformInstance) {
         val length = nextTime - currentTime
         val elapsed = time - currentTime
-        val progress = elapsed / length
+        val progress = (elapsed / length).toFloat()
 
         val value = interpolate(progress, current!!, next!!)
         apply(value, transform)
@@ -100,10 +103,5 @@ abstract class KeyframeInstance<T>(
         this.next = next
 
         return true
-    }
-
-    companion object {
-        const val OVER = true
-        const val NOT_OVER = !OVER
     }
 }

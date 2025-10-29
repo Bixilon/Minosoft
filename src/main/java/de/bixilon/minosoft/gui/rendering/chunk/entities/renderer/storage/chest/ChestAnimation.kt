@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenClo
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateSine
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
+import kotlin.time.Duration.Companion.milliseconds
 
 class ChestAnimation(
     instance: SkeletalInstance,
@@ -26,8 +27,8 @@ class ChestAnimation(
 
     override val name get() = NAME
 
-    override val closingDuration get() = 0.3f
-    override val openingDuration get() = 0.4f
+    override val closingDuration get() = 300.milliseconds
+    override val openingDuration get() = 400.milliseconds
 
 
     override fun transform() {

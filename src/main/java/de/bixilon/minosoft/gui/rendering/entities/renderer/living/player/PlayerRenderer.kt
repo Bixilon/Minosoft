@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.SkinManager.Companion.isReallyWide
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
@@ -119,7 +120,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         return true
     }
 
-    override fun updateMatrix(delta: Float) {
+    override fun updateMatrix(delta: Duration) {
         super.updateMatrix(delta)
         when (entity.pose) {
             Poses.SNEAKING -> matrix.apply { translateYAssign(SNEAKING_OFFSET) } // TODO: interpolate

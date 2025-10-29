@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
@@ -34,7 +34,7 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
     }
 
     open fun invalidate() = Unit
-    open fun update(time: ValueTimeMark, delta: Float) = Unit
+    open fun update(time: ValueTimeMark, delta: Duration) = Unit
     open fun unload() = Unit
 
 

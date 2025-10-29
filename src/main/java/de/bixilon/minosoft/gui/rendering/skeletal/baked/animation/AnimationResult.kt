@@ -11,29 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
+package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation
 
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimation
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
-import kotlin.time.Duration
-
-class KeyframeAnimation(
-    override val name: String,
-    val animators: Array<KeyframeAnimator>,
-) : AbstractAnimation {
-    private var time = Duration.ZERO
-
-
-    override fun draw(delta: Duration): AnimationResult {
-        time += delta
-        var result = AnimationResult.ENDED
-
-        for (animator in this.animators) {
-            if (animator.draw(this.time) == AnimationResult.CONTINUE) {
-                result = AnimationResult.CONTINUE
-            }
-        }
-
-        return result
-    }
+enum class AnimationResult {
+    ENDED,
+    CONTINUE,
 }

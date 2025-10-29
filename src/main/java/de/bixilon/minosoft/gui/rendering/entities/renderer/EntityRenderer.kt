@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFeature
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class EntityRenderer<E : Entity>(
@@ -55,7 +55,7 @@ abstract class EntityRenderer<E : Entity>(
         return this
     }
 
-    open fun updateMatrix(delta: Float) {
+    open fun updateMatrix(delta: Duration) {
         // TODO: update on demand
         val offset = renderer.context.camera.offset.offset
         val original = entity.renderInfo.position
@@ -73,12 +73,12 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun update(time: ValueTimeMark) {
-        val delta = if (this.update == TimeUtil.NULL) 0.0f else ((time - update) / 1.seconds).toFloat()
+        val delta = if (this.update == TimeUtil.NULL) Duration.ZERO else (time - update)
         update(time, delta)
         this.update = time
     }
 
-    open fun update(time: ValueTimeMark, delta: Float) {
+    open fun update(time: ValueTimeMark, delta: Duration) {
         this.isInvisible = entity.isInvisible(renderer.session.camera.entity)
         updateLight(delta)
         updateRenderInfo(time)
@@ -86,8 +86,8 @@ abstract class EntityRenderer<E : Entity>(
         features.update(time, delta)
     }
 
-    open fun updateRenderInfo(millis: ValueTimeMark) {
-        entity.draw(millis)
+    open fun updateRenderInfo(time: ValueTimeMark) {
+        entity.draw(time)
         this.distance = Vec3dUtil.distance2(entity.renderInfo.eyePosition, renderer.session.camera.entity.renderInfo.eyePosition)
     }
 
@@ -101,7 +101,7 @@ abstract class EntityRenderer<E : Entity>(
         return light
     }
 
-    protected open fun updateLight(delta: Float) {
+    protected open fun updateLight(delta: Duration) {
         if (this.light.delta >= 1.0f) {
             val rgb = renderer.context.light.map.buffer[getCurrentLight().index]
             this.light.push(rgb)

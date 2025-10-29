@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeatu
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BlockFeature(
@@ -38,7 +39,8 @@ open class BlockFeature(
 
     override val layer get() = EntityLayer.Translucent // TODO
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
+        super.unload()
         if (!_enabled) return unload()
         if (this.mesh == null) {
             val state = this.state ?: return unload()

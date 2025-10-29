@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.entities
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.collections.spliterator.async.ConcurrentSpliterator
+import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
@@ -59,16 +61,11 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
     }
 
     operator fun plusAssign(entity: Entity) = add(entity)
-    fun add(entity: Entity) {
-        try {
-            renderers.lock.lock()
-            val renderer = ignoreAll { entity.createRenderer() } ?: return
-            entity.renderer?.let { onReplace(it) }
-            entity.renderer = renderer
-            this.renderers.unsafe.put(entity, renderer)?.let { onReplace(it) }
-        } finally {
-            renderers.lock.unlock()
-        }
+    fun add(entity: Entity): Unit = renderers.lock.locked {
+        val renderer = ignoreAll { entity.createRenderer() } ?: return@locked
+        entity.renderer?.let { onReplace(it) }
+        entity.renderer = renderer
+        this.renderers.unsafe.put(entity, renderer)?.let { onReplace(it) }
     }
 
     @Deprecated("That should never ever happen!")
@@ -95,9 +92,7 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
         return renderers.unsafe.values.iterator()
     }
 
-    fun iterate(executor: ((EntityRenderer<*>) -> Unit)) {
-        lock.acquire()
+    fun iterate(executor: ((EntityRenderer<*>) -> Unit)) = lock.acquired {
         ConcurrentSpliterator(renderers.unsafe.values.spliterator(), priority = ThreadPool.Priorities.HIGHER).iterate(executor)
-        lock.release()
     }
 }

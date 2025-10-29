@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class SkeletalFeature(
@@ -41,7 +42,7 @@ open class SkeletalFeature(
 
     protected open fun updatePosition() {
         val renderInfo = renderer.info
-        var yaw = renderInfo.rotation.yaw
+        val yaw = renderInfo.rotation.yaw
         val position = renderInfo.position
 
         var changes = 0
@@ -55,7 +56,7 @@ open class SkeletalFeature(
         }
         if (changes == 0) return
         if (renderer.entity.isFlipped()) {
-            yaw *= -1.0f
+            this.yaw *= -1.0f
         }
         updateInstance()
     }
@@ -65,13 +66,15 @@ open class SkeletalFeature(
         instance.update(this.rotation.unsafe, renderer.matrix.unsafe)
     }
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
+        super.update(time, delta)
         instance.transform.reset()
         updatePosition()
         instance.animation.draw(delta)
     }
 
     override fun prepare() {
+        super.prepare()
         instance.transform.transform(instance.matrix.unsafe)
     }
 
@@ -90,6 +93,7 @@ open class SkeletalFeature(
     }
 
     override fun invalidate() {
+        super.invalidate()
         this.position = Vec3d.EMPTY
         this.yaw = 0.0f
     }

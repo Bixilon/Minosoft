@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.util
 import de.bixilon.kutil.math.MathConstants
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import kotlin.time.Duration
 
 class EntitySpeedAnimator(
     val speed: EntitySpeed,
@@ -26,7 +27,7 @@ class EntitySpeedAnimator(
         private set
 
 
-    fun update(delta: Float) {
+    fun update(delta: Duration) {
         val speed = speed.value
 
         var amplifier = speed * SPEED_AMPLIFIER

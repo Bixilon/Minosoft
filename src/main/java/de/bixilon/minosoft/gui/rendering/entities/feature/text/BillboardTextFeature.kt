@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BillboardTextFeature(
@@ -54,7 +55,8 @@ open class BillboardTextFeature(
 
     override val layer get() = EntityLayer.Translucent
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
+        super.update(time, delta)
         if (!_enabled) return unload()
         if (!isInRenderDistance()) return unload()
         if (this.mesh == null) {

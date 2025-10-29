@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
 
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimation
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AnimationResult
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
+import kotlin.time.Duration
 
 abstract class OpenCloseAnimation(
     protected val instance: SkeletalInstance,
@@ -26,30 +26,30 @@ abstract class OpenCloseAnimation(
     protected var progress = 0.0f
     protected var opening = true
 
-    protected abstract val closingDuration: Float
-    protected abstract val openingDuration: Float
+    protected abstract val closingDuration: Duration
+    protected abstract val openingDuration: Duration
 
-    override fun draw(delta: Float): Boolean {
+    override fun draw(delta: Duration): AnimationResult {
         return if (opening) drawOpening(delta) else drawClosing(delta)
     }
 
-    private fun drawOpening(delta: Float): Boolean {
-        this.progress += delta / openingDuration
+    private fun drawOpening(delta: Duration): AnimationResult {
+        this.progress += (delta / openingDuration).toFloat()
         if (this.progress > 1.0f) {
             this.progress = 1.0f
         }
         transform()
-        return NOT_OVER
+        return AnimationResult.CONTINUE
     }
 
-    private fun drawClosing(delta: Float): Boolean {
-        this.progress -= delta / closingDuration
+    private fun drawClosing(delta: Duration): AnimationResult {
+        this.progress -= (delta / closingDuration).toFloat()
         if (progress <= 0.0f) {
             this.progress = 0.0f
-            return OVER
+            return AnimationResult.ENDED
         }
         transform()
-        return NOT_OVER
+        return AnimationResult.CONTINUE
     }
 
     protected abstract fun transform()

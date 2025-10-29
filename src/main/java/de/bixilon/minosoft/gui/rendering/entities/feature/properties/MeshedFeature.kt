@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.DrawableEntityRenderFe
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
+import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class MeshedFeature<M : Mesh>(
@@ -31,11 +32,13 @@ abstract class MeshedFeature<M : Mesh>(
 
     override val sort = this::class.java.hashCode()
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
+        super.update(time, delta)
         if (!super.enabled) return unload()
     }
 
     override fun invalidate() {
+        super.invalidate()
         unload()
     }
 
@@ -50,6 +53,7 @@ abstract class MeshedFeature<M : Mesh>(
     }
 
     override fun unload() {
+        super.unload()
         val mesh = this.mesh ?: return
         this.mesh = null
         renderer.renderer.queue += { mesh.unload() }

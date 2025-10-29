@@ -20,6 +20,8 @@ import de.bixilon.kutil.primitive.FloatUtil.sin
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class ArmAnimator(
     val model: HumanModel<*>,
@@ -28,11 +30,11 @@ class ArmAnimator(
 ) {
     private var swinging = FloatArray(Arms.VALUES.size) { Float.NaN }
 
-    fun update(delta: Float) {
+    fun update(delta: Duration) {
         apply()
         for ((arm, progress) in swinging.withIndex()) {
             if (progress.isNaN()) continue
-            swinging[arm] += delta * 5.0f
+            swinging[arm] += (delta / 0.2.seconds).toFloat()
             if (swinging[arm] >= 1.0f) {
                 swinging[arm] = Float.NaN
             }

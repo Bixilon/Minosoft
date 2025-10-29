@@ -22,6 +22,8 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import kotlin.math.abs
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 
@@ -30,21 +32,21 @@ open class FlashingBlockFeature(
     state: BlockState?,
     scale: Vec3f = DEFAULT_SCALE,
     var flashColor: RGBColor = ChatColors.WHITE.rgb(),
-    var flashInterval: Float = 0.2f,
-    var maxFlash: Float = 0.5f
+    var flashInterval: Duration = 200.milliseconds,
+    var maxFlash: Float = 0.5f,
 ) : BlockFeature(renderer, state, scale) {
     private var progress = 0.0f
 
 
-    override fun update(time: ValueTimeMark, delta: Float) {
+    override fun update(time: ValueTimeMark, delta: Duration) {
         super.update(time, delta)
         updateFlashing(delta)
     }
 
-    private fun updateFlashing(delta: Float) {
+    private fun updateFlashing(delta: Duration) {
         if (delta > flashInterval) return
         // TODO: exponential?
-        progress += (delta / flashInterval)
+        progress += (delta / flashInterval).toFloat()
         if (progress > maxFlash) {
             progress -= maxFlash * 2.0f
         }

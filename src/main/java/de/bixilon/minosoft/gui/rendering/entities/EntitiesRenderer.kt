@@ -20,9 +20,7 @@ import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
-import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.VisibilityManager
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -70,11 +68,12 @@ class EntitiesRenderer(
                 Exception("Exception while rendering entity (session=${session.id}, entity=${it.entity})", error).crash()
             }
         }
-        drawer.prepare()
         this.invalid = false
     }
 
     override fun postPrepareDraw() {
+        queue.work()
+        drawer.prepare()
         queue.work()
     }
 
