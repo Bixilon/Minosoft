@@ -36,9 +36,6 @@ void main() {
     finTintColor = getRGBColor(floatBitsToUint(vinTint)) * uTintColor;
     finFragmentPosition = position.xyz;
 
-    uint uvRaw = floatBitsToUint(vinUV);
-
-    vec2 uv = uv_unpack(uvRaw);
-
+    vec2 uv = uv_unpack(floatBitsToUint(vinUV));
     setTexture(uv, vinIndexLayerAnimation);
 }

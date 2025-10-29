@@ -14,7 +14,7 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in vec2 vinUV;
+layout (location = 1) in float vinUV;
 layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000)
 layout (location = 3) in float vinTint;
 
@@ -27,6 +27,7 @@ out vec4 finFlashColor;
 
 out vec3 finFragmentPosition;
 
+#include "minosoft:vsh"
 #include "minosoft:tint"
 #include "minosoft:animation"
 #include "minosoft:color"
@@ -37,6 +38,8 @@ void main() {
     finTintColor = getRGBColor(floatBitsToUint(vinTint)) * uTintColor;
     finFragmentPosition = position.xyz;
 
-    setTexture(vinUV, vinIndexLayerAnimation);
+
+    vec2 uv = uv_unpack(floatBitsToUint(vinUV));
+    setTexture(uv, vinIndexLayerAnimation);
     finFlashColor = uFlashColor;
 }
