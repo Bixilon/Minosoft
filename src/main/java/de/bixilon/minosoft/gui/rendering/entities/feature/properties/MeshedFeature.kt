@@ -32,6 +32,12 @@ abstract class MeshedFeature<M : Mesh>(
 
     override val sort = this::class.java.hashCode()
 
+    protected fun unloadMesh() {
+        val mesh = this.mesh ?: return
+        renderer.renderer.queue += { mesh.unload() }
+        this.mesh = null
+    }
+
     override fun update(time: ValueTimeMark, delta: Duration) {
         super.update(time, delta)
         if (!super.enabled) return unload()
@@ -42,9 +48,16 @@ abstract class MeshedFeature<M : Mesh>(
         unload()
     }
 
+    override fun prepare() {
+        super.prepare()
+        val mesh = this.mesh
+        if (mesh != null && mesh.state == MeshStates.PREPARING) {
+            mesh.load()
+        }
+    }
+
     override fun draw() {
         val mesh = this.mesh ?: return
-        if (mesh.state != MeshStates.LOADED) mesh.load()
         draw(mesh)
     }
 
@@ -54,8 +67,6 @@ abstract class MeshedFeature<M : Mesh>(
 
     override fun unload() {
         super.unload()
-        val mesh = this.mesh ?: return
-        this.mesh = null
-        renderer.renderer.queue += { mesh.unload() }
+        unloadMesh()
     }
 }
