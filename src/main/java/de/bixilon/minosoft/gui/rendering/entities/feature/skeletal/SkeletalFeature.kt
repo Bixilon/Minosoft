@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.DrawableEntityRenderFe
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
@@ -69,11 +70,14 @@ open class SkeletalFeature(
         instance.transform.reset()
         updatePosition()
         instance.animation.draw(delta)
+        instance.transform.transform(instance.matrix.unsafe)
     }
 
     override fun prepare() {
         super.prepare()
-        instance.transform.transform(instance.matrix.unsafe)
+        if (instance.state == SkeletalModelStates.PREPARING) {
+            instance.load()
+        }
     }
 
     override fun draw() {
