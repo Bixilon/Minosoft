@@ -25,7 +25,7 @@ class OpenGlError(
     val id: Int,
 ) : RenderSystemError {
     val type = OpenGLErrors.CODES[id]
-    override val printMessage = ChatComponent.of("§cOpenGL error: §e$id ($type)")
+    override val message = ChatComponent.of("§cOpenGL error: §e$id ($type)")
 
     enum class OpenGLErrors(val code: Int) {
         INVALID_ENUM(GL_INVALID_ENUM),

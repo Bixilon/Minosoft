@@ -108,7 +108,7 @@ class RenderLoop(
             }
 
             for (error in context.system.getErrors()) {
-                context.session.util.sendDebugMessage(error.printMessage)
+                context.session.util.sendDebugMessage(error.message)
             }
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {

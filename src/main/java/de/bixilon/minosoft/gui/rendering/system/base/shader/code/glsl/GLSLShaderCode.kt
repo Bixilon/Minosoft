@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class GLSLShaderCode(
         for ((name, value) in NativeShader.DEFAULT_DEFINES) {
             value(context)?.let { defines[name] = it }
         }
-        defines[context.system.vendor.shaderDefine] = ""
+        defines[context.system.vendor.define] = ""
     }
 
     val code: String

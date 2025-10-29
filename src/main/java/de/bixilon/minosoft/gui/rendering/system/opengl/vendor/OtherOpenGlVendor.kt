@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 
 object OtherOpenGlVendor : OpenGlVendor {
-    override val shaderDefine: String = "__OTHER"
+    override val define: String = "__OTHER"
 
     override val hacks = DriverHacks.set()
 

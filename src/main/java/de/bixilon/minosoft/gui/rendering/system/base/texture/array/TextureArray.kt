@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 
 interface TextureArray {
+
     fun upload(latch: AbstractLatch?)
     fun load(latch: AbstractLatch?)
 
