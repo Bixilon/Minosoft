@@ -143,6 +143,9 @@ class ParticleRenderer(
         }
         mesh?.unload()
         translucentMesh?.unload()
+
+        this.mesh = null
+        this.translucentMesh = null
     }
 
     override fun prepareDrawAsync() {
@@ -154,8 +157,8 @@ class ParticleRenderer(
 
         ticker.tick(mesh, translucent)
 
-        this.mesh = mesh.bake()
-        this.translucentMesh = translucent.bake()
+        mesh._data?.takeIf { !it.isEmpty }?.let { this.mesh = mesh.bake() }
+        translucent._data?.takeIf { !it.isEmpty }?.let { this.translucentMesh = mesh.bake() }
     }
 
     override fun postPrepareDraw() {
