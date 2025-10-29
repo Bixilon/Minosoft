@@ -13,9 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-object OpenGlOptions {
-    const val ASSERT_THREAD = false
-    const val ASSERT_BEFORE = false
-    const val ASSERT_AFTER = false
-    const val DEBUG_OUTPUT = false
+import org.junit.jupiter.api.Test
+import kotlin.test.assertFalse
+
+class OpenGlOptionsTest {
+
+    @Test
+    fun `ensure debug options are off`() {
+        assertFalse(OpenGlOptions.ASSERT_THREAD)
+        assertFalse(OpenGlOptions.ASSERT_BEFORE)
+        assertFalse(OpenGlOptions.ASSERT_AFTER)
+        assertFalse(OpenGlOptions.DEBUG_OUTPUT)
+    }
 }

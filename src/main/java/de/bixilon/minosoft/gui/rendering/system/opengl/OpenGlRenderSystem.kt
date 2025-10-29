@@ -112,7 +112,7 @@ class OpenGlRenderSystem(
         this.version = gl { glGetString(GL_VERSION) } ?: "UNKNOWN"
         this.gpuType = gl { glGetString(GL_RENDERER) } ?: "UNKNOWN"
 
-        if (DEBUG_MODE) {
+        if (OpenGlOptions.DEBUG_OUTPUT) {
             gl { glEnable(GL_DEBUG_OUTPUT) }
             gl {
                 glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
@@ -308,7 +308,6 @@ class OpenGlRenderSystem(
         }
 
     companion object : RenderSystemFactory {
-        const val DEBUG_MODE = false
 
         override fun create(context: RenderContext) = OpenGlRenderSystem(context)
 
@@ -388,12 +387,12 @@ class OpenGlRenderSystem(
             if (OpenGlOptions.ASSERT_THREAD && Rendering.currentContext == null) {
                 throw IllegalStateException("No open gl context!")
             }
-            if (OpenGlOptions.CHECK_ERRORS_BEFORE_CALL) {
+            if (OpenGlOptions.ASSERT_BEFORE) {
                 val error = glGetError()
                 if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
             }
             val result = runnable.invoke()
-            if (OpenGlOptions.CHECK_ERRORS_AFTER_CALL) {
+            if (OpenGlOptions.ASSERT_AFTER) {
                 val error = glGetError()
                 if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
             }
