@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
+import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
@@ -39,35 +40,20 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         }
     }
 
-    fun prepare() {
+    fun unload() = features.forEach { it.unload() }
+    fun invalidate() = features.forEach { it.invalidate() }
+    fun updateVisibility(visibility: EntityVisibility) = features.forEach { it.updateVisibility(visibility) }
+    fun collect(drawer: EntityDrawer) {
         for (feature in features) {
             if (feature.isInvisible()) continue
-            feature.prepare()
-        }
-    }
-
-    fun unload() {
-        for (feature in features) {
-            feature.unload()
-        }
-    }
-
-    fun reset() {
-        for (feature in features) {
-            feature.reset()
-        }
-    }
-
-    fun updateVisibility(visibility: EntityVisibility) {
-        for (feature in features) {
-            feature.updateVisibility(visibility)
+            if (!feature.enabled || !feature.visible) continue // TODO: merge that with isInvisible
+            feature.collect(drawer)
         }
     }
 
     fun clear() {
         features.clear()
     }
-
 
     override fun iterator(): Iterator<EntityRenderFeature> {
         return features.iterator()

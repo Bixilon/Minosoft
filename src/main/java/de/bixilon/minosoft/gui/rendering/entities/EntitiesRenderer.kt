@@ -19,6 +19,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
@@ -38,15 +39,13 @@ class EntitiesRenderer(
     val features = EntityRenderFeatures(this)
     val renderers = EntityRendererManager(this)
     val visibility = VisibilityManager(this)
+    val drawer = EntityDrawer(this)
     val queue = Queue()
 
 
-    private var reset = false
+    private var invalid = false
 
-    override fun registerLayers() {
-        layers.register(EntityLayer.Opaque, null, { visibility.opaque.draw() }) { visibility.opaque.isEmpty() }
-        layers.register(EntityLayer.Translucent, null, { visibility.translucent.draw() }) { visibility.translucent.isEmpty() }
-    }
+    override fun registerLayers() = drawer.registerLayers()
 
     override fun prePrepareDraw() {
         queue.work()
@@ -55,23 +54,24 @@ class EntitiesRenderer(
     override fun prepareDrawAsync() {
         this.features.update()
         val time = now()
-        this.visibility.reset()
+        this.visibility.update()
+        drawer.clear()
+
         renderers.iterate {
             try {
-                if (reset) it.reset()
+                if (invalid) it.invalidate()
                 visibility.update(it) // TODO: only update if position, world or frustum changed
                 if (!it.isVisible()) return@iterate
 
                 it.update(time)
-                it.prepare()
-                visibility.collect(it)
+                it.collect(drawer)
             } catch (error: Throwable) {
                 error.printStackTrace()
-                Exception("Exception while rendering entities: ${session.id}", error).crash()
+                Exception("Exception while rendering entity (session=${session.id}, entity=${it.entity})", error).crash()
             }
         }
-        this.reset = false
-        this.visibility.finish()
+        drawer.prepare()
+        this.invalid = false
     }
 
     override fun postPrepareDraw() {
@@ -79,7 +79,7 @@ class EntitiesRenderer(
     }
 
     override fun init(latch: AbstractLatch) {
-        context.camera.offset::offset.observe(this) { reset = true }
+        context.camera.offset::offset.observe(this) { invalid = true }
         features.init()
         renderers.init()
         visibility.init()
@@ -89,11 +89,6 @@ class EntitiesRenderer(
         features.postInit()
     }
 
-    private fun ArrayList<EntityRenderFeature>.draw() {
-        for (feature in this) {
-            feature.draw()
-        }
-    }
 
     companion object : RendererBuilder<EntitiesRenderer> {
 

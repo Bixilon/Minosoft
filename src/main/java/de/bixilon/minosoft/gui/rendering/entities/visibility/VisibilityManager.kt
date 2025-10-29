@@ -13,38 +13,24 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.visibility
 
-import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
 class VisibilityManager(val renderer: EntitiesRenderer) {
-    private var update = false
-    private var _size = 0
-    var size: Int = 0
-        private set
-    var opaqueSize = 0
-        private set
-    var translucentSize = 0
-        private set
-
-    val opaque: ArrayList<EntityRenderFeature> = ArrayList(1000)
-    val translucent: ArrayList<EntityRenderFeature> = ArrayList(1000)
-    private val lock = Lock.lock()
+    private var invalid = false // TODO: Use
     private val graph = renderer.context.camera.occlusion
     private val frustum = renderer.context.camera.frustum
     private var renderDistance = 0
     private var eyePosition = renderer.session.camera.entity.physics.positionInfo.eyePosition
 
     fun init() {
-        renderer.session.events.listen<VisibilityGraphChangeEvent> { update = true }
+        renderer.session.events.listen<VisibilityGraphChangeEvent> { invalid = true }
         renderer.session.events.listen<ViewDistanceChangeEvent> { updateViewDistance(server = it.viewDistance) }
         renderer.profile.general::renderDistance.observe(this, true) { updateViewDistance(entity = it) }
     }
@@ -56,10 +42,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     }
 
 
-    fun reset() {
-        opaque.clear()
-        translucent.clear()
-        _size = 0
+    fun update() {
         eyePosition = renderer.session.camera.entity.physics.positionInfo.eyePosition
     }
 
@@ -82,32 +65,5 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     fun update(renderer: EntityRenderer<*>) {
         val visibility = getVisibility(renderer)
         renderer.updateVisibility(visibility)
-    }
-
-    fun collect(renderer: EntityRenderer<*>) {
-        if (!renderer.isVisible()) return
-        lock.lock()
-        _size++
-        for (feature in renderer.features) {
-            if (!feature.enabled || !feature.visible || feature.isInvisible()) continue
-            feature.collect(this)
-        }
-        lock.unlock()
-    }
-
-    fun finish() {
-        // TODO: Optimize it (pre create array, just work with array?)
-        this.opaque.sort()
-        this.translucent.sort()
-        this.update = false
-        size = _size
-        opaqueSize = opaque.size
-        translucentSize = translucent.size
-    }
-
-    operator fun get(layer: EntityLayer) = when (layer) {
-        EntityLayer.Opaque -> opaque
-        EntityLayer.Translucent -> translucent
-        else -> throw IllegalStateException("Unknown entity layer: $layer")
     }
 }

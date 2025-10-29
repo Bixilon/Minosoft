@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.human
 
-import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.skeletal.SkeletalFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.animator.HeadAnimator
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.ArmAnimator
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.LegAnimator

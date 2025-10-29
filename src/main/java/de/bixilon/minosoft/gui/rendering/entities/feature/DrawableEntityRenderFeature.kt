@@ -15,28 +15,10 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
-    protected var _enabled = true
-    var visible = true
+abstract class DrawableEntityRenderFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer), FeatureDrawable {
 
-    open var enabled
-        get() = _enabled
-        set(value) {
-            _enabled = value
-        }
-
-    open fun updateVisibility(visibility: EntityVisibility) {
-        this.visible = visibility >= EntityVisibility.VISIBLE
+    override fun collect(drawer: EntityDrawer) {
+        drawer += this
     }
-
-    open fun invalidate() = Unit
-    open fun update(time: ValueTimeMark, delta: Float) = Unit
-    open fun unload() = Unit
-
-
-    abstract fun collect(drawer: EntityDrawer)
 }

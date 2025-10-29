@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
+import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureDrawable
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
@@ -30,7 +32,7 @@ import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer) {
+class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer), FeatureDrawable {
     private val manager = renderer.renderer.features.hitbox
 
     private var aabb = AABB.EMPTY

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
@@ -85,10 +86,6 @@ abstract class EntityRenderer<E : Entity>(
         features.update(time, delta)
     }
 
-    open fun prepare() {
-        features.prepare()
-    }
-
     open fun updateRenderInfo(millis: ValueTimeMark) {
         entity.draw(millis)
         this.distance = Vec3dUtil.distance2(entity.renderInfo.eyePosition, renderer.session.camera.entity.renderInfo.eyePosition)
@@ -116,8 +113,12 @@ abstract class EntityRenderer<E : Entity>(
         features.unload()
     }
 
-    open fun reset() {
-        features.reset()
+    open fun invalidate() {
+        features.invalidate()
+    }
+
+    open fun collect(drawer: EntityDrawer) {
+        features.collect(drawer)
     }
 
     open fun isVisible() = visibility >= EntityVisibility.VISIBLE && !isInvisible

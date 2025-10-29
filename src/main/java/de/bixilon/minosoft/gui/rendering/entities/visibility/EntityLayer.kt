@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 
 interface EntityLayer : RenderLayer {
+    val sort get() = EntitySortOrders.NEAREST_FIRST
 
     object Opaque : EntityLayer {
         override val settings = OpaqueLayer.settings.copy(faceCulling = false)
@@ -27,5 +28,15 @@ interface EntityLayer : RenderLayer {
     object Translucent : EntityLayer {
         override val settings = TranslucentLayer.settings.copy(faceCulling = false)
         override val priority: Int get() = TranslucentLayer.priority - 1 // otherwise not visible through water, etc
+        override val sort get() = EntitySortOrders.FURTHEST_FIRST
+    }
+
+    enum class EntitySortOrders {
+        NEAREST_FIRST,
+        FURTHEST_FIRST,
+    }
+
+    companion object {
+        val LAYERS = listOf(Opaque, Translucent)
     }
 }

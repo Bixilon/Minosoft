@@ -34,6 +34,9 @@ class SkeletalInstance(
     val animation = AnimationManager(this)
     var matrix = MMat4f()
 
+    fun load() = Unit
+    fun unload() = Unit
+    fun drop() = Unit
 
     fun draw(light: Int) {
         context.system.reset(faceCulling = false)
@@ -61,7 +64,7 @@ class SkeletalInstance(
     fun update(time: ValueTimeMark = now()) {
         transform.reset()
         animation.draw(time)
-        transform.pack(matrix.unsafe)
+        transform.transform(matrix.unsafe)
     }
 
     fun update(position: Vec3f, rotation: Vec3f, pivot: Vec3f = Vec3f.EMPTY, matrix: Mat4f? = null) {

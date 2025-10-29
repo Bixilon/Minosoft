@@ -11,20 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
+package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.skeletal
 
-import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.skeletal.SkeletalBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
-abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
-    state: BlockState,
-    skeletal: SkeletalInstance?,
-) : SkeletalBlockEntityRenderer<E>(state, skeletal) {
+abstract class SkeletalBlockEntityRenderer<E : BlockEntity>(
+    override var state: BlockState,
+    protected val skeletal: SkeletalInstance?,
+) : BlockEntityRenderer<E> {
+    override var light = 0xFF
 
-    open fun open() = Unit
-    open fun close() = Unit
+    override fun draw(context: RenderContext) {
+        skeletal?.update()
+        skeletal?.draw(light)
+    }
+
+    override fun load() {
+        skeletal?.load()
+    }
+
+    override fun unload() {
+        skeletal?.unload()
+    }
+
+    override fun drop() {
+        skeletal?.drop()
+    }
 }

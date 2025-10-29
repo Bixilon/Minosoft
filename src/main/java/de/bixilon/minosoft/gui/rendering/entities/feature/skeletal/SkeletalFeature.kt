@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature
+package de.bixilon.minosoft.gui.rendering.entities.feature.skeletal
 
-import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
+import de.bixilon.minosoft.gui.rendering.entities.feature.DrawableEntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -28,12 +27,14 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 open class SkeletalFeature(
     renderer: EntityRenderer<*>,
     val instance: SkeletalInstance,
-) : EntityRenderFeature(renderer) {
+) : DrawableEntityRenderFeature(renderer) {
     protected val manager = renderer.renderer.context.skeletal
     private val rotation = MVec3f()
 
     protected var position = Vec3d.EMPTY
     protected var yaw = 0.0f
+
+    override val sort = this::class.java.hashCode()
 
     constructor(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : this(renderer, model.createInstance(renderer.renderer.context))
 
@@ -71,7 +72,7 @@ open class SkeletalFeature(
     }
 
     override fun prepare() {
-        instance.transform.pack(instance.matrix.unsafe)
+        instance.transform.transform(instance.matrix.unsafe)
     }
 
     override fun draw() {
@@ -82,7 +83,13 @@ open class SkeletalFeature(
         instance.draw(tint)
     }
 
-    override fun reset() {
+
+    override fun unload() {
+        super.unload()
+        instance.unload()
+    }
+
+    override fun invalidate() {
         this.position = Vec3d.EMPTY
         this.yaw = 0.0f
     }

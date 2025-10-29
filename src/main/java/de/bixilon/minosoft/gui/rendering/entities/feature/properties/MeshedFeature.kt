@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.properties
 
-import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.DrawableEntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
@@ -21,7 +21,7 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class MeshedFeature<M : Mesh>(
     renderer: EntityRenderer<*>,
-) : EntityRenderFeature(renderer) {
+) : DrawableEntityRenderFeature(renderer) {
     protected open var mesh: M? = null
     override var enabled: Boolean
         get() = super.enabled && mesh != null
@@ -29,11 +29,13 @@ abstract class MeshedFeature<M : Mesh>(
             super.enabled = value
         }
 
+    override val sort = this::class.java.hashCode()
+
     override fun update(time: ValueTimeMark, delta: Float) {
         if (!super.enabled) return unload()
     }
 
-    override fun reset() {
+    override fun invalidate() {
         unload()
     }
 

@@ -13,30 +13,24 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
-import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
-import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
-    protected var _enabled = true
-    var visible = true
+interface FeatureDrawable : Comparable<FeatureDrawable> {
+    val layer: EntityLayer get() = EntityLayer.Opaque
+    val priority: Int get() = 0
+    val sort: Int // sorting purposes
 
-    open var enabled
-        get() = _enabled
-        set(value) {
-            _enabled = value
-        }
+    fun prepare() = Unit
 
-    open fun updateVisibility(visibility: EntityVisibility) {
-        this.visible = visibility >= EntityVisibility.VISIBLE
+    fun draw()
+
+    override fun compareTo(other: FeatureDrawable): Int {
+        var compare = priority.compareTo(other.priority)
+        if (compare != 0) return compare
+
+        compare = sort.compareTo(other.sort)
+        if (compare != 0) return compare
+
+        return 0
     }
-
-    open fun invalidate() = Unit
-    open fun update(time: ValueTimeMark, delta: Float) = Unit
-    open fun unload() = Unit
-
-
-    abstract fun collect(drawer: EntityDrawer)
 }
