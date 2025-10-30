@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -26,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelF
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.score.EntityScoreFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.human.PlayerModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -41,32 +39,30 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
     var model: PlayerModel? = null
     var skin: DynamicTexture? = null
-    private var refresh = true
+
+    protected var unloadModel = false
 
     val score = EntityScoreFeature(this).register()
 
     init {
-        entity.additional::properties.observe(this) { refresh = true }
+        entity.additional::properties.observe(this) { unloadModel = true }
     }
 
-    private fun canSeeTeam(): Boolean {
-        val camera = renderer.session.camera.entity.nullCast<PlayerEntity>() ?: return false
-        val team = camera.additional.team ?: return false
-
-        return team.canSee(entity.additional.team)
+    private fun unloadModel() {
+        val model = this.model ?: return
+        this.model = null
+        features -= model
+        renderer.queue += { model.unload() }
+        this.unloadModel = false
     }
 
-    override fun updateVisibility(visibility: EntityVisibility) {
-        if (visibility >= EntityVisibility.OCCLUDED) {
-            this.isInvisible = entity.isInvisible && !canSeeTeam() // TODO: only update if that changes
+    override fun update(time: ValueTimeMark, delta: Duration) {
+        super.update(time, delta)
+        if (unloadModel) unloadModel()
+        if (this.model == null) {
+            this.model = createModel()
+            model?.register()
         }
-        super.updateVisibility(visibility)
-    }
-
-
-    override fun update(time: ValueTimeMark) {
-        if (refresh) updateModel()
-        super.update(time)
     }
 
     private fun setSkin(): SkinModel? {
@@ -82,16 +78,6 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         }
 
         return skin.model
-    }
-
-    private fun updateModel() {
-        this.model?.let { this.features -= it }
-        val model = createModel()
-        this.model = model
-        this.refresh = false
-        if (model == null) return
-
-        this.features += model
     }
 
     private fun createModel(): PlayerModel? {

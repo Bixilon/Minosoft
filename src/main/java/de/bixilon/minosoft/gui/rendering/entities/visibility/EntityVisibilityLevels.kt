@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.visibility
 
-enum class EntityVisibility {
+enum class EntityVisibilityLevels {
     // they are in order, so you can require a minimum visibility with actual >= required
     OUT_OF_VIEW_DISTANCE,
     OUT_OF_FRUSTUM,

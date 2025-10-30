@@ -52,7 +52,6 @@ class BlockMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, BlockM
         addIndexQuad()
     }
 
-
     data class BlockMeshStruct(
         val position: Vec3f,
         val uv: PackedUV,

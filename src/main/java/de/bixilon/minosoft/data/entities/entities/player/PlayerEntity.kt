@@ -155,12 +155,15 @@ abstract class PlayerEntity(
         }
     }
 
-    override fun isInvisible(camera: Entity): Boolean {
-        if (!super.isInvisible(camera)) return false
-        if (camera !is PlayerEntity) return true
-        val team = additional.team ?: return true
-        if (team != camera.additional.team) return true
-        return !team.visibility.invisibleTeam
+    override fun isVisibleTo(camera: Entity): Boolean {
+        return when {
+            super.isVisibleTo(camera) -> true
+            camera !is PlayerEntity -> false
+            else -> {
+                val team = additional.team ?: return false
+                return team.canSee(camera.additional.team)
+            }
+        }
     }
 
     companion object : Identified {

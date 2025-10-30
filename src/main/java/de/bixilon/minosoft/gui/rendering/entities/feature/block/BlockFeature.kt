@@ -17,33 +17,31 @@ import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.mesh.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
-    var scale: Vec3f = DEFAULT_SCALE,
+    val scale: Vec3f = DEFAULT_SCALE,
 ) : MeshedFeature<Mesh>(renderer) {
     private var matrix = MMat4f()
     var state: BlockState? = state
         set(value) {
             if (field == value) return
             field = value
-            unload()
+            unload = true
         }
 
     override val layer get() = EntityLayer.Translucent // TODO
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
-        super.unload()
-        if (!_enabled) return unload()
+    override fun update(delta: Duration) {
+        super.update(delta)
         if (this.mesh == null) {
-            val state = this.state ?: return unload()
+            val state = this.state ?: return
             createMesh(state)
         }
         updateMatrix()
@@ -51,7 +49,7 @@ open class BlockFeature(
 
     private fun createMesh(state: BlockState) {
         val mesh = BlockMeshBuilder(renderer.renderer.context)
-        val model = (state.block.model ?: state.model) ?: return
+        val model = (state.block.model ?: state.model) ?: return mesh.drop()
         // TODO: block entity support?
 
         val tint = renderer.renderer.context.tints.getBlockTint(state, BlockPosition(), null, null) // TODO

@@ -63,7 +63,7 @@ class ChunkMeshBuilder(context: RenderContext, estimate: Int) : QuadMeshBuilder(
         addIndexQuad()
     }
 
-    override fun bake() = ChunkMesh(create())
+    override fun bake() = ChunkMesh(createVertexBuffer())
 
     data class ChunkMeshStruct(
         val position: Vec3f,

@@ -87,14 +87,14 @@ abstract class MeshBuilder(
         return buffer
     }
 
-    protected fun create(): VertexBuffer {
+    protected fun createVertexBuffer(): VertexBuffer {
         val data = createNativeData()
         val index = createIndexNativeData()
 
         return context.system.createVertexBuffer(struct, data, primitive, index, reused)
     }
 
-    open fun bake() = Mesh(create())
+    open fun bake() = Mesh(createVertexBuffer())
 
     protected fun dropIndex(free: Boolean) {
         if (free && !reused) {

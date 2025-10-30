@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.entities.util.EntitySpeed
 import de.bixilon.minosoft.gui.rendering.entities.util.EntitySpeedAnimator
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
     val head = instance.transform.children["head"]?.let { HeadAnimator(renderer, it) }
@@ -37,10 +36,10 @@ abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkelet
         head?.update()
     }
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
+    override fun update(delta: Duration) {
         speed.update(delta)
         speedAnimator.update(delta)
-        super.update(time, delta)
+        super.update(delta)
         leg.update(delta)
         arm.update(delta)
     }

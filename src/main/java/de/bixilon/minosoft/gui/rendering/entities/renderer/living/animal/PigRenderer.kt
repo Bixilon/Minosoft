@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,15 +18,12 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModel
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 
 class PigRenderer(renderer: EntitiesRenderer, entity: Pig) : AnimalRenderer<Pig>(renderer, entity) {
-    override var model: AnimalModel<*>? = null
-
     init {
-        entity.data.observe<Boolean>(Pig.SADDLED) { unload() }
+        entity.data.observe<Boolean>(Pig.SADDLED) { unloadModel = true }
     }
 
     override fun getModel() = when {

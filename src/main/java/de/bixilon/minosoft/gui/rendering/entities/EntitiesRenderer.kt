@@ -57,11 +57,18 @@ class EntitiesRenderer(
 
         renderers.iterate {
             try {
-                if (invalid) it.invalidate()
-                visibility.update(it) // TODO: only update if position, world or frustum changed
+                if (invalid) {
+                    it.invalidate()
+                }
+
+                it.updateVisibility(visibility.getVisibilityLevel(it)) // TODO: only calculate if position, world or frustum changed (but still set it)
+                it.enqueueUnload()
+
                 if (!it.isVisible()) return@iterate
 
                 it.update(time)
+                it.enqueueUnload()
+
                 it.collect(drawer)
             } catch (error: Throwable) {
                 error.printStackTrace()
@@ -74,7 +81,6 @@ class EntitiesRenderer(
     override fun postPrepareDraw() {
         queue.work()
         drawer.prepare()
-        queue.work()
     }
 
     override fun init(latch: AbstractLatch) {

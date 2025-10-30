@@ -19,10 +19,10 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.mesh.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibilityLevels
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -31,14 +31,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class BillboardTextFeature(
     renderer: EntityRenderer<*>,
     text: ChatComponent?,
     offset: Float = DEFAULT_OFFSET,
 ) : MeshedFeature<Mesh>(renderer) {
-    override val priority: Int get() = 10000
+    override val priority get() = 10000
     private var info: TextRenderInfo? = null
     private var matrix = MMat4f()
     var text: ChatComponent? = text
@@ -55,13 +54,11 @@ open class BillboardTextFeature(
 
     override val layer get() = EntityLayer.Translucent
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
-        super.update(time, delta)
-        if (!_enabled) return unload()
-        if (!isInRenderDistance()) return unload()
-        if (this.mesh == null) {
-            val text = this.text ?: return unload()
-            if (text.length == 0) return unload()
+    override fun update(delta: Duration) {
+        super.update(delta)
+        if (unload || this.mesh == null) {
+            val text = this.text ?: return
+            if (text.length == 0) return
             createMesh(text)
         }
         updateMatrix()
@@ -111,8 +108,11 @@ open class BillboardTextFeature(
         super.draw(mesh)
     }
 
-    override fun updateVisibility(visibility: EntityVisibility) {
-        this.visible = true
+    override fun updateVisibility(level: EntityVisibilityLevels) = when {
+        level < EntityVisibilityLevels.OCCLUDED -> super.updateVisibility(level)
+        !isInRenderDistance() -> super.updateVisibility(EntityVisibilityLevels.OUT_OF_VIEW_DISTANCE)
+        level == EntityVisibilityLevels.OCCLUDED -> super.updateVisibility(EntityVisibilityLevels.VISIBLE)
+        else -> super.updateVisibility(level)
     }
 
     override fun unload() {

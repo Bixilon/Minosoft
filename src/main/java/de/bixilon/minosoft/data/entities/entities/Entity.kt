@@ -274,9 +274,9 @@ abstract class Entity(
         physics.tickRiding()
     }
 
-    open fun isInvisible(camera: Entity): Boolean {
-        if (camera is PlayerEntity && camera.additional.gamemode == Gamemodes.SPECTATOR) return false
-        return isInvisible
+    open fun isVisibleTo(camera: Entity) = when {
+        camera is PlayerEntity && camera.gamemode == Gamemodes.SPECTATOR -> true
+        else -> !isInvisible
     }
 
 

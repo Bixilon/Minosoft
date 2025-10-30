@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureDrawable
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.mesh.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer), FeatureDrawable {
     private val manager = renderer.renderer.features.hitbox
@@ -42,21 +41,22 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
     private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorInterpolation::interpolateRGBA)
     private var velocity = Interpolator(Vec3f.EMPTY, Vec3fUtil::interpolateLinear)
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
-        super.update(time, delta)
-        if (!manager.enabled) return unload()
-        if (!_enabled) return unload()
-        if (renderer.entity.isInvisible(renderer.renderer.session.camera.entity) && !manager.profile.showInvisible) return unload()
-        if (!visible) return
+    // TODO: manager.profile.showInvisible
+
+    override fun update(delta: Duration) {
+        super.update(delta)
+        if (!manager.enabled) {
+            unload = true
+            return
+        }
 
         val offset = renderer.renderer.context.camera.offset.offset
 
         val update = updateRenderInfo(offset) or interpolate(delta)
 
-        if (this.mesh != null && !update) return
-
-        unload()
-        createMesh()
+        if (unload || this.mesh == null || update) {
+            createMesh()
+        }
     }
 
 

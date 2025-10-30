@@ -17,7 +17,7 @@ import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModel
+import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModelFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
@@ -25,34 +25,44 @@ import kotlin.time.Duration
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class AnimalRenderer<E : AgeableMob>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity) {
-    protected abstract var model: AnimalModel<*>?
+    protected open var model: AnimalModelFeature<*>? = null
     val scale = if (renderer.profile.animal.randomScale) Random.asJavaRandom().nextFloat(0.9f, 1.1f) else 1.0f
-
+    protected var unloadModel = false
 
     init {
-        entity.data.observe<Boolean>(AgeableMob.BABY) { unload() }
+        entity.data.observe<Boolean>(AgeableMob.BABY) { unloadModel = true }
+    }
+
+    override fun enqueueUnload() {
+        super.enqueueUnload()
+        if (unloadModel) {
+            val model = this.model ?: return
+            this.model = null
+            features -= model
+            renderer.queue += { model.unload() }
+            this.unloadModel = false
+        }
     }
 
     override fun update(time: ValueTimeMark, delta: Duration) {
-        if (model == null) {
-            updateModel()
-        }
         super.update(time, delta)
+        if (model == null) {
+            this.model = createModel()
+            model?.register()
+        }
+
     }
 
-    protected abstract fun getModel(): ResourceLocation
+    protected abstract fun getModel(): ResourceLocation?
 
-    private fun updateModel() {
-        val type = getModel()
-        val model = renderer.context.models.skeletal[type]?.let { AnimalModel(this, it) } ?: return
-
-        this.model = model
-        model.register()
+    protected open fun createModel(): AnimalModelFeature<AnimalRenderer<E>>? {
+        val type = getModel() ?: return null
+        val skeletal = renderer.context.models.skeletal[type] ?: return null
+        return AnimalModelFeature(this, skeletal)
     }
 
     override fun unload() {
-        val model = this.model ?: return
+        super.unload()
         this.model = null
-        this.features -= model
     }
 }

@@ -28,28 +28,25 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null), InvisibleFeature {
+class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null) {
     private var delta = Duration.ZERO
-    override val renderInvisible get() = true
 
     init {
         renderer.entity::customName.observe(this) { delta = Duration.ZERO }
     }
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
+    override fun update(delta: Duration) {
         this.delta += delta
         if (this.delta >= UPDATE_INTERVAL) {
             updateName()
             this.delta = Duration.ZERO
         }
-        super.update(time, delta)
+        super.update(delta)
     }
 
     private fun updateName() {

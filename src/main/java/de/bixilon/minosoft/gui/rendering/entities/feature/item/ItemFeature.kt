@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMeshBuilder
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
 import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature.ItemRenderDistance.Companion.getCount
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.mesh.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import java.util.*
 import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class ItemFeature(
     renderer: EntityRenderer<*>,
@@ -44,13 +43,14 @@ open class ItemFeature(
         set(value) {
             if (field == value) return
             field = value
-            unload()
+            unload = true
         }
 
     override val layer get() = EntityLayer.Translucent // TODO
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
-        if (!_enabled) return unload()
+    override fun update(delta: Duration) {
+        super.update(delta)
+
         updateDistance()
         if (this.mesh == null) {
             val stack = this.stack ?: return unload()
@@ -62,7 +62,7 @@ open class ItemFeature(
     private fun updateDistance() {
         val distance = ItemRenderDistance.of(renderer.distance2)
         if (distance == this.distance) return
-        unload()
+        unload = true
         this.distance = distance
     }
 

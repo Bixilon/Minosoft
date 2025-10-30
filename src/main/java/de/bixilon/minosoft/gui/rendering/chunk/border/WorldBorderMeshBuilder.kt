@@ -101,7 +101,7 @@ class WorldBorderMeshBuilder(
         )
     }
 
-    override fun bake() = WorldBorderMesh(offset, center, radius, create())
+    override fun bake() = WorldBorderMesh(offset, center, radius, createVertexBuffer())
 
 
     data class WorldBorderMeshStruct(

@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 open class SkeletalFeature(
     renderer: EntityRenderer<*>,
@@ -37,6 +36,9 @@ open class SkeletalFeature(
     protected var yaw = 0.0f
 
     constructor(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : this(renderer, model.createInstance(renderer.renderer.context))
+
+
+    // TODO. free instance when out of view distance?
 
 
     protected open fun updatePosition() {
@@ -65,8 +67,8 @@ open class SkeletalFeature(
         instance.update(this.rotation.unsafe, renderer.matrix.unsafe)
     }
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
-        super.update(time, delta)
+    override fun update(delta: Duration) {
+        super.update(delta)
         instance.transform.reset()
         updatePosition()
         instance.animation.draw(delta)
@@ -91,7 +93,11 @@ open class SkeletalFeature(
 
     override fun unload() {
         super.unload()
-        instance.unload()
+        if (instance.state == SkeletalModelStates.PREPARING) {
+            instance.drop()
+        } else {
+            instance.unload()
+        }
     }
 
     override fun invalidate() {

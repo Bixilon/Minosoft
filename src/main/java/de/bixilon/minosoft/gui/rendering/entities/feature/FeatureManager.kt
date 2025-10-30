@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.draw.EntityDrawer
-import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibilityLevels
 import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFeature> {
     private val features: ArrayList<EntityRenderFeature> = ArrayList(10)
@@ -34,20 +32,28 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         this.features -= feature
     }
 
-    fun update(time: ValueTimeMark, delta: Duration) {
+    fun update(delta: Duration) {
         for (feature in features) {
-            if (feature.isInvisible()) continue
-            feature.update(time, delta)
+            if (!feature.isVisible()) continue
+            feature.update(delta)
         }
     }
 
-    fun unload() = features.forEach { it.unload() }
+    fun unload() {
+        features.forEach { it.unload() }
+        features.clear()
+    }
+
+    fun enqueueUnload() {
+        features.forEach { it.enqueueUnload() }
+    }
+
+    @Deprecated("What, why and how?")
     fun invalidate() = features.forEach { it.invalidate() }
-    fun updateVisibility(visibility: EntityVisibility) = features.forEach { it.updateVisibility(visibility) }
+    fun updateVisibility(level: EntityVisibilityLevels) = features.forEach { it.updateVisibility(level) }
     fun collect(drawer: EntityDrawer) {
         for (feature in features) {
-            if (feature.isInvisible()) continue
-            if (!feature.enabled || !feature.visible) continue // TODO: merge that with isInvisible
+            if (!feature.isVisible()) continue
             feature.collect(drawer)
         }
     }

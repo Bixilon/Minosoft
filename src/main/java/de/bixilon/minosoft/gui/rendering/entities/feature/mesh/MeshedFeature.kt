@@ -11,39 +11,57 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature.properties
+package de.bixilon.minosoft.gui.rendering.entities.feature.mesh
 
 import de.bixilon.minosoft.gui.rendering.entities.feature.DrawableEntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibilityLevels
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
-import kotlin.time.Duration
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class MeshedFeature<M : Mesh>(
     renderer: EntityRenderer<*>,
 ) : DrawableEntityRenderFeature(renderer) {
+    protected var unload = false
     protected open var mesh: M? = null
-    override var enabled: Boolean
-        get() = super.enabled && mesh != null
         set(value) {
-            super.enabled = value
+            val old = field
+            if (old != null) {
+                enqueueUnload(old)
+            }
+            field = value
+            this.unload = false
         }
 
-    protected fun unloadMesh() {
-        val mesh = this.mesh ?: return
-        renderer.renderer.queue += { mesh.unload() }
-        this.mesh = null
+
+    override fun updateVisibility(level: EntityVisibilityLevels) {
+        super.updateVisibility(level)
+        if (level <= EntityVisibilityLevels.OUT_OF_VIEW_DISTANCE) {
+            unload = true
+        }
     }
 
-    override fun update(time: ValueTimeMark, delta: Duration) {
-        super.update(time, delta)
-        if (!super.enabled) return unload()
+    private fun enqueueUnload(mesh: M) {
+        if (mesh.state == MeshStates.PREPARING) {
+            mesh.drop()
+        } else {
+            renderer.renderer.queue += { mesh.unload() }
+        }
+    }
+
+    override fun enqueueUnload() {
+        super.enqueueUnload()
+        if (unload) {
+            val mesh = this.mesh ?: return
+            enqueueUnload(mesh)
+            this.mesh = null
+            this.unload = false
+        }
     }
 
     override fun invalidate() {
         super.invalidate()
-        unload()
+        unload = true
     }
 
     override fun prepare() {
@@ -65,6 +83,13 @@ abstract class MeshedFeature<M : Mesh>(
 
     override fun unload() {
         super.unload()
-        unloadMesh()
+
+        val mesh = this.mesh ?: return
+        if (mesh.state == MeshStates.PREPARING) {
+            mesh.drop()
+        } else {
+            mesh.unload()
+        }
+        this.mesh = null
     }
 }

@@ -30,6 +30,7 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DamageListener {
     val damage = Interpolator(ChatColors.WHITE.rgb(), ColorInterpolation::interpolateRGB) // TODO delta^2 or no interpolation at all?
 
+
     override fun updateMatrix(delta: Duration) {
         super.updateMatrix(delta)
         when (entity.pose) {
