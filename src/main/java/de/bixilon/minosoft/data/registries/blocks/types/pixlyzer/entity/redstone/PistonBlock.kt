@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,11 +15,16 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.redston
 
 import de.bixilon.minosoft.data.entities.block.redstone.piston.PistonBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class PistonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<PistonBlockEntity>(resourceLocation, registries, data) {
+
+    override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = PistonBlockEntity(session, position, state) // TODO: sticky
 
     companion object : PixLyzerBlockFactory<PistonBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PistonBlock {

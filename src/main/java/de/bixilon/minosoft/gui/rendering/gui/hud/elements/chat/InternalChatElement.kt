@@ -19,11 +19,12 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.hud.Skippable
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
-class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
+class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), Skippable {
     private val chatProfile = profile.chat.internal
     private var active = false
         set(value) {
@@ -32,13 +33,10 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
             messages.forceSilentApply()
             forceApply()
         }
-    override var skipDraw: Boolean // skips hud draw and draws it in gui stage
+    override val skip: Boolean // skips hud draw and draws it in gui stage
         get() = chatProfile.hidden || active
-        set(value) {
-            chatProfile.hidden = !value
-        }
-    override val activeWhenHidden: Boolean
-        get() = true
+
+    override val activeWhenHidden get() = true
 
     init {
         messages.prefMaxSize = Vec2f(chatProfile.width, chatProfile.height)

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Witch(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Raider(session, entityType, data, position, rotation) {
@@ -34,7 +33,7 @@ class Witch(session: PlaySession, entityType: EntityType, data: EntityData, posi
         get() = data.getBoolean(LEGACY_IS_AGGRESSIVE_DATA, false)
 
     companion object : EntityFactory<Witch> {
-        override val identifier: ResourceLocation = minecraft("witch")
+        override val identifier = minecraft("witch")
         private val IS_DRINKING_POTION_DATA = EntityDataField("WITCH_IS_DRINKING_POTION")
         private val LEGACY_IS_AGGRESSIVE_DATA = EntityDataField("LEGACY_WITCH_IS_AGGRESSIVE")
 

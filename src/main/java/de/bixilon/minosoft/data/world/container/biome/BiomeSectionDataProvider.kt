@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.container.biome
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -24,7 +25,10 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 class BiomeSectionDataProvider(
     lock: Lock? = null,
     val section: ChunkSection,
-) : SectionDataProvider<Biome?>(lock, false) {
+) : SectionDataProvider<Biome>(lock, false) {
+
+    override fun create() = arrayOfNulls<Biome?>(ChunkSize.BLOCKS_PER_SECTION)
+
 
     @Deprecated("Wrong y coordinate for biomes")
     override fun get(position: InSectionPosition): Biome? {

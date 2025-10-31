@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 
@@ -27,7 +26,7 @@ class LightningBolt(session: PlaySession, entityType: EntityType, data: EntityDa
     val duration = random.nextInt(50, 150).ticks
 
     companion object : EntityFactory<LightningBolt> {
-        override val identifier: ResourceLocation = minecraft("lightning_bolt")
+        override val identifier = minecraft("lightning_bolt")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LightningBolt {
             return LightningBolt(session, entityType, data, position)

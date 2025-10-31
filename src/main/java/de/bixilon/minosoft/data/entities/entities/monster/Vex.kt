@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Vex(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
@@ -35,7 +34,7 @@ class Vex(session: PlaySession, entityType: EntityType, data: EntityData, positi
 
 
     companion object : EntityFactory<Vex> {
-        override val identifier: ResourceLocation = minecraft("vex")
+        override val identifier = minecraft("vex")
         private val FLAGS_DATA = EntityDataField("VEX_FLAGS")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Vex {

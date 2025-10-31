@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Goat(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(session, entityType, data, position, rotation) {
@@ -38,7 +37,7 @@ class Goat(session: PlaySession, entityType: EntityType, data: EntityData, posit
         get() = data.getBoolean(RIGHT_HORN_DATA, false)
 
     companion object : EntityFactory<Goat> {
-        override val identifier: ResourceLocation = minecraft("goat")
+        override val identifier = minecraft("goat")
         private val SCREAMING_DATA = EntityDataField("GOAT_IS_SCREAMING")
         private val LEFT_HORN_DATA = EntityDataField("LEFT_HORN")
         private val RIGHT_HORN_DATA = EntityDataField("RIGHT_HORN")

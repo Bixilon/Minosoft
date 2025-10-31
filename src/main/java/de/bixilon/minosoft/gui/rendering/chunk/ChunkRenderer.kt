@@ -235,7 +235,7 @@ class ChunkRenderer(
 
     private fun drawBlockEntities() {
         for (blockEntity in visible.entities) {
-            blockEntity.draw(context)
+            blockEntity.draw()
         }
     }
 

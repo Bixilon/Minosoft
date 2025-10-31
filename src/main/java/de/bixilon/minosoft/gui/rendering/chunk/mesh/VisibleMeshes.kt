@@ -25,7 +25,7 @@ class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMe
     val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
     val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
     val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
-    val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(previous?.entities?.size ?: 128)
+    val entities: ArrayList<BlockEntityRenderer> = ArrayList(previous?.entities?.size ?: 128)
 
     val sizeString: String
         get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${entities.size.format()}"

@@ -78,7 +78,7 @@ class DraggedManager(
             element.tick()
         }
 
-        if (!element.skipDraw) {
+        if (!element.skip) {
             element.draw()
         }
         element.prepare()

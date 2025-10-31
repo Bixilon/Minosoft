@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ZombieVillager(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Zombie(session, entityType, data, position, rotation) {
@@ -36,7 +35,7 @@ class ZombieVillager(session: PlaySession, entityType: EntityType, data: EntityD
 
 
     companion object : EntityFactory<ZombieVillager> {
-        override val identifier: ResourceLocation = minecraft("zombie_villager")
+        override val identifier = minecraft("zombie_villager")
         private val IS_CONVERTING_DATA = EntityDataField("ZOMBIE_VILLAGER_IS_CONVERTING")
         private val VILLAGER_DATA_DATA = EntityDataField("ZOMBIE_VILLAGER_DATA")
 

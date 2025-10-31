@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.container.DefaultInventoryTypes
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.datafixer.rls.ContainerTypeFixer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B
@@ -32,7 +31,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val id = if (buffer.versionId <= V_1_14) buffer.readUnsignedByte() else buffer.readVarInt()  // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
     val containerType: ContainerType = when {
         buffer.versionId < V_14W03B -> buffer.session.registries.containerType[buffer.readUnsignedByte()]
-        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.session.registries.containerType, ContainerTypeFixer)!! // TODO: version completely guessed
+        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.session.registries.containerType)!! // TODO: version completely guessed
         else -> buffer.readRegistryItem(buffer.session.registries.containerType)
     }
     val title: ChatComponent = buffer.readNbtChatComponent()

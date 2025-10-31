@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Rabbit(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(session, entityType, data, position, rotation) {
@@ -48,7 +47,7 @@ class Rabbit(session: PlaySession, entityType: EntityType, data: EntityData, pos
     }
 
     companion object : EntityFactory<Rabbit> {
-        override val identifier: ResourceLocation = minecraft("rabbit")
+        override val identifier = minecraft("rabbit")
         private val VARIANT_DATA = EntityDataField("RABBIT_VARIANT")
 
 

@@ -40,7 +40,7 @@ open class Guardian(session: PlaySession, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Guardian> {
-        override val identifier: ResourceLocation = minecraft("guardian")
+        override val identifier = minecraft("guardian")
         private val IS_MOVING_DATA = EntityDataField("GUARDIAN_IS_MOVING")
         private val TARGET_DATA = EntityDataField("GUARDIAN_TARGET_ENTITY_ID")
         private val LEGACY_FLAGS_DATA = EntityDataField("LEGACY_GUARDIAN_FLAGS")

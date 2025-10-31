@@ -14,16 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
-interface FeatureDrawable : Comparable<FeatureDrawable> {
+interface FeatureDrawable : Drawable, Comparable<FeatureDrawable> {
     val layer: EntityLayer get() = EntityLayer.Opaque
     val priority: Int get() = 0
     val sort: Int // sorting purposes
     val distance2: Double
 
     fun prepare() = Unit
-
-    fun draw()
 
     override fun compareTo(other: FeatureDrawable): Int {
         var compare = priority.compareTo(other.priority)

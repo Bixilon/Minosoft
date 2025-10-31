@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class TropicalFish(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSchoolingFish(session, entityType, data, position, rotation) {
@@ -54,7 +53,7 @@ class TropicalFish(session: PlaySession, entityType: EntityType, data: EntityDat
     }
 
     companion object : EntityFactory<TropicalFish> {
-        override val identifier: ResourceLocation = minecraft("tropical_fish")
+        override val identifier = minecraft("tropical_fish")
         private val VARIANT_DATA = EntityDataField("TROPICAL_FISH_VARIANT")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): TropicalFish {

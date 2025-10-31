@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,12 +28,13 @@ abstract class ResourceLocationFixer(private val path: ResourceLocation) : Fixer
         this::renames.forceSet(IntegratedAssets.DEFAULT[this.path.fixer()].readJson())
     }
 
-    open fun fix(resourceLocation: ResourceLocation): ResourceLocation {
-        return renames[resourceLocation] ?: resourceLocation
+    open fun fix(identifier: ResourceLocation): ResourceLocation {
+        return renames[identifier] ?: identifier
     }
 
 
     companion object {
+
         private fun ResourceLocation.fixer(): ResourceLocation {
             return this.prefix("fixer/").suffix(".json")
         }

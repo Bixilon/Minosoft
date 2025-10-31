@@ -28,14 +28,12 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isL
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.CampfireBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import java.util.*
 
-class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
+class CampfireBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state) {
     val items: Array<ItemStack?> = arrayOfNulls(CampfireBlock.MAX_ITEMS)
 
 
@@ -63,11 +61,13 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
     }
 
 
-    override fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
+    override fun tick() {
         val particle = session.world.particle ?: return
+        val state = this.state
         if (state.block !is CampfireBlock || !state.isLit()) {
             return
         }
+        val random = session.world.random
 
         if (random.nextFloat() < 0.11f) {
             for (i in 0 until random.nextInt(2) + 2) {
@@ -97,7 +97,7 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
     }
 
     companion object : BlockEntityFactory<CampfireBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("campfire")
+        override val identifier = minecraft("campfire")
         private val HORIZONTAL = arrayOf(Directions.SOUTH, Directions.WEST, Directions.NORTH, Directions.EAST)
         const val DIRECTION_OFFSET = 0.3125
 
@@ -111,8 +111,6 @@ class CampfireBlockEntity(session: PlaySession) : BlockEntity(session) {
         }
 
 
-        override fun build(session: PlaySession): CampfireBlockEntity {
-            return CampfireBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = CampfireBlockEntity(session, position, state)
     }
 }

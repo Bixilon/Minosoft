@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class WitherSkull(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHurtingProjectile(session, entityType, data, position, rotation) {
@@ -31,7 +30,7 @@ class WitherSkull(session: PlaySession, entityType: EntityType, data: EntityData
 
 
     companion object : EntityFactory<WitherSkull> {
-        override val identifier: ResourceLocation = minecraft("wither_skull")
+        override val identifier = minecraft("wither_skull")
         private val IS_DANGEROUS_DATA = EntityDataField("WITHER_SKULL_DANGEROUS")
 
 

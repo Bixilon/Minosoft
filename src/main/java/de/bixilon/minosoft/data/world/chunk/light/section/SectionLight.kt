@@ -22,12 +22,15 @@ import de.bixilon.minosoft.data.world.chunk.light.section.ChunkSkyLight.Companio
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
+import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader.isAllNull
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 class SectionLight(
     val section: ChunkSection,
     var light: LightArray = LightArray(), // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) : AbstractSectionLight() {
+    private val minSection = section.chunk.light.minSection
+    private val maxSection = section.chunk.light.maxSection
 
     fun onBlockChange(position: InSectionPosition, previous: BlockState?, state: BlockState?) {
         val previousLuminance = previous?.luminance ?: 0
@@ -68,14 +71,14 @@ class SectionLight(
         val neighbours = section.neighbours ?: return
         val chunk = section.chunk
         if (position.y - light < 0) {
-            if (section.height == chunk.minSection) {
+            if (section.height == minSection) {
                 chunk.light.bottom.decreaseCheckLevel(position.x, position.z, light - position.y, reset)
             } else {
                 neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(position.x, position.z, light - position.y, reset)
             }
         }
         if (position.y + light > ChunkSize.SECTION_MAX_Y) {
-            if (section.height == chunk.maxSection) {
+            if (section.height == maxSection) {
                 chunk.light.top.decreaseCheckLevel(position.x, position.z, light - (ChunkSize.SECTION_MAX_Y - position.y), reset)
             } else {
                 neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(position.x, position.z, light - (ChunkSize.SECTION_MAX_Y - position.y), reset)
@@ -164,7 +167,7 @@ class SectionLight(
         if (target == null || (target != Directions.UP && lightProperties.propagatesLight(Directions.DOWN))) {
             if (position.y > 0) {
                 traceBlockIncrease(position.minusY(), neighbourLuminance, Directions.DOWN)
-            } else if (section.height == chunk.minSection) {
+            } else if (section.height == minSection) {
                 chunk.light.bottom.traceBlockIncrease(position.x, position.z, neighbourLuminance)
             } else {
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.height - 1, false))?.light?.traceBlockIncrease(position.with(y = ChunkSize.SECTION_MAX_Y), neighbourLuminance, Directions.DOWN)
@@ -173,7 +176,7 @@ class SectionLight(
         if (target == null || (target != Directions.DOWN && lightProperties.propagatesLight(Directions.UP))) {
             if (position.y < ChunkSize.SECTION_MAX_Y) {
                 traceBlockIncrease(position.plusY(), neighbourLuminance, Directions.UP)
-            } else if (section.height == chunk.maxSection) {
+            } else if (section.height == maxSection) {
                 chunk.light.top.traceBlockIncrease(position.x, position.z, neighbourLuminance)
             } else {
                 (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.height + 1, false))?.light?.traceBlockIncrease(position.with(y = 0), neighbourLuminance, Directions.UP)
@@ -227,21 +230,14 @@ class SectionLight(
         val blocks = section.blocks
 
         section.chunk.lock.lock()
-        val min = blocks.minPosition
-        val max = blocks.maxPosition
 
-        for (x in min.x..max.x) {
-            for (z in min.z..max.z) {
-                for (y in min.y..max.y) {
-                    val position = InSectionPosition(x, y, z)
-                    val luminance = blocks[position]?.luminance ?: continue
-                    if (luminance == 0) {
-                        // block is not emitting light, ignore it
-                        continue
-                    }
-                    traceBlockIncrease(position, luminance, null)
-                }
+        section.blocks.forEach { position, state ->
+            val luminance = state.luminance
+            if (luminance == 0) {
+                // block is not emitting light, ignore it
+                return@forEach
             }
+            traceBlockIncrease(position, luminance, null)
         }
         section.chunk.lock.unlock()
         section.chunk.light.sky.recalculate(section.height)
@@ -249,7 +245,8 @@ class SectionLight(
 
 
     fun propagateFromNeighbours() {
-        val neighbours = section.neighbours ?: return
+        val neighbours = section.neighbours
+        if (neighbours.isAllNull()) return
         // ToDo(p): this::traceIncrease checks als the block light level, not needed
 
         // ToDo: Check if current block can propagate into that direction
@@ -356,7 +353,7 @@ class SectionLight(
         if (target != Directions.UP && (target == null || lightProperties.propagatesLight(Directions.DOWN))) {
             if (position.y > 0) {
                 traceSkyLightIncrease(position.minusY(), nextNeighbourLevel, Directions.DOWN, totalY - 1)
-            } else if (section.height == chunk.minSection) {
+            } else if (section.height == minSection) {
                 chunk.light.bottom.traceSkyIncrease(position.x, position.z, nextLevel)
             } else {
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.height - 1, false))?.light?.traceSkyLightIncrease(position.with(y = ChunkSize.SECTION_MAX_Y), nextNeighbourLevel, Directions.DOWN, totalY - 1)
@@ -365,7 +362,7 @@ class SectionLight(
         if (target != Directions.DOWN && (target != null || lightProperties.propagatesLight(Directions.UP))) {
             if (position.y < ChunkSize.SECTION_MAX_Y) {
                 traceSkyLightIncrease(position.plusY(), nextNeighbourLevel, Directions.UP, totalY + 1)
-            } else if (section.height < chunk.maxSection) {
+            } else if (section.height < maxSection) {
                 (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.height + 1, false))?.light?.traceSkyLightIncrease(position.with(y = 0), nextNeighbourLevel, Directions.UP, totalY + 1)
             }
         }

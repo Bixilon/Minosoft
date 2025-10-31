@@ -16,7 +16,10 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion._isFullyOpaque
@@ -31,18 +34,13 @@ open class BlockState(
     val flags = BlockStateFlags.set()
 
     init {
-        if (_isFullyOpaque()) {
-            flags += BlockStateFlags.FULLY_OPAQUE
-        }
-        if (block is CollidableBlock) {
-            flags += BlockStateFlags.COLLISIONS
-        }
-        if (block is TintedBlock) {
-            flags += BlockStateFlags.TINTED
-        }
-        if (block is FluidHolder) {
-            flags += BlockStateFlags.FLUID
-        }
+        if (_isFullyOpaque()) flags += BlockStateFlags.FULLY_OPAQUE
+        if (block is CollidableBlock) flags += BlockStateFlags.COLLISIONS
+        if (block is TintedBlock) flags += BlockStateFlags.TINTED
+        if (block is FluidHolder) flags += BlockStateFlags.FLUID
+        if (block is OffsetBlock) flags += BlockStateFlags.OFFSET
+        if (block is BlockWithEntity<*>) flags += BlockStateFlags.ENTITY
+        if (block is RandomDisplayTickable) flags += BlockStateFlags.RANDOM_TICKS
     }
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.luminance)

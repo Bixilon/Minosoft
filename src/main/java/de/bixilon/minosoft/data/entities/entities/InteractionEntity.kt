@@ -19,13 +19,12 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class InteractionEntity(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<InteractionEntity> {
-        override val identifier: ResourceLocation = minecraft("interaction")
+        override val identifier = minecraft("interaction")
         private val WIDTH = EntityDataField("WIDTH")
         private val HEIGHT = EntityDataField("HEIGHT")
         private val RESPONSE = EntityDataField("RESPONSE")

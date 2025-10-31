@@ -17,18 +17,20 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
-class SpatialBiomeArray(val data: Array<Biome>) : BiomeSource {
+class SpatialBiomeArray(
+    var data: Array<Biome?>,
+) : BiomeSource {
 
     init {
         if (data.size != SIZE) throw IllegalArgumentException("Biome array must have a size of $SIZE: ${data.size}")
     }
 
-    override fun get(position: InChunkPosition): Biome {
+    override fun get(position: InChunkPosition): Biome? {
         return this.data[getIndex(position.x, position.y, position.z)]
     }
 
 
-    operator fun get(index: Int): Biome {
+    operator fun get(index: Int): Biome? {
         return data[index]
     }
 

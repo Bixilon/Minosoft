@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntit
 import de.bixilon.minosoft.data.entities.block.container.storage.TrappedChestBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, AxeRequirement, DoubleChestBlock<T> {
@@ -33,7 +35,7 @@ abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocati
 
     open class Chest(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoodenChestBlock<ChestBlockEntity>(identifier, settings) {
 
-        override fun createBlockEntity(session: PlaySession) = ChestBlockEntity(session)
+        override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = ChestBlockEntity(session, position, state)
 
         companion object : BlockFactory<Chest> {
             override val identifier = minecraft("chest")
@@ -44,7 +46,7 @@ abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocati
 
     open class TrappedChest(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoodenChestBlock<TrappedChestBlockEntity>(identifier, settings) {
 
-        override fun createBlockEntity(session: PlaySession) = TrappedChestBlockEntity(session)
+        override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = TrappedChestBlockEntity(session, position, state)
 
         companion object : BlockFactory<TrappedChest> {
             override val identifier = minecraft("trapped_chest")

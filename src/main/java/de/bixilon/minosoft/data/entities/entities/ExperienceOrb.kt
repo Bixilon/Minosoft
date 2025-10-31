@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ExperienceOrb : Entity {
@@ -37,7 +36,7 @@ class ExperienceOrb : Entity {
     override fun onAttack(attacker: Entity): Boolean = false
 
     companion object : EntityFactory<ExperienceOrb> {
-        override val identifier: ResourceLocation = minecraft("experience_orb")
+        override val identifier = minecraft("experience_orb")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ExperienceOrb {
             return ExperienceOrb(session, entityType, data, position, rotation)

@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class MagmaCube(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Slime(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<MagmaCube> {
-        override val identifier: ResourceLocation = minecraft("magma_cube")
+        override val identifier = minecraft("magma_cube")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): MagmaCube {
             return MagmaCube(session, entityType, data, position, rotation)

@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.item.FallingBlockPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -52,7 +51,7 @@ class FallingBlockEntity(session: PlaySession, entityType: EntityType, data: Ent
     }
 
     companion object : EntityFactory<FallingBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("falling_block")
+        override val identifier = minecraft("falling_block")
         private val SPAWN_POSITION_DATA = EntityDataField("FALLING_BLOCK_SPAWN_POSITION")
 
 

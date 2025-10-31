@@ -29,7 +29,6 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
-import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -106,9 +105,8 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
     }
 
 
-    companion object : ContainerFactory<EnchantingContainer>, AliasedIdentified {
+    companion object : ContainerFactory<EnchantingContainer> {
         override val identifier: ResourceLocation = "minecraft:enchantment".toResourceLocation()
-        override val identifiers: Set<ResourceLocation> = setOf("minecraft:enchanting_table".toResourceLocation(), "EnchantTable".toResourceLocation())
         const val LAPISLAZULI_SLOT = 1
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3

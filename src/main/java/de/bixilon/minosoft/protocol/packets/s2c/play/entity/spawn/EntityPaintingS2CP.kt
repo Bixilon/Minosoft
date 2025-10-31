@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.datafixer.rls.MotifFixer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -39,7 +38,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val motif = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.readLegacyRegistryItem(buffer.session.registries.motif, MotifFixer)!!
+            buffer.readLegacyRegistryItem(buffer.session.registries.motif)
         } else {
             buffer.readRegistryItem(buffer.session.registries.motif)
         }

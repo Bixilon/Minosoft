@@ -23,18 +23,12 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class SignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position = if (buffer.versionId < ProtocolVersions.V_14W04A) {
-        buffer.readShortBlockPosition()
-    } else {
-        buffer.readBlockPosition()
-    }
+    val position = if (buffer.versionId < ProtocolVersions.V_14W04A) buffer.readShortBlockPosition() else buffer.readBlockPosition()
     val lines = Array(SignBlockEntity.LINES) { buffer.readChatComponent() }
 
 
     override fun handle(session: PlaySession) {
-        val entity = session.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(session)
-
-        session.world[position] = entity
+        val entity = session.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: return
 
         for ((index, line) in lines.withIndex()) {
             entity.front.text[index] = line

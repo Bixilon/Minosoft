@@ -1,4 +1,6 @@
 {
   "EntityHorse": "minecraft:horse",
-  "container": "chest"
+  "container": "chest",
+  "enchanting_table": "enchantment",
+  "EnchantTable": "enchantment"
 }

@@ -37,9 +37,6 @@ object VecUtil {
     inline val Int.sectionHeight: Int
         get() = this shr 4
 
-    val Vec3i.centerf: Vec3f
-        get() = Vec3f(x + 0.5f, y + 0.5f, z + 0.5f)
-
     val Vec3i.center: Vec3d
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
 
@@ -65,12 +62,6 @@ object VecUtil {
 
         return offset.unsafe
     }
-
-    val Vec3d.toVec3: Vec3f
-        get() = Vec3f(this)
-
-    val Vec3f.toVec3d: Vec3d
-        get() = Vec3d(this)
 
     fun Double.noised(random: Random): Double {
         return random.nextDouble() / this * if (random.nextBoolean()) 1.0 else -1.0

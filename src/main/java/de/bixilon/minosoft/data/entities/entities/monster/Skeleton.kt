@@ -30,7 +30,7 @@ class Skeleton(session: PlaySession, entityType: EntityType, data: EntityData, p
 
 
     companion object : EntityFactory<Skeleton> {
-        override val identifier: ResourceLocation = minecraft("skeleton")
+        override val identifier = minecraft("skeleton")
         private val CONVERTING_DATA = EntityDataField("SKELETON_STRAY_FREEZE_CONVERTING")
         private val LEGACY_TYPE_DATA = EntityDataField("LEGACY_SKELETON_TYPE")
 

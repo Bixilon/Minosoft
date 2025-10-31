@@ -27,7 +27,7 @@ class SmallFireball(session: PlaySession, entityType: EntityType, data: EntityDa
 
     companion object : EntityFactory<SmallFireball> {
         private val DEFAULT_ITEM = minecraft("fire_charge")
-        override val identifier: ResourceLocation = minecraft("small_fireball")
+        override val identifier = minecraft("small_fireball")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SmallFireball {
             return SmallFireball(session, entityType, data, position, rotation)

@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.Skippable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block.BlockWawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity.EntityWawlaElement
@@ -32,15 +33,15 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable {
+class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable, Skippable {
     private var element: WawlaElement? = null
 
     val profile = guiRenderer.session.profiles.gui.hud.wawla
 
     override val layoutOffset: Vec2f
         get() = Vec2f((guiRenderer.scaledSize.x - ((element?.size?.x ?: 0.0f) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
-    override val skipDraw: Boolean
-        get() = !profile.enabled
+
+    override val skip get() = !profile.enabled
 
 
     override fun drawAsync() {

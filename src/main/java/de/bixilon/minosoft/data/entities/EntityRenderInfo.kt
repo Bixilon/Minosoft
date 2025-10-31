@@ -19,12 +19,11 @@ import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.interpolateYaw
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
-class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
+class EntityRenderInfo(private val entity: Entity) : Tickable {
     private var position0 = Vec3d.EMPTY
     private var position1 = entity.physics.position
     private var defaultAABB = entity.defaultAABB
@@ -83,7 +82,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
         rotation = EntityRotation(interpolateYaw(delta, rotation0.yaw, rotation1.yaw), interpolateLinear(delta, rotation0.pitch, rotation1.pitch))
     }
 
-    override fun draw(time: ValueTimeMark) {
+    fun draw(time: ValueTimeMark) {
         val delta = ((time - entity.lastTickTime) / TickUtil.TIME_PER_TICK).toFloat()
         interpolatePosition(delta)
         interpolateRotation(delta)

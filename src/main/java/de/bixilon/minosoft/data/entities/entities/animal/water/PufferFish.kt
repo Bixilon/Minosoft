@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class PufferFish(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractFish(session, entityType, data, position, rotation) {
@@ -31,7 +30,7 @@ class PufferFish(session: PlaySession, entityType: EntityType, data: EntityData,
 
 
     companion object : EntityFactory<PufferFish> {
-        override val identifier: ResourceLocation = minecraft("pufferfish")
+        override val identifier = minecraft("pufferfish")
         private val PUFF_STATE_DATA = EntityDataField("PUFFERFISH_PUFF_STATE")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PufferFish {

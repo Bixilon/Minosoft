@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class CaveSpider(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Spider(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<CaveSpider> {
-        override val identifier: ResourceLocation = minecraft("cave_spider")
+        override val identifier = minecraft("cave_spider")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): CaveSpider {
             return CaveSpider(session, entityType, data, position, rotation)

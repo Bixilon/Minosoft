@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Ghast(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : FlyingMob(session, entityType, data, position, rotation) {
@@ -32,7 +31,7 @@ class Ghast(session: PlaySession, entityType: EntityType, data: EntityData, posi
 
 
     companion object : EntityFactory<Ghast> {
-        override val identifier: ResourceLocation = minecraft("ghast")
+        override val identifier = minecraft("ghast")
         private val IS_ATTACKING_DATA = EntityDataField("GHAST_IS_ATTACKING")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Ghast {

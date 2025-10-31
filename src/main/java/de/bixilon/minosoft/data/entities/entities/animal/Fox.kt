@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
@@ -85,7 +84,7 @@ class Fox(session: PlaySession, entityType: EntityType, data: EntityData, positi
     }
 
     companion object : EntityFactory<Fox> {
-        override val identifier: ResourceLocation = minecraft("fox")
+        override val identifier = minecraft("fox")
         private val VARIANT_DATA = EntityDataField("FOX_VARIANT")
         private val FLAGS_DATA = EntityDataField("FOX_FLAGS")
         private val OWNER_DATA = EntityDataField("FOX_TRUSTED_1")

@@ -15,20 +15,26 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.EnderChestBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
+import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class EnderChestBlockEntity(session: PlaySession) : StorageBlockEntity(session), RenderedBlockEntity<SingleChestRenderer> {
-    override var renderer: SingleChestRenderer? = null
+class EnderChestBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : StorageBlockEntity(session, position, state) {
+    private var renderer: SingleChestRenderer? = null
 
-    override fun createRenderer(context: RenderContext, state: BlockState, position: BlockPosition, light: Int): SingleChestRenderer? {
+    override fun update(state: BlockState) {
+        assert(state.block is EnderChestBlock)
+        super.update(state)
+    }
+
+    override fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? {
         val model = context.models.skeletal[SingleChestRenderer.EnderChest.NAME] ?: return null
-        return SingleChestRenderer(this, context, state, position, model, light)
+        this.renderer = SingleChestRenderer(this, context, state, position, model, light)
+        return renderer
     }
 
     override fun onOpen() {
@@ -42,10 +48,8 @@ class EnderChestBlockEntity(session: PlaySession) : StorageBlockEntity(session),
     }
 
     companion object : BlockEntityFactory<EnderChestBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("ender_chest")
+        override val identifier = minecraft("ender_chest")
 
-        override fun build(session: PlaySession): EnderChestBlockEntity {
-            return EnderChestBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = EnderChestBlockEntity(session, position, state)
     }
 }

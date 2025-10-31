@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -101,7 +100,7 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
 
 
     companion object : EntityFactory<ArmorStand> {
-        override val identifier: ResourceLocation = minecraft("armor_stand")
+        override val identifier = minecraft("armor_stand")
         val FLAGS_DATA = EntityDataField("ARMOR_STAND_FLAGS")
         private val HEAD_ROTATION_DATA = EntityDataField("ARMOR_STAND_HEAD_ROTATION")
         private val BODY_ROTATION_DATA = EntityDataField("ARMOR_STAND_BODY_ROTATION")

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -36,7 +35,7 @@ class CommandBlockMinecart(session: PlaySession, entityType: EntityType, data: E
 
 
     companion object : EntityFactory<CommandBlockMinecart> {
-        override val identifier: ResourceLocation = minecraft("command_block_minecart")
+        override val identifier = minecraft("command_block_minecart")
         private val COMMAND_DATA = EntityDataField("MINECART_COMMAND_BLOCK_COMMAND")
         private val LAST_OUTPUT_DATA = EntityDataField("MINECART_COMMAND_BLOCK_LAST_OUTPUT")
 

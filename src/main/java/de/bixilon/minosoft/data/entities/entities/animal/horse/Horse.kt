@@ -89,7 +89,7 @@ class Horse(session: PlaySession, entityType: EntityType, data: EntityData, posi
     }
 
     companion object : EntityFactory<Horse> {
-        override val identifier: ResourceLocation = minecraft("horse")
+        override val identifier = minecraft("horse")
         private val VARIANT_DATA = EntityDataField("HORSE_VARIANT")
         private val LEGACY_ARMOR_DATA = EntityDataField("LEGACY_HORSE_ARMOR")
 

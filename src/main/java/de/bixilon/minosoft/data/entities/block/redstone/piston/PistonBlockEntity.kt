@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,44 +13,29 @@
 
 package de.bixilon.minosoft.data.entities.block.redstone.piston
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class PistonBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
-    var state: PistonStates = PistonStates.PULL
+open class PistonBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state), BlockActionEntity {
+    var drag: PistonDrag = PistonDrag.PULL
         private set
     var direction: Directions = Directions.NORTH
         private set
 
     override fun setBlockActionData(type: Int, data: Int) {
-        state = PistonStates[type.toInt()]
-        direction = Directions[data.toInt()]
+        drag = PistonDrag[type]
+        direction = Directions[data]
     }
 
     companion object : BlockEntityFactory<PistonBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("piston")
+        override val identifier = minecraft("piston")
 
-        override fun build(session: PlaySession): PistonBlockEntity {
-            return PistonBlockEntity(session)
-        }
-    }
-
-    enum class PistonStates {
-        PUSH,
-        PULL,
-        ;
-
-        companion object : ValuesEnum<PistonStates> {
-            override val VALUES: Array<PistonStates> = values()
-            override val NAME_MAP: Map<String, PistonStates> = EnumUtil.getEnumValues(VALUES)
-
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = PistonBlockEntity(session, position, state)
     }
 }

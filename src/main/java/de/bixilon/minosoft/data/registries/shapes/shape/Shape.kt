@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
@@ -78,7 +77,7 @@ interface Shape : Iterable<AABB> {
     }
 
     fun shouldDrawLine(start: Vec3f, end: Vec3f): Boolean {
-        return shouldDrawLine(start.toVec3d, end.toVec3d)
+        return shouldDrawLine(Vec3d(start), Vec3d(end))
     }
 
     companion object {

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Arrow(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractArrow(session, entityType, data, position, rotation) {
@@ -31,7 +30,7 @@ class Arrow(session: PlaySession, entityType: EntityType, data: EntityData, posi
 
 
     companion object : EntityFactory<Arrow> {
-        override val identifier: ResourceLocation = minecraft("arrow")
+        override val identifier = minecraft("arrow")
         private val EFFECT_COLOR_DATA = EntityDataField("ARROW_EFFECT_COLOR")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Arrow {

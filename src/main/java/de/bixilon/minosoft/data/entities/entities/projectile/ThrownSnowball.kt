@@ -28,7 +28,7 @@ class ThrownSnowball(session: PlaySession, entityType: EntityType, data: EntityD
 
     companion object : EntityFactory<ThrownSnowball> {
         private val DEFAULT_ITEM = minecraft("snowball")
-        override val identifier: ResourceLocation = minecraft("snowball")
+        override val identifier = minecraft("snowball")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownSnowball {
             return ThrownSnowball(session, entityType, data, position, rotation)

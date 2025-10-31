@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -55,7 +54,7 @@ class Cat(session: PlaySession, entityType: EntityType, data: EntityData, positi
         get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0x0C))?.rgb() ?: ChatColors.RED.rgb()
 
     companion object : EntityFactory<Cat> {
-        override val identifier: ResourceLocation = minecraft("cat")
+        override val identifier = minecraft("cat")
         private val VARIANT_DATA = EntityDataField("CAT_VARIANT")
         private val IS_LYING_DATA = EntityDataField("CAT_IS_LYING")
         private val IS_RELAXED_DATA = EntityDataField("CAT_IS_RELAXED")

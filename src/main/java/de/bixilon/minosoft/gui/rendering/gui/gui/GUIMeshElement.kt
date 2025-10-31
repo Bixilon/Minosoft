@@ -22,12 +22,12 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.Skippable
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
 import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.BaseDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -45,8 +45,7 @@ open class GUIMeshElement<T : Element>(
     private val data = FloatListUtil.direct(1024, false)
     private val index = IntListUtil.direct(1024 / 4, false)
     var mesh: Mesh? = null
-    override val skipDraw: Boolean
-        get() = if (element is BaseDrawable) element.skipDraw else false
+    override val skip get() = if (element is Skippable) element.skip else false
     protected var lastRevision = 0L
     protected var lastPosition: Vec2f? = null
     protected var lastDragPosition: Vec2f? = null

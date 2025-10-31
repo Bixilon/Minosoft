@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class GlowSquid(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Squid(session, entityType, data, position, rotation) {
@@ -31,7 +30,7 @@ class GlowSquid(session: PlaySession, entityType: EntityType, data: EntityData, 
 
 
     companion object : EntityFactory<GlowSquid> {
-        override val identifier: ResourceLocation = minecraft("glow_squid")
+        override val identifier = minecraft("glow_squid")
         private val DARK_TICKS_REMAINING_DATA = EntityDataField("GLOW_SQUID_DARK_TICKS_REMAINING")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): GlowSquid {

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class Spider(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
@@ -34,7 +33,7 @@ open class Spider(session: PlaySession, entityType: EntityType, data: EntityData
 
 
     companion object : EntityFactory<Spider> {
-        override val identifier: ResourceLocation = minecraft("spider")
+        override val identifier = minecraft("spider")
         private val FLAGS_DATA = EntityDataField("SPIDER_FLAGS")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Spider {

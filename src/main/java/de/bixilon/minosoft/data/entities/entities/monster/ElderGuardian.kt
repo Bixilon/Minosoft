@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ElderGuardian(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Guardian(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ElderGuardian> {
-        override val identifier: ResourceLocation = minecraft("elder_guardian")
+        override val identifier = minecraft("elder_guardian")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ElderGuardian {
             return ElderGuardian(session, entityType, data, position, rotation)

@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.entities.entities.properties.riding.InputSteerab
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -94,7 +93,7 @@ open class Boat(session: PlaySession, entityType: EntityType, data: EntityData, 
     }
 
     companion object : EntityFactory<Boat> {
-        override val identifier: ResourceLocation = minecraft("boat")
+        override val identifier = minecraft("boat")
         private val TIME_SINCE_LAST_HIT_DATA = EntityDataField("BOAT_HURT")
         private val HIT_DIRECTION_DATA = EntityDataField("BOAT_HURT_DIRECTION")
         private val DAMAGE_TAKEN_DATA = EntityDataField("BOAT_DAMAGE_TAKEN")

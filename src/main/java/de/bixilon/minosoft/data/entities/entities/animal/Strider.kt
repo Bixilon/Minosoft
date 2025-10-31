@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -58,7 +57,7 @@ class Strider(session: PlaySession, entityType: EntityType, data: EntityData, po
 
 
     companion object : EntityFactory<Strider> {
-        override val identifier: ResourceLocation = minecraft("strider")
+        override val identifier = minecraft("strider")
         private val TIME_TO_BOOST_DATA = EntityDataField("STRIDER_TIME_TO_BOOST")
         private val IS_SUFFOCATING_DATA = EntityDataField("STRIDER_IS_SUFFOCATING")
         private val HAS_SADDLE_DATA = EntityDataField("STRIDER_HAS_SADDLE")

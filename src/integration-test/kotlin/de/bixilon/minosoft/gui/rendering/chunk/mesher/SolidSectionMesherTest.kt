@@ -452,7 +452,7 @@ class SolidSectionMesherTest {
     fun TestQueue.blockEntity(): BlockState {
         val block = object : Block(minosoft("test2"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(session: PlaySession) = object : BlockEntity(session), RenderedBlockEntity<BlockEntityRenderer<*>> {
+            override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = object : BlockEntity(session), RenderedBlockEntity<BlockEntityRenderer<*>> {
                 override var renderer: BlockEntityRenderer<*>? = null
 
                 override fun createRenderer(context: RenderContext, state: BlockState, position: BlockPosition, light: Int) = object : BlockEntityRenderer<BlockEntity> {
@@ -478,7 +478,7 @@ class SolidSectionMesherTest {
     fun TestQueue.meshedOnlyEntity(): BlockState {
         val block = object : Block(minosoft("test4"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(session: PlaySession) = object : BlockEntity(session) {
+            override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = object : BlockEntity(session) {
             }
 
             init {

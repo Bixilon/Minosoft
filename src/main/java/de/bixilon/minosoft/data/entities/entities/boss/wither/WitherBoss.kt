@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.monster.Monster
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class WitherBoss(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
@@ -44,7 +43,7 @@ class WitherBoss(session: PlaySession, entityType: EntityType, data: EntityData,
 
 
     companion object : EntityFactory<WitherBoss> {
-        override val identifier: ResourceLocation = minecraft("wither")
+        override val identifier = minecraft("wither")
         private val CENTER_TARGET_DATA = EntityDataField("WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID")
         private val LEFT_TARGET_DATA = EntityDataField("WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID")
         private val RIGHT_TARGET_DATA = EntityDataField("WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID")

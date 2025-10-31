@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Blaze(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
@@ -35,7 +34,7 @@ class Blaze(session: PlaySession, entityType: EntityType, data: EntityData, posi
 
 
     companion object : EntityFactory<Blaze> {
-        override val identifier: ResourceLocation = minecraft("blaze")
+        override val identifier = minecraft("blaze")
         private val BLAZE_DATA = EntityDataField("BLAZE_FLAGS")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Blaze {

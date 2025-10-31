@@ -13,16 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.drawable
 
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+@Deprecated("Garbage, this is more like async updateable")
+interface AsyncDrawable {
 
-interface AsyncDrawable : DeltaAsyncDrawable {
-
-    /**
-     * Functions gets called every frame
-     */
     fun drawAsync() {}
-
-    override fun drawAsync(time: ValueTimeMark) {
-        drawAsync()
-    }
 }

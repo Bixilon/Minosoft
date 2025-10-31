@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -31,7 +30,7 @@ class UnknownContainer(
 
 
     companion object : ContainerFactory<Container> {
-        override val identifier: ResourceLocation = minecraft("container")
+        override val identifier = minecraft("container")
 
         override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): Container {
             return UnknownContainer(session, type, title, id)

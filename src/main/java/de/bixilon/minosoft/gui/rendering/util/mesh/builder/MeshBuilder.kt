@@ -19,6 +19,7 @@ import de.bixilon.kutil.collections.primitive.ints.IntList
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.collections.MemoryOptions
@@ -117,5 +118,9 @@ abstract class MeshBuilder(
 
     override fun ensureSize(primitives: Int) {
         data.ensureSize(primitives * primitive.vertices * struct.floats)
+    }
+
+    protected fun finalize() {
+        if (_index != null || _data != null) throw MemoryLeakException("Mesh builder was not dropped nor loaded!")
     }
 }

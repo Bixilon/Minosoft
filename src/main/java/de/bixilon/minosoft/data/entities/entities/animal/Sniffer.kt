@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Sniffer(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(session, entityType, data, position, rotation) {
@@ -43,7 +42,7 @@ class Sniffer(session: PlaySession, entityType: EntityType, data: EntityData, po
         }
     }
     companion object : EntityFactory<Sniffer> {
-        override val identifier: ResourceLocation = minecraft("sniffer")
+        override val identifier = minecraft("sniffer")
         private val STATE = EntityDataField("STATE")
         private val FINISH_DIG_TIME = EntityDataField("FINISH_DIG_TIME")
 

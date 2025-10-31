@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
-import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.isInvisible
+import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.setInvisible
 import de.bixilon.minosoft.gui.rendering.entities.feature.mesh.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -32,9 +32,14 @@ import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["entities", "rendering"])
 class HitboxFeatureTest {
-    private val mesh = MeshedFeature::class.java.getFieldOrNull("mesh")!!
+    private val MESH = MeshedFeature::class.java.getFieldOrNull("mesh")!!.field
 
-    val HitboxFeature.mesh: Mesh? get() = this@HitboxFeatureTest.mesh.get(this).unsafeCast()
+    val HitboxFeature.mesh: Mesh?
+        get() {
+            enqueueUnload()
+            renderer.renderer.queue.work()
+            return MESH[this]
+        }
 
     private fun create(entity: EntityFactory<*>): HitboxFeature {
         val renderer = create().create(entity)
@@ -56,7 +61,7 @@ class HitboxFeatureTest {
     fun `unload if entity is invisible`() {
         val hitbox = create(RemotePlayerEntity)
         hitbox.update(0.0.seconds)
-        hitbox.renderer.entity.isInvisible(true)
+        hitbox.renderer.entity.setInvisible(true)
         hitbox.update(0.0.seconds)
         assertNull(hitbox.mesh)
     }
@@ -64,7 +69,7 @@ class HitboxFeatureTest {
     fun `entity is invisible but invisibles are shown`() {
         val hitbox = create(RemotePlayerEntity)
         hitbox.update(0.0.seconds)
-        hitbox.renderer.entity.isInvisible(true)
+        hitbox.renderer.entity.setInvisible(true)
         hitbox.renderer.renderer.profile.features.hitbox.showInvisible = true
         hitbox.update(0.0.seconds)
         assertNotNull(hitbox.mesh)

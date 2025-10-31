@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,11 +20,10 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object MessageParser : ArgumentParser<String>, ArgumentParserFactory<MessageParser>, SignedParser {
-    override val identifier: ResourceLocation = minecraft("message")
+    override val identifier = minecraft("message")
     override val examples: List<Any> = listOf("hi there!")
     private val parser = StringParser(StringParser.StringModes.GREEDY)
 

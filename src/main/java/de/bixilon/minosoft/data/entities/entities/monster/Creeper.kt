@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Creeper(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(session, entityType, data, position, rotation) {
@@ -39,7 +38,7 @@ class Creeper(session: PlaySession, entityType: EntityType, data: EntityData, po
 
 
     companion object : EntityFactory<Creeper> {
-        override val identifier: ResourceLocation = minecraft("creeper")
+        override val identifier = minecraft("creeper")
         private val FUSE_STATE_DATA = EntityDataField("CREEPER_STATE")
         private val IS_CHARGED_DATA = EntityDataField("CREEPER_IS_CHARGED")
         private val IS_IGNITED_DATA = EntityDataField("CREEPER_IS_IGNITED")

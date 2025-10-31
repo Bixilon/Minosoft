@@ -28,7 +28,7 @@ class ChunkTicker(val manager: ChunkManager) {
             if (!it.key.isInViewDistance(simulationDistance, cameraPosition)) {
                 return@async
             }
-            it.value.tick(manager.world.session, random)
+            it.value.tick()
         }
     }
 }

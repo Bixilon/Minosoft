@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class PolarBear(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(session, entityType, data, position, rotation) {
@@ -31,7 +30,7 @@ class PolarBear(session: PlaySession, entityType: EntityType, data: EntityData, 
 
 
     companion object : EntityFactory<PolarBear> {
-        override val identifier: ResourceLocation = minecraft("polar_bear")
+        override val identifier = minecraft("polar_bear")
         private val IS_STANDING_DATA = EntityDataField("POLAR_BEAR_STANDING")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PolarBear {

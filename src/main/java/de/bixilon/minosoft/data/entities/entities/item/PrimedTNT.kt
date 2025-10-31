@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.physics.entities.item.PrimedTNTPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -45,7 +44,7 @@ class PrimedTNT(session: PlaySession, entityType: EntityType, data: EntityData, 
 
     companion object : EntityFactory<PrimedTNT> {
         private val SMOKE_OFFSET = Vec3d(0.0, 0.5, 0.0)
-        override val identifier: ResourceLocation = minecraft("tnt")
+        override val identifier = minecraft("tnt")
         private val FUSE_TIME_DATA = EntityDataField("PRIMED_TNT_FUSE_TIME")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PrimedTNT {

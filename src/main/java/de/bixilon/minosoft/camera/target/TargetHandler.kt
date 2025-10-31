@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
@@ -48,7 +47,7 @@ class TargetHandler(
     fun update() {
         val entity = camera.entity
         val position = if (RenderingOptions.disabled) entity.physics.position + Vec3d(0.0f, entity.eyeHeight, 0.0f) else entity.renderInfo.eyePosition
-        val front = (if (entity is LocalPlayerEntity || RenderingOptions.disabled) entity.physics.rotation else entity.renderInfo.rotation).front.toVec3d
+        val front = (if (entity is LocalPlayerEntity || RenderingOptions.disabled) entity.physics.rotation else entity.renderInfo.rotation).front.let { Vec3d(it) }
 
         val (target, fluid) = this.raycast(position, front)
         this.target = target

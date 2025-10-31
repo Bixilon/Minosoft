@@ -18,24 +18,30 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
+import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker.ShulkerBoxRenderer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class ShulkerBoxBlockEntity(session: PlaySession) : StorageBlockEntity(session), RenderedBlockEntity<ShulkerBoxRenderer> {
-    override var renderer: ShulkerBoxRenderer? = null
+class ShulkerBoxBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : StorageBlockEntity(session, position, state) {
+    private var renderer: ShulkerBoxRenderer? = null
 
-    override fun createRenderer(context: RenderContext, state: BlockState, position: BlockPosition, light: Int): ShulkerBoxRenderer? {
-        if (state.block !is ShulkerBoxBlock) return null
+    override fun update(state: BlockState) {
+        assert(state.block is ShulkerBoxBlock)
+        super.update(state)
+    }
+
+    override fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? {
+        val block = state.block
         val name = when {
-            state.block is DyedBlock -> ShulkerBoxRenderer.NAME_COLOR[state.block.color.ordinal]
+            block is DyedBlock -> ShulkerBoxRenderer.NAME_COLOR[block.color.ordinal]
             else -> ShulkerBoxRenderer.NAME
         }
         val model = context.models.skeletal[name] ?: return null
-        return ShulkerBoxRenderer(this, context, state, position, model, light)
+        this.renderer = ShulkerBoxRenderer(this, context, state, position, model, light)
+
+        return this.renderer
     }
 
     override fun onOpen() {
@@ -49,10 +55,8 @@ class ShulkerBoxBlockEntity(session: PlaySession) : StorageBlockEntity(session),
     }
 
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("shulker_box")
+        override val identifier = minecraft("shulker_box")
 
-        override fun build(session: PlaySession): ShulkerBoxBlockEntity {
-            return ShulkerBoxBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = ShulkerBoxBlockEntity(session, position, state)
     }
 }

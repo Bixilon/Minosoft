@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 interface Renderer {
     val context: RenderContext
     val framebuffer: IntegratedFramebuffer?
+    val skip: Boolean get() = false
 
     fun asyncInit(latch: AbstractLatch) = Unit
     fun init(latch: AbstractLatch) = Unit

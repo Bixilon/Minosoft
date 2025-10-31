@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.exception.Unreachable
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.entities.Poses
@@ -113,7 +113,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
     private fun isInvisible(): Boolean {
         val camera = renderer.renderer.session.camera.entity
         val entity = renderer.entity
-        val invisible = entity.isInvisible(camera)
+        val invisible = !entity.isVisibleTo(camera)
 
         if (entity !is PlayerEntity) return invisible
         val team = entity.additional.team ?: return invisible
@@ -132,7 +132,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         return when (name) {
             NameTagVisibilities.HIDE_FOR_ENEMIES -> !sameTeam || (team.visibility.invisibleTeam && invisible)
             NameTagVisibilities.HIDE_FOR_MATES -> sameTeam || invisible
-            else -> Broken()
+            else -> Unreachable()
         }
     }
 

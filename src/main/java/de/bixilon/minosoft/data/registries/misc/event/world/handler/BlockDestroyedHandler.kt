@@ -37,7 +37,7 @@ object BlockDestroyedHandler : WorldEventHandler {
 
     fun handleDestroy(session: PlaySession, position: BlockPosition, state: BlockState) {
         state.block.soundGroup?.let { group ->
-            group.destroy?.let { session.world.playSoundEvent(it, position, group.volume, group.pitch) }
+            group.destroy?.let { session.world.audio?.play(it, position, group.volume, group.pitch) }
         }
 
         addBlockBreakParticles(session, position, state)

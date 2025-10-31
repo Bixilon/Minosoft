@@ -18,17 +18,15 @@ import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.center
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
+class MobSpawnerBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state), BlockActionEntity {
     private val smokeParticleType = session.registries.particleType[SmokeParticle]
     private val flameParticleType = session.registries.particleType[FlameParticle]
     private var requiredPlayerRange = 16
@@ -46,12 +44,13 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
         return inRadius
     }
 
-    private fun spawnParticles(blockPosition: BlockPosition, random: Random) {
+    private fun spawnParticles() {
         val particle = session.world.particle ?: return
-        if (!isPlayerInRange(blockPosition)) {
+        if (!isPlayerInRange(position)) {
             return
         }
-        val particlePosition = Vec3d(blockPosition.x + random.nextDouble(), blockPosition.y + random.nextDouble(), blockPosition.z + random.nextDouble())
+        val random = session.world.random
+        val particlePosition = Vec3d(position.x + random.nextDouble(), position.y + random.nextDouble(), position.z + random.nextDouble())
         smokeParticleType?.let { particle += SmokeParticle(session, particlePosition, MVec3d.EMPTY, it.default()) }
         flameParticleType?.let { particle += FlameParticle(session, particlePosition, MVec3d.EMPTY, it.default()) }
     }
@@ -67,15 +66,15 @@ class MobSpawnerBlockEntity(session: PlaySession) : BlockEntity(session), BlockA
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
 
-    override fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
-        spawnParticles(position, random)
+    override fun tick() {
+        spawnParticles()
     }
 
     companion object : BlockEntityFactory<MobSpawnerBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("mob_spawner")
+        override val identifier = minecraft("mob_spawner")
 
-        override fun build(session: PlaySession): MobSpawnerBlockEntity {
-            return MobSpawnerBlockEntity(session)
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState): MobSpawnerBlockEntity {
+            return MobSpawnerBlockEntity(session, position, state)
         }
     }
 }

@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
-import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -44,13 +43,11 @@ class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val chunk = session.world.chunks[position] ?: continue
             val source = chunk.biomeSource.nullCast<SpatialBiomeArray>() ?: continue
             val buffer = PlayInByteBuffer(data, session)
-            for (sectionIndex in (0 until chunk.sections.size)) {
-                val data = PalettedContainerReader.unpack<Biome?>(buffer, buffer.session.registries.biome.unsafeCast(), factory = BiomePaletteFactory) ?: continue
 
-                source.data[sectionIndex] = data.cast()
-            }
+            source.data = PalettedContainerReader.unpack<Biome?>(buffer, buffer.session.registries.biome.unsafeCast(), factory = BiomePaletteFactory) ?: continue
         }
-        session.world.biomes.resetCache()
+
+        session.world.biomes.resetCache() // TODO (performance): Only for potentially affected chunks
     }
 
     override fun log(reducedLog: Boolean) {

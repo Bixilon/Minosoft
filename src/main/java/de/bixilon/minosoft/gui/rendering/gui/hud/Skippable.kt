@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,20 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.gui.rendering.gui.hud
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-
-class FlowerPotBlockEntity(session: PlaySession) : BlockEntity(session) {
-
-
-    companion object : BlockEntityFactory<JukeboxBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("flower_pot")
-
-        override fun build(session: PlaySession): JukeboxBlockEntity {
-            return JukeboxBlockEntity(session)
-        }
-    }
+@Deprecated("shit")
+interface Skippable {
+    val skip: Boolean get() = false
 }

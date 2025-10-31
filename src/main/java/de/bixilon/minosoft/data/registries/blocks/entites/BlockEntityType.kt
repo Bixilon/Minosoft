@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,42 +13,33 @@
 
 package de.bixilon.minosoft.data.registries.blocks.entites
 
-import de.bixilon.kutil.cast.CollectionCast.asAnyCollection
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.entities.block.DefaultBlockDataFactory
-import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 data class BlockEntityType<T : BlockEntity>(
     override val identifier: ResourceLocation,
-    val blocks: Set<Block>,
     val factory: BlockEntityFactory<T>,
 ) : RegistryItem() {
 
-    fun build(session: PlaySession): T {
-        return factory.build(session)
+    fun build(session: PlaySession, position: BlockPosition, state: BlockState): T? {
+        return factory.build(session, position, state)
     }
 
     companion object : IdentifierCodec<BlockEntityType<*>> {
+
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): BlockEntityType<*>? {
-            // ToDo: Fix resource location
-            check(registries != null)
-            val factory = DefaultBlockDataFactory[identifier] ?: return null // ToDo
-
-            val blocks: MutableSet<Block> = mutableSetOf()
-
-            for (block in data["blocks"].asAnyCollection()) {
-                blocks += registries.block[block] ?: continue
-            }
+            val factory = DefaultBlockDataFactory[identifier] ?: return null
 
             return BlockEntityType(
                 identifier = identifier,
-                blocks = blocks,
                 factory = factory,
             )
         }

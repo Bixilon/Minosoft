@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
@@ -39,7 +39,6 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusion
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
@@ -66,10 +65,10 @@ class SolidSectionMesher(
         val chunk = section.chunk
 
 
-        val isLowestSection = section.height == chunk.minSection
-        val isHighestSection = section.height == chunk.maxSection
+        val isLowestSection = section.height == chunk.world.dimension.minSection
+        val isHighestSection = section.height == chunk.world.dimension.maxSection
         val blocks = section.blocks
-        val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
+        val entities: ArrayList<BlockEntityRenderer> = ArrayList(section.entities.count)
 
         val tint = RGBArray(1)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
@@ -95,9 +94,8 @@ class SolidSectionMesher(
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
                     val model = state.block.model ?: state.model
-                    val blockEntity = section.blockEntities[inSection]
-                    val renderedBlockEntity = blockEntity?.nullCast<RenderedBlockEntity<*>>()
-                    if (model == null && renderedBlockEntity == null) continue
+                    val blockEntity = section.entities[inSection]
+                    if (model == null && blockEntity == null) continue // TODO: Check for renderer
 
                     val position = offset + inSection
                     val inChunk = InChunkPosition(inSection.x, position.y, inSection.z)
@@ -126,7 +124,7 @@ class SolidSectionMesher(
                     // TODO: cull neighbours
 
 
-                    if (state.block is OffsetBlock) {
+                    if (BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
                         val randomOffset = state.block.offsetModel(position)
                         floatOffset.x += randomOffset.x
                         floatOffset.y += randomOffset.y
@@ -140,7 +138,7 @@ class SolidSectionMesher(
                     var rendered = false
                     model?.render(props, position, state, blockEntity, tints)?.let { if (it) rendered = true }
 
-                    renderedBlockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
+                    //TODO  renderedBlockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
 
                     if (rendered) {
                         mesh.addBlock(x, y, z)

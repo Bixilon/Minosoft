@@ -13,24 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
-interface BlockEntityRenderer<E : BlockEntity> {
-    var state: BlockState
-    var light: Int
-
-    fun draw(context: RenderContext)
+interface BlockEntityRenderer : Drawable {
 
     fun load()
     fun unload()
 
     fun drop()
 
-    fun update(position: BlockPosition, state: BlockState, light: Int) {
-        this.state = state
-        this.light = light
-    }
+    fun update(light: Int) = Unit
 }

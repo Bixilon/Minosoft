@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
-import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -39,15 +38,14 @@ import kotlin.time.Duration.Companion.seconds
 
 class WorldBorderRenderer(
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, SkipAll {
+) : WorldRenderer, AsyncRenderer {
     override val layers = LayerSettings()
     private val shader = context.system.shader.create(minosoft("world/border")) { WorldBorderShader(it) }
     private var mesh: WorldBorderMesh? = null
     private val border = context.session.world.border
     private lateinit var texture: Texture
     private var offsetReset = now()
-    override val skipAll: Boolean
-        get() = border.getDistanceTo(context.session.player.physics.position) > MAX_DISTANCE
+    override val skip get() = border.getDistanceTo(context.session.player.physics.position) > MAX_DISTANCE
     private var reload = false
 
     override fun registerLayers() {
@@ -93,7 +91,7 @@ class WorldBorderRenderer(
 
 
     override fun prepareDrawAsync() {
-        if (skipAll) return
+        if (skip) return
 
         val center = border.center
         val radius = border.area.radius()

@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.property.FullBlockPropertyRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -45,7 +46,7 @@ open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings
         this.model = FullBlockPropertyRenderer
     }
 
-    override fun createBlockEntity(session: PlaySession) = ShulkerBoxBlockEntity(session)
+    override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = ShulkerBoxBlockEntity(session, position, state)
     override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {

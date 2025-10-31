@@ -14,18 +14,31 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import java.util.*
 
 abstract class BlockEntity(
     val session: PlaySession,
-) {
-    open val nbt: JsonObject = emptyMap()
+    val position: BlockPosition,
+    state: BlockState,
+) : Tickable {
+    var state = state
+        private set
 
+    fun toNbt() = HashMap<String, Any>().apply { toNbt(this) }
+    open fun toNbt(nbt: MutableJsonObject) = Unit
     open fun updateNBT(nbt: JsonObject) = Unit
 
-    open fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) = Unit
+    open fun update(state: BlockState) {
+        this.state = state
+    }
 
+    open fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? = null
+
+    override fun tick() = Unit
 }

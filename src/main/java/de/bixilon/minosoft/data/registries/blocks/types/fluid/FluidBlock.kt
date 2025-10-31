@@ -40,11 +40,12 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
     override val hardness: Float get() = Broken("Fluid is kind of unbreakable?")
     override val modelName: ResourceLocation? get() = null
 
-    override val tintProvider: TintProvider?
-        get() = fluid.nullCast<TintedBlock>()?.tintProvider
+    override var tintProvider: TintProvider? = null
 
     override fun initTint(manager: TintManager) {
-        fluid.nullCast<TintedBlock>()?.initTint(manager)
+        val tinted = fluid.nullCast<TintedBlock>() ?: return
+        tinted.initTint(manager)
+        this.tintProvider = tinted.tintProvider
     }
 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AABB {

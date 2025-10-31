@@ -36,18 +36,18 @@ class ShulkerBoxRenderer(
     val entity: ShulkerBoxBlockEntity,
     context: RenderContext,
     state: BlockState,
-    position: BlockPosition,
+    val position: BlockPosition,
     model: BakedSkeletalModel,
     light: Int,
 ) : StorageBlockEntityRenderer<ShulkerBoxBlockEntity>(state, model.createInstance(context)) {
     val animation = skeletal?.let { ShulkerAnimation(it) }
 
     init {
-        update(position, state, light)
+        update(light)
     }
 
-    override fun update(position: BlockPosition, state: BlockState, light: Int) {
-        super.update(position, state, light)
+    override fun update(light: Int) {
+        super.update(light)
         val facing = state.getFacing()
         val rotation = ROTATIONS[facing.ordinal]
         skeletal?.update(position, rotation)

@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
-import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.asMutableJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.memory.allocator.ByteAllocator
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -50,6 +50,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 
 class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
@@ -105,7 +106,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             // set position to expected read positions; the server sometimes sends a bunch of useless zeros (~ 190k), thanks @pokechu22
 
-            this.prototype.blockEntities = buffer.readBlockEntities(dimension)
+            this.prototype.entities = buffer.readBlockEntities(dimension)
 
             if (buffer.versionId >= V_21W37A) {
                 if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
@@ -117,23 +118,23 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    private fun PlayInByteBuffer.readBlockEntities(dimension: DimensionProperties): Map<InChunkPosition, JsonObject>? {
+    private fun PlayInByteBuffer.readBlockEntities(dimension: DimensionProperties): Int2ObjectOpenHashMap<JsonObject>? {
         if (versionId < V_1_9_4) return null
         val count = readVarInt()
         if (count <= 0) return null
-        val entities: MutableMap<InChunkPosition, JsonObject> = HashMap(count)
+        val entities = Int2ObjectOpenHashMap<JsonObject>(count)
 
         when {
             versionId < V_21W37A -> {
-                val positionOffset = BlockPosition.of(position, dimension.minSection)
+                val offset = BlockPosition.of(position, dimension.minSection)
                 for (i in 0 until count) {
-                    val nbt = readNBT()?.asJsonObject() ?: continue
-                    val position = BlockPosition(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
-                    val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
-                    if (nbt.size <= 4) continue // no additional data
+                    val nbt = readNBT()?.asMutableJsonObject() ?: continue
+                    val position = BlockPosition(nbt.remove("x")?.toInt() ?: continue, nbt.remove("y")?.toInt() ?: continue, nbt.remove("z")?.toInt() ?: continue) - offset
+                    val id = nbt.remove("id")?.toResourceLocation()?.fixBlockEntity() ?: continue
+                    if (nbt.isEmpty()) continue
                     val type = session.registries.blockEntityType[id] ?: continue
 
-                    entities[InChunkPosition(position.x, position.y, position.z)] = nbt
+                    entities[InChunkPosition(position.x, position.y, position.z).raw] = nbt
                 }
             }
 
@@ -146,7 +147,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     if (nbt.isEmpty()) continue
                     if (type == null) continue
 
-                    entities[InChunkPosition(xz shr 4, y.toInt(), xz and 0x0F)] = nbt
+                    entities[InChunkPosition(xz shr 4, y.toInt(), xz and 0x0F).raw] = nbt
                 }
             }
         }
@@ -156,7 +157,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
 
-    fun PlayInByteBuffer.readBiomeArray(): Array<Biome> {
+    fun PlayInByteBuffer.readBiomeArray(): Array<Biome?> {
         val length = when {
             versionId >= ProtocolVersions.V_20W28A -> readVarInt()
             versionId >= V_19W36A -> SpatialBiomeArray.SIZE
@@ -170,7 +171,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val id: Int = if (versionId >= ProtocolVersions.V_20W28A) readVarInt() else readInt()
             biomes[index] = session.registries.biome[id]
         }
-        return biomes.cast()
+        return biomes
     }
 
     private fun ChunkReadingData.readChunkData() {

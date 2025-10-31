@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class EnderDragon(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Mob(session, entityType, data, position, rotation) {
@@ -53,7 +52,7 @@ class EnderDragon(session: PlaySession, entityType: EntityType, data: EntityData
     }
 
     companion object : EntityFactory<EnderDragon> {
-        override val identifier: ResourceLocation = minecraft("ender_dragon")
+        override val identifier = minecraft("ender_dragon")
         private val PHASE_DATA = EntityDataField("ENDER_DRAGON_PHASE")
 
 

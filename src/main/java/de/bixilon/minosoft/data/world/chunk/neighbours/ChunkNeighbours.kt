@@ -13,17 +13,14 @@
 
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
-import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.exception.Unreachable
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.ChunkUtil
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
 import kotlin.math.abs
 
 class ChunkNeighbours(val chunk: Chunk) {
@@ -38,10 +35,8 @@ class ChunkNeighbours(val chunk: Chunk) {
         neighbours[offset] = chunk
         if (current == null) {
             count++
-            if (complete) {
-                complete()
-            }
         }
+        updateNeighbours()
         this.chunk.lock.unlock()
     }
 
@@ -52,22 +47,42 @@ class ChunkNeighbours(val chunk: Chunk) {
             neighbours[offset] = null
             count--
         }
+        updateNeighbours()
         chunk.lock.unlock()
     }
 
-    fun completeSection(section: ChunkSection, sectionHeight: SectionHeight, noise: NoiseBiomeAccessor?) {
-        section.neighbours = ChunkUtil.getNeighbours(neighbours, chunk, sectionHeight)
+    fun updateNeighbourNeighbours(height: Int, section: ChunkSection?) {
+        chunk.sections[height - 1]?.neighbours?.set(Directions.O_UP, section)
+        chunk.sections[height + 1]?.neighbours?.set(Directions.O_DOWN, section)
+
+        chunk.neighbours[Directions.NORTH]?.sections?.get(height)?.neighbours?.set(Directions.O_SOUTH, section)
+        chunk.neighbours[Directions.SOUTH]?.sections?.get(height)?.neighbours?.set(Directions.O_NORTH, section)
+        chunk.neighbours[Directions.WEST]?.sections?.get(height)?.neighbours?.set(Directions.O_EAST, section)
+        chunk.neighbours[Directions.EAST]?.sections?.get(height)?.neighbours?.set(Directions.O_WEST, section)
     }
 
-    private fun complete() {
-        val noise = chunk.world.biomes.noise
-        for ((index, section) in chunk.sections.withIndex()) {
-            if (section == null) continue
-            val sectionHeight = index + chunk.minSection
-            completeSection(section, sectionHeight, noise)
+    fun updateNeighbours(section: ChunkSection) {
+        section.neighbours[Directions.O_DOWN] = chunk[section.height - 1]
+        section.neighbours[Directions.O_DOWN] = chunk[section.height + 1]
+        section.neighbours[Directions.O_NORTH] = chunk.neighbours[Directions.NORTH]?.get(section.height)
+        section.neighbours[Directions.O_SOUTH] = chunk.neighbours[Directions.SOUTH]?.get(section.height)
+        section.neighbours[Directions.O_WEST] = chunk.neighbours[Directions.WEST]?.get(section.height)
+        section.neighbours[Directions.O_EAST] = chunk.neighbours[Directions.EAST]?.get(section.height)
+    }
+
+    fun updateNeighbours() {
+        val dimension = chunk.world.dimension
+        for (height in dimension.minSection..dimension.maxSection) {
+            val section = chunk.sections[height]
+            section?.let { updateNeighbours(it) }
+
+            updateNeighbourNeighbours(height, section)
         }
-        chunk.light.recalculate(false)
-        chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)
+
+        if (complete) {
+            chunk.light.recalculate(false)
+            chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)
+        }
     }
 
     operator fun get(direction: Directions): Chunk? {
@@ -77,18 +92,6 @@ class ChunkNeighbours(val chunk: Chunk) {
     operator fun get(offset: ChunkPosition): Chunk? {
         if (offset == ChunkPosition.EMPTY) return chunk
         return traceChunk(offset)
-    }
-
-    fun update(sectionHeight: Int) {
-        for (nextSectionHeight in sectionHeight - 1..sectionHeight + 1) {
-            if (nextSectionHeight < chunk.minSection || nextSectionHeight > chunk.maxSection) {
-                continue
-            }
-
-            val section = chunk[nextSectionHeight] ?: continue
-            val sectionNeighbours = ChunkUtil.getNeighbours(neighbours, chunk, nextSectionHeight)
-            section.neighbours = sectionNeighbours
-        }
     }
 
     fun traceChunk(offset: ChunkPosition): Chunk? {
@@ -101,7 +104,7 @@ class ChunkNeighbours(val chunk: Chunk) {
             offset.z > 0 -> neighbours[Directions.SOUTH]?.neighbours?.traceChunk(offset.minusZ())
             offset.x < 0 -> neighbours[Directions.WEST]?.neighbours?.traceChunk(offset.plusX())
             offset.x > 0 -> neighbours[Directions.EAST]?.neighbours?.traceChunk(offset.minusX())
-            else -> Broken("Invalid chunk offset: $offset")
+            else -> Unreachable()
         }
     }
 

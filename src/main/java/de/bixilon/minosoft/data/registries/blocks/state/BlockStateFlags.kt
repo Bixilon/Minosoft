@@ -22,6 +22,10 @@ enum class BlockStateFlags {
     WATERLOGGED,
     COLLISIONS,
     TINTED,
+    OFFSET,
+    ENTITY,
+
+    RANDOM_TICKS,
     ;
 
     companion object : ValuesEnum<BlockStateFlags> {

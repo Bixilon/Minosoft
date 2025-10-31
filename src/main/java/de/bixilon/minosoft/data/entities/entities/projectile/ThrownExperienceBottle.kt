@@ -27,7 +27,7 @@ class ThrownExperienceBottle(session: PlaySession, entityType: EntityType, data:
 
     companion object : EntityFactory<ThrownExperienceBottle> {
         private val DEFAULT_ITEM = minecraft("experience_bottle")
-        override val identifier: ResourceLocation = minecraft("experience_bottle")
+        override val identifier = minecraft("experience_bottle")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownExperienceBottle {
             return ThrownExperienceBottle(session, entityType, data, position, rotation)

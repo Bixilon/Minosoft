@@ -86,7 +86,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
         }
 
         state.block.soundGroup?.let { group ->
-            group.place?.let { world.playSoundEvent(it, placePosition, group.volume, group.pitch) }
+            group.place?.let { world.audio?.play(it, placePosition, group.volume, group.pitch) }
         }
         return InteractionResults.SUCCESS
     }

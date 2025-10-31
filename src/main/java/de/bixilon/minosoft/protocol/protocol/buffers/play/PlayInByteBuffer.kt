@@ -37,7 +37,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
@@ -284,10 +283,9 @@ class PlayInByteBuffer : InByteBuffer {
         return registry.getOrNull(readVarInt())
     }
 
-    fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>, fixer: ResourceLocationFixer? = null): T? {
-        var name = readResourceLocation()
-        fixer?.fix(name)?.let { name = it }
-        return registry[name]
+    fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>): T? {
+        val identifier = readResourceLocation()
+        return registry[identifier]
     }
 
     fun <T : Enum<*>> readEnum(registry: EnumRegistry<T>): T? {

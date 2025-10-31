@@ -33,7 +33,7 @@ class ChunkMeshesBuilder(
     var opaque = ChunkMeshBuilder(context, count.opaqueCount())
     var translucent = ChunkMeshBuilder(context, count.translucentCount())
     var text = ChunkMeshBuilder(context, 128)
-    var entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(entities)
+    var entities: ArrayList<BlockEntityRenderer> = ArrayList(entities)
 
     // used for frustum culling
     var minPosition = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)

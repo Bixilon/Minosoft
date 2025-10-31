@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class IronGolem(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(session, entityType, data, position, rotation) {
@@ -34,7 +33,7 @@ class IronGolem(session: PlaySession, entityType: EntityType, data: EntityData, 
         get() = getIronGolemFlag(0x01)
 
     companion object : EntityFactory<IronGolem> {
-        override val identifier: ResourceLocation = minecraft("iron_golem")
+        override val identifier = minecraft("iron_golem")
         private val FLAGS_DATA = EntityDataField("IRON_GOLEM_FLAGS")
 
 

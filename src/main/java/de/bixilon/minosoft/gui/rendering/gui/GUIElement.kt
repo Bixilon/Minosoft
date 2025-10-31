@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.gui.hud.Skippable
 import de.bixilon.minosoft.gui.rendering.gui.input.DraggableHandler
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 
-interface GUIElement : InputHandler, DraggableHandler {
+interface GUIElement : InputHandler, DraggableHandler, Skippable {
     val guiRenderer: GUIRenderer
     val context: RenderContext
     var enabled: Boolean

@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -39,7 +38,7 @@ class EndCrystal(session: PlaySession, entityType: EntityType, data: EntityData,
 
 
     companion object : EntityFactory<EndCrystal> {
-        override val identifier: ResourceLocation = minecraft("end_crystal")
+        override val identifier = minecraft("end_crystal")
         private val BEAM_TARGET_DATA = EntityDataField("END_CRYSTAL_BEAM_TARGET")
         private val SHOW_BOTTOM_DATA = EntityDataField("END_CRYSTAL_SHOW_BOTTOM")
 

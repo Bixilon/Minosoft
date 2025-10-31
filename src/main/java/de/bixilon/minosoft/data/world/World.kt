@@ -12,19 +12,21 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.random.RandomUtil.nextInt
+import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
-import de.bixilon.minosoft.data.world.audio.WorldAudioPlayer
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -48,7 +50,7 @@ import java.util.*
  */
 class World(
     val session: PlaySession,
-) : WorldAudioPlayer {
+) : Tickable {
     val lock = RWLock.rwlock()
     val random = Random()
     val biomes = WorldBiomes(this)
@@ -65,7 +67,7 @@ class World(
     var name: ResourceLocation? by observed(null)
 
 
-    override var audio: AbstractAudioPlayer? = null
+    var audio: AbstractAudioPlayer? = null
     var particle: AbstractParticleRenderer? = null
 
     var occlusion by observed(0)
@@ -114,25 +116,10 @@ class World(
         return chunks[position.chunkPosition]?.getBlockEntity(position.inChunkPosition)
     }
 
-    fun getOrPutBlockEntity(blockPosition: BlockPosition): BlockEntity? {
-        return chunks[blockPosition.chunkPosition]?.getOrPutBlockEntity(blockPosition.inChunkPosition)
-    }
-
-    operator fun set(position: BlockPosition, entity: BlockEntity) {
-        this.set(position, entity as BlockEntity?)
-    }
-
-    @JvmName("set2")
-    fun set(position: BlockPosition, entity: BlockEntity?) {
-        chunks[position.chunkPosition]?.set(position.inChunkPosition, entity) // TODO: fire event if needed
-    }
-
-    fun tick() {
+    override fun tick() {
         val simulationDistance = view.simulationDistance
         val cameraPosition = session.player.physics.positionInfo.chunkPosition
-        lock.acquire()
-        chunks.tick(simulationDistance, cameraPosition)
-        lock.release()
+        lock.acquired { chunks.tick(simulationDistance, cameraPosition) }
         border.tick()
     }
 
@@ -154,8 +141,7 @@ class World(
         )
 
         val state = chunk.neighbours.traceBlock(position) ?: return
-        if (state.block !is RandomDisplayTickable) return
-        if (!state.block.hasRandomTicks(session, state, position)) return
+        if (BlockStateFlags.RANDOM_TICKS !in state.flags || state.block !is RandomDisplayTickable) return
 
         state.block.randomDisplayTick(session, state, position, random)
     }

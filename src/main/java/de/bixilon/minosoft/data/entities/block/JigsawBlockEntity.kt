@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,21 +13,22 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class JigsawBlockEntity(session: PlaySession) : BlockEntity(session) {
+class JigsawBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state) {
     var joint: String = "rollable"
         private set
-    var name: ResourceLocation = minecraft("empty")
+    var name = minecraft("empty")
         private set
-    var pool: ResourceLocation = minecraft("empty")
+    var pool = minecraft("empty")
         private set
-    var finalState: ResourceLocation = minecraft("empty")
+    var finalState = minecraft("empty")
         private set
-    var target: ResourceLocation = minecraft("empty")
+    var target = minecraft("empty")
         private set
 
 
@@ -40,10 +41,8 @@ class JigsawBlockEntity(session: PlaySession) : BlockEntity(session) {
     }
 
     companion object : BlockEntityFactory<JigsawBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("jigsaw")
+        override val identifier = minecraft("jigsaw")
 
-        override fun build(session: PlaySession): JigsawBlockEntity {
-            return JigsawBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = JigsawBlockEntity(session, position, state)
     }
 }

@@ -19,15 +19,13 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import java.util.*
 
-class NoteBlockBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
+// TODO: is this needed in > 1.12?
+class NoteBlockBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state), BlockActionEntity {
     private val noteParticleType = session.registries.particleType[NoteParticle]
     var instrument: Instruments? = null
         private set
@@ -41,7 +39,7 @@ class NoteBlockBlockEntity(session: PlaySession) : BlockEntity(session), BlockAc
     }
 
     override fun setBlockActionData(type: Int, data: Int) {
-        instrument = when (type.toInt()) {
+        instrument = when (type) {
             0 -> Instruments.HARP
             1 -> Instruments.BASS
             2 -> Instruments.SNARE
@@ -50,13 +48,13 @@ class NoteBlockBlockEntity(session: PlaySession) : BlockEntity(session), BlockAc
             else -> null
         }
 
-        pitch = data.toInt()
+        pitch = data
 
         showParticleNextTick = true
         // ToDo: Play sound?
     }
 
-    override fun tick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
+    override fun tick() {
         if (!showParticleNextTick) {
             return
         }
@@ -69,14 +67,10 @@ class NoteBlockBlockEntity(session: PlaySession) : BlockEntity(session), BlockAc
         }
     }
 
-    companion object : BlockEntityFactory<NoteBlockBlockEntity>, AliasedIdentified {
-        override val identifier: ResourceLocation = minecraft("note_block")
+    companion object : BlockEntityFactory<NoteBlockBlockEntity> {
+        override val identifier = minecraft("note_block")
 
-        override val identifiers: Set<ResourceLocation> = setOf(minecraft("noteblock"))
-
-        override fun build(session: PlaySession): NoteBlockBlockEntity {
-            return NoteBlockBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = NoteBlockBlockEntity(session, position, state)
     }
 
 }

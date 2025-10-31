@@ -38,17 +38,17 @@ class SkeletalInstance(
         private set
 
     fun load() {
-        assert(state == SkeletalModelStates.PREPARING)
+        assert(state == SkeletalModelStates.PREPARING) { "Can not load: $state" }
         state = SkeletalModelStates.LOADED
     }
 
     fun unload() {
-        assert(state == SkeletalModelStates.LOADED)
+        assert(state == SkeletalModelStates.LOADED) { "Can not unload: $state" }
         state = SkeletalModelStates.UNLOADED
     }
 
     fun drop() {
-        assert(state == SkeletalModelStates.PREPARING)
+        assert(state == SkeletalModelStates.PREPARING) { "Can not drop: $state" }
         state = SkeletalModelStates.UNLOADED
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,19 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.redstone.piston
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 
-class BannerBlockEntity(session: PlaySession) : BlockEntity(session) {
+enum class PistonDrag {
+    PUSH,
+    PULL,
 
-    companion object : BlockEntityFactory<BannerBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("banner")
+    ;
 
-        override fun build(session: PlaySession): BannerBlockEntity {
-            return BannerBlockEntity(session)
-        }
+    companion object : ValuesEnum<PistonDrag> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
     }
 }

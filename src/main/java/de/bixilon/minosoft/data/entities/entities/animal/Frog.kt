@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Frog(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(session, entityType, data, position, rotation) {
@@ -34,7 +33,7 @@ class Frog(session: PlaySession, entityType: EntityType, data: EntityData, posit
         get() = data.get(TARGET_DATA, null)
 
     companion object : EntityFactory<Frog> {
-        override val identifier: ResourceLocation = minecraft("frog")
+        override val identifier = minecraft("frog")
         private val VARIANT_DATA = EntityDataField("FROG_VARIANT", "FROG_TYPE")
         private val TARGET_DATA = EntityDataField("FROG_TARGET")
 

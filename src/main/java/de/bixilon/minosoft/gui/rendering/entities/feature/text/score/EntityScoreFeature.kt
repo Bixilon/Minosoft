@@ -27,7 +27,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null) {
     private var delta = Duration.ZERO
     private val manager = renderer.renderer.features.score
-    override val renderInvisible get() = true
 
 
     override fun update(delta: Duration) {

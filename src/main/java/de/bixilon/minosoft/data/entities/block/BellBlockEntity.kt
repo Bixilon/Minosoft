@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,23 +14,22 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class BellBlockEntity(session: PlaySession) : BlockEntity(session), BlockActionEntity {
+class BellBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state), BlockActionEntity {
     var shakingDirection: Directions = Directions.NORTH
         private set
 
     override fun setBlockActionData(type: Int, data: Int) {
-        shakingDirection = Directions[data.toInt()]
+        shakingDirection = Directions[data]
     }
 
     companion object : BlockEntityFactory<BellBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("bell")
+        override val identifier = minecraft("bell")
 
-        override fun build(session: PlaySession): BellBlockEntity {
-            return BellBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = BellBlockEntity(session, position, state)
     }
 }

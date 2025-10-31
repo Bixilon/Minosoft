@@ -19,15 +19,16 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-class SignBlockEntity(session: PlaySession) : BlockEntity(session) {
+class SignBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state) {
     val front = SignTextProperties()
     val back = SignTextProperties()
     var waxed = false
@@ -84,11 +85,9 @@ class SignBlockEntity(session: PlaySession) : BlockEntity(session) {
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("sign")
+        override val identifier = minecraft("sign")
         const val LINES = 4
 
-        override fun build(session: PlaySession): SignBlockEntity {
-            return SignBlockEntity(session)
-        }
+        override fun build(session: PlaySession, position: BlockPosition, state: BlockState) = SignBlockEntity(session, position, state)
     }
 }

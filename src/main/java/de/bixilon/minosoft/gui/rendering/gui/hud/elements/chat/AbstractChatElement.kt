@@ -20,11 +20,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.Initializable
 import kotlin.time.Duration.Companion.seconds
 
-abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Initializable, Drawable, AbstractLayout<Element> {
+abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Initializable, AbstractLayout<Element> {
     protected val session = context.session
     protected val profile = session.profiles.gui
     protected val messages = TextFlowElement(guiRenderer, 20.seconds).apply { parent = this@AbstractChatElement }

@@ -12,20 +12,18 @@
  */
 package de.bixilon.minosoft.data.world.chunk
 
+import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.SectionLight
-import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
+import de.bixilon.minosoft.data.world.container.entity.BlockEntityDataProvider
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import java.util.*
 
 /**
  * Collection of 16x16x16 blocks
@@ -33,42 +31,22 @@ import java.util.*
 class ChunkSection(
     val height: SectionHeight,
     val chunk: Chunk,
-) {
+) : Tickable {
     val blocks = BlockSectionDataProvider(chunk.lock, this)
     val biomes = BiomeSectionDataProvider(chunk.lock, this)
-    val blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(chunk.lock, checkSize = true)
+    val entities = BlockEntityDataProvider(chunk.lock, this)
 
     val light = SectionLight(this)
-    var neighbours: Array<ChunkSection?>? = null
+    val neighbours = arrayOfNulls<ChunkSection>(Directions.SIZE)
 
-    fun tick(session: PlaySession, random: Random) {
-        if (blockEntities.isEmpty) return
-
-        val offset = BlockPosition.of(chunk.position, height)
-        var position = BlockPosition()
-
-        val min = blockEntities.minPosition
-        val max = blockEntities.maxPosition
-        for (y in min.y..max.y) {
-            position = position.with(y = offset.y + y)
-            for (z in min.z..max.z) {
-                position = position.with(z = offset.z + z)
-                for (x in min.x..max.x) {
-                    val inSection = InSectionPosition(x, y, z)
-                    val entity = blockEntities[inSection] ?: continue
-                    val state = blocks[inSection] ?: continue
-                    position = position.with(x = offset.x + x)
-                    entity.tick(session, state, position, random)
-                }
-            }
-        }
+    override fun tick() {
+        entities.tick()
     }
-
 
     fun clear() {
         blocks.clear()
         biomes.clear()
-        blockEntities.clear()
+        entities.clear()
     }
 
     fun traceBlock(offset: BlockPosition): BlockState? {

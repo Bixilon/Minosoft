@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -40,7 +41,7 @@ class WorldBiomes(val world: World) {
     }
 
     operator fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-        val noise = this.noise ?: return chunk.biomeSource.get(position)
+        val noise = this.noise ?: return chunk.biomeSource?.get(position)
         chunk[position.y.sectionHeight]?.let { return it.biomes[position.inSectionPosition] } // access cache
 
         return noise.get(position, chunk)
@@ -60,14 +61,11 @@ class WorldBiomes(val world: World) {
         world.session.profiles.rendering.performance::fastBiomeNoise.observe(this) { updateNoise(noise?.seed ?: 0L) }
     }
 
-    fun resetCache() {
-        world.lock.lock()
-        for ((_, chunk) in world.chunks.chunks.unsafe) {
-            for (section in chunk.sections) {
-                if (section == null) continue
+    fun resetCache() = world.lock.locked {
+        world.chunks.forEach { chunk ->
+            chunk.sections.forEach { section ->
                 section.biomes.clear()
             }
         }
-        world.lock.unlock()
     }
 }

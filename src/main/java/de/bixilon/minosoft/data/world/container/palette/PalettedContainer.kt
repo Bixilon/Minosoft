@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,30 +13,27 @@
 
 package de.bixilon.minosoft.data.world.container.palette
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.world.container.palette.data.PaletteData
 import de.bixilon.minosoft.data.world.container.palette.palettes.Palette
 
 class PalettedContainer<T>(
-    private val edgeBits: Int,
+    private val bits: Int,
     val palette: Palette<T>,
     val data: PaletteData,
 ) {
 
-    val isEmpty: Boolean
-        get() {
-            return palette.isEmpty || data.size == 0
-        }
+    val isEmpty get() = palette.isEmpty || data.size == 0
+
 
     fun get(x: Int, y: Int, z: Int): T {
-        return palette.get(data.get((((y shl edgeBits) or z) shl edgeBits) or x))
+        return palette.get(data.get((((y shl bits) or z) shl bits) or x))
     }
 
-    inline fun <reified V : T> unpack(): Array<V> {
+    inline fun <reified V : T> unpack(): Array<V?> {
         val array: Array<V?> = arrayOfNulls(data.size)
         for (i in array.indices) {
             array[i] = palette.getOrNull(data.get(i)) as V
         }
-        return array.unsafeCast()
+        return array
     }
 }

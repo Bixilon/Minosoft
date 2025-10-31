@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
@@ -44,7 +43,7 @@ class ItemPickHandler(
             is BlockTarget -> {
                 val block = target.state.block
                 if (block !is BlockWithItem<*>) return null
-                val nbt = if (copyNBT) session.world.getBlockEntity(target.blockPosition)?.nbt?.toMutableJsonObject() else null
+                val nbt = if (copyNBT) session.world.getBlockEntity(target.blockPosition)?.toNbt() else null
                 return ItemStackUtil.of(block.item, 1, session, nbt = nbt)
             }
 

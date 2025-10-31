@@ -23,6 +23,6 @@ class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
     override fun get(position: InChunkPosition, chunk: Chunk): Biome? {
         val biomeY = if (world.dimension.supports3DBiomes) position.y else 0
 
-        return chunk.biomeSource.get(InChunkPosition(position.x, biomeY, position.z)) // TODO: this is really dirty hack
+        return chunk.biomeSource?.get(InChunkPosition(position.x, biomeY, position.z)) // TODO: this is really dirty hack
     }
 }

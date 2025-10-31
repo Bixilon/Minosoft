@@ -18,7 +18,6 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -27,7 +26,7 @@ object EndEffects : DimensionEffects {
 
     override val daylightCycle: Boolean get() = false
     override val skyLight: Boolean get() = false
-    override val fixedTexture: ResourceLocation = minecraft("environment/end_sky").texture()
+    override val fixedTexture = minecraft("environment/end_sky").texture()
 
     override val weather: Boolean get() = false
     override val sun: Boolean get() = false

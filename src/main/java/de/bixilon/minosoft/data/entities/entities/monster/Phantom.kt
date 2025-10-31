@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Phantom(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : FlyingMob(session, entityType, data, position, rotation) {
@@ -32,7 +31,7 @@ class Phantom(session: PlaySession, entityType: EntityType, data: EntityData, po
 
 
     companion object : EntityFactory<Phantom> {
-        override val identifier: ResourceLocation = minecraft("phantom")
+        override val identifier = minecraft("phantom")
         private val SIZE_DATA = EntityDataField("PHANTOM_SIZE")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Phantom {

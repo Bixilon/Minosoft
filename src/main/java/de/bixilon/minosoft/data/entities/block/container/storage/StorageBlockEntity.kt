@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,19 +15,19 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class StorageBlockEntity(session: PlaySession) : ContainerBlockEntity(session), BlockActionEntity {
-
+abstract class StorageBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : ContainerBlockEntity(session, position, state), BlockActionEntity {
     var viewing: Int = 0
         private set
 
     val closed: Boolean get() = viewing <= 0
 
-    override fun setBlockActionData(type: Int, data: Int) {
-        when (type) {
-            1 -> setViewing(data and 0xFF)
-        }
+    override fun setBlockActionData(type: Int, data: Int) = when (type) {
+        1 -> setViewing(data and 0xFF)
+        else -> Unit
     }
 
     protected fun setViewing(viewing: Int) {

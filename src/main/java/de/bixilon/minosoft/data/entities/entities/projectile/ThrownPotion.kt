@@ -40,7 +40,7 @@ class ThrownPotion(session: PlaySession, entityType: EntityType, data: EntityDat
     override val defaultItem: ItemStack? = null
 
     companion object : EntityFactory<ThrownPotion> {
-        override val identifier: ResourceLocation = minecraft("potion")
+        override val identifier = minecraft("potion")
         private val POTION_ITEM_DATA = EntityDataField("THROWN_POTION_ITEM")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownPotion {

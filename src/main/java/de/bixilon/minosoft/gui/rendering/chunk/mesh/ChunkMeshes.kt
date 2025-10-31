@@ -27,7 +27,7 @@ class ChunkMeshes(
     val opaque: ChunkMesh?,
     val translucent: ChunkMesh?,
     val text: ChunkMesh?,
-    val entities: Array<BlockEntityRenderer<*>>?,
+    val entities: Array<BlockEntityRenderer>?,
 ) {
     val center: Vec3f = Vec3f(BlockPosition.of(position, InSectionPosition(8, 8, 8)))
 
@@ -35,7 +35,7 @@ class ChunkMeshes(
         this.opaque?.load()
         this.translucent?.load()
         this.text?.load()
-        entities?.forEach { it.load() }
+        entities?.forEach { it.load() } // TODO: superbad, entity renderers are cached!
     }
 
     fun unload() {
@@ -43,13 +43,13 @@ class ChunkMeshes(
         translucent?.unload()
         text?.unload()
 
-        entities?.forEach { it.unload() }
+        entities?.forEach { it.unload() } // TODO: superbad, entity renderers are cached!
     }
 
     fun drop() {
         this.opaque?.drop()
         this.translucent?.drop()
         this.text?.drop()
-        entities?.forEach { it.drop() }
+        entities?.forEach { it.drop() } // TODO: superbad, entity renderers are cached!
     }
 }

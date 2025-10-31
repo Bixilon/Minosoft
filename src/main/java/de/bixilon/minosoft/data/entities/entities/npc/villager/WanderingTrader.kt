@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class WanderingTrader(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractVillager(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<WanderingTrader> {
-        override val identifier: ResourceLocation = minecraft("wandering_trader")
+        override val identifier = minecraft("wandering_trader")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): WanderingTrader {
             return WanderingTrader(session, entityType, data, position, rotation)

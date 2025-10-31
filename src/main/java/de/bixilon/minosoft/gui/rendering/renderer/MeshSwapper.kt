@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
 
+@Deprecated("Garbage")
 interface MeshSwapper<T : Mesh> : Renderer {
     var mesh: T?
     var nextMesh: T?

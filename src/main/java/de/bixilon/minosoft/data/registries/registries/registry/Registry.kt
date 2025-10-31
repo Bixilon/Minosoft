@@ -61,18 +61,19 @@ open class Registry<T : RegistryItem>(
         }
     }
 
-    open operator fun get(resourceLocation: ResourceLocation): T? {
-        val fixed = fixer?.fix(resourceLocation) ?: resourceLocation
+    open operator fun get(identifier: ResourceLocation): T? {
+        val fixed = fixer?.fix(identifier) ?: identifier
         return resourceLocationMap[fixed] ?: parent?.get(fixed)
+    }
+
+    operator fun set(id: Int, value: T) {
+        idValueMap[id] = value
+        valueIdMap[value] = id
     }
 
     open operator fun set(any: Any, value: T) {
         when (any) {
-            is Int -> {
-                idValueMap[any] = value
-                valueIdMap[value] = any
-            }
-
+            is Int -> set(any, value)
             is ResourceLocation -> resourceLocationMap[any] = value
             is Identified -> resourceLocationMap[any.identifier] = value
             is AliasedIdentified -> {
@@ -89,8 +90,8 @@ open class Registry<T : RegistryItem>(
         return get(resourceLocation.toResourceLocation())
     }
 
-    open operator fun get(resourceLocation: Identified): T? {
-        return get(resourceLocation.identifier)
+    open operator fun get(identified: Identified): T? {
+        return get(identified.identifier)
     }
 
     override fun getOrNull(id: Int): T? {

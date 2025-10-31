@@ -13,16 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.drawable
 
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+interface Drawable {
 
-interface Drawable : DeltaDrawable {
-
-    /**
-     * Functions gets called every frame
-     */
-    fun draw() {}
-
-    override fun draw(time: ValueTimeMark) {
-        draw()
-    }
+    fun draw()
 }

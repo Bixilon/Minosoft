@@ -27,7 +27,7 @@ class ThrownEnderPearl(session: PlaySession, entityType: EntityType, data: Entit
 
     companion object : EntityFactory<ThrownEnderPearl> {
         private val DEFAULT_ITEM = minecraft("ender_pearl")
-        override val identifier: ResourceLocation = minecraft("ender_pearl")
+        override val identifier = minecraft("ender_pearl")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownEnderPearl {
             return ThrownEnderPearl(session, entityType, data, position, rotation)

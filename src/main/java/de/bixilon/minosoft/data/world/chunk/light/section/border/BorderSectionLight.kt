@@ -64,9 +64,9 @@ abstract class BorderSectionLight(
         val neighbourLuminance = nextLuminance - 1
 
         if (this is TopSectionLight) { // TODO: slow check
-            chunk.sections.getLast()?.light?.traceBlockIncrease(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), neighbourLuminance, Directions.DOWN)
+            chunk.sections.sections.getLast()?.light?.traceBlockIncrease(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), neighbourLuminance, Directions.DOWN)
         } else {
-            chunk.sections.getFirst()?.light?.traceBlockIncrease(InSectionPosition(x, 0, z), neighbourLuminance, Directions.UP)
+            chunk.sections.sections.getFirst()?.light?.traceBlockIncrease(InSectionPosition(x, 0, z), neighbourLuminance, Directions.UP)
         }
 
         if (z > 0) {
@@ -113,9 +113,9 @@ abstract class BorderSectionLight(
         val neighbourLevel = nextLevel - 1
 
         if (this is TopSectionLight) { // TOOD: slow check
-            chunk.sections.getLast()?.light?.traceSkyLightIncrease(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), neighbourLevel, Directions.DOWN, chunk.maxSection * ChunkSize.SECTION_HEIGHT_Y + ChunkSize.SECTION_MAX_Y)
+            chunk.sections.sections.getLast()?.light?.traceSkyLightIncrease(InSectionPosition(x, ChunkSize.SECTION_MAX_Y, z), neighbourLevel, Directions.DOWN, chunk.light.maxSection * ChunkSize.SECTION_HEIGHT_Y + ChunkSize.SECTION_MAX_Y)
         } else {
-            chunk.sections.getFirst()?.light?.traceSkyLightIncrease(InSectionPosition(x, 0, z), neighbourLevel, Directions.UP, chunk.minSection * ChunkSize.SECTION_HEIGHT_Y)
+            chunk.sections.sections.getFirst()?.light?.traceSkyLightIncrease(InSectionPosition(x, 0, z), neighbourLevel, Directions.UP, chunk.light.minSection * ChunkSize.SECTION_HEIGHT_Y)
         }
 
         if (z > 0) {

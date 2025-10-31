@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureDrawable
 import de.bixilon.minosoft.gui.rendering.entities.feature.mesh.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibilityLevels
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.LineMeshBuilder
@@ -115,6 +116,15 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
         mesh.drawLine(eyePosition, eyePosition + rotation.front * 5.0f, color = ChatColors.BLUE)
 
         this.mesh = mesh.bake()
+    }
+
+    override fun updateVisibility(level: EntityVisibilityLevels) = when {
+        level >= EntityVisibilityLevels.VISIBLE -> super.updateVisibility(level)
+        level == EntityVisibilityLevels.OCCLUDED && manager.profile.showThroughWalls -> super.updateVisibility(EntityVisibilityLevels.VISIBLE)
+        else -> {
+            unload = true
+            super.updateVisibility(level)
+        }
     }
 
 

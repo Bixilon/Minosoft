@@ -59,7 +59,7 @@ class PopperManager(
                 popper.tick()
             }
 
-            if (!popper.skipDraw) {
+            if (!popper.skip) {
                 popper.drawAsync()
             }
             latch.inc()
@@ -74,7 +74,7 @@ class PopperManager(
 
     override fun draw() {
         for (popper in poppers) {
-            if (!popper.skipDraw) {
+            if (!popper.skip) {
                 popper.draw()
             }
             popper.postPrepare()

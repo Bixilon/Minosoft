@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -38,7 +37,7 @@ class Sheep(session: PlaySession, entityType: EntityType, data: EntityData, posi
 
 
     companion object : EntityFactory<Sheep> {
-        override val identifier: ResourceLocation = minecraft("sheep")
+        override val identifier = minecraft("sheep")
         private val FLAGS_DATA = EntityDataField("SHEEP_FLAGS")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Sheep {

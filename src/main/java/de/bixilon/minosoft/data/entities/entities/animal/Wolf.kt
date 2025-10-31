@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -56,7 +55,7 @@ class Wolf(session: PlaySession, entityType: EntityType, data: EntityData, posit
         }
 
     companion object : EntityFactory<Wolf> {
-        override val identifier: ResourceLocation = minecraft("wolf")
+        override val identifier = minecraft("wolf")
         private val IS_BEGGING_DATA = EntityDataField("WOLF_IS_BEGGING")
         private val COLLAR_COLOR_DATA = EntityDataField("WOLF_COLLAR_COLOR")
         private val ANGER_TIME_DATA = EntityDataField("WOLF_ANGER_TIME")

@@ -172,7 +172,7 @@ abstract class AbstractButtonElement(
 
     private fun _submit() {
         if (guiRenderer.session.profiles.audio.gui.button) {
-            guiRenderer.session.world.play2DSound(CLICK_SOUND)
+            guiRenderer.session.world.audio?.play2D(CLICK_SOUND)
         }
         submit()
     }

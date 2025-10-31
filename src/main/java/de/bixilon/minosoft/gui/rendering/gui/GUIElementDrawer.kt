@@ -62,7 +62,7 @@ interface GUIElementDrawer {
             if (element !is AsyncDrawable) {
                 continue
             }
-            if (element.skipDraw) {
+            if (element.skip) {
                 continue
             }
             element.drawAsync()
@@ -86,7 +86,7 @@ interface GUIElementDrawer {
             if (element !is Drawable) {
                 continue
             }
-            if (element.skipDraw) {
+            if (element.skip) {
                 continue
             }
             element.draw()
@@ -102,7 +102,7 @@ interface GUIElementDrawer {
             if (element !is LayoutedGUIElement<*>) {
                 continue
             }
-            if (element.skipDraw) {
+            if (element.skip) {
                 continue
             }
             element.postPrepare()
@@ -110,7 +110,7 @@ interface GUIElementDrawer {
 
         guiRenderer.setup()
         for (element in elements) {
-            if (element !is LayoutedGUIElement<*> || !element.enabled || element.skipDraw) {
+            if (element !is LayoutedGUIElement<*> || !element.enabled || element.skip) {
                 continue
             }
             element.mesh?.draw()

@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -52,7 +51,7 @@ open class ItemFrame(session: PlaySession, entityType: EntityType, data: EntityD
     }
 
     companion object : EntityFactory<ItemFrame> {
-        override val identifier: ResourceLocation = minecraft("item_frame")
+        override val identifier = minecraft("item_frame")
         private val ITEM_DATA = EntityDataField("ITEM_FRAME_ITEM")
         private val ROTATION_DATA = EntityDataField("ITEM_FRAME_ROTATION")
 

@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class LlamaSpit(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Projectile(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<LlamaSpit> {
-        override val identifier: ResourceLocation = minecraft("llama_spit")
+        override val identifier = minecraft("llama_spit")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LlamaSpit {
             return LlamaSpit(session, entityType, data, position, rotation)

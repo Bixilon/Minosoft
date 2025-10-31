@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Pillager(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractIllager(session, entityType, data, position, rotation) {
@@ -30,7 +29,7 @@ class Pillager(session: PlaySession, entityType: EntityType, data: EntityData, p
         get() = data.getBoolean(IS_CHARGING_CROSSBOW_DATA, false)
 
     companion object : EntityFactory<Pillager> {
-        override val identifier: ResourceLocation = minecraft("pillager")
+        override val identifier = minecraft("pillager")
         private val IS_CHARGING_CROSSBOW_DATA = EntityDataField("PILLAGER_IS_CHARGING_CROSSBOW")
 
 

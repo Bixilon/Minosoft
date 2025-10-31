@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ShulkerBullet(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Projectile(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ShulkerBullet> {
-        override val identifier: ResourceLocation = minecraft("shulker_bullet")
+        override val identifier = minecraft("shulker_bullet")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ShulkerBullet {
             return ShulkerBullet(session, entityType, data, position, rotation)

@@ -40,7 +40,7 @@ open class Zombie(session: PlaySession, entityType: EntityType, data: EntityData
 
 
     companion object : EntityFactory<Zombie> {
-        override val identifier: ResourceLocation = minecraft("zombie")
+        override val identifier = minecraft("zombie")
         private val IS_BABY_DATA = EntityDataField("ZOMBIE_IS_BABY")
         private val SPECIAL_TYPE_DATA = EntityDataField("ZOMBIE_SPECIAL_TYPE")
         private val DROWNING_CONVERSION_DATA = EntityDataField("ZOMBIE_DROWNING_CONVERSION")

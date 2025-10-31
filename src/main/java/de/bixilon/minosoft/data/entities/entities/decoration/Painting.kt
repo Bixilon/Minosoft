@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.entityPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -43,7 +42,7 @@ class Painting(
         get() = fixedMotif ?: data.get<Motif?>(MOTIF_DATA, null)
 
     companion object : EntityFactory<Painting> {
-        override val identifier: ResourceLocation = minecraft("painting")
+        override val identifier = minecraft("painting")
         private val MOTIF_DATA = EntityDataField("MOTIF", "MOTIVE")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Painting {

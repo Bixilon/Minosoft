@@ -104,7 +104,7 @@ class ChunkManagerTest {
     fun convertSinglePrototype() {
         val manager = create()
 
-        manager[ChunkPosition(3, 0)] = ChunkPrototype(blocks = arrayOfNulls(16), blockEntities = emptyMap(), biomeSource = DummyBiomeSource(null))
+        manager[ChunkPosition(3, 0)] = ChunkPrototype(blocks = arrayOfNulls(16), entities = emptyMap(), biomeSource = DummyBiomeSource(null))
         assertEquals(1, manager.chunks.size)
 
         val chunk = manager[ChunkPosition(3, 0)]
@@ -201,7 +201,7 @@ class ChunkManagerTest {
             arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
             null, null, null,
         ),
-            blockEntities = emptyMap(),
+            entities = emptyMap(),
             biomeSource = DummyBiomeSource(null)
         )
 

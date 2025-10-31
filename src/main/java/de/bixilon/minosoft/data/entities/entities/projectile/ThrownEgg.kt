@@ -27,7 +27,7 @@ class ThrownEgg(session: PlaySession, entityType: EntityType, data: EntityData, 
 
     companion object : EntityFactory<ThrownEgg> {
         private val DEFAULT_ITEM = minecraft("egg")
-        override val identifier: ResourceLocation = minecraft("egg")
+        override val identifier = minecraft("egg")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownEgg {
             return ThrownEgg(session, entityType, data, position, rotation)

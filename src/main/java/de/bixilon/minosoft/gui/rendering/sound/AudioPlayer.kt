@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -125,21 +124,21 @@ class AudioPlayer(
         latch.dec()
     }
 
-    override fun playSound(sound: ResourceLocation, position: Vec3d?, volume: Float, pitch: Float) {
+    override fun play(sound: ResourceLocation, position: Vec3d?, volume: Float, pitch: Float) {
         if (!initialized) {
             return
         }
         queue += add@{ playSound(soundManager[sound] ?: return@add, position, volume, pitch) }
     }
 
-    override fun play2DSound(sound: ResourceLocation, volume: Float, pitch: Float) {
+    override fun play2D(sound: ResourceLocation, volume: Float, pitch: Float) {
         if (!session.profiles.audio.gui.enabled) {
             return
         }
-        super.play2DSound(sound, volume, pitch)
+        super.play2D(sound, volume, pitch)
     }
 
-    override fun stopSound(sound: ResourceLocation) {
+    override fun stop(sound: ResourceLocation) {
         if (!profile.enabled) {
             return
         }
@@ -156,7 +155,7 @@ class AudioPlayer(
         }
     }
 
-    override fun stopAllSounds() {
+    override fun stopAll() {
         queue += {
             for (source in sources) {
                 if (!source.isPlaying) {
@@ -209,7 +208,7 @@ class AudioPlayer(
             }
             position?.let {
                 source.relative = false
-                source.position = it.toVec3
+                source.position = Vec3f(it)
             } ?: let {
                 source.position = Vec3f.EMPTY
                 source.relative = true

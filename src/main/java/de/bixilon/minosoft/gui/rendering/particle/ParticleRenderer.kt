@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
-import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -42,7 +41,7 @@ import java.util.*
 class ParticleRenderer(
     private val session: PlaySession,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, SkipAll, AbstractParticleRenderer {
+) : WorldRenderer, AsyncRenderer, AbstractParticleRenderer {
     override val random = Random()
     override val layers = LayerSettings()
     private val profile = session.profiles.particle
@@ -59,8 +58,7 @@ class ParticleRenderer(
     private var matrixUpdate = true
 
 
-    override val skipAll: Boolean
-        get() = !enabled
+    override val skip get() = !enabled
 
 
     var enabled = true

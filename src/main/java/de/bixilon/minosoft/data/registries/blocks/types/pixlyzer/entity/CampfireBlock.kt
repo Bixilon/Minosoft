@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.block.CampfireBlockEntity
@@ -80,7 +79,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             return
         }
         if (random.chance(10)) {
-            session.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, Vec3f(0.5f) + position, 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+            session.world.audio?.play(CAMPFIRE_CRACKLE_SOUND, Vec3d(0.5f) + position, 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
         if (lavaParticles && random.chance(20)) {

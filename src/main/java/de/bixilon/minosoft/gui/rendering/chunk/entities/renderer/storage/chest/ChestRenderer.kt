@@ -26,17 +26,17 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 abstract class ChestRenderer(
     state: BlockState,
     skeletal: SkeletalInstance?,
-    blockPosition: BlockPosition,
+    val position: BlockPosition,
     light: Int,
 ) : StorageBlockEntityRenderer<ChestBlockEntity>(state, skeletal) {
     val animation = skeletal?.let { ChestAnimation(it) }
 
     init {
-        update(blockPosition, state, light)
+        update(light)
     }
 
-    override fun update(position: BlockPosition, state: BlockState, light: Int) {
-        super.update(position, state, light)
+    override fun update(light: Int) {
+        super.update(light)
         val rotation = ROTATION[state.getFacing().ordinal - Directions.SIDE_OFFSET]
         skeletal?.update(position, rotation)
     }

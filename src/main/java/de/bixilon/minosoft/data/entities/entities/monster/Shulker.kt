@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -48,7 +47,7 @@ class Shulker(session: PlaySession, entityType: EntityType, data: EntityData, po
 
 
     companion object : EntityFactory<Shulker> {
-        override val identifier: ResourceLocation = minecraft("shulker")
+        override val identifier = minecraft("shulker")
         private val ATTACH_FACE_DATA = EntityDataField("SHULKER_ATTACH_FACE")
         private val ATTACH_POSITION_DATA = EntityDataField("SHULKER_ATTACHMENT_POSITION")
         private val PEEK_DATA = EntityDataField("SHULKER_PEEK")

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -40,7 +39,7 @@ class Dolphin(session: PlaySession, entityType: EntityType, data: EntityData, po
 
 
     companion object : EntityFactory<Dolphin> {
-        override val identifier: ResourceLocation = minecraft("dolphin")
+        override val identifier = minecraft("dolphin")
         private val TREASURE_POSITION_DATA = EntityDataField("DOLPHIN_TREASURE_POSITION")
         private val HAS_FISH_DATA = EntityDataField("DOLPHIN_HAS_FISH")
         private val MOISTNESS_LEVEL_DATA = EntityDataField("DOLPHIN_MOISTNESS_LEVEL")

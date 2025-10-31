@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class ThrownTrident(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractArrow(session, entityType, data, position, rotation) {
@@ -34,7 +33,7 @@ class ThrownTrident(session: PlaySession, entityType: EntityType, data: EntityDa
         get() = data.getBoolean(ENCHANTED_DATA, false)
 
     companion object : EntityFactory<ThrownTrident> {
-        override val identifier: ResourceLocation = minecraft("trident")
+        override val identifier = minecraft("trident")
         private val TRIDENT_LOYALTY_LEVEL_DATA = EntityDataField("THROWN_TRIDENT_LOYALTY_LEVEL")
         private val ENCHANTED_DATA = EntityDataField("THROWN_TRIDENT_FOIL")
 

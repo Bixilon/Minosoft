@@ -32,7 +32,7 @@ class LargeFireball(session: PlaySession, entityType: EntityType, data: EntityDa
 
     companion object : EntityFactory<LargeFireball> {
         private val DEFAULT_ITEM = minecraft("fire_charge")
-        override val identifier: ResourceLocation = minecraft("fireball")
+        override val identifier = minecraft("fireball")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LargeFireball {
             return LargeFireball(session, entityType, data, position, rotation)

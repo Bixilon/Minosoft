@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 class CloudArray(
     val layer: CloudLayer,
     val offset: Vec2i,
-) {
+) : Drawable {
     private val mesh = build()
 
     init {
@@ -58,7 +59,7 @@ class CloudArray(
     }
 
 
-    fun draw() {
+    override fun draw() {
         mesh.draw()
     }
 

@@ -84,9 +84,8 @@ class ChunkQueueMaster(
         }
 
         var changes = 0
-        for (sectionHeight in chunk.minSection..chunk.maxSection) { // TODO .. or until?
-            val section = chunk[sectionHeight] ?: continue
-            if (queue(section, ignoreVisibility)) {
+        chunk.sections.forEach {
+            if (queue(it, ignoreVisibility)) {
                 changes++
             }
         }

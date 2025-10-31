@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class Slime(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Mob(session, entityType, data, position, rotation) {
@@ -32,7 +31,7 @@ open class Slime(session: PlaySession, entityType: EntityType, data: EntityData,
 
 
     companion object : EntityFactory<Slime> {
-        override val identifier: ResourceLocation = minecraft("slime")
+        override val identifier = minecraft("slime")
         private val SIZE_DATA = EntityDataField("SLIME_SIZE")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Slime {

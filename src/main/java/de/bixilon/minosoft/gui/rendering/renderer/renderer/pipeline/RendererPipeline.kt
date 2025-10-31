@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 
 class RendererPipeline(private val renderer: RendererManager) : Drawable {
     val world = WorldRendererPipeline(renderer)
@@ -48,9 +47,8 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
     private fun drawOther() {
         for (renderer in other) {
-            if (renderer.skipDraw) continue
-            if (renderer is SkipAll && renderer.skipAll) continue
             renderer as Renderer
+            if (renderer.skip) continue
 
             renderSystem.set(renderer)
             renderer.draw()
@@ -59,8 +57,7 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
     private fun drawPre() {
         for (renderer in pre) {
-            if (renderer is SkipAll && renderer.skipAll) continue
-            if (renderer.skipPre) continue
+            if (renderer.skip) continue
             renderSystem.set(renderer)
             renderer.drawPre()
         }
@@ -68,8 +65,7 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
     private fun drawPost() {
         for (renderer in post) {
-            if (renderer is SkipAll && renderer.skipAll) continue
-            if (renderer.skipPost) continue
+            if (renderer.skip) continue
             renderSystem.set(renderer)
             renderer.drawPost()
         }

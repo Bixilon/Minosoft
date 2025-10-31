@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockRegistry
-import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
+import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.dimension.Dimension
@@ -57,7 +57,10 @@ import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
+import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer
+import de.bixilon.minosoft.datafixer.rls.ContainerTypeFixer
 import de.bixilon.minosoft.datafixer.rls.EntityTypeFixer
+import de.bixilon.minosoft.datafixer.rls.MotifFixer
 import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fixRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
@@ -83,7 +86,7 @@ class Registries(
 
     val shape = ShapeRegistry()
 
-    val motif: Registry<Motif> = register("motif", Registry(codec = Motif))
+    val motif: Registry<Motif> = register("motif", Registry(codec = Motif, fixer = MotifFixer))
     val block = register("block", BlockRegistry())
     val item: ItemRegistry = register("item", ItemRegistry())
     val enchantment: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
@@ -121,10 +124,10 @@ class Registries(
     val entityObjectType: Registry<EntityObjectType> = register("entity_object_type", Registry(codec = EntityObjectType))
     val damageType: Registry<DamageType> = register("damage_type", Registry(codec = DamageType))
 
-    val blockEntityType = BlockEntityTypeRegistry()
+    val blockEntityType: Registry<BlockEntityType<*>> = Registry(codec = BlockEntityType, fixer = BlockEntityFixer)
     val blockDataType: Registry<BlockDataDataType> = Registry(codec = BlockDataDataType)
 
-    val containerType: Registry<ContainerType> = Registry(codec = ContainerType)
+    val containerType: Registry<ContainerType> = Registry(codec = ContainerType, fixer = ContainerTypeFixer)
     val gameEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val worldEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val vibrationSource: ResourceLocationRegistry = ResourceLocationRegistry()

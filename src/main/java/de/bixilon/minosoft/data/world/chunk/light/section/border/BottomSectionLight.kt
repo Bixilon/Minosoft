@@ -28,6 +28,6 @@ class BottomSectionLight(
         return LightLevel(this.light[position.xz])
     }
 
-    override fun getNearestSection() = chunk.sections.getFirst()
+    override fun getNearestSection() = chunk.sections.sections.getFirst()
     override fun Chunk.getBorderLight() = this.light.bottom
 }

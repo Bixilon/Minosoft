@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -52,7 +51,7 @@ class Turtle(session: PlaySession, entityType: EntityType, data: EntityData, pos
 
 
     companion object : EntityFactory<Turtle> {
-        override val identifier: ResourceLocation = minecraft("turtle")
+        override val identifier = minecraft("turtle")
         private val HOME_POSITION_DATA = EntityDataField("TURTLE_HOME_POSITION")
         private val HAS_EGG_DATA = EntityDataField("TURTLE_HAS_EGG")
         private val IS_LAYING_EGG_DATA = EntityDataField("TURTLE_IS_LAYING_EGG")

@@ -140,7 +140,7 @@ class SessionUtil(
     fun prepareSpawn() {
         session.player.items.reset()
         session.player.physics.reset()
-        session.world.audio?.stopAllSounds()
+        session.world.audio?.stopAll()
         session.world.particle?.removeAllParticles()
 
         session.player.healthCondition = HealthCondition()

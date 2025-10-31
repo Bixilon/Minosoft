@@ -135,7 +135,7 @@ class GUIManager(
                 lastTickTime = time
             }
 
-            if (element is AsyncDrawable && !element.skipDraw) {
+            if (element is AsyncDrawable && !element.skip) {
                 element.drawAsync()
             }
             if (element is LayoutedGUIElement<*>) {
@@ -156,7 +156,7 @@ class GUIManager(
             if (index != order.size - 1 && !element.activeWhenHidden) {
                 continue
             }
-            if (element is Drawable && !element.skipDraw) {
+            if (element is Drawable && !element.skip) {
                 element.draw()
             }
             if (element is LayoutedGUIElement<*>) {

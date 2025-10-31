@@ -98,7 +98,7 @@ object EntityRendererTestUtil {
     }
 
 
-    fun Entity.isInvisible(invisible: Boolean) {
+    fun Entity.setInvisible(invisible: Boolean) {
         var flags = data.get(Entity.FLAGS_DATA, 0x00)
         flags = flags and 0x20.inv()
         if (invisible) {

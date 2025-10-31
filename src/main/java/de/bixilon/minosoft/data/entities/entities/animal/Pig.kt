@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.entities.entities.properties.riding.ItemRideable
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.physics.entities.living.animal.PigPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -49,7 +48,7 @@ class Pig(session: PlaySession, entityType: EntityType, data: EntityData, positi
     override fun createPhysics() = PigPhysics(this)
 
     companion object : EntityFactory<Pig> {
-        override val identifier: ResourceLocation = minecraft("pig")
+        override val identifier = minecraft("pig")
         val SADDLED = EntityDataField("PIG_HAS_SADDLE")
         private val BOOST_TIME_DATA = EntityDataField("PIG_BOOST_TIME")
 

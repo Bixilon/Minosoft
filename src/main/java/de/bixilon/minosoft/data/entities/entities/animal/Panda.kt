@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class Panda(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(session, entityType, data, position, rotation) {
@@ -84,7 +83,7 @@ class Panda(session: PlaySession, entityType: EntityType, data: EntityData, posi
     }
 
     companion object : EntityFactory<Panda> {
-        override val identifier: ResourceLocation = minecraft("panda")
+        override val identifier = minecraft("panda")
         private val BAMBOO_ASK_TIMER_DATA = EntityDataField("PANDA_UNHAPPY_TIMER")
         private val SNEEZE_TIMER_DATA = EntityDataField("PANDA_SNEEZE_TIMER")
         private val EATING_TICKS_DATA = EntityDataField("PANDA_EAT_TIMER")

@@ -13,27 +13,12 @@
 
 package de.bixilon.minosoft.data.world.chunk
 
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
 import java.lang.StrictMath.abs
 
 object ChunkUtil {
 
-    fun getNeighbours(chunks: ChunkNeighbourArray, chunk: Chunk, height: SectionHeight): Array<ChunkSection?> {
-        return arrayOf(
-            chunk[height - 1],
-            chunk[height + 1],
-            chunks[Directions.NORTH]!![height],
-            chunks[Directions.SOUTH]!![height],
-            chunks[Directions.WEST]!![height],
-            chunks[Directions.EAST]!![height],
-        )
-    }
-
-    inline fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
+    fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
         val delta = cameraPosition - this
         return abs(delta.x) <= viewDistance && abs(delta.z) <= viewDistance
     }

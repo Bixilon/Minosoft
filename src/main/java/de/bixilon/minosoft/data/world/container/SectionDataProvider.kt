@@ -14,29 +14,30 @@
 package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.iterator.EmptyIterator
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 // Dump section: provider.joinToString(";") { it?.block?.identifier?.path ?: "" }
-open class SectionDataProvider<T>(
+abstract class SectionDataProvider<T>(
     var lock: Lock?,
     val checkSize: Boolean = false,
-) : Iterable<T> {
-    protected var data: Array<Any?>? = null
+) {
+    protected var data: Array<T?>? = null
         private set
     var count: Int = 0
         private set
-    val isEmpty: Boolean
-        get() = data == null || count == 0
+    val isEmpty get() = data == null || count == 0
     var minPosition = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
         private set
     var maxPosition = InSectionPosition(0, 0, 0)
         private set
 
+
+    protected abstract fun create(): Array<T?>
+
     @Suppress("UNCHECKED_CAST")
-    open operator fun get(position: InSectionPosition) = data?.get(position.index) as T
+    open operator fun get(position: InSectionPosition) = data?.get(position.index)
     open operator fun get(x: Int, y: Int, z: Int) = this[InSectionPosition(x, y, z)]
 
 
@@ -98,7 +99,7 @@ open class SectionDataProvider<T>(
     }
 
 
-    open fun unsafeSet(position: InSectionPosition, value: T): T? {
+    open fun unsafeSet(position: InSectionPosition, value: T?): T? {
         var data = data
         val previous = data?.get(position.index)
         if (value == null) {
@@ -114,7 +115,7 @@ open class SectionDataProvider<T>(
             count++
         }
         if (data == null) {
-            data = arrayOfNulls<Any?>(ChunkSize.BLOCKS_PER_SECTION).unsafeCast()!!
+            data = create()
             this.data = data
         }
         data[position.index] = value
@@ -137,8 +138,8 @@ open class SectionDataProvider<T>(
         return previous.unsafeCast()
     }
 
-    operator fun set(x: Int, y: Int, z: Int, value: T) = this.set(InSectionPosition(x, y, z), value)
-    open operator fun set(position: InSectionPosition, value: T): T? {
+    operator fun set(x: Int, y: Int, z: Int, value: T?) = this.set(InSectionPosition(x, y, z), value)
+    open operator fun set(position: InSectionPosition, value: T?): T? {
         lock?.lock()
         val previous = unsafeSet(position, value)
         lock?.unlock()
@@ -146,28 +147,38 @@ open class SectionDataProvider<T>(
     }
 
 
-    @Suppress("UNCHECKED_CAST")
-    fun setData(data: Array<T>) {
+    fun setData(data: Array<T?>) {
         lock?.lock()
-        check(data.size == ChunkSize.BLOCKS_PER_SECTION) { "Size does not match!" }
-        this.data = data as Array<Any?>
+        assert(data.size == ChunkSize.BLOCKS_PER_SECTION) { "Size does not match!" }
+        this.data = data
         recalculate()
         lock?.unlock()
     }
 
 
     fun clear() {
+        if (isEmpty) return
         lock?.lock()
         this.data = null
         recalculate()
         lock?.unlock()
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun iterator(): Iterator<T> {
-        val data = this.data ?: return EmptyIterator.unsafeCast()
-        if (this.isEmpty) return EmptyIterator.unsafeCast()
+    inline fun forEach(consumer: (position: InSectionPosition, value: T) -> Unit) {
+        if (isEmpty) return
 
-        return data.iterator().unsafeCast()
+        val min = minPosition
+        val max = maxPosition
+
+        for (y in min.y..max.y) {
+            for (z in min.z..max.z) {
+                for (x in min.x..max.x) {
+                    val position = InSectionPosition(x, y, z)
+                    val value = this[position] ?: continue
+
+                    consumer.invoke(position, value)
+                }
+            }
+        }
     }
 }

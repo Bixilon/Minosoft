@@ -16,8 +16,6 @@ package de.bixilon.minosoft.data.world.chunk.manager
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.manager.size.WorldSizeManager
@@ -86,7 +84,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
     private fun updateExisting(position: ChunkPosition, prototype: ChunkPrototype, replace: Boolean): PrototypeChange? {
         val chunk = this.chunks.unsafe[position] ?: return null
-        val affected = prototype.updateChunk(chunk, replace) ?: return null
+        val affected = prototype.update(chunk, replace) ?: return null
         return PrototypeChange(chunk, affected)
     }
 
@@ -107,7 +105,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         val existingPrototype = this.prototypes.unsafe[position]
         existingPrototype?.update(prototype)
 
-        val chunk = (existingPrototype ?: prototype).createChunk(world.session, position)
+        val chunk = (existingPrototype ?: prototype).create(world.session, position)
         if (chunk == null) {
             // chunk not complete
             if (existingPrototype == null) {
@@ -156,9 +154,9 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
     }
 
 
-    fun create(position: ChunkPosition, biome: BiomeSource = DummyBiomeSource(null)): Chunk {
+    fun create(position: ChunkPosition): Chunk {
         chunks.lock.lock()
-        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.session, position, biome) }
+        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.session, position) }
         val updates = onChunkCreate(chunk)
         chunks.lock.unlock()
 
@@ -171,5 +169,11 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
     fun tick(simulationDistance: Int, cameraPosition: ChunkPosition) {
         ticker.tick(simulationDistance, cameraPosition)
+    }
+
+    fun forEach(consumer: (Chunk) -> Unit) {
+        for ((_, chunk) in this.chunks.unsafe) {
+            consumer.invoke(chunk)
+        }
     }
 }

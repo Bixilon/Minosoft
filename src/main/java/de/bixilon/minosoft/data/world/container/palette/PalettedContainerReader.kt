@@ -33,7 +33,7 @@ object PalettedContainerReader {
         return PalettedContainer(factory.edgeBits, palette, data)
     }
 
-    inline fun <reified T> unpack(buffer: PlayInByteBuffer, registry: AbstractRegistry<T?>, factory: PaletteFactory): Array<T>? {
+    inline fun <reified T> unpack(buffer: PlayInByteBuffer, registry: AbstractRegistry<T?>, factory: PaletteFactory): Array<T?>? {
         val bits = buffer.readUnsignedByte()
 
         val palette = factory.createPalette(registry, bits, buffer.versionId)

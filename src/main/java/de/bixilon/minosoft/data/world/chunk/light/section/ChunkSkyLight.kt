@@ -22,7 +22,9 @@ import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
-class ChunkSkyLight(val light: ChunkLight) {
+class ChunkSkyLight(
+    val light: ChunkLight,
+) {
     private val chunk = light.chunk
 
 
@@ -52,7 +54,7 @@ class ChunkSkyLight(val light: ChunkLight) {
         val topSection = topY.sectionHeight
         val bottomSection = bottomY.sectionHeight
 
-        val sections = topSection - maxOf(chunk.minSection, bottomSection) + 1
+        val sections = topSection - maxOf(light.minSection, bottomSection) + 1
 
 
         // top section
@@ -61,12 +63,12 @@ class ChunkSkyLight(val light: ChunkLight) {
         }
 
         // middle sections
-        for (sectionHeight in (topSection - 1) downTo maxOf(chunk.minSection, bottomSection) + 1) {
+        for (sectionHeight in (topSection - 1) downTo maxOf(light.minSection, bottomSection) + 1) {
             traceSection(sectionHeight, x, ChunkSize.SECTION_MAX_Y, 0, z, target)
         }
 
         // lowest section
-        traceSection(if (bottomY == Int.MIN_VALUE) chunk.minSection else bottomSection, x, if (topSection == bottomSection) topY.inSectionHeight else ChunkSize.SECTION_MAX_Y, if (bottomY == Int.MIN_VALUE) 0 else bottomY.inSectionHeight, z, target)
+        traceSection(if (bottomY == Int.MIN_VALUE) light.minSection else bottomSection, x, if (topSection == bottomSection) topY.inSectionHeight else ChunkSize.SECTION_MAX_Y, if (bottomY == Int.MIN_VALUE) 0 else bottomY.inSectionHeight, z, target)
 
         if (bottomY == Int.MIN_VALUE) {
             chunk.light.bottom.traceSkyIncrease(x, z, NEIGHBOUR_TRACE_LEVEL)
@@ -75,7 +77,7 @@ class ChunkSkyLight(val light: ChunkLight) {
 
     private fun traceDown(x: Int, y: Int, z: Int) {
         val sectionHeight = y.sectionHeight
-        if (sectionHeight == chunk.minSection - 1) {
+        if (sectionHeight == light.minSection - 1) {
             chunk.light.bottom.traceSkyIncrease(x, z, ChunkSize.MAX_LIGHT_LEVEL_I)
             return
         }

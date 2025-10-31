@@ -15,30 +15,43 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.skeletal
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class SkeletalBlockEntityRenderer<E : BlockEntity>(
-    override var state: BlockState,
+    var state: BlockState,
     protected val skeletal: SkeletalInstance?,
-) : BlockEntityRenderer<E> {
-    override var light = 0xFF
+) : BlockEntityRenderer {
+    var light = 0xFF
 
-    override fun draw(context: RenderContext) {
+    override fun update(light: Int) {
+        this.light = light
+    }
+
+    override fun draw() {
         skeletal?.update()
         skeletal?.draw(light)
     }
 
     override fun load() {
-        skeletal?.load()
+        val skeletal = skeletal ?: return
+        if (skeletal.state == SkeletalModelStates.PREPARING) {
+            skeletal.load()
+        }
     }
 
     override fun unload() {
-        skeletal?.unload()
+        val skeletal = skeletal ?: return
+        if (skeletal.state == SkeletalModelStates.LOADED) {
+            skeletal.unload()
+        }
     }
 
     override fun drop() {
-        skeletal?.drop()
+        val skeletal = skeletal ?: return
+        if (skeletal.state == SkeletalModelStates.PREPARING) {
+            skeletal.drop()
+        }
     }
 }

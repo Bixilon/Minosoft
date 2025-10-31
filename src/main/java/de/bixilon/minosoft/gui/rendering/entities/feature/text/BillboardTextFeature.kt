@@ -115,6 +115,8 @@ open class BillboardTextFeature(
         else -> super.updateVisibility(level)
     }
 
+    override fun isVisible() = text != null && super.isVisible()
+
     override fun unload() {
         this.info = null
         super.unload()

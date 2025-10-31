@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,10 +17,6 @@ import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntit
 import de.bixilon.minosoft.data.entities.block.container.storage.EnderChestBlockEntity
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
 import de.bixilon.minosoft.data.entities.block.container.storage.TrappedChestBlockEntity
-import de.bixilon.minosoft.data.entities.block.end.EndGatewayBlockEntity
-import de.bixilon.minosoft.data.entities.block.end.EndPortalBlockEntity
-import de.bixilon.minosoft.data.entities.block.redstone.CommandBlockEntity
-import de.bixilon.minosoft.data.entities.block.redstone.SculkSensorBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.piston.PistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.piston.StickyPistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
@@ -31,27 +27,14 @@ object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEnti
     SignBlockEntity,
     CampfireBlockEntity,
     JigsawBlockEntity,
-    LecternBlockEntity,
     BellBlockEntity,
-    ConduitBlockEntity,
     ShulkerBoxBlockEntity,
-    StructureBlockBlockEntity,
-    CommandBlockEntity,
-    BannerBlockEntity,
     BeaconBlockEntity,
-    SkullBlockEntity,
-    EnchantingTableBlockEntity,
     MobSpawnerBlockEntity,
     EnderChestBlockEntity,
-    JukeboxBlockEntity,
     ChestBlockEntity,
     TrappedChestBlockEntity,
-    BeehiveBlockEntity,
     NoteBlockBlockEntity,
-    EndGatewayBlockEntity,
     PistonBlockEntity,
     StickyPistonBlockEntity,
-    FlowerPotBlockEntity,
-    EndPortalBlockEntity,
-    SculkSensorBlockEntity,
 )

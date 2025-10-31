@@ -28,11 +28,15 @@ import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
-class ChunkLight(val chunk: Chunk) {
+class ChunkLight(
+    val chunk: Chunk,
+) {
     private val session = chunk.session
+    val minSection = chunk.world.dimension.minSection
+    val maxSection = chunk.world.dimension.maxSection
     val heightmap = if (chunk.world.dimension.hasSkyLight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
+
 
     val bottom = BottomSectionLight(chunk)
     val top = TopSectionLight(chunk)
@@ -47,11 +51,11 @@ class ChunkLight(val chunk: Chunk) {
 
         if (!chunk.neighbours.complete) return
 
-        fireLightChange(section, position.y.sectionHeight, chunk.neighbours.neighbours)
+        fireLightChange(section, chunk.neighbours.neighbours)
     }
 
 
-    fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: ChunkNeighbourArray, fireSameChunkEvent: Boolean = true) {
+    fun fireLightChange(section: ChunkSection, neighbours: ChunkNeighbourArray, fireSameChunkEvent: Boolean = true) {
         if (!section.light.update) {
             return
         }
@@ -60,17 +64,17 @@ class ChunkLight(val chunk: Chunk) {
         val events = hashSetOf<AbstractWorldUpdate>()
         val chunkPosition = chunk.position
         if (fireSameChunkEvent) {
-            events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight, true)
+            events += ChunkLightUpdate(chunkPosition, chunk, section.height, true)
 
-            val down = section.neighbours?.get(Directions.O_DOWN)?.light
+            val down = section.neighbours[Directions.O_DOWN]?.light
             if (down != null && down.update) {
                 down.update = false
-                events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight - 1, false)
+                events += ChunkLightUpdate(chunkPosition, chunk, section.height - 1, false)
             }
-            val up = section.neighbours?.get(Directions.O_UP)?.light
+            val up = section.neighbours[Directions.O_UP]?.light
             if (up?.update == true) {
                 up.update = false
-                events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight + 1, false)
+                events += ChunkLightUpdate(chunkPosition, chunk, section.height + 1, false)
             }
         }
 
@@ -84,22 +88,22 @@ class ChunkLight(val chunk: Chunk) {
                 val nextPosition = chunkPosition + offset
                 val chunk = neighbours.array[neighbourIndex++]
                 for (chunkY in -1..1) {
-                    val neighbourSection = chunk?.get(sectionHeight + chunkY) ?: continue
+                    val neighbourSection = chunk?.get(section.height + chunkY) ?: continue
                     if (!neighbourSection.light.update) {
                         continue
                     }
                     neighbourSection.light.update = false
-                    events += ChunkLightUpdate(nextPosition, chunk, sectionHeight + chunkY, false)
+                    events += ChunkLightUpdate(nextPosition, chunk, section.height + chunkY, false)
                 }
             }
         }
         for (event in events) event.fire(session)
     }
 
-    fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {
+    fun fireLightChange(fireSameChunkEvent: Boolean) {
         if (!chunk.neighbours.complete) return
-        for ((index, section) in sections.withIndex()) {
-            fireLightChange(section ?: continue, index + chunk.minSection, chunk.neighbours.neighbours, fireSameChunkEvent)
+        chunk.sections.forEach { section ->
+            fireLightChange(section, chunk.neighbours.neighbours, fireSameChunkEvent)
         }
     }
 
@@ -109,8 +113,8 @@ class ChunkLight(val chunk: Chunk) {
         val inSection = position.inSectionPosition
 
         val light = when (sectionHeight) {
-            chunk.minSection - 1 -> bottom[inSection]
-            chunk.maxSection + 1 -> return top[inSection].with(sky = LightLevel.MAX_LEVEL) // top has always sky=15; TODO: only if dimension has skylight?
+            minSection - 1 -> bottom[inSection]
+            maxSection + 1 -> return top[inSection].with(sky = LightLevel.MAX_LEVEL) // top has always sky=15; TODO: only if dimension has skylight?
             else -> chunk[sectionHeight]?.light?.get(inSection) ?: LightLevel.EMPTY
         }
 
@@ -124,55 +128,35 @@ class ChunkLight(val chunk: Chunk) {
     fun recalculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
         bottom.reset()
         top.reset()
-        val sections = chunk.sections
-        for (section in sections) {
-            if (section == null) {
-                continue
-            }
-            section.light.recalculate()
-        }
+
+        chunk.sections.forEach { it.light.recalculate() }
+
         sky.calculate()
         if (fireEvent) {
-            fireLightChange(sections, fireSameChunkEvent)
+            fireLightChange(fireSameChunkEvent)
         }
     }
 
     fun calculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
-        val sections = chunk.sections
-        for (section in sections) {
-            if (section == null) {
-                continue
-            }
-            section.light.calculate()
-        }
+        chunk.sections.forEach { it.light.calculate() }
+
         sky.calculate()
         if (fireEvent) {
-            fireLightChange(sections, fireSameChunkEvent)
+            fireLightChange(fireSameChunkEvent)
         }
     }
 
     fun reset() {
-        val sections = chunk.sections
-        for (section in sections) {
-            if (section == null) {
-                continue
-            }
-            section.light.reset()
-        }
+        chunk.sections.forEach { it.light.reset() }
         bottom.reset()
         top.reset()
     }
 
     fun propagateFromNeighbours(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
-        val sections = chunk.sections
-        for (section in sections) {
-            if (section == null) {
-                continue
-            }
-            section.light.propagateFromNeighbours()
-        }
+        chunk.sections.forEach { it.light.propagateFromNeighbours() }
+
         if (fireEvent) {
-            fireLightChange(sections, fireSameChunkEvent)
+            fireLightChange(fireSameChunkEvent)
         }
     }
 }

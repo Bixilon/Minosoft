@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class SpawnerMinecart(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(session, entityType, data, position, rotation) {
 
     companion object : EntityFactory<SpawnerMinecart> {
-        override val identifier: ResourceLocation = minecraft("spawner_minecart")
+        override val identifier = minecraft("spawner_minecart")
 
         override fun build(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SpawnerMinecart {
             return SpawnerMinecart(session, entityType, data, position, rotation)

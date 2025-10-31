@@ -61,9 +61,10 @@ class FlatGenerator(
     override fun generate(chunk: Chunk) {
         chunk.biomeSource = this.biomeSource
 
+        val minSection = chunk.world.dimension.minSection
         for ((index, data) in this.data.withIndex()) {
             if (data == null) continue
-            val section = chunk.getOrPut(index + chunk.minSection) ?: continue
+            val section = chunk.getOrPut(index + minSection) ?: continue
             val clone = data.clone()
 
             section.blocks.setData(clone)
