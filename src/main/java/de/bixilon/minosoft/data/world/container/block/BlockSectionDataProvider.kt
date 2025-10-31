@@ -49,7 +49,6 @@ class BlockSectionDataProvider(
         var count = 0
         for (state in data) {
             if (state == null) continue
-            state as BlockState
             if (state.isFluid()) {
                 count++
             }

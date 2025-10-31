@@ -32,7 +32,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
-import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.protocol.network.session.play.tick.SessionTicker
@@ -102,7 +101,7 @@ object SessionTestUtil {
 
         session.camera.init()
         if (worldSize > 0) {
-            session.world.initialize(worldSize) { DummyBiomeSource(null) }
+            session.world.initialize(worldSize)
         }
         return session
     }

@@ -164,7 +164,7 @@ class WorldBiomesTest {
     private class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
 
         override fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-            return chunk.biomeSource.get(position)
+            return chunk.biomeSource?.get(position)
         }
     }
 }

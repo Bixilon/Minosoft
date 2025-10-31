@@ -51,11 +51,18 @@ class ChunkManagerTest {
         return session.world.chunks
     }
 
+    private fun ChunkManager.create(x: Int, z: Int, source: BiomeSource = DummyBiomeSource(null)): Chunk {
+        val chunk = create(ChunkPosition(x, z))
+        chunk.biomeSource = source
+
+        return chunk
+    }
+
     private fun ChunkManager.createMatrix(biomeSource: BiomeSource = DummyBiomeSource(null)): Array<Array<Chunk>> {
         return arrayOf(
-            arrayOf(create(ChunkPosition(-1, -1), biomeSource), create(ChunkPosition(+0, -1), biomeSource), create(ChunkPosition(+1, -1), biomeSource)),
-            arrayOf(create(ChunkPosition(-1, +0), biomeSource), create(ChunkPosition(+0, +0), biomeSource), create(ChunkPosition(+1, +0), biomeSource)),
-            arrayOf(create(ChunkPosition(-1, +1), biomeSource), create(ChunkPosition(+0, +1), biomeSource), create(ChunkPosition(+1, +1), biomeSource)),
+            arrayOf(create(-1, -1, biomeSource), create(+0, -1, biomeSource), create(+1, -1, biomeSource)),
+            arrayOf(create(-1, +0, biomeSource), create(+0, +0, biomeSource), create(+1, +0, biomeSource)),
+            arrayOf(create(-1, +1, biomeSource), create(+0, +1, biomeSource), create(+1, +1, biomeSource)),
         )
     }
 
@@ -104,7 +111,7 @@ class ChunkManagerTest {
     fun convertSinglePrototype() {
         val manager = create()
 
-        manager[ChunkPosition(3, 0)] = ChunkPrototype(blocks = arrayOfNulls(16), entities = emptyMap(), biomeSource = DummyBiomeSource(null))
+        manager[ChunkPosition(3, 0)] = ChunkPrototype(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null))
         assertEquals(1, manager.chunks.size)
 
         val chunk = manager[ChunkPosition(3, 0)]
@@ -201,7 +208,6 @@ class ChunkManagerTest {
             arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
             null, null, null,
         ),
-            entities = emptyMap(),
             biomeSource = DummyBiomeSource(null)
         )
 

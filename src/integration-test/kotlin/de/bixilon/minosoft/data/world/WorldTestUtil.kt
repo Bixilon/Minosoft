@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -58,11 +59,12 @@ object WorldTestUtil {
         return world
     }
 
-    fun World.initialize(size: Int, biome: (ChunkPosition) -> BiomeSource) {
+    fun World.initialize(size: Int, biome: (ChunkPosition) -> BiomeSource = { DummyBiomeSource(null) }) {
         for (x in -size..size) {
             for (z in -size..size) {
                 val position = ChunkPosition(x, z)
-                chunks.create(position, biome.invoke(position))
+                val chunk = chunks.create(position)
+                chunk.biomeSource = biome.invoke(position)
             }
         }
     }
@@ -86,9 +88,9 @@ object WorldTestUtil {
                     val position = BlockPosition(x, y, z)
                     val section = chunk.getOrPut(y.sectionHeight) ?: continue
                     if (superUnsafe) {
-                        var data = DATA[section.blocks] as Array<Any?>?
+                        var data = DATA[section.blocks] as Array<BlockState?>?
                         if (data == null) {
-                            data = arrayOfNulls<Any?>(ChunkSize.BLOCKS_PER_SECTION)
+                            data = arrayOfNulls<BlockState?>(ChunkSize.BLOCKS_PER_SECTION)
                             DATA[section.blocks] = data
                         }
                         data[position.inSectionPosition.index] = state

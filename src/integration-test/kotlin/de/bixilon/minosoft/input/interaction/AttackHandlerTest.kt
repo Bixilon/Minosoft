@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.input.interaction
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.data.Tickable.Companion.tick
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStand
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
@@ -210,7 +211,7 @@ class AttackHandlerTest {
         val attack = AttackHandler(session.camera.interactions)
 
         val remote = session.lookAtPlayer()
-        remote.data[Entity.Companion.FLAGS_DATA] = 0x20
+        remote.data[Entity.FLAGS_DATA] = 0x20
 
         attack.tryAttack()
         session.assertPacket(EntityAttackC2SP(10, false))

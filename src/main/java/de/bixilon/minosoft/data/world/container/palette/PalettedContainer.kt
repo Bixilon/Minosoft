@@ -30,9 +30,9 @@ class PalettedContainer<T>(
     }
 
     inline fun <reified V : T> unpack(): Array<V?> {
-        val array: Array<V?> = arrayOfNulls(data.size)
-        for (i in array.indices) {
-            array[i] = palette.getOrNull(data.get(i)) as V
+        val array = arrayOfNulls<V>(data.size)
+        for (index in array.indices) {
+            array[index] = palette.getOrNull(data.get(index)) as V?
         }
         return array
     }

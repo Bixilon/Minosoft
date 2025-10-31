@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkSectionManagement
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -65,14 +66,14 @@ object LightTestingUtil {
     fun createEmptyChunk(position: ChunkPosition): Chunk {
         val objenesis = ObjenesisStd()
         val chunk = objenesis.newInstance(Chunk::class.java)
+
         chunk::lock.forceSet(ReentrantRWLock())
         chunk::position.forceSet(position.raw)
         chunk::world.forceSet(world)
-        chunk::maxSection.forceSet(chunk.world.dimension.maxSection)
         chunk::session.forceSet(chunk.world.session)
         chunk::light.forceSet(ChunkLight(chunk))
         chunk::neighbours.forceSet(ChunkNeighbours(chunk))
-        chunk.sections = arrayOfNulls(SECTIONS)
+        chunk::sections.forceSet(ChunkSectionManagement(chunk))
 
         return chunk
     }

@@ -14,14 +14,18 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid
 
 import de.bixilon.kutil.concurrent.lock.RWLock
+import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBlock
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateCornerHeights
@@ -42,7 +46,12 @@ class FluidCornerHeightUtilTest {
 
 
     private fun create(): BlockSectionDataProvider {
+        val world = World::class.java.allocate()
+        world::dimension.forceSet(DataObserver(DimensionProperties()))
+
         val chunk = Chunk::class.java.allocate()
+        chunk::world.forceSet(world)
+        chunk::light.forceSet(ChunkLight(chunk))
         chunk::lock.forceSet(RWLock.rwlock())
         val section = ChunkSection(0, chunk)
 
