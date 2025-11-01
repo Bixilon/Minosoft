@@ -32,16 +32,23 @@ class BlockEntityDataProvider(
 
     override fun create() = arrayOfNulls<BlockEntity?>(ChunkSize.BLOCKS_PER_SECTION)
 
-    fun update(position: InSectionPosition): BlockEntity? {
+    private fun getOrCreate(position: InSectionPosition): BlockEntity? {
         this[position]?.let { return it }
         val state = section.blocks[position] ?: return null
 
         if (BlockStateFlags.ENTITY !in state.flags) return null
         val block = state.block.unsafeCast<BlockWithEntity<*>>()
-        val entity = block.createBlockEntity(section.chunk.session, BlockPosition.of(section.chunk.position, section.height, position), state) ?: return null
-
-        // TODO: potential race condition
+        val entity = block.createBlockEntity(section.chunk.world.session, BlockPosition.of(section.chunk.position, section.height, position), state) ?: return null
         this[position] = entity
+
+        return entity
+    }
+
+    fun update(position: InSectionPosition): BlockEntity? {
+        val entity = getOrCreate(position) ?: return null
+        val state = section.blocks[position] ?: return entity // TODO: when racing it might be null
+
+        entity.update(state)
 
         return entity
     }

@@ -17,12 +17,12 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -47,10 +47,10 @@ class ChunkPrototype(
     }
 
 
-    fun create(session: PlaySession, position: ChunkPosition): Chunk? {
+    fun create(world: World, position: ChunkPosition): Chunk? {
         if (this.blocks == null) return null
 
-        val chunk = Chunk(session, position)
+        val chunk = Chunk(world, position)
         chunk.update(true, null)
 
 

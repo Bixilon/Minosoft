@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
@@ -29,17 +30,15 @@ import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 /**
  * Collection of chunk sections (height aligned)
  */
 class Chunk(
-    val session: PlaySession,
+    val world: World,
     val position: ChunkPosition,
 ) : Tickable {
     val lock = ReentrantRWLock()
-    val world = session.world
     val light = ChunkLight(this)
     val sections = ChunkSectionManagement(this)
     var biomeSource: BiomeSource? = null
@@ -119,7 +118,7 @@ class Chunk(
         }
 
 
-        ChunkLocalBlockUpdate(this, executed.toTypedArray()).fire(session)
+        ChunkLocalBlockUpdate(this, executed.toTypedArray()).fire(world.session)
         light.fireLightChange(true)
     }
 
@@ -138,7 +137,7 @@ class Chunk(
         if (!cacheBiomes) {
             return biomeSource?.get(position)
         }
-        return session.world.biomes[position, this]
+        return world.biomes[position, this]
     }
 }
 

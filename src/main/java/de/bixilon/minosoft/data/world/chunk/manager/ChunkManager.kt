@@ -104,7 +104,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         val existingPrototype = this.prototypes.unsafe[position]
         existingPrototype?.update(prototype)
 
-        val chunk = (existingPrototype ?: prototype).create(world.session, position)
+        val chunk = (existingPrototype ?: prototype).create(world, position)
         if (chunk == null) {
             // chunk not complete
             if (existingPrototype == null) {
@@ -155,7 +155,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
 
     fun create(position: ChunkPosition): Chunk {
         chunks.lock.lock()
-        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.session, position) }
+        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world, position) }
         val updates = onChunkCreate(chunk)
         chunks.lock.unlock()
 

@@ -32,7 +32,6 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 class ChunkLight(
     val chunk: Chunk,
 ) {
-    private val session = chunk.session
     val minSection = chunk.world.dimension.minSection
     val maxSection = chunk.world.dimension.maxSection
     val heightmap = if (chunk.world.dimension.hasSkyLight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
@@ -62,7 +61,7 @@ class ChunkLight(
         section.light.update = false
 
         val events = hashSetOf<AbstractWorldUpdate>()
-        val chunkPosition = chunk.position
+
         if (fireSameChunkEvent) {
             events += ChunkLightUpdate(chunk, section.height, true)
 
@@ -96,7 +95,7 @@ class ChunkLight(
                 }
             }
         }
-        for (event in events) event.fire(session)
+        for (event in events) event.fire(chunk.world.session)
     }
 
     fun fireLightChange(fireSameChunkEvent: Boolean) {

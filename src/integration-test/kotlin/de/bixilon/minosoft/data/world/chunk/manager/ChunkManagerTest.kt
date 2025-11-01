@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
-import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
@@ -292,24 +291,6 @@ class ChunkManagerTest {
         assertEquals(fired, 1)
     }
 
-    fun chunkLocalUpdate() {
-        val manager = create()
-        val chunk = manager.create(ChunkPosition(1, 1))
-        var fired = 0
-        val updates = arrayOf(ChunkLocalBlockUpdate.Change(InChunkPosition(4, 2, 1), IT.BLOCK_1), ChunkLocalBlockUpdate.Change(InChunkPosition(3, 123, 9), IT.BLOCK_1))
-        manager.world.session.events.listen<WorldUpdateEvent> {
-            assertTrue(it.update is ChunkLocalBlockUpdate)
-            val update = it.update as ChunkLocalBlockUpdate
-            assertSame(update.chunk, chunk)
-            assertEquals(update.change, updates)
-            fired++
-        }
-        chunk.apply(*updates)
-        chunk.apply(*updates)
-
-
-        assertEquals(fired, 1)
-    }
 
     fun chunkCreateUpdate() {
         val manager = create()

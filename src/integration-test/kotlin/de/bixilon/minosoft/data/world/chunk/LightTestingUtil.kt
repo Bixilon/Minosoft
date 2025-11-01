@@ -60,7 +60,6 @@ object LightTestingUtil {
         chunk::lock.forceSet(RWLock.rwlock())
         chunk::position.forceSet(position.raw)
         chunk::world.forceSet(world)
-        chunk::session.forceSet(chunk.world.session)
         chunk::light.forceSet(ChunkLight(chunk))
         chunk::neighbours.forceSet(ChunkNeighbours(chunk))
         chunk::sections.forceSet(ChunkSectionManagement(chunk))

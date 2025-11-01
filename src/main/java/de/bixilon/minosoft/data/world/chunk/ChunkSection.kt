@@ -60,7 +60,7 @@ class ChunkSection(
             chunk.light.onBlockChange(InChunkPosition(position.x, this.height * ChunkSize.SECTION_HEIGHT_Y + position.y, position.z), this, previous, state)
         }
 
-        SingleBlockUpdate(BlockPosition.of(chunk.position, height, position), chunk, state, entity).fire(chunk.session)
+        SingleBlockUpdate(BlockPosition.of(chunk.position, height, position), chunk, state, entity).fire(chunk.world.session)
     }
 
     fun traceBlock(offset: BlockPosition): BlockState? {
@@ -76,4 +76,6 @@ class ChunkSection(
 
     fun traceBlock(origin: InSectionPosition, offset: BlockPosition) = traceBlock(offset + origin)
     fun traceBlock(origin: InSectionPosition, direction: Directions) = traceBlock(BlockPosition(origin.x, origin.y, origin.z) + direction)
+
+    override fun toString() = "ChunkSection(${chunk.position.x} $height ${chunk.position.z})"
 }

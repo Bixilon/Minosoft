@@ -63,7 +63,8 @@ class ChunkNeighbours(val chunk: Chunk) {
 
     fun updateNeighbours(section: ChunkSection) {
         section.neighbours[Directions.O_DOWN] = chunk[section.height - 1]
-        section.neighbours[Directions.O_DOWN] = chunk[section.height + 1]
+        section.neighbours[Directions.O_UP] = chunk[section.height + 1]
+
         section.neighbours[Directions.O_NORTH] = chunk.neighbours[Directions.NORTH]?.get(section.height)
         section.neighbours[Directions.O_SOUTH] = chunk.neighbours[Directions.SOUTH]?.get(section.height)
         section.neighbours[Directions.O_WEST] = chunk.neighbours[Directions.WEST]?.get(section.height)

@@ -18,11 +18,10 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 
 class ChunkSectionManagement(val chunk: Chunk) {
-    private val world = chunk.world
-    val sections: Array<ChunkSection?> = arrayOfNulls(world.dimension.sections)
+    val sections: Array<ChunkSection?> = arrayOfNulls(chunk.world.dimension.sections)
 
-    private val minSection = world.dimension.minSection
-    private val maxSection = world.dimension.maxSection
+    private val minSection = chunk.world.dimension.minSection
+    private val maxSection = chunk.world.dimension.maxSection
 
 
     operator fun get(height: SectionHeight) = sections.getOrNull(height - minSection)
