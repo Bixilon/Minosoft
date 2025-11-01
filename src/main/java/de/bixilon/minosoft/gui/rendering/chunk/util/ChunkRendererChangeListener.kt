@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourCreatedUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
@@ -119,7 +119,7 @@ object ChunkRendererChangeListener {
         unloadChunk(update.chunk.position)
     }
 
-    private fun ChunkRenderer.handle(update: NeighbourCreatedUpdate) {
+    private fun ChunkRenderer.handle(update: NeighbourSetUpdate) {
         master.tryQueue(update.chunk)
     }
 
@@ -133,7 +133,7 @@ object ChunkRendererChangeListener {
     private fun ChunkRenderer.handle(update: AbstractWorldUpdate) {
         if (context.state == RenderingStates.PAUSED) return
         when (update) {
-            is NeighbourCreatedUpdate -> handle(update)
+            is NeighbourSetUpdate -> handle(update)
             is SingleBlockUpdate -> handle(update)
             is ChunkLocalBlockUpdate -> handle(update)
             is ChunkLightUpdate -> handle(update)

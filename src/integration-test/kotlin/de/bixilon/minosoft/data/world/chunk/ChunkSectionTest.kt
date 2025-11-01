@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateTestUtil.collectUpdates
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -183,5 +184,16 @@ class ChunkSectionTest {
         assertEquals(updates, listOf(
             SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST2),
         ))
+    }
+
+    fun `no event if change is already present`() {
+        val section = create()
+        section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST1
+
+        val updates = section.chunk.world.collectUpdates()
+
+        section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST1
+
+        assertEquals(updates, listOf<AbstractWorldUpdate>())
     }
 }

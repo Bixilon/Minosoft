@@ -18,7 +18,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourCreatedUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -48,7 +48,7 @@ class WorldOcclusionManager(
         session.world::occlusion.observe(this) { invalidate() }
 
         session.events.listen<WorldUpdateEvent> {
-            if (it.update !is NeighbourCreatedUpdate && it.update !is ChunkUnloadUpdate) {
+            if (it.update !is NeighbourSetUpdate && it.update !is ChunkUnloadUpdate) {
                 return@listen
             }
             invalidate()

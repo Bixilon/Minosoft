@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.entities.WorldEntities
@@ -63,8 +64,7 @@ object WorldTestUtil {
         for (x in -size..size) {
             for (z in -size..size) {
                 val position = ChunkPosition(x, z)
-                val chunk = chunks.create(position)
-                chunk.biomeSource = biome.invoke(position)
+                chunks[position] = ChunkData(biomeSource = biome.invoke(position))
             }
         }
     }

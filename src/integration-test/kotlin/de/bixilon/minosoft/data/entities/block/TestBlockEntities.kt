@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.TestBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -24,5 +25,11 @@ object TestBlockEntities {
     val ENTITY2 = TestBlockEntity(PlaySession::class.java.allocate(), BlockPosition(1, 3, 3), TestBlocks.ENTITY2.states.default)
 
 
-    class TestBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state)
+    class TestBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state) {
+        var data: JsonObject? = null
+
+        override fun updateNBT(nbt: JsonObject) {
+            this.data = nbt
+        }
+    }
 }

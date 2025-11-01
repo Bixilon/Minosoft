@@ -93,7 +93,7 @@ object LightTestingUtil {
     }
 
     fun ChunkSection.fill(state: BlockState) {
-        for (index in 0 until 4096) {
+        for (index in 0 until ChunkSize.BLOCKS_PER_SECTION) {
             blocks.unsafeSet(InSectionPosition(index), state)
         }
     }

@@ -36,14 +36,16 @@ class WorldBiomes(val world: World) {
     operator fun get(position: BlockPosition): Biome? {
         val chunk = world.chunks[position.chunkPosition] ?: return null
         val inChunk = position.inChunkPosition
-        return get(inChunk.with(y = inChunk.y.clamp(world.dimension.minY, world.dimension.maxY)), chunk)
+        return get(inChunk, chunk)
     }
 
     operator fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-        val noise = this.noise ?: return chunk.biomeSource?.get(position)
-        chunk[position.sectionHeight]?.let { return it.biomes[position.inSectionPosition] } // access cache
+        val position = position.with(y = position.y.clamp(world.dimension.minY, world.dimension.maxY))
+        if (this.noise == null) {
+            return chunk.biomeSource?.get(position)
+        }
 
-        return noise.get(position, chunk)
+        return chunk.getBiome(position)
     }
 
     fun updateNoise(seed: Long) {

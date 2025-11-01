@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate.Causes
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -139,7 +138,9 @@ class Chunk(
         if (!cacheBiomes) {
             return biomeSource?.get(position)
         }
-        return world.biomes[position, this]
+        this[position.sectionHeight]?.let { return it.biomes[position] }
+
+        return world.biomes.noise?.get(position, this)
     }
 }
 

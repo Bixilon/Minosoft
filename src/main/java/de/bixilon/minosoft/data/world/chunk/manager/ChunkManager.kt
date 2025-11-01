@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourCreatedUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 
 class ChunkManager(
@@ -105,7 +105,7 @@ class ChunkManager(
         if (created) {
             for (neighbour in chunk.neighbours.array) {
                 if (neighbour == null) continue
-                NeighbourCreatedUpdate(neighbour).fire(world.session)
+                NeighbourSetUpdate(neighbour).fire(world.session)
             }
         }
 
@@ -119,6 +119,8 @@ class ChunkManager(
 
         return chunk
     }
+
+    operator fun set(position: ChunkPosition, data: ChunkData) = update(position, data, true)
 
 
     fun tick(simulationDistance: Int, cameraPosition: ChunkPosition) {
