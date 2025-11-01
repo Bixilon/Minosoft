@@ -21,8 +21,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion._isFullyOpaque
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
@@ -74,4 +75,16 @@ open class BlockState(
 
     open operator fun <T> get(property: BlockProperty<T>): T = throw StatelessBlockError(this)
     open fun <T> getOrNull(property: BlockProperty<T>): T? = throw StatelessBlockError(this)
+
+
+    companion object {
+        private fun BlockState._isFullyOpaque(): Boolean {
+            if (BlockStateFlags.FULLY_OPAQUE in flags) return true
+            val block = this.block
+            if (block is FullOpaqueBlock) return true
+            if (block !is PotentialFullOpaqueBlock) return false
+
+            return block.isFullOpaque(this)
+        }
+    }
 }

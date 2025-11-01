@@ -19,6 +19,8 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
+import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusionTracer.isFullyOpaque
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 class BlockSectionDataProvider(
@@ -26,6 +28,8 @@ class BlockSectionDataProvider(
     val section: ChunkSection,
 ) : SectionDataProvider<BlockState>(lock, true) {
     private var fluidCount = 0
+    var fullOpaqueCount = 0
+        private set
     val occlusion = SectionOcclusion(this)
 
     val hasFluid get() = fluidCount > 0
@@ -40,49 +44,59 @@ class BlockSectionDataProvider(
         recalculate(true)
     }
 
-    private fun recalculateFluid() {
+    private fun recalculateFlags() {
         val data = data
         if (data == null || isEmpty) {
             fluidCount = 0
+            fullOpaqueCount = 0
             return
         }
-        var count = 0
+        var fluid = 0
+        var opaque = 0
         for (state in data) {
             if (state == null) continue
-            if (state.isFluid()) {
-                count++
-            }
+
+            if (state.isFluid()) fluid++
+            if (state.isFullyOpaque()) opaque++
         }
-        fluidCount = count
+        fluidCount = fluid
+        fullOpaqueCount = opaque
     }
 
     fun recalculate(notify: Boolean) {
         super.recalculate()
-        recalculateFluid()
-        if (isEmpty) {
-            occlusion.clear(notify)
-            return
-        }
+        recalculateFlags()
 
-        occlusion.recalculate(notify)
+        occlusion.invalidate(notify)
     }
 
-    fun noOcclusionSet(position: InSectionPosition, value: BlockState?): BlockState? {
-        val previous = super.unsafeSet(position, value)
-        val previousFluid = previous.isFluid()
-        val valueFluid = value.isFluid()
+    private fun updateFluidCounter(previous: BlockState?, now: BlockState?) {
+        val previous = previous.isFluid()
+        val now = now.isFluid()
 
-        if (!previousFluid && valueFluid) {
-            fluidCount++
-        } else if (previousFluid && !valueFluid) {
-            fluidCount--
+        when {
+            previous == now -> Unit
+            now -> fluidCount++
+            !now -> fluidCount--
         }
+    }
 
-        return previous
+    private fun updateFullOpaqueCounter(previous: BlockState?, now: BlockState?) {
+        val previous = previous.isFullyOpaque()
+        val now = now.isFullyOpaque()
+
+        when {
+            previous == now -> Unit
+            now -> fullOpaqueCount++
+            !now -> fullOpaqueCount--
+        }
     }
 
     override fun unsafeSet(position: InSectionPosition, value: BlockState?): BlockState? {
-        val previous = noOcclusionSet(position, value)
+        val previous = super.unsafeSet(position, value)
+
+        updateFluidCounter(previous, value)
+        updateFullOpaqueCounter(previous, value)
 
         occlusion.onSet(previous, value)
 

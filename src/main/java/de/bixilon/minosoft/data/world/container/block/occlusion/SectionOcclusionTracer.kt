@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.container.block
+package de.bixilon.minosoft.data.world.container.block.occlusion
 
 import de.bixilon.kutil.memory.allocator.ShortAllocator
 import de.bixilon.minosoft.data.direction.DirectionVector
@@ -19,55 +19,51 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
+import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.*
 
-class SectionOcclusion(
-    val provider: BlockSectionDataProvider,
-) {
-    private var occlusion = EMPTY
-    private var calculate = false
+object SectionOcclusionTracer {
+    private const val EMPTY_REGION = (-1).toShort()
+    private const val INVALID_REGION = (-2).toShort()
+    val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { false }
+    val FULL = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { true }
+    private val ALLOCATOR = ShortAllocator()
 
-    fun clear(notify: Boolean) {
-        update(EMPTY, notify)
-    }
-
-    fun onSet(previous: BlockState?, value: BlockState?) {
-        if (previous.isFullyOpaque() == value.isFullyOpaque()) {
-            return
+    fun calculateFast(provider: BlockSectionDataProvider): BooleanArray? {
+        if (provider.fullOpaqueCount < ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
+            // When there are less than 256 blocks set, you will always be able to look from one side to another
+            return EMPTY
         }
-        recalculate(true)
-    }
-
-    fun recalculate(notify: Boolean) {
-        if (!calculate) return
+        if (provider.fullOpaqueCount == ChunkSize.BLOCKS_PER_SECTION) {
+            return FULL
+        }
 
         val min = provider.minPosition
         val max = provider.minPosition
         if (min.x > 0 && min.y > 0 && min.z > 0 && max.x < ChunkSize.SECTION_MAX_X && max.y < ChunkSize.SECTION_MAX_X && max.z < ChunkSize.SECTION_MAX_X) {
             // blocks are only set in inner section, no blocking of any side possible.
-            clear(notify)
-            return
+            return EMPTY
         }
-        if (provider.count < ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
-            // When there are less than 256 blocks set, you will always be able to look from one side to another
-            clear(notify)
-            return
-        }
-        val array = ALLOCATOR.allocate(ChunkSize.BLOCKS_PER_SECTION)
+
+        return null
+    }
+
+    fun calculate(provider: BlockSectionDataProvider): BooleanArray {
+        calculateFast(provider)?.let { return EMPTY }
+
+        val regions = ALLOCATOR.allocate(ChunkSize.BLOCKS_PER_SECTION)
         try {
-            val regions = calculateSideRegions(array)
-            update(calculateOcclusion(regions), notify)
+            val regions = provider.calculateSideRegions(regions)
+            return calculateOcclusion(regions)
         } finally {
-            ALLOCATOR.free(array)
+            ALLOCATOR.free(regions)
         }
     }
 
-    private inline fun ShortArray.setIfUnset(position: InSectionPosition, region: Short): Boolean {
+    private inline fun ShortArray.setIfUnset(provider: BlockSectionDataProvider, position: InSectionPosition, region: Short): Boolean {
         if (this[position.index] != EMPTY_REGION) {
             return true
         }
@@ -80,7 +76,7 @@ class SectionOcclusion(
         return false
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
+    private fun BlockSectionDataProvider.trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
         trace(regions, position, DirectionVector(), position.index.toShort())
         val region = regions[position.index].toInt()
         if (region > EMPTY_REGION) {
@@ -88,8 +84,8 @@ class SectionOcclusion(
         }
     }
 
-    private fun trace(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
-        if (regions.setIfUnset(position, region)) return
+    private fun BlockSectionDataProvider.trace(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
+        if (regions.setIfUnset(this, position, region)) return
 
         if (direction.x <= 0 && position.x > 0) trace(regions, position.minusX(), direction.with(Directions.WEST), region)
         if (direction.x >= 0 && position.x < ChunkSize.SECTION_MAX_X) trace(regions, position.plusX(), direction.with(Directions.EAST), region)
@@ -99,7 +95,7 @@ class SectionOcclusion(
         if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
-    private fun calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
+    private fun BlockSectionDataProvider.calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
@@ -130,16 +126,6 @@ class SectionOcclusion(
         return occlusion
     }
 
-    private fun update(occlusion: BooleanArray, notify: Boolean) {
-        if (this.occlusion.contentEquals(occlusion)) {
-            return
-        }
-        this.occlusion = occlusion
-        if (notify) {
-            provider.section.chunk.world.occlusion++
-        }
-    }
-
     private fun Array<IntOpenHashSet>.canOcclude(`in`: Directions, out: Directions): Boolean {
         val inSides = this[`in`.ordinal]
         val outSides = this[`out`.ordinal]
@@ -161,45 +147,8 @@ class SectionOcclusion(
         return true
     }
 
-    /**
-     * If we can **not** look from `in` to `out`
-     */
-    fun isOccluded(`in`: Directions, out: Directions): Boolean {
-        if (`in` == out) {
-            return false
-        }
-        return isOccluded(CubeDirections.getIndex(`in`, out))
-    }
-
-    fun isOccluded(index: Int): Boolean {
-        if (!calculate) {
-            calculate = true
-            recalculate(false)
-        }
-        return occlusion[index]
-    }
-
-    companion object {
-        private const val EMPTY_REGION = (-1).toShort()
-        private const val INVALID_REGION = (-2).toShort()
-        private val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
-        private val ALLOCATOR = ShortAllocator()
-
-
-        fun BlockState?._isFullyOpaque(): Boolean {
-            if (this == null) return false
-
-            if (BlockStateFlags.FULLY_OPAQUE in flags) return true
-            val block = this.block
-            if (block is FullOpaqueBlock) return true
-            if (block !is PotentialFullOpaqueBlock) return false
-
-            return block.isFullOpaque(this)
-        }
-
-        fun BlockState?.isFullyOpaque(): Boolean {
-            if (this == null) return false
-            return BlockStateFlags.FULLY_OPAQUE in flags
-        }
+    inline fun BlockState?.isFullyOpaque(): Boolean {
+        if (this == null) return false
+        return BlockStateFlags.FULLY_OPAQUE in flags
     }
 }
