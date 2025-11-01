@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.entities
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -169,23 +170,18 @@ class WorldEntities : Iterable<Entity> {
         return closestEntity
     }
 
-    fun isEntityIn(shape: Shape): Boolean {
-        try {
-            lock.acquire()
-            for (entity in this) {
-                if (!entity.canRaycast) {
-                    continue
-                }
-                val aabb = entity.physics.aabb
-
-                if (shape.intersects(aabb)) {
-                    return true
-                }
+    fun isEntityIn(shape: Shape, local: Boolean) = lock.acquired {
+        for (entity in this) {
+            if (!entity.canRaycast && (entity !is LocalPlayerEntity || !local)) {
+                continue
             }
-        } finally {
-            lock.release()
+            val aabb = entity.physics.aabb
+
+            if (shape.intersects(aabb)) {
+                return@acquired true
+            }
         }
-        return false
+        return@acquired false
     }
 
     fun tick() {

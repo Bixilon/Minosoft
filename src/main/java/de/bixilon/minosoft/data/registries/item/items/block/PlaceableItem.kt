@@ -68,7 +68,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
         val state: BlockState = getPlacementState(session, target, stack)
         if (state.block is CollidableBlock) {
             val shape = state.block.getCollisionShape(session, EntityCollisionContext(player), placePosition, state, null)?.plus(placePosition)
-            if (shape != null && session.world.entities.isEntityIn(shape)) {
+            if (shape != null && session.world.entities.isEntityIn(shape, true)) {
                 return InteractionResults.INVALID
             }
         }
