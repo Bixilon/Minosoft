@@ -17,13 +17,11 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.SectionLight
+import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.entity.BlockEntityDataProvider
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.data.world.positions.*
 
 /**
  * Collection of 16x16x16 blocks
@@ -47,6 +45,22 @@ class ChunkSection(
         blocks.clear()
         biomes.clear()
         entities.clear()
+    }
+
+    operator fun set(position: InSectionPosition, state: BlockState?) {
+        val previous = blocks.set(position, state)
+        if (previous == state) return
+
+        if (previous?.block != state?.block) {
+            entities[position] = null
+        }
+        val entity = entities.update(position)
+
+        if (chunk.world.dimension.light) {
+            chunk.light.onBlockChange(InChunkPosition(position.x, this.height * ChunkSize.SECTION_HEIGHT_Y + position.y, position.z), this, previous, state)
+        }
+
+        SingleBlockUpdate(BlockPosition.of(chunk.position, height, position), chunk, state, entity).fire(chunk.session)
     }
 
     fun traceBlock(offset: BlockPosition): BlockState? {

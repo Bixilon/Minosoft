@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize.SECTION_WIDTH_Z
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 abstract class ChunkHeightmap(
     protected val chunk: Chunk,
@@ -53,7 +52,7 @@ abstract class ChunkHeightmap(
         var y = Int.MIN_VALUE
         val index = position.xz
 
-        sectionLoop@ for (sectionHeight in position.y.sectionHeight downTo minSection) {
+        sectionLoop@ for (sectionHeight in position.sectionHeight downTo minSection) {
             val section = chunk[sectionHeight] ?: continue
             if (section.blocks.isEmpty) continue
 

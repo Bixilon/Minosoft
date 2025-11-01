@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.data.world.chunk.chunk
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Tickable
@@ -24,17 +26,13 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
-import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 /**
- * Collection of chunks sections (from the lowest section to the highest section in y axis)
+ * Collection of chunk sections (height aligned)
  */
 class Chunk(
     val session: PlaySession,
@@ -59,77 +57,69 @@ class Chunk(
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections[sectionHeight]
 
     operator fun get(position: InChunkPosition): BlockState? {
-        return this[position.y.sectionHeight]?.blocks?.get(position.inSectionPosition)
+        return this[position.sectionHeight]?.blocks?.get(position.inSectionPosition)
     }
 
     operator fun set(position: InChunkPosition, state: BlockState?) {
-        val section = getOrPut(position.y.sectionHeight) ?: return
-        val previous = section.blocks.set(position.inSectionPosition, state)
-        if (previous == state) return
-
-        if (previous?.block != state?.block) {
-            this[position.y.sectionHeight]?.entities?.set(position.inSectionPosition, null) // TODO: unload
-        }
-        val entity = updateBlockEntity(position)
-
-        if (world.dimension.light) {
-            light.onBlockChange(position, section, previous, state)
-        }
-
-        SingleBlockUpdate(this.position.blockPosition(position), this, state, entity).fire(session)
+        sections.create(position.sectionHeight)?.set(position.inSectionPosition, state)
     }
 
     fun getBlockEntity(position: InChunkPosition): BlockEntity? {
-        return this[position.y.sectionHeight]?.entities?.get(position.inSectionPosition)
+        return this[position.sectionHeight]?.entities?.get(position.inSectionPosition)
     }
 
     fun updateBlockEntity(position: InChunkPosition): BlockEntity? {
-        return this[position.y.sectionHeight]?.entities?.update(position.inSectionPosition)
+        return this[position.sectionHeight]?.entities?.update(position.inSectionPosition)
     }
 
-    fun apply(update: ChunkLocalBlockUpdate.LocalUpdate) {
-        TODO()
+    fun apply(update: ChunkLocalBlockUpdate.Change) {
         this[update.position] = update.state
     }
 
-    fun apply(updates: Collection<ChunkLocalBlockUpdate.LocalUpdate>) {
-        TODO()
+    private fun unsafeApply(vararg updates: ChunkLocalBlockUpdate.Change): MutableSet<ChunkLocalBlockUpdate.Change> {
+        val executed: MutableSet<ChunkLocalBlockUpdate.Change> = HashSet(updates.size)
+
+        for (update in updates) {
+            val (position, state) = update
+            val sectionHeight = position.sectionHeight
+
+            var section = this[sectionHeight]
+            if (state == null && section == null) continue
+
+            section = this.sections.create(sectionHeight) ?: continue
+
+            val previous = section.blocks.set(position.inSectionPosition, state)
+
+            if (previous == update.state) continue
+            if (previous?.block != state?.block) {
+                section.entities[position.inSectionPosition] = null
+            }
+
+            section.entities.update(position.inSectionPosition)
+
+            executed += update
+        }
+
+        return executed
+    }
+
+    fun apply(vararg updates: ChunkLocalBlockUpdate.Change) {
         if (updates.isEmpty()) return
         if (updates.size == 1) return apply(updates.first())
 
-        val executed: MutableSet<ChunkLocalBlockUpdate.LocalUpdate> = hashSetOf()
-        val sections: MutableSet<ChunkSection> = hashSetOf()
 
-        lock.lock()
-        for (update in updates) {
-            val sectionHeight = update.position.y.sectionHeight
-            var section = this[sectionHeight]
-            if (update.state == null && section == null) continue
+        var executed: Set<ChunkLocalBlockUpdate.Change> = unsafeNull()
+        lock.locked {
+            executed = unsafeApply(*updates)
 
-            section = getOrPut(sectionHeight) ?: continue
-            val previous = section.blocks.noOcclusionSet(InSectionPosition(update.position.x, update.position.y.inSectionHeight, update.position.z), update.state)
-            if (previous == update.state) continue
-            if (previous?.block != update.state?.block) {
-                this[update.position.y.sectionHeight]?.entities?.set(update.position.x, update.position.y and 0x0F, update.position.z, null)
-            }
-            updateBlockEntity(update.position)
-            executed += update
-            sections += section
+            if (executed.isEmpty()) return
+
+            light.heightmap.recalculate() // TODO: Only changed ones
+            light.recalculate(fireEvent = false)
         }
 
-        if (executed.isEmpty()) {
-            return lock.unlock()
-        }
-        light.heightmap.recalculate()
-        light.recalculate(fireEvent = false)
 
-        for (section in sections) {
-            section.blocks.occlusion.recalculate(true)
-        }
-
-        lock.unlock()
-
-        ChunkLocalBlockUpdate(position, this, executed).fire(session)
+        ChunkLocalBlockUpdate(this, executed.toTypedArray()).fire(session)
         light.fireLightChange(true)
     }
 

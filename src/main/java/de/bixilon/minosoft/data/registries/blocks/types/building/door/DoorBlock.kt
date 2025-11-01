@@ -84,7 +84,9 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     private fun legacyCycleOpen(chunk: Chunk, inChunk: InChunkPosition, state: BlockState) {
-        chunk.apply(ChunkLocalBlockUpdate.LocalUpdate(inChunk, state.withProperties(OPEN to !state[OPEN])))
+        val next = state.withProperties(OPEN to !state[OPEN])
+
+        chunk[inChunk] = next
     }
 
     fun cycleOpen(session: PlaySession, position: BlockPosition, state: BlockState) {
@@ -100,13 +102,17 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         if (otherState.block !is DoorBlock) return
 
 
-        if (!session.version.flattened) return legacyCycleOpen(chunk, if (top) otherPosition else inChunk, if (top) otherState else state)
+        if (!session.version.flattened) {
+            legacyCycleOpen(chunk, if (top) otherPosition else inChunk, if (top) otherState else state)
+            return
+        }
 
         val nextOpen = !state[OPEN]
-        chunk.apply(listOf(
-            ChunkLocalBlockUpdate.LocalUpdate(inChunk, state.withProperties(OPEN to nextOpen)),
-            ChunkLocalBlockUpdate.LocalUpdate(otherPosition, otherState.withProperties(OPEN to nextOpen)),
-        ))
+
+        chunk.apply(
+            ChunkLocalBlockUpdate.Change(inChunk, state.withProperties(OPEN to nextOpen)),
+            ChunkLocalBlockUpdate.Change(otherPosition, otherState.withProperties(OPEN to nextOpen)),
+        )
     }
 
     private fun getShape(hinge: Sides, open: Boolean, facing: Directions): AABB {
@@ -177,7 +183,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         )
     }
 
-    private inner class DoorModel(
+    private class DoorModel(
         val models: Map<Map<BlockProperty<*>, Any>, BlockRender?>
     ) : PickedBlockRender {
         override val default: BlockRender?

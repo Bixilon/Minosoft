@@ -64,17 +64,17 @@ class ChunkLight(
         val events = hashSetOf<AbstractWorldUpdate>()
         val chunkPosition = chunk.position
         if (fireSameChunkEvent) {
-            events += ChunkLightUpdate(chunkPosition, chunk, section.height, true)
+            events += ChunkLightUpdate(chunk, section.height, true)
 
             val down = section.neighbours[Directions.O_DOWN]?.light
             if (down != null && down.update) {
                 down.update = false
-                events += ChunkLightUpdate(chunkPosition, chunk, section.height - 1, false)
+                events += ChunkLightUpdate(chunk, section.height - 1, false)
             }
             val up = section.neighbours[Directions.O_UP]?.light
             if (up?.update == true) {
                 up.update = false
-                events += ChunkLightUpdate(chunkPosition, chunk, section.height + 1, false)
+                events += ChunkLightUpdate(chunk, section.height + 1, false)
             }
         }
 
@@ -85,7 +85,6 @@ class ChunkLight(
                 val offset = ChunkPosition(chunkX, chunkZ)
                 if (offset == ChunkPosition.EMPTY) continue
 
-                val nextPosition = chunkPosition + offset
                 val chunk = neighbours.array[neighbourIndex++]
                 for (chunkY in -1..1) {
                     val neighbourSection = chunk?.get(section.height + chunkY) ?: continue
@@ -93,7 +92,7 @@ class ChunkLight(
                         continue
                     }
                     neighbourSection.light.update = false
-                    events += ChunkLightUpdate(nextPosition, chunk, section.height + chunkY, false)
+                    events += ChunkLightUpdate(chunk, section.height + chunkY, false)
                 }
             }
         }

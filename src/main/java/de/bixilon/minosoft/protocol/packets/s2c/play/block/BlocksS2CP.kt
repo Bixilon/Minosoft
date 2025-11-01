@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val chunkPosition: ChunkPosition
-    val update: Array<ChunkLocalBlockUpdate.LocalUpdate?>
+    val updates: Array<ChunkLocalBlockUpdate.Change>
 
     init {
         when {
@@ -36,32 +36,33 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 chunkPosition = if (buffer.versionId < ProtocolVersions.V_1_7_5) ChunkPosition(buffer.readVarInt(), buffer.readVarInt()) else buffer.readChunkPosition()
                 val size = buffer.readUnsignedShort()
                 buffer.readInt() // data size, always 4*size
-                update = arrayOfNulls(size)
+                updates = arrayOfNulls<ChunkLocalBlockUpdate.Change>(size).cast()
                 for (i in 0 until size) {
                     val combined = buffer.readInt()
-                    update[i] = ChunkLocalBlockUpdate.LocalUpdate(
-                        InChunkPosition(
-                            x = (combined ushr 16 and 0xFF),
-                            y = (combined ushr 24 and 0x0F),
-                            z = (combined ushr 28 and 0x0F),
-                        ),
-                        buffer.session.registries.blockState.getOrNull(combined and 0xFFFF),
+                    val position = InChunkPosition(
+                        x = (combined ushr 24 and 0x0F),
+                        y = (combined ushr 16 and 0xFF),
+                        z = (combined ushr 28 and 0x0F),
                     )
+                    val state = buffer.session.registries.blockState.getOrNull(combined and 0xFFFF)
+
+                    updates[i] = ChunkLocalBlockUpdate.Change(position, state)
                 }
             }
 
             buffer.versionId < ProtocolVersions.V_20W28A -> {
                 chunkPosition = buffer.readChunkPosition()
                 val size = buffer.readVarInt()
-                update = arrayOfNulls(size)
+                updates = arrayOfNulls<ChunkLocalBlockUpdate.Change>(size).cast()
                 for (i in 0 until size) {
-                    val position = buffer.readByte().toInt()
+                    val combined = buffer.readByte().toInt()
                     val y = buffer.readUnsignedByte()
                     val blockId = buffer.readVarInt()
-                    update[i] = ChunkLocalBlockUpdate.LocalUpdate(
-                        InChunkPosition(position ushr 4 and 0x0F, y, position and 0x0F),
-                        buffer.session.registries.blockState.getOrNull(blockId),
-                    )
+
+                    val position = InChunkPosition(combined ushr 4 and 0x0F, y, combined and 0x0F)
+                    val state = buffer.session.registries.blockState.getOrNull(blockId)
+
+                    updates[i] = ChunkLocalBlockUpdate.Change(position, state)
                 }
             }
 
@@ -73,7 +74,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     buffer.readBoolean() // ignore light updates
                 }
                 val data = buffer.readVarLongArray()
-                update = arrayOfNulls(data.size)
+                updates = arrayOfNulls<ChunkLocalBlockUpdate.Change>(data.size).cast()
                 for ((index, entry) in data.withIndex()) {
                     val position = InChunkPosition(
                         (entry shr 8 and 0x0F).toInt(),
@@ -82,10 +83,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     )
                     val state = buffer.session.registries.blockState.getOrNull((entry ushr 12).toInt())
 
-                    update[index] = ChunkLocalBlockUpdate.LocalUpdate(
-                        position,
-                        state,
-                    )
+                    updates[index] = ChunkLocalBlockUpdate.Change(position, state)
                 }
             }
         }
@@ -93,10 +91,10 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(session: PlaySession) {
         val chunk = session.world.chunks[chunkPosition] ?: return
-        chunk.apply(this.update.cast().toSet())
+        chunk.apply(*this.updates)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Blocks (chunkPosition=${chunkPosition}, size=${update.size})" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Blocks (chunkPosition=${chunkPosition}, size=${updates.size})" }
     }
 }

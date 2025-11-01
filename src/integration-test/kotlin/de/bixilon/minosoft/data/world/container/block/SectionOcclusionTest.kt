@@ -18,6 +18,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.kutil.unit.UnitFormatter.format
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
@@ -34,7 +35,7 @@ import kotlin.time.measureTime
 @Test(groups = ["occlusion"], dependsOnGroups = ["block"])
 class SectionOcclusionTest {
     private val OCCLUSION = SectionOcclusion::class.java.getFieldOrNull("occlusion")!!
-    private val CALCULATE = SectionOcclusion::class.java.getFieldOrNull("calculate")!!
+    private val CALCULATE = SectionOcclusion::class.java.getDeclaredMethod("calculate").apply { setUnsafeAccessible() }
     private val opaque by lazy { StoneTest0.block.states.default }
     private val transparent by lazy { GlassTest0.block.states.default }
 
@@ -46,7 +47,6 @@ class SectionOcclusionTest {
     }
 
     private operator fun SectionOcclusion.set(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, state: BlockState?) {
-        CALCULATE.setBoolean(this, false)
         for (y in minY..maxY) {
             for (z in minZ..maxZ) {
                 for (x in minX..maxX) {
@@ -54,12 +54,11 @@ class SectionOcclusionTest {
                 }
             }
         }
-        CALCULATE.setBoolean(this, true)
     }
 
     private val SectionOcclusion.occlusion: BooleanArray
         get() {
-            recalculate(false)
+            CALCULATE.invoke(this)
             return OCCLUSION[this].unsafeCast()
         }
 
@@ -130,10 +129,9 @@ class SectionOcclusionTest {
                 occlusion.provider[InSectionPosition(i)] = stone
             }
         }
-        CALCULATE.setBoolean(occlusion, true)
         val time = measureTime {
             for (i in 0 until 500_000) {
-                occlusion.recalculate(false)
+                CALCULATE.invoke(occlusion, false)
             }
         }
         println("Took: ${time.format()}")

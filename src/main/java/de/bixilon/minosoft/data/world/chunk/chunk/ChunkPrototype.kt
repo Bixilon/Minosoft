@@ -64,8 +64,8 @@ class ChunkPrototype(
             var section = this.sections[height]
 
             if (data == null) {
-                if (replace) {
-                    section?.clear()
+                if (replace && section != null) {
+                    section.clear()
                     affected?.add(height)
                 }
                 continue

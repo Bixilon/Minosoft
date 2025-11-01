@@ -52,7 +52,7 @@ object SectionOcclusionTracer {
     }
 
     fun calculate(provider: BlockSectionDataProvider): BooleanArray {
-        calculateFast(provider)?.let { return EMPTY }
+        calculateFast(provider)?.let { return it }
 
         val regions = ALLOCATOR.allocate(ChunkSize.BLOCKS_PER_SECTION)
         try {

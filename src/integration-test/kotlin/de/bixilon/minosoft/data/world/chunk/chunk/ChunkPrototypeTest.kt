@@ -11,15 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.update
+package de.bixilon.minosoft.data.world.chunk.chunk
 
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
+import org.testng.Assert.assertEquals
+import org.testng.annotations.Test
 
-interface AbstractWorldUpdate {
-    val chunk: Chunk
+@Test(groups = ["chunks"])
+class ChunkPrototypeTest {
 
-    fun fire(session: PlaySession) {
-        session.events.fire(WorldUpdateEvent(session, this))
+    fun `merge two prototypes`() {
+        val existing = ChunkPrototype()
+        val next = ChunkPrototype(blocks = Array(1) { arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) })
+
+        // TODO: entities, ...
+        existing.update(next)
+
+        assertEquals(existing.blocks!!.size, 1)
     }
+
 }

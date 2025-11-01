@@ -64,14 +64,10 @@ object ChunkRendererChangeListener {
         }
     }
 
-    private fun ChunkRenderer.handle(update: SingleBlockDataUpdate) {
-        master.tryQueue(update.chunk, update.position.sectionHeight)
-    }
-
     private fun ChunkRenderer.handle(update: ChunkLocalBlockUpdate) {
         if (!update.chunk.neighbours.complete) return
         val sectionHeights: Int2ObjectOpenHashMap<BooleanArray> = Int2ObjectOpenHashMap()
-        for ((position, state) in update.updates) {
+        for ((position, state) in update.change) {
             val neighbours = sectionHeights.getOrPut(position.sectionHeight) { BooleanArray(Directions.SIZE) }
             val inSectionHeight = position.y.inSectionHeight
             if (inSectionHeight == 0) {
@@ -125,7 +121,7 @@ object ChunkRendererChangeListener {
     }
 
     private fun ChunkRenderer.handle(update: ChunkUnloadUpdate) {
-        unloadChunk(update.chunkPosition)
+        unloadChunk(update.chunk.position)
     }
 
     private fun ChunkRenderer.handle(update: NeighbourChangeUpdate) {
@@ -142,14 +138,14 @@ object ChunkRendererChangeListener {
     private fun ChunkRenderer.handle(update: AbstractWorldUpdate) {
         if (context.state == RenderingStates.PAUSED) return
         when (update) {
+            is NeighbourChangeUpdate -> handle(update)
+            is ChunkCreateUpdate -> handle(update)
             is SingleBlockUpdate -> handle(update)
-            is SingleBlockDataUpdate -> handle(update)
             is ChunkLocalBlockUpdate -> handle(update)
             is ChunkLightUpdate -> handle(update)
-            is ChunkCreateUpdate -> handle(update)
             is ChunkUnloadUpdate -> handle(update)
-            is NeighbourChangeUpdate -> handle(update)
             is PrototypeChangeUpdate -> handle(update)
+            is SingleBlockDataUpdate -> Unit
             else -> Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Unknown world update happened: $update" }
         }
     }

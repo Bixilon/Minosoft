@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,20 +16,14 @@ package de.bixilon.minosoft.data.world.chunk.update.block
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class ChunkLocalBlockUpdate(
-    override val chunkPosition: ChunkPosition,
     override val chunk: Chunk,
-    val updates: Set<LocalUpdate>,
-) : AbstractWorldUpdate, Iterable<ChunkLocalBlockUpdate.LocalUpdate> {
+    val change: Array<Change>,
+) : AbstractWorldUpdate {
 
-    override fun iterator(): Iterator<LocalUpdate> {
-        return updates.iterator()
-    }
-
-    data class LocalUpdate(
+    data class Change(
         val position: InChunkPosition,
         val state: BlockState?,
     )

@@ -27,6 +27,6 @@ class ExplosionEvent(
     val velocity: Vec3f,
 ) : PlaySessionEvent(session) {
 
-    constructor(session: PlaySession, packet: ExplosionS2CP) : this(session, packet.position, packet.power, packet.explodedBlocks, packet.velocity)
+    constructor(session: PlaySession, packet: ExplosionS2CP) : this(session, packet.position, packet.power, packet.blocks, packet.velocity)
 
 }

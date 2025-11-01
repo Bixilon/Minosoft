@@ -27,9 +27,6 @@ class SectionOcclusion(
 
 
     fun invalidate(notify: Boolean) {
-        SectionOcclusionTracer.calculateFast(provider)?.let {
-            return update(it, notify)
-        }
         if (this.state == OcclusionState.INVALID) return
 
         state = OcclusionState.INVALID

@@ -28,10 +28,10 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 open class BlockState(
-    @JvmField val block: Block,
+    val block: Block,
     val luminance: Int,
 ) {
-    @JvmField var model: BlockRender? = null
+    var model: BlockRender? = null
     val flags = BlockStateFlags.set()
 
     init {

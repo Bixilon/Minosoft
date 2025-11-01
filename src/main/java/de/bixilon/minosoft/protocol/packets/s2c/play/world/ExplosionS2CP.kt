@@ -34,7 +34,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = if (buffer.versionId >= ProtocolVersions.V_22W42A) buffer.readVec3d() else Vec3d(buffer.readVec3f())
     val power = buffer.readFloat()
-    val explodedBlocks: Array<BlockPosition> = buffer.readArray(if(buffer.versionId < V_1_17)buffer.readInt() else buffer.readVarInt()) { BlockPosition(buffer.readByte().toInt(), buffer.readByte().toInt(), buffer.readByte().toInt()) } // ToDo: Find out version
+    val blocks: Array<BlockPosition> = buffer.readArray(if (buffer.versionId < V_1_17) buffer.readInt() else buffer.readVarInt()) { BlockPosition(buffer.readByte().toInt(), buffer.readByte().toInt(), buffer.readByte().toInt()) } // ToDo: Find out version
     val velocity = buffer.readVec3f()
     val destruct = if (buffer.versionId >= V_23W45A) buffer.readEnum(DestructionTypes) else DestructionTypes.DESTROY
     val particle = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
@@ -55,9 +55,12 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     private fun World.clearBlocks(offset: BlockPosition, positions: Array<BlockPosition>) {
         if (positions.isEmpty()) return
-        if (positions.size == 1) return clearBlock(offset, positions.first())
+        if (positions.size == 1) {
+            this[offset + positions.first()] = null
+            return
+        }
 
-        val updates: MutableMap<Chunk, MutableSet<ChunkLocalBlockUpdate.LocalUpdate>> = hashMapOf()
+        val updates: MutableMap<Chunk, MutableSet<ChunkLocalBlockUpdate.Change>> = HashMap(3 * 3)
 
         var chunk: Chunk? = null
 
@@ -74,19 +77,19 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val inChunkPosition = total.inChunkPosition
             if (chunk[inChunkPosition] == null) continue
 
-            val update = ChunkLocalBlockUpdate.LocalUpdate(inChunkPosition, null)
+            val update = ChunkLocalBlockUpdate.Change(inChunkPosition, null)
 
-            updates.getOrPut(chunk) { hashSetOf() } += update
+            updates.getOrPut(chunk) { HashSet(5) } += update
         }
 
         for ((chunk, updates) in updates) {
-            chunk.apply(updates)
+            chunk.apply(*updates.toTypedArray())
         }
     }
 
     override fun handle(session: PlaySession) {
         if (destruct == DestructionTypes.DESTROY) { // TODO: handle DECAY, TRIGGER
-            session.world.clearBlocks(position.blockPosition, this.explodedBlocks)
+            session.world.clearBlocks(position.blockPosition, this.blocks)
         }
         session.player.physics.velocity += velocity
 
@@ -107,6 +110,6 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, power=$power, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, power=$power, explodedBlocks=$blocks, velocity=$velocity)" }
     }
 }

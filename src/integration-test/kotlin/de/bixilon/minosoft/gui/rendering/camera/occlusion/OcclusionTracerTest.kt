@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
+import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -89,7 +90,7 @@ class OcclusionTracerTest {
         val section = chunks[position.chunkPosition]!!.getOrPut(position.y)!!
         when (state) {
             OcclusionState.NONE -> section.blocks.clear()
-            OcclusionState.FULL_OPAQUE -> section.blocks.setData(fullOpaque.unsafeCast())
+            OcclusionState.FULL_OPAQUE -> section.blocks.setData(fullOpaque.cast())
             OcclusionState.BOTTOM_Y -> section.fill(0, 0, 0, 15, 1, 15, opaque)
             OcclusionState.TOP_Y -> section.fill(0, 15, 0, 15, 15, 15, opaque)
         }
