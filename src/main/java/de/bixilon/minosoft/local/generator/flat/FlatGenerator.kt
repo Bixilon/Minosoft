@@ -23,10 +23,10 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.local.generator.ChunkBuilder
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -58,16 +58,13 @@ class FlatGenerator(
         return array
     }
 
-    override fun generate(chunk: Chunk) {
-        chunk.biomeSource = this.biomeSource
+    override fun generate(builder: ChunkBuilder) {
+        builder.biomes = this.biomeSource
 
-        val minSection = chunk.world.dimension.minSection
+        val minSection = builder.world.dimension.minSection
         for ((index, data) in this.data.withIndex()) {
             if (data == null) continue
-            val section = chunk.getOrPut(index + minSection) ?: continue
-            val clone = data.clone()
-
-            section.blocks.setData(clone)
+            builder[index + minSection] = data.clone()
         }
     }
 

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.local
 
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
-import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.local.generator.ChunkBuilder
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.local.storage.WorldStorage
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -60,10 +60,14 @@ class LocalChunkManager(
         for (x in center.x - distance..center.x + distance) {
             for (z in center.z - distance..center.z + distance) {
                 val position = ChunkPosition(x, z)
-                var chunk = session.world.chunks[position]
+                val chunk = session.world.chunks[position]
                 if (chunk != null) continue
-                chunk = session.world.chunks.update(position, ChunkData(), false)
-                generator.generate(chunk)
+
+                val builder = ChunkBuilder(session.world, position)
+
+                generator.generate(builder)
+
+                session.world.chunks.update(position, builder.toData(), false)
             }
         }
     }

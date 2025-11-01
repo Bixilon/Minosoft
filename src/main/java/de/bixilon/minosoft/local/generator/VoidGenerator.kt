@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.local.generator
 
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-
 object VoidGenerator : ChunkGenerator {
 
-    override fun generate(chunk: Chunk) = Unit
+    override fun generate(builder: ChunkBuilder) = Unit
 }

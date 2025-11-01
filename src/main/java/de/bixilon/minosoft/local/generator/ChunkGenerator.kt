@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.local.generator
 
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-
 interface ChunkGenerator {
 
-    @Deprecated("Use chunk data")
-    fun generate(chunk: Chunk)
+    fun generate(builder: ChunkBuilder)
 }
