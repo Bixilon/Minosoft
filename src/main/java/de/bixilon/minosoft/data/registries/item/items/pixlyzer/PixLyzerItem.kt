@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactories
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.block.legacy.PixLyzerBlockItem
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
@@ -47,10 +48,10 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
             val className = data["class"]?.toString()
             var factory = PixLyzerItemFactories[className]
             if (factory == null) {
-                factory = if (data["food_properties"] != null) {
-                    PixLyzerFoodItem // ToDo: Remove this edge case
-                } else {
-                    PixLyzerItem
+                factory = when {
+                    "food_properties" in data -> PixLyzerFoodItem
+                    registries.block[identifier] != null -> PixLyzerBlockItem
+                    else -> PixLyzerItem
                 }
             }
             return factory.build(identifier, registries, data)

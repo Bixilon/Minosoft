@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,10 +30,10 @@ import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class PixLyzerBlockItem(
-    resourceLocation: ResourceLocation,
+    identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data), PlaceableItem {
+) : PixLyzerItem(identifier, registries, data), PlaceableItem {
     val block: Block = unsafeNull()
 
     override var model: ItemRender?
@@ -43,7 +43,7 @@ open class PixLyzerBlockItem(
         }
 
     init {
-        BLOCK_FIELD.inject<RegistryItem>(data["block"])
+        BLOCK_FIELD.inject<RegistryItem>(data["block"] ?: this@PixLyzerBlockItem.identifier)
     }
 
     override fun getPlacementState(session: PlaySession, target: BlockTarget, stack: ItemStack): BlockState {
