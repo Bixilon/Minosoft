@@ -24,7 +24,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
-import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -55,7 +55,7 @@ import java.util.*
 
 class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position: ChunkPosition
-    val prototype: ChunkPrototype = ChunkPrototype()
+    val prototype: ChunkData = ChunkData()
     var action: ChunkAction = ChunkAction.CREATE
         private set
     private lateinit var readingData: ChunkReadingData
@@ -199,7 +199,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             return
         }
         parse()
-        session.world.chunks.set(position, prototype, action == ChunkAction.CREATE)
+        session.world.chunks.update(position, prototype, action == ChunkAction.CREATE)
     }
 
     override fun log(reducedLog: Boolean) {

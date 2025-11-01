@@ -11,14 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.update.chunk
+package de.bixilon.minosoft.data.world.chunk.chunk
 
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
+import org.testng.Assert.assertEquals
+import org.testng.annotations.Test
 
-/**
- * One of the chunk neighbours was changed
- */
-class NeighbourChangeUpdate(
-    override val chunk: Chunk,
-) : AbstractWorldUpdate
+@Test(groups = ["chunk"])
+class ChunkDataTest {
+
+    fun `merge two prototypes`() {
+        val existing = ChunkData()
+        val next = ChunkData(blocks = Array(1) { arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) })
+
+        // TODO: entities, ...
+        existing.update(next)
+
+        assertEquals(existing.blocks!!.size, 1)
+    }
+}

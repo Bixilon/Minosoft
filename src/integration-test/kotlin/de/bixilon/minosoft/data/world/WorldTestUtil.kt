@@ -44,7 +44,7 @@ object WorldTestUtil {
         val world = World::class.java.allocate()
         world::occlusion.forceSet(DataObserver(0))
         world::lock.forceSet(RWLock.rwlock())
-        world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity), 0))
+        world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity)))
         world::border.forceSet(WorldBorder())
         world::dimension.forceSet(DataObserver((dimension ?: DimensionProperties()).copy(light = light, skyLight = light)))
         world::session.forceSet(session)

@@ -19,13 +19,11 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
-import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourCreatedUpdate
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
@@ -41,7 +39,7 @@ object ChunkRendererChangeListener {
 
     private fun ChunkRenderer.handle(update: SingleBlockUpdate) {
         if (!update.chunk.neighbours.complete) return
-        val neighbours = update.chunk.neighbours.neighbours
+        val neighbours = update.chunk.neighbours
         val sectionHeight = update.position.sectionHeight
 
         master.tryQueue(update.chunk, sectionHeight)
@@ -86,7 +84,7 @@ object ChunkRendererChangeListener {
                 neighbours[5] = true
             }
         }
-        val neighbours = update.chunk.neighbours.neighbours
+        val neighbours = update.chunk.neighbours
         for ((sectionHeight, neighbourUpdates) in sectionHeights) {
             master.tryQueue(update.chunk, sectionHeight)
 
@@ -112,25 +110,22 @@ object ChunkRendererChangeListener {
     }
 
     private fun ChunkRenderer.handle(update: ChunkLightUpdate) {
-        if (update.blockChange) return // change is already covered
-        master.tryQueue(update.chunk, update.sectionHeight)
+        if (update.cause == ChunkLightUpdate.Causes.BLOCK_CHANGE) return // change is already covered
+        master.tryQueue(update.section)
     }
 
-    private fun ChunkRenderer.handle(update: ChunkCreateUpdate) {
-        master.tryQueue(update.chunk)
-    }
 
     private fun ChunkRenderer.handle(update: ChunkUnloadUpdate) {
         unloadChunk(update.chunk.position)
     }
 
-    private fun ChunkRenderer.handle(update: NeighbourChangeUpdate) {
+    private fun ChunkRenderer.handle(update: NeighbourCreatedUpdate) {
         master.tryQueue(update.chunk)
     }
 
-    private fun ChunkRenderer.handle(update: PrototypeChangeUpdate) {
-        for (height in update.affected.intIterator()) {
-            master.tryQueue(update.chunk, height)
+    private fun ChunkRenderer.handle(update: ChunkDataUpdate) {
+        for (section in update.sections) {
+            master.tryQueue(section)
         }
     }
 
@@ -138,14 +133,12 @@ object ChunkRendererChangeListener {
     private fun ChunkRenderer.handle(update: AbstractWorldUpdate) {
         if (context.state == RenderingStates.PAUSED) return
         when (update) {
-            is NeighbourChangeUpdate -> handle(update)
-            is ChunkCreateUpdate -> handle(update)
+            is NeighbourCreatedUpdate -> handle(update)
             is SingleBlockUpdate -> handle(update)
             is ChunkLocalBlockUpdate -> handle(update)
             is ChunkLightUpdate -> handle(update)
             is ChunkUnloadUpdate -> handle(update)
-            is PrototypeChangeUpdate -> handle(update)
-            is SingleBlockDataUpdate -> Unit
+            is ChunkDataUpdate -> handle(update)
             else -> Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Unknown world update happened: $update" }
         }
     }

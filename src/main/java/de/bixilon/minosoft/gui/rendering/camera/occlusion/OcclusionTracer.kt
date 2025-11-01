@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -68,7 +68,7 @@ class OcclusionTracer(
 
 
         val inverted = direction.inverted
-        val neighbours = chunk.neighbours.neighbours
+        val neighbours = chunk.neighbours
         val occlusion = section?.blocks?.occlusion // TODO: empty section bypass?
 
 
@@ -82,7 +82,7 @@ class OcclusionTracer(
         if (vector.y >= 0) trace(occlusion, chunk, height, inverted, Directions.UP, vector)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbourArray, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
+    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbours, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
         if (occlusion != null && occlusion.isOccluded(source, destination)) return
         val next = neighbours[destination] ?: return
         trace(next, height, destination, vector + destination)

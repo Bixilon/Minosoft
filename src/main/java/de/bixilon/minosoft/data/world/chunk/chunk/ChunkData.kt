@@ -17,17 +17,15 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
-class ChunkPrototype(
+class ChunkData(
     var blocks: Array<Array<BlockState?>?>? = null,
     var entities: Int2ObjectOpenHashMap<JsonObject>? = null,
     var biomeSource: BiomeSource? = null,
@@ -36,8 +34,8 @@ class ChunkPrototype(
     var topLight: LightArray? = null,
 ) {
 
-    @Synchronized
-    fun update(data: ChunkPrototype) {
+    @Deprecated("useless")
+    fun update(data: ChunkData) {
         data.blocks?.let { this.blocks = it }
         data.entities?.let { this.entities = it }
         data.biomeSource?.let { this.biomeSource = it }
@@ -47,17 +45,7 @@ class ChunkPrototype(
     }
 
 
-    fun create(world: World, position: ChunkPosition): Chunk? {
-        if (this.blocks == null) return null
-
-        val chunk = Chunk(world, position)
-        chunk.update(true, null)
-
-
-        return chunk
-    }
-
-    fun Chunk.update(blocks: Array<Array<BlockState?>?>, replace: Boolean, affected: IntOpenHashSet?) {
+    private fun Chunk.update(blocks: Array<Array<BlockState?>?>, replace: Boolean, affected: MutableSet<ChunkSection>?) {
         val minSection = world.dimension.minSection
         for ((index, data) in blocks.withIndex()) {
             val height = index + minSection
@@ -66,7 +54,7 @@ class ChunkPrototype(
             if (data == null) {
                 if (replace && section != null) {
                     section.clear()
-                    affected?.add(height)
+                    affected?.add(section)
                 }
                 continue
             }
@@ -79,15 +67,15 @@ class ChunkPrototype(
 
             section.blocks.setData(data)
 
-            affected?.add(height)
+            affected?.add(section)
         }
 
         this.light.heightmap.recalculate()
     }
 
-    private fun Chunk.update(data: Int2ObjectMap<JsonObject>?, affected: IntOpenHashSet?) {
+    private fun Chunk.update(data: Int2ObjectMap<JsonObject>?, affected: MutableSet<ChunkSection>?) {
         sections.forEach { section ->
-            if (data == null && affected != null && section.height !in affected) return@forEach
+            if (data == null && affected != null && section !in affected) return@forEach
             val blocks = section.blocks
             val yOffset = section.height * ChunkSize.SECTION_HEIGHT_Y
 
@@ -98,32 +86,32 @@ class ChunkPrototype(
                 val inChunk = InChunkPosition(position.x, position.y + yOffset, position.z)
                 data?.get(inChunk.raw)?.let { entity.updateNBT(it) }
 
-                affected?.add(section.height)
+                affected?.add(section)
             }
         }
     }
 
-    private fun Chunk.update(replace: Boolean, affected: IntOpenHashSet?) {
-        val blocks = this@ChunkPrototype.blocks
-        val entities = this@ChunkPrototype.entities
+    private fun Chunk.update(replace: Boolean, affected: MutableSet<ChunkSection>?) {
+        val blocks = this@ChunkData.blocks
+        val entities = this@ChunkData.entities
 
         blocks?.let { update(it, replace, affected) }
         if (blocks != null || entities != null) { // this operation is expensive, only do it if data has changed
             update(entities, affected)
         }
 
-        this@ChunkPrototype.biomeSource?.let { biomeSource = it } // TODO: invalidate cache
+        this@ChunkData.biomeSource?.let { biomeSource = it } // TODO: invalidate cache
 
         if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
-            this@ChunkPrototype.topLight?.let { light.top.update(it) }
+            this@ChunkData.topLight?.let { light.top.update(it) }
             // TODO: section light, update affected
-            this@ChunkPrototype.bottomLight?.let { light.bottom.update(it) }
+            this@ChunkData.bottomLight?.let { light.bottom.update(it) }
         }
     }
 
 
-    fun update(chunk: Chunk, replace: Boolean): IntOpenHashSet? {
-        val affected = IntOpenHashSet(5)
+    fun update(chunk: Chunk, replace: Boolean): MutableSet<ChunkSection>? {
+        val affected: MutableSet<ChunkSection> = HashSet(5)
 
         chunk.update(replace, affected)
 

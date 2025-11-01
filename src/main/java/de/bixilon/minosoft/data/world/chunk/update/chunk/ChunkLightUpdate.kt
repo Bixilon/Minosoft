@@ -13,12 +13,21 @@
 
 package de.bixilon.minosoft.data.world.chunk.update.chunk
 
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
-import de.bixilon.minosoft.data.world.positions.SectionHeight
 
 class ChunkLightUpdate(
     override val chunk: Chunk,
-    val sectionHeight: SectionHeight,
-    val blockChange: Boolean,
-) : AbstractWorldUpdate
+    val section: ChunkSection,
+    val cause: Causes,
+) : AbstractWorldUpdate {
+
+    enum class Causes {
+        UNKNOWN,
+        RECALCULATE,
+        BLOCK_CHANGE,
+        NEIGHBOUR_CHANGE,
+        ;
+    }
+}

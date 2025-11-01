@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeig
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createOpaqueLight
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createSolidBlock
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.fillBottom
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import org.testng.annotations.Test
@@ -33,7 +34,7 @@ internal class LightBenchmark {
     fun calculateEmptyLight() {
         val chunk = createChunkWithNeighbours()
         BenchmarkUtil.benchmark(100000) {
-            chunk.light.recalculate()
+            chunk.light.recalculate(true, ChunkLightUpdate.Causes.RECALCULATE)
         }.println()
     }
 
@@ -42,7 +43,7 @@ internal class LightBenchmark {
         val chunk = createChunkWithNeighbours()
         chunk.fillBottom(createSolidBlock().states.default)
         BenchmarkUtil.benchmark(100000) {
-            chunk.light.recalculate()
+            chunk.light.recalculate(true, ChunkLightUpdate.Causes.RECALCULATE)
         }.println()
     }
 

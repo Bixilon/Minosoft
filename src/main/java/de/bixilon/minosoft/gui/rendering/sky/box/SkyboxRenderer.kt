@@ -23,8 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
@@ -65,7 +64,7 @@ class SkyboxRenderer(
         }
 
         sky.context.session.events.listen<WorldUpdateEvent> {
-            if (it.update !is NeighbourChangeUpdate && it.update !is ChunkCreateUpdate) return@listen
+            if (it.update !is ChunkDataUpdate) return@listen
             if (!it.update.chunk.neighbours.complete) return@listen
             color.updateBase()
         }

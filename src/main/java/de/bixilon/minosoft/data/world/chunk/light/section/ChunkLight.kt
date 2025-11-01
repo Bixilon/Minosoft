@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLightUtil.hasSkyL
 import de.bixilon.minosoft.data.world.chunk.light.section.border.BottomSectionLight
 import de.bixilon.minosoft.data.world.chunk.light.section.border.TopSectionLight
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -50,11 +49,11 @@ class ChunkLight(
 
         if (!chunk.neighbours.complete) return
 
-        fireLightChange(section, chunk.neighbours.neighbours)
+        fireLightChange(section, ChunkLightUpdate.Causes.BLOCK_CHANGE)
     }
 
 
-    fun fireLightChange(section: ChunkSection, neighbours: ChunkNeighbourArray, fireSameChunkEvent: Boolean = true) {
+    fun fireLightChange(section: ChunkSection, cause: ChunkLightUpdate.Causes) {
         if (!section.light.update) {
             return
         }
@@ -62,18 +61,18 @@ class ChunkLight(
 
         val events = hashSetOf<AbstractWorldUpdate>()
 
-        if (fireSameChunkEvent) {
-            events += ChunkLightUpdate(chunk, section.height, true)
+        if (cause != ChunkLightUpdate.Causes.BLOCK_CHANGE) { // TODO?
+            events += ChunkLightUpdate(chunk, section, cause)
 
-            val down = section.neighbours[Directions.O_DOWN]?.light
-            if (down != null && down.update) {
-                down.update = false
-                events += ChunkLightUpdate(chunk, section.height - 1, false)
+            val down = section.neighbours[Directions.O_DOWN]
+            if (down != null && down.light.update) {
+                down.light.update = false
+                events += ChunkLightUpdate(chunk, down, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
             }
-            val up = section.neighbours[Directions.O_UP]?.light
-            if (up?.update == true) {
-                up.update = false
-                events += ChunkLightUpdate(chunk, section.height + 1, false)
+            val up = section.neighbours[Directions.O_UP]
+            if (up != null && up.light.update) {
+                up.light.update = false
+                events += ChunkLightUpdate(chunk, up, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
             }
         }
 
@@ -84,24 +83,24 @@ class ChunkLight(
                 val offset = ChunkPosition(chunkX, chunkZ)
                 if (offset == ChunkPosition.EMPTY) continue
 
-                val chunk = neighbours.array[neighbourIndex++]
+                val chunk = chunk.neighbours.array[neighbourIndex++]
                 for (chunkY in -1..1) {
                     val neighbourSection = chunk?.get(section.height + chunkY) ?: continue
                     if (!neighbourSection.light.update) {
                         continue
                     }
                     neighbourSection.light.update = false
-                    events += ChunkLightUpdate(chunk, section.height + chunkY, false)
+                    events += ChunkLightUpdate(chunk, neighbourSection, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
                 }
             }
         }
         for (event in events) event.fire(chunk.world.session)
     }
 
-    fun fireLightChange(fireSameChunkEvent: Boolean) {
+    fun fireLightChange(cause: ChunkLightUpdate.Causes) {
         if (!chunk.neighbours.complete) return
         chunk.sections.forEach { section ->
-            fireLightChange(section, chunk.neighbours.neighbours, fireSameChunkEvent)
+            fireLightChange(section, cause)
         }
     }
 
@@ -123,7 +122,7 @@ class ChunkLight(
         return light
     }
 
-    fun recalculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
+    fun recalculate(fireEvent: Boolean = true, cause: ChunkLightUpdate.Causes) {
         bottom.reset()
         top.reset()
 
@@ -131,16 +130,16 @@ class ChunkLight(
 
         sky.calculate()
         if (fireEvent) {
-            fireLightChange(fireSameChunkEvent)
+            fireLightChange(cause)
         }
     }
 
-    fun calculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
+    fun calculate(fireEvent: Boolean = true, cause: ChunkLightUpdate.Causes) {
         chunk.sections.forEach { it.light.calculate() }
 
         sky.calculate()
         if (fireEvent) {
-            fireLightChange(fireSameChunkEvent)
+            fireLightChange(cause)
         }
     }
 
@@ -150,11 +149,11 @@ class ChunkLight(
         top.reset()
     }
 
-    fun propagateFromNeighbours(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
+    fun propagateFromNeighbours(fireEvent: Boolean = true, cause: ChunkLightUpdate.Causes) {
         chunk.sections.forEach { it.light.propagateFromNeighbours() }
 
         if (fireEvent) {
-            fireLightChange(fireSameChunkEvent)
+            fireLightChange(cause)
         }
     }
 }

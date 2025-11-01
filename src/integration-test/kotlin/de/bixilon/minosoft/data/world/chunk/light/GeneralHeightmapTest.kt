@@ -33,12 +33,12 @@ class GeneralHeightmapTest {
         chunk[InChunkPosition(3, 11, 2)] = IT.BLOCK_1
         chunk[InChunkPosition(3, 12, 4)] = IT.BLOCK_1
         chunk[InChunkPosition(4, 13, 3)] = IT.BLOCK_1
-        assertEquals(chunk.light.sky.getNeighbourMinHeight(chunk.neighbours.neighbours, 3, 3), 11)
+        assertEquals(chunk.light.sky.getNeighbourMinHeight(chunk.neighbours, 3, 3), 11)
     }
 
     fun testMinHeightNeighbourEast() {
         val chunk: Chunk = createChunkWithNeighbours()
-        val neighbours = chunk.neighbours.neighbours
+        val neighbours = chunk.neighbours
         chunk[InChunkPosition(14, 11, 3)] = IT.BLOCK_1
         chunk[InChunkPosition(15, 12, 2)] = IT.BLOCK_1
         chunk[InChunkPosition(15, 13, 4)] = IT.BLOCK_1

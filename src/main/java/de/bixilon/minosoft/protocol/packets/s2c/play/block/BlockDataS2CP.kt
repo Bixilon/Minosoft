@@ -13,8 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
-import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockDataUpdate
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -42,9 +40,8 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val chunk = session.world.chunks[position.chunkPosition] ?: return
         val entity = chunk.updateBlockEntity(position.inChunkPosition) ?: return
-        entity.updateNBT(nbt)
 
-        session.events.fire(WorldUpdateEvent(session, SingleBlockDataUpdate(position, chunk, entity)))
+        entity.updateNBT(nbt)
     }
 
     override fun log(reducedLog: Boolean) {

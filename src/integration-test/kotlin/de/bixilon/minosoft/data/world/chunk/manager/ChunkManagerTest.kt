@@ -24,13 +24,12 @@ import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
-import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourCreatedUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -110,7 +109,7 @@ class ChunkManagerTest {
     fun convertSinglePrototype() {
         val manager = create()
 
-        manager[ChunkPosition(3, 0)] = ChunkPrototype(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null))
+        manager[ChunkPosition(3, 0)] = ChunkData(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null))
         assertEquals(1, manager.chunks.size)
 
         val chunk = manager[ChunkPosition(3, 0)]
@@ -133,8 +132,8 @@ class ChunkManagerTest {
         val a = manager.create(ChunkPosition(4, 1))
         val b = manager.create(ChunkPosition(4, 2))
 
-        assertSame(a.neighbours.neighbours[Directions.SOUTH], b)
-        assertSame(b.neighbours.neighbours[Directions.NORTH], a)
+        assertSame(a.neighbours[Directions.SOUTH], b)
+        assertSame(b.neighbours[Directions.NORTH], a)
 
 
         assertEquals(manager.size.size.size, MVec2i(1, 2))
@@ -145,17 +144,17 @@ class ChunkManagerTest {
         val matrix = manager.createMatrix()
         assertTrue(matrix[1][1].neighbours.complete)
 
-        assertEquals(matrix[0][0].neighbours.neighbours.array, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], matrix[1][1]))
-        assertEquals(matrix[0][1].neighbours.neighbours.array, arrayOf(null, matrix[0][0], matrix[1][0], null, matrix[1][1], null, matrix[0][2], matrix[1][2]))
-        assertEquals(matrix[0][2].neighbours.neighbours.array, arrayOf(null, matrix[0][1], matrix[1][1], null, matrix[1][2], null, null, null))
+        assertEquals(matrix[0][0].neighbours.array, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], matrix[1][1]))
+        assertEquals(matrix[0][1].neighbours.array, arrayOf(null, matrix[0][0], matrix[1][0], null, matrix[1][1], null, matrix[0][2], matrix[1][2]))
+        assertEquals(matrix[0][2].neighbours.array, arrayOf(null, matrix[0][1], matrix[1][1], null, matrix[1][2], null, null, null))
 
-        assertEquals(matrix[1][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], matrix[1][1], matrix[2][1]))
-        assertEquals(matrix[1][1].neighbours.neighbours.array, arrayOf(matrix[0][0], matrix[1][0], matrix[2][0], matrix[0][1], matrix[2][1], matrix[0][2], matrix[1][2], matrix[2][2]))
-        assertEquals(matrix[1][2].neighbours.neighbours.array, arrayOf(matrix[0][1], matrix[1][1], matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
+        assertEquals(matrix[1][0].neighbours.array, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], matrix[1][1], matrix[2][1]))
+        assertEquals(matrix[1][1].neighbours.array, arrayOf(matrix[0][0], matrix[1][0], matrix[2][0], matrix[0][1], matrix[2][1], matrix[0][2], matrix[1][2], matrix[2][2]))
+        assertEquals(matrix[1][2].neighbours.array, arrayOf(matrix[0][1], matrix[1][1], matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
 
-        assertEquals(matrix[2][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[1][0], null, matrix[1][1], matrix[2][1], null))
-        assertEquals(matrix[2][1].neighbours.neighbours.array, arrayOf(matrix[1][0], matrix[2][0], null, matrix[1][1], null, matrix[1][2], matrix[2][2], null))
-        assertEquals(matrix[2][2].neighbours.neighbours.array, arrayOf(matrix[1][1], matrix[2][1], null, matrix[1][2], null, null, null, null))
+        assertEquals(matrix[2][0].neighbours.array, arrayOf(null, null, null, matrix[1][0], null, matrix[1][1], matrix[2][1], null))
+        assertEquals(matrix[2][1].neighbours.array, arrayOf(matrix[1][0], matrix[2][0], null, matrix[1][1], null, matrix[1][2], matrix[2][2], null))
+        assertEquals(matrix[2][2].neighbours.array, arrayOf(matrix[1][1], matrix[2][1], null, matrix[1][2], null, null, null, null))
 
 
         assertEquals(manager.size.size.size, MVec2i(3, 3))
@@ -166,16 +165,16 @@ class ChunkManagerTest {
         val matrix = manager.createMatrix()
         manager.unload(ChunkPosition(0, 0))
 
-        assertEquals(matrix[0][0].neighbours.neighbours.array, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], null))
-        assertEquals(matrix[0][1].neighbours.neighbours.array, arrayOf(null, matrix[0][0], matrix[1][0], null, null, null, matrix[0][2], matrix[1][2]))
-        assertEquals(matrix[0][2].neighbours.neighbours.array, arrayOf(null, matrix[0][1], null, null, matrix[1][2], null, null, null))
+        assertEquals(matrix[0][0].neighbours.array, arrayOf(null, null, null, null, matrix[1][0], null, matrix[0][1], null))
+        assertEquals(matrix[0][1].neighbours.array, arrayOf(null, matrix[0][0], matrix[1][0], null, null, null, matrix[0][2], matrix[1][2]))
+        assertEquals(matrix[0][2].neighbours.array, arrayOf(null, matrix[0][1], null, null, matrix[1][2], null, null, null))
 
-        assertEquals(matrix[1][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], null, matrix[2][1]))
-        assertEquals(matrix[1][2].neighbours.neighbours.array, arrayOf(matrix[0][1], null, matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
+        assertEquals(matrix[1][0].neighbours.array, arrayOf(null, null, null, matrix[0][0], matrix[2][0], matrix[0][1], null, matrix[2][1]))
+        assertEquals(matrix[1][2].neighbours.array, arrayOf(matrix[0][1], null, matrix[2][1], matrix[0][2], matrix[2][2], null, null, null))
 
-        assertEquals(matrix[2][0].neighbours.neighbours.array, arrayOf(null, null, null, matrix[1][0], null, null, matrix[2][1], null))
-        assertEquals(matrix[2][1].neighbours.neighbours.array, arrayOf(matrix[1][0], matrix[2][0], null, null, null, matrix[1][2], matrix[2][2], null))
-        assertEquals(matrix[2][2].neighbours.neighbours.array, arrayOf(null, matrix[2][1], null, matrix[1][2], null, null, null, null))
+        assertEquals(matrix[2][0].neighbours.array, arrayOf(null, null, null, matrix[1][0], null, null, matrix[2][1], null))
+        assertEquals(matrix[2][1].neighbours.array, arrayOf(matrix[1][0], matrix[2][0], null, null, null, matrix[1][2], matrix[2][2], null))
+        assertEquals(matrix[2][2].neighbours.array, arrayOf(null, matrix[2][1], null, matrix[1][2], null, null, null, null))
 
 
         assertEquals(manager.size.size.size, MVec2i(3, 3))
@@ -201,7 +200,7 @@ class ChunkManagerTest {
         manager[ChunkPosition(1, 0)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
         manager[ChunkPosition(0, 1)]!![InChunkPosition(3, 16, 3)] = IT.BLOCK_1
 
-        manager[ChunkPosition(0, 0)] = ChunkPrototype(blocks = arrayOf(
+        manager[ChunkPosition(0, 0)] = ChunkData(blocks = arrayOf(
             arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
             arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
             arrayOfNulls<BlockState>(ChunkSize.BLOCKS_PER_SECTION).apply { this[InSectionPosition(3, 3, 3).index] = IT.BLOCK_1 },
@@ -317,7 +316,7 @@ class ChunkManagerTest {
             fired++
         }
 
-        manager[ChunkPosition(1, 1)] = ChunkPrototype(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null))
+        manager[ChunkPosition(1, 1)] = ChunkData(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null))
 
         assertEquals(fired, 1)
     }
@@ -359,14 +358,14 @@ class ChunkManagerTest {
         var fired = 0
 
         manager.world.session.events.listen<WorldUpdateEvent> {
-            assertTrue(it.update is PrototypeChangeUpdate)
-            val update = it.update as PrototypeChangeUpdate
+            assertTrue(it.update is ChunkDataUpdate)
+            val update = it.update as ChunkDataUpdate
             assertEquals(update.chunk.position, ChunkPosition(1, 1))
-            assertEquals(update.affected, setOf(0, 2))
+            assertEquals(update.sections, setOf(0, 2))
             fired++
         }
 
-        manager.set(ChunkPosition(1, 1), ChunkPrototype(blocks = arrayOfNulls(16)), true)
+        manager.set(ChunkPosition(1, 1), ChunkData(blocks = arrayOfNulls(16)), true)
 
         assertNotNull(manager[ChunkPosition(1, 1)])
 
@@ -381,14 +380,14 @@ class ChunkManagerTest {
         var fired = 0
 
         manager.world.session.events.listen<WorldUpdateEvent> {
-            assertTrue(it.update is PrototypeChangeUpdate)
-            val update = it.update as PrototypeChangeUpdate
+            assertTrue(it.update is ChunkDataUpdate)
+            val update = it.update as ChunkDataUpdate
             assertEquals(update.chunk.position, ChunkPosition(1, 1))
-            assertEquals(update.affected, setOf(0))
+            assertEquals(update.sections, setOf(0))
             fired++
         }
 
-        manager.set(ChunkPosition(1, 1), ChunkPrototype(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }), false)
+        manager.set(ChunkPosition(1, 1), ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }), false)
 
         assertNotNull(manager[ChunkPosition(1, 1)])
 
@@ -402,8 +401,8 @@ class ChunkManagerTest {
 
         manager.world.session.events.listen<WorldUpdateEvent> {
             if (it.update is ChunkCreateUpdate) return@listen
-            assertTrue(it.update is NeighbourChangeUpdate)
-            val update = it.update as NeighbourChangeUpdate
+            assertTrue(it.update is NeighbourCreatedUpdate)
+            val update = it.update as NeighbourCreatedUpdate
             assertEquals(update.chunk.position, ChunkPosition(1, 1))
             assertNotNull(update.chunk.neighbours[Directions.SOUTH])
             fired++

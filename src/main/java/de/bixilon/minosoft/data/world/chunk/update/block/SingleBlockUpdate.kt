@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.data.world.chunk.update.block
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 data class SingleBlockUpdate(
-    val position: BlockPosition,
     override val chunk: Chunk,
+    val position: BlockPosition,
     val state: BlockState?,
-    val entity: BlockEntity?,
 ) : AbstractWorldUpdate

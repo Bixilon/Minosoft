@@ -187,7 +187,7 @@ class BlockLightBreakIT {
         val events: MutableList<SVec3i> = synchronizedListOf()
         world.session.events.listen<WorldUpdateEvent> {
             if (it.update !is ChunkLightUpdate) return@listen
-            events += SVec3i(it.update.chunk.position.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunk.position.z)
+            events += SVec3i(it.update.chunk.position.x, (it.update as ChunkLightUpdate).section.height, it.update.chunk.position.z)
         }
         world[BlockPosition(8, 24, 8)] = null
 

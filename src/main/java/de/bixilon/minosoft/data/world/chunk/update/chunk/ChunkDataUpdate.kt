@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.update.chunk.prototype
+package de.bixilon.minosoft.data.world.chunk.update.chunk
 
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
+import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 
-data class PrototypeChange(
-    val chunk: Chunk,
-    val affected: IntOpenHashSet,
-)
+class ChunkDataUpdate(
+    override val chunk: Chunk,
+    val sections: Set<ChunkSection>,
+) : AbstractWorldUpdate

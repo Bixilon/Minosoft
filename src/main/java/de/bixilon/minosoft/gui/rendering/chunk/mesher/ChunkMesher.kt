@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
+import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader.isAllNull
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -32,12 +33,12 @@ class ChunkMesher(
 
         val neighbours = item.section.chunk.neighbours
         val sectionNeighbours = item.section.neighbours
-        if (!neighbours.complete || sectionNeighbours == null) {
+        if (!neighbours.complete || sectionNeighbours.isAllNull()) {
             return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
         }
         val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count)
         try {
-            solid.mesh(item.section, neighbours.neighbours, sectionNeighbours, mesh)
+            solid.mesh(item.section, neighbours, sectionNeighbours, mesh)
 
             if (item.section.blocks.hasFluid) {
                 fluid.mesh(item.section, mesh)

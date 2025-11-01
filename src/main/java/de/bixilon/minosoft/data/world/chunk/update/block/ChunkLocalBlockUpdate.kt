@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class ChunkLocalBlockUpdate(
     override val chunk: Chunk,
-    val change: Array<Change>,
+    val change: Array<Change>, // TODO: Set?
 ) : AbstractWorldUpdate {
 
     data class Change(

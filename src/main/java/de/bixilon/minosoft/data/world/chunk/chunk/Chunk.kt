@@ -27,6 +27,8 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate.Causes
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
@@ -114,12 +116,12 @@ class Chunk(
             if (executed.isEmpty()) return
 
             light.heightmap.recalculate() // TODO: Only changed ones
-            light.recalculate(fireEvent = false)
+            light.recalculate(fireEvent = false, cause = Causes.UNKNOWN)
         }
 
 
         ChunkLocalBlockUpdate(this, executed.toTypedArray()).fire(world.session)
-        light.fireLightChange(true)
+        light.fireLightChange(Causes.BLOCK_CHANGE)
     }
 
     @Deprecated("sections.create")

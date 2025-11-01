@@ -127,4 +127,6 @@ class ChunkNeighboursTest {
         chunk[InChunkPosition(2, 21, 8)] = IT.BLOCK_1
         assertEquals(world.chunks[2, 2]!!.neighbours.traceBlock(InChunkPosition(2, 37, 8), BlockPosition(-16, -16, -16)), IT.BLOCK_1)
     }
+
+    // TODO: neighbours getting/setting, updating
 }

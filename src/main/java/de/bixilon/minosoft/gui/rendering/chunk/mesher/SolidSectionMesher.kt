@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel.Companion.MAX_LEVEL
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -59,7 +59,7 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(section: ChunkSection, neighbourChunks: ChunkNeighbourArray, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
+    fun mesh(section: ChunkSection, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
         val chunk = section.chunk
@@ -174,7 +174,7 @@ class SolidSectionMesher(
         }
     }
 
-    private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) = when (position.z) {
+    private inline fun setZ(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbours, section: ChunkSection, chunk: Chunk) = when (position.z) {
         0 -> {
             setNeighbour(neighbourBlocks, position.with(z = ChunkSize.SECTION_MAX_Z), light, neighbours[O_NORTH], neighbourChunks[Directions.NORTH], O_NORTH)
             setNeighbour(neighbourBlocks, position.plusZ(), light, section, chunk, O_SOUTH)
@@ -192,7 +192,7 @@ class SolidSectionMesher(
     }
 
 
-    private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbourArray, section: ChunkSection, chunk: Chunk) = when (position.x) {
+    private inline fun setX(neighbourBlocks: Array<BlockState?>, position: InChunkPosition, neighbours: Array<ChunkSection?>, light: ByteArray, neighbourChunks: ChunkNeighbours, section: ChunkSection, chunk: Chunk) = when (position.x) {
         0 -> {
             setNeighbour(neighbourBlocks, position.with(x = ChunkSize.SECTION_MAX_X), light, neighbours[O_WEST], neighbourChunks[Directions.WEST], O_WEST)
             setNeighbour(neighbourBlocks, position.plusX(), light, section, chunk, O_EAST)

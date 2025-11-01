@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkSkyLight.Companion.NEIGHBOUR_TRACE_LEVEL
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader.isAllNull
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
@@ -148,7 +148,7 @@ class SectionLight(
             update = true
         }
         val chunk = section.chunk
-        val chunkNeighbours = chunk.neighbours.neighbours
+        val chunkNeighbours = chunk.neighbours
         val neighbours = section.neighbours ?: return
 
         if (nextLuminance == 1) {
@@ -315,7 +315,7 @@ class SectionLight(
             // this light level will be 15, don't care
             return
         }
-        val chunkNeighbours = chunk.neighbours.neighbours
+        val chunkNeighbours = chunk.neighbours
         val light = this[position]
         if (light.sky >= nextLevel) {
             return
@@ -426,7 +426,7 @@ class SectionLight(
         }
     }
 
-    private inline operator fun Array<ChunkSection?>.get(direction: Int, neighbour: Directions, neighbours: ChunkNeighbourArray): ChunkSection? {
+    private inline operator fun Array<ChunkSection?>.get(direction: Int, neighbour: Directions, neighbours: ChunkNeighbours): ChunkSection? {
         return this[direction] ?: neighbours[neighbour]?.getOrPut(section.height, false)
     }
 
@@ -476,7 +476,7 @@ class SectionLight(
         val totalY = section.height * ChunkSize.SECTION_HEIGHT_Y + position.y
         section.chunk.let {
             // check if neighbours are above heightmap, if so set light level to max
-            val chunkNeighbours = it.neighbours.neighbours
+            val chunkNeighbours = it.neighbours
             if (!it.neighbours.complete) return@let
             val minHeight = it.light.sky.getNeighbourMinHeight(chunkNeighbours, position.x, position.z)
             if (totalY > minHeight) {

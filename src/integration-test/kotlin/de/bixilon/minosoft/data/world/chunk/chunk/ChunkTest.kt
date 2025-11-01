@@ -20,7 +20,9 @@ import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
+import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateTestUtil.collectUpdates
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -100,6 +102,7 @@ class ChunkTest {
             ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1),
             ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2),
         )
+
         var fired = 0
 
         chunk.world.session.events.listen<WorldUpdateEvent> {
@@ -121,16 +124,16 @@ class ChunkTest {
         val update2 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2)
 
         chunk.apply(update2)
-        var fired = 0
 
-        chunk.world.session.events.listen<WorldUpdateEvent> {
-            val update = it.update as ChunkLocalBlockUpdate
-            assertEquals(update.change, arrayOf(update1))
-            fired++
-        }
+
+        val updates = chunk.world.collectUpdates()
+
         chunk.apply(update1, update2)
 
-        assertEquals(fired, 1)
+
+        assertEquals(updates, listOf(
+            ChunkLocalBlockUpdate(chunk, arrayOf(update1)),
+        ))
     }
 
     fun `trigger update event without changes`() {
@@ -140,13 +143,12 @@ class ChunkTest {
         val update2 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2)
 
         chunk.apply(update1); chunk.apply(update2)
-        var fired = 0
 
-        chunk.world.session.events.listen<WorldUpdateEvent> {
-            fired++
-        }
+        val updates = chunk.world.collectUpdates()
+
         chunk.apply(update1, update2)
 
-        assertEquals(fired, 0)
+
+        assertEquals(updates, listOf<AbstractWorldUpdate>())
     }
 }

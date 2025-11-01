@@ -16,9 +16,6 @@ package de.bixilon.minosoft.data.world.chunk.update.chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 
-/**
- * A chunk was created (by a prototype or in code)
- */
-class ChunkCreateUpdate(
+class NeighbourCreatedUpdate(
     override val chunk: Chunk,
 ) : AbstractWorldUpdate

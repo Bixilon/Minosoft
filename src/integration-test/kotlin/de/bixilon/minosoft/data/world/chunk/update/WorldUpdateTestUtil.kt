@@ -11,15 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.update.block
+package de.bixilon.minosoft.data.world.chunk.update
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
-import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
-data class SingleBlockDataUpdate(
-    val position: BlockPosition,
-    override val chunk: Chunk,
-    val entity: BlockEntity,
-) : AbstractWorldUpdate
+object WorldUpdateTestUtil {
+
+    fun World.collectUpdates(): List<AbstractWorldUpdate> {
+        val updates: MutableList<AbstractWorldUpdate> = mutableListOf()
+        session.events.listen<WorldUpdateEvent> { updates += it.update }
+
+        return updates
+    }
+
+}

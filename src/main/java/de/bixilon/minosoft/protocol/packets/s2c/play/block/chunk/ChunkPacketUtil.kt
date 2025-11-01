@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
@@ -40,15 +40,15 @@ import java.util.*
 
 object ChunkPacketUtil {
 
-    fun readChunkPacket(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, complete: Boolean, containsSkyLight: Boolean): ChunkPrototype? {
+    fun readChunkPacket(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, complete: Boolean, containsSkyLight: Boolean): ChunkData? {
         if (buffer.versionId < V_15W35A) { // ToDo: was this really changed in 62?
             return readLegacyChunk(buffer, dimension, sectionBitMask, addBitMask, complete, containsSkyLight)
         }
         return readPaletteChunk(buffer, dimension, sectionBitMask, complete, containsSkyLight)
     }
 
-    private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, complete: Boolean, containsSkyLight: Boolean): ChunkPrototype {
-        val chunkData = ChunkPrototype()
+    private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, complete: Boolean, containsSkyLight: Boolean): ChunkData {
+        val chunkData = ChunkData()
 
         val totalBytes = ChunkSize.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val halfBytes = totalBytes / 2
@@ -106,7 +106,7 @@ object ChunkPacketUtil {
         return chunkData
     }
 
-    fun readLegacyChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkPrototype? {
+    fun readLegacyChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData? {
         if (sectionBitMask.length() == 0 && isFullChunk) {
             // unload chunk
             return null
@@ -115,7 +115,7 @@ object ChunkPacketUtil {
         if (buffer.versionId < V_14W26A) {
             return readLegacyChunkWithAddBitSet(buffer, dimension, sectionBitMask, addBitMask!!, isFullChunk, containsSkyLight)
         }
-        val chunkData = ChunkPrototype()
+        val chunkData = ChunkData()
 
         val totalEntries: Int = ChunkSize.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2
@@ -150,8 +150,8 @@ object ChunkPacketUtil {
         return chunkData
     }
 
-    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, complete: Boolean, skylight: Boolean = false): ChunkPrototype {
-        val chunkData = ChunkPrototype()
+    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, complete: Boolean, skylight: Boolean = false): ChunkData {
+        val chunkData = ChunkData()
         val sectionBlocks: Array<Array<BlockState?>?> = arrayOfNulls(dimension.sections)
         val light: Array<LightArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0

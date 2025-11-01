@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.chunk.light.section
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLightUtil.hasSkyLight
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourArray
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
@@ -86,7 +86,7 @@ class ChunkSkyLight(
         section.light.traceSkyLightDown(InSectionPosition(x, y.inSectionHeight, z), Directions.DOWN, y)
     }
 
-    private fun floodFill(neighbours: ChunkNeighbourArray, x: Int, z: Int) {
+    private fun floodFill(neighbours: ChunkNeighbours, x: Int, z: Int) {
         val heightmapIndex = (z shl 4) or x
         val maxHeight = light.heightmap[heightmapIndex]
 
@@ -124,11 +124,11 @@ class ChunkSkyLight(
 
     fun floodFill(x: Int, z: Int) {
         if (!this.chunk.neighbours.complete) return
-        floodFill(chunk.neighbours.neighbours, x, z)
+        floodFill(chunk.neighbours, x, z)
     }
 
     private fun floodFill() {
-        val neighbours = this.chunk.neighbours.neighbours
+        val neighbours = this.chunk.neighbours
         if (!this.chunk.neighbours.complete) return
         for (z in 0 until ChunkSize.SECTION_WIDTH_Z) {
             for (x in 0 until ChunkSize.SECTION_WIDTH_X) {
@@ -145,7 +145,7 @@ class ChunkSkyLight(
         calculate()
     }
 
-    fun getNeighbourMinHeight(neighbours: ChunkNeighbourArray, x: Int, z: Int, heightmapIndex: Int = (z shl 4) or x): Int {
+    fun getNeighbourMinHeight(neighbours: ChunkNeighbours, x: Int, z: Int, heightmapIndex: Int = (z shl 4) or x): Int {
         return minOf(
             if (x > 0) {
                 light.heightmap[heightmapIndex - 1]

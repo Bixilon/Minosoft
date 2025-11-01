@@ -26,12 +26,11 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateTestUtil.collectUpdates
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.test.ITUtil.allocate
@@ -150,47 +149,39 @@ class ChunkSectionTest {
 
     fun `fire block change when block is set`() {
         val section = create()
-        var fired = 0
-        section.chunk.world.session.events.listen<WorldUpdateEvent> {
-            val update = it.update as SingleBlockUpdate
-            assertEquals(update.position, BlockPosition(2, 35, 4))
-            assertEquals(update.state, TestBlockStates.TEST1)
-            fired++
-        }
+
+        val updates = section.chunk.world.collectUpdates()
+
         section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST1
 
-        assertEquals(fired, 1)
+        assertEquals(updates, listOf(
+            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST1),
+        ))
     }
 
     fun `fire block change when block is removed`() {
         val section = create()
         section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST1
 
-        var fired = 0
-        section.chunk.world.session.events.listen<WorldUpdateEvent> {
-            val update = it.update as SingleBlockUpdate
-            assertEquals(update.position, BlockPosition(2, 35, 4))
-            assertEquals(update.state, null)
-            fired++
-        }
+        val updates = section.chunk.world.collectUpdates()
+
         section[InSectionPosition(2, 3, 4)] = null
 
-        assertEquals(fired, 1)
+        assertEquals(updates, listOf(
+            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), null),
+        ))
     }
 
     fun `fire block change when block is replaced`() {
         val section = create()
         section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST1
 
-        var fired = 0
-        section.chunk.world.session.events.listen<WorldUpdateEvent> {
-            val update = it.update as SingleBlockUpdate
-            assertEquals(update.position, BlockPosition(2, 35, 4))
-            assertEquals(update.state, TestBlockStates.TEST2)
-            fired++
-        }
+        val updates = section.chunk.world.collectUpdates()
+
         section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST2
 
-        assertEquals(fired, 1)
+        assertEquals(updates, listOf(
+            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST2),
+        ))
     }
 }

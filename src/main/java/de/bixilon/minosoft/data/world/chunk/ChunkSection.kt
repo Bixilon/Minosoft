@@ -54,13 +54,13 @@ class ChunkSection(
         if (previous?.block != state?.block) {
             entities[position] = null
         }
-        val entity = entities.update(position)
+        entities.update(position)
 
         if (chunk.world.dimension.light) {
             chunk.light.onBlockChange(InChunkPosition(position.x, this.height * ChunkSize.SECTION_HEIGHT_Y + position.y, position.z), this, previous, state)
         }
 
-        SingleBlockUpdate(BlockPosition.of(chunk.position, height, position), chunk, state, entity).fire(chunk.world.session)
+        SingleBlockUpdate(chunk, BlockPosition.of(chunk.position, height, position), state).fire(chunk.world.session)
     }
 
     fun traceBlock(offset: BlockPosition): BlockState? {

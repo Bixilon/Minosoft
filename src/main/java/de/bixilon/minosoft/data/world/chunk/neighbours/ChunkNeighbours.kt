@@ -14,25 +14,30 @@
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
 import de.bixilon.kutil.exception.Unreachable
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourUtil.neighbourIndex
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import kotlin.math.abs
 
 class ChunkNeighbours(val chunk: Chunk) {
-    val neighbours = ChunkNeighbourArray()
+    val array: Array<Chunk?> = arrayOfNulls(ChunkNeighbourUtil.COUNT)
     private var count = 0
 
-    val complete: Boolean get() = count == ChunkNeighbourArray.COUNT
+    val complete: Boolean get() = count == ChunkNeighbourUtil.COUNT
 
+    @JvmName("setOffset")
     operator fun set(offset: ChunkPosition, chunk: Chunk) {
         this.chunk.lock.lock()
-        val current = neighbours[offset]
-        neighbours[offset] = chunk
+        val index = offset.neighbourIndex
+        val current = array[index]
+        array[index] = chunk
         if (current == null) {
             count++
         }
@@ -42,9 +47,10 @@ class ChunkNeighbours(val chunk: Chunk) {
 
     fun remove(offset: ChunkPosition) {
         chunk.lock.lock()
-        val current = neighbours[offset]
+        val index = offset.neighbourIndex
+        val current = array[index]
         if (current != null) {
-            neighbours[offset] = null
+            array[index] = null
             count--
         }
         updateNeighbours()
@@ -81,13 +87,14 @@ class ChunkNeighbours(val chunk: Chunk) {
         }
 
         if (complete) {
-            chunk.light.recalculate(false)
-            chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)
+            chunk.light.recalculate(false, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
+            chunk.light.propagateFromNeighbours(fireEvent = false, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
         }
     }
 
     operator fun get(direction: Directions): Chunk? {
-        return neighbours[direction]
+        assert(direction.axis != Axes.Y) { "There are no vertical neighbours!" }
+        return this.array[ChunkNeighbourUtil.BY_DIRECTION[direction.ordinal]]
     }
 
     operator fun get(offset: ChunkPosition): Chunk? {
@@ -97,16 +104,20 @@ class ChunkNeighbours(val chunk: Chunk) {
 
     fun traceChunk(offset: ChunkPosition): Chunk? {
         if (offset == ChunkPosition.EMPTY) return chunk
-        if (abs(offset.x) <= 1 && abs(offset.z) <= 1) return this.neighbours[offset]
+        if (abs(offset.x) <= 1 && abs(offset.z) <= 1) return this.array[offset.neighbourIndex]
 
         // TODO: optimize diagonal trace
         return when {
-            offset.z < 0 -> neighbours[Directions.NORTH]?.neighbours?.traceChunk(offset.plusZ())
-            offset.z > 0 -> neighbours[Directions.SOUTH]?.neighbours?.traceChunk(offset.minusZ())
-            offset.x < 0 -> neighbours[Directions.WEST]?.neighbours?.traceChunk(offset.plusX())
-            offset.x > 0 -> neighbours[Directions.EAST]?.neighbours?.traceChunk(offset.minusX())
+            offset.z < 0 -> this[Directions.NORTH]?.neighbours?.traceChunk(offset.plusZ())
+            offset.z > 0 -> this[Directions.SOUTH]?.neighbours?.traceChunk(offset.minusZ())
+            offset.x < 0 -> this[Directions.WEST]?.neighbours?.traceChunk(offset.plusX())
+            offset.x > 0 -> this[Directions.EAST]?.neighbours?.traceChunk(offset.minusX())
             else -> Unreachable()
         }
+    }
+
+    operator fun set(offset: ChunkPosition, chunk: Chunk?) {
+        this.array[offset.neighbourIndex] = chunk
     }
 
     fun traceBlock(position: BlockPosition): BlockState? {

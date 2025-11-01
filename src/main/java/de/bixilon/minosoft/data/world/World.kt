@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
 import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
@@ -54,7 +55,7 @@ class World(
     val lock = RWLock.rwlock()
     val random = Random()
     val biomes = WorldBiomes(this)
-    val chunks = ChunkManager(this, 1000, 100)
+    val chunks = ChunkManager(this, 1000)
     val entities = WorldEntities()
     var hardcore by observed(false)
     var dimension: DimensionProperties by observed(DimensionProperties())
@@ -182,7 +183,7 @@ class World(
                 if (heightmap) {
                     chunk.light.heightmap.recalculate()
                 }
-                chunk.light.calculate()
+                chunk.light.calculate(true, ChunkLightUpdate.Causes.RECALCULATE)
             }
         }
         lock.release()

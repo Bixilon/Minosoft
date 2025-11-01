@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -34,7 +34,7 @@ class ChunkLightS2CP(
 ) : PlayS2CPacket {
     var recalculateNeighbours: Boolean = false
         private set
-    val prototype: ChunkPrototype
+    val prototype: ChunkData
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3 && buffer.versionId < ProtocolVersions.V_23W17A) {
@@ -57,7 +57,7 @@ class ChunkLightS2CP(
     }
 
     override fun handle(session: PlaySession) {
-        session.world.chunks[position] = this.prototype
+        session.world.chunks.update(position, this.prototype, false)
     }
 
     companion object : PacketExtraHandler {

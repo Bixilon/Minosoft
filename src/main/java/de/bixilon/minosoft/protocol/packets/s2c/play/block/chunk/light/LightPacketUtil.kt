@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkData
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
@@ -25,7 +25,7 @@ import java.util.*
 object LightPacketUtil {
     val EMPTY_LIGHT_ARRAY = ByteArray(ChunkSize.BLOCKS_PER_SECTION / 2)
 
-    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkPrototype {
+    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkData {
         val skyLight = if (dimension.skyLight || buffer.versionId > V_1_16) { // ToDo: find out version
             readLightArray(buffer, skyLightMask, emptySkyLightMask, dimension)
         } else {
@@ -33,7 +33,7 @@ object LightPacketUtil {
         }
         val blockLight = readLightArray(buffer, blockLightMask, emptyBlockLightMask, dimension)
 
-        val chunkData = ChunkPrototype()
+        val chunkData = ChunkData()
         val light: Array<LightArray?> = arrayOfNulls(dimension.sections)
 
         for (i in light.indices) {
