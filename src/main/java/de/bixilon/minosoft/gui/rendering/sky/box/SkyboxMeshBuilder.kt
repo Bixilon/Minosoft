@@ -31,16 +31,16 @@ class SkyboxMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, Posit
         addIndexQuad(false, true)
 
         addVertex(-1.0f, +1.0f, -1.0f)
-        addVertex(-1.0f, +1.0f, +1.0f)
-        addVertex(+1.0f, +1.0f, +1.0f)
         addVertex(+1.0f, +1.0f, -1.0f)
+        addVertex(+1.0f, +1.0f, +1.0f)
+        addVertex(-1.0f, +1.0f, +1.0f)
         addIndexQuad(false, true)
 
 
         addVertex(-1.0f, -1.0f, -1.0f)
-        addVertex(-1.0f, +1.0f, -1.0f)
-        addVertex(+1.0f, +1.0f, -1.0f)
         addVertex(+1.0f, -1.0f, -1.0f)
+        addVertex(+1.0f, +1.0f, -1.0f)
+        addVertex(-1.0f, +1.0f, -1.0f)
         addIndexQuad(false, true)
 
         addVertex(-1.0f, -1.0f, +1.0f)
@@ -51,9 +51,9 @@ class SkyboxMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, Posit
 
 
         addVertex(-1.0f, -1.0f, -1.0f)
-        addVertex(-1.0f, -1.0f, +1.0f)
-        addVertex(-1.0f, +1.0f, +1.0f)
         addVertex(-1.0f, +1.0f, -1.0f)
+        addVertex(-1.0f, +1.0f, +1.0f)
+        addVertex(-1.0f, -1.0f, +1.0f)
         addIndexQuad(false, true)
 
         addVertex(+1.0f, -1.0f, -1.0f)

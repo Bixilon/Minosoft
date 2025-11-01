@@ -51,11 +51,11 @@ interface CachedGuiVertexConsumer : GuiVertexConsumer {
 
         val color = options.finalTint(tint)
 
-
+        // y is swapped, opengl y starts in the middle, while out logic starts up left
         addVertex(startX, startY, uvStart, texture, color)
-        addVertex(startX, endY, PackedUV(uvStart.u, uvEnd.v), texture, color)
-        addVertex(endX, endY, uvEnd, texture, color)
         addVertex(endX, startY, PackedUV(uvEnd.u, uvStart.v), texture, color)
+        addVertex(endX, endY, uvEnd, texture, color)
+        addVertex(startX, endY, PackedUV(uvStart.u, uvEnd.v), texture, color)
     }
 
     override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
@@ -74,11 +74,11 @@ interface CachedGuiVertexConsumer : GuiVertexConsumer {
         val endY = 1.0f - end.y / halfSize.y
 
 
-
+        // y is swapped, opengl y starts in the middle, while out logic starts up left
         addVertex(startX + topOffset, startY, PackedUV(uvStart), texture, tint)
-        addVertex(startX, endY, PackedUV(uvStart.x, uvEnd.y), texture, tint)
-        addVertex(endX, endY, PackedUV(uvEnd), texture, tint)
         addVertex(endX + topOffset, startY, PackedUV(uvEnd.x, uvStart.y), texture, tint)
+        addVertex(endX, endY, PackedUV(uvEnd), texture, tint)
+        addVertex(startX, endY, PackedUV(uvStart.x, uvEnd.y), texture, tint)
     }
 
     fun add(cache: CachedGuiVertexConsumer) {
