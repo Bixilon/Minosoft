@@ -119,7 +119,7 @@ class Chunk(
         }
 
 
-        ChunkLocalBlockUpdate(this, executed.toTypedArray()).fire(world.session)
+        ChunkLocalBlockUpdate(this, executed).fire(world.session)
         light.fireLightChange(Causes.BLOCK_CHANGE)
     }
 

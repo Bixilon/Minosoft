@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 
-class ChunkDataUpdate(
+data class ChunkDataUpdate(
     override val chunk: Chunk,
     val sections: Set<ChunkSection>,
 ) : AbstractWorldUpdate

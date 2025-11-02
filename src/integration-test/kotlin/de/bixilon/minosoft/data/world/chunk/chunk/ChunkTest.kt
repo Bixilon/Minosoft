@@ -98,23 +98,19 @@ class ChunkTest {
 
     fun `trigger update event`() {
         val chunk = create()
-        val updates = arrayOf(
+        val updates = setOf(
             ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1),
             ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2),
         )
 
-        var fired = 0
+        val events = chunk.world.collectUpdates()
 
-        chunk.world.session.events.listen<WorldUpdateEvent> {
-            val update = it.update as ChunkLocalBlockUpdate
-            assertSame(update.chunk, chunk)
-            assertEquals(update.change.size, 2)
-            assertEquals(update.change.toSet(), updates.toSet())
-            fired++
-        }
-        chunk.apply(*updates)
+        chunk.apply(*updates.toTypedArray())
 
-        assertEquals(fired, 1)
+
+        assertEquals(events, listOf(
+            ChunkLocalBlockUpdate(chunk, updates),
+        ))
     }
 
     fun `trigger update event only changes`() {
@@ -132,7 +128,7 @@ class ChunkTest {
 
 
         assertEquals(updates, listOf(
-            ChunkLocalBlockUpdate(chunk, arrayOf(update1)),
+            ChunkLocalBlockUpdate(chunk, setOf(update1)),
         ))
     }
 

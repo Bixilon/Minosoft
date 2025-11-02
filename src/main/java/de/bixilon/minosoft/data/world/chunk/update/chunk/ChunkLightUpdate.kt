@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 
-class ChunkLightUpdate(
+data class ChunkLightUpdate(
     override val chunk: Chunk,
     val section: ChunkSection,
     val cause: Causes,

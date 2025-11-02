@@ -16,6 +16,6 @@ package de.bixilon.minosoft.data.world.chunk.update.chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 
-class NeighbourSetUpdate(
+data class NeighbourSetUpdate(
     override val chunk: Chunk,
 ) : AbstractWorldUpdate
