@@ -43,7 +43,7 @@ class WorldBiomesTest {
         return session.world
     }
 
-    fun `simple biome getting at origin chunk`() {
+    fun `from world`() {
         val world = create(null) { if (it.x == 0 && it.z == 0) PositionedSource(InChunkPosition(1, 2, 3), b1, b3) else DummyBiomeSource(b2) }
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(world.biomes[BlockPosition(1, 2, 4)], b3)
@@ -51,72 +51,61 @@ class WorldBiomesTest {
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(world.biomes[BlockPosition(1, 2, 4)], b3)
         assertEquals(world.biomes[BlockPosition(16, 2, 4)], b2)
+    }
+
+    fun `from chunk`() {
+        val world = create(null) { if (it.x == 0 && it.z == 0) PositionedSource(InChunkPosition(1, 2, 3), b1, b3) else DummyBiomeSource(b2) }
         val chunk = world.chunks[0, 0]!!
-        assertEquals(world.biomes[InChunkPosition(1, 2, 3), chunk], b1)
-        assertEquals(world.biomes[InChunkPosition(1, 2, 4), chunk], b3)
         assertEquals(chunk.getBiome(InChunkPosition(1, 2, 3)), b1)
         assertEquals(chunk.getBiome(InChunkPosition(1, 2, 4)), b3)
     }
 
-    fun `simple biome getting at chunk -1, -1`() {
+    fun `from world with chunk `() {
+        val world = create(null) { if (it.x == 0 && it.z == 0) PositionedSource(InChunkPosition(1, 2, 3), b1, b3) else DummyBiomeSource(b2) }
+        val chunk = world.chunks[0, 0]!!
+        assertEquals(world.biomes[InChunkPosition(1, 2, 3), chunk], b1)
+        assertEquals(world.biomes[InChunkPosition(1, 2, 4), chunk], b3)
+    }
+
+    fun `from world with negative coordinates`() {
         val world = create(null) { if (it.x == -1 && it.z == -1) PositionedSource(InChunkPosition(15, 2, 14), b1, b3) else DummyBiomeSource(b2) }
         assertEquals(world.biomes[BlockPosition(-1, 2, -2)], b1)
         assertEquals(world.biomes[BlockPosition(-1, 2, -6)], b3)
         assertEquals(world.biomes[BlockPosition(1, 2, 6)], b2)
         assertEquals(world.biomes[BlockPosition(-1, 2, -2)], b1)
-        val chunk = world.chunks[-1, -1]!!
-        assertEquals(world.biomes[InChunkPosition(15, 2, 14), chunk], b1)
-        assertEquals(world.biomes[InChunkPosition(15, 2, 13), chunk], b3)
-        assertEquals(chunk.getBiome(InChunkPosition(15, 2, 14)), b1)
-        assertEquals(chunk.getBiome(InChunkPosition(15, 2, 13)), b3)
     }
 
-    fun `ensure no caching is done without noise`() {
+    fun `cache is disabled when not using noise`() {
         val source = CounterSource(b1)
         val world = create(null) { source }
         val chunk = world.chunks[0, 0]!!
-        chunk.getOrPut(0)
+        chunk.sections.create(0)
 
         assertEquals(source.counter, 0)
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(source.counter, 1)
-        assertFalse(chunk.cacheBiomes)
-        assertEquals(chunk[0]!!.biomes[1, 2, 3], null)
+        assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
+        assertEquals(source.counter, 2)
     }
 
-    fun `ensure caching is done with noise`() {
+    fun `cache is used with noise`() {
         val source = CounterSource(b1)
         val world = create({ FastNoiseAccessor(it.world) }) { source }
         val chunk = world.chunks[0, 0]!!
-        chunk.getOrPut(0)
+        chunk.sections.create(0)
 
         assertEquals(source.counter, 0) // biomes ore on demand
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(source.counter, 1)
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(source.counter, 1) // don't query again
-        assertTrue(chunk.cacheBiomes)
-        assertEquals(chunk[0]!!.biomes[1, 2, 3], b1)
     }
 
-    fun `ensure world position is converted to chunk position`() {
-        val source = VerifyPositionSource(b1)
-        val world = create(null) { source }
-
-        assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
-        assertEquals(world.biomes[BlockPosition(16, 2, 4)], b1)
-        assertEquals(world.biomes[BlockPosition(-4, 2, -4)], b1)
-
-        assertEquals(world.biomes[BlockPosition(-4, -2, -4)], b1)
-        assertEquals(world.biomes[BlockPosition(-4, 1024, -4)], b1)
-    }
-
-
-    fun `ensure caching is properly cleared`() {
+    fun `ensure cache is properly cleared`() {
         val source = CounterSource(b1)
         val world = create({ FastNoiseAccessor(it.world) }) { source }
         val chunk = world.chunks[0, 0]!!
-        chunk.getOrPut(0)
+        chunk.sections.create(0)
 
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(source.counter, 1)
@@ -151,15 +140,6 @@ class WorldBiomesTest {
         }
     }
 
-    private class VerifyPositionSource(val biome: Biome?) : BiomeSource {
-        override fun get(position: InChunkPosition): Biome? {
-            if (position.x < 0 || position.x > 15) throw IllegalArgumentException("Invalid x: ${position.x}")
-            if (position.y < 0 || position.y > 255) throw IllegalArgumentException("Invalid y: ${position.y}")
-            if (position.z < 0 || position.z > 15) throw IllegalArgumentException("Invalid z: ${position.z}")
-
-            return biome
-        }
-    }
 
     private class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
 
