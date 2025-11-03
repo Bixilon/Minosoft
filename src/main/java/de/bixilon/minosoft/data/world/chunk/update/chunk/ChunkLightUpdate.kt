@@ -24,10 +24,10 @@ data class ChunkLightUpdate(
 ) : AbstractWorldUpdate {
 
     enum class Causes {
-        UNKNOWN,
+        INITIAL,
         RECALCULATE,
         BLOCK_CHANGE,
-        NEIGHBOUR_CHANGE,
+        PROPAGATION,
         ;
     }
 }

@@ -115,12 +115,23 @@ class Chunk(
             if (executed.isEmpty()) return
 
             light.heightmap.recalculate() // TODO: Only changed ones
-            light.recalculate(fireEvent = false, cause = Causes.UNKNOWN)
+            light.recalculate(fireEvent = false, cause = Causes.INITIAL)
         }
 
+        if (neighbours.complete) {
+            val sections: HashSet<ChunkSection> = hashSetOf()
+
+            for (change in executed) {
+                sections += this[change.position.sectionHeight] ?: continue
+            }
+
+            for (section in sections) {
+                light.fireLightChange(section, Causes.BLOCK_CHANGE)
+            }
+            light.fireLightChange(Causes.PROPAGATION)
+        }
 
         ChunkLocalBlockUpdate(this, executed).fire(world.session)
-        light.fireLightChange(Causes.BLOCK_CHANGE)
     }
 
     @Deprecated("sections.create")

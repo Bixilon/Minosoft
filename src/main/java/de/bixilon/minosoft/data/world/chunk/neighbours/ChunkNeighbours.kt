@@ -87,8 +87,8 @@ class ChunkNeighbours(val chunk: Chunk) {
         }
 
         if (complete) {
-            chunk.light.recalculate(false, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
-            chunk.light.propagateFromNeighbours(fireEvent = false, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
+            chunk.light.recalculate(false, ChunkLightUpdate.Causes.INITIAL)
+            chunk.light.propagateFromNeighbours(fireEvent = false, ChunkLightUpdate.Causes.INITIAL)
         }
     }
 

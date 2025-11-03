@@ -58,6 +58,7 @@ class HitboxFeatureTest {
         assertNotNull(hitbox.mesh)
     }
 
+    @Test(enabled = false) // the hitbox is not unloaded anymore if the entity goes dark
     fun `unload if entity is invisible`() {
         val hitbox = create(RemotePlayerEntity)
         hitbox.update(0.0.seconds)

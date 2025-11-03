@@ -53,27 +53,16 @@ class ChunkLight(
     }
 
 
-    fun fireLightChange(section: ChunkSection, cause: ChunkLightUpdate.Causes) {
-        if (!section.light.update) {
-            return
+    private fun getNeighbourEvents(section: ChunkSection, cause: ChunkLightUpdate.Causes, events: HashSet<AbstractWorldUpdate>) {
+        val down = section.neighbours[Directions.O_DOWN]
+        if (down != null && down.light.update) {
+            down.light.update = false
+            events += ChunkLightUpdate(chunk, down, cause)
         }
-        section.light.update = false
-
-        val events = hashSetOf<AbstractWorldUpdate>()
-
-        if (cause != ChunkLightUpdate.Causes.BLOCK_CHANGE) { // TODO?
-            events += ChunkLightUpdate(chunk, section, cause)
-
-            val down = section.neighbours[Directions.O_DOWN]
-            if (down != null && down.light.update) {
-                down.light.update = false
-                events += ChunkLightUpdate(chunk, down, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
-            }
-            val up = section.neighbours[Directions.O_UP]
-            if (up != null && up.light.update) {
-                up.light.update = false
-                events += ChunkLightUpdate(chunk, up, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
-            }
+        val up = section.neighbours[Directions.O_UP]
+        if (up != null && up.light.update) {
+            up.light.update = false
+            events += ChunkLightUpdate(chunk, up, cause)
         }
 
 
@@ -90,11 +79,29 @@ class ChunkLight(
                         continue
                     }
                     neighbourSection.light.update = false
-                    events += ChunkLightUpdate(chunk, neighbourSection, ChunkLightUpdate.Causes.NEIGHBOUR_CHANGE)
+                    events += ChunkLightUpdate(chunk, neighbourSection, cause)
                 }
             }
         }
-        for (event in events) event.fire(chunk.world.session)
+    }
+
+    fun fireLightChange(section: ChunkSection, cause: ChunkLightUpdate.Causes) {
+        if (!section.light.update) {
+            return
+        }
+        section.light.update = false
+
+        val events = hashSetOf<AbstractWorldUpdate>()
+        events += ChunkLightUpdate(chunk, section, cause)
+
+        if (cause != ChunkLightUpdate.Causes.RECALCULATE) { // do not fire multiple events per section
+            getNeighbourEvents(section, cause, events)
+        }
+
+
+        for (event in events) {
+            event.fire(chunk.world.session)
+        }
     }
 
     fun fireLightChange(cause: ChunkLightUpdate.Causes) {
