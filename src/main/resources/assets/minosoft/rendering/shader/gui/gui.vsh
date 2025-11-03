@@ -14,7 +14,7 @@
 #version 330 core
 
 layout (location = 0) in vec2 vinPosition;
-layout (location = 1) in float vinUV;
+layout (location = 1) in vec2 vinUV;
 layout (location = 2) in float vinIndexLayerAnimation;
 layout (location = 3) in float vinTintColor;
 
@@ -28,7 +28,5 @@ void main() {
     gl_Position = vec4(vinPosition.xy, 0.0f, 1.0f);
     finTintColor = getRGBAColor(floatBitsToUint(vinTintColor));
 
-    vec2 uv = uv_unpack(floatBitsToUint(vinUV));
-
-    setTexture(uv, vinIndexLayerAnimation);
+    setTexture(vinUV, vinIndexLayerAnimation);
 }

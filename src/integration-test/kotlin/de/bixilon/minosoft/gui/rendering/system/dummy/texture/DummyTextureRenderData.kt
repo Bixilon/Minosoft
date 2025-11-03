@@ -23,5 +23,7 @@ object DummyTextureRenderData : TextureRenderData {
 
     override fun transformUV(uv: Vec2f) = uv
     override fun transformUV(u: Float, v: Float) = PackedUV(u, v)
+    override fun transformU(u: Float) = u
+    override fun transformV(v: Float) = v
     override fun transformUV(uv: PackedUV): PackedUV = uv
 }

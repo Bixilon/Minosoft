@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.IndexUtil
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 class GuiMeshBuilder(
     context: RenderContext,
@@ -72,7 +71,7 @@ class GuiMeshBuilder(
 
     data class GUIMeshStruct(
         val position: Vec2f,
-        val uv: PackedUV,
+        val uv: Vec2f,
         val texture: ShaderTexture,
         val tint: RGBAColor,
     ) {

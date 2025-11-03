@@ -20,8 +20,11 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 interface ShaderTexture : ShaderIdentifiable {
     val transparency: TextureTransparencies
 
-    @Deprecated("packed uv")
     fun transformUV(uv: Vec2f): Vec2f
     fun transformUV(u: Float, v: Float): PackedUV
+
+    fun transformU(u: Float): Float
+    fun transformV(v: Float): Float
+
     fun transformUV(uv: PackedUV): PackedUV
 }

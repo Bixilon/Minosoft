@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProp
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 interface CachedGuiVertexConsumer : GuiVertexConsumer {
@@ -32,10 +31,10 @@ interface CachedGuiVertexConsumer : GuiVertexConsumer {
     override fun addQuad(positions: FloatArray, uv: PackedUVArray, texture: ShaderTexture, tint: RGBAColor, options: GUIVertexOptions?) {
         val color = options.finalTint(tint)
 
-        addVertex(positions[0 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[0 * Vec2f.LENGTH + 1] / halfSize.y, uv[0], texture, color)
-        addVertex(positions[1 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[1 * Vec2f.LENGTH + 1] / halfSize.y, uv[1], texture, color)
-        addVertex(positions[2 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[2 * Vec2f.LENGTH + 1] / halfSize.y, uv[2], texture, color)
-        addVertex(positions[3 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[3 * Vec2f.LENGTH + 1] / halfSize.y, uv[3], texture, color)
+        addVertex(positions[0 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[0 * Vec2f.LENGTH + 1] / halfSize.y, uv[0].u, uv[0].v, texture, color)
+        addVertex(positions[1 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[1 * Vec2f.LENGTH + 1] / halfSize.y, uv[1].u, uv[1].v, texture, color)
+        addVertex(positions[2 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[2 * Vec2f.LENGTH + 1] / halfSize.y, uv[2].u, uv[2].v, texture, color)
+        addVertex(positions[3 * Vec2f.LENGTH + 0] / halfSize.x - 1.0f, 1.0f - positions[3 * Vec2f.LENGTH + 1] / halfSize.y, uv[3].u, uv[3].v, texture, color)
     }
 
     override fun addQuad(startX: Float, startY: Float, endX: Float, endY: Float, texture: ShaderTexture, uvStartX: Float, uvStartY: Float, uvEndX: Float, uvEndY: Float, tint: RGBAColor, options: GUIVertexOptions?) {
@@ -45,17 +44,20 @@ interface CachedGuiVertexConsumer : GuiVertexConsumer {
         val endX = endX / halfSize.x - 1.0f
         val endY = 1.0f - endY / halfSize.y
 
-        val uvStart = texture.transformUV(uvStartX, uvStartY)
-        val uvEnd = texture.transformUV(uvEndX, uvEndY)
+        val uvStartX = texture.transformU(uvStartX)
+        val uvStartY = texture.transformV(uvStartY)
+
+        val uvEndX = texture.transformU(uvEndX)
+        val uvEndY = texture.transformV(uvEndY)
 
 
         val color = options.finalTint(tint)
 
         // y is swapped, opengl y starts in the middle, while out logic starts up left
-        addVertex(startX, startY, uvStart, texture, color)
-        addVertex(endX, startY, PackedUV(uvEnd.u, uvStart.v), texture, color)
-        addVertex(endX, endY, uvEnd, texture, color)
-        addVertex(startX, endY, PackedUV(uvStart.u, uvEnd.v), texture, color)
+        addVertex(startX, startY, uvStartX, uvStartY, texture, color)
+        addVertex(endX, startY, uvEndX, uvStartY, texture, color)
+        addVertex(endX, endY, uvEndX, uvEndY, texture, color)
+        addVertex(startX, endY, uvStartX, uvEndY, texture, color)
     }
 
     override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
@@ -75,10 +77,10 @@ interface CachedGuiVertexConsumer : GuiVertexConsumer {
 
 
         // y is swapped, opengl y starts in the middle, while out logic starts up left
-        addVertex(startX + topOffset, startY, PackedUV(uvStart), texture, tint)
-        addVertex(endX + topOffset, startY, PackedUV(uvEnd.x, uvStart.y), texture, tint)
-        addVertex(endX, endY, PackedUV(uvEnd), texture, tint)
-        addVertex(startX, endY, PackedUV(uvStart.x, uvEnd.y), texture, tint)
+        addVertex(startX + topOffset, startY, uvStart.x, uvStart.y, texture, tint)
+        addVertex(endX + topOffset, startY, uvEnd.x, uvStart.y, texture, tint)
+        addVertex(endX, endY, uvEnd.x, uvEnd.y, texture, tint)
+        addVertex(startX, endY, uvStart.x, uvEnd.y, texture, tint)
     }
 
     fun add(cache: CachedGuiVertexConsumer) {
@@ -88,9 +90,9 @@ interface CachedGuiVertexConsumer : GuiVertexConsumer {
 
     companion object {
 
-        inline fun CachedGuiVertexConsumer.addVertex(x: Float, y: Float, uv: PackedUV, texture: ShaderTexture, tint: RGBAColor) = data.add(
+        inline fun CachedGuiVertexConsumer.addVertex(x: Float, y: Float, u: Float, v: Float, texture: ShaderTexture, tint: RGBAColor) = data.add(
             x, y,
-            uv.raw,
+            u, v,
             texture.shaderId.buffer(),
             tint.rgba.buffer(),
         )
