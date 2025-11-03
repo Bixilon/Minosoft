@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.world.chunk.manager.size.WorldSizeManager
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourUtil
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -100,7 +99,7 @@ class ChunkManager(
             return@locked create(position)
         }
 
-        val updates = data.update(chunk, replace && !created)
+        data.update(chunk, replace && !created)
 
         if (created) {
             for (neighbour in chunk.neighbours.array) {
@@ -112,9 +111,6 @@ class ChunkManager(
         size.onCreate(chunk.position)
         world.view.updateServerDistance()
 
-        if (updates != null) {
-            ChunkDataUpdate(chunk, updates).fire(world.session)
-        }
         revision++
 
         return chunk

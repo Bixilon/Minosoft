@@ -18,8 +18,10 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.block.TestBlockEntities
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
@@ -112,7 +114,7 @@ class ChunkDataTest {
 
         ChunkData(blocks = Array(16) { if (it == 0) Array(ChunkSize.BLOCKS_PER_SECTION) { if (it == 1) TestBlockStates.ENTITY1 else TestBlockStates.TEST1 } else null }).update(chunk, false)
 
-        assertTrue(chunk.getBlockEntity(InChunkPosition(0, 0, 1)) is TestBlockEntities.TestBlockEntity)
+        assertTrue(chunk.getBlockEntity(InChunkPosition(1, 0, 0)) is TestBlockEntities.TestBlockEntity)
         assertNull(chunk.getBlockEntity(InChunkPosition(0, 0, 2)))
     }
 
@@ -120,10 +122,10 @@ class ChunkDataTest {
         val chunk = create()
 
         val nbt = Int2ObjectOpenHashMap<JsonObject>()
-        nbt[InChunkPosition(0, 0, 1).raw] = mapOf("hello" to "test")
+        nbt[InChunkPosition(1, 0, 0).raw] = mapOf("hello" to "test")
         ChunkData(blocks = Array(16) { if (it == 0) Array(ChunkSize.BLOCKS_PER_SECTION) { if (it == 1) TestBlockStates.ENTITY1 else TestBlockStates.TEST1 } else null }, entities = nbt).update(chunk, false)
 
-        val entity = chunk.getBlockEntity(InChunkPosition(0, 0, 1)).unsafeCast<TestBlockEntities.TestBlockEntity>()
+        val entity = chunk.getBlockEntity(InChunkPosition(1, 0, 0)).unsafeCast<TestBlockEntities.TestBlockEntity>()
         assertEquals(entity.data, mapOf("hello" to "test"))
     }
 
@@ -158,15 +160,19 @@ class ChunkDataTest {
 
         val events = chunk.world.collectUpdates()
 
-        ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }).update(chunk, false)
+        ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }).update(chunk, true)
 
         assertEquals(events, listOf(ChunkDataUpdate(chunk, setOf(chunk.sections[0]!!, chunk.sections[2]!!))))
     }
 
     fun `event on biome source change`() {
         val chunk = create()
-        chunk[InChunkPosition(4, 3, 5)] = TestBlockStates.TEST1 // create block, so sections can be affected
+
+        // create block, so sections can be affected
         chunk.biomeSource = DummyBiomeSource(null)
+        chunk[InChunkPosition(4, 3, 5)] = TestBlockStates.TEST1
+        chunk.sections.create(0)!!.biomes[1, 2, 3] = Biome(minosoft("test"), temperature = 0.0f, downfall = 0.0f)
+
 
         val events = chunk.world.collectUpdates()
 

@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["biomes"])
@@ -94,7 +94,7 @@ class WorldBiomesTest {
         val chunk = world.chunks[0, 0]!!
         chunk.sections.create(0)
 
-        assertEquals(source.counter, 0) // biomes ore on demand
+        assertEquals(source.counter, 0) // biomes are on demand
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
         assertEquals(source.counter, 1)
         assertEquals(world.biomes[BlockPosition(1, 2, 3)], b1)
