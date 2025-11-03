@@ -34,6 +34,11 @@ class EnderChestBlockEntity(session: PlaySession, position: BlockPosition, state
     override fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? {
         val model = context.models.skeletal[SingleChestRenderer.EnderChest.NAME] ?: return null
         this.renderer = SingleChestRenderer(this, context, state, position, model, light)
+
+        if (viewing > 0) {
+            renderer?.open()
+        }
+
         return renderer
     }
 

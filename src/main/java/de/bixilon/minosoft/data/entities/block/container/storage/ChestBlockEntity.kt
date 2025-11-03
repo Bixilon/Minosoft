@@ -39,6 +39,9 @@ open class ChestBlockEntity(session: PlaySession, position: BlockPosition, state
             ChestTypes.LEFT -> DoubleChestRenderer(this, context, state, position, context.models.skeletal[getDoubleModel()] ?: return null, light)
             ChestTypes.RIGHT -> null // Optimized: Only the left one is rendered
         }
+        if (viewing > 0) {
+            renderer?.open()
+        }
         return this.renderer
     }
 

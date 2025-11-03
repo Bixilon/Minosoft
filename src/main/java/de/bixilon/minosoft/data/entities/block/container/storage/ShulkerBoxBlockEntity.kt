@@ -41,6 +41,10 @@ class ShulkerBoxBlockEntity(session: PlaySession, position: BlockPosition, state
         val model = context.models.skeletal[name] ?: return null
         this.renderer = ShulkerBoxRenderer(this, context, state, position, model, light)
 
+        if (viewing > 0) {
+            renderer?.open()
+        }
+
         return this.renderer
     }
 
