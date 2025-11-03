@@ -49,9 +49,9 @@ class WorldCharConsumer(
         // uv is already pretransformed
 
         addVertex(start.x + topOffset, start.y, uvStart.x, uvStart.y, texture, tint)
-        addVertex(start.x, end.y, uvStart.x, uvEnd.y, texture, tint)
-        addVertex(end.x, end.y, uvEnd.x, uvEnd.y, texture, tint)
         addVertex(end.x + topOffset, start.y, uvEnd.x, uvStart.y, texture, tint)
+        addVertex(end.x, end.y, uvEnd.x, uvEnd.y, texture, tint)
+        addVertex(start.x, end.y, uvStart.x, uvEnd.y, texture, tint)
 
         mesh.addIndexQuad()
     }
@@ -59,9 +59,9 @@ class WorldCharConsumer(
 
     override fun addQuad(start: Vec2f, end: Vec2f, tint: RGBAColor, options: GUIVertexOptions?) {
         addVertex(start.x, start.y, 0.0f, 0.0f, null, tint)
-        addVertex(start.x, end.y, 0.0f, 0.0f, null, tint)
-        addVertex(end.x, end.y, 0.0f, 0.0f, null, tint)
         addVertex(end.x, start.y, 0.0f, 0.0f, null, tint)
+        addVertex(end.x, end.y, 0.0f, 0.0f, null, tint)
+        addVertex(start.x, end.y, 0.0f, 0.0f, null, tint)
 
         mesh.addIndexQuad()
     }
