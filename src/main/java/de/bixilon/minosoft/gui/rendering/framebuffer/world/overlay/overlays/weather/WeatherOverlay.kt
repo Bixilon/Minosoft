@@ -48,7 +48,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
         }
 
     private val shader = context.system.shader.create(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
-    private lateinit var mesh: Mesh
+    private var mesh: Mesh? = null
     private var windowSize = Vec2f.EMPTY
 
 
@@ -82,7 +82,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
         this.windowSize = windowSize
 
         this.mesh = mesh.bake()
-        this.mesh.load()
+        this.mesh?.load()
     }
 
     override fun postInit() {
@@ -101,12 +101,12 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
     override fun draw() {
         val windowSize = Vec2f(context.window.size)
         if (this.windowSize != windowSize) {
-            mesh.unload()
+            mesh?.unload()
             updateMesh(windowSize)
         }
         shader.use()
         updateShader()
-        mesh.draw()
+        mesh?.draw()
     }
 
     companion object : OverlayFactory<WeatherOverlay> {
