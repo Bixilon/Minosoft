@@ -26,8 +26,8 @@ class LightHeightmap(chunk: Chunk) : ChunkHeightmap(chunk) {
         chunk.light.sky.calculate()
     }
 
-    override fun onHeightmapUpdate(x: Int, z: Int, previous: Int, now: Int) {
-        if (previous > now) {
+    override fun onHeightmapUpdate(x: Int, z: Int, previousY: Int, y: Int) {
+        if (previousY > y) {
             // block is lower
             return chunk.light.sky.floodFill(x, z)
         }
@@ -36,10 +36,10 @@ class LightHeightmap(chunk: Chunk) : ChunkHeightmap(chunk) {
         val sections = chunk.sections
 
         chunk.light.bottom.reset()
-        for (height in previous.sectionHeight downTo now.sectionHeight) {
+        for (height in previousY.sectionHeight downTo y.sectionHeight) {
             sections[height]?.light?.reset()
         }
-        for (height in previous.sectionHeight downTo now.sectionHeight) {
+        for (height in previousY.sectionHeight downTo y.sectionHeight) {
             sections[height]?.light?.calculate()
         }
         chunk.light.sky.calculate()

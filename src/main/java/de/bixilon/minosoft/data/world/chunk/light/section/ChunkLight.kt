@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 class ChunkLight(
     val chunk: Chunk,
@@ -43,13 +44,20 @@ class ChunkLight(
 
 
     fun onBlockChange(position: InChunkPosition, section: ChunkSection, previous: BlockState?, next: BlockState?) {
+        val previousHeight = heightmap[position]
         heightmap.onBlockChange(position, next)
+        val nextHeight = heightmap[position]
 
         section.light.onBlockChange(position.inSectionPosition, previous, next)
 
         if (!chunk.neighbours.complete) return
 
         fireLightChange(section, ChunkLightUpdate.Causes.BLOCK_CHANGE)
+
+        for (height in minOf(previousHeight, nextHeight).sectionHeight..maxOf(previousHeight, nextHeight).sectionHeight) {
+            val section = chunk.sections[height] ?: continue
+            fireLightChange(section, ChunkLightUpdate.Causes.PROPAGATION)
+        }
     }
 
 
@@ -95,7 +103,7 @@ class ChunkLight(
         events += ChunkLightUpdate(chunk, section, cause)
 
         if (cause != ChunkLightUpdate.Causes.RECALCULATE) { // do not fire multiple events per section
-            getNeighbourEvents(section, cause, events)
+            getNeighbourEvents(section, if (cause == ChunkLightUpdate.Causes.BLOCK_CHANGE) ChunkLightUpdate.Causes.PROPAGATION else cause, events)
         }
 
 

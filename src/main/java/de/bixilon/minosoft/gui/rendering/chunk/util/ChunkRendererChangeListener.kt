@@ -111,6 +111,7 @@ object ChunkRendererChangeListener {
 
     private fun ChunkRenderer.handle(update: ChunkLightUpdate) {
         if (update.cause == ChunkLightUpdate.Causes.BLOCK_CHANGE) return // change is already covered
+        // TODO: Enqueue neighbour sections (light level from cullface)
         master.tryQueue(update.section)
     }
 
