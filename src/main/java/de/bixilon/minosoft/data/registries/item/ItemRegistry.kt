@@ -34,7 +34,7 @@ class ItemRegistry(
             return super.getOrNull(id)
         }
         val itemId = id ushr 16
-        if (itemId shr 4 == ProtocolDefinition.AIR_BLOCK_ID) return null
+        if (itemId == ProtocolDefinition.AIR_BLOCK_ID) return null
 
         val meta = id and 0xFFFF
 
