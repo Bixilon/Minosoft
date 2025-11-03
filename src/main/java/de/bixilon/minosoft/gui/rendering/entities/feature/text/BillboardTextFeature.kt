@@ -44,7 +44,8 @@ open class BillboardTextFeature(
         set(value) {
             if (field == value) return
             field = value
-            unload()
+            info = null
+            unload = true
         }
     var offset: Float = offset
         set(value) {
@@ -113,13 +114,6 @@ open class BillboardTextFeature(
         !isInRenderDistance() -> super.updateVisibility(EntityVisibilityLevels.OUT_OF_VIEW_DISTANCE)
         level == EntityVisibilityLevels.OCCLUDED -> super.updateVisibility(EntityVisibilityLevels.VISIBLE)
         else -> super.updateVisibility(level)
-    }
-
-    override fun isVisible() = text != null && super.isVisible()
-
-    override fun unload() {
-        this.info = null
-        super.unload()
     }
 
     companion object {
