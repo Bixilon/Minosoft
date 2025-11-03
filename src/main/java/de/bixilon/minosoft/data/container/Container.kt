@@ -91,6 +91,8 @@ abstract class Container(
         for (section in sections) {
             for (slot in section) {
                 val item = items[slot]
+                val type = getSlotType(slot) ?: continue
+                if (!type.canPut(this, slot, stack)) continue
                 if (item == null) {
                     if (next == null) {
                         next = slot
