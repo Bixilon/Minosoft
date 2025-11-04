@@ -34,7 +34,7 @@ open class Registry<T : RegistryItem>(
     val codec: IdentifierCodec<T>? = null,
     val integrated: IntegratedRegistry<T>? = null,
     val metaType: MetaTypes = MetaTypes.NONE,
-    var flattened: Boolean = false,
+    var flattened: Boolean = true,
     private val fixer: ResourceLocationFixer? = null,
 ) : AbstractRegistry<T> {
     protected val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()

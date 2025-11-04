@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ItemRegistry(
     parent: Registry<Item>? = null,
-    flattened: Boolean = false,
+    flattened: Boolean = true,
 ) : Registry<Item>(parent = parent, codec = PixLyzerItem, integrated = ItemFactories, flattened = flattened, metaType = MetaTypes.ITEM) {
 
     override fun getOrNull(id: Int): Item? {
