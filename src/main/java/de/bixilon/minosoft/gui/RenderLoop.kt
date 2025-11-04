@@ -36,10 +36,6 @@ class RenderLoop(
 
 
     init {
-        var paused = false
-        context::state.observe(this) {
-            paused = if (paused) false else it == RenderingStates.PAUSED
-        }
         context.profile.performance::slowRendering.observe(this) { this.slowRendering = it }
     }
 
@@ -97,13 +93,13 @@ class RenderLoop(
 
             context.window.swapBuffers()
 
-            // glClear waits for any unfinished operation, so it might swill wait for the buffer swap and makes frame times really long.
+            // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
             context.framebuffer.clear()
             context.system.framebuffer = null
             context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
 
-            if (context.state == RenderingStates.SLOW && slowRendering) {
+            if (context.state == RenderingStates.BACKGROUND && slowRendering) {
                 sleep(100.milliseconds)
             }
 

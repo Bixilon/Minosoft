@@ -126,7 +126,7 @@ object RenderLoader {
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Finishing up (after ${stopwatch.lab().format()})..." }
 
-        window::focused.observeRendering(this) { state = if (it) RenderingStates.RUNNING else RenderingStates.SLOW }
+        window::focused.observeRendering(this) { state = if (it) RenderingStates.RUNNING else RenderingStates.BACKGROUND }
 
         window::iconified.observeRendering(this) { state = if (it) RenderingStates.PAUSED else RenderingStates.RUNNING }
 
@@ -137,7 +137,7 @@ object RenderLoader {
         window::size.observeRendering(this, true) { system.viewport = it }
 
         this::state.observe(this) {
-            if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
+            if (it == RenderingStates.PAUSED || it == RenderingStates.BACKGROUND) {
                 pause()
             }
         }
