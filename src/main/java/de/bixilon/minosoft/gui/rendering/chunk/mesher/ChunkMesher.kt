@@ -34,7 +34,7 @@ class ChunkMesher(
 
         val neighbours = item.section.chunk.neighbours
         val sectionNeighbours = item.section.neighbours
-        if (!neighbours.complete || sectionNeighbours.isAllNull()) {
+        if (!neighbours.complete) {
             return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
         }
         val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count)
