@@ -11,22 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.mesh
+package de.bixilon.minosoft.gui.rendering.chunk.mesh.cache
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.kutil.bit.set.ArrayBitSet
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 
-class BlockEntityRendererCache(
-    val context: RenderContext,
-) {
+class BlockEntityCacheState {
+    val entities: Array<BlockEntityRenderer?> = arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION)
+    val usage = ArrayBitSet(ChunkSize.BLOCKS_PER_SECTION)
+    var count = 0
 
-    fun create(position: InSectionPosition, entity: BlockEntity): BlockEntityRenderer? {
-        return entity.createRenderer(context) // TODO: Cache
+
+    fun store(position: InSectionPosition, renderer: BlockEntityRenderer) {
+        entities[position.index] = renderer
+        usage[position.index] = true
+
+        count++
     }
-
-    fun unload() = Unit // TODO
-
-    fun drop() = Unit // TODO
 }

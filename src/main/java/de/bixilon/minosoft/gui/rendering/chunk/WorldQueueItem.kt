@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockEntityRendererCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 
@@ -24,7 +24,7 @@ class WorldQueueItem(
     val position: SectionPosition,
     val section: ChunkSection,
     val center: Vec3f,
-    var cache: BlockEntityRendererCache?,
+    var cache: BlockMesherCache?,
 ) {
     var mesh: ChunkMeshes? = null
 

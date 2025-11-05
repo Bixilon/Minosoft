@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
-import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader.isAllNull
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockEntityRendererCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidSectionMesher
@@ -37,7 +36,8 @@ class ChunkMesher(
         if (!neighbours.complete) {
             return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
         }
-        val cache = item.cache ?: BlockEntityRendererCache(renderer.context)
+        val cache = item.cache ?: BlockMesherCache(renderer.context)
+        cache.unmark()
         val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count, cache)
         try {
             solid.mesh(item.section, cache, neighbours, sectionNeighbours, mesh)
@@ -45,6 +45,7 @@ class ChunkMesher(
             if (item.section.blocks.hasFluid) {
                 fluid.mesh(item.section, mesh)
             }
+            cache.cleanup()
         } catch (exception: Throwable) {
             mesh.drop()
             mesh.cache.drop() // TODO: Really drop it? Errors should not happen...
