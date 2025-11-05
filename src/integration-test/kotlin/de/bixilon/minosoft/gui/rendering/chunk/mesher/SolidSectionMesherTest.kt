@@ -36,6 +36,7 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockEntityRendererCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
@@ -88,7 +89,7 @@ class SolidSectionMesherTest {
         val chunk = world.chunks[0, 0]!!
         val meshes = ChunkMeshesBuilder(context, 16, 1)
 
-        mesher.mesh(chunk.sections[0]!!, chunk.neighbours, chunk.sections[0]!!.neighbours!!, meshes)
+        mesher.mesh(chunk.sections[0]!!, BlockEntityRendererCache(context), chunk.neighbours, chunk.sections[0]!!.neighbours, meshes)
 
         return meshes.build(SectionPosition.of(chunk.position, 0))
     }
@@ -453,7 +454,7 @@ class SolidSectionMesherTest {
             override val hardness get() = 0.0f
             override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = object : BlockEntity(session, position, state) {
 
-                override fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? {
+                override fun createRenderer(context: RenderContext): BlockEntityRenderer? {
                     entities.add(TestQueue.RenderedEntity(position, state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
                     return null
                 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities
 
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 interface BlockEntityRenderer : Drawable {
@@ -22,5 +23,5 @@ interface BlockEntityRenderer : Drawable {
 
     fun drop()
 
-    fun update(light: Int) = Unit
+    fun update(light: LightLevel) = Unit
 }

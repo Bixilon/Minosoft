@@ -30,7 +30,7 @@ object ProtocolDefinition {
 
     const val TEXT_COMPONENT_FORMATTING_PREFIX = '§'
 
-    const val AIR_BLOCK_ID = 0
+    const val AIR_ID = 0
 
 
     val MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}")

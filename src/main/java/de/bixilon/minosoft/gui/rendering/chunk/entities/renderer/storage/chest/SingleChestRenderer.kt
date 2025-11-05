@@ -32,8 +32,7 @@ class SingleChestRenderer(
     state: BlockState,
     position: BlockPosition,
     model: BakedSkeletalModel,
-    light: Int,
-) : ChestRenderer(state, model.createInstance(context), position, light) {
+) : ChestRenderer(state, model.createInstance(context), position) {
 
     companion object {
         val MODEL = minecraft("block/entities/chest/single").sModel()

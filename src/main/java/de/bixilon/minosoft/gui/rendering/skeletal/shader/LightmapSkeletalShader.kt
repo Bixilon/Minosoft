@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,6 +20,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class LightmapSkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), AnimatedShader, LightShader {
-    var light by uniform("uLight", 0xFF, NativeShader::setUInt)
+    var light by uniform("uLight", 0xFF, NativeShader::setUInt) // TODO: LightLevel
     override val lightmap: LightmapBuffer by lightmap()
 }

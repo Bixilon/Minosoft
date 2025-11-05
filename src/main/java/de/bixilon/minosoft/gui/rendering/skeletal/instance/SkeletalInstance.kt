@@ -20,6 +20,7 @@ import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -52,11 +53,11 @@ class SkeletalInstance(
         state = SkeletalModelStates.UNLOADED
     }
 
-    fun draw(light: Int) {
+    fun draw(light: LightLevel) {
         context.system.reset(faceCulling = false)
         val shader = context.skeletal.lightmapShader
         shader.use()
-        shader.light = light
+        shader.light = light.raw.toInt()
         draw(shader)
     }
 

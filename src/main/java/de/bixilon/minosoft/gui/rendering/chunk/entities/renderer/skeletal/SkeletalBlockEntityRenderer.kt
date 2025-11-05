@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.skeletal
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
@@ -23,9 +24,9 @@ abstract class SkeletalBlockEntityRenderer<E : BlockEntity>(
     var state: BlockState,
     protected val skeletal: SkeletalInstance?,
 ) : BlockEntityRenderer {
-    var light = 0xFF
+    var light = LightLevel.MAX
 
-    override fun update(light: Int) {
+    override fun update(light: LightLevel) {
         this.light = light
     }
 

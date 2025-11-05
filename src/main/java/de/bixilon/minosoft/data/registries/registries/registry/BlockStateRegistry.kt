@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -76,9 +76,9 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     @Suppress("DEPRECATION")
     override fun getOrNull(id: Int): BlockState? {
         if (flattened) {
-            if (id == ProtocolDefinition.AIR_BLOCK_ID) return null
+            if (id == ProtocolDefinition.AIR_ID) return null
         } else {
-            if (id shr 4 == ProtocolDefinition.AIR_BLOCK_ID) return null
+            if (id shr 4 == ProtocolDefinition.AIR_ID) return null
         }
         val state = forceGet(id) ?: return null
         if (state.block is AirBlock) {

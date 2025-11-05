@@ -154,7 +154,7 @@ class PlayInByteBuffer : InByteBuffer {
 
     private fun readLegacyItemStack(): ItemStack? {
         val id = readShort().toInt()
-        if (id <= ProtocolDefinition.AIR_BLOCK_ID) {
+        if (id <= ProtocolDefinition.AIR_ID) {
             return null
         }
         val count = readUnsignedByte()

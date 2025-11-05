@@ -106,7 +106,7 @@ open class Registry<T : RegistryItem>(
         if (data == null) return
         for ((name, value) in data) {
             check(value is Map<*, *>)
-            val id = value["id"]?.toInt()?.let { if (metaType != MetaTypes.NONE && !flattened) metaType.modify(it, value["meta"]?.toInt() ?: 0) else it }
+            val id = value["id"]?.toInt()?.let { if (metaType != MetaTypes.NONE && !flattened) metaType.combine(it, value["meta"]?.toInt() ?: 0) else it }
             add(name.toResourceLocation(), id, value.unsafeCast(), version, registries)
         }
     }

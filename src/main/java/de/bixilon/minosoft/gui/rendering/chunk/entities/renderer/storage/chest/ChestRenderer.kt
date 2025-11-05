@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
@@ -27,15 +28,11 @@ abstract class ChestRenderer(
     state: BlockState,
     skeletal: SkeletalInstance?,
     val position: BlockPosition,
-    light: Int,
 ) : StorageBlockEntityRenderer<ChestBlockEntity>(state, skeletal) {
     val animation = skeletal?.let { ChestAnimation(it) }
 
-    init {
-        update(light)
-    }
 
-    override fun update(light: Int) {
+    override fun update(light: LightLevel) {
         super.update(light)
         val rotation = ROTATION[state.getFacing().ordinal - Directions.SIDE_OFFSET]
         skeletal?.update(position, rotation)

@@ -30,13 +30,13 @@ open class ChestBlockEntity(session: PlaySession, position: BlockPosition, state
     private var renderer: ChestRenderer? = null
 
 
-    override fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? {
+    override fun createRenderer(context: RenderContext): BlockEntityRenderer? {
         val state = this.state
 
         val type = state.getOrNull(BlockProperties.CHEST_TYPE)
         this.renderer = when (type) {
-            null, ChestTypes.SINGLE -> SingleChestRenderer(this, context, state, position, context.models.skeletal[getSingleModel()] ?: return null, light)
-            ChestTypes.LEFT -> DoubleChestRenderer(this, context, state, position, context.models.skeletal[getDoubleModel()] ?: return null, light)
+            null, ChestTypes.SINGLE -> SingleChestRenderer(this, context, state, position, context.models.skeletal[getSingleModel()] ?: return null)
+            ChestTypes.LEFT -> DoubleChestRenderer(this, context, state, position, context.models.skeletal[getDoubleModel()] ?: return null)
             ChestTypes.RIGHT -> null // Optimized: Only the left one is rendered
         }
         if (viewing > 0) {

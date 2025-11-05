@@ -39,6 +39,7 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockEntityRendererCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusion
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
@@ -59,7 +60,7 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    fun mesh(section: ChunkSection, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
+    fun mesh(section: ChunkSection, cache: BlockEntityRendererCache, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
         val chunk = section.chunk
@@ -94,8 +95,9 @@ class SolidSectionMesher(
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
                     val model = state.block.model ?: state.model
-                    val blockEntity = section.entities[inSection]
-                    if (model == null && blockEntity == null) continue // TODO: Check for renderer
+                    val entity = section.entities[inSection]
+                    val entityRenderer = entity?.let { cache.create(inSection, entity) }
+                    if (model == null && entityRenderer == null) continue
 
                     val position = offset + inSection
                     val inChunk = InChunkPosition(inSection.x, position.y, inSection.z)
@@ -136,9 +138,13 @@ class SolidSectionMesher(
 
                     val tints = tints.getBlockTint(state, chunk, InChunkPosition(x, position.y, z), tint)
                     var rendered = false
-                    model?.render(props, position, state, blockEntity, tints)?.let { if (it) rendered = true }
+                    model?.render(props, position, state, entity, tints)?.let { if (it) rendered = true }
 
-                    //TODO  renderedBlockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
+                    if (entityRenderer != null) {
+                        entityRenderer.update(LightLevel(light[SELF_LIGHT_INDEX]))
+                        entities += entityRenderer
+                        rendered = true
+                    }
 
                     if (rendered) {
                         mesh.addBlock(x, y, z)

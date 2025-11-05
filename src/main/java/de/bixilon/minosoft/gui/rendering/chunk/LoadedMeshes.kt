@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -88,12 +89,7 @@ class LoadedMeshes(
 
 
     operator fun contains(position: ChunkPosition): Boolean {
-        renderer.lock.acquire()
-        lock.acquire()
-        val contains = position in this.meshes
-        lock.release()
-        renderer.lock.release()
-        return contains
+        return renderer.lock.acquired { lock.acquired { position in this.meshes } }
     }
 
 
@@ -102,6 +98,7 @@ class LoadedMeshes(
         lock.acquire()
         for ((chunkPosition, meshes) in this.meshes) {
             if (!renderer.visibility.isChunkVisible(chunkPosition)) {
+                // TODO: unload when out of reach distance
                 continue
             }
 

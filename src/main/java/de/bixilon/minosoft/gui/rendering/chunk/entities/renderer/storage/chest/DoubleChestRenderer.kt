@@ -32,8 +32,7 @@ class DoubleChestRenderer(
     state: BlockState,
     position: BlockPosition,
     model: BakedSkeletalModel,
-    light: Int,
-) : ChestRenderer(state, model.createInstance(context), position, light) {
+) : ChestRenderer(state, model.createInstance(context), position) {
 
     companion object {
         private val MODEL = minecraft("block/entities/chest/double").sModel()

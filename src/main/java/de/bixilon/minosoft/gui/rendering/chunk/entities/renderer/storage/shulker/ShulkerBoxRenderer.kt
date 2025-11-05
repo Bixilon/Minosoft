@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.get
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
@@ -38,15 +39,11 @@ class ShulkerBoxRenderer(
     state: BlockState,
     val position: BlockPosition,
     model: BakedSkeletalModel,
-    light: Int,
 ) : StorageBlockEntityRenderer<ShulkerBoxBlockEntity>(state, model.createInstance(context)) {
     val animation = skeletal?.let { ShulkerAnimation(it) }
 
-    init {
-        update(light)
-    }
 
-    override fun update(light: Int) {
+    override fun update(light: LightLevel) {
         super.update(light)
         val facing = state.getFacing()
         val rotation = ROTATIONS[facing.ordinal]

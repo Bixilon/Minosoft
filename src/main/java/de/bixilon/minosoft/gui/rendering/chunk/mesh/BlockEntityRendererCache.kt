@@ -11,34 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.kutil.json.MutableJsonObject
-import de.bixilon.minosoft.data.Tickable
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class BlockEntity(
-    val session: PlaySession,
-    val position: BlockPosition,
-    state: BlockState,
-) : Tickable {
-    var state = state
-        private set
+class BlockEntityRendererCache(
+    val context: RenderContext,
+) {
 
-    fun toNbt() = HashMap<String, Any>().apply { toNbt(this) }
-    open fun toNbt(nbt: MutableJsonObject) = Unit
-    open fun updateNBT(nbt: JsonObject) = Unit
-
-    open fun update(state: BlockState) {
-        this.state = state
+    fun create(position: InSectionPosition, entity: BlockEntity): BlockEntityRenderer? {
+        return entity.createRenderer(context) // TODO: Cache
     }
-
-    open fun createRenderer(context: RenderContext): BlockEntityRenderer? = null
-
-    override fun tick() = Unit
 }

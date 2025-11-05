@@ -32,14 +32,14 @@ class ShulkerBoxBlockEntity(session: PlaySession, position: BlockPosition, state
         super.update(state)
     }
 
-    override fun createRenderer(context: RenderContext, light: Int): BlockEntityRenderer? {
+    override fun createRenderer(context: RenderContext): BlockEntityRenderer? {
         val block = state.block
         val name = when {
             block is DyedBlock -> ShulkerBoxRenderer.NAME_COLOR[block.color.ordinal]
             else -> ShulkerBoxRenderer.NAME
         }
         val model = context.models.skeletal[name] ?: return null
-        this.renderer = ShulkerBoxRenderer(this, context, state, position, model, light)
+        this.renderer = ShulkerBoxRenderer(this, context, state, position, model)
 
         if (viewing > 0) {
             renderer?.open()

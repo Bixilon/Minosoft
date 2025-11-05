@@ -30,19 +30,13 @@ class ItemRegistry(
 
     override fun getOrNull(id: Int): Item? {
         if (flattened) {
-            if (id == ProtocolDefinition.AIR_BLOCK_ID) return null
+            if (id == ProtocolDefinition.AIR_ID) return null
             return super.getOrNull(id)
         }
         val itemId = id ushr 16
-        if (itemId == ProtocolDefinition.AIR_BLOCK_ID) return null
+        if (itemId == ProtocolDefinition.AIR_ID) return null
 
-        val meta = id and 0xFFFF
-
-        var versionItemId = itemId shl 16
-        if (meta > 0) {
-            versionItemId = versionItemId or meta
-        }
-        val item = super.getOrNull(versionItemId) ?: super.getOrNull(itemId shl 16) // ignore meta?
+        val item = super.getOrNull(id) ?: super.getOrNull(itemId shl 16) // ignore meta
 
         if (item?.identifier == AirBlock.Air.identifier) return null // TODO: use AirItem
 
