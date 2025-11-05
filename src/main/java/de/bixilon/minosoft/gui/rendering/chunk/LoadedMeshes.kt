@@ -92,17 +92,23 @@ class LoadedMeshes(
         return renderer.lock.acquired { lock.acquired { position in this.meshes } }
     }
 
-
     fun collect(visible: VisibleMeshes) {
         renderer.lock.acquire()
         lock.acquire()
-        for ((chunkPosition, meshes) in this.meshes) {
+        val iterator = this.meshes.iterator()
+        while (iterator.hasNext()) {
+            val (chunkPosition, meshes) = iterator.next()
+
+            if (!renderer.visibility.isInViewDistance(chunkPosition)) {
+                iterator.remove()
+                renderer.unloadingQueue.forceQueue(meshes.values, false)
+                continue
+            }
             if (!renderer.visibility.isChunkVisible(chunkPosition)) {
-                // TODO: unload when out of reach distance
                 continue
             }
 
-            val iterator = meshes.keys.iterator()
+            val iterator = meshes.keys.intIterator()
             while (iterator.hasNext()) {
                 val key = iterator.nextInt()
                 val mesh = meshes[key] ?: continue
