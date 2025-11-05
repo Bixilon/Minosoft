@@ -37,8 +37,8 @@ class ChunkMesher(
         if (!neighbours.complete) {
             return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
         }
-        val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count)
-        val cache = BlockEntityRendererCache(renderer.context) // TODO: cache the cache
+        val cache = item.cache ?: BlockEntityRendererCache(renderer.context)
+        val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count, cache)
         try {
             solid.mesh(item.section, cache, neighbours, sectionNeighbours, mesh)
 
@@ -47,6 +47,7 @@ class ChunkMesher(
             }
         } catch (exception: Throwable) {
             mesh.drop()
+            mesh.cache.drop() // TODO: Really drop it? Errors should not happen...
             throw exception
         }
 

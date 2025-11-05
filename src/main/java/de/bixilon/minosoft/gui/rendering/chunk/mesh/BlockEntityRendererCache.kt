@@ -25,4 +25,8 @@ class BlockEntityRendererCache(
     fun create(position: InSectionPosition, entity: BlockEntity): BlockEntityRenderer? {
         return entity.createRenderer(context) // TODO: Cache
     }
+
+    fun unload() = Unit // TODO
+
+    fun drop() = Unit // TODO
 }

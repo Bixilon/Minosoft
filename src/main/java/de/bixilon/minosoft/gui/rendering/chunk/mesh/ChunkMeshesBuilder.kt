@@ -29,6 +29,7 @@ class ChunkMeshesBuilder(
     context: RenderContext,
     count: Int,
     entities: Int,
+    val cache: BlockEntityRendererCache,
 ) : BlockVertexConsumer { // TODO: Don't inherit
     var opaque = ChunkMeshBuilder(context, count.opaqueCount())
     var translucent = ChunkMeshBuilder(context, count.translucentCount())
@@ -82,14 +83,13 @@ class ChunkMeshesBuilder(
         if (opaque == null && translucent == null && text == null && entities == null) {
             return null
         }
-        return ChunkMeshes(position, minPosition, maxPosition, opaque, translucent, text, entities)
+        return ChunkMeshes(position, minPosition, maxPosition, opaque, translucent, text, entities, cache)
     }
 
     fun drop() {
         opaque.drop()
         translucent.drop()
         text.drop()
-        entities.forEach { it.drop() }
     }
 
     override fun addQuad(offset: Vec3f, positions: FaceVertexData, uv: PackedUVArray, texture: ShaderTexture, light: Int, tint: RGBColor, ao: IntArray) {

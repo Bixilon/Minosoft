@@ -45,6 +45,7 @@ class MeshUnloadingQueue(
             this.positions -= QueuePosition(mesh)
             renderer.visible -= mesh
             mesh.unload()
+            mesh.cache.unload()
         }
     }
 

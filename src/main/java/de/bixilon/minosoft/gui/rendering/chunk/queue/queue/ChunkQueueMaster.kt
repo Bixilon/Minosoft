@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.queue
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -41,7 +42,8 @@ class ChunkQueueMaster(
         val visible = ignoreVisibility || renderer.visibility.isSectionVisible(section)
         if (visible) {
             val center = CHUNK_CENTER + BlockPosition.of(section.chunk.position, section.height)
-            val item = WorldQueueItem(position, section, center)
+            val cache = renderer.lock.acquired { renderer.loaded.meshes[section.chunk.position]?.get(section.height)?.cache }
+            val item = WorldQueueItem(position, section, center, cache)
             renderer.meshingQueue.queue(item)
             return true
         }

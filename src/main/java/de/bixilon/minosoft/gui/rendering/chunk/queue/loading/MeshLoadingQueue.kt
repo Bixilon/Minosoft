@@ -148,6 +148,7 @@ class MeshLoadingQueue(
         while (meshes.isNotEmpty()) {
             val mesh = meshes.removeAt(0)
             mesh.drop()
+            mesh.cache.drop()
         }
         if (lock) unlock()
     }
