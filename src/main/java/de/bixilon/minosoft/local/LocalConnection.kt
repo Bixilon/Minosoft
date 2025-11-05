@@ -90,18 +90,20 @@ class LocalConnection(
 
         session.events.fire(TabListEntryChangeEvent(session, mapOf(session.player.uuid to AdditionalDataUpdate())))
 
-        session.player.physics.forceTeleport(Vec3d(0, 20, 0))
-        session.state = PlaySessionStates.PLAYING
-
-        sendMessage("§e${session.player.name} §ejoined the game!")
-
-        session.events.listen<ChatMessageSendEvent> { sendMessage(BaseComponent(session.player.name, "> ", it.message.replace('&', '§'))) }
-
 
         Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loading local world" }
         chunks.storage.load(session.world)
         DefaultThreadPool += { chunks.update() }
         Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Loaded local world!" }
+
+        session.player.physics.forceTeleport(Vec3d(0.5, 20.0, 0.5)) // TODO: teleport on ground (after world is loaded)
+
+
+        session.events.listen<ChatMessageSendEvent> { sendMessage(BaseComponent(session.player.name, "> ", it.message.replace('&', '§'))) }
+
+        session.state = PlaySessionStates.PLAYING
+
+        sendMessage("§e${session.player.name} §ejoined the game!")
     }
 
     override fun disconnect() {
