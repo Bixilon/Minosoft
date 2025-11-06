@@ -152,6 +152,19 @@ class BlockMesherCacheTest {
         assertEquals(b.status, TestBlockEntity.State.UNLOADED)
     }
 
+    fun `replace block entity`() {
+        val cache = create()
+        val a = TestBlockEntity()
+        val b = TestBlockEntity()
+
+        val aa = cache.createEntity(InSectionPosition(1, 2, 3), a)
+        val bb = cache.createEntity(InSectionPosition(1, 2, 3), b)
+
+        cache.context.queue.work()
+
+        assertEquals(a.status, TestBlockEntity.State.UNLOADED)
+        assertEquals(b.status, TestBlockEntity.State.LOADED)
+    }
 
     private class TestBlockEntity : BlockEntity(PlaySession::class.java.allocate(), BlockPosition(1, 2, 3), TestBlockStates.ENTITY1) {
         val renderer = Renderer()
@@ -164,6 +177,7 @@ class BlockMesherCacheTest {
         }
 
         inner class Renderer : BlockEntityRenderer {
+            override val entity get() = this@TestBlockEntity
             override fun load() = Broken()
 
             override fun unload() {

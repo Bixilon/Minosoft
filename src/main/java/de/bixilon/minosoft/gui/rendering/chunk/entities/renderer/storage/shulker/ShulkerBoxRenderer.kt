@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.rad
 
 class ShulkerBoxRenderer(
-    val entity: ShulkerBoxBlockEntity,
+    override val entity: ShulkerBoxBlockEntity,
     context: RenderContext,
     state: BlockState,
     val position: BlockPosition,

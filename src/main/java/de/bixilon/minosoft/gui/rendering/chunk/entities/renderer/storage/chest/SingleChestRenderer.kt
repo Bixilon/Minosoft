@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
 class SingleChestRenderer(
-    val entity: StorageBlockEntity,
+    override val entity: StorageBlockEntity,
     context: RenderContext,
     state: BlockState,
     position: BlockPosition,

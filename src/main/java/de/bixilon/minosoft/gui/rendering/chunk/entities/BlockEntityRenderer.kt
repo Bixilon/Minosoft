@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 interface BlockEntityRenderer : Drawable {
+    val entity: BlockEntity
 
     fun load()
     fun unload()

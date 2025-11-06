@@ -41,6 +41,15 @@ class BlockMesherCache(
             renderer = entity.createRenderer(context) ?: return null
             entities.store(position, renderer)
         } else {
+            if (renderer.entity !== entity) {
+                val unload = renderer
+                context.queue += { unload.unload() }
+                entities.store(position, null)
+
+                renderer = entity.createRenderer(context) ?: return null
+                entities.store(position, renderer)
+            }
+
             entities.usage[position.index] = true
         }
 

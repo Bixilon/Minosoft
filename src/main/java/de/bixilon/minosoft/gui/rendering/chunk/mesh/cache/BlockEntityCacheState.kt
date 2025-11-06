@@ -24,10 +24,14 @@ class BlockEntityCacheState {
     var count = 0
 
 
-    fun store(position: InSectionPosition, renderer: BlockEntityRenderer) {
+    fun store(position: InSectionPosition, renderer: BlockEntityRenderer?) {
         entities[position.index] = renderer
-        usage[position.index] = true
+        if (renderer != null) {
+            usage[position.index] = true
 
-        count++
+            count++
+        } else {
+            count--
+        }
     }
 }
