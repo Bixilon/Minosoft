@@ -147,7 +147,7 @@ abstract class DynamicTextureArray(
         this.textures = textures
 
         this.reload = true
-        context.queue += { reload() }
+        context.queue += { context.profiler.profile("dynamic textures") { reload() } }
         lock.unlock()
     }
 

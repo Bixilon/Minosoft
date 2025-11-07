@@ -47,16 +47,18 @@ class Camera(
 
     fun draw() {
         val entity = context.session.camera.entity
-        (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
+        context.profiler.profile("tick camera") { (entity.attachment.getRootVehicle() ?: entity).tryTick() }// TODO
         if (entity is LocalPlayerEntity) {
             entity._draw(now()) // TODO: force draw if entity is camera entity?
         }
         view.draw()
         matrix.draw()
-        val latch = SimpleLatch(2)
-        context.runAsync { occlusion.draw(); latch.dec() }
-        context.runAsync { context.session.camera.target.update(); latch.dec() }
-        fog.draw()
-        latch.await()
+        context.profiler.profile("camera") {
+            val latch = SimpleLatch(2)
+            context.runAsync("occlusion") { occlusion.draw(); latch.dec() }
+            context.runAsync("target") { context.session.camera.target.update(); latch.dec() }
+            fog.draw()
+            latch.await()
+        }
     }
 }

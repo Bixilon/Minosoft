@@ -24,7 +24,7 @@ class WorldQueueItem(
     val position: SectionPosition,
     val section: ChunkSection,
     val center: Vec3f,
-    var cache: BlockMesherCache?,
+    val cache: BlockMesherCache?,
 ) {
     var mesh: ChunkMeshes? = null
 

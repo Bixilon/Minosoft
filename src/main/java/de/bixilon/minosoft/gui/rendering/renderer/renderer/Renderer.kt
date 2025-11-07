@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 

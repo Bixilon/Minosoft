@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui
 
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.profiler.Profiler
 import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -40,77 +41,85 @@ class RenderLoop(
     }
 
 
-    fun startLoop() {
-        Log.log(LogMessageType.RENDERING) { "Starting loop" }
-        context.session.events.listen<WindowCloseEvent> { context.state = RenderingStates.QUITTING }
-        while (true) {
-            if (context.state == RenderingStates.PAUSED) {
-                context.window.title = "Minosoft | Paused"
-            }
+    private fun loop() {
+        if (context.state == RenderingStates.PAUSED) {
+            context.window.title = "Minosoft | Paused"
+        }
 
-            while (context.state == RenderingStates.PAUSED) {
-                sleep(20.milliseconds)
-                context.window.pollEvents()
-            }
-
-            if (context.state == RenderingStates.QUITTING || context.session.established || !context.state.active) {
-                break
-            }
-            context.renderStats.startFrame()
-
+        while (context.state == RenderingStates.PAUSED) {
+            sleep(20.milliseconds)
             context.window.pollEvents()
+        }
 
+        context.profiler = Profiler()
+        context.renderStats.startFrame()
+
+        context.profiler.profile("window poll events") { context.window.pollEvents() }
+
+        context.profiler.profile("framebuffer update") {
             context.framebuffer.update()
             context.framebuffer.clear()
             context.system.framebuffer = null
             context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+        }
 
 
+        val time = context.window.time
+        val delta = time - lastFrame
+        lastFrame = time
 
-            val time = context.window.time
-            val delta = time - lastFrame
-            lastFrame = time
+        context.profiler.profile("input") { context.input.draw(delta) }
+        context.camera.draw()
 
-            context.input.draw(delta)
-            context.camera.draw()
-
+        context.profiler.profile("light") {
             context.light.updateAsync() // ToDo: do async
             context.light.update()
+        }
 
 
 
-            context.textures.static.animator.update()
+        context.profiler.profile("animations") { context.textures.static.animator.update() }
 
-            context.renderer.draw()
+        context.renderer.draw()
 
-            context.system.reset() // Reset to enable depth mask, etc again
+        context.system.reset() // Reset to enable depth mask, etc again
 
-            // handle opengl context tasks, but limit it per frame
-            context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
+        // handle opengl context tasks, but limit it per frame
+        context.profiler.profile("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
 
-            context.renderStats.endDraw()
-
-
-            context.window.swapBuffers()
-
-            // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
-            context.framebuffer.clear()
-            context.system.framebuffer = null
-            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+        context.renderStats.endDraw()
 
 
-            if (context.state == RenderingStates.BACKGROUND && slowRendering) {
-                sleep(100.milliseconds)
+        context.profiler.profile("swap buffers") { context.window.swapBuffers() }
+
+        // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
+        context.framebuffer.clear()
+        context.system.framebuffer = null
+        context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+
+
+        if (context.state == RenderingStates.BACKGROUND && slowRendering) {
+            sleep(100.milliseconds)
+        }
+
+        for (error in context.system.getErrors()) {
+            context.session.util.sendDebugMessage(error.message)
+        }
+
+        if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
+            context.window.title = "${RunConfiguration.APPLICATION_NAME} | FPS: ${context.renderStats.smoothAvgFPS.rounded10}"
+        }
+        context.renderStats.endFrame()
+    }
+
+    fun startLoop() {
+        Log.log(LogMessageType.RENDERING) { "Starting loop" }
+        context.session.events.listen<WindowCloseEvent> { context.state = RenderingStates.QUITTING }
+        while (true) {
+            if (context.state == RenderingStates.QUITTING || context.session.established || !context.state.active) {
+                break
             }
-
-            for (error in context.system.getErrors()) {
-                context.session.util.sendDebugMessage(error.message)
-            }
-
-            if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                context.window.title = "${RunConfiguration.APPLICATION_NAME} | FPS: ${context.renderStats.smoothAvgFPS.rounded10}"
-            }
-            context.renderStats.endFrame()
+            loop()
         }
     }
 }

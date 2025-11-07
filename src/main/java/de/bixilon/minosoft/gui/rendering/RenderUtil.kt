@@ -29,10 +29,14 @@ object RenderUtil {
         guiRenderer.pause()
     }
 
-    inline fun RenderContext.runAsync(crossinline runnable: () -> Unit) {
+    inline fun RenderContext.runAsync(profile: String? = null, crossinline runnable: () -> Unit) {
         DefaultThreadPool += SimplePoolRunnable(ThreadPool.Priorities.HIGHER) {
             try {
-                runnable()
+                if (profile != null) {
+                    profiler.profile(profile) { runnable.invoke() }
+                } else {
+                    runnable()
+                }
             } catch (error: Throwable) {
                 window.cursorMode = CursorModes.NORMAL
                 error.printStackTrace()

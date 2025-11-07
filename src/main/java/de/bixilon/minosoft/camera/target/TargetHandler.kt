@@ -107,7 +107,7 @@ class TargetHandler(
 
     fun raycastBlock(origin: Vec3d, front: Vec3d): Pair<BlockTarget?, FluidTarget?> {
         val position = MVec3d(origin)
-        var chunk: Chunk? = null
+        var chunk: Chunk? = camera.entity.physics.positionInfo.chunk
 
         var fluid: FluidTarget? = null
 
@@ -127,6 +127,7 @@ class TargetHandler(
                 chunk = chunk.neighbours.traceChunk(chunkPosition - chunk.position) ?: break
             }
             val state = chunk[blockPosition.inChunkPosition] ?: continue
+
             if (state.block is FluidBlock) {
                 if (fluid == null) {
                     val hit = raycast(origin, front, state, blockPosition)
