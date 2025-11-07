@@ -36,7 +36,7 @@ import kotlin.time.Duration
 
 class SpriteAnimator(val context: RenderContext) {
     private val animations: MutableList<TextureAnimation> = ArrayList()
-    private var buffer: IntUniformBuffer? = null
+    private var buffer: IntUniformBuffer? = null // size is dynamic
     private var enabled = true
     private var previous = TimeUtil.NULL
     val size get() = animations.size
@@ -75,9 +75,9 @@ class SpriteAnimator(val context: RenderContext) {
     fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {
         val buffer = buffer!!
         val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
-        buffer.data[offset + 0] = first.renderData.shaderTextureId
-        buffer.data[offset + 1] = second.renderData.shaderTextureId
-        buffer.data[offset + 2] = (progress * 100.0f).toInt()
+        buffer.data[offset + 0] = first.shaderId
+        buffer.data[offset + 1] = second.shaderId
+        buffer.data[offset + 2] = progress.toBits()
     }
 
     private fun update(delta: Duration) {
