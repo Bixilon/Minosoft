@@ -19,7 +19,7 @@ import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
 import org.lwjgl.opengl.GL11.glGetInteger
 
 object AmdOpenGlVendor : OpenGlVendor {
-    override val define: String = "__AMD"
+    override val define: String = "VENDOR_AMD"
 
     override val availableVRAM: Long
         get() = gl { glGetInteger(GL_VBO_FREE_MEMORY_ATI) }.toLong() * 1024
