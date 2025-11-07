@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.LongUtil.toByteArray
+import de.bixilon.minosoft.data.accounts.AccountCapabilities
 import de.bixilon.minosoft.protocol.network.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
@@ -36,7 +37,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nonce: ByteArray = buffer.readByteArray()
 
     override fun handle(session: PlaySession) {
-        if (!session.account.supportsEncryption && !session.profiles.account.ignoreNotEncryptedAccount) {
+        if (AccountCapabilities.ENCRYPTION !in session.account.capabilities && !session.profiles.account.ignoreNotEncryptedAccount) {
             throw IllegalAccessError("Account does not support encryption, but the server requested it!\nMaybe you try to join with an offline account on an online server?")
         }
 

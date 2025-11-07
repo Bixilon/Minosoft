@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.AccountCapabilities
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Identified
@@ -33,8 +34,7 @@ class OfflineAccount(username: String, @JacksonInject storage: ProfileStorage?) 
         get() = AccountStates.WORKING
         set(value) {}
 
-    override val supportsEncryption: Boolean get() = false
-    override val supportsSkins: Boolean get() = false
+    override val capabilities = AccountCapabilities.set()
 
     @JsonIgnore
     override val properties: PlayerProperties = PlayerProperties()

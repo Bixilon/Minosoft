@@ -25,6 +25,7 @@ import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.AccountCapabilities
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Identified
@@ -53,6 +54,8 @@ class MicrosoftAccount(
 ) : Account(username, storage) {
     override val id: String = uuid.toString()
     override val type: ResourceLocation = identifier
+
+    override val capabilities = AccountCapabilities.set(AccountCapabilities.SKIN, AccountCapabilities.ENCRYPTION)
 
     @JsonIgnore
     private val keyLock = Lock.lock()
