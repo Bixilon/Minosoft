@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class PixLyzerBlockWithEntity<T : BlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), BlockWithEntity<BlockEntity> {
+abstract class PixLyzerBlockWithEntity<T : BlockEntity>(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(identifier, registries, data), BlockWithEntity<BlockEntity> {
     private val blockEntity: BlockEntityType<BlockEntity>? = unsafeNull()
 
     init {

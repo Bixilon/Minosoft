@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<SignBlockEntity>(resourceLocation, registries, data), ModelChooser {
+abstract class SignBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<SignBlockEntity>(identifier, registries, data), ModelChooser {
 
     override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = SignBlockEntity(session, position, state)
 

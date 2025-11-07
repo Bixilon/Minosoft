@@ -26,10 +26,10 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.HelmetItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.LeggingsItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingArmorItem {
+abstract class GoldArmor(identifier: ResourceLocation) : ArmorItem(identifier), WearableItem, DefendingArmorItem {
 
 
-    open class GoldBoots(resourceLocation: ResourceLocation = this.identifier) : GoldArmor(resourceLocation), BootsItem {
+    open class GoldBoots(identifier: ResourceLocation = this.identifier) : GoldArmor(identifier), BootsItem {
         override val defense: Int get() = 1
         override val maxDurability get() = 91
 
@@ -40,7 +40,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         }
     }
 
-    open class GoldLeggings(resourceLocation: ResourceLocation = this.identifier) : GoldArmor(resourceLocation), LeggingsItem {
+    open class GoldLeggings(identifier: ResourceLocation = this.identifier) : GoldArmor(identifier), LeggingsItem {
         override val defense: Int get() = 3
         override val maxDurability get() = 105
 
@@ -51,7 +51,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         }
     }
 
-    open class GoldChestplate(resourceLocation: ResourceLocation = this.identifier) : GoldArmor(resourceLocation), ChestplateItem {
+    open class GoldChestplate(identifier: ResourceLocation = this.identifier) : GoldArmor(identifier), ChestplateItem {
         override val defense: Int get() = 5
         override val maxDurability get() = 112
 
@@ -62,7 +62,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         }
     }
 
-    open class GoldHelmet(resourceLocation: ResourceLocation = this.identifier) : GoldArmor(resourceLocation), HelmetItem {
+    open class GoldHelmet(identifier: ResourceLocation = this.identifier) : GoldArmor(identifier), HelmetItem {
         override val defense: Int get() = 2
         override val maxDurability get() = 77
 

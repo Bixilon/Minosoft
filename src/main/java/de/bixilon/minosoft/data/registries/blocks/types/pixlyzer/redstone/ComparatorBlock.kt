@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 // ToDo: This is a block with entity
-open class ComparatorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(resourceLocation, registries, data), InteractBlockHandler {
+open class ComparatorBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(identifier, registries, data), InteractBlockHandler {
 
     override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
         session.world[target.blockPosition] = target.state.cycle(BlockProperties.STRUCTURE_BLOCK_MODE)
@@ -34,8 +34,8 @@ open class ComparatorBlock(resourceLocation: ResourceLocation, registries: Regis
     }
 
     companion object : PixLyzerBlockFactory<ComparatorBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ComparatorBlock {
-            return ComparatorBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): ComparatorBlock {
+            return ComparatorBlock(identifier, registries, data)
         }
     }
 }

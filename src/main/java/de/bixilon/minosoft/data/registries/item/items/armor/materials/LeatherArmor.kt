@@ -27,10 +27,10 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.LeggingsItem
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingArmorItem, DyeableItem {
+abstract class LeatherArmor(identifier: ResourceLocation) : ArmorItem(identifier), WearableItem, DefendingArmorItem, DyeableItem {
 
 
-    open class LeatherBoots(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), BootsItem {
+    open class LeatherBoots(identifier: ResourceLocation = this.identifier) : LeatherArmor(identifier), BootsItem {
         override val defense: Int get() = 1
         override val maxDurability get() = 65
 
@@ -41,7 +41,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         }
     }
 
-    open class LeatherLeggings(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), LeggingsItem {
+    open class LeatherLeggings(identifier: ResourceLocation = this.identifier) : LeatherArmor(identifier), LeggingsItem {
         override val defense: Int get() = 2
         override val maxDurability get() = 75
 
@@ -52,7 +52,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         }
     }
 
-    open class LeatherChestplate(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), ChestplateItem {
+    open class LeatherChestplate(identifier: ResourceLocation = this.identifier) : LeatherArmor(identifier), ChestplateItem {
         override val defense: Int get() = 3
         override val maxDurability get() = 80
 
@@ -63,7 +63,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         }
     }
 
-    open class LeatherHelmet(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), HelmetItem {
+    open class LeatherHelmet(identifier: ResourceLocation = this.identifier) : LeatherArmor(identifier), HelmetItem {
         override val defense: Int get() = 1
         override val maxDurability get() = 55
 

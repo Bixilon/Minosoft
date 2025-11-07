@@ -110,6 +110,8 @@ class RenderLoop(
             context.window.title = "${RunConfiguration.APPLICATION_NAME} | FPS: ${context.renderStats.smoothAvgFPS.rounded10}"
         }
         context.renderStats.endFrame()
+
+        println(context.profiler.results.map { "${it.name} (duration=${it.duration}, thread=${it.thread.name})" })
     }
 
     fun startLoop() {

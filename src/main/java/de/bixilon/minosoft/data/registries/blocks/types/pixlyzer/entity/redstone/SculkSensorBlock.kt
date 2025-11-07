@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class SculkSensorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(resourceLocation, registries, data) {
+open class SculkSensorBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(identifier, registries, data) {
 
     companion object : PixLyzerBlockFactory<SculkSensorBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SculkSensorBlock {
-            return SculkSensorBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): SculkSensorBlock {
+            return SculkSensorBlock(identifier, registries, data)
         }
     }
 }

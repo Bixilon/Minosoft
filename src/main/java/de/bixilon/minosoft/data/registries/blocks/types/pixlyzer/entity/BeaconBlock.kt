@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class BeaconBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BeaconBlockEntity>(resourceLocation, registries, data) {
+open class BeaconBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BeaconBlockEntity>(identifier, registries, data) {
 
     companion object : PixLyzerBlockFactory<BeaconBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BeaconBlock {
-            return BeaconBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): BeaconBlock {
+            return BeaconBlock(identifier, registries, data)
         }
     }
 }

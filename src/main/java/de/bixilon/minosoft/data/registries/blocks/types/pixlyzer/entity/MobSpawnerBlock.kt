@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,12 +19,12 @@ import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class MobSpawnerBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<MobSpawnerBlockEntity>(resourceLocation, registries, data) {
+open class MobSpawnerBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<MobSpawnerBlockEntity>(identifier, registries, data) {
 
     companion object : PixLyzerBlockFactory<MobSpawnerBlock>, MultiClassFactory<MobSpawnerBlock> {
         override val ALIASES: Set<String> = setOf("SpawnerBlock")
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): MobSpawnerBlock {
-            return MobSpawnerBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): MobSpawnerBlock {
+            return MobSpawnerBlock(identifier, registries, data)
         }
     }
 }

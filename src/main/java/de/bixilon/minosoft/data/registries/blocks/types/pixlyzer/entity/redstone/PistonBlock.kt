@@ -22,13 +22,13 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class PistonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<PistonBlockEntity>(resourceLocation, registries, data) {
+open class PistonBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<PistonBlockEntity>(identifier, registries, data) {
 
     override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = PistonBlockEntity(session, position, state) // TODO: sticky
 
     companion object : PixLyzerBlockFactory<PistonBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PistonBlock {
-            return PistonBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): PistonBlock {
+            return PistonBlock(identifier, registries, data)
         }
     }
 }

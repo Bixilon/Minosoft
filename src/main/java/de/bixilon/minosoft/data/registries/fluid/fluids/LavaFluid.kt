@@ -113,6 +113,6 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         private val FOG_OPTIONS = FogOptions(start = 0.2f, end = 1.0f, color = RGBColor(0.6f, 0.1f, 0.0f))
         const val FRICTION = 0.5
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries) = LavaFluid()
+        override fun build(identifier: ResourceLocation, registries: Registries) = LavaFluid()
     }
 }

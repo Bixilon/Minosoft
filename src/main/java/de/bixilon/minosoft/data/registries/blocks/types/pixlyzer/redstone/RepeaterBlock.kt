@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(resourceLocation, registries, data), InteractBlockHandler {
+open class RepeaterBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(identifier, registries, data), InteractBlockHandler {
 
     override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
         session.world[target.blockPosition] = target.state.cycle(BlockProperties.REPEATER_DELAY)
@@ -33,8 +33,8 @@ open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     companion object : PixLyzerBlockFactory<RepeaterBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): RepeaterBlock {
-            return RepeaterBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): RepeaterBlock {
+            return RepeaterBlock(identifier, registries, data)
         }
     }
 }

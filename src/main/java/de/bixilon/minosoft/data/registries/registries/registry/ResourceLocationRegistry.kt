@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -59,21 +59,21 @@ class ResourceLocationRegistry(
 
     override fun update(data: Map<String, Any>?, version: Version, registries: Registries?) {
         if (data == null) return
-        for ((resourceLocation, value) in data) {
+        for ((identifier, value) in data) {
             val id: Int = when (value) {
                 is Number -> value.toInt()
                 is Map<*, *> -> value["id"].toInt()
                 else -> throw IllegalArgumentException("Don't know what $value is!")
             }
-            addItem(resourceLocation.toResourceLocation(), id)
+            addItem(identifier.toResourceLocation(), id)
         }
     }
 
     override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
 
-    fun addItem(resourceLocation: ResourceLocation, id: Int) {
-        idValueMap[id] = resourceLocation
-        valueIdMap[resourceLocation] = id
+    fun addItem(identifier: ResourceLocation, id: Int) {
+        idValueMap[id] = identifier
+        valueIdMap[identifier] = id
     }
 
 

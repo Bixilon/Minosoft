@@ -50,7 +50,7 @@ import de.bixilon.minosoft.physics.parts.input.InputPhysics.applyMovementInput
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resourceLocation), FluidEnterHandler, FluidCollisionHandler, TintedBlock, FoggedFluid {
+class WaterFluid(identifier: ResourceLocation = Companion.identifier) : Fluid(identifier), FluidEnterHandler, FluidCollisionHandler, TintedBlock, FoggedFluid {
     override val priority: Int get() = 0
     override val tintProvider get() = WaterTintProvider
 
@@ -143,7 +143,7 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
         override val identifier = minecraft("water")
         override val identifiers = setOf(minecraft("flowing_water"))
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries) = WaterFluid()
+        override fun build(identifier: ResourceLocation, registries: Registries) = WaterFluid()
 
         fun BlockState._isWaterlogged(): Boolean {
             if (block is PixLyzerBlock && !block.waterloggable) return false

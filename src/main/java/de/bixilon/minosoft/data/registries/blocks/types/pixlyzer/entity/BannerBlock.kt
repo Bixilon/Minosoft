@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class BannerBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(resourceLocation, registries, data) {
+open class BannerBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(identifier, registries, data) {
 
     companion object : PixLyzerBlockFactory<BannerBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BannerBlock {
-            return BannerBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): BannerBlock {
+            return BannerBlock(identifier, registries, data)
         }
     }
 }

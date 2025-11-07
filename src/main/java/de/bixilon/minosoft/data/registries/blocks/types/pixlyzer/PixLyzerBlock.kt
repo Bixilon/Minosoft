@@ -138,8 +138,8 @@ open class PixLyzerBlock(
             return factory.build(identifier, registries, data)
         }
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlock {
-            return PixLyzerBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlock {
+            return PixLyzerBlock(identifier, registries, data)
         }
     }
 }

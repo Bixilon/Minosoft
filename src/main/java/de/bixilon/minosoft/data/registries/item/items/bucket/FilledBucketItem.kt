@@ -26,16 +26,16 @@ import de.bixilon.minosoft.data.registries.item.items.fluid.FluidItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class FilledBucketItem<T : Fluid>(
-    resourceLocation: ResourceLocation,
+    identifier: ResourceLocation,
     factory: FluidFactory<T>,
-) : BucketItem(resourceLocation), FluidItem {
+) : BucketItem(identifier), FluidItem {
     override val fluid: Fluid = CastUtil.unsafeNull()
 
     init {
         this::fluid.inject(factory.identifier)
     }
 
-    open class LavaBucketItem(resourceLocation: ResourceLocation = this.identifier) : FilledBucketItem<LavaFluid>(resourceLocation, LavaFluid) {
+    open class LavaBucketItem(identifier: ResourceLocation = this.identifier) : FilledBucketItem<LavaFluid>(identifier, LavaFluid) {
 
         companion object : ItemFactory<LavaBucketItem> {
             override val identifier = minecraft("lava_bucket")
@@ -44,7 +44,7 @@ open class FilledBucketItem<T : Fluid>(
         }
     }
 
-    open class WaterBucketItem(resourceLocation: ResourceLocation = this.identifier) : FilledBucketItem<WaterFluid>(resourceLocation, WaterFluid) {
+    open class WaterBucketItem(identifier: ResourceLocation = this.identifier) : FilledBucketItem<WaterFluid>(identifier, WaterFluid) {
 
         companion object : ItemFactory<WaterBucketItem> {
             override val identifier = minecraft("water_bucket")

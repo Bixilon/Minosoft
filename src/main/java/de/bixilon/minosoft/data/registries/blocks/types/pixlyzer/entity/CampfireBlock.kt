@@ -35,7 +35,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data), LitBlock, RandomDisplayTickable {
+open class CampfireBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<CampfireBlockEntity>(identifier, registries, data), LitBlock, RandomDisplayTickable {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
     private val cosySmokeParticle = registries.particleType[CampfireSmokeParticle.CosyFactory]!!
@@ -114,8 +114,8 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         private val SMOKE_VELOCITY = Vec3d(0.0f, 0.07f, 0.0f)
         private val EXTINGUISHED_VELOCITY = Vec3d(0.0f, 0.005f, 0.0f)
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
-            return CampfireBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
+            return CampfireBlock(identifier, registries, data)
         }
     }
 }

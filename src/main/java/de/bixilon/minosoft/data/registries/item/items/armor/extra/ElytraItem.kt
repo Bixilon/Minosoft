@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.ChestplateItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class ElytraItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), WearableItem, ChestplateItem, DurableItem {
+open class ElytraItem(identifier: ResourceLocation = this.identifier) : Item(identifier), WearableItem, ChestplateItem, DurableItem {
     override val maxDurability: Int get() = 432
 
 

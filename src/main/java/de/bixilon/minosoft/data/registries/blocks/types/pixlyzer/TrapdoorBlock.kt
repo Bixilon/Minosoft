@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 
-open class TrapdoorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), Climbable {
+open class TrapdoorBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(identifier, registries, data), Climbable {
 
     override fun canClimb(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState): Boolean {
         val below = entity.session.world[position + Directions.DOWN] ?: return false
@@ -44,8 +44,8 @@ open class TrapdoorBlock(resourceLocation: ResourceLocation, registries: Registr
 
     companion object : PixLyzerBlockFactory<TrapdoorBlock> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): TrapdoorBlock {
-            return TrapdoorBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): TrapdoorBlock {
+            return TrapdoorBlock(identifier, registries, data)
         }
     }
 }

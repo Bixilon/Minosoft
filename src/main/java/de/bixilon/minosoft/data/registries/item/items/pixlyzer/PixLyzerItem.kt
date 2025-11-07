@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(resourceLocation), DurableItem, StackableItem, TintedBlock {
+open class PixLyzerItem(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(identifier), DurableItem, StackableItem, TintedBlock {
     override val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
     override val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     override val maxDurability: Int = data["max_damage"]?.toInt() ?: 0
@@ -57,8 +57,8 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
             return factory.build(identifier, registries, data)
         }
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): Item {
-            return PixLyzerItem(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): Item {
+            return PixLyzerItem(identifier, registries, data)
         }
     }
 }

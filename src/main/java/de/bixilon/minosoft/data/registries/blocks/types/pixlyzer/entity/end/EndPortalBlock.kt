@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class EndPortalBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(resourceLocation, registries, data) {
+open class EndPortalBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(identifier, registries, data) {
 
     companion object : PixLyzerBlockFactory<EndPortalBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EndPortalBlock {
-            return EndPortalBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): EndPortalBlock {
+            return EndPortalBlock(identifier, registries, data)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class PixLyzerFluid(resourceLocation: ResourceLocation) : Fluid(resourceLocation) {
+open class PixLyzerFluid(identifier: ResourceLocation) : Fluid(identifier) {
 
     override fun getVelocityMultiplier(session: PlaySession): Double = 1.0
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,16 +19,16 @@ import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class DyeItem(
-    resourceLocation: ResourceLocation,
+    identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
+) : PixLyzerItem(identifier, registries, data) {
     val dyeColor = data["dye_color"].nullCast<String>() ?: "white"
 
     companion object : PixLyzerItemFactory<DyeItem> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeItem {
-            return DyeItem(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeItem {
+            return DyeItem(identifier, registries, data)
         }
     }
 }

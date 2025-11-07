@@ -148,16 +148,16 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
         writeInt(position?.z ?: 0)
     }
 
-    fun writeLegacyResourceLocation(resourceLocation: ResourceLocation) {
-        if (resourceLocation.namespace == Namespaces.DEFAULT) {
-            writeString(resourceLocation.path)
+    fun writeLegacyResourceLocation(identifier: ResourceLocation) {
+        if (identifier.namespace == Namespaces.DEFAULT) {
+            writeString(identifier.path)
             return
         }
-        writeResourceLocation(resourceLocation)
+        writeResourceLocation(identifier)
     }
 
-    fun writeResourceLocation(resourceLocation: ResourceLocation) {
-        writeString(resourceLocation.toString())
+    fun writeResourceLocation(identifier: ResourceLocation) {
+        writeString(identifier.toString())
     }
 
     fun writeVec3d(vec3: Vec3f) {

@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class CropBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data), BlockWawlaProvider {
+open class CropBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(identifier, registries, data), BlockWawlaProvider {
 
     override fun canPlaceOn(blockState: BlockState): Boolean {
         return blockState.block.identifier == MinecraftBlocks.FARMLAND
@@ -47,8 +47,8 @@ open class CropBlock(resourceLocation: ResourceLocation, registries: Registries,
     companion object : PixLyzerBlockFactory<CropBlock> {
         const val MIN_LIGHT_LEVEL = 7
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CropBlock {
-            return CropBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): CropBlock {
+            return CropBlock(identifier, registries, data)
         }
     }
 }

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 
-open class SweetBerryBushBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data), EntityCollisionHandler {
+open class SweetBerryBushBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(identifier, registries, data), EntityCollisionHandler {
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         if (entity !is LivingEntity) {
@@ -37,8 +37,8 @@ open class SweetBerryBushBlock(resourceLocation: ResourceLocation, registries: R
     companion object : PixLyzerBlockFactory<SweetBerryBushBlock> {
         val SLOW = Vec3d(0.8f.d, 0.75, 0.8f.d)
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SweetBerryBushBlock {
-            return SweetBerryBushBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): SweetBerryBushBlock {
+            return SweetBerryBushBlock(identifier, registries, data)
         }
     }
 }

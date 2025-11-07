@@ -36,7 +36,7 @@ import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : WallMountedBlock(resourceLocation, registries, data), InteractBlockHandler, RandomDisplayTickable {
+open class LeverBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : WallMountedBlock(identifier, registries, data), InteractBlockHandler, RandomDisplayTickable {
     private val dustParticleType = registries.particleType[DustParticle]
 
     private fun spawnParticles(session: PlaySession, blockState: BlockState, blockPosition: BlockPosition, scale: Float) {
@@ -68,8 +68,8 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
     }
 
     companion object : PixLyzerBlockFactory<LeverBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LeverBlock {
-            return LeverBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): LeverBlock {
+            return LeverBlock(identifier, registries, data)
         }
     }
 }

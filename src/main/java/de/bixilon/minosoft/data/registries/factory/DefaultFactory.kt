@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,8 +26,8 @@ open class DefaultFactory<T : Identified>(private vararg val factories: T) : Ite
         for (factory in factories) {
             map[factory.identifier] = factory
             if (factory is AliasedIdentified) {
-                for (resourceLocation in factory.identifiers) {
-                    map[resourceLocation] = factory
+                for (identifier in factory.identifiers) {
+                    map[identifier] = factory
                 }
             }
         }

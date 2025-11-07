@@ -26,10 +26,10 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.HelmetItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.LeggingsItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingArmorItem {
+abstract class NetheriteArmor(identifier: ResourceLocation) : ArmorItem(identifier), WearableItem, DefendingArmorItem {
 
 
-    open class NetheriteBoots(resourceLocation: ResourceLocation = this.identifier) : NetheriteArmor(resourceLocation), BootsItem {
+    open class NetheriteBoots(identifier: ResourceLocation = this.identifier) : NetheriteArmor(identifier), BootsItem {
         override val defense: Int get() = 3
         override val maxDurability get() = 481
 
@@ -40,7 +40,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         }
     }
 
-    open class NetheriteLeggings(resourceLocation: ResourceLocation = this.identifier) : NetheriteArmor(resourceLocation), LeggingsItem {
+    open class NetheriteLeggings(identifier: ResourceLocation = this.identifier) : NetheriteArmor(identifier), LeggingsItem {
         override val defense: Int get() = 6
         override val maxDurability get() = 555
 
@@ -51,7 +51,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         }
     }
 
-    open class NetheriteChestplate(resourceLocation: ResourceLocation = this.identifier) : NetheriteArmor(resourceLocation), ChestplateItem {
+    open class NetheriteChestplate(identifier: ResourceLocation = this.identifier) : NetheriteArmor(identifier), ChestplateItem {
         override val defense: Int get() = 8
         override val maxDurability get() = 592
 
@@ -62,7 +62,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         }
     }
 
-    open class NetheriteHelmet(resourceLocation: ResourceLocation = this.identifier) : NetheriteArmor(resourceLocation), HelmetItem {
+    open class NetheriteHelmet(identifier: ResourceLocation = this.identifier) : NetheriteArmor(identifier), HelmetItem {
         override val defense: Int get() = 3
         override val maxDurability get() = 407
 

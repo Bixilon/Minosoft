@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,14 +23,14 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class CraftingTableBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), InteractBlockHandler {
+open class CraftingTableBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(identifier, registries, data), InteractBlockHandler {
 
     override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?) = InteractionResults.SUCCESS
 
     companion object : PixLyzerBlockFactory<CraftingTableBlock> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CraftingTableBlock {
-            return CraftingTableBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): CraftingTableBlock {
+            return CraftingTableBlock(identifier, registries, data)
         }
     }
 }

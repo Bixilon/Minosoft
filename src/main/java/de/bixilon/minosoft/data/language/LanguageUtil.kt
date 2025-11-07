@@ -37,11 +37,11 @@ object LanguageUtil {
 
 
     fun String?.i18n(): Translated {
-        val resourceLocation = this.toResourceLocation()
-        if (resourceLocation.namespace == Namespaces.MINECRAFT) {
-            return Translated(minosoft(resourceLocation.path))
+        val key = this.toResourceLocation()
+        if (key.namespace == Namespaces.MINECRAFT) {
+            return Translated(minosoft(key.path))
         }
-        return Translated(resourceLocation)
+        return Translated(key)
     }
 
     fun loadJsonLanguage(json: JsonObject): LanguageData {

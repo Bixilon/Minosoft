@@ -22,10 +22,10 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
 open class SpawnEggItem(
-    resourceLocation: ResourceLocation,
+    identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
+) : PixLyzerItem(identifier, registries, data) {
     val color1 = data["spawn_egg_color_1"]?.toInt()?.rgb()
     val color2 = data["spawn_egg_color_2"]?.toInt()?.rgb()
     val entityType: EntityType = unsafeNull()
@@ -36,8 +36,8 @@ open class SpawnEggItem(
 
     companion object : PixLyzerItemFactory<SpawnEggItem> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SpawnEggItem {
-            return SpawnEggItem(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): SpawnEggItem {
+            return SpawnEggItem(identifier, registries, data)
         }
     }
 }

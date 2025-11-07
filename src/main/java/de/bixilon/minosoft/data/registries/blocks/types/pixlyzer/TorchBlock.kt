@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), RandomDisplayTickable {
+open class TorchBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(identifier, registries, data), RandomDisplayTickable {
     protected val smokeParticle = registries.particleType[SmokeParticle]
     protected val flameParticle = registries.particleType[data["flame_particle"]]
 
@@ -43,8 +43,8 @@ open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries
 
     companion object : PixLyzerBlockFactory<TorchBlock> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): TorchBlock {
-            return TorchBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): TorchBlock {
+            return TorchBlock(identifier, registries, data)
         }
     }
 }

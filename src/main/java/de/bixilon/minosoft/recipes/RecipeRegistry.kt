@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,17 +28,17 @@ class RecipeRegistry(
 ) : AbstractRegistry<Recipe> {
     private val idValueMap: Int2ObjectOpenHashMap<Recipe> = Int2ObjectOpenHashMap()
     private val valueIdMap: Object2IntOpenHashMap<Recipe> = Object2IntOpenHashMap<Recipe>().apply { defaultReturnValue(-1) }
-    private val resourceLocationRecipeMap: MutableMap<ResourceLocation, Recipe> = mutableMapOf()
-    private val recipeResourceLocationMap: MutableMap<Recipe, ResourceLocation> = mutableMapOf()
+    private val identifierRecipeMap: MutableMap<ResourceLocation, Recipe> = mutableMapOf()
+    private val recipeIdentifierMap: MutableMap<Recipe, ResourceLocation> = mutableMapOf()
 
     override val size: Int
-        get() = (parent?.size ?: 0) + maxOf(idValueMap.size, recipeResourceLocationMap.size)
+        get() = (parent?.size ?: 0) + maxOf(idValueMap.size, recipeIdentifierMap.size)
 
     override fun get(any: Any?): Recipe? {
         return when (any) {
             null -> null
             is Number -> getOrNull(any.toInt())
-            is ResourceLocation -> resourceLocationRecipeMap[any]
+            is ResourceLocation -> identifierRecipeMap[any]
             is String -> get(any.toResourceLocation())
             is Identified -> get(any.identifier)
             else -> throw IllegalArgumentException("Can not get recipe from $any")
@@ -60,28 +60,28 @@ class RecipeRegistry(
     }
 
     override fun noParentIterator(): Iterator<Recipe> {
-        return resourceLocationRecipeMap.values.iterator() // ToDo
+        return identifierRecipeMap.values.iterator() // ToDo
     }
 
     override fun clear() {
         idValueMap.clear()
         valueIdMap.clear()
-        resourceLocationRecipeMap.clear()
-        recipeResourceLocationMap.clear()
+        identifierRecipeMap.clear()
+        recipeIdentifierMap.clear()
     }
 
     fun getResourceLocation(recipe: Recipe): ResourceLocation? {
-        return recipeResourceLocationMap[recipe]
+        return recipeIdentifierMap[recipe]
     }
 
-    fun add(id: Int?, resourceLocation: ResourceLocation?, recipe: Recipe) {
+    fun add(id: Int?, identifier: ResourceLocation?, recipe: Recipe) {
         if (id != null) {
             idValueMap[id] = recipe
             valueIdMap[recipe] = id
         }
-        if (resourceLocation != null) {
-            resourceLocationRecipeMap[resourceLocation] = recipe
-            recipeResourceLocationMap[recipe] = resourceLocation
+        if (identifier != null) {
+            identifierRecipeMap[identifier] = recipe
+            recipeIdentifierMap[recipe] = identifier
         }
     }
 

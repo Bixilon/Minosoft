@@ -54,8 +54,8 @@ open class PixLyzerBlockItem(
         override val ALIASES = setOf("BlockItem", "AliasedBlockItem")
         private val BLOCK_FIELD = PixLyzerBlockItem::block.field
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlockItem {
-            return PixLyzerBlockItem(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlockItem {
+            return PixLyzerBlockItem(identifier, registries, data)
         }
     }
 }

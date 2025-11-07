@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,19 +24,19 @@ open class ResourceLocationMap<T : Identified>(vararg entries: T) : Iterable<T> 
         for (factory in entries) {
             this.entries[factory.identifier] = factory
             if (factory is AliasedIdentified) {
-                for (resourceLocation in factory.identifiers) {
-                    this.entries[resourceLocation] = factory
+                for (identifier in factory.identifiers) {
+                    this.entries[identifier] = factory
                 }
             }
         }
     }
 
-    operator fun set(resourceLocation: ResourceLocation, value: T) {
-        this.entries[resourceLocation] = value
+    operator fun set(identifier: ResourceLocation, value: T) {
+        this.entries[identifier] = value
     }
 
-    operator fun get(resourceLocation: ResourceLocation): T? {
-        return this.entries[resourceLocation]
+    operator fun get(identifier: ResourceLocation): T? {
+        return this.entries[identifier]
     }
 
     override fun iterator(): Iterator<T> {

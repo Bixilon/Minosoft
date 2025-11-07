@@ -26,10 +26,10 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.HelmetItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.LeggingsItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingArmorItem {
+abstract class DiamondArmor(identifier: ResourceLocation) : ArmorItem(identifier), WearableItem, DefendingArmorItem {
 
 
-    open class DiamondBoots(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), BootsItem {
+    open class DiamondBoots(identifier: ResourceLocation = this.identifier) : DiamondArmor(identifier), BootsItem {
         override val defense: Int get() = 3
         override val maxDurability get() = 429
 
@@ -40,7 +40,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         }
     }
 
-    open class DiamondLeggings(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), LeggingsItem {
+    open class DiamondLeggings(identifier: ResourceLocation = this.identifier) : DiamondArmor(identifier), LeggingsItem {
         override val defense: Int get() = 6
         override val maxDurability get() = 495
 
@@ -51,7 +51,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         }
     }
 
-    open class DiamondChestplate(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), ChestplateItem {
+    open class DiamondChestplate(identifier: ResourceLocation = this.identifier) : DiamondArmor(identifier), ChestplateItem {
         override val defense: Int get() = 8
         override val maxDurability get() = 528
 
@@ -62,7 +62,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         }
     }
 
-    open class DiamondHelmet(resourceLocation: ResourceLocation = this.identifier) : DiamondArmor(resourceLocation), HelmetItem {
+    open class DiamondHelmet(identifier: ResourceLocation = this.identifier) : DiamondArmor(identifier), HelmetItem {
         override val defense: Int get() = 3
         override val maxDurability get() = 363
 

@@ -39,7 +39,7 @@ open class Registry<T : RegistryItem>(
 ) : AbstractRegistry<T> {
     protected val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
     protected val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
-    protected val resourceLocationMap: MutableMap<ResourceLocation, T> = HashMap()
+    protected val identifierMap: MutableMap<ResourceLocation, T> = HashMap()
 
     override val size: Int
         get() {
@@ -63,7 +63,7 @@ open class Registry<T : RegistryItem>(
 
     open operator fun get(identifier: ResourceLocation): T? {
         val fixed = fixer?.fix(identifier) ?: identifier
-        return resourceLocationMap[fixed] ?: parent?.get(fixed)
+        return identifierMap[fixed] ?: parent?.get(fixed)
     }
 
     operator fun set(id: Int, value: T) {
@@ -74,11 +74,11 @@ open class Registry<T : RegistryItem>(
     open operator fun set(any: Any, value: T) {
         when (any) {
             is Int -> set(any, value)
-            is ResourceLocation -> resourceLocationMap[any] = value
-            is Identified -> resourceLocationMap[any.identifier] = value
+            is ResourceLocation -> identifierMap[any] = value
+            is Identified -> identifierMap[any.identifier] = value
             is AliasedIdentified -> {
-                for (resourceLocation in any.identifiers) {
-                    resourceLocationMap[resourceLocation] = value
+                for (identifier in any.identifiers) {
+                    identifierMap[identifier] = value
                 }
             }
 
@@ -86,8 +86,8 @@ open class Registry<T : RegistryItem>(
         }
     }
 
-    open operator fun get(resourceLocation: String): T? {
-        return get(resourceLocation.toResourceLocation())
+    open operator fun get(identifier: String): T? {
+        return get(identifier.toResourceLocation())
     }
 
     open operator fun get(identified: Identified): T? {
@@ -145,7 +145,7 @@ open class Registry<T : RegistryItem>(
             idValueMap[id] = item
             valueIdMap[item] = id
         }
-        resourceLocationMap[identifier] = item
+        identifierMap[identifier] = item
     }
 
     fun add(id: Int?, item: T) {
@@ -153,7 +153,7 @@ open class Registry<T : RegistryItem>(
     }
 
     open fun postInit(registries: Registries) {
-        for ((_, value) in resourceLocationMap) {
+        for ((_, value) in identifierMap) {
             value.inject(registries)
             value.postInit(registries)
         }
@@ -164,13 +164,13 @@ open class Registry<T : RegistryItem>(
     }
 
     override fun clear() {
-        resourceLocationMap.clear()
+        identifierMap.clear()
         idValueMap.clear()
         valueIdMap.clear()
     }
 
     override fun noParentIterator(): Iterator<T> {
-        return resourceLocationMap.values.iterator()
+        return identifierMap.values.iterator()
     }
 
     override fun optimize() {

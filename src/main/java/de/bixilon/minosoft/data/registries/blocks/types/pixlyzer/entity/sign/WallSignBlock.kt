@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class WallSignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : SignBlock(resourceLocation, registries, data) {
+open class WallSignBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : SignBlock(identifier, registries, data) {
 
 
     companion object : PixLyzerBlockFactory<WallSignBlock> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): WallSignBlock {
-            return WallSignBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): WallSignBlock {
+            return WallSignBlock(identifier, registries, data)
         }
     }
 }

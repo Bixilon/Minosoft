@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.du
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : TorchBlock(resourceLocation, registries, data), RandomDisplayTickable {
+open class RedstoneTorchBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : TorchBlock(identifier, registries, data), RandomDisplayTickable {
     private val redstoneDustParticle = registries.particleType[DustParticle]
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
@@ -42,8 +42,8 @@ open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Re
 
     companion object : PixLyzerBlockFactory<RedstoneTorchBlock> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): RedstoneTorchBlock {
-            return RedstoneTorchBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): RedstoneTorchBlock {
+            return RedstoneTorchBlock(identifier, registries, data)
         }
     }
 }

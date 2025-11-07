@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Po
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), RandomDisplayTickable {
+open class NetherPortalBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(identifier, registries, data), RandomDisplayTickable {
     private val portalParticleType = registries.particleType[PortalParticle]
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
@@ -61,8 +61,8 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
 
     companion object : PixLyzerBlockFactory<NetherPortalBlock> {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NetherPortalBlock {
-            return NetherPortalBlock(resourceLocation, registries, data)
+        override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): NetherPortalBlock {
+            return NetherPortalBlock(identifier, registries, data)
         }
     }
 }

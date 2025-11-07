@@ -44,8 +44,8 @@ abstract class Particle(
 ) : PhysicsEntity {
     protected val data: ParticleData by lazy {
         data ?: let {
-            val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
-            session.registries.particleType[resourceLocation]!!.default()
+            val identifier = this::class.companionObjectInstance as ParticleFactory<*>
+            session.registries.particleType[identifier]!!.default()
         }
     }
     var chunkPosition = position.blockPosition.chunkPosition

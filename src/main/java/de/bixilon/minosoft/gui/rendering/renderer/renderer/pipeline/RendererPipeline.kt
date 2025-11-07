@@ -31,7 +31,7 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
     private val pre: MutableList<PreDrawable> = mutableListOf()
     private val post: MutableList<PostDrawable> = mutableListOf()
 
-    private val renderSystem = renderer.context.system
+    private val system = renderer.context.system
     private val framebuffer = renderer.context.framebuffer
 
 
@@ -50,7 +50,7 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
             renderer as Renderer
             if (renderer.skip) continue
 
-            renderSystem.set(renderer)
+            system.set(renderer)
             renderer.draw()
         }
     }
@@ -58,7 +58,7 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
     private fun drawPre() {
         for (renderer in pre) {
             if (renderer.skip) continue
-            renderSystem.set(renderer)
+            system.set(renderer)
             renderer.drawPre()
         }
     }
@@ -66,7 +66,7 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
     private fun drawPost() {
         for (renderer in post) {
             if (renderer.skip) continue
-            renderSystem.set(renderer)
+            system.set(renderer)
             renderer.drawPost()
         }
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -54,8 +54,8 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
         } else {
             for (i in 0 until buffer.readVarInt()) {
-                val resourceLocation = buffer.readResourceLocation()
-                tags[resourceLocation] = when (resourceLocation) {
+                val identifier = buffer.readResourceLocation()
+                tags[identifier] = when (identifier) {
                     BLOCK -> buffer.readBlockTags()
                     ITEM -> buffer.readItemTags()
                     FLUID -> buffer.readFluidTags()

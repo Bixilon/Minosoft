@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), FoodItem, StackableItem {
+open class AppleItem(identifier: ResourceLocation = this.identifier) : Item(identifier), FoodItem, StackableItem {
     override val nutrition: Int get() = 4
 
     companion object : ItemFactory<AppleItem> {
@@ -30,7 +30,7 @@ open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Ite
         override fun build(registries: Registries, data: JsonObject) = AppleItem()
     }
 
-    open class GoldenAppleItem(resourceLocation: ResourceLocation = this.identifier) : AppleItem(resourceLocation) {
+    open class GoldenAppleItem(identifier: ResourceLocation = this.identifier) : AppleItem(identifier) {
         override val alwaysEdible: Boolean get() = true
 
         companion object : ItemFactory<GoldenAppleItem> {
@@ -40,7 +40,7 @@ open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Ite
         }
     }
 
-    open class EnchantedGoldenAppleItem(resourceLocation: ResourceLocation = this.identifier) : GoldenAppleItem(resourceLocation) {
+    open class EnchantedGoldenAppleItem(identifier: ResourceLocation = this.identifier) : GoldenAppleItem(identifier) {
 
         companion object : ItemFactory<EnchantedGoldenAppleItem> {
             override val identifier = minecraft("enchanted_golden_apple")
