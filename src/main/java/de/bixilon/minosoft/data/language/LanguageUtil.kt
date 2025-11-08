@@ -45,7 +45,7 @@ object LanguageUtil {
     }
 
     fun loadJsonLanguage(json: JsonObject): LanguageData {
-        val data: LanguageData = HashMap()
+        val data: LanguageData = HashMap(json.size)
 
         for ((key, value) in json) {
             val path = ResourceLocation.of(key).path
