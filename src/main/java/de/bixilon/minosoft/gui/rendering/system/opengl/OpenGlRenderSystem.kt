@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -308,6 +310,11 @@ class OpenGlRenderSystem(
         }
 
     companion object : RenderSystemFactory {
+        private val INITIALIZE = GL::class.java.getDeclaredMethod("initialize").apply { setUnsafeAccessible() }
+
+        init {
+            DefaultThreadPool += { INITIALIZE.invoke(null) }
+        }
 
         override fun create(context: RenderContext) = OpenGlRenderSystem(context)
 
