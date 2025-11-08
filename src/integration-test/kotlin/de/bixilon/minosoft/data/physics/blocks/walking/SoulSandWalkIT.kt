@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.physics.blocks.walking
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertGround
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.test.IT
 import org.testng.SkipException
 import org.testng.annotations.Test
@@ -26,7 +26,7 @@ class SoulSandWalkIT : WalkIT() {
 
     @Test(priority = -1)
     fun getSoulSand() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.SOUL_SAND]?.states?.default ?: throw SkipException("Can not find soul sand!")
+        this.block = IT.REGISTRIES.block[SoulSand]?.states?.default ?: throw SkipException("Can not find soul sand!")
     }
 
     fun soulSandLanding() {

@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlo
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 enum class BlockStateFlags {
-    FULLY_OPAQUE,
+    FULLY_OPAQUE, // TODO: Split into rendering, outline and collision (e.g. soul sand)
     FLUID,
     WATERLOGGED,
     OFFSET,

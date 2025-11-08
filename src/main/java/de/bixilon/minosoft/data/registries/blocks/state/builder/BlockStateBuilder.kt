@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyL
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
@@ -126,7 +127,7 @@ class BlockStateBuilder(
             var flags = BlockStateFlags.update(flags, properties)
 
 
-            if (data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULLY_OPAQUE
+            if (block is PixLyzerBlock && data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULLY_OPAQUE
 
             return BlockStateBuilder(
                 properties = properties,
