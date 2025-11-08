@@ -14,16 +14,20 @@
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
 import de.bixilon.kmath.vec.vec3.i.SVec3i
+import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.container.block.occlusion.OcclusionState
 import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.measureTime
 
 class OcclusionTracer(
     val position: SectionPosition,
@@ -41,6 +45,8 @@ class OcclusionTracer(
     private val skip = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) // TODO: reuse
     private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
     private val paths = Array(Axes.VALUES.size) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
+
+    val queue: HashSet<SectionOcclusion> = HashSet(MAX_QUEUE_SIZE)
 
 
     private inline fun isInViewDistance(chunk: Chunk): Boolean {
@@ -93,6 +99,19 @@ class OcclusionTracer(
         trace(chunk, height + destination.vector.y, destination, vector + destination)
     }
 
+    private fun SectionOcclusion.isOccludedQueue(source: Directions, destination: Directions): Boolean {
+        if (this.state == OcclusionState.INVALID) {
+            calculateFast() // maybe it is possible without effort
+            if (this.state == OcclusionState.INVALID) {
+                if (queue.size > MAX_QUEUE_SIZE) return true
+                queue += this
+                return true
+            }
+        }
+
+        return isOccluded(source, destination)
+    }
+
     fun trace(chunk: Chunk): OcclusionGraph {
         for (direction in Directions) {
             val neighbour = if (direction.axis == Axes.Y) chunk else chunk.neighbours[direction] ?: continue
@@ -102,5 +121,9 @@ class OcclusionTracer(
         visible += position
 
         return OcclusionGraph(visible)
+    }
+
+    companion object {
+        const val MAX_QUEUE_SIZE = 100
     }
 }

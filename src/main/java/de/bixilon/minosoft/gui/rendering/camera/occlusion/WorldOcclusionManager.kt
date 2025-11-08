@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
+import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -42,6 +46,8 @@ class WorldOcclusionManager(
     private val session = context.session
     private var graph: OcclusionGraph? = null
     private var position = SectionPosition.EMPTY
+
+    private var queue = false
 
 
     init {
@@ -91,6 +97,19 @@ class WorldOcclusionManager(
         graph = null
     }
 
+    private fun workQueue(queue: Set<SectionOcclusion>) {
+        if (queue.isEmpty()) return
+        if (this.queue) return // already working on it
+
+        this.queue = true
+        DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.Priorities.HIGH) {
+            for (occlusion in queue) {
+                occlusion.calculate()
+            }
+            this.queue = false
+        }
+    }
+
 
     override fun draw() {
         if (graph != null) return
@@ -100,7 +119,12 @@ class WorldOcclusionManager(
         val chunk = world.chunks[this.position.chunkPosition] ?: return // TODO: optimize camera chunk retrieval
         val viewDistance = world.view.viewDistance
 
-        this.graph = OcclusionTracer(this.position, world.dimension, camera, viewDistance).trace(chunk)
+        val tracer = OcclusionTracer(this.position, world.dimension, camera, viewDistance)
+        this.graph = tracer.trace(chunk)
+
+        workQueue(tracer.queue)
+
+
         session.events.fire(VisibilityGraphChangeEvent(context))
     }
 }

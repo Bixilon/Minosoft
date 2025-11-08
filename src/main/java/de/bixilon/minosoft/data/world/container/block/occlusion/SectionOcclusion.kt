@@ -23,7 +23,8 @@ class SectionOcclusion(
     val provider: BlockSectionDataProvider,
 ) {
     private var occlusion = SectionOcclusionTracer.EMPTY
-    private var state = OcclusionState.INVALID
+    var state = OcclusionState.INVALID
+        private set
 
 
     fun invalidate(notify: Boolean) {
@@ -40,8 +41,15 @@ class SectionOcclusion(
         invalidate(true)
     }
 
-    private fun calculate() {
+    fun calculate() {
+        if (state == OcclusionState.VALID) return
         val occlusion = SectionOcclusionTracer.calculate(provider)
+        update(occlusion, false)
+    }
+
+    fun calculateFast() {
+        if (state == OcclusionState.VALID) return
+        val occlusion = SectionOcclusionTracer.calculateFast(provider) ?: return
         update(occlusion, false)
     }
 
