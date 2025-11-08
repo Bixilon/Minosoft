@@ -115,7 +115,9 @@ interface ChatComponent {
             if (string.isEmpty()) return EMPTY
 
             if (!ignoreJson) {
-                for (codePoint in string.codePoints()) {
+                val stream = string.codePoints().iterator()
+                while (stream.hasNext()) {
+                    val codePoint = stream.nextInt()
                     if (Character.isWhitespace(codePoint)) {
                         continue
                     }

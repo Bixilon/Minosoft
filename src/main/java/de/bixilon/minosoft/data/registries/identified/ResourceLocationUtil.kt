@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,9 @@ object ResourceLocationUtil {
         if (namespace.isEmpty()) {
             throw IllegalArgumentException("Namespace is blank!")
         }
-        for (code in namespace.codePoints()) {
+        val stream = namespace.codePoints().iterator()
+        while (stream.hasNext()) {
+            val code = stream.nextInt()
             if (
                 code in 'a'.code..'z'.code ||
                 code in '0'.code..'9'.code ||
