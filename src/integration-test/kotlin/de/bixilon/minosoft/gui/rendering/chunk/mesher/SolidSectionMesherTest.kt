@@ -455,13 +455,24 @@ class SolidSectionMesherTest {
     fun TestQueue.blockEntity(): BlockState {
         val block = object : Block(minosoft("test2"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = object : BlockEntity(session, position, state) {
 
-                override fun createRenderer(context: RenderContext): BlockEntityRenderer? {
-                    entities.add(TestQueue.RenderedEntity(position, state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
-                    return null
+            private inner class ABlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state) {
+
+                override fun createRenderer(context: RenderContext) = object : BlockEntityRenderer {
+                    override val entity get() = this@ABlockEntity
+
+                    init {
+                        entities.add(TestQueue.RenderedEntity(position, state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
+                    }
+
+                    override fun draw() = Broken()
+                    override fun drop() = Broken()
+                    override fun load() = Broken()
+                    override fun unload() = Broken()
                 }
             }
+
+            override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = ABlockEntity(session, position, state)
         }
         val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
 
