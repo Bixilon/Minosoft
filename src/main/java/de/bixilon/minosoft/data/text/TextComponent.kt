@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 
+// TODO: make this one immutable
 open class TextComponent(
     message: Any? = "",
     override var color: RGBAColor? = null,

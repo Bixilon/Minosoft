@@ -17,7 +17,6 @@ import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -49,7 +48,7 @@ class BlockTarget(
 
         text += "\n"
 
-        if (state is PropertyBlockState) {
+        if (state.properties.isNotEmpty()) {
             text += state.withProperties()
         }
 

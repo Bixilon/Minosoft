@@ -15,13 +15,10 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.snow
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
@@ -35,17 +32,18 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.protocol.versions.Version
 
-class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FixedCollidable, OutlinedBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock, BlockStateBuilder {
+class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FixedCollidable, OutlinedBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.1f
     override val legacyModelName get() = minecraft("snow_layer")
 
-    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
-        val layer = settings.properties?.get(BlockProperties.SNOW_LAYERS)?.toInt() ?: return BlockState(this, settings)
+    override fun buildState(version: Version, settings: BlockStateBuilder): BlockState {
+        val layer = settings.properties[LAYERS]?.toInt() ?: return super.buildState(version, settings)
 
-        settings.collisionShape = AABB(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
-        settings.outlineShape = AABB(0.0, 0.0, 0.0, 1.0, layer * LAYER_HEIGHT, 1.0)
-        return AdvancedBlockState(this, settings)
+        val collisionShape = AABB(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
+        val outlineShape = AABB(0.0, 0.0, 0.0, 1.0, layer * LAYER_HEIGHT, 1.0)
+
+        return settings.build(block = this, collisionShape = collisionShape, outlineShape = outlineShape)
     }
 
 

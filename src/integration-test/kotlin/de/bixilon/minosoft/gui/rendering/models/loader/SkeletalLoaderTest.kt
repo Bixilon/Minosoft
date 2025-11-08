@@ -34,7 +34,7 @@ import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
-@Test(groups = ["rendering", "skeletal"])
+@Test(groups = ["skeletal"])
 class SkeletalLoaderTest {
     private val dummyModel = minosoft("model/dummy").sModel()
 

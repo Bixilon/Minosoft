@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.legacy
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.versions.registries.RegistryLoadingTest
 import de.bixilon.minosoft.test.ITUtil
@@ -72,7 +70,7 @@ abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version)
 
         assertEquals(registries.blockState.getOrNull(55 shl 4 or 0)?.block?.identifier, minecraft("redstone_wire"))
         assertEquals(registries.blockState.getOrNull(55 shl 4 or 1)?.block?.identifier, minecraft("redstone_wire"))
-        assertEquals(registries.blockState.getOrNull(55 shl 4 or 2)?.nullCast<PropertyBlockState>()?.properties?.get(BlockProperties.REDSTONE_POWER), 2)
+        assertEquals(registries.blockState.getOrNull(55 shl 4 or 2)?.properties?.get(BlockProperties.REDSTONE_POWER), 2)
     }
 
     fun itemId() {

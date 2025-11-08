@@ -16,7 +16,6 @@ package de.bixilon.minosoft.camera.target.targets
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -47,7 +46,7 @@ class FluidTarget(
 
         text += "\n"
 
-        if (state is PropertyBlockState) {
+        if (state.properties.isNotEmpty()) {
             text += state.withProperties()
         }
 

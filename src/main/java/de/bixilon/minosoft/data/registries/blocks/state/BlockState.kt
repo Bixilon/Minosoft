@@ -12,79 +12,114 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.state
 
+import de.bixilon.kutil.array.ArrayUtil.next
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
-import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
+import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
-import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
-open class BlockState(
+class BlockState(
     val block: Block,
-    val luminance: Int,
+    val properties: Map<BlockProperty<*>, Any>,
+    val flags: IntInlineEnumSet<BlockStateFlags>,
+    val luminance: Int = 0,
+    val collisionShape: Shape? = null,
+    val outlineShape: Shape? = null,
+    val lightProperties: LightProperties = OpaqueProperty,
 ) {
+    private val hashCode = _hashCode()
     var model: BlockRender? = null
-    val flags = BlockStateFlags.set()
 
-    init {
-        if (_isFullyOpaque()) flags += BlockStateFlags.FULLY_OPAQUE
-        if (block is CollidableBlock) flags += BlockStateFlags.COLLISIONS
-        if (block is TintedBlock) flags += BlockStateFlags.TINTED
-        if (block is FluidHolder) flags += BlockStateFlags.FLUID
-        if (block is OffsetBlock) flags += BlockStateFlags.OFFSET
-        if (block is BlockWithEntity<*>) flags += BlockStateFlags.ENTITY
-        if (block is RandomDisplayTickable) flags += BlockStateFlags.RANDOM_TICKS
+    private fun _hashCode(): Int {
+        var result = 1
+        result = 31 * result + block.hashCode()
+        result = 31 * result + properties.hashCode()
+        return result
     }
 
-    constructor(block: Block, settings: BlockStateSettings) : this(block, settings.luminance)
-
-
-    override fun hashCode(): Int {
-        return block.hashCode()
-    }
+    override fun hashCode() = hashCode
 
     override fun equals(other: Any?): Boolean {
         if (other is ResourceLocation) return other == block.identifier
-        if (other is BlockState) return other.block == block && other.luminance == luminance
+        if (other is BlockState) return hashCode == other.hashCode && other.block == block && other.luminance == luminance && properties == other.properties
         return false
     }
 
-    override fun toString(): String {
-        return block.toString()
-    }
 
-    open fun withProperties(vararg properties: Pair<BlockProperty<*>, Any>): BlockState {
-        if (properties.isEmpty()) return this
-        throw StatelessBlockError(this)
-    }
+    fun withProperties(vararg properties: Pair<BlockProperty<*>, Any>): BlockState {
+        val nextProperties = this.properties.toMutableMap()
 
-    open fun withProperties(properties: Map<BlockProperty<*>, Any>): BlockState {
-        if (properties.isEmpty()) return this
-        throw StatelessBlockError(this)
-    }
-
-    open fun cycle(property: BlockProperty<*>): BlockState = throw StatelessBlockError(this)
-
-    open operator fun <T> get(property: BlockProperty<T>): T = throw StatelessBlockError(this)
-    open fun <T> getOrNull(property: BlockProperty<T>): T? = throw StatelessBlockError(this)
-
-
-    companion object {
-        private fun BlockState._isFullyOpaque(): Boolean {
-            if (BlockStateFlags.FULLY_OPAQUE in flags) return true
-            val block = this.block
-            if (block is FullOpaqueBlock) return true
-            if (block !is PotentialFullOpaqueBlock) return false
-
-            return block.isFullOpaque(this)
+        for ((key, value) in properties) {
+            nextProperties[key] = value
         }
+
+        return getStateWith(nextProperties)
+    }
+
+    fun withProperties(properties: Map<BlockProperty<*>, Any>): BlockState {
+        val nextProperties = this.properties.toMutableMap()
+
+        for ((key, value) in properties) {
+            nextProperties[key] = value
+        }
+
+        return getStateWith(nextProperties)
+    }
+
+    fun getStateWith(properties: Map<BlockProperty<*>, Any>): BlockState {
+        for (state in this.block.states) {
+            if (state.properties != properties) {
+                continue
+            }
+
+            return state
+        }
+
+        throw IllegalArgumentException("Can not find ${this.block} with properties: $properties")
+    }
+
+    fun cycle(property: BlockProperty<*>): BlockState {
+        val value: Any = this[property]!!
+        return withProperties(property to block.states.unsafeCast<PropertyStateManager>().properties[property]!!.next(value))
+    }
+
+    operator fun <T> get(property: BlockProperty<T>): T {
+        val value = this.properties[property] ?: throw IllegalArgumentException("$this has no property $property")
+        return value.unsafeCast()
+    }
+
+    fun <T> getOrNull(property: BlockProperty<T>): T? {
+        return this.properties[property]?.unsafeCast()
+    }
+
+
+    fun withProperties(): BaseComponent {
+        val component = BaseComponent()
+        var first = true
+        for ((property, value) in properties) {
+            if (first) {
+                first = false
+            } else {
+                component += "\n"
+            }
+            component += property
+            component += ": "
+            component += value
+        }
+
+        return component
+    }
+
+    override fun toString(): String {
+        if (properties.isEmpty()) return super.toString()
+
+        return super.toString() + "[${properties.map { "${it.key}=${it.value}" }.joinToString(",")}]"
     }
 }

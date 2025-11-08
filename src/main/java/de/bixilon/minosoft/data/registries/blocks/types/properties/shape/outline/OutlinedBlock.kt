@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -24,10 +22,5 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
  */
 interface OutlinedBlock {
 
-    fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
-        if (state is AdvancedBlockState) {
-            return state.outlineShape
-        }
-        return null
-    }
+    fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState) = state.outlineShape
 }

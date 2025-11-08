@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,8 +53,8 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
     override val randomOffset get() = RandomOffsetTypes.XYZ
     override val item: Item = this::item.inject(identifier)
 
-    override fun register(version: Version, list: MapPropertyList) {
-        super<Block>.register(version, list)
+    override fun registerProperties(version: Version, list: MapPropertyList) {
+        super<Block>.registerProperties(version, list)
         list += HALF
     }
 
@@ -165,7 +165,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         }
     }
 
-    class UpperBlock(settings: BlockSettings) : DoublePlant(Companion.identifier, settings), TintedBlock {
+    class UpperBlock(settings: BlockSettings) : DoublePlant(identifier, settings), TintedBlock {
         override val tintProvider: TintProvider? = null
 
         init {

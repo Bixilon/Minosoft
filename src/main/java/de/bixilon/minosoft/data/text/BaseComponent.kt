@@ -30,6 +30,7 @@ import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
+// TODO: make this one immutable
 class BaseComponent : ChatComponent, Iterable<ChatComponent> {
     val parts: MutableList<ChatComponent> = mutableListOf()
 

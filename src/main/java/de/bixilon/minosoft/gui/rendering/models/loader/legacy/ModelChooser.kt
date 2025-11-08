@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader.legacy
 
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.StatedBlock
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
@@ -27,8 +26,7 @@ interface ModelChooser : StatedBlock {
     companion object {
         fun fallback(model: DirectBlockModel, block: StatedBlock) {
             for (state in block.states) {
-                val properties = if (state is PropertyBlockState) state.properties else emptyMap()
-                val apply = model.choose(properties) ?: continue
+                val apply = model.choose(state.properties) ?: continue
                 state.model = apply.bake()
             }
         }

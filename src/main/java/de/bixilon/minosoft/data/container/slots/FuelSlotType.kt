@@ -22,7 +22,7 @@ object FuelSlotType : SlotType {
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
         val item = stack.item
 
-        if (item is FilledBucketItem.LavaBucketItem) {
+        if (item is FilledBucketItem.Lava) {
             return true
         }
         val fuelTime = container.session.registries.misc.getFuelTime(item)

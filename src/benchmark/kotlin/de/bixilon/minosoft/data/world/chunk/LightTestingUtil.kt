@@ -20,10 +20,9 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.TestBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -111,7 +110,7 @@ object LightTestingUtil {
         val block = TestBlock(minosoft(name), BlockSettings(Versions.AUTOMATIC))
         val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = null, outlineShape = null, luminance = luminance, lightProperties = lightProperties)
         state.flags += BlockStateFlags.FULLY_OPAQUE
-        block::states.forceSet(SimpleStateManager(state))
+        block::states.forceSet(SingleStateManager(state))
 
         return block
     }

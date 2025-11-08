@@ -13,10 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
@@ -28,9 +26,7 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
  */
 interface FixedCollidable : CollidableBlock {
 
-    fun getCollisionShape(state: BlockState): Shape? {
-        return state.nullCast<AdvancedBlockState>()?.collisionShape
-    }
+    fun getCollisionShape(state: BlockState) = state.collisionShape
 
     override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
         return getCollisionShape(state)

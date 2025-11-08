@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.item.items.tool.axe
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CollectionCast.toAnyMap
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.InteractingToolItem
@@ -39,9 +37,7 @@ abstract class AxeItem(identifier: ResourceLocation, registries: Registries, dat
             return InteractionResults.INVALID
         }
 
-        val properties = target.state.nullCast<PropertyBlockState>()?.properties ?: emptyMap()
-
-        return super.interact(player.session, target.blockPosition, strippable?.get(target.state.block)?.states?.withProperties(properties))
+        return super.interact(player.session, target.blockPosition, strippable?.get(target.state.block)?.states?.withProperties(target.state.properties))
     }
 
     companion object {

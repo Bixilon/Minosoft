@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.stone
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
-import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -46,7 +46,7 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun testStates() {
-        assertTrue(block.states is SimpleStateManager)
+        assertTrue(block.states is SingleStateManager)
     }
 
     fun testLightProperties() {

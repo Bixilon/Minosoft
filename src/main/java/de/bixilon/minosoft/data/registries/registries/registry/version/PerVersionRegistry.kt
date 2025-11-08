@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,19 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry.version
 
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 import java.util.*
 
-class PerVersionEnumRegistry<T : Enum<*>>(
-    val values: ValuesEnum<T>,
-) {
-    private lateinit var versions: Map<Int, EnumRegistry<T>>
+class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator: () -> R) {
+    private lateinit var versions: Map<Int, R>
 
-
-    fun forVersion(version: Version): EnumRegistry<T>? {
+    fun forVersion(version: Version): R {
         // must loop from the highest version to lowest!
         for ((versionId, registry) in versions) {
             if (version.versionId < versionId) {
@@ -31,16 +31,18 @@ class PerVersionEnumRegistry<T : Enum<*>>(
             }
             return registry
         }
-
-        return null
+        throw IllegalArgumentException("Can not find a registry for version $version")
     }
 
     fun initialize(data: Map<String, Any>) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
-        val versions: SortedMap<Int, EnumRegistry<T>> = sortedMapOf({ t, t2 -> t2 - t })
+        val versions: SortedMap<Int, R> = sortedMapOf({ t, t2 -> t2 - t })
         for ((versionId, json) in data) {
-            versions[versionId.toInt()] = EnumRegistry(values = values, mutable = false).initialize(json)
+            val versionId = versionId.toInt()
+            val registry = registryCreator()
+            registry.updatePixlyzer(json.toJsonObject(), Versions.getById(versionId)!!, null)
+            versions[versionId] = registry
         }
         this.versions = versions
     }

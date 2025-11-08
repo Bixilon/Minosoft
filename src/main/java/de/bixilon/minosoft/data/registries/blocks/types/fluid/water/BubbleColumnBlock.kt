@@ -68,7 +68,7 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
     }
 
 
-    override fun getLightProperties(blockState: BlockState) = FluidBlock.LIGHT_PROPERTIES
+    override fun getLightProperties(state: BlockState) = FluidBlock.LIGHT_PROPERTIES
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         fluid.randomTick(session, state, position, random)

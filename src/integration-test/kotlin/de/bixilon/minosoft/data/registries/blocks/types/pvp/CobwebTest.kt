@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.pvp
 import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
-import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
@@ -50,7 +50,7 @@ class CobwebTest : BlockTest<Block>() {
     }
 
     fun testStates() {
-        assertTrue(block.states is SimpleStateManager)
+        assertTrue(block.states is SingleStateManager)
     }
 
     fun testLightProperties() {

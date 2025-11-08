@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ object PreFlattening {
     const val VERSION = "1.12.2"
 
     fun loadRegistry(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
-        val registries = Registries()
+        val registries = Registries(version = version)
 
         val json: MutableJsonObject = synchronizedMapOf()
 
@@ -40,7 +40,7 @@ object PreFlattening {
 
         error?.let { throw it }
 
-        registries.load(version, json, latch)
+        registries.load(json, latch)
 
         return registries
     }

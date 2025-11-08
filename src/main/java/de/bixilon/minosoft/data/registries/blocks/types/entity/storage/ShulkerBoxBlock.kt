@@ -19,9 +19,6 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
@@ -37,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
-open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item>, LightedBlock, BlockStateBuilder, CustomModel {
+open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item>, LightedBlock, CustomModel {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 2.0f
 
@@ -47,11 +44,7 @@ open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings
     }
 
     override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = ShulkerBoxBlockEntity(session, position, state)
-    override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES
-
-    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
-        return PropertyBlockState(this, settings)
-    }
+    override fun getLightProperties(state: BlockState) = LIGHT_PROPERTIES
 
 
     companion object : BlockFactory<ShulkerBoxBlock> {

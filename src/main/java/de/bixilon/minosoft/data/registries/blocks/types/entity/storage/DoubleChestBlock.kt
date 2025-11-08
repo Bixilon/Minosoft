@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEnt
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 interface DoubleChestBlock<T : StorageBlockEntity> : ChestBlock<T> {
 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
-        if (state !is PropertyBlockState) return super.getOutlineShape(session, position, state)
         val type = state.properties[BlockProperties.CHEST_TYPE] ?: return ChestBlock.SINGLE
         if (type == ChestTypes.SINGLE) return ChestBlock.SINGLE
         var facing = state[BlockProperties.FACING] // TODO: HORIZONTAL_FACING

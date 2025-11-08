@@ -11,11 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry.codec
+package de.bixilon.minosoft.data.registries.registries
 
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 
-interface IdCodec<T> {
+enum class RegistriesStates {
+    UNLOADED,
+    LOADED,
+    ;
 
-    fun deserialize(registries: Registries, data: Map<String, Any>): T
+    companion object : ValuesEnum<RegistriesStates> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
+    }
 }

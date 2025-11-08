@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyList
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
 import de.bixilon.minosoft.protocol.versions.Version
 
@@ -24,7 +24,7 @@ interface StatedBlock {
     val properties: BlockPropertyList
     val states: BlockStateManager
 
-    fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperty<*>, Array<Any>>)
+    fun registerProperties(version: Version, list: MapPropertyList) = Unit
 
-    fun register(version: Version, list: MapPropertyList) = Unit
+    fun buildState(version: Version, settings: BlockStateBuilder) = settings.build(this.unsafeCast())
 }

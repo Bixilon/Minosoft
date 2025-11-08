@@ -66,10 +66,10 @@ object PixLyzerUtil {
     }
 
     fun loadRegistry(version: Version, profile: ResourcesProfile, latch: AbstractLatch): Registries {
-        val registries = Registries()
+        val registries = Registries(version = version)
         val data = load(profile, version)
 
-        registries.load(version, data, latch)
+        registries.load(data, latch)
 
         return registries
     }

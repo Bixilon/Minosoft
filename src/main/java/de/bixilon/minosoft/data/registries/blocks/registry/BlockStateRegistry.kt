@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.registries.blocks.registry
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.logging.Log
@@ -27,18 +28,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
+class BlockStateRegistry(
+    val flattened: Boolean,
+) : AbstractRegistry<BlockState?> {
     override var parent: AbstractRegistry<BlockState?>? = null
     private val idMap: Int2ObjectOpenHashMap<BlockState> = Int2ObjectOpenHashMap()
 
-    override val size: Int
-        get() {
-            val value = idMap.size
-            parent?.let {
-                return value + it.size
-            }
-            return value
-        }
+    override val size get() = idMap.size + (parent?.size ?: 0)
 
     override fun noParentIterator(): Iterator<BlockState?> {
         return idMap.values.iterator()
@@ -48,11 +44,9 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         idMap.clear()
     }
 
-    override fun get(any: Any?): BlockState? {
-        return when (any) {
-            is Int -> getOrNull(any)
-            else -> TODO("Not yet implemented")
-        }
+    override fun get(any: Any?) = when (any) {
+        is Int -> getOrNull(any)
+        else -> TODO("Not yet implemented")
     }
 
 
@@ -65,7 +59,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         if (state != null) return state
         if (flattened) return null
 
-        return _get((id shr 4) shl 4) // Remove meta and try again
+        return _get(id and 0x0F.inv()) // Remove meta and try again
     }
 
     @Deprecated("Use getOrNull", ReplaceWith("getOrNull(id)"))
@@ -73,7 +67,6 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         return getOrNull(id)
     }
 
-    @Suppress("DEPRECATION")
     override fun getOrNull(id: Int): BlockState? {
         if (flattened) {
             if (id == ProtocolDefinition.AIR_ID) return null
@@ -81,6 +74,8 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
             if (id shr 4 == ProtocolDefinition.AIR_ID) return null
         }
         val state = forceGet(id) ?: return null
+
+        @Suppress("DEPRECATION")
         if (state.block is AirBlock) {
             return null
         }
@@ -103,6 +98,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
             Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block state $state just replaced $previous (id=$id)" }
         }
     }
+
     operator fun set(id: Int, meta: Int?, state: BlockState) {
         this[id shl 4 or (meta ?: 0)] = state
     }

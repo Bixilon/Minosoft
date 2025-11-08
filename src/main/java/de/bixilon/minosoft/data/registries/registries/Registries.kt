@@ -30,8 +30,9 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.BlockRegistry
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
+import de.bixilon.minosoft.data.registries.blocks.registry.BlockRegistry
+import de.bixilon.minosoft.data.registries.blocks.registry.BlockStateRegistry
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.dimension.Dimension
@@ -53,6 +54,8 @@ import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.misc.MiscData
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
+import de.bixilon.minosoft.data.registries.registries.registry.enums.EnumRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.enums.FakeEnumRegistry
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
@@ -74,21 +77,21 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import kotlin.reflect.KProperty0
 import kotlin.time.Duration.Companion.milliseconds
 
 
 class Registries(
     val cleanup: Boolean = true,
+    val version: Version,
 ) : Parentable<Registries> {
     val registries: MutableMap<ResourceLocation, AbstractRegistry<*>> = mutableMapOf()
 
     val shape = ShapeRegistry()
 
     val motif: Registry<Motif> = register("motif", Registry(codec = Motif, fixer = MotifFixer))
-    val block = register("block", BlockRegistry())
-    val item: ItemRegistry = register("item", ItemRegistry())
+    val block = register("block", BlockRegistry(flattened = version.flattened))
+    val item: ItemRegistry = register("item", ItemRegistry(flattened = version.flattened))
     val enchantment: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
     val particleType: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
     val statusEffect: Registry<StatusEffectType> = register("mob_effect", Registry(codec = PixlyzerStatusEffectType, integrated = IntegratedStatusEffects))
@@ -117,7 +120,7 @@ class Registries(
 
     val soundGroup: FakeEnumRegistry<SoundGroup> = FakeEnumRegistry(codec = SoundGroup)
 
-    val blockState = BlockStateRegistry(false)
+    val blockState = BlockStateRegistry(flattened = version.flattened)
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
     val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType, fixer = EntityTypeFixer))
@@ -137,7 +140,7 @@ class Registries(
 
     val misc = MiscData()
 
-    var isFullyLoaded = false
+    var state = RegistriesStates.UNLOADED
         private set
 
 
@@ -152,16 +155,7 @@ class Registries(
         return entityDataIndexMap[field] ?: parent?.getEntityDataIndex(field)
     }
 
-    fun updateFlattened(flattened: Boolean) {
-        block.flattened = flattened
-        blockState.flattened = flattened
-        item.flattened = flattened
-    }
-
-    fun load(version: Version, pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
-        updateFlattened(version.flattened)
-
-
+    fun load(pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it })
         val stopwatch = now()
@@ -178,41 +172,41 @@ class Registries(
 
         // id stuff
         // id resource location stuff
-        worker += WorkerTask(this::containerType.i) { containerType.update(pixlyzerData["container_types", "container_type"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::gameEvent.i) { gameEvent.update(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::worldEvent.i) { worldEvent.update(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::vibrationSource.i) { vibrationSource.update(pixlyzerData["vibration_source"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::argumentType.i) { argumentType.update(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::messageType.i) { messageType.update(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::containerType.i) { containerType.updatePixlyzer(pixlyzerData["container_types", "container_type"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::gameEvent.i) { gameEvent.updatePixlyzer(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::worldEvent.i) { worldEvent.updatePixlyzer(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::vibrationSource.i) { vibrationSource.updatePixlyzer(pixlyzerData["vibration_source"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::argumentType.i) { argumentType.updatePixlyzer(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::messageType.i) { messageType.updatePixlyzer(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
 
 
-        worker += WorkerTask(this::entityType.i) { entityType.update(pixlyzerData["entities"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::entityType.i) { entityType.updatePixlyzer(pixlyzerData["entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::motif.i) { motif.update(pixlyzerData["motives", "motif"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::soundEvent.i) { soundEvent.update(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
+        worker += WorkerTask(this::motif.i) { motif.updatePixlyzer(pixlyzerData["motives", "motif"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::soundEvent.i) { soundEvent.updatePixlyzer(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
         worker += WorkerTask(this::soundGroup.i, dependencies = arrayOf(this::soundEvent.i)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
-        worker += WorkerTask(this::particleType.i) { particleType.update(pixlyzerData["particles", "particle_type"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::material.i) { material.update(pixlyzerData["materials"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::enchantment.i) { enchantment.update(pixlyzerData["enchantments"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::statusEffect.i) { statusEffect.update(pixlyzerData["status_effects"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::biome.i) { biome.update(pixlyzerData["biomes"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::dimension.i) { dimension.update(pixlyzerData["dimensions"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::fluid.i) { fluid.update(pixlyzerData["fluids"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::block.i, dependencies = arrayOf(this::material.i, this::fluid.i, this::shape.i, this::soundGroup.i, this::particleType.i)) { block.update(pixlyzerData["blocks"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::item.i, dependencies = arrayOf(this::material.i, this::block.i, this::entityType.i, this::fluid.i, this::statusEffect.i, this::soundEvent.i)) { item.update(pixlyzerData["items"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::particleType.i) { particleType.updatePixlyzer(pixlyzerData["particles", "particle_type"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::material.i) { material.updatePixlyzer(pixlyzerData["materials"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::enchantment.i) { enchantment.updatePixlyzer(pixlyzerData["enchantments"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::statusEffect.i) { statusEffect.updatePixlyzer(pixlyzerData["status_effects"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::biome.i) { biome.updatePixlyzer(pixlyzerData["biomes"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::dimension.i) { dimension.updatePixlyzer(pixlyzerData["dimensions"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::fluid.i) { fluid.updatePixlyzer(pixlyzerData["fluids"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::block.i, dependencies = arrayOf(this::material.i, this::fluid.i, this::shape.i, this::soundGroup.i, this::particleType.i)) { block.updatePixlyzer(pixlyzerData["blocks"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::item.i, dependencies = arrayOf(this::material.i, this::block.i, this::entityType.i, this::fluid.i, this::statusEffect.i, this::soundEvent.i)) { item.updatePixlyzer(pixlyzerData["items"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::blockEntityType.i, dependencies = arrayOf(this::block.i)) { blockEntityType.update(pixlyzerData["block_entities"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::blockEntityType.i, dependencies = arrayOf(this::block.i)) { blockEntityType.updatePixlyzer(pixlyzerData["block_entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::villagerProfession.i) { villagerProfession.update(pixlyzerData["villager_professions"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::villagerType.i) { villagerType.update(pixlyzerData["villager_types"]?.toJsonObject(), version, null) }
+        worker += WorkerTask(this::villagerProfession.i) { villagerProfession.updatePixlyzer(pixlyzerData["villager_professions"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::villagerType.i) { villagerType.updatePixlyzer(pixlyzerData["villager_types"]?.toJsonObject(), version, null) }
 
 
-        worker += WorkerTask(this::blockDataType.i) { blockDataType.update(pixlyzerData["block_data_data_types"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::blockDataType.i) { blockDataType.updatePixlyzer(pixlyzerData["block_data_data_types"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::catVariants.i) { catVariants.update(pixlyzerData["variant/cat"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::frogVariants.i) { frogVariants.update(pixlyzerData["variant/frog"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::catVariants.i) { catVariants.updatePixlyzer(pixlyzerData["variant/cat"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::frogVariants.i) { frogVariants.updatePixlyzer(pixlyzerData["variant/frog"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::statistic.i) { statistic.update(pixlyzerData["statistics"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::statistic.i) { statistic.updatePixlyzer(pixlyzerData["statistics"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::misc.i, dependencies = arrayOf(this::item.i)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
         val inner = ParentLatch(1, latch)
@@ -233,7 +227,8 @@ class Registries(
         postInit(inner)
         inner.dec()
         inner.await()
-        isFullyLoaded = true
+        state = RegistriesStates.LOADED
+
         if (cleanup) {
             shape.cleanup()
         }
@@ -251,30 +246,26 @@ class Registries(
         return registry
     }
 
-    operator fun get(name: ResourceLocation): AbstractRegistry<*>? {
-        return registries[name]
-    }
+    operator fun get(name: ResourceLocation) = registries[name]
 
-    fun update(version: Version, registries: JsonObject) {
+    fun updateNbt(version: Version, data: JsonObject) {
         // TODO: Clear them first?
-        for ((key, value) in registries) {
-            val fixedKey = key.toResourceLocation().fixRegistry()
-            val registry = this[fixedKey]
+        for ((name, value) in data) {
+            val fixedName = name.toResourceLocation().fixRegistry()
+            val registry = this[fixedName]
             if (registry == null) {
-                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find registry: $fixedName" }
                 continue
             }
-            val values: List<JsonObject> = if (value is List<*>) {
-                value.unsafeCast()
-            } else {
-                value.asJsonObject()["value"].listCast()!!
-            }
+            registry.clear()
+
+            val values: List<JsonObject> = if (value is List<*>) value.unsafeCast() else value.asJsonObject()["value"].unsafeCast()
 
             try {
-                registry.update(values, version, this)
+                registry.updateNbt(values, version, this)
             } catch (error: Throwable) {
                 error.printStackTrace()
-                Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }
+                Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Can not update $fixedName registry: $error" }
             }
         }
     }

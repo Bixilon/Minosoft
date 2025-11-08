@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry.enums
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.primitive.Clearable
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.registries.registry.Parentable
 import de.bixilon.minosoft.datafixer.enumeration.EnumFixer
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -40,12 +41,10 @@ class EnumRegistry<T : Enum<*>>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    private fun getEnum(data: Any): T {
-        return when (data) {
-            is Int -> values[data]
-            is String -> fixer?.fix(data) ?: values[data]
-            else -> throw IllegalArgumentException("Unknown enum value: $data")
-        }
+    private fun getEnum(data: Any) = when (data) {
+        is Int -> values[data]
+        is String -> fixer?.fix(data) ?: values[data]
+        else -> throw IllegalArgumentException("Unknown enum value: $data")
     }
 
     private fun putEnum(data: Any, alternativeIndex: Int) {
@@ -56,10 +55,12 @@ class EnumRegistry<T : Enum<*>>(
                 id = data["id"].unsafeCast()
                 value = getEnum(data["value"]!!)
             }
+
             is String -> {
                 id = alternativeIndex
                 value = getEnum(data)
             }
+
             else -> throw IllegalArgumentException("Can not get enum value: $data")
         }
         idValueMap[id] = value
@@ -77,11 +78,13 @@ class EnumRegistry<T : Enum<*>>(
                     putEnum(enum!!, index)
                 }
             }
+
             is Map<*, *> -> {
                 for ((index, enum) in data) {
                     putEnum(enum!!, index.toInt())
                 }
             }
+
             else -> throw IllegalArgumentException("Can not get enum value: $data")
         }
 

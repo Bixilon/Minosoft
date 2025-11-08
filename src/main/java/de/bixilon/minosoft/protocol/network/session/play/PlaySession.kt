@@ -84,7 +84,7 @@ class PlaySession(
 ) : Session() {
     val sessionId = KUtil.secureRandomUUID()
     val settingsManager = ClientSettingsManager(this)
-    val registries = Registries().apply { updateFlattened(version.flattened) }
+    val registries = Registries(version = version)
     val world = World(this)
     val tabList = TabList()
     val scoreboard = ScoreboardManager(this)

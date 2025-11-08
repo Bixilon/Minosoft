@@ -37,7 +37,7 @@ class ChunkS2CPTest {
     private fun PlaySession.readRegistries(name: String) {
         val steam = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.mbf")
         val mbf = MBFBinaryReader(steam!!).readMBF()
-        registries.update(version, mbf.data.unsafeCast())
+        registries.updateNbt(version, mbf.data.unsafeCast())
     }
 
     private operator fun Array<BlockState?>.get(x: Int, y: Int, z: Int): BlockState? {

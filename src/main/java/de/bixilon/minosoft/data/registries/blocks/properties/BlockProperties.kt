@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -169,13 +169,13 @@ object BlockProperties {
     }
 
     fun parseProperty(block: Block, group: String, value: Any): Pair<BlockProperty<*>, Any> {
-        val property = block.properties[group] ?: return parseProperty(group, value)
+        val property = block.properties[group] ?: return parseFallbackProperty(group, value)
 
         return Pair(property, property.parse(value)!!)
     }
 
     @Deprecated("not block specific")
-    private fun parseProperty(group: String, value: Any): Pair<BlockProperty<*>, Any> {
+    fun parseFallbackProperty(group: String, value: Any): Pair<BlockProperty<*>, Any> {
         val properties = PROPERTIES[group] ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
 
         var property: BlockProperty<*>? = null

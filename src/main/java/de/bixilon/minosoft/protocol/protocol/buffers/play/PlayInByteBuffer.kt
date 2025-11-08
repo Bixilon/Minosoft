@@ -30,9 +30,9 @@ import de.bixilon.minosoft.data.registries.particle.data.*
 import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSource
 import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSources
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.data.registries.registries.registry.EnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.enums.EnumRegistry
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.positions.BlockPosition

@@ -35,21 +35,21 @@ open class FilledBucketItem<T : Fluid>(
         this::fluid.inject(factory.identifier)
     }
 
-    open class LavaBucketItem(identifier: ResourceLocation = this.identifier) : FilledBucketItem<LavaFluid>(identifier, LavaFluid) {
+    open class Lava(resourceLocation: ResourceLocation = this.identifier) : FilledBucketItem<LavaFluid>(resourceLocation, LavaFluid) {
 
-        companion object : ItemFactory<LavaBucketItem> {
+        companion object : ItemFactory<Lava> {
             override val identifier = minecraft("lava_bucket")
 
-            override fun build(registries: Registries, data: JsonObject) = LavaBucketItem()
+            override fun build(registries: Registries, data: JsonObject) = Lava()
         }
     }
 
-    open class WaterBucketItem(identifier: ResourceLocation = this.identifier) : FilledBucketItem<WaterFluid>(identifier, WaterFluid) {
+    open class Water(resourceLocation: ResourceLocation = this.identifier) : FilledBucketItem<WaterFluid>(resourceLocation, WaterFluid) {
 
-        companion object : ItemFactory<WaterBucketItem> {
+        companion object : ItemFactory<Water> {
             override val identifier = minecraft("water_bucket")
 
-            override fun build(registries: Registries, data: JsonObject) = WaterBucketItem()
+            override fun build(registries: Registries, data: JsonObject) = Water()
         }
     }
 }

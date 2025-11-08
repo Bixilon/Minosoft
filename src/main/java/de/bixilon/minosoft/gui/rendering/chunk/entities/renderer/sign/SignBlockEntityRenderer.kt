@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -53,7 +52,6 @@ class SignBlockEntityRenderer(
 ) : BlockRender {
 
     private fun BlockState.getRotation(): Float {
-        if (this !is PropertyBlockState) return 0.0f
         val rotation = this.properties[BlockProperties.ROTATION]?.toInt() ?: return 0.0f
         return STANDING_ROTATIONS[rotation]
     }

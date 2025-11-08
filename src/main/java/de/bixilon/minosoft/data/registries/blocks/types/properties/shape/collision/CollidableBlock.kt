@@ -15,9 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collis
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -26,10 +24,5 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
  */
 interface CollidableBlock {
 
-    fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
-        if (state is AdvancedBlockState) {
-            return state.collisionShape
-        }
-        return null
-    }
+    fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?) = state.collisionShape
 }

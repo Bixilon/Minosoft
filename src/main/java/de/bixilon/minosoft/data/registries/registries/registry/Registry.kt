@@ -34,31 +34,22 @@ open class Registry<T : RegistryItem>(
     val codec: IdentifierCodec<T>? = null,
     val integrated: IntegratedRegistry<T>? = null,
     val metaType: MetaTypes = MetaTypes.NONE,
-    var flattened: Boolean = true,
+    val flattened: Boolean = true,
     private val fixer: ResourceLocationFixer? = null,
 ) : AbstractRegistry<T> {
     protected val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
     protected val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
     protected val identifierMap: MutableMap<ResourceLocation, T> = HashMap()
 
-    override val size: Int
-        get() {
-            val value = valueIdMap.size
-            parent?.let {
-                return value + it.size
-            }
-            return value
-        }
+    override val size get() = valueIdMap.size + (parent?.size ?: 0)
 
-    override operator fun get(any: Any?): T? {
-        return when (any) {
-            null -> null
-            is Number -> getOrNull(any.toInt())
-            is ResourceLocation -> get(any)
-            is String -> get(any)
-            is Identified -> get(any.identifier)
-            else -> TODO()
-        }
+    override operator fun get(any: Any?) = when (any) {
+        null -> null
+        is Number -> getOrNull(any.toInt())
+        is ResourceLocation -> get(any)
+        is String -> get(any)
+        is Identified -> get(any.identifier)
+        else -> TODO()
     }
 
     open operator fun get(identifier: ResourceLocation): T? {
@@ -71,19 +62,17 @@ open class Registry<T : RegistryItem>(
         valueIdMap[value] = id
     }
 
-    open operator fun set(any: Any, value: T) {
-        when (any) {
-            is Int -> set(any, value)
-            is ResourceLocation -> identifierMap[any] = value
-            is Identified -> identifierMap[any.identifier] = value
-            is AliasedIdentified -> {
-                for (identifier in any.identifiers) {
-                    identifierMap[identifier] = value
-                }
+    open operator fun set(any: Any, value: T) = when (any) {
+        is Int -> set(any, value)
+        is ResourceLocation -> identifierMap[any] = value
+        is Identified -> identifierMap[any.identifier] = value
+        is AliasedIdentified -> {
+            for (identifier in any.identifiers) {
+                identifierMap[identifier] = value
             }
-
-            else -> TODO("Can not set $any, value=$value")
         }
+
+        else -> TODO("Can not set $any, value=$value")
     }
 
     open operator fun get(identifier: String): T? {
@@ -102,8 +91,9 @@ open class Registry<T : RegistryItem>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    override fun update(data: Map<String, Any>?, version: Version, registries: Registries?) {
+    override fun updatePixlyzer(data: JsonObject?, version: Version, registries: Registries?) {
         if (data == null) return
+
         for ((name, value) in data) {
             check(value is Map<*, *>)
             val id = value["id"]?.toInt()?.let { if (metaType != MetaTypes.NONE && !flattened) metaType.combine(it, value["meta"]?.toInt() ?: 0) else it }
@@ -111,7 +101,7 @@ open class Registry<T : RegistryItem>(
         }
     }
 
-    override fun update(data: List<JsonObject>, version: Version, registries: Registries?) {
+    override fun updateNbt(data: List<JsonObject>, version: Version, registries: Registries?) {
         for (entry in data) {
             val name = (entry["name"] ?: entry["key"])?.toResourceLocation() ?: throw IllegalArgumentException("Can not find name: $entry")
             val id = entry["id"]?.toInt()

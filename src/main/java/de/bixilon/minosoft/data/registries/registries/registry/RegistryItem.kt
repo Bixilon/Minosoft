@@ -23,7 +23,7 @@ import kotlin.reflect.KProperty
 
 abstract class RegistryItem : Identified {
     open val injectable: Boolean get() = true
-    private val injects: MutableMap<ObjectField, List<Any>> = if (injectable) hashMapOf() else unsafeNull()
+    private val injects: MutableMap<ObjectField, List<Any>> = if (injectable) HashMap(4) else unsafeNull()
 
     fun <T : RegistryItem> KProperty<T?>.inject(vararg keys: Any?): T {
         return this.field.inject(*keys)

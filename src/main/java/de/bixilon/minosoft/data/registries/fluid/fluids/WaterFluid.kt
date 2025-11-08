@@ -14,14 +14,9 @@
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -144,13 +139,6 @@ class WaterFluid(identifier: ResourceLocation = Companion.identifier) : Fluid(id
         override val identifiers = setOf(minecraft("flowing_water"))
 
         override fun build(identifier: ResourceLocation, registries: Registries) = WaterFluid()
-
-        fun BlockState._isWaterlogged(): Boolean {
-            if (block is PixLyzerBlock && !block.waterloggable) return false
-            if (this !is PropertyBlockState) return false
-            if (this.block !is WaterloggableBlock) return false // check for interfaces is rather slow, so do it after class checking
-            return properties[BlockProperties.WATERLOGGED]?.toBoolean() ?: return false
-        }
 
         fun BlockState.isWaterlogged() = BlockStateFlags.WATERLOGGED in this.flags
     }

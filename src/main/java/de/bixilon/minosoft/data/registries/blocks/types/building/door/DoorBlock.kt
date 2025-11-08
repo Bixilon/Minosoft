@@ -29,11 +29,8 @@ import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyLis
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
@@ -62,25 +59,26 @@ import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
-abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, BlockStateBuilder, LightedBlock {
+abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, LightedBlock {
     override val item: Item = this::item.inject(identifier)
 
-    override fun getLightProperties(blockState: BlockState) = TransparentProperty
+    override fun getLightProperties(state: BlockState) = TransparentProperty
 
-    override fun register(version: Version, list: MapPropertyList) {
-        super<Block>.register(version, list)
+    override fun registerProperties(version: Version, list: MapPropertyList) {
+        super<Block>.registerProperties(version, list)
         list += HALF; list += HINGE; list += POWERED; list += FACING; list += OPEN
     }
 
-    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
-        if (!version.flattened) return PropertyBlockState(this, settings)
+    override fun buildState(version: Version, settings: BlockStateBuilder): BlockState {
+        if (!version.flattened) return super<Block>.buildState(version, settings) // they depend on the other block in <1.13
 
-        val hinge = settings.properties!![HINGE].unsafeCast<Sides>()
+        val hinge = settings.properties[HINGE].unsafeCast<Sides>()
         val open = settings.properties[OPEN].toBoolean()
         val facing = settings.properties[FACING].unsafeCast<Directions>()
+
         val shape = getShape(hinge, open, facing)
 
-        return AdvancedBlockState(this, settings.properties, 0, shape, shape, settings.lightProperties)
+        return settings.build(this, collisionShape = shape, outlineShape = shape)
     }
 
     private fun legacyCycleOpen(chunk: Chunk, inChunk: InChunkPosition, state: BlockState) {
@@ -120,7 +118,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
             !open -> facing.inverted
             hinge == Sides.LEFT -> facing.rotateY(-1)
             hinge == Sides.RIGHT -> facing.rotateY(1)
-            else -> Broken()
+            else -> Broken("Hinge: $hinge, open: $open, facing: $facing")
         }
         return SHAPES[direction.ordinal - Directions.SIDE_OFFSET]
     }
@@ -128,7 +126,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     private fun getLegacyShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         val isTop = isTop(state, session)
         val other = session.world[position + if (isTop) Directions.DOWN else Directions.UP]
-        if (other !is PropertyBlockState || other.block !is DoorBlock) return null
+        if (other == null || other.block !is DoorBlock) return null
         if (isTop(other, session) == isTop) return null  // impossible
 
 
@@ -151,6 +149,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
 
     override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
         if (session.version.flattened) return super.getCollisionShape(session, context, position, state, blockEntity)
+
         return getLegacyShape(session, position, state)
     }
 
@@ -194,11 +193,10 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
 
         override fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender? {
-            if (state !is PropertyBlockState) return null
             val half = state[HALF]
 
             val other = if (half == Halves.UPPER) neighbours[Directions.O_DOWN] else neighbours[Directions.O_UP]
-            if (other !is PropertyBlockState || other.block !is DoorBlock) return null
+            if (other == null || other.block !is DoorBlock) return null
             if (other[HALF] == half) return null // double door is invalid
 
             val top = if (half == Halves.UPPER) state else other

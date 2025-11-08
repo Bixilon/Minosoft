@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,14 +34,13 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
 
     fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T?
 
-    fun update(data: List<JsonObject>, version: Version, registries: Registries?) = Unit
-    fun update(data: Map<String, Any>?, version: Version, registries: Registries?) = Unit
+    fun updateNbt(data: List<JsonObject>, version: Version, registries: Registries?) = Unit
+
+    fun updatePixlyzer(data: JsonObject?, version: Version, registries: Registries?) = Unit
 
     fun noParentIterator(): Iterator<T>
 
-    override fun iterator(): Iterator<T> {
-        return RegistryIterator(this)
-    }
+    override fun iterator() = RegistryIterator(this)
 
     fun optimize() = Unit
 }

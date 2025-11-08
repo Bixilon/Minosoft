@@ -18,8 +18,6 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
@@ -37,16 +35,13 @@ import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics
-import de.bixilon.minosoft.protocol.versions.Version
 import kotlin.math.abs
 
-open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, JumpBlock, VelocityBlock, BeeBlock, TranslucentBlock, InstantBreakableBlock, StatelessCollidable, FullOutlinedBlock, BlockWithItem<Item>, BlockStateBuilder {
+open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, JumpBlock, VelocityBlock, BeeBlock, TranslucentBlock, InstantBreakableBlock, StatelessCollidable, FullOutlinedBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val velocity: Float get() = 0.4f
     override val jumpBoost: Float get() = 0.5f
     override val collisionShape: Shape get() = COLLISION_BOX
-
-    override fun buildState(version: Version, settings: BlockStateSettings) = BlockState(this, settings)
 
     private fun isSliding(position: BlockPosition, physics: EntityPhysics<*>): Boolean {
         if (physics.onGround) {

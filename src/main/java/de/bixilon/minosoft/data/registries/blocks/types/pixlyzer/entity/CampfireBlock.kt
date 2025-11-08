@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LitBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -104,7 +103,6 @@ open class CampfireBlock(identifier: ResourceLocation, registries: Registries, d
     }
 
     fun isSignal(state: BlockState): Boolean {
-        if (state !is PropertyBlockState) return false
         return state.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE]?.toBoolean() ?: return false
     }
 

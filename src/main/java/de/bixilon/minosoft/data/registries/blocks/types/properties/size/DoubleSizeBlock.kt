@@ -13,20 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.size
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 interface DoubleSizeBlock : MultiSizeBlock {
 
 
-    fun isTop(state: BlockState, session: PlaySession) = state.unsafeCast<PropertyBlockState>().properties[BlockProperties.STAIR_HALF] == Halves.UPPER
+    fun isTop(state: BlockState, session: PlaySession) = state.properties[BlockProperties.STAIR_HALF] == Halves.UPPER
     fun getTop(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER)
     fun getBottom(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER)
 

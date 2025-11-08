@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,129 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state.builder
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.blocks.light.*
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyList
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape.Companion.deserialize
 
-interface BlockStateBuilder {
+class BlockStateBuilder(
+    val properties: Map<BlockProperty<*>, Any>,
+    val luminance: Int,
+    val collisionShape: Shape?,
+    val outlineShape: Shape?,
+    val lightProperties: LightProperties,
+    val flags: IntInlineEnumSet<BlockStateFlags>,
+) {
 
-    fun buildState(version: Version, settings: BlockStateSettings): BlockState
+    fun build(block: Block) = BlockState(block, properties, flags, luminance, collisionShape, outlineShape, lightProperties)
+
+    fun build(block: Block, luminance: Int = this.luminance, collisionShape: Shape? = this.collisionShape, outlineShape: Shape? = this.outlineShape, lightProperties: LightProperties = this.lightProperties, flags: IntInlineEnumSet<BlockStateFlags> = this.flags): BlockState {
+        return BlockState(block, properties, flags, luminance, collisionShape, outlineShape, lightProperties)
+    }
+
+    companion object {
+
+        private fun Any.getShape(shapes: ShapeRegistry): Shape? {
+            if (this is Int) {
+                return shapes[this]
+            }
+            return shapes.deserialize(this)
+        }
+
+        private fun JsonObject.getCollisionShape(shapes: ShapeRegistry): Shape? {
+            this["is_collision_shape_full_block"]?.toBoolean()?.let { if (it) return Shape.FULL else null }
+
+            this["collision_shape"]?.getShape(shapes)?.let { return it }
+
+            return null
+        }
+
+        private fun JsonObject.getOutlineShape(shapes: ShapeRegistry): Shape? {
+            this["outline_shape"]?.getShape(shapes)?.let { return it }
+
+            return null
+        }
+
+        private fun JsonObject.getProperties(list: BlockPropertyList?): Map<BlockProperty<*>, Any>? {
+            val data = this["properties"]?.toJsonObject() ?: return null
+            if (data.isEmpty()) return null
+
+            val properties: MutableMap<BlockProperty<*>, Any> = HashMap(data.size)
+
+            for ((group, json) in data) {
+                try {
+                    val raw = if (json is String) json.lowercase() else json
+                    var property: BlockProperty<*>
+                    var value: Any
+
+                    val listProperty = list?.get(group)
+                    if (listProperty == null) {
+                        val pair = BlockProperties.parseFallbackProperty(group, raw)
+                        property = pair.first; value = pair.second
+                    } else {
+                        property = listProperty; value = listProperty.parse(raw)!!
+                    }
+
+                    properties[property] = value
+                } catch (exception: NullPointerException) {
+                    throw NullPointerException("Invalid block property $group or value $json")
+                }
+            }
+
+            return properties
+        }
+
+        private fun JsonObject.getLuminance(): Int {
+            return this["luminance"]?.toInt() ?: 0
+        }
+
+        private fun JsonObject.getLightProperties(outlineShape: Shape?): LightProperties {
+            val opaque = this["is_opaque"]?.toBoolean() ?: true
+            val translucent = this["translucent"]?.toBoolean() ?: true
+
+            var lightProperties = when {
+                outlineShape == null || !opaque && translucent -> TransparentProperty
+                outlineShape == Shape.FULL -> OpaqueProperty
+                else -> DirectedProperty.of(outlineShape, opaque, !translucent)
+            }
+
+            if (lightProperties is OpaqueProperty && !opaque) {
+                lightProperties = CustomLightProperties(propagatesLight = true, skylightEnters = false, !translucent)
+            }
+
+            return lightProperties
+        }
+
+        fun of(block: Block, flags: IntInlineEnumSet<BlockStateFlags>, registries: Registries, data: JsonObject): BlockStateBuilder {
+            val properties = data.getProperties(block.properties) ?: emptyMap()
+            val collisionShape = data.getCollisionShape(registries.shape)
+            val outlineShape = data.getOutlineShape(registries.shape)
+
+            var flags = BlockStateFlags.update(flags, properties)
+
+
+            if (data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULLY_OPAQUE
+
+            return BlockStateBuilder(
+                properties = properties,
+                luminance = data.getLuminance(),
+                collisionShape = collisionShape,
+                outlineShape = outlineShape,
+                lightProperties = data.getLightProperties(outlineShape),
+                flags = flags,
+            )
+        }
+    }
 }

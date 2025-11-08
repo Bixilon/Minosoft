@@ -23,14 +23,8 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
@@ -42,7 +36,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpB
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -55,14 +48,13 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 
 open class PixLyzerBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(Versions.AUTOMATIC, soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item>, TintedBlock {
+) : Block(identifier, BlockSettings(Versions.AUTOMATIC, soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, ReplaceableBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item>, TintedBlock {
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 
     override val friction = data["friction"]?.toFloat() ?: FrictionBlock.DEFAULT_FRICTION
@@ -75,8 +67,6 @@ open class PixLyzerBlock(
     val requiresTool: Boolean
     val replaceable: Boolean
     override val item: Item = unsafeNull()
-    var waterloggable: Boolean = true
-        private set
 
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
@@ -88,21 +78,8 @@ open class PixLyzerBlock(
         ITEM_FIELD.inject<RegistryItem>(data["item"])
     }
 
-    override fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperty<*>, Array<Any>>) {
-        super.updateStates(states, default, properties)
-        waterloggable = BlockProperties.WATERLOGGED in properties
-    }
-
-    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
-        return AdvancedBlockState(this, settings)
-    }
-
     override fun canReplace(session: PlaySession, state: BlockState, position: BlockPosition): Boolean {
         return replaceable
-    }
-
-    override fun isFullOpaque(state: BlockState): Boolean {
-        return BlockStateFlags.FULLY_OPAQUE in state.flags
     }
 
     override fun isCorrectTool(item: Item): Boolean {

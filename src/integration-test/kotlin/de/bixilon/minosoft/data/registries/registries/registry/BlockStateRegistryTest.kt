@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.data.registries.blocks.registry.BlockStateRegistry
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock

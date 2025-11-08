@@ -16,14 +16,10 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyList
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
-import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
-import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.StatedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
@@ -36,7 +32,7 @@ abstract class Block(
     override val identifier: ResourceLocation,
     settings: BlockSettings,
 ) : RegistryItem(), LightedBlock, HardnessBlock, Translatable, PushingBlock, StatedBlock {
-    override val properties: BlockPropertyList = MapPropertyList().apply { register(settings.version, this) }.shrink()
+    override val properties: BlockPropertyList = MapPropertyList().apply { registerProperties(settings.version, this) }.shrink()
     override val states: BlockStateManager = unsafeNull()
 
     var model: BlockRender? = null
@@ -49,15 +45,7 @@ abstract class Block(
         return identifier.toString()
     }
 
-    override fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperty<*>, Array<Any>>) {
-        val manager = when {
-            states.size == 1 -> SimpleStateManager(default)
-            else -> PropertyStateManager(properties, states, default)
-        }
-        STATES[this] = manager
-    }
-
-    private companion object {
+    companion object {
         val STATES = Block::states.field
     }
 }

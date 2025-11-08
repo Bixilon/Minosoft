@@ -15,6 +15,18 @@ package de.bixilon.minosoft.data.registries.blocks.state
 
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 enum class BlockStateFlags {
     FULLY_OPAQUE,
@@ -31,5 +43,30 @@ enum class BlockStateFlags {
     companion object : ValuesEnum<BlockStateFlags> {
         override val VALUES = values()
         override val NAME_MAP = names()
+
+        fun of(block: Block): IntInlineEnumSet<BlockStateFlags> {
+            var flags = IntInlineEnumSet<BlockStateFlags>()
+
+            if (block is FullOpaqueBlock) flags += FULLY_OPAQUE
+            if (block is CollidableBlock) flags += COLLISIONS
+            if (block is TintedBlock) flags += TINTED
+            if (block is FluidHolder) flags += FLUID
+            if (block is OffsetBlock) flags += OFFSET
+            if (block is BlockWithEntity<*>) flags += ENTITY
+            if (block is RandomDisplayTickable) flags += RANDOM_TICKS
+
+            return flags
+        }
+
+        fun update(flags: IntInlineEnumSet<BlockStateFlags>, properties: Map<BlockProperty<*>, Any>): IntInlineEnumSet<BlockStateFlags> {
+            var flags = flags
+
+            if (properties[BlockProperties.WATERLOGGED]?.toBoolean() == true) { // TODO: Check if WaterloggableBlock
+                flags += WATERLOGGED
+                flags += FLUID
+            }
+
+            return flags
+        }
     }
 }
