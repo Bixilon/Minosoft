@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(session: PlaySession) {
         for (entityId in entityIds) {
             val entity = session.world.entities[entityId] ?: continue
-            for (passenger in entity.attachment.passengers) { // TODO: potential ConcurrentModificationException
+            for (passenger in entity.attachment.passengers.toTypedArray()) {
                 passenger.attachment.vehicle = null
             }
 
