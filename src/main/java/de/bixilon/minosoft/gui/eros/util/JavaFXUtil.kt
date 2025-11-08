@@ -200,13 +200,13 @@ object JavaFXUtil {
         this.cursorProperty().unsafeCast<StyleableProperty<Cursor>>().applyStyle(null, Cursor.HAND)
     }
 
-    fun runLater(runnable: Runnable) {
+    inline fun runLater(crossinline runnable: () -> Unit) {
         if (Thread.currentThread() === JAVA_FX_THREAD) {
-            runnable.run()
+            runnable.invoke()
             return
         }
 
-        Platform.runLater(runnable)
+        Platform.runLater { runnable.invoke() }
     }
 
     fun Stage.bringToFront() {
