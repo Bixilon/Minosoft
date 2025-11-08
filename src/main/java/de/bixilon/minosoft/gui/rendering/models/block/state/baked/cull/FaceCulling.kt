@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -43,7 +44,7 @@ object FaceCulling {
             }
         }
 
-        if (state.block is CustomBlockCulling) {
+        if (BlockStateFlags.CUSTOM_CULLING in state.flags && state.block is CustomBlockCulling) {
             return state.block.shouldCull(state, properties, direction, neighbour)
         }
 

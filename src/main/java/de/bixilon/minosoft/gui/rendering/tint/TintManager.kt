@@ -79,7 +79,7 @@ class TintManager(val session: PlaySession) {
     }
 
     fun getParticleTint(state: BlockState, position: BlockPosition): RGBColor {
-        if (state.block !is TintedBlock) return Colors.WHITE_RGB
+        if (BlockStateFlags.TINTED !in state.flags || state.block !is TintedBlock) return Colors.WHITE_RGB
         val tintProvider = state.block.tintProvider ?: return Colors.WHITE_RGB
 
         // TODO: cache chunk of particle

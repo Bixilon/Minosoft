@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -87,9 +86,10 @@ class CollisionShape(
             if (predicate != null && !predicate.invoke(state)) continue
             // TODO: filter blocks (e.g. moving piston), whatever that means
 
-            val shape = when (state.block) {
-                is FixedCollidable -> state.block.getCollisionShape(state)
-                is BlockWithEntity<*> -> state.block.getCollisionShape(world.session, context, position, state, chunk.getBlockEntity(position.inChunkPosition))
+            val shape = when {
+                BlockStateFlags.FULLY_OPAQUE in state.flags -> Shape.FULL
+                state.block is FixedCollidable -> state.block.getCollisionShape(state)
+                BlockStateFlags.ENTITY in state.flags -> state.block.getCollisionShape(world.session, context, position, state, chunk.getBlockEntity(position.inChunkPosition))
                 else -> state.block.getCollisionShape(world.session, context, position, state, null)
             } ?: continue
 

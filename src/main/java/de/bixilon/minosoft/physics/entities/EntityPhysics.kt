@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.handler.entity.StepHandler
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.LandingHandler
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.LandingHandler.Companion.handleLanding
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
@@ -120,19 +121,20 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     open fun getVelocityMultiplier(): Float {
         val info = this.positionInfo
-        var block = info.block?.block
+        var state = info.block
 
-        if (block is VelocityBlock) {
-            val multiplier = block.velocity
+        if (state != null && BlockStateFlags.VELOCITY in state.flags && state.block is VelocityBlock) {
+            val multiplier = state.block.velocity
 
-            if (multiplier != 1.0f || block !is PixLyzerBlock) {
+            if (multiplier != 1.0f || state.block !is PixLyzerBlock) {
                 return multiplier
             }
         }
-        block = info.velocityBlock?.block
-        if (block is VelocityBlock) {
-            return block.velocity
+        state = info.velocityBlock ?: return 1.0f
+        if (BlockStateFlags.VELOCITY in state.flags && state.block is VelocityBlock) {
+            return state.block.velocity
         }
+
         return 1.0f
     }
 

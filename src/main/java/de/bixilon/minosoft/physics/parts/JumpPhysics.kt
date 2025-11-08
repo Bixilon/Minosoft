@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
@@ -34,19 +35,21 @@ object JumpPhysics {
 
     fun LivingEntityPhysics<*>.getJumpVelocityMultiplier(): Float {
         val info = this.positionInfo
-        var block = info.block?.block
+        var state = info.block
 
-        if (block is JumpBlock) {
-            val multiplier = block.jumpBoost
+        if (state != null && BlockStateFlags.JUMP in state.flags && state.block is JumpBlock) {
+            val multiplier = state.block.jumpBoost
 
-            if (multiplier != 1.0f || block !is PixLyzerBlock) {
+            if (multiplier != 1.0f || state.block !is PixLyzerBlock) {
                 return multiplier * BLOCK_MODIFIER
             }
         }
-        block = info.velocityBlock?.block
-        if (block is JumpBlock) {
-            return block.jumpBoost * BLOCK_MODIFIER
+        state = info.velocityBlock ?: return BLOCK_MODIFIER
+
+        if (BlockStateFlags.JUMP in state.flags && state.block is JumpBlock) {
+            return state.block.jumpBoost * BLOCK_MODIFIER
         }
+
         return BLOCK_MODIFIER
     }
 

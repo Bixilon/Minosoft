@@ -23,21 +23,30 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 enum class BlockStateFlags {
     FULLY_OPAQUE,
     FLUID,
     WATERLOGGED,
-    COLLISIONS,
-    TINTED,
     OFFSET,
     ENTITY,
 
+    // physics
+    COLLISIONS,
+    VELOCITY,
+    JUMP,
+
+    // rendering
+    TINTED,
     RANDOM_TICKS,
+    CUSTOM_CULLING,
     ;
 
     companion object : ValuesEnum<BlockStateFlags> {
@@ -48,12 +57,17 @@ enum class BlockStateFlags {
             var flags = IntInlineEnumSet<BlockStateFlags>()
 
             if (block is FullOpaqueBlock) flags += FULLY_OPAQUE
-            if (block is CollidableBlock) flags += COLLISIONS
-            if (block is TintedBlock) flags += TINTED
             if (block is FluidHolder) flags += FLUID
             if (block is OffsetBlock) flags += OFFSET
             if (block is BlockWithEntity<*>) flags += ENTITY
+
+            if (block is CollidableBlock) flags += COLLISIONS
+            if (block is VelocityBlock) flags += VELOCITY
+            if (block is JumpBlock) flags += JUMP
+
+            if (block is TintedBlock) flags += TINTED
             if (block is RandomDisplayTickable) flags += RANDOM_TICKS
+            if (block is CustomBlockCulling) flags += CUSTOM_CULLING
 
             return flags
         }

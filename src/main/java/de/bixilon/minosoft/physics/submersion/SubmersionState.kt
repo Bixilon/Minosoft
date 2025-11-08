@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
@@ -153,7 +154,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         val eyePosition = BlockPosition(position.x.floor, eyeHeight.floor.clamp(BlockPosition.MIN_Y, BlockPosition.MAX_Y), position.z.floor)
 
         val block = physics.positionInfo.chunk?.get(eyePosition.inChunkPosition) ?: return
-        if (block.block !is FluidHolder) {
+        if (BlockStateFlags.FLUID !in block.flags || block.block !is FluidHolder) {
             return
         }
 
