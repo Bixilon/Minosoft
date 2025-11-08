@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,14 +27,13 @@ import java.util.*
  *
  * @see <a href="https://minecraft.wiki/w/Resource_location">Resource location</a>
  */
-open class ResourceLocation(
+data class ResourceLocation(
     val namespace: String = Namespaces.DEFAULT,
     val path: String,
 ) : Translatable {
     private val hashCode = Objects.hash(namespace, path)
 
-    override val translationKey: ResourceLocation
-        get() = this
+    override val translationKey get() = this
 
     init {
         ResourceLocationUtil.validateNamespace(namespace)
@@ -63,21 +62,15 @@ open class ResourceLocation(
         return toString()
     }
 
-    override fun toString(): String {
-        return "$namespace:$path"
-    }
+    override fun toString() = "$namespace:$path"
 
-    override fun hashCode(): Int {
-        return hashCode
-    }
+    override fun hashCode() = hashCode
 
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-        if (other is Identified) return this == other.identifier
-        if (other !is ResourceLocation) return false
-        if (hashCode() != other.hashCode()) return false
-
-        return path == other.path && namespace == other.namespace
+    override fun equals(other: Any?) = when {
+        other === this -> true
+        other is ResourceLocation -> hashCode == other.hashCode && path == other.path && namespace == other.namespace
+        other is Identified -> this == other.identifier
+        else -> false
     }
 
     companion object {

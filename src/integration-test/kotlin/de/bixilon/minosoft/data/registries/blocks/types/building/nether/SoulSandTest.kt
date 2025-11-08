@@ -30,5 +30,4 @@ class SoulSandTest {
 
         assertFalse(BlockStateFlags.FULLY_OPAQUE in block.states.default.flags)
     }
-
 }
