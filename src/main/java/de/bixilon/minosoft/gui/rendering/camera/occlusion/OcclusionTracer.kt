@@ -87,13 +87,13 @@ class OcclusionTracer(
     }
 
     private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbours, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
-        if (occlusion != null && occlusion.isOccluded(source, destination)) return
+        if (occlusion != null && occlusion.isOccludedQueue(source, destination)) return
         val next = neighbours[destination] ?: return
         trace(next, height, destination, vector + destination)
     }
 
     private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
-        if (occlusion != null && occlusion.isOccluded(source, destination)) return
+        if (occlusion != null && occlusion.isOccludedQueue(source, destination)) return
         trace(chunk, height + destination.vector.y, destination, vector + destination)
     }
 
