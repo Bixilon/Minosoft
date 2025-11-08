@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
 import de.bixilon.kmath.vec.vec3.i.SVec3i
-import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -26,8 +25,6 @@ import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.measureTime
 
 class OcclusionTracer(
     val position: SectionPosition,
@@ -46,6 +43,7 @@ class OcclusionTracer(
     private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
     private val paths = Array(Axes.VALUES.size) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
 
+    private var free = FREE_SIZE
     val queue: HashSet<SectionOcclusion> = HashSet(MAX_QUEUE_SIZE)
 
 
@@ -103,9 +101,14 @@ class OcclusionTracer(
         if (this.state == OcclusionState.INVALID) {
             calculateFast() // maybe it is possible without effort
             if (this.state == OcclusionState.INVALID) {
-                if (queue.size > MAX_QUEUE_SIZE) return true
-                queue += this
-                return true
+                if (free > 0) {
+                    calculate()
+                    free--
+                } else {
+                    if (queue.size > MAX_QUEUE_SIZE) return true
+                    queue += this
+                    return true
+                }
             }
         }
 
@@ -124,6 +127,9 @@ class OcclusionTracer(
     }
 
     companion object {
+        const val FREE_SIZE = 10
         const val MAX_QUEUE_SIZE = 100
+
+        fun Set<SectionOcclusion>.calculate() = this.forEach(SectionOcclusion::calculate)
     }
 }

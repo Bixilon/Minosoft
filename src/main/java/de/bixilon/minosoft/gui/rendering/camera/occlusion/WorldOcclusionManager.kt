@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.camera.occlusion.OcclusionTracer.Companion.calculate
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
@@ -103,9 +104,7 @@ class WorldOcclusionManager(
 
         this.queue = true
         DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.Priorities.HIGH) {
-            for (occlusion in queue) {
-                occlusion.calculate()
-            }
+            queue.calculate()
             this.queue = false
         }
     }
