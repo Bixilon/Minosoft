@@ -18,6 +18,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
@@ -45,7 +46,7 @@ class FaceCullingTest {
     }
 
     private fun createBlock(block: Block, transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: SideProperties? = SideProperties(arrayOf(FaceProperties(Vec2f(0), Vec2f(1), transparency)), transparency)): BlockState {
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
 
         state.model = BakedModel(Array(Directions.SIZE) { emptyArray() }, arrayOf(properties, properties, properties, properties, properties, properties), null, null)
 

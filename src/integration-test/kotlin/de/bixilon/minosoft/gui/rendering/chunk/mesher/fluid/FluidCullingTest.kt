@@ -18,6 +18,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
@@ -52,7 +53,7 @@ class FluidCullingTest {
         val block = object : Block(minosoft("dummy"), BlockSettings(IT.VERSION)) {
             override val hardness: Float get() = Broken()
         }
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
 
         val properties = properties?.let { SideProperties(arrayOf(it), it.transparency) }
 

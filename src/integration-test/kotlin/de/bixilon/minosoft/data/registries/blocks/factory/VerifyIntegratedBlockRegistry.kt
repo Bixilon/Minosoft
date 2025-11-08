@@ -17,10 +17,12 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStasteCodec
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
@@ -40,9 +42,11 @@ import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createS
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.RegistriesUtil.setParent
 import de.bixilon.minosoft.util.logging.Log
 
 object VerifyIntegratedBlockRegistry {
+    private val SHAPES = Registries::shape.field
     private val session = createSession()
 
 
@@ -54,12 +58,12 @@ object VerifyIntegratedBlockRegistry {
 
     private fun StringBuilder.appendState(pixlyzer: BlockState, integrated: BlockState) {
         appendBlock(pixlyzer.block)
-        if (pixlyzer is PropertyBlockState && pixlyzer.properties.isNotEmpty()) {
+        if (pixlyzer.properties.isNotEmpty()) {
             append("p=")
             append(pixlyzer.properties)
             append(": ")
         }
-        if (integrated is PropertyBlockState && integrated.properties.isNotEmpty() && (pixlyzer !is PropertyBlockState || pixlyzer.properties == integrated.properties)) {
+        if (integrated.properties.isNotEmpty() && pixlyzer.properties == integrated.properties) {
             append("i=")
             append(integrated.properties)
             append(": ")
@@ -131,7 +135,7 @@ object VerifyIntegratedBlockRegistry {
         compareHardness(pixlyzer, integrated, errors)
         compareItem(pixlyzer, integrated, errors)
         for (state in pixlyzer.states) {
-            val integratedState = if (state is PropertyBlockState) integrated.states.withProperties(state.properties) else integrated.states.default
+            val integratedState = integrated.states.withProperties(state.properties)
 
             compareCollisionShape(state, integratedState, errors)
             compareOutlineShape(state, integratedState, errors)
@@ -157,7 +161,14 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
             val parsed = PixLyzerBlock.deserialize(registries, identifier, value).unsafeCast<PixLyzerBlock>()
-            registries.block.flattened(parsed, integrated.properties, value, registries, version, false)
+            val fake = Registries(version = version)
+            fake.setParent(registries)
+            SHAPES[fake] = registries.shape
+
+            val states = FlattenedBlockStasteCodec.deserialize(integrated, BlockStateFlags.of(integrated), value, version, fake)
+
+            Block.STATES[parsed] = states
+
             parsed.postInit(registries)
             parsed.inject(registries)
 

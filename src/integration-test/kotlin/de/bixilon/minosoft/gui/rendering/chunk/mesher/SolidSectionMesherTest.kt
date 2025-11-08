@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -36,10 +37,10 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
@@ -389,14 +390,16 @@ class SolidSectionMesherTest {
     }
 
     fun TestQueue.fullOpaque(index: Int = 0): BlockState {
-        val state = BlockState(block(index), 0)
+        val block = block(index)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
         state.model = TestModel(this, SideProperties(arrayOf(FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE))
 
         return state
     }
 
     fun TestQueue.nonTouching(index: Int = 0): BlockState {
-        val state = BlockState(block(index), 0)
+        val block = block(index)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
         state.model = TestModel(this, null)
 
         return state
@@ -407,7 +410,7 @@ class SolidSectionMesherTest {
             override val hardness get() = 0.0f
             override val tintProvider = StaticTintProvider(0x123456.rgb())
         }
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
         state.model = TestModel(this, null)
 
         return state
@@ -417,7 +420,7 @@ class SolidSectionMesherTest {
         val block = object : Block(minosoft("testdroelf"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())) {
             override val hardness get() = 0.0f
         }
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
         state.model = object : TestModel(this, null) {
             override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
                 assertEquals(props.light.size, 7)
@@ -435,7 +438,7 @@ class SolidSectionMesherTest {
         val block = object : Block(minosoft("testdroelfe"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())) {
             override val hardness get() = 0.0f
         }
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
         state.model = object : TestModel(this, null) {
             override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
                 assertEquals(props.neighbours.size, 6)
@@ -460,7 +463,7 @@ class SolidSectionMesherTest {
                 }
             }
         }
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
 
         return state
     }
@@ -487,7 +490,7 @@ class SolidSectionMesherTest {
             }
 
         }
-        val state = BlockState(block, 0)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
 
         return state
     }

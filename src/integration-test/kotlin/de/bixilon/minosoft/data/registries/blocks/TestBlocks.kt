@@ -17,6 +17,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.block.TestBlockEntities
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
@@ -49,7 +50,7 @@ object TestBlocks {
         override val hardness get() = 1.0f
 
         init {
-            this::states.forceSet(SingleStateManager(BlockState(this, 0)))
+            this::states.forceSet(SingleStateManager(BlockState(this, emptyMap(), BlockStateFlags.of(this))))
         }
     }
 }

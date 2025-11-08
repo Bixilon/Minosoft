@@ -47,7 +47,9 @@ class DummyWindow : Window {
 
     override fun forceClose() = Unit
 
-    override fun swapBuffers() = Unit
+    override fun swapBuffers() {
+        Thread.sleep(100) // otherwise a million frames are drawn in test mode
+    }
     override fun pollEvents() = Unit
 
     override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) = Unit

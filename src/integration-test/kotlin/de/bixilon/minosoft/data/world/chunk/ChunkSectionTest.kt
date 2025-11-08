@@ -20,7 +20,8 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.TestBlockEntities
 import de.bixilon.minosoft.data.registries.blocks.TestBlocks
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
@@ -141,7 +142,7 @@ class ChunkSectionTest {
 
         val entity = section.entities[2, 3, 4]!!
 
-        val state = PropertyBlockState(TestBlocks.ENTITY1, mapOf(BlockProperties.AXIS to Axes.X), 4)
+        val state = BlockState(TestBlocks.ENTITY1, mapOf(BlockProperties.AXIS to Axes.X), BlockStateFlags.of(TestBlocks.ENTITY1))
         section[InSectionPosition(2, 3, 4)] = state
 
         assertSame(entity, section.entities[2, 3, 4])

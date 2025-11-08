@@ -29,11 +29,11 @@ object ITUtil {
 
 
     fun loadPixlyzerData(version: Version): Registries {
-        val registries = Registries(false)
+        val registries = Registries(false, version)
 
         val data = PixLyzerUtil.load(profile, version)
 
-        registries.load(version, data, SimpleLatch(0))
+        registries.load(data, SimpleLatch(0))
 
         return registries
     }
