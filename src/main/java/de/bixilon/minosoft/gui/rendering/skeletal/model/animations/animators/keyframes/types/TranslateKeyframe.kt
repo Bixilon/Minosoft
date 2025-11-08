@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.Vec3KeyframeInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe.Companion.toKeyframes
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.time.Duration
@@ -26,12 +28,14 @@ import kotlin.time.Duration
 data class TranslateKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
     override val loop: AnimationLoops,
-    val data: ArrayList<KeyframeData<Vec3f>>,
+    val data: List<KeyframeData<Vec3f>>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
+    @JsonCreator
+    constructor(interpolation: KeyframeInterpolation, loop: AnimationLoops, data: Map<Any, Any>) : this(interpolation, loop, data.toKeyframes())
+
     init {
-        data.sort()
         if (data.size < 2) throw IllegalArgumentException("Must have at least 2 keyframes!")
     }
 

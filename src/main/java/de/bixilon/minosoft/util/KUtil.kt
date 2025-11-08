@@ -34,6 +34,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
@@ -63,6 +64,13 @@ import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
 
 
 object KUtil {
@@ -275,4 +283,20 @@ object KUtil {
     }
 
     fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
+
+
+    fun String.toDuration(): Duration {
+        val reader = StringReader(this)
+        val value = reader.readNumeric(true, true)!!.toDouble()
+        reader.skipWhitespaces()
+        return when (val unit = reader.readRest()) {
+            "d" -> value.days
+            "h" -> value.hours
+            "m" -> value.minutes
+            "s", "", null -> value.seconds
+            "ms" -> value.milliseconds
+            "ns" -> value.nanoseconds
+            else -> throw IllegalArgumentException("Unexpected time unit: $unit (value: $value)")
+        }
+    }
 }

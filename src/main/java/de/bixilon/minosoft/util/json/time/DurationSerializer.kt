@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.commands.util.StringReader
+import de.bixilon.minosoft.util.KUtil.toDuration
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -46,20 +47,7 @@ object DurationSerializer : SimpleModule() {
 
         override fun deserialize(parser: JsonParser, context: DeserializationContext?) = when (parser.currentToken) {
             JsonToken.VALUE_NUMBER_FLOAT -> parser.valueAsDouble.seconds
-            JsonToken.VALUE_STRING -> {
-                val reader = StringReader(parser.valueAsString)
-                val value = reader.readNumeric(true, true)!!.toDouble()
-                reader.skipWhitespaces()
-                when (val unit = reader.readRest()) {
-                    "d" -> value.days
-                    "h" -> value.hours
-                    "m" -> value.minutes
-                    "s" -> value.seconds
-                    "ms" -> value.milliseconds
-                    "ns" -> value.nanoseconds
-                    else -> throw IllegalArgumentException("Unexpected time unit: $unit (value: $value)")
-                }
-            }
+            JsonToken.VALUE_STRING -> parser.valueAsString.toDuration()
 
             else -> TODO("Can not parse duration!")
         }
