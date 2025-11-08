@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.WorldOffset
 import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.camera.occlusion.OcclusionTracer.Companion.calculate
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
@@ -55,9 +56,10 @@ class OcclusionTracerTest {
         camera::context.forceSet(context)
         camera::frustum.forceSet(Frustum::class.java.allocate().apply { this::class.java.getDeclaredField("camera").field[this] = camera }) // empty frustum, everything always visible
 
-        val graph = OcclusionTracer(SectionPosition(1, 1, 1), dimension, camera, 5)
+        val tracer = OcclusionTracer(SectionPosition(1, 1, 1), dimension, camera, 5)
+        tracer.queue.calculate()
 
-        return graph.trace(chunk)
+        return tracer.trace(chunk)
     }
 
     private fun ChunkSection.fill(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, value: BlockState?) {
