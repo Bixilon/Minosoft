@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 
 class TestProfile(
     override var storage: ProfileStorage? = null,
-    override val lock: ProfileLock = ProfileLock(),
 ) : Profile {
+    override val lock = ProfileLock()
     val config = ConfigC(this)
 
     var key by IntDelegate(this, 1)

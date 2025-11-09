@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid
 
-import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 @Test(groups = ["mesher"], dependsOnGroups = ["block", "fluid"])
 class FluidCornerHeightUtilTest {
@@ -52,7 +52,7 @@ class FluidCornerHeightUtilTest {
         val chunk = Chunk::class.java.allocate()
         chunk::world.forceSet(world)
         chunk::light.forceSet(ChunkLight(chunk))
-        chunk::lock.forceSet(RWLock.rwlock())
+        chunk::lock.forceSet(ReentrantReadWriteLock())
         val section = ChunkSection(0, chunk)
 
         return section.blocks
