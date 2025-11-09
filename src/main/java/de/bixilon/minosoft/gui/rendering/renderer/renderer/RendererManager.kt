@@ -118,7 +118,7 @@ class RendererManager(
     }
 
     override fun draw() {
-        prepare()
+        context.profiler.profile("prepare") { prepare() }
         context.profiler.profile("draw") { pipeline.draw() }
     }
 

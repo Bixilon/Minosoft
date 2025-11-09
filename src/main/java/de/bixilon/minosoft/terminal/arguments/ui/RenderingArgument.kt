@@ -31,6 +31,7 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
     val renderApi by option("--render-api").choice(choices = RenderSystemFactory.FACTORIES.map { it.key }.toTypedArray()).convert { RenderSystemFactory.FACTORIES[it] ?: fail("No such render api: $it") }.defaultLazy { RenderSystemFactory.factory!! }
 
     val noNativeMemory by option("--no-native-memory").flag(default = !MemoryOptions.native)
+    val dumpProfiler by option("--dump-profiler").flag(default = RenderingOptions.dumpProfiler)
 
 
     override fun apply() {
@@ -40,5 +41,6 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
         RenderSystemFactory.factory = renderApi
 
         MemoryOptions.native = !noNativeMemory
+        RenderingOptions.dumpProfiler = dumpProfiler
     }
 }

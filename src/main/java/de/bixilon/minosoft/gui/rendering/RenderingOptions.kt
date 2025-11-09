@@ -16,4 +16,5 @@ package de.bixilon.minosoft.gui.rendering
 object RenderingOptions {
     var disabled = false
     var cursorCatch = true
+    var dumpProfiler = false
 }

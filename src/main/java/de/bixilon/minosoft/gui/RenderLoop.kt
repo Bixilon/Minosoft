@@ -19,6 +19,7 @@ import de.bixilon.kutil.profiler.stack.StackedProfiler
 import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.FileOutputStream
 import kotlin.time.Duration.Companion.milliseconds
 
 class RenderLoop(
@@ -80,9 +82,9 @@ class RenderLoop(
 
         context.profiler.profile("animations") { context.textures.static.animator.update() }
 
-        context.renderer.draw()
+        context.profiler.profile("draw") { context.renderer.draw() }
 
-        context.system.reset() // Reset to enable depth mask, etc again
+        context.profiler.profile("reset") { context.system.reset() } // Reset to enable depth mask, etc again
 
         // handle opengl context tasks, but limit it per frame
         context.profiler.profile("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
@@ -92,10 +94,12 @@ class RenderLoop(
 
         context.profiler.profile("swap buffers") { context.window.swapBuffers() }
 
-        // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
-        context.framebuffer.clear()
-        context.system.framebuffer = null
-        context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+        context.profiler.profile("clear framebuffer") {
+            // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
+            context.framebuffer.clear()
+            context.system.framebuffer = null
+            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+        }
 
 
         if (context.state == RenderingStates.BACKGROUND && slowRendering) {
@@ -111,18 +115,11 @@ class RenderLoop(
         }
         context.renderStats.endFrame()
 
-        /*
-        try {
-            val total = context.profiler.results.filter { it.thread == Thread.currentThread() }.foldRight(Duration.ZERO) { segment, accumulator -> accumulator + segment.duration }
 
-            if (total > 16.milliseconds) {
-                println("Total: ${total.format()}: " + context.profiler.results.filter { it.duration > 1.milliseconds }.map { "${it.name} (duration=${it.duration}, thread=${it.thread.name})" })
-            }
-        } catch (error: Throwable) {
-            println()
-            error.printStackTrace()
+        val segment = context.profiler.finish()
+        if (RenderingOptions.dumpProfiler && segment.duration > 20.milliseconds) {
+            FileOutputStream("minosoft.perf").use { it.write(segment.toPerf().toByteArray()) }
         }
-         */
     }
 
 

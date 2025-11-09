@@ -73,12 +73,12 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
 
     override fun draw() {
-        world.draw()
-        drawOther()
+        renderer.context.profiler.profile("world") { world.draw() }
+        renderer.context.profiler.profile("other") { drawOther() }
 
-        drawPre()
-        framebuffer.draw()
-        drawPost()
+        renderer.context.profiler.profile("pre") { drawPre() }
+        renderer.context.profiler.profile("framebuffer") { framebuffer.draw() }
+        renderer.context.profiler.profile("post") { drawPost() }
     }
 
     operator fun plusAssign(renderer: Renderer) {
