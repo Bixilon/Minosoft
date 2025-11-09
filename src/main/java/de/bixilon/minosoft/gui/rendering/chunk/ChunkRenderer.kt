@@ -211,8 +211,8 @@ class ChunkRenderer(
             clearVisibleNextFrame = false
         }
 
-        unloadingQueue.work()
-        loadingQueue.work()
+        context.profiler.profile("unloading") { unloadingQueue.work() }
+        context.profiler.profile("loading") { loadingQueue.work() }
     }
 
     private fun drawBlocksOpaque() {

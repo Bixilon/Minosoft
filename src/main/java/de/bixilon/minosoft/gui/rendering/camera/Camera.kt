@@ -54,8 +54,8 @@ class Camera(
         view.draw()
         matrix.draw()
         val latch = SimpleLatch(2)
-        context.runAsync { occlusion.draw(); latch.dec() }
-        context.runAsync { context.session.camera.target.update(); latch.dec() }
+        context.profiler.profile("occlusion") { context.runAsync { occlusion.draw(); latch.dec() } }
+        context.profiler.profile("target") { context.runAsync { context.session.camera.target.update(); latch.dec() } }
         fog.draw()
         context.profiler.profile("await") { latch.await() }
     }

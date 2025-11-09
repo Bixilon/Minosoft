@@ -79,7 +79,7 @@ class EntitiesRenderer(
     }
 
     override fun postPrepareDraw() {
-        queue.work()
+        context.profiler.profile("queue") { queue.work() }
         drawer.prepare()
     }
 
