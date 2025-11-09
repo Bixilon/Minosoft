@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
+import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
@@ -31,6 +32,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
 import javafx.scene.layout.Pane
+import kotlin.io.path.toPath
 
 
 class ProfilesListController : EmbeddedJavaFXController<Pane>() {
@@ -178,7 +180,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
 
             "minosoft:profiles.profile.disk_path".toResourceLocation() to a@{
                 val path = it.storage?.url ?: return@a null
-                TextComponent(path/* clickEvent = OpenFileClickEvent(path)*/) // TODO
+                TextComponent(path, clickEvent = OpenFileClickEvent(path.toPath()))
             },
         )
     }
