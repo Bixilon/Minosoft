@@ -17,7 +17,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.data.language.IntegratedLanguage
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
@@ -28,7 +28,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
@@ -136,6 +135,6 @@ class ServerCardController : AbstractCardController<ServerCard>() {
     }
 
     companion object : CardFactory<ServerCardController> {
-        override val LAYOUT: ResourceLocation = "minosoft:eros/main/play/server/server_card.fxml".toResourceLocation()
+        override val LAYOUT = minosoft("eros/main/play/server/server_card.fxml")
     }
 }

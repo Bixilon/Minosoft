@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.eros.dialog.session
 
 import de.bixilon.kutil.latch.CallbackLatch
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.dialog.progress.ProgressDialog
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Companion.disconnected
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 
 class LoadingDialog(
@@ -31,7 +31,7 @@ class LoadingDialog(
     }
 
     companion object {
-        private val TITLE = "minosoft:session.dialog.loading.title".toResourceLocation()
-        private val HEADER = "minosoft:session.dialog.loading.header".toResourceLocation()
+        private val TITLE = minosoft("session.dialog.loading.title")
+        private val HEADER = minosoft("session.dialog.loading.header")
     }
 }

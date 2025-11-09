@@ -15,15 +15,14 @@ package de.bixilon.minosoft.data.container.types.processing.smelting
 
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BlastFurnaceContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : SmeltingContainer(session, type, title, id) {
 
     companion object : ContainerFactory<BlastFurnaceContainer> {
-        override val identifier: ResourceLocation = "minecraft:blast_furnace".toResourceLocation()
+        override val identifier = minecraft("blast_furnace")
 
         override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): BlastFurnaceContainer {
             return BlastFurnaceContainer(session, type, title, id)

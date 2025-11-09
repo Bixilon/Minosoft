@@ -25,6 +25,7 @@ import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -52,7 +53,6 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates.Compa
 import de.bixilon.minosoft.protocol.network.session.status.StatusSession
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeListFX
 import javafx.fxml.FXML
@@ -175,13 +175,13 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             session.events.register(JavaFXEventListener.of<KickEvent> { event ->
                 val dialog = if (session.connection.unsafeCast<NetworkConnection>().state == ProtocolStates.LOGIN) KickDialog(
-                    title = "minosoft:session.login_kick.title".toResourceLocation(),
-                    header = "minosoft:session.login_kick.header".toResourceLocation(),
+                    title = minosoft("session.login_kick.title"),
+                    header = minosoft("session.login_kick.header"),
                     description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
                     reason = event.reason,
                 ) else KickDialog(
-                    title = "minosoft:session.kick.title".toResourceLocation(),
-                    header = "minosoft:session.kick.header".toResourceLocation(),
+                    title = minosoft("session.kick.title"),
+                    header = minosoft("session.kick.header"),
                     description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
                     reason = event.reason,
                 )
@@ -288,7 +288,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 val type = serverType
                 isDisable = type.readOnly
                 setOnAction {
-                    ConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = { type.remove(server) }).show()
+                    ConfirmationDialog(confirmButtonText = minosoft("general.delete"), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = { type.remove(server) }).show()
                 }
                 ctext = TranslatableComponents.GENERAL_DELETE
             },
@@ -415,34 +415,34 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/play/server/server_list.fxml".toResourceLocation()
+        val LAYOUT = minosoft("eros/main/play/server/server_list.fxml")
 
-        private val HIDE_OFFLINE = "minosoft:server_list.hide_offline".toResourceLocation()
-        private val HIDE_FULL = "minosoft:server_list.hide_full".toResourceLocation()
-        private val HIDE_EMPTY = "minosoft:server_list.hide_empty".toResourceLocation()
-        private val ADD_SERVER = "minosoft:server_list.add_server".toResourceLocation()
+        private val HIDE_OFFLINE = minosoft("server_list.hide_offline")
+        private val HIDE_FULL = minosoft("server_list.hide_full")
+        private val HIDE_EMPTY = minosoft("server_list.hide_empty")
+        private val ADD_SERVER = minosoft("server_list.add_server")
 
-        private val CONNECT = "minosoft:server_list.button.connect".toResourceLocation()
-        private val EDIT = "minosoft:server_list.button.edit".toResourceLocation()
+        private val CONNECT = minosoft("server_list.button.connect")
+        private val EDIT = minosoft("server_list.button.edit")
 
 
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (ServerCard) -> Any?>> = listOf(
-            "minosoft:server_info.server_name".toResourceLocation() to { it.server.name },
-            "minosoft:server_info.server_address".toResourceLocation() to { it.server.address },
-            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.connection?.address },
-            "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
+            minosoft("server_info.server_name") to { it.server.name },
+            minosoft("server_info.server_address") to { it.server.address },
+            minosoft("server_info.real_server_address") to { it.ping.connection?.address },
+            minosoft("server_info.forced_version") to { it.server.forcedVersion },
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
-            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "§cunknown\nPlease force a specific version!" },
-            "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.status?.serverBrand },
-            "minosoft:server_info.players_online".toResourceLocation() to { it.ping.status?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
-            "minosoft:server_info.ping".toResourceLocation() to { it.ping.pong?.latency?.format() },
+            minosoft("server_info.remote_version") to { it.ping.serverVersion ?: "§cunknown\nPlease force a specific version!" },
+            minosoft("server_info.remote_brand") to { it.ping.status?.serverBrand },
+            minosoft("server_info.players_online") to { it.ping.status?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
+            minosoft("server_info.ping") to { it.ping.pong?.latency?.format() },
 
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
-            "minosoft:server_info.active_sessions".toResourceLocation() to { if (it.sessions.isEmpty()) null else it.sessions.size },
+            minosoft("server_info.active_sessions") to { if (it.sessions.isEmpty()) null else it.sessions.size },
         )
     }
 }

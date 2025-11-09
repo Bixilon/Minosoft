@@ -15,11 +15,10 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.s
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SmallFlameParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : FlameParticle(session, position, velocity, data) {
 
@@ -28,7 +27,7 @@ class SmallFlameParticle(session: PlaySession, position: Vec3d, velocity: MVec3d
     }
 
     companion object : ParticleFactory<SmallFlameParticle> {
-        override val identifier: ResourceLocation = "minecraft:small_flame".toResourceLocation()
+        override val identifier = minecraft("small_flame")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): SmallFlameParticle {
             return SmallFlameParticle(session, position, velocity, data)

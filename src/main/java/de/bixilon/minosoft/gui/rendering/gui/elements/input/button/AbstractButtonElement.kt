@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 abstract class AbstractButtonElement(
     guiRenderer: GUIRenderer,
@@ -188,7 +188,7 @@ abstract class AbstractButtonElement(
     }
 
     private companion object {
-        val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
+        val CLICK_SOUND = minecraft("ui.button.click")
         const val TEXT_PADDING = 4
     }
 }

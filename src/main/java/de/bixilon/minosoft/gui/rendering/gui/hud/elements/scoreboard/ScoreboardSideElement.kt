@@ -18,7 +18,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
@@ -41,7 +41,6 @@ import de.bixilon.minosoft.modding.event.events.scoreboard.*
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable, Skippable {
     private val backgroundElement = ColorElement(guiRenderer, size = Vec2f.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
@@ -214,7 +213,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<ScoreboardSideElement>> {
-        override val identifier: ResourceLocation = "minosoft:scoreboard".toResourceLocation()
+        override val identifier = minosoft("scoreboard")
         val TEXT_PROPERTIES = TextRenderProperties()
         const val MAX_SCORES = 15
         const val MIN_WIDTH = 30.0f

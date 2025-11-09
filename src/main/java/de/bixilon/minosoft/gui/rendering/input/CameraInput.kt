@@ -21,11 +21,11 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.HALF_CIRCLE_DEGREE
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class CameraInput(
     private val context: RenderContext,
@@ -127,21 +127,21 @@ class CameraInput(
     }
 
     private companion object {
-        private val MOVE_SPRINT_KEYBINDING = "minosoft:move_sprint".toResourceLocation()
-        private val MOVE_FORWARDS_KEYBINDING = "minosoft:move_forward".toResourceLocation()
-        private val MOVE_BACKWARDS_KEYBINDING = "minosoft:move_backwards".toResourceLocation()
-        private val MOVE_LEFT_KEYBINDING = "minosoft:move_left".toResourceLocation()
-        private val MOVE_RIGHT_KEYBINDING = "minosoft:move_right".toResourceLocation()
+        private val MOVE_SPRINT_KEYBINDING = minosoft("move_sprint")
+        private val MOVE_FORWARDS_KEYBINDING = minosoft("move_forward")
+        private val MOVE_BACKWARDS_KEYBINDING = minosoft("move_backwards")
+        private val MOVE_LEFT_KEYBINDING = minosoft("move_left")
+        private val MOVE_RIGHT_KEYBINDING = minosoft("move_right")
 
-        private val SNEAK_KEYBINDING = "minosoft:move_sneak".toResourceLocation()
-        private val JUMP_KEYBINDING = "minosoft:move_jump".toResourceLocation()
+        private val SNEAK_KEYBINDING = minosoft("move_sneak")
+        private val JUMP_KEYBINDING = minosoft("move_jump")
 
-        private val START_ELYTRA_FLY_KEYBINDING = "minosoft:move_start_elytra_fly".toResourceLocation()
+        private val START_ELYTRA_FLY_KEYBINDING = minosoft("move_start_elytra_fly")
 
-        private val CHANGE_FLY_KEYBINDING = "minosoft:move_change_fly".toResourceLocation()
-        private val FLY_UP_KEYBINDING = "minosoft:move_fly_up".toResourceLocation()
-        private val FLY_DOWN_KEYBINDING = "minosoft:move_fly_down".toResourceLocation()
+        private val CHANGE_FLY_KEYBINDING = minosoft("move_change_fly")
+        private val FLY_UP_KEYBINDING = minosoft("move_fly_up")
+        private val FLY_DOWN_KEYBINDING = minosoft("move_fly_down")
 
-        private val ZOOM_KEYBINDING = "minosoft:zoom".toResourceLocation()
+        private val ZOOM_KEYBINDING = minosoft("zoom")
     }
 }

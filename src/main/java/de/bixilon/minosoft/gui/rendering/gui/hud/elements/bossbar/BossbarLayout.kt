@@ -17,7 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.modding.event.events.bossbar.*
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2.0f), LayoutedElement, Initializable {
     private val session = context.session
@@ -66,7 +65,7 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
 
     companion object : HUDBuilder<LayoutedGUIElement<BossbarLayout>> {
         private val ATLAS = minecraft("hud/bossbar")
-        override val identifier: ResourceLocation = "minosoft:bossbar".toResourceLocation()
+        override val identifier = minosoft("bossbar")
 
         override fun register(gui: GUIRenderer) {
             gui.atlas.load(ATLAS)

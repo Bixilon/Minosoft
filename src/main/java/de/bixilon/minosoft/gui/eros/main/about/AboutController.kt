@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.about
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.updater.MinosoftUpdater
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
@@ -83,9 +83,9 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
     }
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/about/about.fxml".toResourceLocation()
-        private val TEXT = "minosoft:main.about.text".toResourceLocation()
-        private val CRASH_REPORT = "minosoft:main.about.crash".toResourceLocation()
-        private val CHECK_UPDATES = "minosoft:main.about.check_updates".toResourceLocation()
+        val LAYOUT = minosoft("eros/main/about/about.fxml")
+        private val TEXT = minosoft("main.about.text")
+        private val CRASH_REPORT = minosoft("main.about.crash")
+        private val CHECK_UPDATES = minosoft("main.about.check_updates")
     }
 }

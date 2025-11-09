@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
@@ -174,7 +173,7 @@ class MainErosController : JavaFXWindowController() {
     }
 
     companion object {
-        private val NO_ACCOUNT_SELECTED = "minosoft:main.account.no_account_selected".toResourceLocation()
+        private val NO_ACCOUNT_SELECTED = minosoft("main.account.no_account_selected")
         private val NO_ACCOUNT_WARNING_TITLE = minosoft("main.account.no_account.warning.title")
         private val NO_ACCOUNT_WARNING_HEADER = minosoft("main.account.no_account.warning.header")
         private val NO_ACCOUNT_WARNING_DESCRIPTION = minosoft("main.account.no_account.warning.description")

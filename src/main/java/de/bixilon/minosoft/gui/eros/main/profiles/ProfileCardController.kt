@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.gui.eros.main.profiles
 
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
@@ -46,6 +45,6 @@ class ProfileCardController : AbstractCardController<Profile>() {
     }
 
     companion object : CardFactory<ProfileCardController> {
-        override val LAYOUT: ResourceLocation = "minosoft:eros/main/profiles/profile_card.fxml".toResourceLocation()
+        override val LAYOUT = minosoft("eros/main/profiles/profile_card.fxml")
     }
 }

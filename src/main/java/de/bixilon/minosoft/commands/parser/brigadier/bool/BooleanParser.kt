@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,12 +20,11 @@ import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanParser> {
-    override val identifier: ResourceLocation = "brigadier:bool".toResourceLocation()
+    override val identifier = "brigadier:bool".toResourceLocation()
     override val examples: List<Boolean> = listOf(true, false)
 
     override fun parse(reader: CommandReader): Boolean {

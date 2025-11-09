@@ -27,7 +27,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -56,7 +56,6 @@ import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
@@ -327,8 +326,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<DebugHUDElement>> {
-        override val identifier: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
-        override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
+        override val identifier = minosoft("debug_hud")
+        override val ENABLE_KEY_BINDING_NAME = minosoft("enable_debug_hud")
         override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             KeyActions.STICKY to setOf(KeyCodes.KEY_F3),

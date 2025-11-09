@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceConta
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -58,7 +57,7 @@ object ContainerTestUtil {
     }
 
     private object GenericContainerFactory : ContainerFactory<Container> {
-        override val identifier: ResourceLocation = minosoft("test")
+        override val identifier = minosoft("test")
 
         override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): Container {
             return UnknownContainer(session, type, title, id)

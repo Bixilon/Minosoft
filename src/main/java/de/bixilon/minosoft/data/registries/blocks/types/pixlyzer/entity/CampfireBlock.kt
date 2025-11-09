@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isL
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LitBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 open class CampfireBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<CampfireBlockEntity>(identifier, registries, data), LitBlock, RandomDisplayTickable {
@@ -107,7 +107,7 @@ open class CampfireBlock(identifier: ResourceLocation, registries: Registries, d
     }
 
     companion object : PixLyzerBlockFactory<CampfireBlock> {
-        private val CAMPFIRE_CRACKLE_SOUND = "minecraft:block.campfire.crackle".toResourceLocation()
+        private val CAMPFIRE_CRACKLE_SOUND = minecraft("block.campfire.crackle")
         const val MAX_ITEMS = 4
         private val SMOKE_VELOCITY = Vec3d(0.0f, 0.07f, 0.0f)
         private val EXTINGUISHED_VELOCITY = Vec3d(0.0f, 0.005f, 0.0f)

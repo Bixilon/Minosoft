@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.language.IntegratedLanguage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -36,7 +37,6 @@ import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeMapFX
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -243,23 +243,23 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
     }
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/account/account.fxml".toResourceLocation()
+        val LAYOUT = minosoft("eros/main/account/account.fxml")
 
-        private val CHECK = "minosoft:main.account.list.info.button.check".toResourceLocation()
-        private val USE = "minosoft:main.account.list.info.button.use".toResourceLocation()
-        private val ADD = "minosoft:main.account.list.info.button.add".toResourceLocation()
+        private val CHECK = minosoft("main.account.list.info.button.check")
+        private val USE = minosoft("main.account.list.info.button.use")
+        private val ADD = minosoft("main.account.list.info.button.add")
 
         private val ACCOUNT_INFO_PROPERTIES: List<Pair<ResourceLocation, (account: Account) -> Any?>> = listOf(
-            "minosoft:main.account.account_info.id".toResourceLocation() to { it.id },
-            "minosoft:main.account.account_info.state".toResourceLocation() to { it.state },
+            minosoft("main.account.account_info.id") to { it.id },
+            minosoft("main.account.account_info.state") to { it.state },
         )
 
         val ACCOUNT_TYPES = listOf(
             ErosAccountType<MicrosoftAccount>(
                 identifier = MicrosoftAccount.identifier,
-                translationKey = "minosoft:main.account.type.microsoft".toResourceLocation(),
+                translationKey = minosoft("main.account.type.microsoft"),
                 additionalDetails = listOf(
-                    "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
+                    minosoft("main.account.account_info.uuid") to { it.uuid },
                 ),
                 icon = FontAwesomeBrands.MICROSOFT,
                 addHandler = { MicrosoftAddController(it).request() },
@@ -267,7 +267,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             ),
             ErosAccountType<OfflineAccount>(
                 identifier = OfflineAccount.identifier,
-                translationKey = "minosoft:main.account.type.offline".toResourceLocation(),
+                translationKey = minosoft("main.account.type.offline"),
                 icon = FontAwesomeSolid.MAP,
                 addHandler = { OfflineAddController(it).show() },
             ),

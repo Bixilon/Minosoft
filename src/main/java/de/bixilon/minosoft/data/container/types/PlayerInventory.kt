@@ -37,12 +37,11 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerItemManager
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.ClientActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W13B
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(
@@ -154,7 +153,7 @@ class PlayerInventory(
 
     companion object : ContainerFactory<PlayerInventory> {
         const val CONTAINER_ID = 0
-        override val identifier: ResourceLocation = "minecraft:player_inventory".toResourceLocation()
+        override val identifier = minecraft("player_inventory")
         val TYPE = ContainerType(
             identifier = identifier,
             factory = this,

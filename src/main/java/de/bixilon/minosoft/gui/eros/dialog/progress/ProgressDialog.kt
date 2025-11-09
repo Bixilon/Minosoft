@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.eros.dialog.progress
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CallbackLatch
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -108,7 +108,7 @@ open class ProgressDialog(
 
     companion object {
         private const val GUI_STEPS = 1000 // 0.1%
-        private val LAYOUT = "minosoft:eros/dialog/loading.fxml".toResourceLocation()
+        private val LAYOUT = minosoft("eros/dialog/loading.fxml")
 
 
         fun Double.steps(): Int {

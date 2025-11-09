@@ -20,12 +20,11 @@ import de.bixilon.minosoft.data.accounts.AccountCapabilities
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.util.*
 
 object TestAccount : Account("Bixilon", null) {
     override val id: String = "id"
-    override val type: ResourceLocation = minosoft("test_account")
+    override val type = minosoft("test_account")
     override val properties: PlayerProperties = PlayerProperties()
     override val uuid: UUID = "9e6ce7c5-40d3-483e-8e5a-b6350987d65f".toUUID()
     override var state: AccountStates

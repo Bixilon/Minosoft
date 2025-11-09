@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -38,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.LineMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ChunkBorderRenderer(
     val session: PlaySession,
@@ -205,7 +205,7 @@ class ChunkBorderRenderer(
 
 
     companion object : RendererBuilder<ChunkBorderRenderer> {
-        private val CHUNK_BORDER_TOGGLE_KEY_COMBINATION = "minosoft:toggle_chunk_borders".toResourceLocation()
+        private val CHUNK_BORDER_TOGGLE_KEY_COMBINATION = minosoft("toggle_chunk_borders")
         private const val SECTION_LINE_WIDTH = RenderConstants.DEFAULT_LINE_WIDTH * 3
         private const val INNER_CHUNK_LINE_WIDTH = SECTION_LINE_WIDTH * 3
         private const val OUTER_CHUNK_LINE_WIDTH = INNER_CHUNK_LINE_WIDTH * 3

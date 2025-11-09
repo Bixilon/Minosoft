@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class InteractionManagerKeys(
     private val input: InputManager,
@@ -69,7 +68,7 @@ class InteractionManagerKeys(
 
     private fun registerHotbar() {
         for (i in 1..PlayerInventory.HOTBAR_SLOTS) {
-            input.bindings.register("minosoft:hotbar_slot_$i".toResourceLocation(), KeyBinding(
+            input.bindings.register(minosoft("hotbar_slot_$i"), KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
             )) { interactions.hotbar.selectSlot(i - 1) }
         }
@@ -119,14 +118,14 @@ class InteractionManagerKeys(
     }
 
     companion object {
-        private val ATTACK = "minosoft:attack".toResourceLocation()
-        private val USE_ITEM = "minosoft:use_item".toResourceLocation()
+        private val ATTACK = minosoft("attack")
+        private val USE_ITEM = minosoft("use_item")
         private val SWAP = minosoft("swap_items")
         private val PICK = minosoft("pick_item")
 
-        private val DROP_ITEM = "minosoft:drop_item".toResourceLocation()
-        private val DROP_ITEM_STACK = "minosoft:drop_item_stack".toResourceLocation()
+        private val DROP_ITEM = minosoft("drop_item")
+        private val DROP_ITEM_STACK = minosoft("drop_item_stack")
 
-        private val STOP_SPECTATING = "minosoft:stop_spectating".toResourceLocation()
+        private val STOP_SPECTATING = minosoft("stop_spectating")
     }
 }

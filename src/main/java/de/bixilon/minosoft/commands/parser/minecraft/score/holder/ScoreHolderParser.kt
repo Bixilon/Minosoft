@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,9 +17,8 @@ import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 @Deprecated("TODO")
 class ScoreHolderParser(
@@ -33,7 +32,7 @@ class ScoreHolderParser(
 
 
     companion object : ArgumentParserFactory<ScoreHolderParser> {
-        override val identifier: ResourceLocation = "minecraft:score_holder".toResourceLocation()
+        override val identifier = minecraft("score_holder")
 
         override fun read(buffer: PlayInByteBuffer): ScoreHolderParser {
             val flags = buffer.readUnsignedByte()

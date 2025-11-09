@@ -29,12 +29,11 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerButtonC2SP
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EnchantingContainer(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : InventorySynchronizedContainer(session, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS), id = id) {
     override val sections: Array<ContainerSection> get() = SECTIONS
@@ -106,7 +105,7 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
 
 
     companion object : ContainerFactory<EnchantingContainer> {
-        override val identifier: ResourceLocation = "minecraft:enchantment".toResourceLocation()
+        override val identifier = minecraft("enchantment")
         const val LAPISLAZULI_SLOT = 1
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3

@@ -22,14 +22,13 @@ import de.bixilon.minosoft.data.accounts.AccountCapabilities
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import java.util.*
 
 class OfflineAccount(username: String, @JacksonInject storage: ProfileStorage?) : Account(username, storage) {
     override val id: String = username
     override val uuid: UUID = UUID("OfflinePlayer:$username".hashCode().toLong(), 0L) // ToDo
-    override val type: ResourceLocation = identifier
+    override val type = identifier
     override var state: AccountStates
         get() = AccountStates.WORKING
         set(value) {}
@@ -50,6 +49,6 @@ class OfflineAccount(username: String, @JacksonInject storage: ProfileStorage?) 
     }
 
     companion object : Identified {
-        override val identifier: ResourceLocation = "minosoft:offline_account".toResourceLocation()
+        override val identifier = minosoft("offline_account")
     }
 }

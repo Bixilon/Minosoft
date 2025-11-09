@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.kutil.latch.CallbackLatch
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
@@ -60,9 +60,9 @@ class CheckingDialog(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/checking.fxml".toResourceLocation()
+        private val LAYOUT = minosoft("eros/main/account/checking.fxml")
 
-        private val TITLE = "minosoft:main.account.checking_dialog.title".toResourceLocation()
-        private val HEADER = "minosoft:main.account.checking_dialog.header".toResourceLocation()
+        private val TITLE = minosoft("main.account.checking_dialog.title")
+        private val HEADER = minosoft("main.account.checking_dialog.header")
     }
 }

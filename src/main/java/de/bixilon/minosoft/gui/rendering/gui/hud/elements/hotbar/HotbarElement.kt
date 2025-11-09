@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Arms
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -40,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4fUtil.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -199,7 +198,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
 
     companion object : HUDBuilder<LayoutedGUIElement<HotbarElement>> {
-        override val identifier: ResourceLocation = "minosoft:hotbar".toResourceLocation()
+        override val identifier = minosoft("hotbar")
         private const val HOVER_TEXT_OFFSET = 15.0f
         private const val ITEM_NAME_OFFSET = 5.0f
 

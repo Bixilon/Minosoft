@@ -15,11 +15,10 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.d
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class DamageIndicatorParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : DamageParticle(session, position, velocity + Vec3d(0.0, 1.0, 0.0), data) {
 
@@ -28,7 +27,7 @@ class DamageIndicatorParticle(session: PlaySession, position: Vec3d, velocity: M
     }
 
     companion object : ParticleFactory<DamageIndicatorParticle> {
-        override val identifier: ResourceLocation = "minecraft:damage_indicator".toResourceLocation()
+        override val identifier = minecraft("damage_indicator")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): DamageIndicatorParticle {
             return DamageIndicatorParticle(session, position, velocity, data)

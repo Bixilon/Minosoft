@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,11 +17,11 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
@@ -31,7 +31,7 @@ object LANServerType : ServerType {
         get() = !LANServerListener.listening
     override var readOnly: Boolean = true
     override val servers: MutableList<AbstractServer> by observedList(synchronizedListOf())
-    override val translationKey: ResourceLocation = "minosoft:server_type.lan".toResourceLocation()
+    override val translationKey = minosoft("server_type.lan")
 
     override fun refresh(cards: List<ServerCard>) {
         LANServerListener.clear()

@@ -22,6 +22,7 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
@@ -41,7 +42,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HUDManager(
     override val guiRenderer: GUIRenderer,
@@ -99,7 +99,7 @@ class HUDManager(
         }
 
         context.input.bindings.register(
-            "minosoft:enable_hud".toResourceLocation(), KeyBinding(
+            minosoft("enable_hud"), KeyBinding(
                 KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
             ), pressed = enabled
         ) { enabled = it }

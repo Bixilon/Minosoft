@@ -47,6 +47,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.ChestBoat
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
@@ -193,7 +194,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     }
 
     val ABSTRACT_ENTITY_DATA_CLASSES = mapOf(
-        "minecraft:player".toResourceLocation() to PlayerEntity::class,
+        minecraft("player") to PlayerEntity::class,
         "Entity".toResourceLocation() to Entity::class,
         "LivingEntity".toResourceLocation() to LivingEntity::class,
         "PersistentProjectileEntity".toResourceLocation() to AbstractArrow::class,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.account.add
 
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
@@ -95,14 +95,14 @@ class OfflineAddController(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/add/offline.fxml".toResourceLocation()
+        private val LAYOUT = minosoft("eros/main/account/add/offline.fxml")
 
-        private val TITLE = "minosoft:main.account.add.offline.title".toResourceLocation()
-        private val HEADER = "minosoft:main.account.add.offline.header".toResourceLocation()
-        private val DESCRIPTION = "minosoft:main.account.add.offline.description".toResourceLocation()
-        private val USERNAME_LABEL = "minosoft:main.account.add.offline.username.label".toResourceLocation()
-        private val USERNAME_PLACEHOLDER = "minosoft:main.account.add.offline.username.placeholder".toResourceLocation()
-        private val ADD_BUTTON = "minosoft:main.account.add.offline.add_button".toResourceLocation()
-        private val CANCEL_BUTTON = "minosoft:main.account.add.offline.cancel_button".toResourceLocation()
+        private val TITLE = minosoft("main.account.add.offline.title")
+        private val HEADER = minosoft("main.account.add.offline.header")
+        private val DESCRIPTION = minosoft("main.account.add.offline.description")
+        private val USERNAME_LABEL = minosoft("main.account.add.offline.username.label")
+        private val USERNAME_PLACEHOLDER = minosoft("main.account.add.offline.username.placeholder")
+        private val ADD_BUTTON = minosoft("main.account.add.offline.add_button")
+        private val CANCEL_BUTTON = minosoft("main.account.add.offline.cancel_button")
     }
 }

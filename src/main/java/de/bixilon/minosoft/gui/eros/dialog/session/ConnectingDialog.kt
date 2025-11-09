@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.eros.dialog.session
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -71,10 +71,10 @@ class ConnectingDialog(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/session/connecting.fxml".toResourceLocation()
+        private val LAYOUT = minosoft("eros/dialog/session/connecting.fxml")
 
-        private val TITLE = "minosoft:session.dialog.connecting.title".toResourceLocation()
-        private val HEADER = "minosoft:session.dialog.connecting.header".toResourceLocation()
+        private val TITLE = minosoft("session.dialog.connecting.title")
+        private val HEADER = minosoft("session.dialog.connecting.header")
 
         private const val PROGRESS_STEPS = 7
         private val PlaySessionStates.step: Int

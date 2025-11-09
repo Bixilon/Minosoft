@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMeshBuilder
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
@@ -26,14 +27,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.depth.DepthModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldFramebuffer(
     override val context: RenderContext,
 ) : IntegratedFramebuffer {
     private val overlay = OverlayManager(context)
     val `fun` = FunEffectManager(context)
-    private val defaultShader = context.system.shader.create("minosoft:framebuffer/world".toResourceLocation()) { FramebufferShader(it) }
+    private val defaultShader = context.system.shader.create(minosoft("framebuffer/world")) { FramebufferShader(it) }
     override val shader: FramebufferShader
         get() = `fun`.shader ?: defaultShader
     override var framebuffer: Framebuffer = unsafeNull()

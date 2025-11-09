@@ -22,7 +22,6 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -37,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement, Skippable {
@@ -92,7 +90,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         }
 
         context.input.bindings.register(
-            "minosoft:open_chat".toResourceLocation(), KeyBinding(
+            minosoft("open_chat"), KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_T),
             )
         ) { guiRenderer.gui.open(ChatElement) }
@@ -280,7 +278,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<ChatElement>>, GUIBuilder<LayoutedGUIElement<ChatElement>> {
-        override val identifier: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
+        override val identifier = minosoft("chat_hud")
         private val TEXT_PROPERTIES = TextRenderProperties()
         const val LINES = 3
         const val CHAT_INPUT_MARGIN = 2.0f

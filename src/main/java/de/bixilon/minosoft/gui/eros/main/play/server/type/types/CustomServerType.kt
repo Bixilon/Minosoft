@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,12 +23,12 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.network.session.status.StatusSessionStates
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
@@ -38,7 +38,7 @@ object CustomServerType : ServerType {
     override var readOnly: Boolean = false
     override var servers: MutableList<ErosServer> by observedList(mutableListOf())
         private set
-    override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
+    override val translationKey = minosoft("server_type.custom")
     private var profile: ErosProfile? = null
 
     init {

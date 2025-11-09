@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 object DefaultAudioBehavior {
     private val random = Random()
-    private val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".toResourceLocation()
+    private val ENTITY_GENERIC_EXPLODE = minecraft("entity.generic.explode")
 
     fun register(session: PlaySession) {
         val world = session.world

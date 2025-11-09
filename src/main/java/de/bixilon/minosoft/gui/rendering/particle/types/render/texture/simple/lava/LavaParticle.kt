@@ -15,14 +15,13 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.l
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d.EMPTY, data) {
 
@@ -52,7 +51,7 @@ class LavaParticle(session: PlaySession, position: Vec3d, data: ParticleData? = 
     }
 
     companion object : ParticleFactory<LavaParticle> {
-        override val identifier: ResourceLocation = "minecraft:lava".toResourceLocation()
+        override val identifier = minecraft("lava")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): LavaParticle {
             return LavaParticle(session, position, data)

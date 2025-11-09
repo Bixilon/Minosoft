@@ -21,6 +21,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.crash.CrashReportState
 import de.bixilon.minosoft.gui.eros.dialog.UpdateAvailableDialog
 import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.updater.MinosoftUpdater
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -41,8 +41,8 @@ import javafx.stage.Modality
 import javafx.stage.Window
 
 object Eros {
-    private val TITLE = "minosoft:eros_window_title".toResourceLocation()
-    private val LAYOUT = "minosoft:eros/main/main.fxml".toResourceLocation()
+    private val TITLE = minosoft("eros_window_title")
+    private val LAYOUT = minosoft("eros/main/main.fxml")
 
     private val latch = SimpleLatch(2)
 

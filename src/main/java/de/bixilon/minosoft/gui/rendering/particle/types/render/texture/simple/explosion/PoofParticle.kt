@@ -15,13 +15,12 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.e
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PoofParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null, velocity: MVec3d) : SimpleTextureParticle(session, position, MVec3d(velocity.x + (Math.random() * 2.0 - 1.0) * 0.05, velocity.y + (Math.random() * 2.0 - 1.0) * 0.05, velocity.z + (Math.random() * 2.0 - 1.0) * 0.05), data) {
 
@@ -34,7 +33,7 @@ class PoofParticle(session: PlaySession, position: Vec3d, data: ParticleData? = 
     }
 
     companion object : ParticleFactory<PoofParticle> {
-        override val identifier: ResourceLocation = "minecraft:poof".toResourceLocation()
+        override val identifier = minecraft("poof")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): PoofParticle {
             return PoofParticle(session, position, data, velocity)

@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
 
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 interface FunEffect : Identified {
     val context: RenderContext
@@ -28,7 +28,7 @@ interface FunEffect : Identified {
     fun preDraw() {}
 
 
-    fun <T : FramebufferShader> createShader(vertex: ResourceLocation = "minosoft:framebuffer/world.vsh".toResourceLocation(), fragment: ResourceLocation = "minosoft:framebuffer/world.fsh".toResourceLocation(), creator: (NativeShader) -> T): T {
+    fun <T : FramebufferShader> createShader(vertex: ResourceLocation = minosoft("framebuffer/world.vsh"), fragment: ResourceLocation = minosoft("framebuffer/world.fsh"), creator: (NativeShader) -> T): T {
         val native = context.system.shader.create(vertex = vertex, fragment = fragment)
         val shader = creator(native)
         shader.load()

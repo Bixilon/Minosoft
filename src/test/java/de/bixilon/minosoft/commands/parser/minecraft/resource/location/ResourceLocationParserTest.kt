@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.resource.location
 
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
@@ -24,13 +24,13 @@ internal class ResourceLocationParserTest {
     @Test
     fun `read dirt`() {
         val reader = CommandReader("dirt")
-        assertEquals(ResourceLocationParser.parse(reader), "minecraft:dirt".toResourceLocation())
+        assertEquals(ResourceLocationParser.parse(reader), minecraft("dirt"))
     }
 
     @Test
     fun `read minecraft dirt`() {
         val reader = CommandReader("minecraft:dirt")
-        assertEquals(ResourceLocationParser.parse(reader), "minecraft:dirt".toResourceLocation())
+        assertEquals(ResourceLocationParser.parse(reader), minecraft("dirt"))
     }
 
     @Test

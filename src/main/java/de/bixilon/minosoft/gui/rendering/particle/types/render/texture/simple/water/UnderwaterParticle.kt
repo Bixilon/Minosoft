@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.w
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class UnderwaterParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(session, position, MVec3d.EMPTY, data) {
 
@@ -29,7 +28,7 @@ class UnderwaterParticle(session: PlaySession, position: Vec3d, data: ParticleDa
     }
 
     companion object : ParticleFactory<UnderwaterParticle> {
-        override val identifier: ResourceLocation = "minecraft:underwater".toResourceLocation()
+        override val identifier = minecraft("underwater")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): UnderwaterParticle {
             return UnderwaterParticle(session, position, data)

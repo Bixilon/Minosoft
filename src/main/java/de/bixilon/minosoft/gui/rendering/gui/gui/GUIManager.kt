@@ -23,6 +23,7 @@ import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -44,7 +45,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GUIManager(
     private val guiRenderer: GUIRenderer,
@@ -75,7 +75,7 @@ class GUIManager(
 
     override fun postInit() {
         context.input.bindings.register(
-            "minosoft:back".toResourceLocation(),
+            minosoft("back"),
             KeyBinding(
                 KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
                 ignoreConsumer = true,

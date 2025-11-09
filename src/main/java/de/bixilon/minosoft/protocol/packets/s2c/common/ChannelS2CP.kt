@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.common
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ChannelS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val channel: ResourceLocation = buffer.readResourceLocation()
+    val channel = buffer.readResourceLocation()
 
     init {
         // "read" length prefix

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class Invert(override val context: RenderContext) : FunEffect {
     override val identifier: ResourceLocation get() = Invert.identifier
-    override val shader: FramebufferShader = createShader(fragment = "minosoft:framebuffer/world/fun/invert.fsh".toResourceLocation()) { FramebufferShader(it) }
+    override val shader: FramebufferShader = createShader(fragment = minosoft("framebuffer/world/fun/invert.fsh")) { FramebufferShader(it) }
 
 
     companion object : FunEffectFactory<Invert> {
-        override val identifier: ResourceLocation = "minosoft:invert".toResourceLocation()
+        override val identifier = minosoft("invert")
 
         override fun build(context: RenderContext): Invert {
             return Invert(context)

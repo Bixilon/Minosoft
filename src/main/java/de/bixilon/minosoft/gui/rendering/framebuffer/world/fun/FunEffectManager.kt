@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FunEffectManager(
     private val context: RenderContext,
@@ -34,7 +34,7 @@ class FunEffectManager(
 
     init {
         context.input.bindings.register(
-            "minosoft:switch_fun_settings".toResourceLocation(),
+            minosoft("switch_fun_settings"),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
                 KeyActions.PRESS to setOf(KeyCodes.KEY_J),

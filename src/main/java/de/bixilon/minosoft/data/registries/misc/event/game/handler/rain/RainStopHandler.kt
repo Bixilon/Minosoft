@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.misc.event.game.handler.rain
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object RainStopHandler : GameEventHandler {
-    override val identifier: ResourceLocation = "minecraft:rain_stop".toResourceLocation()
+    override val identifier = minecraft("rain_stop")
 
     override fun handle(data: Float, session: PlaySession) {
         session.world.weather = WorldWeather(0.0f, 0.0f)

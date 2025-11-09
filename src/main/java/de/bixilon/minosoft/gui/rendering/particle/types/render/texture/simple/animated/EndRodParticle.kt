@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.a
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EndRodParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : AnimatedParticle(session, position, 0.0125f, data) {
 
@@ -34,7 +33,7 @@ class EndRodParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, da
     }
 
     companion object : ParticleFactory<EndRodParticle> {
-        override val identifier: ResourceLocation = "minecraft:end_rod".toResourceLocation()
+        override val identifier = minecraft("end_rod")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): EndRodParticle {
             return EndRodParticle(session, position, velocity, data)

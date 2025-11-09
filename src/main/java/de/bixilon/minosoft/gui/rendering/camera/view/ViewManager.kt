@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,11 +17,11 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.person.FirstPersonView
 import de.bixilon.minosoft.gui.rendering.camera.view.person.ThirdPersonView
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ViewManager(private val camera: Camera) {
     private val debug = DebugView(camera)
@@ -39,7 +39,7 @@ class ViewManager(private val camera: Camera) {
 
     fun init() {
         camera.context.input.bindings.register(
-            "minosoft:camera_debug_view".toResourceLocation(),
+            minosoft("camera_debug_view"),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
                 KeyActions.STICKY to setOf(KeyCodes.KEY_V),
@@ -51,7 +51,7 @@ class ViewManager(private val camera: Camera) {
         }
 
         camera.context.input.bindings.register(
-            "minosoft:camera_third_person".toResourceLocation(),
+            minosoft("camera_third_person"),
             KeyBinding(
                 KeyActions.STICKY to setOf(KeyCodes.KEY_F5),
             )

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,13 +21,12 @@ import de.bixilon.minosoft.commands.parser.minosoft.session.selector.properties.
 import de.bixilon.minosoft.commands.parser.selector.AbstractTarget
 import de.bixilon.minosoft.commands.parser.selector.SelectorParser
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object SessionParser : SelectorParser<PlaySession>(), ArgumentParserFactory<SessionParser> {
-    override val identifier: ResourceLocation = "minosoft:session".toResourceLocation()
+    override val identifier = minosoft("session")
     override val properties get() = SessionTargetProperties
 
     override fun parseId(reader: CommandReader): AbstractTarget<PlaySession> {

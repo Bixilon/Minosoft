@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.language.IntegratedLanguage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.dialog.PleaseWaitDialog
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.eros.main.account.CheckingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.microsoft.AuthenticationResponse
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.account.microsoft.code.MicrosoftDeviceCode
@@ -49,7 +49,7 @@ class MicrosoftAddController(
     private var deviceCodeDialog: PleaseWaitDialog? = null
 
     fun request() {
-        deviceCodeDialog = PleaseWaitDialog(header = "minosoft:main.account.add.microsoft.please_wait.device_code".toResourceLocation())
+        deviceCodeDialog = PleaseWaitDialog(header = minosoft("main.account.add.microsoft.please_wait.device_code"))
         deviceCodeDialog?.show()
         MicrosoftOAuthUtils.obtainDeviceCodeAsync(this::codeCallback, this::errorCallback, this::successCallback)
     }
@@ -107,9 +107,9 @@ class MicrosoftAddController(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".toResourceLocation()
-        private val TITLE = "minosoft:main.account.add.microsoft.title".toResourceLocation()
-        private val HEADER = { link: URL -> IntegratedLanguage.LANGUAGE.forceTranslate("minosoft:main.account.add.microsoft.header".toResourceLocation(), link) }
-        private val CANCEL = "minosoft:main.account.add.microsoft.cancel".toResourceLocation()
+        private val LAYOUT = minosoft("eros/main/account/add/microsoft.fxml")
+        private val TITLE = minosoft("main.account.add.microsoft.title")
+        private val HEADER = { link: URL -> IntegratedLanguage.LANGUAGE.forceTranslate(minosoft("main.account.add.microsoft.header"), link) }
+        private val CANCEL = minosoft("main.account.add.microsoft.cancel")
     }
 }

@@ -37,7 +37,7 @@ abstract class Block(
 
     var model: BlockRender? = null
 
-    override val translationKey: ResourceLocation = settings.translationKey ?: identifier.translation("block")
+    override val translationKey = settings.translationKey ?: identifier.translation("block")
 
     val soundGroup = settings.soundGroup
 

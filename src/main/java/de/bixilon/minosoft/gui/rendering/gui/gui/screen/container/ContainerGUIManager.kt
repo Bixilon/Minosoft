@@ -18,16 +18,16 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.InventoryScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.LocalInventoryScreen
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ContainerGUIManager {
 
     private fun registerLocalContainerEvent(guiRenderer: GUIRenderer) {
-        guiRenderer.context.input.bindings.register("minosoft:local_inventory".toResourceLocation(), KeyBinding(
+        guiRenderer.context.input.bindings.register(minosoft("local_inventory"), KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_E),
         )) { guiRenderer.gui.open(LocalInventoryScreen) }
     }

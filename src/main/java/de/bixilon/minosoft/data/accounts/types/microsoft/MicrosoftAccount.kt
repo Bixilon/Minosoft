@@ -29,8 +29,7 @@ import de.bixilon.minosoft.data.accounts.AccountCapabilities
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
@@ -53,7 +52,7 @@ class MicrosoftAccount(
     override val properties: PlayerProperties?,
 ) : Account(username, storage) {
     override val id: String = uuid.toString()
-    override val type: ResourceLocation = identifier
+    override val type = identifier
 
     override val capabilities = AccountCapabilities.set(AccountCapabilities.SKIN, AccountCapabilities.ENCRYPTION)
 
@@ -178,6 +177,6 @@ class MicrosoftAccount(
     }
 
     companion object : Identified {
-        override val identifier: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
+        override val identifier = minosoft("microsoft_account")
     }
 }

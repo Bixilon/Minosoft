@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class SwitchElement(
     guiRenderer: GUIRenderer,
@@ -167,7 +167,7 @@ open class SwitchElement(
 
     companion object {
         val ATLAS = minosoft("elements/switch")
-        val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
+        val CLICK_SOUND = minecraft("ui.button.click")
         const val TEXT_MARGIN = 5
         val SIZE = Vec2f(30, 20)
         val SLIDER_SIZE = Vec2f(6, 20)

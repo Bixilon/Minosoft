@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.c
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class SneezeParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : CloudParticle(session, position, velocity, data) {
 
@@ -29,7 +28,7 @@ open class SneezeParticle(session: PlaySession, position: Vec3d, velocity: MVec3
     }
 
     companion object : ParticleFactory<SneezeParticle> {
-        override val identifier: ResourceLocation = "minecraft:sneeze".toResourceLocation()
+        override val identifier = minecraft("sneeze")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): SneezeParticle {
             return SneezeParticle(session, position, velocity, data)

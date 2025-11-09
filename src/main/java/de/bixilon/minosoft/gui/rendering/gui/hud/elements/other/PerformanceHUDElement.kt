@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Pollable {
     private val text = TextElement(guiRenderer, "", parent = this)
@@ -69,7 +68,7 @@ class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<PerformanceHUDElement>> {
-        override val identifier: ResourceLocation = "minosoft:performance".toResourceLocation()
+        override val identifier = minosoft("performance")
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<PerformanceHUDElement> {
             return LayoutedGUIElement(PerformanceHUDElement(guiRenderer))

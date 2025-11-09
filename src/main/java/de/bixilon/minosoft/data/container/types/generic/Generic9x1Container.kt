@@ -15,15 +15,14 @@ package de.bixilon.minosoft.data.container.types.generic
 
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class Generic9x1Container(session: PlaySession, type: ContainerType, title: ChatComponent?, id: Int) : GenericContainer(1, session, type, title, id) {
 
     companion object : ContainerFactory<Generic9x1Container> {
-        override val identifier: ResourceLocation = "minecraft:generic_9x1".toResourceLocation()
+        override val identifier = minecraft("generic_9x1")
 
         override fun build(session: PlaySession, type: ContainerType, title: ChatComponent?, slots: Int, id: Int): Generic9x1Container {
             return Generic9x1Container(session, type, title, id)

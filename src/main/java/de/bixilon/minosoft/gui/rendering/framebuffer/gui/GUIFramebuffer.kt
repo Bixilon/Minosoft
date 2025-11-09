@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.gui
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMeshBuilder
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
@@ -23,12 +24,11 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GUIFramebuffer(
     override val context: RenderContext,
 ) : IntegratedFramebuffer {
-    override val shader = context.system.shader.create("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
+    override val shader = context.system.shader.create(minosoft("framebuffer/gui")) { FramebufferShader(it) }
     override var framebuffer: Framebuffer = unsafeNull()
     override val mesh = FramebufferMeshBuilder(context).bake()
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT

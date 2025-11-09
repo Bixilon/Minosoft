@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity.EntityWaw
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable, Skippable {
     private var element: WawlaElement? = null
@@ -84,7 +83,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
     companion object : HUDBuilder<LayoutedGUIElement<WawlaHUDElement>> {
         private const val BACKGROUND_SIZE = 5.0f
-        override val identifier: ResourceLocation = "minosoft:wawla".toResourceLocation()
+        override val identifier = minosoft("wawla")
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<WawlaHUDElement> {
             return LayoutedGUIElement(WawlaHUDElement(guiRenderer))

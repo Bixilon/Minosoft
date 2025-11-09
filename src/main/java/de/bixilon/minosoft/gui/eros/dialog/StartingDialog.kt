@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.eros.dialog
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.crash.CrashReportState
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
@@ -76,9 +76,9 @@ class StartingDialog(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/starting.fxml".toResourceLocation()
+        private val LAYOUT = minosoft("eros/dialog/starting.fxml")
 
-        private val TITLE = "minosoft:dialog.starting.title".toResourceLocation()
-        private val HEADER = "minosoft:dialog.starting.header".toResourceLocation()
+        private val TITLE = minosoft("dialog.starting.title")
+        private val HEADER = minosoft("dialog.starting.header")
     }
 }

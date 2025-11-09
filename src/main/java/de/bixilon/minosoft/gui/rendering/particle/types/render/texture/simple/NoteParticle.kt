@@ -17,12 +17,11 @@ import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class NoteParticle(session: PlaySession, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(session, position, MVec3d.EMPTY, data) {
 
@@ -48,7 +47,7 @@ class NoteParticle(session: PlaySession, position: Vec3d, colorModifier: Float, 
 
 
     companion object : ParticleFactory<NoteParticle> {
-        override val identifier: ResourceLocation = "minecraft:note".toResourceLocation()
+        override val identifier = minecraft("note")
         private const val ONE_THIRD = 1.0f / 3
         private const val TWO_THIRD = ONE_THIRD * 2
 

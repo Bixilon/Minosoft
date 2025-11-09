@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.misc.event.world.handler
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.misc.event.world.WorldEventHandler
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -25,10 +25,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ceil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.max
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object BlockDestroyedHandler : WorldEventHandler {
-    override val identifier: ResourceLocation = "minecraft:block_destroyed".toResourceLocation()
+    override val identifier = minecraft("block_destroyed")
 
     override fun handle(session: PlaySession, position: BlockPosition, data: Int, isGlobal: Boolean) {
         val state = session.registries.blockState.getOrNull(data) ?: return

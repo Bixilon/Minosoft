@@ -19,7 +19,7 @@ import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ColorParser(
     val allowRGB: Boolean = true,
@@ -92,7 +91,7 @@ class ColorParser(
 
 
     companion object : ArgumentParserFactory<ColorParser> {
-        override val identifier: ResourceLocation = "minecraft:color".toResourceLocation()
+        override val identifier = minecraft("color")
 
         override fun read(buffer: PlayInByteBuffer): ColorParser {
             return ColorParser(buffer.session.version.supportsRGBChat)

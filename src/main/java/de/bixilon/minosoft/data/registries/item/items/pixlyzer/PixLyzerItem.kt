@@ -35,7 +35,7 @@ open class PixLyzerItem(identifier: ResourceLocation, registries: Registries, da
     override val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     override val maxDurability: Int = data["max_damage"]?.toInt() ?: 0
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
-    override val translationKey: ResourceLocation = data["translation_key"]?.toResourceLocation() ?: super.translationKey
+    override val translationKey = data["translation_key"]?.toResourceLocation() ?: super.translationKey
     override var tintProvider: TintProvider? = null
 
 

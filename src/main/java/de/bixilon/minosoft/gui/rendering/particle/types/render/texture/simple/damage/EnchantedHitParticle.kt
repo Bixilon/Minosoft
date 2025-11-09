@@ -15,11 +15,10 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.d
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EnchantedHitParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : DamageParticle(session, position, velocity, data) {
 
@@ -28,7 +27,7 @@ class EnchantedHitParticle(session: PlaySession, position: Vec3d, velocity: MVec
     }
 
     companion object : ParticleFactory<EnchantedHitParticle> {
-        override val identifier: ResourceLocation = "minecraft:enchanted_hit".toResourceLocation()
+        override val identifier = minecraft("enchanted_hit")
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): EnchantedHitParticle {
             return EnchantedHitParticle(session, position, velocity, data)

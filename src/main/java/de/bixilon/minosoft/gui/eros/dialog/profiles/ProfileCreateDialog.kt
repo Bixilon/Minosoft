@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,13 +18,13 @@ import de.bixilon.minosoft.config.profile.ProfileUtil.isValidName
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
@@ -112,15 +112,15 @@ class ProfileCreateDialog<T : Profile>(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/profiles/create.fxml".toResourceLocation()
+        private val LAYOUT = minosoft("eros/dialog/profiles/create.fxml")
 
-        private val TITLE = "minosoft:general.dialog.profile.create.title".toResourceLocation()
-        private val HEADER = "minosoft:general.dialog.profile.create.header".toResourceLocation()
-        private val DESCRIPTION = "minosoft:general.dialog.profile.create.description".toResourceLocation()
-        private val TYPE_LABEL = "minosoft:general.dialog.profile.create.type.label".toResourceLocation()
-        private val NAME_LABEL = "minosoft:general.dialog.profile.create.name.label".toResourceLocation()
-        private val NAME_PLACEHOLDER = "minosoft:general.dialog.profile.create.name.placeholder".toResourceLocation()
-        private val CREATE_BUTTON = "minosoft:general.dialog.profile.create.create_button".toResourceLocation()
-        private val CANCEL_BUTTON = "minosoft:general.dialog.profile.create.cancel_button".toResourceLocation()
+        private val TITLE = minosoft("general.dialog.profile.create.title")
+        private val HEADER = minosoft("general.dialog.profile.create.header")
+        private val DESCRIPTION = minosoft("general.dialog.profile.create.description")
+        private val TYPE_LABEL = minosoft("general.dialog.profile.create.type.label")
+        private val NAME_LABEL = minosoft("general.dialog.profile.create.name.label")
+        private val NAME_PLACEHOLDER = minosoft("general.dialog.profile.create.name.placeholder")
+        private val CREATE_BUTTON = minosoft("general.dialog.profile.create.create_button")
+        private val CANCEL_BUTTON = minosoft("general.dialog.profile.create.cancel_button")
     }
 }

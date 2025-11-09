@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,12 +17,11 @@ import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DummyParser : ArgumentParser<Any>, ArgumentParserFactory<DummyParser> {
-    override val identifier: ResourceLocation = "minosoft:dummy".toResourceLocation()
+    override val identifier = minosoft("dummy")
     override val examples: List<Any> = listOf("?")
 
     override fun parse(reader: CommandReader): String {

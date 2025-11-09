@@ -25,7 +25,7 @@ open class MusicDiscItem(
     data: Map<String, Any>,
 ) : PixLyzerItem(identifier, registries, data) {
     val analogOutput = data["analog_output"].nullCast<Item>() ?: 0
-    val sound: ResourceLocation = registries.soundEvent[data["sound"]]
+    val sound = registries.soundEvent[data["sound"]]
 
     companion object : PixLyzerItemFactory<MusicDiscItem> {
 

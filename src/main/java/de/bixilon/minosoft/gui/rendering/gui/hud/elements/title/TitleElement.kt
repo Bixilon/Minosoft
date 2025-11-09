@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -32,7 +32,6 @@ import de.bixilon.minosoft.modding.event.events.title.*
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // ToDo: Remove subtitle when hidden
 class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
@@ -129,7 +128,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
-        override val identifier: ResourceLocation = "minosoft:title".toResourceLocation()
+        override val identifier = minosoft("title")
         const val SUBTITLE_VERTICAL_OFFSET = 10
         private val DEFAULT_TIMES = FadingTimes(20.ticks, 60.ticks, 20.ticks) // TODO: default constructor?
 

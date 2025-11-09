@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundType
@@ -71,6 +72,6 @@ class SoundManager(
     }
 
     companion object {
-        private val SOUNDS_INDEX_FILE = "minecraft:sounds.json".toResourceLocation()
+        private val SOUNDS_INDEX_FILE = minecraft("sounds.json")
     }
 }

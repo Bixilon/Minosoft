@@ -19,11 +19,10 @@ import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser.Companio
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W03A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.time.Duration
 
 // TODO: respect minimum
@@ -62,7 +61,7 @@ class TimeParser(val minimum: Duration = Duration.ZERO) : ArgumentParser<Duratio
 
 
     companion object : ArgumentParserFactory<TimeParser> {
-        override val identifier: ResourceLocation = "minecraft:time".toResourceLocation()
+        override val identifier = minecraft("time")
 
         override fun read(buffer: PlayInByteBuffer): TimeParser {
             if (buffer.versionId < V_23W03A) {

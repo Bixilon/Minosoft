@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.norender
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ExplosionEmitterParticle(session: PlaySession, position: Vec3d, data: ParticleData? = null) : NoRenderParticle(session, position, MVec3d(), data) {
     private val explosionParticleType = session.registries.particleType[ExplosionParticle]
@@ -49,7 +48,7 @@ class ExplosionEmitterParticle(session: PlaySession, position: Vec3d, data: Part
     }
 
     companion object : ParticleFactory<ExplosionEmitterParticle> {
-        override val identifier: ResourceLocation = "minecraft:explosion_emitter".toResourceLocation()
+        override val identifier = minecraft("explosion_emitter")
         private const val MAX_AGE = 9
 
         override fun build(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData): ExplosionEmitterParticle {

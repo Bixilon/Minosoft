@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,13 +21,13 @@ import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.gui.eros.util.cell.LabeledListCell
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.text.TextFlow
@@ -100,17 +100,17 @@ class ProfileSelectDialog(
 
 
     companion object {
-        val LAYOUT = "minosoft:eros/dialog/profiles/select.fxml".toResourceLocation()
-        private val TITLE = "minosoft:general.dialog.profile.select.title".toResourceLocation()
-        private val HEADER = "minosoft:general.dialog.profile.select.header".toResourceLocation()
+        val LAYOUT = minosoft("eros/dialog/profiles/select.fxml")
+        private val TITLE = minosoft("general.dialog.profile.select.title")
+        private val HEADER = minosoft("general.dialog.profile.select.header")
 
-        private val TYPE_COLUMN_TITLE = "minosoft:general.dialog.profile.select.column.type".toResourceLocation()
-        private val PROFILE_COLUMN_TITLE = "minosoft:general.dialog.profile.select.column.profile".toResourceLocation()
+        private val TYPE_COLUMN_TITLE = minosoft("general.dialog.profile.select.column.type")
+        private val PROFILE_COLUMN_TITLE = minosoft("general.dialog.profile.select.column.profile")
 
-        private val CANCEL = "minosoft:general.dialog.profile.select.cancel_button".toResourceLocation()
-        private val CONFIRM = "minosoft:general.dialog.profile.select.confirm_button".toResourceLocation()
+        private val CANCEL = minosoft("general.dialog.profile.select.cancel_button")
+        private val CONFIRM = minosoft("general.dialog.profile.select.confirm_button")
 
-        private val CLICK_ME_TO_ADD = "minosoft:general.dialog.profile.select.click_me_to_add".toResourceLocation()
+        private val CLICK_ME_TO_ADD = minosoft("general.dialog.profile.select.click_me_to_add")
     }
 
     private data class ProfileEntry(
@@ -118,7 +118,7 @@ class ProfileSelectDialog(
         var profile: String?,
     )
 
-    private abstract inner class EditTableCell<T> : TableCell<ProfileEntry, T>() {
+    private abstract class EditTableCell<T> : TableCell<ProfileEntry, T>() {
         protected val label = Label()
         protected val comboBox = ComboBox<T>()
 

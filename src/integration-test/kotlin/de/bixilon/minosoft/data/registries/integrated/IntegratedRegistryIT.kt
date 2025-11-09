@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.registries.integrated
 
 import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
 import de.bixilon.minosoft.test.IT
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -25,12 +25,12 @@ class IntegratedRegistryIT {
 
     fun integratedSharpness() {
         val expected = WeaponEnchantment.Sharpness
-        val current = IT.REGISTRIES.enchantment["minecraft:sharpness".toResourceLocation()]
+        val current = IT.REGISTRIES.enchantment[minecraft("sharpness")]
         Assert.assertSame(current, expected)
     }
 
     fun goldenApple() {
-        val current = IT.REGISTRIES.item["minecraft:golden_apple".toResourceLocation()]
+        val current = IT.REGISTRIES.item[minecraft("golden_apple")]
         if (current !is AppleItem.GoldenAppleItem) {
             Assert.fail("Not an golden apple: $current")
         }

@@ -22,7 +22,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -40,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
@@ -247,8 +246,8 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         private const val ENTRY_VERTICAL_SPACING = 1.0f
         private const val BACKGROUND_PADDING = 3.0f
         private const val MAX_ENTRIES = 80
-        override val identifier: ResourceLocation = "minosoft:tab_list".toResourceLocation()
-        override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
+        override val identifier = minosoft("tab_list")
+        override val ENABLE_KEY_BINDING_NAME = minosoft("enable_tab_list")
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_TAB),
         )
