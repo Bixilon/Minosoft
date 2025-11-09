@@ -52,7 +52,7 @@ abstract class ChunkHeightmap(
         var y = Int.MIN_VALUE
         val index = position.xz
 
-        sectionLoop@ for (sectionHeight in position.sectionHeight downTo minSection) {
+        sectionLoop@ for (sectionHeight in position.sectionHeight downTo chunk.sections.lowest) {
             val section = chunk[sectionHeight] ?: continue
             if (section.blocks.isEmpty) continue
 
