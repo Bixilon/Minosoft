@@ -111,8 +111,20 @@ class RenderLoop(
         }
         context.renderStats.endFrame()
 
-        println(context.profiler.results.map { "${it.name} (duration=${it.duration}, thread=${it.thread.name})" })
+        /*
+        try {
+            val total = context.profiler.results.filter { it.thread == Thread.currentThread() }.foldRight(Duration.ZERO) { segment, accumulator -> accumulator + segment.duration }
+
+            if (total > 16.milliseconds) {
+                println("Total: ${total.format()}: " + context.profiler.results.filter { it.duration > 1.milliseconds }.map { "${it.name} (duration=${it.duration}, thread=${it.thread.name})" })
+            }
+        } catch (error: Throwable) {
+            println()
+            error.printStackTrace()
+        }
+         */
     }
+
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING) { "Starting loop" }
