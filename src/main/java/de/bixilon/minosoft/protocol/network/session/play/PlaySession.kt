@@ -17,8 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
-import de.bixilon.kutil.concurrent.worker.task.TaskWorker
-import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
@@ -194,8 +193,8 @@ class PlaySession(
 
             state = PlaySessionStates.LOADING_ASSETS
             var error: Throwable? = null
-            val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception })
-            taskWorker += {
+            val worker = UnconditionalWorker(errorHandler = { exception -> if (error == null) error = exception })
+            worker += {
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 registries.parent = version.load(profiles.resources, latch.child(0))
                 registries.fluid.updateWaterLava()
@@ -203,7 +202,7 @@ class PlaySession(
                 this::legacyTags.forceSet(FallbackTags.map(registries))
             }
 
-            taskWorker += {
+            worker += {
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
                 assetsManager = AssetsLoader.create(profiles.resources, version, latch.child(0))
                 assetsManager.load(latch)
@@ -212,10 +211,10 @@ class PlaySession(
 
             val keyManagement = SignatureKeyManagement(this, account)
             if (version.requiresSignedChat && !profiles.session.signature.disableKeys && connection is NetworkConnection) {
-                taskWorker += WorkerTask { keyManagement.init(latch) }
+                worker += { keyManagement.init(latch) }
             }
 
-            taskWorker.work(latch)
+            worker.work(latch)
             error?.let { throw it }
 
             state = PlaySessionStates.LOADING
