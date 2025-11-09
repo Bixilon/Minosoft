@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.item.items.pixlyzer
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
@@ -28,13 +29,10 @@ open class SpawnEggItem(
 ) : PixLyzerItem(identifier, registries, data) {
     val color1 = data["spawn_egg_color_1"]?.toInt()?.rgb()
     val color2 = data["spawn_egg_color_2"]?.toInt()?.rgb()
-    val entityType: EntityType = unsafeNull()
-
-    init {
-        this::entityType.inject(data["spawn_egg_entity_type"])
-    }
+    val entityType: EntityType = ENTITY_TYPE.inject(data["spawn_egg_entity_type"])
 
     companion object : PixLyzerItemFactory<SpawnEggItem> {
+        private val ENTITY_TYPE = SpawnEggItem::entityType.field
 
         override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): SpawnEggItem {
             return SpawnEggItem(identifier, registries, data)
