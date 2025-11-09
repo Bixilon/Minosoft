@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.RemoveObserver
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observeList
@@ -61,7 +61,7 @@ object CustomServerType : ServerType {
             if (ping.state != StatusSessionStates.PING_DONE && ping.state != StatusSessionStates.ERROR) {
                 continue
             }
-            DefaultThreadPool += ForcePooledRunnable {
+            DefaultThreadPool += ThreadPoolRunnable(forcePool = true) {
                 ping.terminate()
                 ping.ping()
             }

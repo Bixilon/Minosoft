@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderConstants.UV_PRECISION_CORRECTION
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -29,14 +29,10 @@ object RenderUtil {
         guiRenderer.pause()
     }
 
-    inline fun RenderContext.runAsync(profile: String? = null, crossinline runnable: () -> Unit) {
-        DefaultThreadPool += SimplePoolRunnable(ThreadPool.Priorities.HIGHER) {
+    inline fun RenderContext.runAsync(crossinline runnable: () -> Unit) {
+        DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER) {
             try {
-                if (profile != null) {
-                    profiler.profile(profile) { runnable.invoke() }
-                } else {
-                    runnable()
-                }
+                runnable.invoke()
             } catch (error: Throwable) {
                 window.cursorMode = CursorModes.NORMAL
                 error.printStackTrace()

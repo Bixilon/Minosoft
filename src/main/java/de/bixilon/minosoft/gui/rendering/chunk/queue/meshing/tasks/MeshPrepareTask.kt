@@ -13,10 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks
 
-import de.bixilon.kutil.concurrent.pool.runnable.HeavyPoolRunnable
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 
 class MeshPrepareTask(
     val position: SectionPosition,
-    val runnable: HeavyPoolRunnable,
-)
+) {
+    var interruptible = true
+    var thread: Thread? = null
+
+
+    fun interrupt() {
+        if (!interruptible) return
+        thread?.interrupt()
+    }
+}

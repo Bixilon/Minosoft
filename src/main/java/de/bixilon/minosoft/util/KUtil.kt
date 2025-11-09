@@ -24,7 +24,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -193,22 +193,22 @@ object KUtil {
 
 
     fun initBootClasses() {
-        DefaultThreadPool += ForcePooledRunnable { GlobalEventMaster::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { ShutdownManager::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { GlobalEventMaster::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { ShutdownManager::class.java.forceInit() }
 
         for (manager in ProfileManagers) {
             DefaultThreadPool += { manager.init() }
         }
-        DefaultThreadPool += ForcePooledRunnable { URLProtocolStreamHandlers::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { MicrosoftOAuthUtils::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { TaskScheduler::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { SystemInformation::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { StatusSession::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { NettyClient::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { SimpleChannelInboundHandler::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { SSLContext.getDefault() }
-        DefaultThreadPool += ForcePooledRunnable { DefaultPackets::class.java.forceInit() }
-        DefaultThreadPool += ForcePooledRunnable { DefaultPacketMapping::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { URLProtocolStreamHandlers::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { MicrosoftOAuthUtils::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { TaskScheduler::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { SystemInformation::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { StatusSession::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { NettyClient::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { SimpleChannelInboundHandler::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { SSLContext.getDefault() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { DefaultPackets::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { DefaultPacketMapping::class.java.forceInit() }
 
     }
 

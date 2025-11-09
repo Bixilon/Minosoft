@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui
 
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.profiler.Profiler
+import de.bixilon.kutil.profiler.stack.StackedProfiler
 import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -51,7 +51,7 @@ class RenderLoop(
             context.window.pollEvents()
         }
 
-        context.profiler = Profiler()
+        context.profiler = StackedProfiler()
         context.renderStats.startFrame()
 
         context.profiler.profile("window poll events") { context.window.pollEvents() }

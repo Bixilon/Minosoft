@@ -101,7 +101,7 @@ class RendererManager(
             val name = renderer::class.java.realName
             context.profiler.profile("prepare $name") { renderer.prePrepareDraw() }
             if (renderer is AsyncRenderer) {
-                context.runAsync("async $name") { renderer.prepareDrawAsync(); queue += renderer }
+                context.runAsync { renderer.prepareDrawAsync(); queue += renderer }
             } else {
                 queue += renderer
             }
@@ -110,7 +110,7 @@ class RendererManager(
         var done = 0
         while (true) {
             if (done >= total) break
-            val renderer = queue.take()
+            val renderer = context.profiler.profile("wait") { queue.take() }
             val name = renderer::class.java.realName
             context.profiler.profile("post $name") { renderer.postPrepareDraw() }
             done++

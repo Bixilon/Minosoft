@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.util
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -43,7 +43,7 @@ class JavaFXInitializer internal constructor() : Application() {
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()
-        DefaultThreadPool += ForcePooledRunnable(priority = Int.MIN_VALUE) { JavaFXUtil.BIXILON_LOGO } // lazy value
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = Int.MIN_VALUE) { JavaFXUtil.BIXILON_LOGO } // lazy value
     }
 
     companion object {

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.profiler.Profiler
+import de.bixilon.kutil.profiler.stack.StackedProfiler
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.data.registries.identified.Identified
@@ -195,7 +195,7 @@ class WorldRendererPipelineTest {
         context.font = FontManager(DummyFontType)
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(DummyTextureManager(context))
-        context::profiler.forceSet(Profiler())
+        context::profiler.forceSet(StackedProfiler())
 
         val framebuffer = FramebufferManager::class.java.allocate()
         framebuffer::world.forceSet(WorldFramebuffer::class.java.allocate().apply {

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.main
 
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.task.TaskWorker
-import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.concurrent.worker.tree.TaskTreeBuilder
+import de.bixilon.kutil.concurrent.worker.tree.TreeTask
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
@@ -35,21 +35,21 @@ import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 object MinosoftBoot {
     val LATCH = CallbackLatch(1)
 
-    fun register(worker: TaskWorker) {
-        worker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.Priorities.HIGHER, executor = VersionLoader::load)
-        worker += WorkerTask(identifier = BootTasks.PROFILES, dependencies = arrayOf(BootTasks.VERSIONS), priority = ThreadPool.Priorities.HIGHEST, executor = ProfileManagers::load) // servers might have a version set
+    fun register(tree: TaskTreeBuilder) {
+        tree += TreeTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.Priorities.HIGHER, executor = VersionLoader::load)
+        tree += TreeTask(identifier = BootTasks.PROFILES, dependencies = arrayOf(BootTasks.VERSIONS), priority = ThreadPool.Priorities.HIGHEST, executor = ProfileManagers::load) // servers might have a version set
 
-        worker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
-        worker += WorkerTask(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })
+        tree += TreeTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
+        tree += TreeTask(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })
 
 
-        worker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
+        tree += TreeTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
-        worker += WorkerTask(identifier = BootTasks.KEYS, executor = { YggdrasilUtil.load(); UpdateKey.load() })
+        tree += TreeTask(identifier = BootTasks.KEYS, executor = { YggdrasilUtil.load(); UpdateKey.load() })
 
-        worker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
-        worker += WorkerTask(identifier = BootTasks.MODS, executor = { DefaultModPhases.BOOT.load(it) })
-        worker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
-        worker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.Priorities.LOW, executor = CLI::startThread)
+        tree += TreeTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
+        tree += TreeTask(identifier = BootTasks.MODS, executor = { DefaultModPhases.BOOT.load(it) })
+        tree += TreeTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
+        tree += TreeTask(identifier = BootTasks.CLI, priority = ThreadPool.Priorities.LOW, executor = CLI::startThread)
     }
 }

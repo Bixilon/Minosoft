@@ -15,8 +15,9 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.HeavyPoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
@@ -75,10 +76,10 @@ class ChunkMeshingQueue(
         val camera = renderer.cameraSectionPosition
         for (item in items) {
             val distance = abs(item.position.x - camera.x) + abs(item.position.z - camera.z) // TODO: Should y get in here too?
-            val runnable = HeavyPoolRunnable(if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW, interruptable = true)
-            val task = MeshPrepareTask(item.position, runnable)
-            task.runnable.runnable = Runnable { renderer.mesher.tryMesh(item, task, task.runnable) }
+            val task = MeshPrepareTask(item.position)
             tasks += task
+
+            DefaultThreadPool += ThreadPoolRunnable(if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) { renderer.mesher.tryMesh(item, task) }
         }
         working = false
     }

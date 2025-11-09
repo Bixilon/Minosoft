@@ -13,8 +13,9 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.worker.task.TaskWorker
-import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.concurrent.worker.tree.TaskTreeBuilder
+import de.bixilon.kutil.concurrent.worker.tree.TreeTask
+import de.bixilon.kutil.concurrent.worker.tree.TreeWorker
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
@@ -78,7 +79,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import kotlin.reflect.KProperty0
-import kotlin.time.Duration.Companion.milliseconds
 
 
 class Registries(
@@ -156,75 +156,63 @@ class Registries(
     }
 
     fun load(pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
-        var error: Throwable? = null
-        val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it })
+        val worker = TaskTreeBuilder()
         val stopwatch = now()
         // enums
-        worker += WorkerTask(this::shape.i) { this.shape.load(pixlyzerData["shapes"]?.toJsonObject()) }
+        worker += TreeTask(this::shape.i) { this.shape.load(pixlyzerData["shapes"]?.toJsonObject()) }
 
-        worker += WorkerTask(this::equipmentSlot.i) { equipmentSlot.initialize(pixlyzerData["equipment_slots"]) }
+        worker += TreeTask(this::equipmentSlot.i) { equipmentSlot.initialize(pixlyzerData["equipment_slots"]) }
 
-        worker += WorkerTask(this::entityDataTypes.i) { entityDataTypes.initialize(pixlyzerData["entity_data_data_types"]) }
+        worker += TreeTask(this::entityDataTypes.i) { entityDataTypes.initialize(pixlyzerData["entity_data_data_types"]) }
 
-        worker += WorkerTask(this::titleActions.i) { titleActions.initialize(pixlyzerData["title_actions"]) }
-        worker += WorkerTask(this::entityAnimation.i) { entityAnimation.initialize(pixlyzerData["entity_animations"]) }
-        worker += WorkerTask(this::entityActions.i) { entityActions.initialize(pixlyzerData["entity_actions"]) }
+        worker += TreeTask(this::titleActions.i) { titleActions.initialize(pixlyzerData["title_actions"]) }
+        worker += TreeTask(this::entityAnimation.i) { entityAnimation.initialize(pixlyzerData["entity_animations"]) }
+        worker += TreeTask(this::entityActions.i) { entityActions.initialize(pixlyzerData["entity_actions"]) }
 
         // id stuff
         // id resource location stuff
-        worker += WorkerTask(this::containerType.i) { containerType.updatePixlyzer(pixlyzerData["container_types", "container_type"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::gameEvent.i) { gameEvent.updatePixlyzer(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::worldEvent.i) { worldEvent.updatePixlyzer(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::vibrationSource.i) { vibrationSource.updatePixlyzer(pixlyzerData["vibration_source"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::argumentType.i) { argumentType.updatePixlyzer(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::messageType.i) { messageType.updatePixlyzer(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::containerType.i) { containerType.updatePixlyzer(pixlyzerData["container_types", "container_type"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::gameEvent.i) { gameEvent.updatePixlyzer(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::worldEvent.i) { worldEvent.updatePixlyzer(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::vibrationSource.i) { vibrationSource.updatePixlyzer(pixlyzerData["vibration_source"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::argumentType.i) { argumentType.updatePixlyzer(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::messageType.i) { messageType.updatePixlyzer(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
 
 
-        worker += WorkerTask(this::entityType.i) { entityType.updatePixlyzer(pixlyzerData["entities"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::entityType.i) { entityType.updatePixlyzer(pixlyzerData["entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::motif.i) { motif.updatePixlyzer(pixlyzerData["motives", "motif"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::soundEvent.i) { soundEvent.updatePixlyzer(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
-        worker += WorkerTask(this::soundGroup.i, dependencies = arrayOf(this::soundEvent.i)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
-        worker += WorkerTask(this::particleType.i) { particleType.updatePixlyzer(pixlyzerData["particles", "particle_type"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::material.i) { material.updatePixlyzer(pixlyzerData["materials"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::enchantment.i) { enchantment.updatePixlyzer(pixlyzerData["enchantments"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::statusEffect.i) { statusEffect.updatePixlyzer(pixlyzerData["status_effects"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::biome.i) { biome.updatePixlyzer(pixlyzerData["biomes"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::dimension.i) { dimension.updatePixlyzer(pixlyzerData["dimensions"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::fluid.i) { fluid.updatePixlyzer(pixlyzerData["fluids"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::block.i, dependencies = arrayOf(this::material.i, this::fluid.i, this::shape.i, this::soundGroup.i, this::particleType.i)) { block.updatePixlyzer(pixlyzerData["blocks"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::item.i, dependencies = arrayOf(this::material.i, this::block.i, this::entityType.i, this::fluid.i, this::statusEffect.i, this::soundEvent.i)) { item.updatePixlyzer(pixlyzerData["items"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::motif.i) { motif.updatePixlyzer(pixlyzerData["motives", "motif"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::soundEvent.i) { soundEvent.updatePixlyzer(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
+        worker += TreeTask(this::soundGroup.i, dependencies = arrayOf(this::soundEvent.i)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
+        worker += TreeTask(this::particleType.i) { particleType.updatePixlyzer(pixlyzerData["particles", "particle_type"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::material.i) { material.updatePixlyzer(pixlyzerData["materials"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::enchantment.i) { enchantment.updatePixlyzer(pixlyzerData["enchantments"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::statusEffect.i) { statusEffect.updatePixlyzer(pixlyzerData["status_effects"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::biome.i) { biome.updatePixlyzer(pixlyzerData["biomes"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::dimension.i) { dimension.updatePixlyzer(pixlyzerData["dimensions"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::fluid.i) { fluid.updatePixlyzer(pixlyzerData["fluids"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::block.i, dependencies = arrayOf(this::material.i, this::fluid.i, this::shape.i, this::soundGroup.i, this::particleType.i)) { block.updatePixlyzer(pixlyzerData["blocks"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::item.i, dependencies = arrayOf(this::material.i, this::block.i, this::entityType.i, this::fluid.i, this::statusEffect.i, this::soundEvent.i)) { item.updatePixlyzer(pixlyzerData["items"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::blockEntityType.i, dependencies = arrayOf(this::block.i)) { blockEntityType.updatePixlyzer(pixlyzerData["block_entities"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::blockEntityType.i, dependencies = arrayOf(this::block.i)) { blockEntityType.updatePixlyzer(pixlyzerData["block_entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::villagerProfession.i) { villagerProfession.updatePixlyzer(pixlyzerData["villager_professions"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::villagerType.i) { villagerType.updatePixlyzer(pixlyzerData["villager_types"]?.toJsonObject(), version, null) }
+        worker += TreeTask(this::villagerProfession.i) { villagerProfession.updatePixlyzer(pixlyzerData["villager_professions"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::villagerType.i) { villagerType.updatePixlyzer(pixlyzerData["villager_types"]?.toJsonObject(), version, null) }
 
 
-        worker += WorkerTask(this::blockDataType.i) { blockDataType.updatePixlyzer(pixlyzerData["block_data_data_types"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::blockDataType.i) { blockDataType.updatePixlyzer(pixlyzerData["block_data_data_types"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::catVariants.i) { catVariants.updatePixlyzer(pixlyzerData["variant/cat"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::frogVariants.i) { frogVariants.updatePixlyzer(pixlyzerData["variant/frog"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::catVariants.i) { catVariants.updatePixlyzer(pixlyzerData["variant/cat"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::frogVariants.i) { frogVariants.updatePixlyzer(pixlyzerData["variant/frog"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::statistic.i) { statistic.updatePixlyzer(pixlyzerData["statistics"]?.toJsonObject(), version, this) }
-        worker += WorkerTask(this::misc.i, dependencies = arrayOf(this::item.i)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
+        worker += TreeTask(this::statistic.i) { statistic.updatePixlyzer(pixlyzerData["statistics"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::misc.i, dependencies = arrayOf(this::item.i)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
         val inner = ParentLatch(1, latch)
-        worker.work(inner)
-        inner.dec()
+        TreeWorker(worker.build()).work(latch)
 
-        while (inner.count > 0) { // a task might fail and blocks forever
-            val error2 = error
-            if (error2 != null) {
-                throw error2
-            }
-            inner.awaitOrChange(100.milliseconds)
-        }
-        error?.let { throw it }
-
-        // post init
-        inner.inc()
         postInit(inner)
+
         inner.dec()
         inner.await()
         state = RegistriesStates.LOADED

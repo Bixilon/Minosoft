@@ -30,7 +30,7 @@ class PipelineElement(
 
         context.system.set(layer.settings)
         shader?.use()
-        context.profiler.profile("draw ${renderer::class.java.realName}") { renderer.invoke() }
+        context.profiler.profile(renderer::class.java.realName) { renderer.invoke() }
     }
 
     override fun compareTo(other: PipelineElement): Int {

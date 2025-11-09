@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.minosoft.assets.util.AssetsOptions
@@ -109,7 +109,7 @@ class ScreenshotTaker(
 
             val path = RunConfiguration.home / "screenshots" / context.session.connection.identifier
             val time = Instant.now()
-            DefaultIOPool += ForcePooledRunnable(priority = ThreadPool.Priorities.HIGHER) { store(buffer, path, time) }
+            DefaultIOPool += ThreadPoolRunnable(forcePool = true, priority = ThreadPool.Priorities.HIGHER) { store(buffer, path, time) }
         } catch (exception: Exception) {
             exception.fail()
         }

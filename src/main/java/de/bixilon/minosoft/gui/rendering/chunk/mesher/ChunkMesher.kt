@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
-import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidSectionMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 
@@ -55,9 +54,9 @@ class ChunkMesher(
         return mesh.build(item.position)
     }
 
-    private fun mesh(item: WorldQueueItem, runnable: InterruptableRunnable) {
+    private fun mesh(item: WorldQueueItem, task: MeshPrepareTask) {
         val mesh = mesh(item)
-        runnable.interruptable = false
+        task.interruptible = false
         if (mesh == null) {
             return renderer.unload(item)
         }
@@ -66,13 +65,15 @@ class ChunkMesher(
         renderer.loadingQueue.queue(mesh)
     }
 
-    fun tryMesh(item: WorldQueueItem, task: MeshPrepareTask, runnable: InterruptableRunnable) {
+    fun tryMesh(item: WorldQueueItem, task: MeshPrepareTask) {
         try {
-            mesh(item, runnable)
+            task.thread = Thread.currentThread()
+            mesh(item, task)
         } catch (ignored: InterruptedException) {
             renderer.meshingQueue.queue(item)
         } finally {
-            task.runnable.interruptable = false
+            task.thread = null
+            task.interruptible = false
             Thread.interrupted() // clear interrupted flag
             renderer.meshingQueue.tasks -= task
             renderer.meshingQueue.work()

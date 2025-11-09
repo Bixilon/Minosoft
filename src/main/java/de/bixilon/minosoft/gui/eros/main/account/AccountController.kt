@@ -17,7 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -117,7 +117,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val profile = ErosProfileManager.selected.general.accountProfile
         if (account.state == AccountStates.WORKING) {
             onSuccess?.let {
-                DefaultThreadPool += ForcePooledRunnable {
+                DefaultThreadPool += ThreadPoolRunnable(forcePool = true) {
                     it(account)
                 }
             }
@@ -134,7 +134,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val latch = CallbackLatch(2)
         val dialog = CheckingDialog(latch)
         dialog.show()
-        DefaultIOPool += ForcePooledRunnable {
+        DefaultIOPool += ThreadPoolRunnable(forcePool = true) {
             latch.dec()
             try {
                 account.tryCheck(latch) // ToDo: Show error

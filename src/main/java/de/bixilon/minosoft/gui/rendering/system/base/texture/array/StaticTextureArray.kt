@@ -17,8 +17,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -62,7 +61,7 @@ abstract class StaticTextureArray(
         other += texture
         lock.unlock()
         if (texture.state != TextureStates.LOADED && async) {
-            DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
+            DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { texture.load(context) }
         }
     }
 
@@ -75,7 +74,7 @@ abstract class StaticTextureArray(
         named[name] = texture
         lock.unlock()
         if (async) {
-            DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
+            DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { texture.load(context) }
         }
 
         return texture
@@ -89,7 +88,7 @@ abstract class StaticTextureArray(
             if (texture.state != TextureStates.DECLARED) continue
 
             latch.inc()
-            DefaultThreadPool += SimplePoolRunnable(ThreadPool.Priorities.HIGH) { texture.load(context); latch.dec() }
+            DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGH) { texture.load(context); latch.dec() }
         }
     }
 

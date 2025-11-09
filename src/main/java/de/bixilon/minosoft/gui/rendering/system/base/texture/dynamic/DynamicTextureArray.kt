@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
@@ -104,7 +104,7 @@ abstract class DynamicTextureArray(
         texture.state = DynamicTextureState.LOADING
 
         if (async) {
-            DefaultIOPool += ForcePooledRunnable { texture.load(index, creator) }
+            DefaultIOPool += ThreadPoolRunnable(forcePool = true) { texture.load(index, creator) }
         } else {
             texture.load(index, creator)
         }

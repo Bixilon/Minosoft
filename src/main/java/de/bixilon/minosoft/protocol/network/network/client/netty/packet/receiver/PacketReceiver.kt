@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.packet.receive
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
@@ -76,7 +76,7 @@ class PacketReceiver(
 
     private fun tryHandle2(type: PacketType, packet: S2CPacket) {
         if (type.handleAsync()) {
-            DefaultThreadPool += ForcePooledRunnable(priority = if (type.lowPriority) ThreadPool.Priorities.NORMAL else ThreadPool.Priorities.HIGH) { tryHandle(type, packet) }
+            DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (type.lowPriority) ThreadPool.Priorities.NORMAL else ThreadPool.Priorities.HIGH) { tryHandle(type, packet) }
         } else {
             tryHandle(type, packet)
         }

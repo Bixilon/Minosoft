@@ -33,8 +33,6 @@ class MeshPrepareTaskManager(
         lock.lock()
         tasks += task
         lock.unlock()
-
-        DefaultThreadPool += task.runnable
     }
 
     operator fun plusAssign(task: MeshPrepareTask) = add(task)
@@ -50,7 +48,7 @@ class MeshPrepareTaskManager(
     fun interruptAll() {
         lock.acquire()
         for (task in tasks) {
-            task.runnable.interrupt()
+            task.interrupt()
         }
         lock.release()
     }
@@ -59,7 +57,7 @@ class MeshPrepareTaskManager(
         lock.acquire()
         for (task in tasks) {
             if (task.position.chunkPosition == position) {
-                task.runnable.interrupt()
+                task.interrupt()
             }
         }
         lock.release()
@@ -69,7 +67,7 @@ class MeshPrepareTaskManager(
         lock.acquire()
         for (task in tasks) {
             if (task.position == position) {
-                task.runnable.interrupt()
+                task.interrupt()
             }
         }
         lock.release()
@@ -80,7 +78,7 @@ class MeshPrepareTaskManager(
         lock.acquire()
         for (task in tasks) {
             if (!renderer.visibility.isChunkVisible(task.position.chunkPosition)) {
-                task.runnable.interrupt()
+                task.interrupt()
             }
         }
         lock.release()

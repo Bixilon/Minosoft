@@ -17,9 +17,10 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
-import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.concurrent.worker.task.TaskWorker
-import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.worker.tree.TaskTreeBuilder
+import de.bixilon.kutil.concurrent.worker.tree.TreeTask
+import de.bixilon.kutil.concurrent.worker.tree.TreeWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -68,9 +69,9 @@ object Minosoft {
 
     private fun preBoot(args: Array<String>) {
         val assets = SimpleLatch(1)
-        DefaultThreadPool += ForcePooledRunnable { IntegratedAssets.DEFAULT.load(); assets.dec() }
-        DefaultThreadPool += ForcePooledRunnable { Jackson.init(); MinosoftPropertiesLoader.init() }
-        DefaultThreadPool += ForcePooledRunnable { KUtil.initBootClasses() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { IntegratedAssets.DEFAULT.load(); assets.dec() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { Jackson.init(); MinosoftPropertiesLoader.init() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { KUtil.initBootClasses() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "We are running on ${PlatformInfo.OS.name.lowercase()} with an ${PlatformInfo.ARCHITECTURE.name.lowercase()} cpu. Java version is ${Runtime.version()}!" }
@@ -81,7 +82,7 @@ object Minosoft {
 
         val latch = SimpleLatch(1)
         assets.await()
-        DefaultThreadPool += ForcePooledRunnable { MinosoftPropertiesLoader.load(); latch.dec() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { MinosoftPropertiesLoader.load(); latch.dec() }
 
         KUtil.init()
 
@@ -95,21 +96,27 @@ object Minosoft {
     }
 
     private fun boot() {
-        val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() }, forcePool = true)
+        val builder = TaskTreeBuilder()
 
-        MinosoftBoot.register(taskWorker)
+        MinosoftBoot.register(builder)
 
-        taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
+        builder += TreeTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
 
         if (!ErosOptions.disabled) {
-            javafx(taskWorker)
+            javafx(builder)
         }
         if (ErosOptions.disabled && !RenderingOptions.disabled) {
             // eros is disabled, but rendering not, force initialize the desktop, because eros won't
             DefaultThreadPool += { SystemUtil.api = DesktopAPI() }
         }
 
-        taskWorker.work(MinosoftBoot.LATCH)
+        try {
+            TreeWorker(builder.build(), forcePool = true).work(MinosoftBoot.LATCH)
+        } catch (error: Throwable) {
+            error.printStackTrace()
+            error.crash()
+        }
+
         MinosoftBoot.LATCH.dec() // initial count
         MinosoftBoot.LATCH.await()
     }
@@ -129,19 +136,19 @@ object Minosoft {
         CommandLineArguments.connect.connect()
     }
 
-    private fun javafx(taskWorker: TaskWorker) {
-        taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.Priorities.HIGHER) { javafx.scene.text.Font.getDefault() } })
+    private fun javafx(taskWorker: TaskTreeBuilder) {
+        taskWorker += TreeTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.Priorities.HIGHER) { javafx.scene.text.Font.getDefault() } })
 
-        taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(MinosoftBoot.LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
-        taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
+        taskWorker += TreeTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(MinosoftBoot.LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
+        taskWorker += TreeTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
 
-        DefaultThreadPool += ForcePooledRunnable { Eros::class.java.forceInit() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { Eros::class.java.forceInit() }
     }
 
     private fun initLog() {
-        DefaultThreadPool += ForcePooledRunnable { Log.init() }
-        DefaultThreadPool += ForcePooledRunnable { FormattingCodes }
-        DefaultThreadPool += ForcePooledRunnable { ChatColors }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { Log.init() }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { FormattingCodes }
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { ChatColors }
     }
 
     @JvmStatic
@@ -191,10 +198,10 @@ object Minosoft {
         if (MinosoftUpdater.disabled) return
         if (!MinosoftProperties.canUpdate()) return
         if (!OtherProfileManager.selected.updater.check) return
-        DefaultIOPool += ForcePooledRunnable(priority = ThreadPool.Priorities.LOW) {
+        DefaultIOPool += ThreadPoolRunnable(forcePool = true, priority = ThreadPool.Priorities.LOW) {
             enableUpdates()
-            if (!OtherProfileManager.selected.updater.check) return@ForcePooledRunnable
-            val update = MinosoftUpdater.check() ?: return@ForcePooledRunnable
+            if (!OtherProfileManager.selected.updater.check) return@ThreadPoolRunnable
+            val update = MinosoftUpdater.check() ?: return@ThreadPoolRunnable
             Log.log(LogMessageType.OTHER, LogLevels.INFO) { "A new update is available: ${update.name} (${update.id}). Type \"update\" or click in the gui to update." }
         }
     }

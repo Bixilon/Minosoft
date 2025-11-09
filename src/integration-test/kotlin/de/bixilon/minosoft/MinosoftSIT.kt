@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft
 
-import de.bixilon.kutil.concurrent.worker.task.TaskWorker
+import de.bixilon.kutil.concurrent.worker.tree.TaskTreeBuilder
+import de.bixilon.kutil.concurrent.worker.tree.TreeWorker
 import de.bixilon.kutil.environment.Environment
 import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.file.PathUtil.toPath
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.profile.ProfileOptions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlOptions
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.main.BootTasks
@@ -59,14 +59,14 @@ internal object MinosoftSIT {
     }
 
     private fun boot() {
-        val worker = TaskWorker()
-        MinosoftBoot.register(worker)
-        worker -= BootTasks.PROFILES
-        worker -= BootTasks.LAN_SERVERS
-        worker -= BootTasks.MODS
-        worker -= BootTasks.CLI
+        val builder = TaskTreeBuilder()
+        MinosoftBoot.register(builder)
+        builder -= BootTasks.PROFILES
+        builder -= BootTasks.LAN_SERVERS
+        builder -= BootTasks.MODS
+        builder -= BootTasks.CLI
 
-        worker.work(MinosoftBoot.LATCH)
+        TreeWorker(builder.build()).work(MinosoftBoot.LATCH)
 
         MinosoftBoot.LATCH.dec()
         MinosoftBoot.LATCH.await()
