@@ -54,9 +54,13 @@ class ChunkLight(
 
         fireLightChange(section, ChunkLightUpdate.Causes.BLOCK_CHANGE)
 
-        for (height in minOf(previousHeight, nextHeight).sectionHeight..maxOf(previousHeight, nextHeight).sectionHeight) {
+        // TODO: cache highest/lowest section
+        val min = maxOf(minOf(previousHeight, nextHeight).sectionHeight, minSection)
+        val max = minOf(maxOf(previousHeight, nextHeight).sectionHeight, maxSection)
+
+        for (height in min..max) {
             val section = chunk.sections[height] ?: continue
-            fireLightChange(section, ChunkLightUpdate.Causes.PROPAGATION)
+            fireLightChange(section, ChunkLightUpdate.Causes.HEIGHTMAP)
         }
     }
 

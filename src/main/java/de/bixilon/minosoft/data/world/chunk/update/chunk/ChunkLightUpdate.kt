@@ -28,6 +28,7 @@ data class ChunkLightUpdate(
         RECALCULATE,
         BLOCK_CHANGE,
         PROPAGATION,
+        HEIGHTMAP,
         ;
     }
 }
