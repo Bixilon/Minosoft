@@ -69,7 +69,7 @@ class RenderLoop(
         lastFrame = time
 
         context.profiler.profile("input") { context.input.draw(delta) }
-        context.camera.draw()
+        context.profiler.profile("camera") { context.camera.draw() }
 
         context.profiler.profile("light") {
             context.light.updateAsync() // ToDo: do async

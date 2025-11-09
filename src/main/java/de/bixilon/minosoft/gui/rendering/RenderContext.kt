@@ -72,7 +72,7 @@ class RenderContext(
 
     var state by observed(RenderingStates.LOADING)
 
-    var profiler = Profiler()
+    var profiler = Profiler() // TODO: kutil 1.30 stacked profiler
 
     init {
         profile.experimental::fps.observe(this, true) { renderStats = if (it) ExperimentalRenderStats() else RenderStats() }

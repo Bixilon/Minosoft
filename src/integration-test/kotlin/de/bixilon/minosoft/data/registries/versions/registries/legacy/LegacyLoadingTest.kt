@@ -26,7 +26,7 @@ abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version)
 
     @Test(priority = 100000)
     open fun loadRegistries() {
-        this._registries = ITUtil.loadPreFlatteningData(version)
+        this._registries = ITUtil.loadRegistries(version)
     }
 
     fun dimension() {

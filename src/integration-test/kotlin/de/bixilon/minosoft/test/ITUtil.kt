@@ -28,7 +28,7 @@ object ITUtil {
     private val objenesis = ObjenesisStd()
 
 
-    fun loadPixlyzerData(version: Version): Registries {
+    private fun loadPixlyzerData(version: Version): Registries {
         val registries = Registries(false, version)
 
         val data = PixLyzerUtil.load(profile, version)
@@ -38,7 +38,7 @@ object ITUtil {
         return registries
     }
 
-    fun loadPreFlatteningData(version: Version): Registries {
+    private fun loadPreFlatteningData(version: Version): Registries {
         return PreFlattening.loadRegistry(profile, version, SimpleLatch(0))
     }
 

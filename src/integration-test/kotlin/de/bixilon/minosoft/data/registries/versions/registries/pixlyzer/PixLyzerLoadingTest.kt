@@ -24,7 +24,7 @@ abstract class PixLyzerLoadingTest(version: String) : RegistryLoadingTest(versio
 
     @Test(priority = 100000)
     open fun loadRegistries() {
-        this._registries = ITUtil.loadPixlyzerData(version)
+        this._registries = ITUtil.loadRegistries(version)
     }
 
     fun `blocks integrated`() {
