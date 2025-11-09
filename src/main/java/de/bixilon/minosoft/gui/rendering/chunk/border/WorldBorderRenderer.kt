@@ -104,7 +104,6 @@ class WorldBorderRenderer(
         val offset = context.camera.offset.offset
 
         val mesh = WorldBorderMeshBuilder(context, offset, center, radius)
-        mesh.build()
 
         this.mesh = mesh.bake()
         this.reload = false
@@ -139,7 +138,7 @@ class WorldBorderRenderer(
         val GROWING_COLOR = "#40FF80".rgba()
         val SHRINKING_COLOR = "#FF3030".rgba()
         val STATIC_COLOR = "#20A0FF".rgba()
-        val ANIMATION_SPEED = 2.seconds
+        val ANIMATION_SPEED = 5.seconds
         const val MAX_DISTANCE = 100.0f
 
         private val TEXTURE = minecraft("misc/forcefield").texture()

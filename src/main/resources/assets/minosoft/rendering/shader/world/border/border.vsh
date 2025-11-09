@@ -25,8 +25,8 @@ uniform vec3 uCameraPosition;
 
 out vec3 finFragmentPosition; // fog
 
-#define DENSITY 2.0f
-#define HEIGHT 150.0f
+#define DENSITY 1.0f
+#define HEIGHT 300.0f
 
 #include "minosoft:uv"
 #include "minosoft:color"
@@ -36,16 +36,17 @@ out vec3 finFragmentPosition; // fog
 void main() {
     vec3 position = vinPosition;
     if (position.y < 0.0f) {
-        position.y = uCameraPosition.y - HEIGHT;
+        position.y = uCameraPosition.y - (HEIGHT / 2.0f);
     } else if (position.y > 0.0f) {
-        position.y = uCameraPosition.y + HEIGHT;
+        position.y = uCameraPosition.y + (HEIGHT / 2.0f);
     }
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
 
 
     vec2 uv = CONST_UV[floatBitsToUint(vinUVIndex)];
-    uv.x *= (vinWidth / DENSITY); // TODO: insert width
-    uv.y *= (HEIGHT / DENSITY);
+
+    uv.x *= vinWidth / DENSITY;
+    uv.y *= vinWidth * (HEIGHT / vinWidth) / 2 / DENSITY;
 
     uv.x += uTextureOffset; uv.y += uTextureOffset;
 

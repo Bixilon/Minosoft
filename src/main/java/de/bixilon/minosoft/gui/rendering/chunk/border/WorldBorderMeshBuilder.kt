@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.border
 
 import de.bixilon.kmath.vec.vec2.d.Vec2d
-import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.border.WorldBorder
@@ -22,7 +21,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
@@ -33,73 +31,49 @@ class WorldBorderMeshBuilder(
     val radius: Double,
 ) : QuadMeshBuilder(context, WorldBorderMeshStruct, 4) {
 
-    private fun width(): Float {
-        return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
-    }
+    init {
+        val radius = minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
 
-    private fun positions(width: Float, center: Double): Array<Vec2f> {
-        val left = (center - width).toFloat()
-        val right = (center + width).toFloat()
+        val x1 = (maxOf(-WorldBorder.MAX_RADIUS, center.x - radius) - offset.x).toFloat()
+        val y1 = (maxOf(-WorldBorder.MAX_RADIUS, center.y - radius) - offset.z).toFloat()
 
-        return arrayOf(
-            Vec2f(left, -1.0f),
-            Vec2f(left, +1.0f),
-            Vec2f(right, +1.0f),
-            Vec2f(right, -1.0f),
-        )
-    }
+        val x2 = (minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat()
+        val y2 = (minOf(WorldBorder.MAX_RADIUS, center.y + radius) - offset.z).toFloat()
 
-    private fun textureIndex(index: Int) = when (index) {
-        1 -> 2
-        2 -> 1
-        3 -> 0
-        else -> 3
-    }
+        // north
+        addVertex(x1, -1.0f, y1, 2, radius)
+        addVertex(x1, +1.0f, y1, 3, radius)
+        addVertex(x2, +1.0f, y1, 0, radius)
+        addVertex(x2, -1.0f, y1, 1, radius)
+        addIndexQuad()
 
-    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
-        iterate {  // TODO: verify render order
-            val (z, y) = positions[it]
-            val texture = if (rotated) textureIndex(it + 1) else it + 1
-            addVertex(x, y, z, textureIndex(texture), width)
-        }
+        // south
+        addVertex(x2, -1.0f, y2, 2, radius)
+        addVertex(x2, +1.0f, y2, 3, radius)
+        addVertex(x1, +1.0f, y2, 0, radius)
+        addVertex(x1, -1.0f, y2, 1, radius)
+        addIndexQuad()
+
+        // west
+        addVertex(x1, -1.0f, y2, 2, radius)
+        addVertex(x1, +1.0f, y2, 3, radius)
+        addVertex(x1, +1.0f, y1, 0, radius)
+        addVertex(x1, -1.0f, y1, 1, radius)
+        addIndexQuad()
+
+        // east
+        addVertex(x2, -1.0f, y1, 2, radius)
+        addVertex(x2, +1.0f, y1, 3, radius)
+        addVertex(x2, +1.0f, y2, 0, radius)
+        addVertex(x2, -1.0f, y2, 1, radius)
         addIndexQuad()
     }
 
-    private fun x(width: Float) {
-        val positions = positions(width, center.y)
-        addVertexX((maxOf(-WorldBorder.MAX_RADIUS, center.x - radius) - offset.x).toFloat(), width, positions, false)
-        addVertexX((minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat(), width, positions, true)
-    }
-
-    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2f>, rotated: Boolean) {
-        iterate { // TODO: verify render order
-            val (x, y) = positions[it]
-            val texture = if (rotated) textureIndex(it + 1) else it + 1
-            addVertex(x, y, z, textureIndex(texture), width)
-        }
-        addIndexQuad()
-    }
-
-    private fun z(width: Float) {
-        val positions = positions(width, center.x)
-
-        addVertexZ((maxOf(-WorldBorder.MAX_RADIUS, center.y - radius) - offset.z).toFloat(), width, positions, true)
-        addVertexZ((minOf(WorldBorder.MAX_RADIUS, center.y + radius) - offset.z).toFloat(), width, positions, false)
-    }
-
-    fun build() {
-        val width = width()
-        x(width)
-        z(width)
-    }
-
-    private fun addVertex(x: Float, y: Float, z: Float, uvIndex: Int, width: Float) {
-        data.add(
-            x, y, z,
-            uvIndex.buffer(),
-            width,
-        )
-    }
+    private fun addVertex(x: Float, y: Float, z: Float, uvIndex: Int, width: Float) = data.add(
+        x, y, z,
+        uvIndex.buffer(),
+        width,
+    )
 
     override fun bake() = WorldBorderMesh(offset, center, radius, createVertexBuffer())
 
