@@ -109,4 +109,14 @@ class ChunkSectionManagementTest {
         assertSame(below.neighbours[Directions.O_UP], above)
         assertSame(above.neighbours[Directions.O_DOWN], below)
     }
+
+    fun `correct lowest and highest section set`() {
+        val sections = create()
+
+        sections.create(2)!!
+        sections.create(3)!!
+
+        assertEquals(sections.lowest, 2)
+        assertEquals(sections.highest, 3)
+    }
 }
