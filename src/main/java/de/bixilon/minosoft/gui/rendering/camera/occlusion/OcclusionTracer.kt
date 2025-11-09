@@ -52,6 +52,22 @@ class OcclusionTracer(
         return true
     }
 
+    private fun getLowestHeight(chunk: Chunk) = OcclusionUtil.minOf(
+        chunk.sections.lowest,
+        chunk.neighbours[Directions.NORTH]?.sections?.lowest,
+        chunk.neighbours[Directions.SOUTH]?.sections?.lowest,
+        chunk.neighbours[Directions.WEST]?.sections?.lowest,
+        chunk.neighbours[Directions.EAST]?.sections?.lowest,
+    )
+
+    private fun getHighestHeight(chunk: Chunk) = OcclusionUtil.maxOf(
+        chunk.sections.highest,
+        chunk.neighbours[Directions.NORTH]?.sections?.highest,
+        chunk.neighbours[Directions.SOUTH]?.sections?.highest,
+        chunk.neighbours[Directions.WEST]?.sections?.highest,
+        chunk.neighbours[Directions.EAST]?.sections?.highest,
+    )
+
     private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions, vector: SVec3i) {
         // TODO: keep track of direction and don't allow going of the axis too far (we can not bend our look direction). This will hide caves and reveans too if they are occluded
         if (!isInViewDistance(chunk)) return
@@ -61,6 +77,11 @@ class OcclusionTracer(
 
         if (position in skip) return
         if (position in paths[direction.axis.ordinal]) return // path from same source direction already taken
+
+        if (getLowestHeight(chunk) > height || getHighestHeight(chunk) > height) {
+            skip += position
+            return
+        }
 
         val section = chunk[height]
         if (!frustum.containsChunkSection(position)) {
