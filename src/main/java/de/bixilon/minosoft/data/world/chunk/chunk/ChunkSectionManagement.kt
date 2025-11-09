@@ -39,8 +39,8 @@ class ChunkSectionManagement(val chunk: Chunk) {
         val section = ChunkSection(height, chunk = chunk)
         sections[index] = section
 
-        if (lowest > height) lowest = height
-        if (highest > height) highest = height
+        if (height < lowest) lowest = height
+        if (height > highest) highest = height
 
         chunk.neighbours.updateNeighbours(section)
         chunk.neighbours.updateNeighbourNeighbours(section.height, section)
