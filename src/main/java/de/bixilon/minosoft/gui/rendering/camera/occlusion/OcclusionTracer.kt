@@ -39,7 +39,8 @@ class OcclusionTracer(
     private val minSection = dimension.minSection - 1
     private val maxSection = dimension.maxSection + 1
 
-    private val skip = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) // TODO: reuse
+    // TODO: reuse those (reduce allocations)
+    private val culled = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
     private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
     private val paths = Array(Axes.VALUES.size) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
 
@@ -59,21 +60,19 @@ class OcclusionTracer(
 
         val position = SectionPosition.of(chunk.position, height)
 
-        if (position in skip) return
+        if (position in culled) return
         if (position in paths[direction.axis.ordinal]) return // path from same source direction already taken
 
-        val section = chunk[height]
-        if (!frustum.containsChunkSection(position)) {
-            skip += position
+        if (position !in visible && position !in frustum) {
+            culled += position
             return
         }
         paths[direction.axis.ordinal] += position
         visible += position
 
-
         val inverted = direction.inverted
         val neighbours = chunk.neighbours
-        val occlusion = section?.blocks?.occlusion // TODO: empty section bypass?
+        val occlusion = chunk[height]?.blocks?.occlusion // TODO: empty section bypass?
 
 
         if (vector.x <= 0) trace(occlusion, neighbours, height, inverted, Directions.WEST, vector)
