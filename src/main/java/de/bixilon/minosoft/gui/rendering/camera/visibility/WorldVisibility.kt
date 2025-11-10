@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumCulling
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 
 class WorldVisibility(
@@ -54,7 +54,7 @@ class WorldVisibility(
     }
 
     fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section.chunk.position, section.height), section.blocks.minPosition, section.blocks.maxPosition)
-    fun isSectionVisible(position: SectionPosition, minPosition: InSectionPosition = Frustum.SECTION_MIN_POSITION, maxPosition: InSectionPosition = Frustum.SECTION_MIN_POSITION): Boolean {
+    fun isSectionVisible(position: SectionPosition, minPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, maxPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION): Boolean {
         if (!isInViewDistance(position.chunkPosition)) return false
         if (!camera.frustum.containsChunkSection(position, minPosition, maxPosition)) return false
 

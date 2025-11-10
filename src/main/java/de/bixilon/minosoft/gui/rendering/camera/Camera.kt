@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
-import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumCulling
 import de.bixilon.minosoft.gui.rendering.camera.occlusion.WorldOcclusionManager
 import de.bixilon.minosoft.gui.rendering.camera.view.ViewManager
 import de.bixilon.minosoft.gui.rendering.camera.visibility.WorldVisibility
@@ -31,7 +31,7 @@ class Camera(
     val fog = FogManager(context)
     val matrix = MatrixHandler(context, this)
 
-    val frustum = Frustum(this, matrix, context.session.world)
+    val frustum = FrustumCulling(this, matrix, context.session.world)
     val occlusion = WorldOcclusionManager(context, this)
     val visibility = WorldVisibility(this)
 

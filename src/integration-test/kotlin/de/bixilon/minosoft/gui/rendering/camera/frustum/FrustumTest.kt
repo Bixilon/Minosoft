@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.kmath.mat.mat4.f.UnsafeMat4f
+import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -30,19 +29,19 @@ import org.testng.annotations.Test
 
 @Test(groups = ["frustum", "rendering"])
 class FrustumTest {
-    private val CAMERA by lazy { Frustum::class.java.getFieldOrNull("camera")!! }
-    private val RECALCULATE by lazy { Frustum::class.java.declaredMethods.find { it.name.startsWith("recalculate") && it.parameterCount == 1 && it.parameterTypes[0] == UnsafeMat4f::class.java }!!.apply { setUnsafeAccessible() } }
+    private val CAMERA by lazy { FrustumCulling::class.java.getFieldOrNull("camera")!! }
+    private val FRUSTUM by lazy { FrustumCulling::class.java.getFieldOrNull("frustum")!! }
 
-    private fun create(matrix: Mat4f, offset: BlockPosition = BlockPosition.EMPTY): Frustum {
+    private fun create(matrix: Mat4f, offset: BlockPosition = BlockPosition.EMPTY): FrustumCulling {
         val worldOffset = WorldOffset::class.java.allocate()
         worldOffset::offset.forceSet(DataObserver(offset))
 
         val camera = Camera::class.java.allocate()
         camera::offset.forceSet(worldOffset)
 
-        val frustum = Frustum::class.java.allocate()
+        val frustum = FrustumCulling::class.java.allocate()
         CAMERA[frustum] = camera
-        RECALCULATE.invoke(frustum, matrix.transpose()._0)
+        FRUSTUM[frustum] = Frustum1.calculate(matrix)
 
         return frustum
     }
@@ -96,6 +95,28 @@ class FrustumTest {
         assertFalse(AABB(12377.953316849576, 90.0, -1837647.0120724367, 12378.203316849576, 90.25, -1837646.7620724367) in frustum)
         assertFalse(AABB(12379.90899152872, 98.0, -1837647.6819665642, 12380.15899152872, 98.25, -1837647.4319665642) in frustum)
         assertFalse(AABB(12379.90899152872, 980.0, -1837647.6819665642, 12380.15899152872, 980.25, -1837647.4319665642) in frustum)
+    }
+
+    @Test(enabled = false)
+    fun benchmark() {
+        val frustum = create(Mat4f(-0.50417376f, 1.1785046f, 0.0014267226f, 0.0014266947f, 0.0f, 0.0024691392f, -1.0000181f, -0.99999857f, 0.7365663f, 0.80667686f, 9.765802E-4f, 9.765611E-4f, 482.31094f, 369.0533f, 91.83938f, 91.85758f).transpose(), BlockPosition(12288, 0, -1837056))
+
+        BenchmarkUtil.benchmark(iterations = 10000000) {
+            assertTrue(AABB(12381.468664298143, 75.0, -1837647.3519469386, 12381.718664298143, 75.25, -1837647.1019469386) in frustum)
+            assertTrue(AABB(12392.072452953968, 77.0, -1837649.209980461, 12392.322452953968, 77.25, -1837648.959980461) in frustum)
+            assertTrue(AABB(12378.786446140077, 90.0, -1837647.5059374704, 12379.036446140077, 90.25, -1837647.2559374704) in frustum)
+            assertTrue(AABB(12373.378926686006, 75.0, -1837657.9311021646, 12373.628926686006, 75.25, -1837657.6811021646) in frustum)
+            assertTrue(AABB(12362.253648637714, 73.0, -1837642.526695204, 12362.503648637714, 73.25, -1837642.276695204) in frustum)
+            assertTrue(AABB(12377.927700770964, 72.0, -1837625.270155985, 12378.177700770964, 72.25, -1837625.020155985) in frustum)
+
+            assertFalse(AABB(12375.81703836898, 71.0, -1837622.0629902035, 12376.06703836898, 71.25, -1837621.8129902035) in frustum)
+            assertFalse(AABB(12386.114232198135, 72.0, -1837629.4777019175, 12386.364232198135, 72.25, -1837629.2277019175) in frustum)
+            assertFalse(AABB(12394.104957870117, 78.0, -1837650.8539772641, 12394.354957870117, 78.25, -1837650.6039772641) in frustum)
+            assertFalse(AABB(12380.219527944339, 80.0, -1837665.479991612, 12380.469527944339, 80.25, -1837665.229991612) in frustum)
+            assertFalse(AABB(12377.953316849576, 90.0, -1837647.0120724367, 12378.203316849576, 90.25, -1837646.7620724367) in frustum)
+            assertFalse(AABB(12379.90899152872, 98.0, -1837647.6819665642, 12380.15899152872, 98.25, -1837647.4319665642) in frustum)
+            assertFalse(AABB(12379.90899152872, 980.0, -1837647.6819665642, 12380.15899152872, 980.25, -1837647.4319665642) in frustum)
+        }.println()
     }
 
     // TODO: test chunk, section (with camera offset)

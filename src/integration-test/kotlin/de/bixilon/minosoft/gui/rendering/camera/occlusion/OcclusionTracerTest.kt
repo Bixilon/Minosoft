@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.WorldOffset
-import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumCulling
 import de.bixilon.minosoft.gui.rendering.camera.occlusion.OcclusionTracer.Companion.calculate
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
 import de.bixilon.minosoft.test.IT
@@ -54,7 +54,7 @@ class OcclusionTracerTest {
         val context = RenderContext::class.java.allocate()
         context::session.forceSet(session)
         camera::context.forceSet(context)
-        camera::frustum.forceSet(Frustum::class.java.allocate().apply { this::class.java.getDeclaredField("camera").field[this] = camera }) // empty frustum, everything always visible
+        camera::frustum.forceSet(FrustumCulling::class.java.allocate().apply { this::class.java.getDeclaredField("camera").field[this] = camera }) // empty frustum, everything always visible
 
         val tracer = OcclusionTracer(SectionPosition(1, 1, 1), dimension, camera, 5)
         tracer.queue.calculate()
