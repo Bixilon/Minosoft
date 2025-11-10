@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.gui.rendering.RenderConstants.FRUSTUM_CULLING_ENABLED
+import de.bixilon.minosoft.gui.rendering.RenderConstants.FRUSTUM_CULLING_SPHERE
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 
@@ -35,6 +37,7 @@ class FrustumCulling(
         private set
 
     fun recalculate() {
+        if (!FRUSTUM_CULLING_ENABLED) return
         frustum = Frustum1.calculate(matrixHandler.viewProjectionMatrix)
         revision++
     }
@@ -42,17 +45,22 @@ class FrustumCulling(
     private fun containsRegion(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
         val frustum = this.frustum ?: return true
 
-        val widthX = (maxX - minX) / 2.0f
-        val widthY = (maxY - minY) / 2.0f
-        val widthZ = (maxZ - minZ) / 2.0f
+        if (FRUSTUM_CULLING_SPHERE) {
+            val widthX = (maxX - minX) / 2.0f
+            val widthY = (maxY - minY) / 2.0f
+            val widthZ = (maxZ - minZ) / 2.0f
 
-        val width = maxOf(widthX, widthY, widthZ) * 1.4142135f // times sqrt(2) to get tge corner too
-
-        return when {
-            !frustum.containsSphere(minX + widthX, minY + widthY, minZ + widthZ, width) -> false
-            !frustum.containsAABB(minX, minY, minZ, maxX, maxY, maxZ) -> false
-            else -> true
+            val width = maxOf(widthX, widthY, widthZ) * 1.4142135f // times sqrt(2) to get tge corner too
+            if (!frustum.containsSphere(minX + widthX, minY + widthY, minZ + widthZ, width)) {
+                return false
+            }
         }
+
+        if (!frustum.containsAABB(minX, minY, minZ, maxX, maxY, maxZ)) {
+            return false
+        }
+
+        return true
     }
 
     fun containsChunkSection(position: SectionPosition, minPosition: InSectionPosition = SECTION_MIN_POSITION, maxPosition: InSectionPosition = SECTION_MAX_POSITION): Boolean {
