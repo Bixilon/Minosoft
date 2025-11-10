@@ -99,7 +99,8 @@ class CulledQueue(
             if (!chunk.neighbours.complete) continue
 
             val heightIterator = sectionHeights.intIterator()
-            for (sectionHeight in heightIterator) {
+            while (heightIterator.hasNext()) {
+                val sectionHeight = heightIterator.nextInt()
                 val section = chunk[sectionHeight] ?: continue
                 if (!renderer.visibility.isSectionVisible(section)) {
                     continue

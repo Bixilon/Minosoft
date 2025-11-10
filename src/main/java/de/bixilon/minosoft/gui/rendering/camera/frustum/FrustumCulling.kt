@@ -14,12 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.primitive.f
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -42,32 +40,36 @@ class FrustumCulling(
     }
 
     private fun containsRegion(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
-        val first = frustum?.containsRegion(minX, minY, minZ, maxX, maxY, maxZ) ?: Frustum.FrustumResult.MAYBE
+        val frustum = this.frustum ?: return true
 
-        return when (first) {
-            Frustum.FrustumResult.INSIDE -> true
-            Frustum.FrustumResult.OUTSIDE -> false
+        val widthX = (maxX - minX) / 2.0f
+        val widthY = (maxY - minY) / 2.0f
+        val widthZ = (maxZ - minZ) / 2.0f
+
+        val width = maxOf(widthX, widthY, widthZ) * 1.4142135f // times sqrt(2) to get tge corner too
+
+        return when {
+            !frustum.containsSphere(minX + widthX, minY + widthY, minZ + widthZ, width) -> false
+            !frustum.containsAABB(minX, minY, minZ, maxX, maxY, maxZ) -> false
             else -> true
         }
     }
 
-    private fun containsRegion(min: Vec3f, max: Vec3f): Boolean {
-        return containsRegion(min.x, min.y, min.z, max.x, max.y, max.z)
-    }
-
-    fun containsChunkSection(section: ChunkSection) = containsChunkSection(SectionPosition.of(section.chunk.position, section.height), section.blocks.minPosition, section.blocks.maxPosition)
-
     fun containsChunkSection(position: SectionPosition, minPosition: InSectionPosition = SECTION_MIN_POSITION, maxPosition: InSectionPosition = SECTION_MAX_POSITION): Boolean {
         val base = BlockPosition.of(position) - camera.offset.offset
-        val min = Vec3f(base + minPosition)
-        val max = Vec3f(base + maxPosition + 1)
-        return containsRegion(min, max)
+
+        val min = base + minPosition
+        val max = base + maxPosition + 1
+        return containsRegion(
+            min.x.f, min.y.f, min.z.f,
+            max.x.f, max.y.f, max.z.f,
+        )
     }
 
-    fun containsChunk(position: ChunkPosition): Boolean {
+    private fun containsChunk(position: ChunkPosition): Boolean {
         val dimension = world.dimension
-
         val offset = camera.offset.offset
+
         val baseX = (position.x * ChunkSize.SECTION_WIDTH_X - offset.x).toFloat()
         val baseZ = (position.z * ChunkSize.SECTION_WIDTH_Z - offset.z).toFloat()
 
@@ -80,13 +82,18 @@ class FrustumCulling(
         )
     }
 
-    fun containsRegion(min: BlockPosition, max: BlockPosition): Boolean {
+    private fun containsRegion(min: BlockPosition, max: BlockPosition): Boolean {
         val offset = camera.offset.offset
-        return containsRegion(Vec3f(min - offset), Vec3f(max - offset))
+
+        return containsRegion(
+            (min.x - offset.x).toFloat(), (min.y - offset.y).toFloat(), (min.z - offset.z).toFloat(),
+            (max.x - offset.x).toFloat(), (max.y - offset.y).toFloat(), (max.z - offset.z).toFloat(),
+        )
     }
 
-    fun containsAABB(aabb: AABB): Boolean {
+    private fun containsAABB(aabb: AABB): Boolean {
         val offset = camera.offset.offset
+
         return containsRegion(
             (aabb.min.x - offset.x).toFloat(), (aabb.min.y - offset.y).toFloat(), (aabb.min.z - offset.z).toFloat(),
             (aabb.max.x - offset.x).toFloat(), (aabb.max.y - offset.y).toFloat(), (aabb.max.z - offset.z).toFloat(),
@@ -94,9 +101,8 @@ class FrustumCulling(
     }
 
     operator fun contains(aabb: AABB) = containsAABB(aabb)
-    operator fun contains(chunk: Chunk) = containsChunk(chunk.position)
     operator fun contains(position: ChunkPosition) = containsChunk(position)
-    operator fun contains(section: ChunkSection) = containsChunkSection(section)
+    operator fun contains(position: SectionPosition) = containsChunkSection(position)
 
     companion object {
         val SECTION_MIN_POSITION = InSectionPosition(0, 0, 0)

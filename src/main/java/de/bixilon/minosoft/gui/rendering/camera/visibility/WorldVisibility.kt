@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.visibility
 
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -42,23 +42,28 @@ class WorldVisibility(
             return true
         }
 
-        return true
+        return false
     }
 
-    fun isAABBVisible(aabb: AABB): Boolean {
-        // TODO: is occlusion checking cheaper?
-        if (aabb !in camera.frustum) return false
-        if (camera.occlusion.isAABBOccluded(aabb)) return false
+    fun isChunkVisible(chunk: Chunk): Boolean {
+        if (!isInViewDistance(chunk.position)) return false
+        if (chunk.position !in camera.frustum) return false
 
-        return true
+
+        for (height in chunk.sections.lowest..chunk.sections.highest) {
+            if (camera.occlusion.isSectionOccluded(chunk.position.sectionPosition(height))) continue
+            return true
+        }
+
+        return false
     }
 
     fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section.chunk.position, section.height), section.blocks.minPosition, section.blocks.maxPosition)
-    fun isSectionVisible(position: SectionPosition, minPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, maxPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION): Boolean {
-        if (!isInViewDistance(position.chunkPosition)) return false
-        if (!camera.frustum.containsChunkSection(position, minPosition, maxPosition)) return false
 
-
-        return !camera.occlusion.isSectionOccluded(position)
+    fun isSectionVisible(position: SectionPosition, minPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, maxPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION) = when {
+        !isInViewDistance(position.chunkPosition) -> false
+        camera.occlusion.isSectionOccluded(position) -> false
+        !camera.frustum.containsChunkSection(position, minPosition, maxPosition) -> false
+        else -> true
     }
 }

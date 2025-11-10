@@ -15,12 +15,6 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 interface Frustum {
 
-    fun containsRegion(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): FrustumResult
-
-    enum class FrustumResult {
-        INSIDE,
-        OUTSIDE,
-        MAYBE,
-        ;
-    }
+    fun containsSphere(x: Float, y: Float, z: Float, radius: Float): Boolean
+    fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean
 }
