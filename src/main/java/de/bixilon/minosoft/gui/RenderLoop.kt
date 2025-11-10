@@ -119,6 +119,7 @@ class RenderLoop(
 
 
         context.profiler?.let {
+            context.profiler = null
             val segment = it.finish()
             if (segment.duration > 20.milliseconds) {
                 FileOutputStream("minosoft.perf").use { it.write(segment.toPerf().toByteArray()) }
