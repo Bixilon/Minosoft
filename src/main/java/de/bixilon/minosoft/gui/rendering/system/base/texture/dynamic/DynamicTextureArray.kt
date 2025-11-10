@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
@@ -147,7 +148,7 @@ abstract class DynamicTextureArray(
         this.textures = textures
 
         this.reload = true
-        context.queue += { context.profiler.profile("dynamic textures") { reload() } }
+        context.queue += { context.profiler("dynamic textures") { reload() } }
         lock.unlock()
     }
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline
 
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
@@ -73,12 +74,12 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
 
     override fun draw() {
-        renderer.context.profiler.profile("world") { world.draw() }
-        renderer.context.profiler.profile("other") { drawOther() }
+        renderer.context.profiler("world") { world.draw() }
+        renderer.context.profiler("other") { drawOther() }
 
-        renderer.context.profiler.profile("pre") { drawPre() }
-        renderer.context.profiler.profile("framebuffer") { framebuffer.draw() }
-        renderer.context.profiler.profile("post") { drawPost() }
+        renderer.context.profiler("pre") { drawPre() }
+        renderer.context.profiler("framebuffer") { framebuffer.draw() }
+        renderer.context.profiler("post") { drawPost() }
     }
 
     operator fun plusAssign(renderer: Renderer) {

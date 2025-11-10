@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
@@ -99,7 +100,7 @@ class RendererManager(
 
         for (renderer in list) {
             val name = renderer::class.java.realName
-            context.profiler.profile("prepare $name") { renderer.prePrepareDraw() }
+            context.profiler("prepare $name") { renderer.prePrepareDraw() }
             if (renderer is AsyncRenderer) {
                 context.runAsync { renderer.prepareDrawAsync(); queue += renderer }
             } else {
@@ -110,16 +111,16 @@ class RendererManager(
         var done = 0
         while (true) {
             if (done >= total) break
-            val renderer = context.profiler.profile("wait") { queue.take() }
+            val renderer = context.profiler("wait") { queue.take() }
             val name = renderer::class.java.realName
-            context.profiler.profile("post $name") { renderer.postPrepareDraw() }
+            context.profiler("post $name") { renderer.postPrepareDraw() }
             done++
         }
     }
 
     override fun draw() {
-        context.profiler.profile("prepare") { prepare() }
-        context.profiler.profile("draw") { pipeline.draw() }
+        context.profiler("prepare") { prepare() }
+        context.profiler("draw") { pipeline.draw() }
     }
 
     override fun iterator(): Iterator<Renderer> {

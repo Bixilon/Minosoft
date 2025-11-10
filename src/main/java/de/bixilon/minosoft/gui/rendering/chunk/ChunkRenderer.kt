@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -211,8 +212,8 @@ class ChunkRenderer(
             clearVisibleNextFrame = false
         }
 
-        context.profiler.profile("unloading") { unloadingQueue.work() }
-        context.profiler.profile("loading") { loadingQueue.work() }
+        context.profiler("unloading") { unloadingQueue.work() }
+        context.profiler("loading") { loadingQueue.work() }
     }
 
     private fun drawBlocksOpaque() {

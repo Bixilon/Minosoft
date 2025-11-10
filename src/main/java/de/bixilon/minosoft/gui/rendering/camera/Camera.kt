@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -47,16 +48,16 @@ class Camera(
 
     fun draw() {
         val entity = context.session.camera.entity
-        context.profiler.profile("tick") { (entity.attachment.getRootVehicle() ?: entity).tryTick() } // TODO
+        context.profiler("tick") { (entity.attachment.getRootVehicle() ?: entity).tryTick() } // TODO
         if (entity is LocalPlayerEntity) {
-            context.profiler.profile("draw") { entity._draw(now()) } // TODO: force draw if entity is camera entity?
+            context.profiler("draw") { entity._draw(now()) } // TODO: force draw if entity is camera entity?
         }
         view.draw()
         matrix.draw()
         val latch = SimpleLatch(2)
-        context.profiler.profile("occlusion") { context.runAsync { occlusion.draw(); latch.dec() } }
-        context.profiler.profile("target") { context.runAsync { context.session.camera.target.update(); latch.dec() } }
+        context.profiler("occlusion") { context.runAsync { occlusion.draw(); latch.dec() } }
+        context.profiler("target") { context.runAsync { context.session.camera.target.update(); latch.dec() } }
         fog.draw()
-        context.profiler.profile("await") { latch.await() }
+        context.profiler("await") { latch.await() }
     }
 }

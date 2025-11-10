@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.profiler.stack.StackedProfiler
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.time.TimeUtil.sleep
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -53,12 +54,12 @@ class RenderLoop(
             context.window.pollEvents()
         }
 
-        context.profiler = StackedProfiler()
+        context.profiler = if (RenderingOptions.profileFrames) StackedProfiler() else null
         context.renderStats.startFrame()
 
-        context.profiler.profile("window poll events") { context.window.pollEvents() }
+        context.profiler("window poll events") { context.window.pollEvents() }
 
-        context.profiler.profile("framebuffer update") {
+        context.profiler("framebuffer update") {
             context.framebuffer.update()
             context.framebuffer.clear()
             context.system.framebuffer = null
@@ -70,31 +71,31 @@ class RenderLoop(
         val delta = time - lastFrame
         lastFrame = time
 
-        context.profiler.profile("input") { context.input.draw(delta) }
-        context.profiler.profile("camera") { context.camera.draw() }
+        context.profiler("input") { context.input.draw(delta) }
+        context.profiler("camera") { context.camera.draw() }
 
-        context.profiler.profile("light") {
+        context.profiler("light") {
             context.light.updateAsync() // ToDo: do async
             context.light.update()
         }
 
 
 
-        context.profiler.profile("animations") { context.textures.static.animator.update() }
+        context.profiler("animations") { context.textures.static.animator.update() }
 
-        context.profiler.profile("draw") { context.renderer.draw() }
+        context.profiler("draw") { context.renderer.draw() }
 
-        context.profiler.profile("reset") { context.system.reset() } // Reset to enable depth mask, etc again
+        context.profiler("reset") { context.system.reset() } // Reset to enable depth mask, etc again
 
         // handle opengl context tasks, but limit it per frame
-        context.profiler.profile("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
+        context.profiler("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
 
         context.renderStats.endDraw()
 
 
-        context.profiler.profile("swap buffers") { context.window.swapBuffers() }
+        context.profiler("swap buffers") { context.window.swapBuffers() }
 
-        context.profiler.profile("clear framebuffer") {
+        context.profiler("clear framebuffer") {
             // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
             context.framebuffer.clear()
             context.system.framebuffer = null
@@ -116,9 +117,12 @@ class RenderLoop(
         context.renderStats.endFrame()
 
 
-        val segment = context.profiler.finish()
-        if (RenderingOptions.dumpProfiler && segment.duration > 20.milliseconds) {
-            FileOutputStream("minosoft.perf").use { it.write(segment.toPerf().toByteArray()) }
+
+        context.profiler?.let {
+            val segment = it.finish()
+            if (segment.duration > 20.milliseconds) {
+                FileOutputStream("minosoft.perf").use { it.write(segment.toPerf().toByteArray()) }
+            }
         }
     }
 

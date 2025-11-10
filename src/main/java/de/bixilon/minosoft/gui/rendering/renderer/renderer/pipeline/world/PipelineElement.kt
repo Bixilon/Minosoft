@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world
 
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -30,7 +31,7 @@ class PipelineElement(
 
         context.system.set(layer.settings)
         shader?.use()
-        context.profiler.profile(renderer::class.java.realName) { renderer.invoke() }
+        context.profiler(renderer::class.java.realName) { renderer.invoke() }
     }
 
     override fun compareTo(other: PipelineElement): Int {

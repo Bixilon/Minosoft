@@ -72,7 +72,7 @@ class RenderContext(
 
     var state by observed(RenderingStates.LOADING)
 
-    var profiler = StackedProfiler()
+    var profiler: StackedProfiler? = null
 
     init {
         profile.experimental::fps.observe(this, true) { renderStats = if (it) ExperimentalRenderStats() else RenderStats() }

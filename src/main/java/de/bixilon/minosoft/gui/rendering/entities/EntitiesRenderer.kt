@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -79,7 +80,7 @@ class EntitiesRenderer(
     }
 
     override fun postPrepareDraw() {
-        context.profiler.profile("queue") { queue.work() }
+        context.profiler("queue") { queue.work() }
         drawer.prepare()
     }
 
