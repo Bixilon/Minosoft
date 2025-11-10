@@ -13,9 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.occlusion
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -26,6 +23,7 @@ import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.occlusion.OcclusionTracer.Companion.calculate
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
@@ -103,7 +101,7 @@ class WorldOcclusionManager(
         if (this.queue) return // already working on it
 
         this.queue = true
-        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGH) {
+        context.runAsync(forcePool = true) {
             queue.calculate()
             this.queue = false
         }

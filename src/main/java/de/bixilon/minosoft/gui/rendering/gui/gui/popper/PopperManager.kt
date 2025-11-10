@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
@@ -64,7 +64,7 @@ class PopperManager(
             }
             latch.inc()
             popper.prepare()
-            DefaultThreadPool += { popper.prepareAsync(); latch.dec() }
+            guiRenderer.context.runAsync { popper.prepareAsync(); latch.dec() }
         }
         latch.dec()
         latch.await()

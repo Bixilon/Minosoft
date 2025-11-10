@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kmath.vec.vec2.f.MVec2f
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -29,8 +28,8 @@ object RenderUtil {
         guiRenderer.pause()
     }
 
-    inline fun RenderContext.runAsync(crossinline runnable: () -> Unit) {
-        DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER) {
+    inline fun RenderContext.runAsync(forcePool: Boolean = false, crossinline runnable: () -> Unit) {
+        RenderingThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER, forcePool = forcePool) {
             try {
                 runnable.invoke()
             } catch (error: Throwable) {

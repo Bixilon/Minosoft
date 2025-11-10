@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -141,7 +141,7 @@ class GUIManager(
             if (element is LayoutedGUIElement<*>) {
                 element.prepare()
                 latch.inc()
-                DefaultThreadPool += { element.prepareAsync(); latch.dec() }
+                context.runAsync { element.prepareAsync(); latch.dec() }
             }
         }
         latch.dec()

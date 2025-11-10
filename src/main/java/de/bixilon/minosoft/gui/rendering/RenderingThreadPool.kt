@@ -11,25 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.util
+package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.math.simple.IntMath.clamp
 
-object ChunkRendererUtil {
-    val STILL_LOADING_TIME = 20.milliseconds
-    val MOVING_LOADING_TIME = 2.milliseconds
-
-
-    // If the player is still, then we can load more chunks (to not cause lags)
-    val ChunkRenderer.maxBusyTime: Duration
-        get() {
-            if (!limitChunkTransferTime) return Duration.INFINITE
-            if (session.camera.entity.physics.velocity.isEmpty()) {
-                return STILL_LOADING_TIME
-            }
-            return MOVING_LOADING_TIME
-        }
-
-}
+object RenderingThreadPool : ThreadPool(
+    Runtime.getRuntime().availableProcessors().clamp(4, 12),
+    "RenderingPool#%d",
+    priority = Thread.NORM_PRIORITY + 1,
+)

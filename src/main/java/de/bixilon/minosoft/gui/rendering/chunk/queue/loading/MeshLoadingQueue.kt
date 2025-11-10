@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
@@ -53,7 +54,7 @@ class MeshLoadingQueue(
             val mesh = this.meshes.removeAt(0)
             this.positions -= QueuePosition(mesh)
 
-            mesh.load()
+            renderer.context.profiler("load$index") { mesh.load() }
 
             if (position != mesh.position.chunkPosition) {
                 meshes = renderer.loaded.meshes.getOrPut(mesh.position.chunkPosition) { Int2ObjectOpenHashMap() }
@@ -165,6 +166,6 @@ class MeshLoadingQueue(
     }
 
     companion object {
-        const val BATCH_SIZE = 5
+        const val BATCH_SIZE = 4
     }
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -81,7 +81,7 @@ class TabListEntryElement(
 
     init {
         background = ColorElement(guiRenderer, size, RGBAColor(120, 120, 120, 130))
-        DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.session.connection.nullCast<NetworkConnection>()?.client?.encrypted == true, async = false)?.texture }
+        DefaultIOPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.session.connection.nullCast<NetworkConnection>()?.client?.encrypted == true, async = false)?.texture }
         forceSilentApply()
     }
 

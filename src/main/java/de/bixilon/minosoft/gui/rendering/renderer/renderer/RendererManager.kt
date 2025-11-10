@@ -95,14 +95,14 @@ class RendererManager(
     }
 
     private fun prepare() {
-        val queue = LinkedBlockingQueue<Renderer>()
+        val queue = LinkedBlockingQueue<Renderer>(this.list.size)
         val total = list.size
 
         for (renderer in list) {
             val name = renderer::class.java.realName
-            context.profiler("prepare $name") { renderer.prePrepareDraw() }
+            context.profiler("pre $name") { renderer.prePrepareDraw() }
             if (renderer is AsyncRenderer) {
-                context.runAsync { renderer.prepareDrawAsync(); queue += renderer }
+                context.profiler("?async $name") { context.runAsync { renderer.prepareDrawAsync(); queue += renderer } }
             } else {
                 queue += renderer
             }

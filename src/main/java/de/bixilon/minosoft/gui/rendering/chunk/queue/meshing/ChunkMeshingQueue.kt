@@ -79,7 +79,7 @@ class ChunkMeshingQueue(
             val task = MeshPrepareTask(item.position)
             tasks += task
 
-            DefaultThreadPool += ThreadPoolRunnable(if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) { renderer.mesher.tryMesh(item, task) }
+            DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) { renderer.mesher.tryMesh(item, task) }
         }
         working = false
     }
