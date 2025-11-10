@@ -112,6 +112,6 @@ class Rendering(private val session: PlaySession) {
     companion object {
         private val contexts = ThreadLocal<RenderContext>()
 
-        val currentContext get() = contexts.get()
+        val currentContext: RenderContext? get() = contexts.get()
     }
 }

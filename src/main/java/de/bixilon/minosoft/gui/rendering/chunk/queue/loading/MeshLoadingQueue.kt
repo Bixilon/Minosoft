@@ -36,7 +36,7 @@ class MeshLoadingQueue(
 
     fun work() {
         if (meshes.isEmpty()) return
-        lock()
+        renderer.context.profiler("lock") { lock() }
 
         var count = 0
         val start = now()
@@ -45,7 +45,7 @@ class MeshLoadingQueue(
         var meshes: Int2ObjectOpenHashMap<ChunkMeshes> = unsafeNull()
         var position: ChunkPosition? = null
 
-        renderer.loaded.lock()
+        renderer.context.profiler("lock") { renderer.loaded.lock() }
         var index = 0
         while (true) {
             if (this.meshes.isEmpty()) break

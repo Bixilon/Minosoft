@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
@@ -391,14 +392,16 @@ class OpenGlRenderSystem(
             }
 
         inline fun <T> gl(runnable: () -> T): T {
-            if (OpenGlOptions.ASSERT_THREAD && Rendering.currentContext == null) {
+            val context = Rendering.currentContext
+            if (OpenGlOptions.ASSERT_THREAD && context == null) {
                 throw IllegalStateException("No open gl context!")
             }
             if (OpenGlOptions.ASSERT_BEFORE) {
                 val error = glGetError()
                 if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
             }
-            val result = runnable.invoke()
+            val profiler = context?.profiler
+            val result = profiler("gl") { runnable.invoke() }
             if (OpenGlOptions.ASSERT_AFTER) {
                 val error = glGetError()
                 if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
