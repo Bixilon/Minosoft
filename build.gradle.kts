@@ -232,6 +232,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
+                        maxHeapSize = "2G"
                         filter {
                             isFailOnNoMatchingTests = true
                         }
