@@ -155,6 +155,28 @@ class Mat4fTest {
     }
 
     @Test
+    fun `times matrix 2`() {
+        val a = Mat4f(1.0f, 2.0f, 3.0f, 4.0f,
+            5.0f, 6.0f, 7.0f, 8.0f,
+            9.0f, 10.0f, 11.0f, 12.0f,
+            13.0f, 14.0f, 15.0f, 16.0f
+        )
+        val b = Mat4f(
+            16f, 15f, 14f, 13f,
+            12f, 11f, 10f, 9f,
+            8f, 7f, 6f, 5f,
+            4f, 3f, 2f, 1f,
+        )
+
+        assertEquals(a * b, Mat4f(
+            80f, 70f, 60f, 50f,
+            240f, 214f, 188f, 162f,
+            400f, 358f, 316f, 274f,
+            560f, 502f, 444f, 386f,
+        ))
+    }
+
+    @Test
     fun transpose() {
         val mat = Mat4f(
             1.0f, 2.0f, 3.0f, 4.0f,

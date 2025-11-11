@@ -84,9 +84,9 @@ object Mat4Operations {
             transposeSIMD(a, result)
         } else {
             result[0, 0] = a[0, 0]; result[0, 1] = a[1, 0]; result[0, 2] = a[2, 0]; result[0, 3] = a[3, 0]
-            result[0, 0] = a[0, 1]; result[0, 1] = a[1, 1]; result[0, 2] = a[2, 1]; result[0, 3] = a[3, 1]
-            result[0, 0] = a[0, 2]; result[0, 1] = a[1, 2]; result[0, 2] = a[2, 2]; result[0, 3] = a[3, 2]
-            result[0, 0] = a[0, 3]; result[0, 1] = a[1, 3]; result[0, 2] = a[2, 3]; result[0, 3] = a[3, 3]
+            result[1, 0] = a[0, 1]; result[1, 1] = a[1, 1]; result[1, 2] = a[2, 1]; result[1, 3] = a[3, 1]
+            result[2, 0] = a[0, 2]; result[2, 1] = a[1, 2]; result[2, 2] = a[2, 2]; result[2, 3] = a[3, 2]
+            result[3, 0] = a[0, 3]; result[3, 1] = a[1, 3]; result[3, 2] = a[2, 3]; result[3, 3] = a[3, 3]
         }
     }
 
@@ -113,7 +113,7 @@ object Mat4Operations {
 
     fun timesSIMD(a: Mat4f, b: Mat4f, result: MMat4f) {
         val a = FloatVector.fromArray(FloatVector.SPECIES_512, a._0.array, 0, TRANSPOSE, 0)
-        val b = FloatVector.fromArray(FloatVector.SPECIES_512, b._0.array, 0, TRANSPOSE, 0)
+        val b = FloatVector.fromArray(FloatVector.SPECIES_512, b._0.array, 0)
 
         val mask1 = VectorMask.fromArray(FloatVector.SPECIES_512, MASK1, 0)
         val mask2 = VectorMask.fromArray(FloatVector.SPECIES_512, MASK2, 0)
@@ -136,7 +136,7 @@ object Mat4Operations {
         result[0, 2] = z.reduceLanes(VectorOperators.ADD, mask1)
         result[1, 2] = z.reduceLanes(VectorOperators.ADD, mask2)
         result[2, 2] = z.reduceLanes(VectorOperators.ADD, mask3)
-        result[3, 2] == z.reduceLanes(VectorOperators.ADD, mask4)
+        result[3, 2] = z.reduceLanes(VectorOperators.ADD, mask4)
 
         val w = a.mul(b.rearrange(VectorShuffle.fromArray(FloatVector.SPECIES_512, TIMES, 3 * Mat4f.LENGTH)))
         result[0, 3] = w.reduceLanes(VectorOperators.ADD, mask1)
