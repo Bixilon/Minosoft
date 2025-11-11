@@ -16,11 +16,9 @@ package de.bixilon.minosoft.data.registries.items
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
-import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -45,9 +43,8 @@ object VerifyIntegratedItemRegistry {
         compareDurability(pixlyzer, integrated, errors)
     }
 
-    fun verify(registries: Registries, version: Version) {
+    fun verify(registries: Registries, version: Version, data: Map<String, JsonObject>) {
         val error = StringBuilder()
-        val data = PixLyzerUtil.load(ResourcesProfile(), version)["items"]!!.unsafeCast<Map<String, JsonObject>>()
 
         for ((id, value) in data) {
             if (value["class"] == "AirBlock") {

@@ -13,25 +13,49 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.blocks.factory.VerifyIntegratedBlockRegistry
 import de.bixilon.minosoft.data.registries.items.VerifyIntegratedItemRegistry
+import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.versions.registries.RegistryLoadingTest
 import de.bixilon.minosoft.test.ITUtil
 import org.testng.annotations.Test
 
 @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], priority = Int.MAX_VALUE, timeOut = 15000L)
 abstract class PixLyzerLoadingTest(version: String) : RegistryLoadingTest(version) {
+    protected val data by lazy {
+        val registries = PixLyzerUtil.load(ResourcesProfile(), this.version).unsafeCast<MutableJsonObject>()
+        registries -= "models"
+
+        return@lazy registries
+    }
 
     @Test(priority = 100000)
     open fun loadRegistries() {
-        this._registries = ITUtil.loadRegistries(version)
+        ITUtil.registries[version]?.let { this._registries = it; return }
+
+        val registries = Registries(false, version)
+        registries.load(this.data, SimpleLatch(0))
+        this.data["blocks"]!!
+        this.data["items"]!!
+
+        this.data -= "sound_events"
+        this.data -= "entities"
+
+        this._registries = registries
     }
 
     fun `blocks integrated`() {
-        VerifyIntegratedBlockRegistry.verify(registries, version)
+        VerifyIntegratedBlockRegistry.verify(registries, version, this.data["blocks"]!!.unsafeCast())
+        this.data -= "blocks"
     }
 
     fun `items integrated`() {
-        VerifyIntegratedItemRegistry.verify(registries, version)
+        VerifyIntegratedItemRegistry.verify(registries, version, this.data["items"]!!.unsafeCast())
+        this.data -= "items"
     }
 }

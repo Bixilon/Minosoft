@@ -24,7 +24,7 @@ import org.testng.SkipException
 
 object ITUtil {
     private val profile = ResourcesProfile()
-    private val registries: MutableMap<Version, Registries> = mutableMapOf()
+    val registries: MutableMap<Version, Registries> = mutableMapOf()
     private val objenesis = ObjenesisStd()
 
 

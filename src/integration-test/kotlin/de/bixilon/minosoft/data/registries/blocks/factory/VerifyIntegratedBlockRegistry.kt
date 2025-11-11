@@ -18,7 +18,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStasteCodec
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -35,7 +34,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.Offset
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
@@ -142,9 +140,8 @@ object VerifyIntegratedBlockRegistry {
         }
     }
 
-    fun verify(registries: Registries, version: Version) {
+    fun verify(registries: Registries, version: Version, data: Map<String, JsonObject>) {
         val error = StringBuilder()
-        val data = PixLyzerUtil.load(ResourcesProfile(), version)["blocks"]!!.unsafeCast<Map<String, JsonObject>>()
 
         for ((id, value) in data) {
             if (value["class"] == "AirBlock") {

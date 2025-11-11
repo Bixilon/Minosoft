@@ -74,7 +74,6 @@ internal object MinosoftSIT {
 
 
     @BeforeSuite
-    @Synchronized
     fun setup() {
         if (loaded) return
         setupEnv()
