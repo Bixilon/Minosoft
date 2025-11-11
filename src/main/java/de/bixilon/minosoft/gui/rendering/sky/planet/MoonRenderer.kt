@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.sky.planet
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.hash.HashUtil.murmur64
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 import java.util.*
 
 class MoonRenderer(
@@ -71,7 +71,7 @@ class MoonRenderer(
     }
 
     override fun calculateModifier(day: Long): Float {
-        return Random((day / MoonPhases.VALUES.size).murmur64()).nextFloat(0.0f, 0.2f)
+        return Random((day / MoonPhases.VALUES.size).murmur64()).nextFloatPort(0.0f, 0.2f)
     }
 
     override fun draw() {

@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.item
 import de.bixilon.kmath.mat.mat4.f.MMat4f
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec3.f.MVec3f
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMeshBuilder
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 import java.util.*
 import kotlin.time.Duration
 
@@ -84,9 +84,9 @@ open class ItemFeature(
         if (count > 1) {
             val random = Random(1234567890123456789L)
             for (i in 0 until count - 1) {
-                offset.x = random.nextFloat(-spread, spread)
-                offset.y = random.nextFloat(-spread, spread)
-                offset.z = random.nextFloat(-spread, spread)
+                offset.x = random.nextFloatPort(-spread, spread)
+                offset.y = random.nextFloatPort(-spread, spread)
+                offset.z = random.nextFloatPort(-spread, spread)
 
                 model.render(offset.unsafe, mesh, stack, tint)
             }

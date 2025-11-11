@@ -16,7 +16,6 @@ import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -44,6 +43,7 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.util.Backports.nextIntPort
 import java.util.*
 
 /**
@@ -136,9 +136,9 @@ class World(
 
     private fun randomDisplayTick(radius: Int, origin: BlockPosition, chunk: Chunk) {
         val position = BlockPosition(
-            x = origin.x + random.nextInt(-radius, radius),
-            y = origin.y + random.nextInt(-radius, radius),
-            z = origin.z + random.nextInt(-radius, radius),
+            x = origin.x + random.nextIntPort(-radius, radius),
+            y = origin.y + random.nextIntPort(-radius, radius),
+            z = origin.z + random.nextIntPort(-radius, radius),
         )
 
         val state = chunk.neighbours.traceBlock(position) ?: return

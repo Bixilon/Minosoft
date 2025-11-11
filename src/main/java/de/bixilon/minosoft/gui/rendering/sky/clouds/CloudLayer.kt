@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.hash.HashUtil.murmur64
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 import java.util.*
 import kotlin.math.abs
 
@@ -125,7 +125,7 @@ class CloudLayer(
         val day = sky.time.day
         if (day != this.day) {
             this.day = day
-            randomSpeed = Random(index.toLong().murmur64() * (sky.time.age + 1000L).murmur64()).nextFloat(0.0f, 0.1f)
+            randomSpeed = Random(index.toLong().murmur64() * (sky.time.age + 1000L).murmur64()).nextFloatPort(0.0f, 0.1f)
         }
     }
 

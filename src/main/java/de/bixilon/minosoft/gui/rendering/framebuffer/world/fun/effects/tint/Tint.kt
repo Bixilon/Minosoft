@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 
-import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
+import de.bixilon.minosoft.util.Backports.nextIntPort
 import java.util.*
 
 class Tint(override val context: RenderContext) : FunEffect {
     override val identifier: ResourceLocation get() = Tint.identifier
     override val shader = createShader(fragment = minosoft("framebuffer/world/fun/tint.fsh")) { TintShader(it) }
     private var updateUniform = true
-    var color = Random().let { RGBColor(it.nextInt(20, 255), it.nextInt(20, 255), it.nextInt(20, 255)) }
+    var color = Random().let { RGBColor(it.nextIntPort(20, 255), it.nextIntPort(20, 255), it.nextIntPort(20, 255)) }
         set(value) {
             field = value
             updateUniform = true

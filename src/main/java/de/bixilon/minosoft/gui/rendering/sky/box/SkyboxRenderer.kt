@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.sky.box
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -30,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 import java.util.*
 
 class SkyboxRenderer(
@@ -77,7 +77,7 @@ class SkyboxRenderer(
         this.time = time
         if (day != time.day) {
             this.day = time.day
-            this.intensity = Random(time.day.murmur64()).nextFloat(0.3f, 1.0f)
+            this.intensity = Random(time.day.murmur64()).nextFloatPort(0.3f, 1.0f)
         }
     }
 

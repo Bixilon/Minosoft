@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.stats
 
 import de.bixilon.kutil.avg.duration.DurationAverage
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
-import de.bixilon.kutil.random.RandomUtil.nextFloat
-import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.minosoft.util.Backports.nextFloatPort
+import de.bixilon.minosoft.util.Backports.nextIntPort
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -27,8 +27,8 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private val renderStats = RenderStats()
     private val random = Random()
 
-    private val baseMultiplier = random.nextFloat(1.0f, 1.5f)
-    private val baseJitter = random.nextInt(0, 20)
+    private val baseMultiplier = random.nextFloatPort(1.0f, 1.5f)
+    private val baseJitter = random.nextIntPort(0, 20)
 
     override val avgFrameTime = DurationAverage(1.seconds)
     override val avgDrawTime = DurationAverage(1.seconds)
@@ -49,13 +49,13 @@ class ExperimentalRenderStats : AbstractRenderStats {
         get() {
             val avgFPS = renderStats.avgFPS
 
-            val multiplier = 3.0f * baseMultiplier * random.nextFloat(0.9f, 1.1f)
+            val multiplier = 3.0f * baseMultiplier * random.nextFloatPort(0.9f, 1.1f)
 
             var fps = avgFPS * multiplier
 
             fps += baseJitter
 
-            fps += random.nextInt(-10, 10)
+            fps += random.nextIntPort(-10, 10)
 
             return fps.clamp(0.0, 10000.0)
         }

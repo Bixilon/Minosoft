@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.wea
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManage
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
@@ -61,9 +61,9 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
         var offset = 0.0f
         val random = Random()
         while (true) {
-            val timeOffset = random.nextFloat(0.0f, 1.0f)
-            val offsetMultiplicator = random.nextFloat(0.8f, 1.2f)
-            val alpha = random.nextFloat(0.8f, 1.0f)
+            val timeOffset = random.nextFloatPort(0.0f, 1.0f)
+            val offsetMultiplicator = random.nextFloatPort(0.8f, 1.2f)
+            val alpha = random.nextFloatPort(0.8f, 1.0f)
             mesh.addZQuad(
                 Vec2f(offset, 0f), OVERLAY_Z, Vec2f(offset + step, windowSize.y), Vec2f.EMPTY, texture.array.uvEnd ?: Vec2f.ONE
             ) { position, uv ->

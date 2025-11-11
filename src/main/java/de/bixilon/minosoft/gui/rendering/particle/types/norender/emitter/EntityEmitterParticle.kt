@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.NoRenderParticle
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 
 class EntityEmitterParticle(
     session: PlaySession,
@@ -45,7 +45,7 @@ class EntityEmitterParticle(
         val particle = session.world.particle ?: return
         val position = entity.physics.position
         for (i in 0 until 16) {
-            val scale = Vec3f(random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f))
+            val scale = Vec3f(random.nextFloatPort(-1.0f, 1.0f), random.nextFloatPort(-1.0f, 1.0f), random.nextFloatPort(-1.0f, 1.0f))
 
             if (scale.length2() < 1.0f) {
                 continue

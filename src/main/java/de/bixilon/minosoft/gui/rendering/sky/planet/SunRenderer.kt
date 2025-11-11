@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.kutil.hash.HashUtil.murmur64
-import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.util.Backports.nextFloatPort
 import java.util.*
 import kotlin.math.pow
 
@@ -52,7 +52,7 @@ class SunRenderer(
     }
 
     override fun calculateModifier(day: Long): Float {
-        return Random(day.murmur64()).nextFloat(0.0f, 0.2f)
+        return Random(day.murmur64()).nextFloatPort(0.0f, 0.2f)
     }
 
     override fun draw() {
