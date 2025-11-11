@@ -160,7 +160,7 @@ open class TextFlowElement(
     @Synchronized
     fun addMessage(message: ChatComponent) {
         while (messages.size >= MAX_TOTAL_MESSAGES) {
-            messages.removeLast()
+            messages.removeAt(messages.size - 1)
         }
         messages.add(0, TextFlowTextElement(message))
         forceApply()

@@ -106,7 +106,7 @@ class PacketReceiver(
 
     private fun process() {
         while (queue.isNotEmpty()) {
-            val (type, packet) = queue.removeFirst()
+            val (type, packet) = queue.removeAt(0)
             tryHandle(type, packet)
         }
     }

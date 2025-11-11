@@ -71,7 +71,7 @@ class ItemInfoPopper(
                 text += ", "
             }
             if (text.parts.lastOrNull()?.message == ", ") {
-                text.parts.removeLast()
+                text.parts.removeAt(text.parts.size - 1)
             }
         }
         text += "\n\n"

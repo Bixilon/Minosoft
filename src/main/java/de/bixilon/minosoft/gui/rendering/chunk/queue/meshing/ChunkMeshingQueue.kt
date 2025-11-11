@@ -68,7 +68,7 @@ class ChunkMeshingQueue(
             if (queue.isEmpty()) {
                 break
             }
-            val item = queue.removeFirst()
+            val item = queue.removeAt(0)
             set -= item
             items += item
         }

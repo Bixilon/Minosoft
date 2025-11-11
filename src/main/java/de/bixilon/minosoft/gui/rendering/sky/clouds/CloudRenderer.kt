@@ -114,7 +114,7 @@ class CloudRenderer(
 
     private fun updateLayers(layers: Int) {
         while (layers < this.cloudLayers.size) {
-            toUnload += this.cloudLayers.removeLast()
+            toUnload += this.cloudLayers.removeAt(this.cloudLayers.size - 1)
         }
         for (index in this.cloudLayers.size until layers) {
             val layer = CloudLayer(sky, this, index, getCloudHeight(index))

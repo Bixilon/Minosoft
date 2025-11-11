@@ -46,7 +46,7 @@ class ParticleQueue(val renderer: ParticleRenderer) {
         lock.lock()
 
         while (queue.isNotEmpty() && list.size < renderer.maxAmount) {
-            list.add(queue.removeFirst())
+            list.add(queue.removeAt(0))
         }
 
         lock.unlock()
