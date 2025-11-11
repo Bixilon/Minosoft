@@ -38,11 +38,11 @@ I will still bring up fixes from time to time, might do some changes but don't e
 ## System requirements
 
 - OS: Windows/Linux/macOS (x86/x64 or arm64/aarch64)
-- CPU: Multiple (4+) cores, high clock speed (2+ GHz)
+- CPU: Multiple (4+) cores, high clock speed (2+ GHz) (CPUs with AVX-512 recommended)
 - RAM: Minimum 500 MiB, 1 GiB recommended
 - Disk space: 80 MiB + assets (~ 300 MiB per version)
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
-- Java 11+ (Java 8 is **not** supported).
+- Java 11+ (Java 8 is **not** supported). Java 17+ recommended (SIMD Vector API)
 - A minecraft server (local or online)
 
 ## Rendering
