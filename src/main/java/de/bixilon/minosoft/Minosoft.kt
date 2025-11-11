@@ -56,6 +56,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.arguments.CommandLineArguments
 import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.SIMDUtil
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -65,6 +66,18 @@ import de.bixilon.minosoft.util.system.SystemUtil
 
 
 object Minosoft {
+
+    fun warn() {
+        if (!Minosoft::class.java.desiredAssertionStatus()) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Java assertions are disabled! This might lead to a performance improvement, but errors might not be detected!" }
+        }
+        if (!SIMDUtil.SUPPORTED_JDK) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Your JVM does not support the simd vector api. Performance will be degraded!" }
+            // TODO: Use JDK 17+ with --enable-preview --add-modules jdk.incubator.vector
+        } else if (SIMDUtil.CPU_SUPPORTED) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Your CPU does not support simd instructions. Performance will be degraded!" }
+        }
+    }
 
 
     private fun preBoot(args: Array<String>) {
@@ -76,9 +89,7 @@ object Minosoft {
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "We are running on ${PlatformInfo.OS.name.lowercase()} with an ${PlatformInfo.ARCHITECTURE.name.lowercase()} cpu. Java version is ${Runtime.version()}!" }
 
-        if (!Minosoft::class.java.desiredAssertionStatus()) {
-            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Java assertions are disabled! This might lead to a performance improvement, but errors might not be detected!" }
-        }
+        warn()
 
         val latch = SimpleLatch(1)
         assets.await()

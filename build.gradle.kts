@@ -232,7 +232,9 @@ testing {
             targets {
                 all {
                     testTask.configure {
+                        jvmArgs("--enable-preview", "--add-modules", "jdk.incubator.vector")
                         maxHeapSize = "2G"
+
                         filter {
                             isFailOnNoMatchingTests = true
                         }
@@ -514,6 +516,7 @@ kotlin {
         languageVersion.set(KotlinVersion.KOTLIN_2_1)
         freeCompilerArgs.add("-Xskip-prerelease-check")
         freeCompilerArgs.add("-Xallow-unstable-dependencies")
+        freeCompilerArgs.add("-Xadd-modules=jdk.incubator.vector")
     }
 }
 
@@ -523,6 +526,7 @@ tasks.withType<JavaCompile> {
 
 application {
     mainClass.set("de.bixilon.minosoft.Minosoft")
+    applicationDefaultJvmArgs = listOf("--enable-preview", "--add-modules", "jdk.incubator.vector")
 }
 
 var destination: File? = null
