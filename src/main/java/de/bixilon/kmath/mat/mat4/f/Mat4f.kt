@@ -69,12 +69,7 @@ value class Mat4f(val _0: UnsafeMat4f) : _Mat4f {
     inline operator fun times(other: MVec3f) = MVec3f().apply { Mat4Operations.times(this@Mat4f, other.unsafe, this) }.unsafe
 
 
-    inline fun transpose() = Mat4f(
-        this[0, 0], this[1, 0], this[2, 0], this[3, 0],
-        this[0, 1], this[1, 1], this[2, 1], this[3, 1],
-        this[0, 2], this[1, 2], this[2, 2], this[3, 2],
-        this[0, 3], this[1, 3], this[2, 3], this[3, 3],
-    )
+    inline fun transpose() = MMat4f().apply { Mat4Operations.transpose(this@Mat4f, this) }.unsafe
 
 
     inline fun translate(x: Float, y: Float, z: Float) = MMat4f(this).apply { Mat4Operations.translate(this, x, y, z) }.unsafe

@@ -179,6 +179,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
+                        jvmArgs("--enable-preview", "--add-modules", "jdk.incubator.vector")
                         filter {
                             isFailOnNoMatchingTests = true
                         }
@@ -281,6 +282,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
+                        jvmArgs("--enable-preview", "--add-modules", "jdk.incubator.vector")
                         filter {
                             isFailOnNoMatchingTests = false
                         }

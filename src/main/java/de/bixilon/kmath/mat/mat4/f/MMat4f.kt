@@ -106,19 +106,8 @@ value class MMat4f(val _0: UnsafeMat4f) : _Mat4f {
     inline operator fun timesAssign(other: MMat4f) = Mat4Operations.times(this@MMat4f.unsafe, other.unsafe, this)
 
 
-    inline fun transpose() = MMat4f(
-        this[0, 0], this[1, 0], this[2, 0], this[3, 0],
-        this[0, 1], this[1, 1], this[2, 1], this[3, 1],
-        this[0, 2], this[1, 2], this[2, 2], this[3, 2],
-        this[0, 3], this[1, 3], this[2, 3], this[3, 3],
-    )
-
-    inline fun transposeAssign() = set(
-        this[0, 0], this[1, 0], this[2, 0], this[3, 0],
-        this[0, 1], this[1, 1], this[2, 1], this[3, 1],
-        this[0, 2], this[1, 2], this[2, 2], this[3, 2],
-        this[0, 3], this[1, 3], this[2, 3], this[3, 3],
-    )
+    inline fun transpose() = MMat4f().apply { Mat4Operations.transpose(this@MMat4f.unsafe, this) }
+    inline fun transposeAssign() = Mat4Operations.transpose(this@MMat4f.unsafe, this)
 
 
     inline fun clearAssign() {

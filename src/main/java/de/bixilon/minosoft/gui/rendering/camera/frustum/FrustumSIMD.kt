@@ -27,6 +27,7 @@ class FrustumSIMD(
     val signs: BooleanArray,
 ) : Frustum {
 
+
     init {
         assert(SIMDUtil.SUPPORTED_JDK) { "Your JDK does not support SIMD" }
         assert(FloatVector.SPECIES_PREFERRED.length() >= 4) { "The Frustum requires at least 128bit float registers!" }
