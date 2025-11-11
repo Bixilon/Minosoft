@@ -1,5 +1,3 @@
-image: azul/zulu-openjdk-alpine:11-latest
-
 stages:
   - create
   - build
@@ -9,7 +7,7 @@ stages:
 
 
 .gradle:
-  image: azul/zulu-openjdk-alpine:21-latest
+  image: azul/zulu-openjdk-alpine:17-latest
   variables:
     GRADLE_USER_HOME: $CI_PROJECT_DIR/.home
     GRADLE_OPTS: "-Dorg.gradle.daemon=false"
