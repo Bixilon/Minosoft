@@ -48,8 +48,15 @@ class FrustumSIMD(
     }
 
     override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
-        val min = FloatVector.fromArray(FloatVector.SPECIES_128, floatArrayOf(minX, minY, minZ, 1.0f), 0)
-        val max = FloatVector.fromArray(FloatVector.SPECIES_128, floatArrayOf(maxX, maxY, maxZ, 1.0f), 0)
+        val min = FloatVector.broadcast(FloatVector.SPECIES_128, 1.0f)
+            .withLane(0, minX)
+            .withLane(1, minY)
+            .withLane(2, minZ)
+
+        val max = FloatVector.broadcast(FloatVector.SPECIES_128, 1.0f)
+            .withLane(0, maxX)
+            .withLane(1, maxY)
+            .withLane(2, maxZ)
 
         for (index in 0 until PLANES) {
             val offset = index * Vec4f.LENGTH
