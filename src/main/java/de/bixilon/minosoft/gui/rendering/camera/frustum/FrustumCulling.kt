@@ -38,7 +38,7 @@ class FrustumCulling(
 
     fun recalculate() {
         if (!FRUSTUM_CULLING_ENABLED) return
-        frustum = Frustum1.calculate(matrixHandler.viewProjectionMatrix)
+        frustum = Frustum.create(matrixHandler.viewProjectionMatrix)
         revision++
     }
 

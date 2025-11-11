@@ -41,7 +41,7 @@ class FrustumTest {
 
         val frustum = FrustumCulling::class.java.allocate()
         CAMERA[frustum] = camera
-        FRUSTUM[frustum] = Frustum1.calculate(matrix)
+        FRUSTUM[frustum] = FrustumScalar.calculate(matrix)
 
         return frustum
     }

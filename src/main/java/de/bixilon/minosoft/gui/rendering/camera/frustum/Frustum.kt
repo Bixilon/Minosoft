@@ -13,8 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
+import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.minosoft.util.SIMDUtil
+import jdk.incubator.vector.FloatVector
+
 interface Frustum {
 
     fun containsSphere(x: Float, y: Float, z: Float, radius: Float): Boolean
     fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean
+
+
+    companion object {
+
+        fun create(matrix: Mat4f) = when {
+            !SIMDUtil.SUPPORTED_JDK -> FrustumScalar.calculate(matrix)
+            FloatVector.SPECIES_PREFERRED.length() >= 4 -> FrustumSIMD.calculate(matrix)
+            else -> FrustumScalar.calculate(matrix)
+        }
+    }
 }

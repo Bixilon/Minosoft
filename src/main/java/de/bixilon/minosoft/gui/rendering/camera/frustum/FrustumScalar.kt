@@ -18,7 +18,7 @@ import de.bixilon.kmath.vec.vec4.f.Vec4f
 import kotlin.math.sqrt
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
-class Frustum1(
+class FrustumScalar(
     val planes: Array<Vec4f>,
 ) : Frustum {
 
@@ -48,7 +48,7 @@ class Frustum1(
 
     companion object {
 
-        fun calculate(matrix: Mat4f): Frustum1 {
+        fun calculate(matrix: Mat4f): FrustumScalar {
             val planes = arrayOf(
                 matrix[3] + matrix[0], // left
                 matrix[3] - matrix[0], // right
@@ -66,7 +66,7 @@ class Frustum1(
                 planes[i] = Vec4f(plane.x * length, plane.y * length, plane.z * length, plane.w * length)
             }
 
-            return Frustum1(planes)
+            return FrustumScalar(planes)
         }
     }
 }
