@@ -83,10 +83,17 @@ object Mat4Operations {
         if (SIMD) {
             transposeSIMD(a, result)
         } else {
-            result[0, 0] = a[0, 0]; result[0, 1] = a[1, 0]; result[0, 2] = a[2, 0]; result[0, 3] = a[3, 0]
-            result[1, 0] = a[0, 1]; result[1, 1] = a[1, 1]; result[1, 2] = a[2, 1]; result[1, 3] = a[3, 1]
-            result[2, 0] = a[0, 2]; result[2, 1] = a[1, 2]; result[2, 2] = a[2, 2]; result[2, 3] = a[3, 2]
-            result[3, 0] = a[0, 3]; result[3, 1] = a[1, 3]; result[3, 2] = a[2, 3]; result[3, 3] = a[3, 3]
+            // @formatter:off
+            val x0 = a[0, 0]; val y0 = a[1, 0]; val z0 = a[2, 0]; val w0 = a[3, 0]
+            val x1 = a[0, 1]; val y1 = a[1, 1]; val z1 = a[2, 1]; val w1 = a[3, 1]
+            val x2 = a[0, 2]; val y2 = a[1, 2]; val z2 = a[2, 2]; val w2 = a[3, 2]
+            val x3 = a[0, 3]; val y3 = a[1, 3]; val z3 = a[2, 3]; val w3 = a[3, 3]
+            // @formatter:on
+
+            result[0, 0] = x0; result[0, 1] = y0; result[0, 2] = z0; result[0, 3] = w0
+            result[1, 0] = x1; result[1, 1] = y1; result[1, 2] = z1; result[1, 3] = w1
+            result[2, 0] = x2; result[2, 1] = y2; result[2, 2] = z2; result[2, 3] = w2
+            result[3, 0] = x3; result[3, 1] = y3; result[3, 2] = z3; result[3, 3] = w3
         }
     }
 
