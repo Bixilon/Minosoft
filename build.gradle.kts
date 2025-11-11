@@ -215,7 +215,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("it.unimi.dsi:fastutil-core:8.5.16")
+                implementation("it.unimi.dsi:fastutil-core:8.5.18")
 
                 implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
 
@@ -362,8 +362,8 @@ dependencies {
     implementation("com.github.ajalt.clikt", "clikt", "5.0.3")
     implementation("org.jline", "jline", "3.30.6")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.9.0")
-    implementation("com.github.luben", "zstd-jni", "1.5.7-4", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.9.1")
+    implementation("com.github.luben", "zstd-jni", "1.5.7-6", classifier = zstdNatives)
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.16")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
