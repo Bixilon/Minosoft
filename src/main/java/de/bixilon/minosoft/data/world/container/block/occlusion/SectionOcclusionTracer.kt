@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.block.occlusion
 
-import de.bixilon.kutil.memory.allocator.ShortAllocator
+import de.bixilon.kutil.memory.allocator.ByteAllocator
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
@@ -26,11 +26,11 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.*
 
 object SectionOcclusionTracer {
-    private const val EMPTY_REGION = (-1).toShort()
-    private const val INVALID_REGION = (-2).toShort()
+    private const val EMPTY_REGION = (-1).toByte()
+    private const val INVALID_REGION = (-2).toByte()
     val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { false }
     val FULL = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { true }
-    private val ALLOCATOR = ShortAllocator()
+    private val ALLOCATOR = ByteAllocator()
 
     fun calculateFast(provider: BlockSectionDataProvider): BooleanArray? {
         if (provider.fullOpaqueCount < ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
@@ -63,7 +63,7 @@ object SectionOcclusionTracer {
         }
     }
 
-    private inline fun ShortArray.setIfUnset(provider: BlockSectionDataProvider, position: InSectionPosition, region: Short): Boolean {
+    private inline fun ByteArray.setIfUnset(provider: BlockSectionDataProvider, position: InSectionPosition, region: Byte): Boolean {
         if (this[position.index] != EMPTY_REGION) {
             return true
         }
@@ -76,15 +76,15 @@ object SectionOcclusionTracer {
         return false
     }
 
-    private fun BlockSectionDataProvider.trace(regions: ShortArray, position: InSectionPosition, set: IntOpenHashSet) {
-        trace(regions, position, DirectionVector(), position.index.toShort())
+    private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, set: IntOpenHashSet, region: Int) {
+        trace(regions, position, DirectionVector(), region.toByte())
         val region = regions[position.index].toInt()
         if (region > EMPTY_REGION) {
             set.add(region)
         }
     }
 
-    private fun BlockSectionDataProvider.trace(regions: ShortArray, position: InSectionPosition, direction: DirectionVector, region: Short) {
+    private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, direction: DirectionVector, region: Byte) {
         if (regions.setIfUnset(this, position, region)) return
 
         if (direction.x <= 0 && position.x > 0) trace(regions, position.minusX(), direction.with(Directions.WEST), region)
@@ -95,7 +95,7 @@ object SectionOcclusionTracer {
         if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
-    private fun BlockSectionDataProvider.calculateSideRegions(array: ShortArray): Array<IntOpenHashSet> {
+    private fun BlockSectionDataProvider.calculateSideRegions(array: ByteArray): Array<IntOpenHashSet> {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
@@ -104,14 +104,14 @@ object SectionOcclusionTracer {
         val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
 
         for (index in 0 until ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
-            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), sides[Directions.O_DOWN])
-            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), sides[Directions.O_UP])
+            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), sides[Directions.O_DOWN], 1)
+            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), sides[Directions.O_UP], 2)
 
-            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), sides[Directions.O_NORTH])
-            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), sides[Directions.O_SOUTH])
+            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), sides[Directions.O_NORTH], 3)
+            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), sides[Directions.O_SOUTH], 4)
 
-            trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_WEST])
-            trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_EAST])
+            trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_WEST], 5)
+            trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_EAST], 6)
             // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
