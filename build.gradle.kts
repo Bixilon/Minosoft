@@ -83,7 +83,7 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath("de.bixilon", "kutil", "1.29.1")
+        classpath("de.bixilon:kutil:1.29.1")
     }
 }
 
@@ -433,16 +433,15 @@ var commit: Commit? = null
 fun Commit.shortId() = id.substring(0, 10)
 
 fun loadGit() {
-    val git: Grgit
     try {
         git = Grgit.open(mapOf("currentDir" to project.rootDir))
     } catch (error: Throwable) {
         logger.warn("Can not open git folder: $error")
         return
     }
-    this.git = git
-    val commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
-    this.commit = commit
+    val git = git!!
+    commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
+    val commit = commit!!
     val tag = git.tag.list().find { it.commit == commit }
     var nextVersion = if (tag != null) {
         stable = true
@@ -493,7 +492,7 @@ val versionJsonTask = tasks.register("versionJson") {
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }
-        val file = File(project.buildDir.path + "/resources/main/assets/minosoft/version.json")
+        val file = project.layout.buildDirectory.get().asFile.resolve("resources/main/assets/minosoft/version.json")
         file.writeText(groovy.json.JsonOutput.toJson(versionInfo))
     }
 }
@@ -527,7 +526,7 @@ application {
 
 var destination: File? = null
 
-val fatJar = task("fatJar", type = Jar::class) {
+val fatJar = tasks.register("fatJar", fun Jar.() {
     destination = destinationDirectory.get().asFile
     archiveBaseName.set("${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}")
     manifest {
@@ -613,7 +612,7 @@ val fatJar = task("fatJar", type = Jar::class) {
     exclude("META-INF/services/java.net.spi.InetAddressResolverProvider")
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     with(tasks["jar"] as CopySpec)
-}
+})
 
 
 tasks.register("assetsProperties", fun JavaExec.() {
