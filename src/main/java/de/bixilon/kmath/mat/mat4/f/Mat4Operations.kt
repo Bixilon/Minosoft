@@ -21,15 +21,55 @@ import de.bixilon.kutil.primitive.FloatUtil.cos
 import de.bixilon.kutil.primitive.FloatUtil.sin
 import de.bixilon.minosoft.util.SIMDUtil
 import jdk.incubator.vector.FloatVector
+import jdk.incubator.vector.VectorMask
 import jdk.incubator.vector.VectorOperators
 import jdk.incubator.vector.VectorShuffle
 
 object Mat4Operations {
+    private val SIMD = SIMDUtil.SUPPORTED_JDK && SIMDUtil.CPU_SUPPORTED && FloatVector.SPECIES_PREFERRED.length() >= Mat4f.LENGTH
     private val TRANSPOSE = intArrayOf(
         0, 4, 8, 12,
         1, 5, 9, 13,
         2, 6, 10, 14,
         3, 7, 11, 15,
+    )
+
+    private fun IntArray.repeat(count: Int): IntArray {
+        val output = IntArray(this.size * count)
+        for (iteration in 0 until count) {
+            System.arraycopy(this, 0, output, this.size * iteration, this.size)
+        }
+        return output
+    }
+
+    private val TIMES = IntArray(Vec4f.LENGTH) { it + 0 * Vec4f.LENGTH }.repeat(4) +
+            IntArray(Vec4f.LENGTH) { it + 1 * Vec4f.LENGTH }.repeat(4) +
+            IntArray(Vec4f.LENGTH) { it + 2 * Vec4f.LENGTH }.repeat(4) +
+            IntArray(Vec4f.LENGTH) { it + 3 * Vec4f.LENGTH }.repeat(4)
+
+    private val MASK1 = booleanArrayOf(
+        true, true, true, true,
+        false, false, false, false,
+        false, false, false, false,
+        false, false, false, false,
+    )
+    private val MASK2 = booleanArrayOf(
+        false, false, false, false,
+        true, true, true, true,
+        false, false, false, false,
+        false, false, false, false,
+    )
+    private val MASK3 = booleanArrayOf(
+        false, false, false, false,
+        false, false, false, false,
+        true, true, true, true,
+        false, false, false, false,
+    )
+    private val MASK4 = booleanArrayOf(
+        false, false, false, false,
+        false, false, false, false,
+        false, false, false, false,
+        true, true, true, true,
     )
 
     fun transposeSIMD(a: Mat4f, result: MMat4f) {
@@ -40,7 +80,7 @@ object Mat4Operations {
     }
 
     fun transpose(a: Mat4f, result: MMat4f) {
-        if (SIMDUtil.SUPPORTED_JDK && SIMDUtil.CPU_SUPPORTED) {
+        if (SIMD) {
             transposeSIMD(a, result)
         } else {
             result[0, 0] = a[0, 0]; result[0, 1] = a[1, 0]; result[0, 2] = a[2, 0]; result[0, 3] = a[3, 0]
@@ -72,47 +112,41 @@ object Mat4Operations {
     }
 
     fun timesSIMD(a: Mat4f, b: Mat4f, result: MMat4f) {
-        val a = a._0.array
-        val b = b._0.array
+        val a = FloatVector.fromArray(FloatVector.SPECIES_512, a._0.array, 0, TRANSPOSE, 0)
+        val b = FloatVector.fromArray(FloatVector.SPECIES_512, b._0.array, 0, TRANSPOSE, 0)
 
-        val a0 = FloatVector.fromArray(FloatVector.SPECIES_128, a, 0, TRANSPOSE, 0 * Vec4f.LENGTH)
-        val a1 = FloatVector.fromArray(FloatVector.SPECIES_128, a, 0, TRANSPOSE, 1 * Vec4f.LENGTH)
-        val a2 = FloatVector.fromArray(FloatVector.SPECIES_128, a, 0, TRANSPOSE, 2 * Vec4f.LENGTH)
-        val a3 = FloatVector.fromArray(FloatVector.SPECIES_128, a, 0, TRANSPOSE, 3 * Vec4f.LENGTH)
+        val mask1 = VectorMask.fromArray(FloatVector.SPECIES_512, MASK1, 0)
+        val mask2 = VectorMask.fromArray(FloatVector.SPECIES_512, MASK2, 0)
+        val mask3 = VectorMask.fromArray(FloatVector.SPECIES_512, MASK3, 0)
+        val mask4 = VectorMask.fromArray(FloatVector.SPECIES_512, MASK4, 0)
 
+        val x = a.mul(b.rearrange(VectorShuffle.fromArray(FloatVector.SPECIES_512, TIMES, 0 * Mat4f.LENGTH)))
+        result[0, 0] = x.reduceLanes(VectorOperators.ADD, mask1)
+        result[1, 0] = x.reduceLanes(VectorOperators.ADD, mask2)
+        result[2, 0] = x.reduceLanes(VectorOperators.ADD, mask3)
+        result[3, 0] = x.reduceLanes(VectorOperators.ADD, mask4)
 
-        val b0 = FloatVector.fromArray(FloatVector.SPECIES_128, b, 0 * Vec4f.LENGTH)
-        val x0 = a0.mul(b0).reduceLanes(VectorOperators.ADD)
-        val x1 = a1.mul(b0).reduceLanes(VectorOperators.ADD)
-        val x2 = a2.mul(b0).reduceLanes(VectorOperators.ADD)
-        val x3 = a3.mul(b0).reduceLanes(VectorOperators.ADD)
+        val y = a.mul(b.rearrange(VectorShuffle.fromArray(FloatVector.SPECIES_512, TIMES, 1 * Mat4f.LENGTH)))
+        result[0, 1] = y.reduceLanes(VectorOperators.ADD, mask1)
+        result[1, 1] = y.reduceLanes(VectorOperators.ADD, mask2)
+        result[2, 1] = y.reduceLanes(VectorOperators.ADD, mask3)
+        result[3, 1] = y.reduceLanes(VectorOperators.ADD, mask4)
 
-        val b1 = FloatVector.fromArray(FloatVector.SPECIES_128, b, 1 * Vec4f.LENGTH)
-        val y0 = a0.mul(b1).reduceLanes(VectorOperators.ADD)
-        val y1 = a1.mul(b1).reduceLanes(VectorOperators.ADD)
-        val y2 = a2.mul(b1).reduceLanes(VectorOperators.ADD)
-        val y3 = a3.mul(b1).reduceLanes(VectorOperators.ADD)
+        val z = a.mul(b.rearrange(VectorShuffle.fromArray(FloatVector.SPECIES_512, TIMES, 2 * Mat4f.LENGTH)))
+        result[0, 2] = z.reduceLanes(VectorOperators.ADD, mask1)
+        result[1, 2] = z.reduceLanes(VectorOperators.ADD, mask2)
+        result[2, 2] = z.reduceLanes(VectorOperators.ADD, mask3)
+        result[3, 2] == z.reduceLanes(VectorOperators.ADD, mask4)
 
-        val b2 = FloatVector.fromArray(FloatVector.SPECIES_128, b, 2 * Vec4f.LENGTH)
-        val z0 = a0.mul(b2).reduceLanes(VectorOperators.ADD)
-        val z1 = a1.mul(b2).reduceLanes(VectorOperators.ADD)
-        val z2 = a2.mul(b2).reduceLanes(VectorOperators.ADD)
-        val z3 = a3.mul(b2).reduceLanes(VectorOperators.ADD)
-
-        val b3 = FloatVector.fromArray(FloatVector.SPECIES_128, b, 3 * Vec4f.LENGTH)
-        val w0 = a0.mul(b3).reduceLanes(VectorOperators.ADD)
-        val w1 = a1.mul(b3).reduceLanes(VectorOperators.ADD)
-        val w2 = a2.mul(b3).reduceLanes(VectorOperators.ADD)
-        val w3 = a3.mul(b3).reduceLanes(VectorOperators.ADD)
-
-        result[0, 0] = x0; result[0, 1] = y0; result[0, 2] = z0; result[0, 3] = w0
-        result[1, 0] = x1; result[1, 1] = y1; result[1, 2] = z1; result[1, 3] = w1
-        result[2, 0] = x2; result[2, 1] = y2; result[2, 2] = z2; result[2, 3] = w2
-        result[3, 0] = x3; result[3, 1] = y3; result[3, 2] = z3; result[3, 3] = w3
+        val w = a.mul(b.rearrange(VectorShuffle.fromArray(FloatVector.SPECIES_512, TIMES, 3 * Mat4f.LENGTH)))
+        result[0, 3] = w.reduceLanes(VectorOperators.ADD, mask1)
+        result[1, 3] = w.reduceLanes(VectorOperators.ADD, mask2)
+        result[2, 3] = w.reduceLanes(VectorOperators.ADD, mask3)
+        result[3, 3] = w.reduceLanes(VectorOperators.ADD, mask4)
     }
 
     fun times(a: Mat4f, b: Mat4f, result: MMat4f) {
-        if (SIMDUtil.SUPPORTED_JDK && SIMDUtil.CPU_SUPPORTED) {
+        if (SIMD) {
             timesSIMD(a, b, result)
         } else {
             val x0 = a[0, 0] * b[0, 0] + a[0, 1] * b[1, 0] + a[0, 2] * b[2, 0] + a[0, 3] * b[3, 0]

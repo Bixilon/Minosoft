@@ -131,15 +131,27 @@ class Mat4fTest {
         ))
     }
 
-    @Test
-    fun `times matrix`() {
+    // @Test
+    fun `times matrix benchmark`() {
         val a = Mat4f(1.0f, 2.0f, 3.0f, 4.0f)
         val b = Mat4f(2.0f, 2.0f, 3.0f, 3.0f)
-        BenchmarkUtil.benchmark(10000) {
+        BenchmarkUtil.benchmark(1000) {
             for (i in 0 until 10000) {
                 a * b
             }
         }.println()
+    }
+
+    @Test
+    fun `times matrix`() {
+        val mat = Mat4f(1.0f, 2.0f, 3.0f, 4.0f)
+
+        assertEquals((mat * Mat4f(2.0f, 2.0f, 3.0f, 3.0f)), Mat4f(
+            2.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 4.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 9.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 12.0f,
+        ))
     }
 
     @Test
