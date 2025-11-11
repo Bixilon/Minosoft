@@ -40,4 +40,16 @@ object FrustumUtil {
 
         return planes
     }
+
+    fun Array<Vec4f>.pack(): FloatArray {
+        val output = FloatArray(this.size * Vec4f.LENGTH)
+        for ((index, vec) in this.withIndex()) {
+            output[index * Vec4f.LENGTH + 0] = vec.x
+            output[index * Vec4f.LENGTH + 1] = vec.y
+            output[index * Vec4f.LENGTH + 2] = vec.z
+            output[index * Vec4f.LENGTH + 3] = vec.w
+        }
+
+        return output
+    }
 }

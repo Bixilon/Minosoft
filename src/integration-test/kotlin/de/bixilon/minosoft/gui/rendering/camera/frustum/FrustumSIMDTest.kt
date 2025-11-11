@@ -58,11 +58,11 @@ class FrustumSIMDTest {
         assertFalse(frustum.containsAABB(-423.73242f, 71.0f, 608.72485f, -423.48242f, 71.25f, 608.97485f))
     }
 
-    @Test(enabled = false)
+    @Test
     fun benchmark() {
         val frustum = create(Mat4f(0.031299774f, 1.4272678f, 0.0017395335f, 0.0017394995f, 0.0f, 0.0024857917f, -1.0000181f, -0.99999857f, 0.89204353f, -0.050079573f, -6.103626E-5f, -6.103507E-5f, -533.13086f, 625.4982f, 80.68989f, 80.708305f).transpose())
 
-        BenchmarkUtil.benchmark(iterations = 10000000) {
+        BenchmarkUtil.benchmark(iterations = 100000000) {
             assertTrue(frustum.containsAABB(-412.8941f, 71.0f, 602.2575f, -412.6441f, 71.25f, 602.5075f))
             assertTrue(frustum.containsAABB(-410.9874f, 71.0f, 607.7848f, -410.7374f, 71.25f, 608.0348f))
             assertTrue(frustum.containsAABB(-417.95395f, 72.0f, 620.89374f, -417.70395f, 72.25f, 621.14374f))

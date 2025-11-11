@@ -16,33 +16,35 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
 import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumUtil.PLANES
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumUtil.pack
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class FrustumScalar(
-    val planes: Array<Vec4f>,
+    val planes: FloatArray,
 ) : Frustum {
 
-    private fun Vec4f.dot(x: Float, y: Float, z: Float) = this.x * x + this.y * y + this.z * z + this.w
+    private inline fun FloatArray.dot(offset: Int, x: Float, y: Float, z: Float) = this[offset + 0] * x + this[offset + 1] * y + this[offset + 2] * z + this[offset + 3]
 
     override fun containsSphere(x: Float, y: Float, z: Float, radius: Float): Boolean {
         for (index in 0 until PLANES) {
-            val plane = planes[index]
+            val offset = index * Vec4f.LENGTH
 
-            if (plane.dot(x, y, z) < -radius) return false
+            if (this.planes.dot(offset, x, y, z) < -radius) return false
         }
         return true
     }
 
     override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
-        for (i in 0 until PLANES) {
-            val plane = planes[i]
+        for (index in 0 until PLANES) {
+            val offset = index * Vec4f.LENGTH
 
-            val x = if (plane.x >= 0.0f) maxX else minX
-            val y = if (plane.y >= 0.0f) maxY else minY
-            val z = if (plane.z >= 0.0f) maxZ else minZ
+            val x = if (planes[offset + 0] >= 0.0f) maxX else minX
+            val y = if (planes[offset + 1] >= 0.0f) maxY else minY
+            val z = if (planes[offset + 2] >= 0.0f) maxZ else minZ
 
-            if (plane.dot(x, y, z) < 0.0f) return false
+            if (this.planes.dot(offset, x, y, z) < 0.0f) return false
         }
+
         return true
     }
 
@@ -51,7 +53,7 @@ class FrustumScalar(
         fun calculate(matrix: Mat4f): FrustumScalar {
             val planes = FrustumUtil.calculatePlanes(matrix)
 
-            return FrustumScalar(planes)
+            return FrustumScalar(planes.pack())
         }
     }
 }
