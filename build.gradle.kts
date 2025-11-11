@@ -25,7 +25,6 @@ import org.ajoberstar.grgit.Grgit
 import org.ajoberstar.grgit.operation.LogOp
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -532,7 +531,7 @@ val fatJar = task("fatJar", type = Jar::class) {
     destination = destinationDirectory.get().asFile
     archiveBaseName.set("${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}")
     manifest {
-        attributes["Implementation-Title"] = project.name.capitalized()
+        attributes["Implementation-Title"] = project.name.replaceFirstChar { it.uppercaseChar() }
         attributes["Implementation-Version"] = project.version
         attributes["Main-Class"] = application.mainClass
     }
