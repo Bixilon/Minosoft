@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.data.world.container.block.occlusion
 
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.memory.allocator.ByteAllocator
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
@@ -22,8 +24,8 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.*
+import kotlin.time.Duration
 
 object SectionOcclusionTracer {
     private const val EMPTY_REGION = (-1).toByte()
@@ -76,12 +78,9 @@ object SectionOcclusionTracer {
         return false
     }
 
-    private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, set: IntOpenHashSet, region: Int) {
+    private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, region: Int): Int {
         trace(regions, position, DirectionVector(), region.toByte())
-        val region = regions[position.index].toInt()
-        if (region > EMPTY_REGION) {
-            set.add(region)
-        }
+        return regions[position.index].toInt()
     }
 
     private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, direction: DirectionVector, region: Byte) {
@@ -95,60 +94,57 @@ object SectionOcclusionTracer {
         if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
-    private fun BlockSectionDataProvider.calculateSideRegions(array: ByteArray): Array<IntOpenHashSet> {
+    private fun BlockSectionDataProvider.calculateSideRegions(array: ByteArray): Array<IntInlineSet> {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
         // TODO: force trace first block (might already be in a different region from a different vector)
 
-        val sides: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
+        var down = IntInlineSet()
+        var up = IntInlineSet()
+        var north = IntInlineSet()
+        var south = IntInlineSet()
+        var west = IntInlineSet()
+        var east = IntInlineSet()
 
         for (index in 0 until ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
-            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), sides[Directions.O_DOWN], 1)
-            trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), sides[Directions.O_UP], 2)
+            down += trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), 1)
+            up += trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), 2)
 
-            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), sides[Directions.O_NORTH], 3)
-            trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), sides[Directions.O_SOUTH], 4)
+            north += trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), 3)
+            south += trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), 4)
 
-            trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_WEST], 5)
-            trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), sides[Directions.O_EAST], 6)
+            west += trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), 5)
+            east += trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), 6)
             // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
-        return sides
+        return arrayOf(down, up, north, south, west, east)
     }
 
-    private fun calculateOcclusion(sides: Array<IntOpenHashSet>): BooleanArray {
+    private fun calculateOcclusion(sides: Array<IntInlineSet>): BooleanArray {
         val occlusion = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
         for ((index, pair) in CubeDirections.PAIRS.withIndex()) {
-            occlusion[index] = sides.canOcclude(pair.`in`, pair.out)
+            occlusion[index] = sides[pair.a.ordinal].raw() and sides[pair.b.ordinal].raw() != 0
         }
         return occlusion
     }
 
-    private fun Array<IntOpenHashSet>.canOcclude(`in`: Directions, out: Directions): Boolean {
-        val inSides = this[`in`.ordinal]
-        val outSides = this[`out`.ordinal]
-        if (inSides.isEmpty() || outSides.isEmpty()) {
-            return true
-        }
-
-        val preferIn = inSides.size < outSides.size
-        val first = if (preferIn) inSides else outSides
-        val second = if (preferIn) outSides else inSides
-
-        val iterator = first.intIterator()
-        while (iterator.hasNext()) {
-            val region = iterator.nextInt()
-            if (second.contains(region)) {
-                return false
-            }
-        }
-        return true
-    }
 
     inline fun BlockState?.isFullyOpaque(): Boolean {
         if (this == null) return false
         return BlockStateFlags.FULLY_OPAQUE in flags
+    }
+
+    @Deprecated("Kutil 1.30.1")
+    private val RAW_FIELD by lazy { InlineRaw::set.field }
+
+    @Deprecated("Kutil 1.30.1")
+    private class InlineRaw(val set: IntInlineSet)
+
+    @Deprecated("Kutil 1.30.1")
+    fun IntInlineSet.raw(): Int {
+        val wrapped = InlineRaw(this)
+        return RAW_FIELD.getInt(wrapped)
     }
 }
