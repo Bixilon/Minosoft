@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import kotlin.math.sqrt
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumUtil.PLANES
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class FrustumScalar(
@@ -25,7 +25,7 @@ class FrustumScalar(
     private fun Vec4f.dot(x: Float, y: Float, z: Float) = this.x * x + this.y * y + this.z * z + this.w
 
     override fun containsSphere(x: Float, y: Float, z: Float, radius: Float): Boolean {
-        for (index in 0 until planes.size) {
+        for (index in 0 until PLANES) {
             val plane = planes[index]
 
             if (plane.dot(x, y, z) < -radius) return false
@@ -34,7 +34,7 @@ class FrustumScalar(
     }
 
     override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
-        for (i in 0 until planes.size) {
+        for (i in 0 until PLANES) {
             val plane = planes[i]
 
             val x = if (plane.x >= 0.0f) maxX else minX
@@ -49,22 +49,7 @@ class FrustumScalar(
     companion object {
 
         fun calculate(matrix: Mat4f): FrustumScalar {
-            val planes = arrayOf(
-                matrix[3] + matrix[0], // left
-                matrix[3] - matrix[0], // right
-
-                matrix[3] + matrix[1], // bottom
-                matrix[3] - matrix[1], // top
-
-                matrix[3] + matrix[2], // near
-                matrix[3] - matrix[2],  // far
-            )
-
-            for (i in 0 until planes.size) {
-                val plane = planes[i]
-                val length = 1.0f / sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z)
-                planes[i] = Vec4f(plane.x * length, plane.y * length, plane.z * length, plane.w * length)
-            }
+            val planes = FrustumUtil.calculatePlanes(matrix)
 
             return FrustumScalar(planes)
         }

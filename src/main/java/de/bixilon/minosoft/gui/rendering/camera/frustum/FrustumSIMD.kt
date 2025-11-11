@@ -15,12 +15,15 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumUtil.PLANES
 import de.bixilon.minosoft.util.SIMDUtil
 import jdk.incubator.vector.FloatVector
-import kotlin.math.sqrt
+import jdk.incubator.vector.VectorMask
+import jdk.incubator.vector.VectorOperators
 
 class FrustumSIMD(
-    val planes: Array<Vec4f>,
+    val planes: FloatArray,
+    val signs: BooleanArray,
 ) : Frustum {
 
     init {
@@ -29,71 +32,59 @@ class FrustumSIMD(
         assert(FloatVector.SPECIES_PREFERRED.length() >= 4) { "The Frustum requires at least 128bit float registers!" }
     }
 
-    private fun Vec4f.dot(x: Float, y: Float, z: Float) = this.x * x + this.y * y + this.z * z + this.w
-
     override fun containsSphere(x: Float, y: Float, z: Float, radius: Float): Boolean {
-        for (index in 0 until planes.size) {
+        for (index in 0 until PLANES) {
             val plane = planes[index]
 
-            if (plane.dot(x, y, z) < -radius) return false
+            // if (plane.dot(x, y, z) < -radius) return false
         }
         return true
     }
 
     override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
-        //val planes = FloatArray(planes.size * 4)
-        //for((index, plane) in this.planes.withIndex()) {
-        //    planes[index * 4 + 0] = plane.x
-        //    planes[index * 4 + 1] = plane.y
-        //    planes[index * 4 + 2] = plane.z
-        //    planes[index * 4 + 3] = plane.w
-        //}
-        //val min = floatArrayOf(minX, minY, minZ, 1.0f)
-        //val max = floatArrayOf(maxX, maxY, maxZ, 1.0f)
+        val min = FloatVector.fromArray(FloatVector.SPECIES_128, floatArrayOf(minX, minY, minZ, 1.0f), 0)
+        val max = FloatVector.fromArray(FloatVector.SPECIES_128, floatArrayOf(maxX, maxY, maxZ, 1.0f), 0)
 
-        for (i in 0 until planes.size) {
-            val plane = planes[i]
+        for (index in 0 until PLANES) {
+            val offset = index * Vec4f.LENGTH
 
-            val x = if (plane.x >= 0.0f) maxX else minX
-            val y = if (plane.y >= 0.0f) maxY else minY
-            val z = if (plane.z >= 0.0f) maxZ else minZ
+            val plane = FloatVector.fromArray(FloatVector.SPECIES_128, this.planes, offset)
+            val mask = VectorMask.fromArray(FloatVector.SPECIES_128, this.signs, offset)
 
-            val a = floatArrayOf(plane.x, plane.y, plane.z, plane.w)
-            val b = floatArrayOf(x, y, z, 1.0f)
+            val point = min.blend(max, mask)
 
 
-            val v1 = FloatVector.fromArray(FloatVector.SPECIES_128, a, 0)
-            val v2 = FloatVector.fromArray(FloatVector.SPECIES_128, b, 0)
-
-            val mul = v1.mul(v2)
+            val sum = plane.mul(point).reduceLanes(VectorOperators.ADD)
 
 
-            if (mul.toArray().sum() < 0.0f) return false
+            if (sum < 0.0f) return false
         }
+
         return true
     }
 
     companion object {
 
+
         fun calculate(matrix: Mat4f): FrustumSIMD {
-            val planes = arrayOf(
-                matrix[3] + matrix[0], // left
-                matrix[3] - matrix[0], // right
+            val planes = FrustumUtil.calculatePlanes(matrix)
 
-                matrix[3] + matrix[1], // bottom
-                matrix[3] - matrix[1], // top
+            val array = FloatArray(planes.size * 4)
 
-                matrix[3] + matrix[2], // near
-                matrix[3] - matrix[2],  // far
-            )
-
-            for (i in 0 until planes.size) {
-                val plane = planes[i]
-                val length = 1.0f / sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z)
-                planes[i] = Vec4f(plane.x * length, plane.y * length, plane.z * length, plane.w * length)
+            for ((index, plane) in planes.withIndex()) {
+                array[index * 4 + 0] = plane.x
+                array[index * 4 + 1] = plane.y
+                array[index * 4 + 2] = plane.z
+                array[index * 4 + 3] = plane.w
             }
 
-            return FrustumSIMD(planes)
+            val signs = BooleanArray(planes.size * 4)
+
+            for (index in array.indices) {
+                signs[index] = array[index] >= 0.0f
+            }
+
+            return FrustumSIMD(array, signs)
         }
     }
 }

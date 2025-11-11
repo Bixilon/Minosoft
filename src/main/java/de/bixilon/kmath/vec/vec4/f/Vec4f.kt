@@ -84,6 +84,7 @@ value class Vec4f(
     }
 
     companion object {
+        const val LENGTH = 4
         val EMPTY = Vec4f(0)
 
         @Deprecated("final", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("other"))
