@@ -128,7 +128,7 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 
 ## Building
 
-1. Install Java 11+ (e.g. `sudo apt install openjdk-11-jdk`). Windows users [download](https://www.azul.com/downloads/?package=jdk#zulu) and install java.
+1. Install Java 17+ (e.g. `sudo apt install openjdk-17-jdk`). Windows users [download](https://www.azul.com/downloads/?package=jdk#zulu) and install java. Java 11 only works for executing, NOT for building.
 2. Clone this repository (`git clone --depth=1 https://gitlab.bixilon.de/bixilon/minosoft.git`) or click on download master and extract the archive.
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
