@@ -50,14 +50,12 @@ class EntityPositionInfo(
             }
             val chunkPosition = BlockPosition(position.x.floor, 0, position.z.floor).chunkPosition
 
-            world.lock.acquire()
             val revision = world.chunks.revision
             var chunk = if (previous.revision == revision) previous.chunk?.neighbours?.traceChunk(chunkPosition - previous.chunkPosition) else null
 
             if (chunk == null) {
-                chunk = world.chunks.chunks.unsafe[chunkPosition]
+                chunk = world.chunks.chunks[chunkPosition]
             }
-            world.lock.release()
 
             if (position.y - VELOCITY_POSITION_OFFSET < BlockPosition.MIN_Y || position.y > BlockPosition.MAX_Y) {
                 // invalid height; can easily happen when you fly around
