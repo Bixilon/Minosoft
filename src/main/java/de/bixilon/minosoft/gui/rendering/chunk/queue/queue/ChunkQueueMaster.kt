@@ -77,7 +77,10 @@ class ChunkQueueMaster(
     }
 
     fun tryQueue(chunk: Chunk, ignoreLoaded: Boolean = false, ignoreVisibility: Boolean = false) {
-        if (!canQueue() || !chunk.neighbours.complete) return
+        if (!canQueue() || !chunk.neighbours.complete) {
+            renderer.unload(chunk.position)
+            return
+        }
 
         if (!ignoreLoaded && chunk.position in renderer.loaded) {
             // chunks only get queued when the server sends them, we normally do not want to queue them again.

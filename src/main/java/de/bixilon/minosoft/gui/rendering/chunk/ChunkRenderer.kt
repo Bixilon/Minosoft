@@ -175,15 +175,15 @@ class ChunkRenderer(
         lock.unlock()
     }
 
-    fun unloadChunk(chunkPosition: ChunkPosition) {
+    fun unload(position: ChunkPosition) {
         lock.lock()
 
-        meshingQueue.tasks.interrupt(chunkPosition)
-        culledQueue.remove(chunkPosition, false)
-        meshingQueue.remove(chunkPosition)
-        loadingQueue.abort(chunkPosition, false)
+        meshingQueue.tasks.interrupt(position)
+        culledQueue.remove(position, false)
+        meshingQueue.remove(position)
+        loadingQueue.abort(position, false)
 
-        loaded.unload(chunkPosition, false)
+        loaded.unload(position, false)
 
         lock.unlock()
     }

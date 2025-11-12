@@ -117,7 +117,7 @@ object ChunkRendererChangeListener {
 
 
     private fun ChunkRenderer.handle(update: ChunkUnloadUpdate) {
-        unloadChunk(update.chunk.position)
+        unload(update.chunk.position)
     }
 
     private fun ChunkRenderer.handle(update: NeighbourSetUpdate) {
