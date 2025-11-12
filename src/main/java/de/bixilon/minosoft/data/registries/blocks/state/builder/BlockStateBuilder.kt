@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyL
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
@@ -136,6 +137,7 @@ class BlockStateBuilder(
 
             val lightProperties = when {
                 BlockStateFlags.FULL_OPAQUE in flags -> OpaqueProperty
+                BlockStateFlags.WATERLOGGED in flags -> FluidBlock.LIGHT_PROPERTIES
                 !implemented -> data.getLightProperties(outlineShape)
                 BlockStateFlags.OUTLINE in flags && block is OutlinedBlock -> data.getLightProperties(block.outlineShape) // TODO: get outline shape by block state?
                 else -> TransparentProperty

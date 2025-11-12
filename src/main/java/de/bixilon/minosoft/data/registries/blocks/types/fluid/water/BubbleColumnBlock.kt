@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.fluid.water
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -38,11 +37,10 @@ import java.util.*
 
 class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, FluidFilled, LightedBlock, RandomDisplayTickable {
     override val hardness: Float get() = Broken("Fluid!")
-    override val fluid: WaterFluid = unsafeNull()
+    override val fluid: WaterFluid = this::fluid.inject(WaterFluid)
 
-    init {
-        this::fluid.inject(WaterFluid)
-    }
+    override val lightProperties get() = FluidBlock.LIGHT_PROPERTIES
+
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         val up = entity.session.world[position + Directions.UP]
@@ -65,7 +63,6 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
         physics.velocity.y = if (drag) maxOf(-0.9, velocity.y - 0.03) else minOf(1.8, velocity.y + 0.1)
     }
 
-    override val lightProperties get() = FluidBlock.LIGHT_PROPERTIES
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         fluid.randomTick(session, state, position, random)
