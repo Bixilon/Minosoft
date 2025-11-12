@@ -227,9 +227,6 @@ class SectionLight(
 
     fun calculate() {
         update = true
-        val blocks = section.blocks
-
-        section.chunk.lock.lock()
 
         section.blocks.forEach { position, state ->
             val luminance = state.luminance
@@ -239,7 +236,7 @@ class SectionLight(
             }
             traceBlockIncrease(position, luminance, null)
         }
-        section.chunk.lock.unlock()
+
         section.chunk.light.sky.recalculate(section.height)
     }
 
