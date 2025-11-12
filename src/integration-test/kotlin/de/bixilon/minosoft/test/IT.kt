@@ -21,16 +21,27 @@ import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.ITUtil.allocate
+import kotlin.system.exitProcess
 
 object IT {
 
     init {
-        MinosoftSIT.setup()
+        try {
+            MinosoftSIT.setup()
+        } catch (error: Throwable) {
+            error.printStackTrace()
+            exitProcess(1)
+        }
     }
 
 
     var VERSION = Versions["1.19.3"]!!
-    var REGISTRIES = ITUtil.loadRegistries(VERSION)
+    var REGISTRIES = try {
+        ITUtil.loadRegistries(VERSION)
+    } catch (error: Throwable) {
+        error.printStackTrace()
+        exitProcess(1)
+    }
 
 
     var VERSION_LEGACY = Versions["1.12.2"]!!
@@ -40,8 +51,13 @@ object IT {
     var FALLBACK_TAGS = FallbackTags.map(REGISTRIES)
 
 
+    @Deprecated("TestBlockStates.OPAQUE1")
     val BLOCK_1 = REGISTRIES.block[StoneBlock.Block]!!.states.default
+
+    @Deprecated("TestBlockStates.OPAQUE2")
     val BLOCK_2 = REGISTRIES.block[Cobblestone.Block]!!.states.default
+
+    @Deprecated("TestBlockStates.OPAQUE3")
     val BLOCK_3 = REGISTRIES.block[Andesite.Block]!!.states.default
 
 
