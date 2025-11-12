@@ -142,15 +142,8 @@ class ChunkLight(
     }
 
     fun recalculate(fireEvent: Boolean = true, cause: ChunkLightUpdate.Causes) {
-        bottom.reset()
-        top.reset()
-
-        chunk.sections.forEach { it.light.recalculate() }
-
-        sky.calculate()
-        if (fireEvent) {
-            fireLightChange(cause)
-        }
+        reset()
+        calculate(fireEvent, cause)
     }
 
     fun calculate(fireEvent: Boolean = true, cause: ChunkLightUpdate.Causes) {

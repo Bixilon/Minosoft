@@ -166,6 +166,6 @@ class MeshLoadingQueue(
     }
 
     companion object {
-        const val BATCH_SIZE = 4
+        const val BATCH_SIZE = 5
     }
 }

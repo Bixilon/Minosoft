@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourUtil.neighbourIndex
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -84,11 +83,6 @@ class ChunkNeighbours(val chunk: Chunk) {
             section?.let { updateNeighbours(it) }
 
             updateNeighbourNeighbours(height, section)
-        }
-
-        if (complete) {
-            chunk.light.recalculate(false, ChunkLightUpdate.Causes.INITIAL)
-            chunk.light.propagateFromNeighbours(fireEvent = false, ChunkLightUpdate.Causes.INITIAL)
         }
     }
 

@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.world.chunk.manager.size.WorldSizeManager
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbourUtil
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -76,6 +78,7 @@ class ChunkManager(
         val chunk = Chunk(world, position)
 
         for (index in 0 until ChunkNeighbourUtil.COUNT) {
+            if (chunk.neighbours.array[index] != null) continue
             val offset = ChunkPosition(ChunkNeighbourUtil.OFFSETS[index])
             val neighbour = this.chunks.unsafe[chunk.position + offset] ?: continue
             chunk.neighbours[offset] = neighbour
@@ -96,7 +99,32 @@ class ChunkManager(
             return@locked create(position)
         }
 
-        data.update(chunk, replace && !created)
+
+        val affected = data.update(chunk, replace && !created)
+
+        size.onCreate(chunk.position)
+        world.view.updateServerDistance()
+
+        if (created || affected.isNotEmpty()) {
+            if (!created) chunk.light.reset()
+            chunk.light.calculate(false, ChunkLightUpdate.Causes.INITIAL)
+            chunk.light.propagateFromNeighbours(fireEvent = false, ChunkLightUpdate.Causes.INITIAL)
+
+            for (neighbour in chunk.neighbours.array) {
+                if (neighbour == null || !neighbour.neighbours.complete) continue
+
+                // TODO: This is executed WAY to often (7x per chunk), this should just run once!
+                if (!created) neighbour.light.reset()
+                neighbour.light.calculate(false, ChunkLightUpdate.Causes.INITIAL)
+                neighbour.light.propagateFromNeighbours(true, ChunkLightUpdate.Causes.INITIAL)
+            }
+        }
+
+        revision++
+
+        if (created || affected.isNotEmpty()) {
+            ChunkDataUpdate(chunk, affected).fire(world.session)
+        }
 
         if (created) {
             for (neighbour in chunk.neighbours.array) {
@@ -105,10 +133,6 @@ class ChunkManager(
             }
         }
 
-        size.onCreate(chunk.position)
-        world.view.updateServerDistance()
-
-        revision++
 
         return chunk
     }

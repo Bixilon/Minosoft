@@ -25,11 +25,7 @@ class TeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val position: Vec3d = buffer.readVec3d()
     val rotation = buffer.readEntityRotation()
-    val onGround = if (buffer.versionId >= ProtocolVersions.V_14W25B) {
-        buffer.readBoolean()
-    } else {
-        false
-    }
+    val onGround = if (buffer.versionId >= ProtocolVersions.V_14W25B) buffer.readBoolean() else false
 
     override fun handle(session: PlaySession) {
         val entity = session.world.entities[entityId] ?: return

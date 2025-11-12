@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.light.types.LightArray
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -119,13 +118,11 @@ class ChunkData(
     }
 
 
-    fun update(chunk: Chunk, replace: Boolean) {
+    fun update(chunk: Chunk, replace: Boolean): Set<ChunkSection> {
         val affected: MutableSet<ChunkSection> = HashSet(5)
 
         chunk.update(replace, affected)
 
-        if (affected.isEmpty()) return
-
-        ChunkDataUpdate(chunk, affected).fire(chunk.world.session)
+        return affected
     }
 }
