@@ -48,9 +48,6 @@ class AABB : Shape {
 
     constructor(aabb: AABB) : this(aabb.min, aabb.max)
 
-    constructor(min: Vec3f, max: Vec3f) : this(Vec3d(min), Vec3d(max))
-
-    constructor(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))
     constructor(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))
 
     constructor(min: Vec3d, max: Vec3d) {
