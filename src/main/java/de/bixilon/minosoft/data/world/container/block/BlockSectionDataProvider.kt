@@ -32,6 +32,8 @@ class BlockSectionDataProvider(
     private var fluidCount = 0
     var fullOpaqueCount = 0
         private set
+    var entityCount = 0
+        private set
     val occlusion = SectionOcclusion(this)
 
     val hasFluid get() = fluidCount > 0
@@ -50,23 +52,28 @@ class BlockSectionDataProvider(
         val data = data
         fullOpaque.clear()
         if (data == null || isEmpty) {
+            entityCount = 0
             fluidCount = 0
             fullOpaqueCount = 0
             return
         }
         var fluid = 0
         var opaque = 0
+        var entities = 0
         for ((index, state) in data.withIndex()) {
             if (state == null) continue
+            val flags = state.flags
 
-            if (state.isFluid()) fluid++
-            if (state.isFullyOpaque()) {
+            if (BlockStateFlags.FLUID in flags) fluid++
+            if (BlockStateFlags.ENTITY in flags) entities++
+            if (BlockStateFlags.FULL_OPAQUE in flags) {
                 fullOpaque[index] = true
                 opaque++
             }
         }
         fluidCount = fluid
         fullOpaqueCount = opaque
+        entityCount = entities
     }
 
     fun recalculate(notify: Boolean) {
@@ -84,6 +91,16 @@ class BlockSectionDataProvider(
             previous == now -> Unit
             now -> fluidCount++
             !now -> fluidCount--
+        }
+    }
+    private fun updateEntitiesCounter(previous: BlockState?, now: BlockState?) {
+        val previous = previous.isEntity()
+        val now = now.isEntity()
+
+        when {
+            previous == now -> Unit
+            now -> entityCount++
+            !now -> entityCount--
         }
     }
 
@@ -104,6 +121,7 @@ class BlockSectionDataProvider(
         val previous = super.unsafeSet(position, value)
 
         updateFluidCounter(previous, value)
+        updateEntitiesCounter(previous, value)
         updateFullOpaque(position, previous, value)
 
         occlusion.onSet(previous, value)
@@ -114,5 +132,10 @@ class BlockSectionDataProvider(
     private fun BlockState?.isFluid(): Boolean {
         if (this == null) return false
         return BlockStateFlags.FLUID in flags
+    }
+
+    private fun BlockState?.isEntity(): Boolean {
+        if (this == null) return false
+        return BlockStateFlags.ENTITY in flags
     }
 }

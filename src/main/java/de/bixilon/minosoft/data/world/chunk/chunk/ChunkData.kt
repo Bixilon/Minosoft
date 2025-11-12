@@ -78,9 +78,10 @@ class ChunkData(
         sections.forEach { section ->
             if (data == null && affected != null && section !in affected) return@forEach
             val blocks = section.blocks
+            if (blocks.entityCount == 0) return@forEach
             val yOffset = section.height * ChunkSize.SECTION_HEIGHT_Y
 
-            blocks.forEach { position, state ->
+            blocks.forEach { position, state -> // TODO: break if reached entity counter
                 if (BlockStateFlags.ENTITY !in state.flags) return@forEach
 
                 val entity = section.entities.update(position) ?: return@forEach

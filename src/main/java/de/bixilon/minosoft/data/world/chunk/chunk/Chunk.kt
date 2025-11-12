@@ -49,11 +49,6 @@ class Chunk(
 
     val neighbours = ChunkNeighbours(this)
 
-
-    init {
-        light.heightmap.recalculate()
-    }
-
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections[sectionHeight]
 
     operator fun get(position: InChunkPosition): BlockState? {
@@ -139,9 +134,7 @@ class Chunk(
 
     override fun tick() {
         if (!neighbours.complete) return
-        lock.acquired {
-            sections.forEach { it.tick() }
-        }
+        lock.acquired { sections.forEach { it.tick() } }
     }
 
     fun getBiome(position: InChunkPosition): Biome? {
