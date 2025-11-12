@@ -21,6 +21,7 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
@@ -100,7 +101,8 @@ class BlockOutlineRenderer(
     override fun prepareDrawAsync() {
         val target = context.session.camera.target.target.nullCast<BlockTarget>()
 
-        if (target == null || target.state.block !is OutlinedBlock || session.world.border.isOutside(target.blockPosition)) {
+        val state = target?.state
+        if (state == null || BlockStateFlags.OUTLINE !in state.flags || state.block !is OutlinedBlock || session.world.border.isOutside(target.blockPosition)) {
             unload = true
             return
         }
@@ -119,7 +121,7 @@ class BlockOutlineRenderer(
 
         val offsetPosition = (target.blockPosition - context.camera.offset.offset)
 
-        if (offsetPosition == position && target.state == state && !reload) { // TODO: also compare shapes, some blocks dynamically change it (e.g. scaffolding)
+        if (offsetPosition == position && target.state == this.state && !reload) { // TODO: also compare shapes, some blocks dynamically change it (e.g. scaffolding)
             return
         }
 
@@ -130,23 +132,23 @@ class BlockOutlineRenderer(
         val mesh = LineMeshBuilder(context)
 
         val blockOffset = MVec3d(target.blockPosition)
-        if (target.state.block is OffsetBlock) {
+        if (BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
             blockOffset += target.state.block.offsetShape(target.blockPosition)
         }
 
 
-        target.state.block.getOutlineShape(session, target.blockPosition, target.state)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
+        state.block.getOutlineShape(session, target.blockPosition, state)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
 
 
-        if (target.state.block is CollidableBlock && profile.collisions) { // TODO: block entity
-            target.state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
+        if (BlockStateFlags.COLLISIONS in state.flags && state.block is CollidableBlock && profile.collisions) { // TODO: block entity
+            state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, state, null)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
         }
 
         this.nextMesh = mesh.bake()
 
 
         this.position = offsetPosition
-        this.state = target.state
+        this.state = state
         this.reload = false
     }
 

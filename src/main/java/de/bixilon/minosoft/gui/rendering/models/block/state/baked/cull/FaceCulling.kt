@@ -25,6 +25,7 @@ object FaceCulling {
     fun canCull(state: BlockState, properties: FaceProperties?, direction: Directions, neighbour: BlockState?): Boolean {
         if (neighbour == null) return false
         if (properties == null) return false
+        if (BlockStateFlags.FULL_OPAQUE in neighbour.flags) return true
 
         val model = neighbour.model ?: neighbour.block.model ?: return false
         val neighbourProperties = model.getProperties(direction) ?: return false // not touching side

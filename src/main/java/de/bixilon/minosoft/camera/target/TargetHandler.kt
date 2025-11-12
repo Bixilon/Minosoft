@@ -24,6 +24,7 @@ import de.bixilon.minosoft.camera.target.targets.FluidTarget
 import de.bixilon.minosoft.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
@@ -93,7 +94,7 @@ class TargetHandler(
     }
 
     private fun raycast(origin: Vec3d, front: Vec3d, state: BlockState, blockPosition: BlockPosition): AABBRaycastHit? {
-        if (state.block !is OutlinedBlock) {
+        if (BlockStateFlags.OUTLINE !in state.flags || state.block !is OutlinedBlock) { // TODO: Check FULL_OUTLINE
             // no block, continue going into that direction
             return null
         }
