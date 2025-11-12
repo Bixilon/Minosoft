@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
+import de.bixilon.kutil.bit.set.ArrayBitSet
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
@@ -27,6 +28,7 @@ class BlockSectionDataProvider(
     lock: Lock? = null,
     val section: ChunkSection,
 ) : SectionDataProvider<BlockState>(lock, true) {
+    val fullOpaque = ArrayBitSet(ChunkSize.BLOCKS_PER_SECTION)
     private var fluidCount = 0
     var fullOpaqueCount = 0
         private set
@@ -46,6 +48,7 @@ class BlockSectionDataProvider(
 
     private fun recalculateFlags() {
         val data = data
+        fullOpaque.clear()
         if (data == null || isEmpty) {
             fluidCount = 0
             fullOpaqueCount = 0
@@ -53,11 +56,14 @@ class BlockSectionDataProvider(
         }
         var fluid = 0
         var opaque = 0
-        for (state in data) {
+        for ((index, state) in data.withIndex()) {
             if (state == null) continue
 
             if (state.isFluid()) fluid++
-            if (state.isFullyOpaque()) opaque++
+            if (state.isFullyOpaque()) {
+                fullOpaque[index] = true
+                opaque++
+            }
         }
         fluidCount = fluid
         fullOpaqueCount = opaque
@@ -81,9 +87,11 @@ class BlockSectionDataProvider(
         }
     }
 
-    private fun updateFullOpaqueCounter(previous: BlockState?, now: BlockState?) {
+    private fun updateFullOpaque(position: InSectionPosition, previous: BlockState?, now: BlockState?) {
         val previous = previous.isFullyOpaque()
         val now = now.isFullyOpaque()
+
+        fullOpaque[position.index] = now
 
         when {
             previous == now -> Unit
@@ -96,7 +104,7 @@ class BlockSectionDataProvider(
         val previous = super.unsafeSet(position, value)
 
         updateFluidCounter(previous, value)
-        updateFullOpaqueCounter(previous, value)
+        updateFullOpaque(position, previous, value)
 
         occlusion.onSet(previous, value)
 

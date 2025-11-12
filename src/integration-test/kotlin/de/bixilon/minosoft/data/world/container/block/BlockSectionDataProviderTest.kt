@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.container.block
 
 import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.minosoft.data.registries.blocks.WaterTest0
+import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -47,6 +48,28 @@ class BlockSectionDataProviderTest {
         assertFalse(blocks.hasFluid)
         assertEquals(blocks.count, 0)
     }
+
+    fun `full opaque is set`() {
+        val blocks = create()
+        blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.OPAQUE1
+        assertTrue(blocks.fullOpaque[InSectionPosition(3, 2, 1).index])
+    }
+
+    fun `full opaque is removed null`() {
+        val blocks = create()
+        blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.OPAQUE1
+        blocks[InSectionPosition(3, 2, 1)] = null
+        assertFalse(blocks.fullOpaque[InSectionPosition(3, 2, 1).index])
+    }
+
+    fun `full opaque is removed non opaque`() {
+        val blocks = create()
+        blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.OPAQUE1
+        blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.TEST1
+        assertFalse(blocks.fullOpaque[InSectionPosition(3, 2, 1).index])
+    }
+
+    // TODO: full opaque initially
 
     fun `single block set`() {
         val blocks = create()

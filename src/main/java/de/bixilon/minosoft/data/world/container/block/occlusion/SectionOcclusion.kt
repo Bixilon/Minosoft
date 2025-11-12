@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
 class SectionOcclusion(
     val provider: BlockSectionDataProvider,
 ) {
-    private var occlusion = SectionOcclusionTracer.EMPTY
+    private var occlusion = NOT_OCCLUDED
     var state = OcclusionState.INVALID
         private set
 
@@ -84,5 +84,10 @@ class SectionOcclusion(
             calculate()
         }
         return occlusion[index]
+    }
+
+    companion object {
+        val NOT_OCCLUDED = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { false }
+        val ALL_OCCLUDED = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { true }
     }
 }

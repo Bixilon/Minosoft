@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.block.occlusion
 
+import de.bixilon.kutil.bit.set.ArrayBitSet
 import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.memory.allocator.ByteAllocator
 import de.bixilon.kutil.reflection.ReflectionUtil.field
@@ -29,24 +30,24 @@ import java.util.*
 object SectionOcclusionTracer {
     private const val EMPTY_REGION = (-1).toByte()
     private const val INVALID_REGION = (-2).toByte()
-    val EMPTY = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { false }
-    val FULL = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS) { true }
+    private const val NO_REGION = 8
+    private const val REGION_MASK = 0x3F // 1 << Directions.SIZE - 1
     private val ALLOCATOR = ByteAllocator()
 
     fun calculateFast(provider: BlockSectionDataProvider): BooleanArray? {
         if (provider.fullOpaqueCount < ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
             // When there are less than 256 blocks set, you will always be able to look from one side to another
-            return EMPTY
+            return SectionOcclusion.NOT_OCCLUDED
         }
         if (provider.fullOpaqueCount == ChunkSize.BLOCKS_PER_SECTION) {
-            return FULL
+            return SectionOcclusion.ALL_OCCLUDED
         }
 
         val min = provider.minPosition
         val max = provider.minPosition
         if (min.x > 0 && min.y > 0 && min.z > 0 && max.x < ChunkSize.SECTION_MAX_X && max.y < ChunkSize.SECTION_MAX_X && max.z < ChunkSize.SECTION_MAX_X) {
             // blocks are only set in inner section, no blocking of any side possible.
-            return EMPTY
+            return SectionOcclusion.NOT_OCCLUDED
         }
 
         return null
@@ -57,19 +58,18 @@ object SectionOcclusionTracer {
 
         val regions = ALLOCATOR.allocate(ChunkSize.BLOCKS_PER_SECTION)
         try {
-            val sides = provider.calculateSideRegions(regions)
+            val sides = provider.fullOpaque.calculateSideRegions(regions)
             return calculateOcclusion(sides)
         } finally {
             ALLOCATOR.free(regions)
         }
     }
 
-    private inline fun ByteArray.setIfUnset(provider: BlockSectionDataProvider, position: InSectionPosition, region: Byte): Boolean {
+    private inline fun ByteArray.setIfUnset(opaque: ArrayBitSet, position: InSectionPosition, region: Byte): Boolean {
         if (this[position.index] != EMPTY_REGION) {
             return true
         }
-        val state = provider[position] // TODO: Cache isFullOpaque
-        if (state.isFullyOpaque()) {
+        if (opaque[position.index]) {
             this[position.index] = INVALID_REGION
             return true
         }
@@ -77,17 +77,17 @@ object SectionOcclusionTracer {
         return false
     }
 
-    private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, region: Int): Int {
+    private fun ArrayBitSet.trace(regions: ByteArray, position: InSectionPosition, region: Int): Int {
         var set = regions[position.index]
         if (set < 0) set = region.toByte()
 
         trace(regions, position, DirectionVector(), set)
         set = regions[position.index]
 
-        return if (set < 0) 8 else set.toInt()
+        return if (set < 0) NO_REGION else set.toInt()
     }
 
-    private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, direction: DirectionVector, region: Byte) {
+    private fun ArrayBitSet.trace(regions: ByteArray, position: InSectionPosition, direction: DirectionVector, region: Byte) {
         if (regions.setIfUnset(this, position, region)) return
 
         if (direction.x <= 0 && position.x > 0) trace(regions, position.minusX(), direction.with(Directions.WEST), region)
@@ -98,7 +98,7 @@ object SectionOcclusionTracer {
         if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
-    private fun BlockSectionDataProvider.calculateSideRegions(array: ByteArray): IntArray {
+    private fun ArrayBitSet.calculateSideRegions(array: ByteArray): IntArray {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
@@ -123,7 +123,7 @@ object SectionOcclusionTracer {
             // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
-        return intArrayOf(down.raw() and 0x3F, up.raw() and 0x3F, north.raw() and 0x3F, south.raw() and 0x3F, west.raw() and 0x3F, east.raw() and 0x3F)
+        return intArrayOf(down.raw() and REGION_MASK, up.raw() and REGION_MASK, north.raw() and REGION_MASK, south.raw() and REGION_MASK, west.raw() and REGION_MASK, east.raw() and REGION_MASK)
     }
 
     private fun calculateOcclusion(sides: IntArray): BooleanArray {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
+import de.bixilon.kutil.bit.set.ArrayBitSet
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
@@ -43,6 +44,7 @@ class SectionOcclusionTest {
         val blocks = BlockSectionDataProvider::class.java.allocate()
         val occlusion = SectionOcclusion(blocks)
         blocks::occlusion.forceSet(occlusion)
+        blocks::fullOpaque.forceSet(ArrayBitSet(ChunkSize.BLOCKS_PER_SECTION))
         return occlusion
     }
 

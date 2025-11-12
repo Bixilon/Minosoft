@@ -18,6 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
@@ -38,8 +39,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["rendering"])
 class OcclusionTracerTest {
-    private val opaque by lazy { IT.REGISTRIES.block[StoneBlock.Block]!!.states.default }
-    private val fullOpaque by lazy { Array(ChunkSize.BLOCKS_PER_SECTION) { opaque } }
+    private val fullOpaque = Array<BlockState?>(ChunkSize.BLOCKS_PER_SECTION) { TestBlockStates.OPAQUE1 }
 
 
     private fun create(block: (World) -> Unit): OcclusionGraph {
@@ -92,9 +92,9 @@ class OcclusionTracerTest {
         val section = chunks[position.chunkPosition]!!.getOrPut(position.y)!!
         when (state) {
             OcclusionState.NONE -> section.blocks.clear()
-            OcclusionState.FULL_OPAQUE -> section.blocks.setData(fullOpaque.cast())
-            OcclusionState.BOTTOM_Y -> section.fill(0, 0, 0, 15, 1, 15, opaque)
-            OcclusionState.TOP_Y -> section.fill(0, 15, 0, 15, 15, 15, opaque)
+            OcclusionState.FULL_OPAQUE -> section.blocks.setData(fullOpaque)
+            OcclusionState.BOTTOM_Y -> section.fill(0, 0, 0, 15, 1, 15, TestBlockStates.OPAQUE1)
+            OcclusionState.TOP_Y -> section.fill(0, 15, 0, 15, 15, 15, TestBlockStates.OPAQUE1)
         }
     }
 
