@@ -132,7 +132,7 @@ object AmbientOcclusionUtil {
 
     fun applyNorth(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.z == 0) {
-            return setZ(section.neighbours?.get(O_NORTH), position.with(z = ChunkSize.SECTION_MAX_Z), true, ao)
+            return setZ(section.neighbours[O_NORTH], position.with(z = ChunkSize.SECTION_MAX_Z), true, ao)
         } else {
             return setZ(section, position.minusZ(), true, ao)
         }
@@ -140,7 +140,7 @@ object AmbientOcclusionUtil {
 
     fun applySouth(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.z == ChunkSize.SECTION_MAX_Z) {
-            return setZ(section.neighbours?.get(O_SOUTH), position.with(z = 0), false, ao)
+            return setZ(section.neighbours[O_SOUTH], position.with(z = 0), false, ao)
         } else {
             return setZ(section, position.plusZ(), false, ao)
         }
@@ -164,7 +164,7 @@ object AmbientOcclusionUtil {
 
     fun applyWest(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.x == 0) {
-            return setX(section.neighbours?.get(O_WEST), position.with(x = ChunkSize.SECTION_MAX_X), true, ao)
+            return setX(section.neighbours[O_WEST], position.with(x = ChunkSize.SECTION_MAX_X), false, ao)
         } else {
             return setX(section, position.minusX(), false, ao)
         }
@@ -172,7 +172,7 @@ object AmbientOcclusionUtil {
 
     fun applyEast(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.x == ChunkSize.SECTION_MAX_X) {
-            return setX(section.neighbours?.get(O_EAST), position.with(x = 0), true, ao)
+            return setX(section.neighbours[O_EAST], position.with(x = 0), true, ao)
         } else {
             return setX(section, position.plusX(), true, ao)
         }
