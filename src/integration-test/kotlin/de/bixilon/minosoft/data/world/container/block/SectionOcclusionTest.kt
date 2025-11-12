@@ -13,32 +13,24 @@
 
 package de.bixilon.minosoft.data.world.container.block
 
+import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.bit.set.ArrayBitSet
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
-import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
-import de.bixilon.minosoft.data.registries.blocks.GlassTest0
-import de.bixilon.minosoft.data.registries.blocks.TestBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
+import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusionTracer
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import kotlin.random.Random
-import kotlin.time.measureTime
 
 @Test(groups = ["occlusion"])
 class SectionOcclusionTest {
-    private val OCCLUSION = SectionOcclusion::class.java.getFieldOrNull("occlusion")!!
-    private val CALCULATE = SectionOcclusion::class.java.getDeclaredMethod("calculate").apply { setUnsafeAccessible() }
 
     private fun create(): SectionOcclusion {
         val blocks = BlockSectionDataProvider::class.java.allocate()
@@ -58,11 +50,7 @@ class SectionOcclusionTest {
         }
     }
 
-    private val SectionOcclusion.occlusion: BooleanArray
-        get() {
-            CALCULATE.invoke(this)
-            return OCCLUSION[this].unsafeCast()
-        }
+    private val SectionOcclusion.occlusion get() = SectionOcclusionTracer.calculate(provider)
 
     fun `empty section`() {
         val occlusion = create()
@@ -121,22 +109,20 @@ class SectionOcclusionTest {
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 
-    @Test(enabled = false)
+    @Test
     fun benchmark() {
         val occlusion = create()
-        val stone = IT.BLOCK_1
         val random = Random(12)
         for (i in 0 until ChunkSize.BLOCKS_PER_SECTION) {
             if (random.nextBoolean()) {
-                occlusion.provider[InSectionPosition(i)] = stone
+                occlusion.provider[InSectionPosition(i)] = TestBlockStates.OPAQUE1
             }
         }
-        val time = measureTime {
-            for (i in 0 until 500_000) {
-                CALCULATE.invoke(occlusion, false)
+        BenchmarkUtil.benchmark(1000) {
+            for (i in 0 until 100) {
+                SectionOcclusionTracer.calculate(occlusion.provider)
             }
-        }
-        println("Took: ${time.format()}")
+        }.println()
     }
 
     // TODO: Test more possible cases
