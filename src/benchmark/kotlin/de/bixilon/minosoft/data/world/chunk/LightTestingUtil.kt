@@ -109,7 +109,7 @@ object LightTestingUtil {
 
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
         val block = TestBlock(minosoft(name), BlockSettings(Versions.AUTOMATIC))
-        val state = BlockState(block, properties = emptyMap(), luminance = luminance, lightProperties = lightProperties, flags = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.FULLY_OPAQUE)
+        val state = BlockState(block, properties = emptyMap(), luminance = luminance, lightProperties = lightProperties, flags = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.FULL_OPAQUE)
 
         block::states.forceSet(SingleStateManager(state))
 

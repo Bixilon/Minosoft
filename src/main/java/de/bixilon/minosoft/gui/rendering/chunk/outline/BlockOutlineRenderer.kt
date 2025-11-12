@@ -135,13 +135,21 @@ class BlockOutlineRenderer(
         if (BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
             blockOffset += target.state.block.offsetShape(target.blockPosition)
         }
+        val block = state.block
 
+        val outline = block.outlineShape ?: block.getOutlineShape(state) ?: block.getOutlineShape(session, target.blockPosition, state) ?: target.entity?.let { block.getOutlineShape(session, target.blockPosition, state, it) }
 
-        state.block.getOutlineShape(session, target.blockPosition, state)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
+        outline?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
 
 
         if (BlockStateFlags.COLLISIONS in state.flags && state.block is CollidableBlock && profile.collisions) { // TODO: block entity
-            state.block.getCollisionShape(session, EntityCollisionContext(session.player), target.blockPosition, state, null)?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
+            var collision = block.collisionShape ?: block.getCollisionShape(state)
+            if (collision == null) {
+                val context = EntityCollisionContext(session.player)
+                collision = block.getCollisionShape(session, context, target.blockPosition, state) ?: target.entity?.let { block.getCollisionShape(session, context, target.blockPosition, state, it) }
+            }
+
+            collision?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
         }
 
         this.nextMesh = mesh.bake()

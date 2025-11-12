@@ -46,7 +46,7 @@ class CobwebTest : BlockTest<Block>() {
 
     fun testCollisionShape() {
         if (block !is CollidableBlock) return
-        assertEquals(null, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
+        assertEquals(null, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state))
     }
 
     fun testStates() {

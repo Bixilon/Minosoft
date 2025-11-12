@@ -52,7 +52,7 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
         return AABB(Vec3d.EMPTY, Vec3d(1.0f, fluid.getHeight(state), 1.0f))
     }
 
-    override fun getLightProperties(state: BlockState) = LIGHT_PROPERTIES
+    override val lightProperties get() = LIGHT_PROPERTIES
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         fluid.randomTick(session, state, position, random)

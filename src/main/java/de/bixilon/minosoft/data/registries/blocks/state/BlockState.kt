@@ -16,7 +16,6 @@ import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
-import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -30,9 +29,9 @@ class BlockState(
     val properties: Map<BlockProperty<*>, Any>,
     val flags: IntInlineEnumSet<BlockStateFlags>,
     val luminance: Int = 0,
-    val collisionShape: Shape? = null,
-    val outlineShape: Shape? = null,
-    val lightProperties: LightProperties = OpaqueProperty,
+    @Deprecated("access only via block") internal val collisionShape: Shape? = null,
+    @Deprecated("access only via block") internal val outlineShape: Shape? = null,
+    @Deprecated("access only via block") internal val lightProperties: LightProperties? = null,
 ) {
     private val hashCode = _hashCode()
     var model: BlockRender? = null
@@ -46,10 +45,11 @@ class BlockState(
 
     override fun hashCode() = hashCode
 
-    override fun equals(other: Any?): Boolean {
-        if (other is ResourceLocation) return other == block.identifier
-        if (other is BlockState) return hashCode == other.hashCode && other.block == block && other.luminance == luminance && properties == other.properties
-        return false
+    override fun equals(other: Any?) = when (other) {
+        is BlockState -> hashCode == other.hashCode && other.block == block && other.luminance == luminance && properties == other.properties
+        is Block -> block == other
+        is ResourceLocation -> block.identifier == other
+        else -> false
     }
 
 

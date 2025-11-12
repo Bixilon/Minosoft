@@ -11,17 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
+package de.bixilon.minosoft.data.registries.blocks.types.properties
 
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.shape.Shape
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 
-/**
- * A block with an outline shape of (0|0|0) -> (1|1|1)
- */
-interface FullOutlinedBlock : OutlinedBlock {
+interface FullBlock : OutlinedBlock, LightedBlock, CollidableBlock {
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? = Shape.FULL
+    override val lightProperties get() = OpaqueProperty
+    override val collisionShape get() = AABB.BLOCK
+    override val outlineShape get() = AABB.BLOCK
 }

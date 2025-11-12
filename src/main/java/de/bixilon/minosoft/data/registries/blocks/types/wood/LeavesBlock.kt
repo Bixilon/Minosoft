@@ -24,12 +24,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.Waterloggabl
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.CustomDiggingBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
@@ -37,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
+abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, CollidableBlock, OutlinedBlock, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
     override val hardness get() = 0.2f
     override val item: Item = this::item.inject(identifier)
     override val tintProvider: TintProvider? = null
@@ -46,7 +48,9 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
         TINT_PROVIDER.set(this, manager.foliage)
     }
 
-    override fun getLightProperties(state: BlockState) = LIGHT_PROPERTIES
+    override val lightProperties get() = LIGHT_PROPERTIES
+    override val outlineShape get() = AABB.BLOCK
+    override val collisionShape get() = AABB.BLOCK
 
     override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {
         return neighbour.block != this

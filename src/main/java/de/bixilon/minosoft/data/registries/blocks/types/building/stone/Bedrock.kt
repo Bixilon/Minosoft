@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,15 +16,15 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.stone
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.UnbreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class Bedrock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, BlockWithItem<Item>, UnbreakableBlock {
+open class Bedrock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullBlock, BlockWithItem<Item>, UnbreakableBlock {
     override val item: Item = this::item.inject(identifier)
 
     companion object : BlockFactory<Bedrock> {

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -57,6 +58,9 @@ class ShulkerBoxBlockEntity(session: PlaySession, position: BlockPosition, state
         super.onClose()
         renderer?.close()
     }
+
+    fun getCollisionShape() = AABB.BLOCK // TODO
+    fun getOutlineShape() = AABB.BLOCK // TODO
 
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
         override val identifier = minecraft("shulker_box")

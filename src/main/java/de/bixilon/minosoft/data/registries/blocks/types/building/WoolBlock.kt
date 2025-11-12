@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.CustomDiggingBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
-abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, CustomDiggingBlock, DyedBlock, BlockWithItem<Item> {
+abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullBlock, CustomDiggingBlock, DyedBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 0.8f
 

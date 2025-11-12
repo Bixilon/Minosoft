@@ -15,8 +15,10 @@ package de.bixilon.minosoft.data.registries.blocks.types.legacy
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
@@ -26,12 +28,15 @@ open class LegacyBlock(
     identifier: ResourceLocation,
     settings: BlockSettings,
     model: ResourceLocation?,
-) : Block(identifier, settings), FullBlock, CustomModel, TintedBlock {
+) : Block(identifier, settings), OutlinedBlock, CollidableBlock, CustomModel, TintedBlock {
     override var hardness: Float = 0.0f
     override var tintProvider: TintProvider? = null
 
-    override val modelName: ResourceLocation? = model ?: identifier
+    override val modelName = model ?: identifier
 
+    // TODO: No shapes are provided in minosoft-meta, fallback to always full
+    override val collisionShape = AABB.BLOCK
+    override val outlineShape = AABB.BLOCK
 
     companion object {
 

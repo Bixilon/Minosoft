@@ -16,13 +16,17 @@ package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collis
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-/**
- * A block with collisions (a player can not move through the shape)
- */
 interface CollidableBlock {
 
-    fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?) = state.collisionShape
+    val collisionShape: Shape? get() = null
+
+    @Suppress("DEPRECATION")
+    fun getCollisionShape(state: BlockState): Shape? = collisionShape ?: state.collisionShape ?: AABB.BLOCK
+    fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState) = getCollisionShape(state)
+    fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, entity: BlockEntity) = getCollisionShape(session, context, position, state)
 }

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.camera.target
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.camera.SessionCamera
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
@@ -28,6 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -93,15 +93,25 @@ class TargetHandler(
         return target
     }
 
-    private fun raycast(origin: Vec3d, front: Vec3d, state: BlockState, blockPosition: BlockPosition): AABBRaycastHit? {
-        if (BlockStateFlags.OUTLINE !in state.flags || state.block !is OutlinedBlock) { // TODO: Check FULL_OUTLINE
+    private fun raycast(origin: Vec3d, front: Vec3d, state: BlockState, position: BlockPosition): AABBRaycastHit? {
+        val block = state.block
+        if (BlockStateFlags.OUTLINE !in state.flags || block !is OutlinedBlock) {
             // no block, continue going into that direction
             return null
         }
-        var shape = state.block.getOutlineShape(camera.session, blockPosition, state) ?: return null
-        state.block.nullCast<OffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
+        var shape = when {
+            BlockStateFlags.FULL_OUTLINE in state.flags -> AABB.BLOCK
+            else -> block.outlineShape ?: block.getOutlineShape(state) ?: block.getOutlineShape(camera.session, position, state)
+        }
+        if (shape == null) {
+            shape = camera.session.world.getBlockEntity(position)?.let { block.getOutlineShape(camera.session, position, state, it) }
+        }
+        if (shape == null) return null
+        if (BlockStateFlags.OFFSET in state.flags && block is OffsetBlock) {
+            shape += block.offsetShape(position)
+        }
 
-        shape += blockPosition
+        shape += position
 
         return shape.raycast(origin, front)
     }

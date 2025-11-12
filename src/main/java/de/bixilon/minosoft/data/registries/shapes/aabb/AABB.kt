@@ -318,8 +318,8 @@ class AABB : Shape {
     }
 
     companion object {
-        val BLOCK: AABB = AABB(Vec3f.EMPTY, Vec3f.ONE)
-        val EMPTY: AABB = AABB(Vec3f.EMPTY, Vec3f.EMPTY)
+        val BLOCK = AABB(Vec3d.EMPTY, Vec3d.ONE)
+        val INVALID = AABB(Vec3d.EMPTY, Vec3d.EMPTY)
 
         inline fun getRange(min: Double, max: Double): IntRange {
             return min.floor until max.ceil

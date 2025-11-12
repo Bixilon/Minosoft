@@ -67,8 +67,7 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
         physics.velocity.y = if (drag) maxOf(-0.9, velocity.y - 0.03) else minOf(1.8, velocity.y + 0.1)
     }
 
-
-    override fun getLightProperties(state: BlockState) = FluidBlock.LIGHT_PROPERTIES
+    override val lightProperties get() = FluidBlock.LIGHT_PROPERTIES
 
     override fun randomDisplayTick(session: PlaySession, state: BlockState, position: BlockPosition, random: Random) {
         fluid.randomTick(session, state, position, random)

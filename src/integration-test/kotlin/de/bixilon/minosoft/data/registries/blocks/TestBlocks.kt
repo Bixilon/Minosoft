@@ -17,19 +17,15 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.block.TestBlockEntities
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.TestVersions
-import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.protocol.versions.VersionTypes
-import de.bixilon.minosoft.test.IT
 
 object TestBlocks {
     val TEST1 = TestBlock(minecraft("test1"))
@@ -37,9 +33,9 @@ object TestBlocks {
     val TEST3 = TestBlock(minecraft("test3"))
 
 
-    val OPAQUE1: TestBlock = object : TestBlock(minecraft("opaque1")), FullOpaqueBlock {}
-    val OPAQUE2: TestBlock = object : TestBlock(minecraft("opaque2")), FullOpaqueBlock {}
-    val OPAQUE3: TestBlock = object : TestBlock(minecraft("opaque3")), FullOpaqueBlock {}
+    val OPAQUE1: TestBlock = object : TestBlock(minecraft("opaque1")), FullBlock {}
+    val OPAQUE2: TestBlock = object : TestBlock(minecraft("opaque2")), FullBlock {}
+    val OPAQUE3: TestBlock = object : TestBlock(minecraft("opaque3")), FullBlock {}
 
 
     val ENTITY1: TestBlock = object : TestBlock(minecraft("entity1")), BlockWithEntity<TestBlockEntities.TestBlockEntity> {
@@ -53,7 +49,7 @@ object TestBlocks {
         override val hardness get() = 1.0f
 
         init {
-            this::states.forceSet(SingleStateManager(BlockState(this, emptyMap(), BlockStateFlags.of(this))))
+            this::states.forceSet(SingleStateManager(BlockState(this, emptyMap(), this.flags, 1, null, null)))
         }
     }
 }

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.physics.entities.living.player.local
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -84,8 +83,8 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
 
     fun getAABB(pose: Poses): AABB {
         val dimensions = entity.getDimensions(pose) ?: entity.dimensions
-        val halfWidth = dimensions.x / 2
-        return AABB(Vec3f(-halfWidth, 0.0f, -halfWidth), Vec3f(halfWidth, dimensions.y, halfWidth))
+        val halfWidth = dimensions.x / 2.0f
+        return AABB(Vec3d(-halfWidth, 0.0f, -halfWidth), Vec3d(halfWidth, dimensions.y, halfWidth))
     }
 
     fun wouldPoseCollide(pose: Poses): Boolean {

@@ -10,18 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.recipes
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
+package de.bixilon.minosoft.data.registries.blocks
 
-data class Ingredient(val stacks: Array<ItemStack?>) {
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
+import org.testng.Assert.assertTrue
+import org.testng.annotations.Test
 
-    override fun equals(other: Any?) = when {
-        other !is Ingredient -> false
-        else -> stacks.contentEquals(other.stacks)
+@Test(groups = ["blocks"])
+class TestBlocksTest {
+
+    fun `opaque are all opaque`() {
+        assertTrue(BlockStateFlags.FULL_OPAQUE in TestBlocks.OPAQUE1.flags)
+        assertTrue(BlockStateFlags.FULL_OPAQUE in TestBlocks.OPAQUE2.flags)
+        assertTrue(BlockStateFlags.FULL_OPAQUE in TestBlocks.OPAQUE3.flags)
     }
 
-    override fun hashCode(): Int {
-        return stacks.contentHashCode()
+    fun `normal blocks are all not opaque`() {
+        assertTrue(BlockStateFlags.FULL_OPAQUE !in TestBlocks.TEST1.flags)
+        assertTrue(BlockStateFlags.FULL_OPAQUE !in TestBlocks.TEST1.flags)
+        assertTrue(BlockStateFlags.FULL_OPAQUE !in TestBlocks.TEST1.flags)
     }
 }

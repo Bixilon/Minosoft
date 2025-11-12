@@ -17,6 +17,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -27,16 +28,23 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpB
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 enum class BlockStateFlags {
-    FULLY_OPAQUE, // TODO: Split into rendering, outline and collision (e.g. soul sand)
     FLUID,
     WATERLOGGED,
     OFFSET,
     ENTITY,
+
+    OUTLINE,
+
+    // shape
+    FULL_COLLISION,
+    FULL_OUTLINE,
+    FULL_OPAQUE,
 
     // physics
     COLLISIONS,
@@ -56,12 +64,24 @@ enum class BlockStateFlags {
         fun of(block: Block): IntInlineEnumSet<BlockStateFlags> {
             var flags = IntInlineEnumSet<BlockStateFlags>()
 
-            if (block is FullOpaqueBlock) flags += FULLY_OPAQUE
+            if (block.lightProperties == OpaqueProperty) flags += FULL_OPAQUE
+
             if (block is FluidHolder) flags += FLUID
             if (block is OffsetBlock) flags += OFFSET
             if (block is BlockWithEntity<*>) flags += ENTITY
 
-            if (block is CollidableBlock) flags += COLLISIONS
+            if (block is CollidableBlock) {
+                flags += COLLISIONS
+                if (block.collisionShape == AABB.BLOCK) {
+                    flags += FULL_COLLISION
+                }
+            }
+            if (block is OutlinedBlock) {
+                flags += OUTLINE
+                if (block.outlineShape == AABB.BLOCK) {
+                    flags += FULL_OUTLINE
+                }
+            }
             if (block is VelocityBlock) flags += VELOCITY
             if (block is JumpBlock) flags += JUMP
 
@@ -79,6 +99,8 @@ enum class BlockStateFlags {
                 flags += WATERLOGGED
                 flags += FLUID
             }
+
+            TODO("opaque, collision, outline based on block shape")
 
             return flags
         }

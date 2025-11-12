@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStasteCodec
 import de.bixilon.minosoft.data.registries.blocks.registry.codec.LegacyBlockStasteCodec
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
@@ -48,7 +47,7 @@ class BlockRegistry(
             else -> LegacyBlock.deserialize(identifier, settings, data)
         }
 
-        val flags = BlockStateFlags.of(block)
+        val flags = block.flags
 
         val manager = when {
             flattened -> FlattenedBlockStasteCodec.deserialize(block, flags, data, version, registries)

@@ -78,23 +78,20 @@ open class PixLyzerBlock(
         ITEM_FIELD.inject<RegistryItem>(data["item"])
     }
 
-    override fun canReplace(session: PlaySession, state: BlockState, position: BlockPosition): Boolean {
-        return replaceable
-    }
+    @Suppress("DEPRECATION")
+    override fun getCollisionShape(state: BlockState) = state.collisionShape
 
-    override fun isCorrectTool(item: Item): Boolean {
-        return false
-    }
+    @Suppress("DEPRECATION")
+    override fun getOutlineShape(state: BlockState) = state.outlineShape
+
+    override fun canReplace(session: PlaySession, state: BlockState, position: BlockPosition) = replaceable
+
+    override fun isCorrectTool(item: Item) = false
 
     override fun offsetShape(position: BlockPosition): Vec3f {
         val offset = randomOffset ?: return Vec3f.EMPTY
         return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
     }
-
-    override fun offsetModel(position: BlockPosition): Vec3f {
-        return super.offsetShape(position)
-    }
-
 
     companion object : IdentifierCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
         private val NULL_OFFSET_XYZ = BlockPosition(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)

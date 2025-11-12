@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
@@ -43,7 +42,7 @@ abstract class Block(
 
     val soundGroup = settings.soundGroup
 
-    open val flags get() = IntInlineEnumSet<BlockStateFlags>()
+    open val flags get() = BlockStateFlags.of(this)
 
     companion object {
         val STATES = Block::states.field

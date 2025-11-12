@@ -78,7 +78,7 @@ abstract class Particle(
     override var onGround: Boolean = true
     var alreadyCollided = false
     var accelerateIfYBlocked = false
-    override var aabb: AABB = AABB.EMPTY
+    override var aabb: AABB = AABB.INVALID
     var spacing: Vec3f = Vec3f.EMPTY
         set(value) {
             if (field == value) {

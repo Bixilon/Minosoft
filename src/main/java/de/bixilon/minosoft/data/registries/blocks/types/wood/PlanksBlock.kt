@@ -15,14 +15,14 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 
-abstract class PlanksBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, AxeRequirement, HandBreakable, BlockWithItem<Item> {
+abstract class PlanksBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullBlock, AxeRequirement, HandBreakable, BlockWithItem<Item> {
     override val hardness get() = 2.0f
     override val item: Item = this::item.inject(identifier)
 }

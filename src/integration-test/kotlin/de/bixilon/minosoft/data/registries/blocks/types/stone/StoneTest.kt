@@ -42,7 +42,7 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun testCollisionShape() {
-        assertEquals(Shape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state, null))
+        assertEquals(Shape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state))
     }
 
     fun testStates() {

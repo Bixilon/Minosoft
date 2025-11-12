@@ -15,12 +15,12 @@ package de.bixilon.minosoft.data.registries.blocks.types.building
 
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
 
-abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), PickaxeRequirement, FullOpaqueBlock, BlockWithItem<Item> {
+abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), PickaxeRequirement, FullBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
 }

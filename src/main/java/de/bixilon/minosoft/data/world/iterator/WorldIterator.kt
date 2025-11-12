@@ -117,7 +117,7 @@ class WorldIterator(
             if (BlockStateFlags.COLLISIONS !in state.flags || state.block !is CollidableBlock) continue
             if (predicate != null && !predicate.invoke(state)) continue
 
-            val shape = state.block.getCollisionShape(world.session, context, position, state, null) ?: continue
+            val shape = state.block.getCollisionShape(world.session, context, position, state) ?: continue // TODO: block entity
             if ((shape + position).intersects(aabb)) {
                 return true
             }

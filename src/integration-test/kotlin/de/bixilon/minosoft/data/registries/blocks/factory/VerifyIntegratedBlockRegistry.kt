@@ -32,7 +32,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Unbr
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -69,10 +68,8 @@ object VerifyIntegratedBlockRegistry {
     }
 
     private fun compareCollisionShape(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
-        if (integrated.block is OutlinedBlock && integrated.block !is FixedCollidable) return // not checkable without context
-
-        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer, null) else null
-        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer, null) else null
+        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer) else null
+        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer) else null
 
         if (expected == actual) {
             return

@@ -18,6 +18,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.EnumProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
@@ -30,13 +31,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Inst
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.FullOutlinedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.size.DoubleSizeBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
@@ -49,9 +51,12 @@ import de.bixilon.minosoft.gui.rendering.tint.tints.grass.TallGrassTintCalculato
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
-abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock, ReplaceableBlock {
+abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, OutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock, ReplaceableBlock {
     override val randomOffset get() = RandomOffsetTypes.XYZ
     override val item: Item = this::item.inject(identifier)
+
+    override val lightProperties get() = TransparentProperty
+    override val outlineShape get() = AABB.BLOCK
 
     override fun registerProperties(version: Version, list: MapPropertyList) {
         super<Block>.registerProperties(version, list)

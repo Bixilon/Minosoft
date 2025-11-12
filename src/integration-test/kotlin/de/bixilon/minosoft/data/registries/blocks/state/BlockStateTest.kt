@@ -21,11 +21,11 @@ import org.testng.annotations.Test
 class BlockStateTest {
 
     fun `not full opaque flag`() {
-        assertFalse(BlockStateFlags.FULLY_OPAQUE in TestBlockStates.TEST1.flags)
+        assertFalse(BlockStateFlags.FULL_OPAQUE in TestBlockStates.TEST1.flags)
     }
 
     fun `full opaque flag`() {
-        assertTrue(BlockStateFlags.FULLY_OPAQUE in TestBlockStates.OPAQUE1.flags)
+        assertTrue(BlockStateFlags.FULL_OPAQUE in TestBlockStates.OPAQUE1.flags)
     }
 
     fun `entity flag`() {

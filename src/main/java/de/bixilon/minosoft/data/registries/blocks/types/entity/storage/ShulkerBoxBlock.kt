@@ -14,27 +14,32 @@
 package de.bixilon.minosoft.data.registries.blocks.types.entity.storage
 
 import de.bixilon.minosoft.data.colors.DyeColors
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.property.FullBlockPropertyRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 
-open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item>, LightedBlock, CustomModel {
+open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, CollidableBlock, OutlinedBlock, BlockWithItem<Item>, LightedBlock, CustomModel {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 2.0f
 
@@ -44,11 +49,22 @@ open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings
     }
 
     override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = ShulkerBoxBlockEntity(session, position, state)
-    override fun getLightProperties(state: BlockState) = LIGHT_PROPERTIES
+
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState, entity: BlockEntity): Shape {
+        if (entity !is ShulkerBoxBlockEntity) return AABB.BLOCK
+        return entity.getOutlineShape()
+    }
+
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, entity: BlockEntity): Shape? {
+        if (entity !is ShulkerBoxBlockEntity) return AABB.BLOCK
+        return entity.getCollisionShape()
+    }
+
+    override val lightProperties get() = LIGHT_PROPERTIES
 
 
     companion object : BlockFactory<ShulkerBoxBlock> {
-        val LIGHT_PROPERTIES = CustomLightProperties(true, true, true)
+        val LIGHT_PROPERTIES = CustomLightProperties(true, true, true) // TODO: Directed (from bottom)
         override val identifier = minecraft("shulker_box")
 
         override fun build(registries: Registries, settings: BlockSettings) = ShulkerBoxBlock(identifier, settings = settings)

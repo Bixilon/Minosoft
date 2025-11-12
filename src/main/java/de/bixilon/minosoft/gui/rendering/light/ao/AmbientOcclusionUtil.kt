@@ -67,7 +67,7 @@ object AmbientOcclusionUtil {
         }
 
         val state = section?.blocks?.get(x, y, z) ?: return 0
-        if (BlockStateFlags.FULLY_OPAQUE in state.flags) return 1
+        if (BlockStateFlags.FULL_OPAQUE in state.flags) return 1
 
         // TODO: more test?
 

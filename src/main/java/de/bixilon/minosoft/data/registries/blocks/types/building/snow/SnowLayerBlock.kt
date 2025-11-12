@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.snow
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilde
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -32,7 +33,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.protocol.versions.Version
 
-class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FixedCollidable, OutlinedBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock {
+class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), OutlinedBlock, CollidableBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.1f
     override val legacyModelName get() = minecraft("snow_layer")
@@ -43,7 +44,7 @@ class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settin
         val collisionShape = AABB(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
         val outlineShape = AABB(0.0, 0.0, 0.0, 1.0, layer * LAYER_HEIGHT, 1.0)
 
-        return settings.build(block = this, collisionShape = collisionShape, outlineShape = outlineShape)
+        return settings.build(block = this, collisionShape = collisionShape, outlineShape = outlineShape, lightProperties = TransparentProperty)
     }
 
 

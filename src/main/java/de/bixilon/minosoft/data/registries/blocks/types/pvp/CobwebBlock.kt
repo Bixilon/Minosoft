@@ -19,12 +19,13 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.CustomDiggingBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.FullOutlinedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -32,13 +33,18 @@ import de.bixilon.minosoft.data.registries.item.items.tool.properties.requiremen
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, FullOutlinedBlock, ToolRequirement, CustomDiggingBlock, BlockWithItem<Item> {
+open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, OutlinedBlock, ToolRequirement, CustomDiggingBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 4.0f
+
+    override val lightProperties get() = TransparentProperty
+    override val outlineShape get() = AABB.BLOCK
+    override val collisionShape get() = AABB.BLOCK
 
 
     override fun isCorrectTool(item: Item): Boolean {

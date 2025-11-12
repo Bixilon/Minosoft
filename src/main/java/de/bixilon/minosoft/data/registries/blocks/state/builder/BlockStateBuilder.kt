@@ -127,7 +127,7 @@ class BlockStateBuilder(
             var flags = BlockStateFlags.update(flags, properties)
 
 
-            if (block is PixLyzerBlock && data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULLY_OPAQUE
+            if (block is PixLyzerBlock && data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULL_OPAQUE
 
             return BlockStateBuilder(
                 properties = properties,

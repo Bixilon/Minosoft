@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.bee
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -23,25 +24,25 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Inst
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.StatelessCollidable
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.FullOutlinedBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TranslucentBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 
-open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, JumpBlock, VelocityBlock, BeeBlock, TranslucentBlock, InstantBreakableBlock, StatelessCollidable, FullOutlinedBlock, BlockWithItem<Item> {
+open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, JumpBlock, VelocityBlock, BeeBlock, OutlinedBlock, InstantBreakableBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val velocity: Float get() = 0.4f
     override val jumpBoost: Float get() = 0.5f
-    override val collisionShape: Shape get() = COLLISION_BOX
+
+    override val lightProperties get() = TransparentProperty
+    override val collisionShape get() = SHAPE
+    override val outlineShape get() = SHAPE
 
     private fun isSliding(position: BlockPosition, physics: EntityPhysics<*>): Boolean {
         if (physics.onGround) {
@@ -79,7 +80,7 @@ open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, setti
 
     companion object : BlockFactory<HoneyBlock> {
         override val identifier = minecraft("honey_block")
-        private val COLLISION_BOX = AABB(0.0625, 0.0, 0.0625, 0.9375, 0.9375, 0.9375)
+        private val SHAPE = AABB(0.0625, 0.0, 0.0625, 0.9375, 0.9375, 0.9375)
         const val MAX_Y = 0.9375
         const val SLIDE_GRAVITY = 0.05
 

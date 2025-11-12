@@ -81,7 +81,7 @@ abstract class Entity(
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
     open val dimensions = Vec2f(type.width, type.height)
-    open val defaultAABB: AABB = AABB.EMPTY
+    open val defaultAABB: AABB = AABB.INVALID
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
     open val heightOffset: Double get() = 0.0

@@ -28,6 +28,13 @@ class SoulSandTest {
         assertTrue(BlockStateFlags.COLLISIONS in block.states.default.flags)
         assertTrue(BlockStateFlags.VELOCITY in block.states.default.flags)
 
-        assertFalse(BlockStateFlags.FULLY_OPAQUE in block.states.default.flags)
+        assertTrue(BlockStateFlags.FULL_OPAQUE in block.states.default.flags)
+
+        assertTrue(BlockStateFlags.OUTLINE in block.states.default.flags)
+        assertTrue(BlockStateFlags.FULL_OUTLINE in block.states.default.flags)
+
+        assertFalse(BlockStateFlags.FULL_COLLISION in block.states.default.flags)
+
+        assertFalse(BlockStateFlags.ENTITY !in block.states.default.flags)
     }
 }

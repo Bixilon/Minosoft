@@ -32,7 +32,7 @@ object FluidCornerHeightUtil {
 
         if (height != 0.0f) return height
 
-        if (BlockStateFlags.FULLY_OPAQUE in state.flags || BlockStateFlags.COLLISIONS in state.flags) {
+        if (BlockStateFlags.FULL_OPAQUE in state.flags || BlockStateFlags.FULL_COLLISION in state.flags) { // TODO: check if there are actual collisions
             return -1.0f
         }
         return 0.0f

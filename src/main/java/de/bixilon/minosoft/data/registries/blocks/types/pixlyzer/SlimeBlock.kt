@@ -24,19 +24,23 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TranslucentBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 
-open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, settings: BlockSettings) : Block(identifier, settings), BouncingHandler, StepHandler, InstantBreakableBlock, FrictionBlock, TranslucentBlock, FullBlock, BlockWithItem<Item> {
+open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, settings: BlockSettings) : Block(identifier, settings), BouncingHandler, StepHandler, InstantBreakableBlock, FrictionBlock, OutlinedBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier) // TODO
     override val friction: Float get() = 0.8f
+
+    override val lightProperties get() = FilteringTransparentProperty
+    override val outlineShape get() = AABB.BLOCK
+    override val collisionShape get() = AABB.BLOCK
 
     override fun onEntityStep(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         val velocity = entity.physics.velocity
@@ -47,7 +51,6 @@ open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, sett
         physics.velocity.z *= friction
     }
 
-    override fun getLightProperties(state: BlockState) = FilteringTransparentProperty
 
     companion object : BlockFactory<SlimeBlock> {
         override val identifier = minecraft("slime_block")

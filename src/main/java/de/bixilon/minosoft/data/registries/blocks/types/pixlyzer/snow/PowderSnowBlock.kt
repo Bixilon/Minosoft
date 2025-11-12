@@ -16,20 +16,19 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.primitive.d
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.FullOutlinedBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.OpaqueBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.LeatherArmor
@@ -41,8 +40,11 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.tags.entity.MinecraftEntityTags.isIn
 
-open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock, FullOutlinedBlock, OpaqueBlock {
+open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock, OutlinedBlock {
     override val hardness: Float get() = 0.25f
+
+    override val lightProperties get() = OpaqueProperty
+    override val outlineShape get() = AABB.BLOCK
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
         if (entity is LivingEntity && physics.positionInfo.block?.block !is PowderSnowBlock) {
@@ -51,16 +53,14 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
         physics.slowMovement(state, SLOW)
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
-        if (context !is EntityCollisionContext) {
-            return null
-        }
-        if (context.physics.fallDistance > 2.5f) {
-            return FALLING_SHAPE
-        }
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState): AABB? {
+        if (context !is EntityCollisionContext) return null
+
+        if (context.physics.fallDistance > 2.5f) return FALLING_SHAPE
         if (context.entity is FallingBlockEntity || (context.entity.canWalkOnPowderSnow() && context.isAbove(1.0, position) && !context.descending)) {
             return Shape.FULL
         }
+
         return null
     }
 

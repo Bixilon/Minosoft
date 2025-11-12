@@ -137,7 +137,7 @@ object SectionOcclusionTracer {
 
     inline fun BlockState?.isFullyOpaque(): Boolean {
         if (this == null) return false
-        return BlockStateFlags.FULLY_OPAQUE in flags
+        return BlockStateFlags.FULL_OPAQUE in flags
     }
 
     @Deprecated("Kutil 1.30.1")

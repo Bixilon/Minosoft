@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.dirt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTinted
 
-open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, GrassTinted {
+open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, GrassTinted {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.6f
     override val legacyModelName get() = minecraft("grass")

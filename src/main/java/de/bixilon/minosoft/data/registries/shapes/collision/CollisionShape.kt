@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPred
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
@@ -82,15 +81,16 @@ class CollisionShape(
         // TODO: add world border collision shape
 
         for ((position, state, chunk) in WorldIterator(aabbs, world, chunk)) {
-            if (BlockStateFlags.COLLISIONS !in state.flags || state.block !is CollidableBlock) continue
+            val block = state.block
+            if (BlockStateFlags.COLLISIONS !in state.flags || block !is CollidableBlock) continue
             if (predicate != null && !predicate.invoke(state)) continue
             // TODO: filter blocks (e.g. moving piston), whatever that means
 
+            val entity = chunk.getBlockEntity(position.inChunkPosition)
+
             val shape = when {
                 BlockStateFlags.FULL_COLLISION in state.flags -> Shape.FULL
-                state.block is FixedCollidable -> state.block.getCollisionShape(state)
-                BlockStateFlags.ENTITY in state.flags -> state.block.getCollisionShape(world.session, context, position, state, chunk.getBlockEntity(position.inChunkPosition))
-                else -> state.block.getCollisionShape(world.session, context, position, state, null)
+                else -> block.collisionShape ?: block.getCollisionShape(state) ?: block.getCollisionShape(world.session, context, position, state) ?: entity?.let { block.getCollisionShape(world.session, context, position, state, it) }
             } ?: continue
 
             if (position in aabb && shape.intersects(aabb, -position)) {

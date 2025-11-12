@@ -35,7 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer), FeatureDrawable {
     private val manager = renderer.renderer.features.hitbox
 
-    private var aabb = AABB.EMPTY
+    private var aabb = AABB.INVALID
     private var eyePosition = Vec3f.EMPTY
     private var rotation = EntityRotation.EMPTY
 

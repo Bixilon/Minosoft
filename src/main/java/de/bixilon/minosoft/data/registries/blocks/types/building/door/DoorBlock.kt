@@ -20,7 +20,6 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
@@ -62,7 +61,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, LightedBlock {
     override val item: Item = this::item.inject(identifier)
 
-    override fun getLightProperties(state: BlockState) = TransparentProperty
+    override val lightProperties get() = TransparentProperty
 
     override fun registerProperties(version: Version, list: MapPropertyList) {
         super<Block>.registerProperties(version, list)
@@ -147,8 +146,8 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return getLegacyShape(session, position, state)
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
-        if (session.version.flattened) return super.getCollisionShape(session, context, position, state, blockEntity)
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState): Shape? {
+        if (session.version.flattened) return super.getCollisionShape(session, context, position, state)
 
         return getLegacyShape(session, position, state)
     }

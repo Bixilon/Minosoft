@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.registries.blocks.types.climbing
 
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Inst
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TransparentBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.block.climbing.ClimbingItems
@@ -38,10 +37,11 @@ import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.identifier, settings: BlockSettings) : Block(identifier, settings), ClimbingBlock, TransparentBlock, InstantBreakableBlock, OutlinedBlock, CollidableBlock, BlockWithItem<ClimbingItems.ScaffoldingItem> {
+open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.identifier, settings: BlockSettings) : Block(identifier, settings), ClimbingBlock, InstantBreakableBlock, OutlinedBlock, CollidableBlock, BlockWithItem<ClimbingItems.ScaffoldingItem> {
     override val item: ClimbingItems.ScaffoldingItem = this::item.inject(ClimbingItems.ScaffoldingItem)
 
     override fun canPushOut(entity: Entity) = false
+    override val lightProperties get() = TransparentProperty
 
 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
@@ -51,7 +51,7 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
         return if (state.isBottom()) BOTTOM_OUTLINE else OUTLINE
     }
 
-    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState, blockEntity: BlockEntity?): Shape? {
+    override fun getCollisionShape(session: PlaySession, context: CollisionContext, position: BlockPosition, state: BlockState): Shape? {
         if (context.isAbove(1.0, position) && (context !is EntityCollisionContext || !context.descending)) {
             return OUTLINE
         }

@@ -53,7 +53,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         protected set
 
 
-    override var aabb = AABB.EMPTY
+    override var aabb = AABB.INVALID
         protected set
     open var onGround = false
 

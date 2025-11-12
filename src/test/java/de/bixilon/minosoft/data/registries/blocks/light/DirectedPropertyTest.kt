@@ -35,17 +35,17 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered2() {
-        assertFalse(AABB.EMPTY.isSideCovered(Directions.DOWN))
-        assertFalse(AABB.EMPTY.isSideCovered(Directions.UP))
-        assertFalse(AABB.EMPTY.isSideCovered(Directions.NORTH))
-        assertFalse(AABB.EMPTY.isSideCovered(Directions.SOUTH))
-        assertFalse(AABB.EMPTY.isSideCovered(Directions.WEST))
-        assertFalse(AABB.EMPTY.isSideCovered(Directions.EAST))
+        assertFalse(AABB.INVALID.isSideCovered(Directions.DOWN))
+        assertFalse(AABB.INVALID.isSideCovered(Directions.UP))
+        assertFalse(AABB.INVALID.isSideCovered(Directions.NORTH))
+        assertFalse(AABB.INVALID.isSideCovered(Directions.SOUTH))
+        assertFalse(AABB.INVALID.isSideCovered(Directions.WEST))
+        assertFalse(AABB.INVALID.isSideCovered(Directions.EAST))
     }
 
     @Test
     fun testSideCovered3() {
-        val shape = AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f)
+        val shape = AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0)
         assertTrue(shape.isSideCovered(Directions.DOWN))
         assertFalse(shape.isSideCovered(Directions.UP))
         assertFalse(shape.isSideCovered(Directions.NORTH))
@@ -56,7 +56,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered4() {
-        val shape = AABB(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f)
+        val shape = AABB(0.0, 0.0, 0.0, 1.0, 1.0, 0.5)
         assertFalse(shape.isSideCovered(Directions.DOWN))
         assertFalse(shape.isSideCovered(Directions.UP))
         assertTrue(shape.isSideCovered(Directions.NORTH))
@@ -68,8 +68,8 @@ internal class DirectedPropertyTest {
     @Test
     fun testSideCovered5() {
         val shape = CombinedShape(
-            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
-            AABB(0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f),
+            AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
+            AABB(0.0, 0.5, 0.0, 1.0, 1.0, 1.0),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))
@@ -83,8 +83,8 @@ internal class DirectedPropertyTest {
     @Test
     fun testSideCovered6() {
         val shape = CombinedShape(
-            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
-            AABB(0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f),
+            AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
+            AABB(0.0, 0.5, 0.0, 1.0, 1.0, 0.5),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))
@@ -98,8 +98,8 @@ internal class DirectedPropertyTest {
     @Test
     fun testSideCovered7() {
         val shape = CombinedShape(
-            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
-            AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
+            AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
+            AABB(0.0, 0.5, 0.5, 1.0, 1.0, 1.0),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))
@@ -113,8 +113,8 @@ internal class DirectedPropertyTest {
     @Test
     fun testSideCovered8() {
         val shape = CombinedShape(
-            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
-            AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
+            AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
+            AABB(0.0, 0.5, 0.5, 1.0, 1.0, 1.0),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))
@@ -129,8 +129,8 @@ internal class DirectedPropertyTest {
     @Test
     fun testSideCovered9() { // overlapping
         val shape = CombinedShape(
-            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.6f, 1.0f),
-            AABB(0.0f, 0.4f, 0.5f, 1.0f, 1.0f, 1.0f),
+            AABB(0.0, 0.0, 0.0, 1.0, 0.6, 1.0),
+            AABB(0.0, 0.4, 0.5, 1.0, 1.0, 1.0),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))
@@ -144,9 +144,9 @@ internal class DirectedPropertyTest {
     // @Test // TODO: This test is correct, isSideCovered is broken
     fun testSideCovered10() { // overlapping
         val shape = CombinedShape(
-            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.6f, 1.0f),
-            AABB(0.1f, 0.0f, 0.0f, 0.9f, 0.8f, 1.0f),
-            AABB(0.0f, 0.4f, 0.5f, 1.0f, 0.9f, 1.0f),
+            AABB(0.0, 0.0, 0.0, 1.0, 0.6, 1.0),
+            AABB(0.1, 0.0, 0.0, 0.9, 0.8, 1.0),
+            AABB(0.0, 0.4, 0.5, 1.0, 0.9, 1.0),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))
