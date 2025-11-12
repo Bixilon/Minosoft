@@ -24,10 +24,6 @@ data class ContainerType(
     val factory: ContainerFactory<out Container>,
 ) : RegistryItem() {
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
     companion object : IdentifierCodec<ContainerType> {
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): ContainerType {
             return ContainerType(

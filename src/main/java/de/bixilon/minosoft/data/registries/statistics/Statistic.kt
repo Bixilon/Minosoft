@@ -26,10 +26,6 @@ open class Statistic(
     val unit: StatisticUnits,
 ) : RegistryItem(), Translatable {
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
     companion object : IdentifierCodec<Statistic> {
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Statistic {
             val translationKey = data["translation_id"]?.toResourceLocation()

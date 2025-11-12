@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,17 +16,4 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
 abstract class Enchantment : RegistryItem() {
     override val injectable: Boolean get() = false
-
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
-    override fun hashCode(): Int {
-        return identifier.hashCode()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is Enchantment) return false
-        return this.identifier == other.identifier
-    }
 }

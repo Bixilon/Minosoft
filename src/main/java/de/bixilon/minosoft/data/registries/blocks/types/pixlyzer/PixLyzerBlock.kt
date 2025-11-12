@@ -86,10 +86,6 @@ open class PixLyzerBlock(
         return false
     }
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
     override fun offsetShape(position: BlockPosition): Vec3f {
         val offset = randomOffset ?: return Vec3f.EMPTY
         return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data

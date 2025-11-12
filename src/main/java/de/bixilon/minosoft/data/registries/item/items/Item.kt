@@ -12,16 +12,12 @@
  */
 package de.bixilon.minosoft.data.registries.item.items
 
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 abstract class Item(
     override val identifier: ResourceLocation,
@@ -32,21 +28,4 @@ abstract class Item(
     override val translationKey = identifier.translation("item")
 
     open var model: ItemRender? = null
-
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
-    override fun hashCode(): Int {
-        return identifier.hashCode()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is Item) return false
-        if (other.identifier != identifier) return false
-        if (StaticConfiguration.REGISTRY_ITEM_COMPARE_CLASS && other::class.java != this::class.java) {
-            Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Mismatching class: ${other::class.java} vs ${this::class.java}, but same identifier: $identifier" }
-        }
-        return true
-    }
 }

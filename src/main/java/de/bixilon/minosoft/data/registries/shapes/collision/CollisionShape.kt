@@ -87,7 +87,7 @@ class CollisionShape(
             // TODO: filter blocks (e.g. moving piston), whatever that means
 
             val shape = when {
-                BlockStateFlags.FULLY_OPAQUE in state.flags -> Shape.FULL
+                BlockStateFlags.FULL_COLLISION in state.flags -> Shape.FULL
                 state.block is FixedCollidable -> state.block.getCollisionShape(state)
                 BlockStateFlags.ENTITY in state.flags -> state.block.getCollisionShape(world.session, context, position, state, chunk.getBlockEntity(position.inChunkPosition))
                 else -> state.block.getCollisionShape(world.session, context, position, state, null)

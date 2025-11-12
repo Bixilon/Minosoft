@@ -30,10 +30,6 @@ class PixlyzerStatusEffectType(
     override val category: StatusEffectCategories,
 ) : StatusEffectType(), Colored, CategorizedEffect {
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
     companion object : IdentifierCodec<StatusEffectType> {
 
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): PixlyzerStatusEffectType {

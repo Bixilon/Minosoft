@@ -65,19 +65,14 @@ abstract class RegistryItem : Identified {
     open fun postInit(registries: Registries) {}
 
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
+    override fun toString() = identifier.toString()
+    override fun hashCode() = identifier.hashCode()
 
-    override fun hashCode(): Int {
-        return identifier.hashCode()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other is ResourceLocation) return this.identifier == other
-        if (other is Identified) return this.identifier == other.identifier
-
-        return false
+    override fun equals(other: Any?) = when (other) {
+        is RegistryItem -> this.identifier == other.identifier
+        is ResourceLocation -> this.identifier == other
+        is Identified -> this.identifier == other.identifier
+        else -> false
     }
 
     companion object {

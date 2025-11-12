@@ -57,10 +57,6 @@ data class EntityType(
     var modelFactory: RegisteredEntityModelFactory<*>? = null,
 ) : RegistryItem(), Translatable {
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
     fun build(session: PlaySession, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, uuid: UUID?, versionId: Int): Entity? {
         return DefaultEntityFactories.buildEntity(factory, session, position, rotation, entityData, uuid, versionId)
     }

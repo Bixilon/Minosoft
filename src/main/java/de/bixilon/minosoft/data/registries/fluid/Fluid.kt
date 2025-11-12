@@ -116,10 +116,6 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
         this.velocity *= Vec3d(horizontal, vertical, horizontal)
     }
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
     open fun matches(other: Fluid): Boolean {
         return other == this
     }

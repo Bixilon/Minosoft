@@ -33,11 +33,6 @@ open class LegacyBlock(
     override val modelName: ResourceLocation? = model ?: identifier
 
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
-
-
     companion object {
 
         fun deserialize(identifier: ResourceLocation, settings: BlockSettings, data: JsonObject): Block {
