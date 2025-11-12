@@ -20,7 +20,9 @@ import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
+import de.bixilon.minosoft.data.registries.blocks.TestBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
@@ -32,12 +34,10 @@ import org.testng.annotations.Test
 import kotlin.random.Random
 import kotlin.time.measureTime
 
-@Test(groups = ["occlusion"], dependsOnGroups = ["block"])
+@Test(groups = ["occlusion"])
 class SectionOcclusionTest {
     private val OCCLUSION = SectionOcclusion::class.java.getFieldOrNull("occlusion")!!
     private val CALCULATE = SectionOcclusion::class.java.getDeclaredMethod("calculate").apply { setUnsafeAccessible() }
-    private val opaque by lazy { StoneTest0.block.states.default }
-    private val transparent by lazy { GlassTest0.block.states.default }
 
     private fun create(): SectionOcclusion {
         val blocks = BlockSectionDataProvider::class.java.allocate()
@@ -69,44 +69,44 @@ class SectionOcclusionTest {
 
     fun `one block set section`() {
         val occlusion = create()
-        occlusion.provider[0, 0, 0] = opaque
+        occlusion.provider[0, 0, 0] = TestBlockStates.OPAQUE1
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 
     fun `full opaque section`() {
         val occlusion = create()
-        occlusion[0, 0, 0, 15, 15, 15] = opaque
+        occlusion[0, 0, 0, 15, 15, 15] = TestBlockStates.OPAQUE1
         assertEquals(occlusion.occlusion, BooleanArray(15) { true })
     }
 
     fun `full transparent section`() {
         val occlusion = create()
-        occlusion[0, 0, 0, 15, 15, 15] = transparent
+        occlusion[0, 0, 0, 15, 15, 15] = TestBlockStates.TEST1
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 
     fun `bottom line filled opaque`() {
         val occlusion = create()
-        occlusion[0, 0, 0, 15, 0, 15] = opaque
+        occlusion[0, 0, 0, 15, 0, 15] = TestBlockStates.OPAQUE1
         assertEquals(occlusion.occlusion, BooleanArray(15) { if (it <= 4) true else false })
     }
 
     fun `everything except bottom line filled opaque`() {
         val occlusion = create()
-        occlusion[0, 1, 0, 15, 15, 15] = opaque
+        occlusion[0, 1, 0, 15, 15, 15] = TestBlockStates.OPAQUE1
         assertEquals(occlusion.occlusion, booleanArrayOf(true, false, false, false, false, true, true, true, true, false, false, false, false, false, false))
     }
 
     fun `y=1 line filled opaque`() {
         val occlusion = create()
-        occlusion[0, 1, 0, 15, 1, 15] = opaque
+        occlusion[0, 1, 0, 15, 1, 15] = TestBlockStates.OPAQUE1
         assertEquals(occlusion.occlusion, BooleanArray(15) { if (it == 0) true else false })
     }
 
     fun `opaque bottom line filled opaque with one transparent`() {
         val occlusion = create()
-        occlusion[0, 0, 0, 15, 0, 15] = opaque
-        occlusion[4, 0, 4, 4, 0, 4] = transparent
+        occlusion[0, 0, 0, 15, 0, 15] = TestBlockStates.OPAQUE1
+        occlusion[4, 0, 4, 4, 0, 4] = TestBlockStates.TEST1
         assertEquals(occlusion.occlusion, BooleanArray(15) { false })
     }
 

@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import java.util.*
-import kotlin.time.Duration
 
 object SectionOcclusionTracer {
     private const val EMPTY_REGION = (-1).toByte()
@@ -58,8 +57,8 @@ object SectionOcclusionTracer {
 
         val regions = ALLOCATOR.allocate(ChunkSize.BLOCKS_PER_SECTION)
         try {
-            val regions = provider.calculateSideRegions(regions)
-            return calculateOcclusion(regions)
+            val sides = provider.calculateSideRegions(regions)
+            return calculateOcclusion(sides)
         } finally {
             ALLOCATOR.free(regions)
         }
@@ -69,7 +68,7 @@ object SectionOcclusionTracer {
         if (this[position.index] != EMPTY_REGION) {
             return true
         }
-        val state = provider[position]
+        val state = provider[position] // TODO: Cache isFullOpaque
         if (state.isFullyOpaque()) {
             this[position.index] = INVALID_REGION
             return true
@@ -79,8 +78,13 @@ object SectionOcclusionTracer {
     }
 
     private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, region: Int): Int {
-        trace(regions, position, DirectionVector(), region.toByte())
-        return regions[position.index].toInt()
+        var set = regions[position.index]
+        if (set < 0) set = region.toByte()
+
+        trace(regions, position, DirectionVector(), set)
+        set = regions[position.index]
+
+        return if (set < 0) 8 else set.toInt()
     }
 
     private fun BlockSectionDataProvider.trace(regions: ByteArray, position: InSectionPosition, direction: DirectionVector, region: Byte) {
@@ -94,7 +98,7 @@ object SectionOcclusionTracer {
         if (direction.y >= 0 && position.y < ChunkSize.SECTION_MAX_Y) trace(regions, position.plusY(), direction.with(Directions.UP), region)
     }
 
-    private fun BlockSectionDataProvider.calculateSideRegions(array: ByteArray): Array<IntInlineSet> {
+    private fun BlockSectionDataProvider.calculateSideRegions(array: ByteArray): IntArray {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
@@ -108,24 +112,24 @@ object SectionOcclusionTracer {
         var east = IntInlineSet()
 
         for (index in 0 until ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) {
-            down += trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), 1)
-            up += trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), 2)
+            down += trace(array, InSectionPosition((index shr 0) and 0x0F, 0x00, (index shr 4) and 0x0F), Directions.O_DOWN)
+            up += trace(array, InSectionPosition((index shr 0) and 0x0F, 0x0F, (index shr 4) and 0x0F), Directions.O_UP)
 
-            north += trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), 3)
-            south += trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), 4)
+            north += trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x00), Directions.O_NORTH)
+            south += trace(array, InSectionPosition((index shr 0) and 0x0F, (index shr 4) and 0x0F, 0x0F), Directions.O_SOUTH)
 
-            west += trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), 5)
-            east += trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), 6)
+            west += trace(array, InSectionPosition(0x00, (index shr 4) and 0x0F, (index shr 0) and 0x0F), Directions.O_WEST)
+            east += trace(array, InSectionPosition(0x0F, (index shr 4) and 0x0F, (index shr 0) and 0x0F), Directions.O_EAST)
             // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
-        return arrayOf(down, up, north, south, west, east)
+        return intArrayOf(down.raw() and 0x3F, up.raw() and 0x3F, north.raw() and 0x3F, south.raw() and 0x3F, west.raw() and 0x3F, east.raw() and 0x3F)
     }
 
-    private fun calculateOcclusion(sides: Array<IntInlineSet>): BooleanArray {
+    private fun calculateOcclusion(sides: IntArray): BooleanArray {
         val occlusion = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
         for ((index, pair) in CubeDirections.PAIRS.withIndex()) {
-            occlusion[index] = sides[pair.a.ordinal].raw() and sides[pair.b.ordinal].raw() != 0
+            occlusion[index] = sides[pair.a.ordinal] and sides[pair.b.ordinal] == 0 // no overlapping regions
         }
         return occlusion
     }
