@@ -26,6 +26,9 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.versions.TestVersions
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.VersionTypes
 import de.bixilon.minosoft.test.IT
 
 object TestBlocks {
@@ -46,7 +49,7 @@ object TestBlocks {
         override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = TestBlockEntities.TestBlockEntity(session, position, state)
     }
 
-    open class TestBlock(identifier: ResourceLocation) : Block(identifier, BlockSettings(IT.VERSION)) {
+    open class TestBlock(identifier: ResourceLocation) : Block(identifier, BlockSettings(TestVersions.TEST)) {
         override val hardness get() = 1.0f
 
         init {
