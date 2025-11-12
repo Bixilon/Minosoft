@@ -41,11 +41,10 @@ class ChunkManager(
     operator fun get(x: Int, z: Int) = this[ChunkPosition(x, z)]
 
     fun unload(position: ChunkPosition) {
-        world.lock.lock()
-        val chunk = chunks.unsafe.remove(position)
-        if (chunk == null) {
-            world.lock.unlock()
-            return
+        val chunk = world.lock.locked {
+            val chunk = chunks.unsafe.remove(position) ?: return
+            size.onUnload(position)
+            return@locked chunk
         }
         val updates = hashSetOf<AbstractWorldUpdate>(ChunkUnloadUpdate(chunk))
 
@@ -56,9 +55,7 @@ class ChunkManager(
             neighbour.neighbours.remove(-offset)
             neighbours.array[index] = null
         }
-        size.onUnload(position)
         world.occlusion++
-        world.lock.unlock()
 
         for (update in updates) {
             world.session.events.fire(WorldUpdateEvent(world.session, update))
