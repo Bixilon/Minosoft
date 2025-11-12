@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -37,10 +36,9 @@ import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import java.util.*
 
-class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), VelocityBlock, EntityCollisionHandler, FluidFilled, LightedBlock, RandomDisplayTickable {
+class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, FluidFilled, LightedBlock, RandomDisplayTickable {
     override val hardness: Float get() = Broken("Fluid!")
     override val fluid: WaterFluid = unsafeNull()
-    override val velocity: Float get() = 1.0f
 
     init {
         this::fluid.inject(WaterFluid)

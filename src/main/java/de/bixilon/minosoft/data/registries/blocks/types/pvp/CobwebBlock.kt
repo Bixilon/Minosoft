@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.EntityCollisionHandler
-import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -42,9 +41,7 @@ open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, sett
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 4.0f
 
-    override val lightProperties get() = TransparentProperty
     override val outlineShape get() = AABB.BLOCK
-    override val collisionShape get() = AABB.BLOCK
 
 
     override fun isCorrectTool(item: Item): Boolean {

@@ -61,5 +61,5 @@ object IT {
     val BLOCK_3 = REGISTRIES.block[Andesite.Block]!!.states.default
 
 
-    val NULL_CONNECTION = PlaySession::class.java.allocate()
+    val NULL_SESSION = PlaySession::class.java.allocate()
 }

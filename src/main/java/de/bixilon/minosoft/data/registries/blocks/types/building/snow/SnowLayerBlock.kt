@@ -15,7 +15,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.snow
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
+import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -41,15 +42,18 @@ class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settin
     override fun buildState(version: Version, settings: BlockStateBuilder): BlockState {
         val layer = settings.properties[LAYERS]?.toInt() ?: return super.buildState(version, settings)
 
-        val collisionShape = AABB(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
+        val collisionShape = if (layer == 1) null else AABB(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)
         val outlineShape = AABB(0.0, 0.0, 0.0, 1.0, layer * LAYER_HEIGHT, 1.0)
 
-        return settings.build(block = this, collisionShape = collisionShape, outlineShape = outlineShape, lightProperties = TransparentProperty)
+        val light = if (layer == LAYER_COUNT) OpaqueProperty else LIGHT_PROPERTIES
+
+        return settings.build(block = this, collisionShape = collisionShape, outlineShape = outlineShape, lightProperties = light)
     }
 
 
     companion object : BlockFactory<SnowLayerBlock> {
         override val identifier = minecraft("snow")
+        private val LIGHT_PROPERTIES = DirectedProperty(booleanArrayOf(false, true, true, true, true, true), true, false)
         private const val LAYER_COUNT = 8
         private const val LAYER_HEIGHT = 1.0 / LAYER_COUNT
         val LAYERS = IntProperty("layers", 1..LAYER_COUNT)

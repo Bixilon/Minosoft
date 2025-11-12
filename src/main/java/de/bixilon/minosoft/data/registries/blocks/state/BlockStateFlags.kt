@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state
 
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
@@ -40,14 +42,14 @@ enum class BlockStateFlags {
     ENTITY,
 
     OUTLINE,
-
-    // shape
-    FULL_COLLISION,
     FULL_OUTLINE,
+
+    COLLISIONS,
+    FULL_COLLISION,
+
     FULL_OPAQUE,
 
     // physics
-    COLLISIONS,
     VELOCITY,
     JUMP,
 
@@ -67,7 +69,7 @@ enum class BlockStateFlags {
             if (block.lightProperties == OpaqueProperty) flags += FULL_OPAQUE
 
             if (block is FluidHolder) flags += FLUID
-            if (block is OffsetBlock) flags += OFFSET
+            if (block is OffsetBlock && (block !is RandomOffsetBlock || block.randomOffset != null)) flags += OFFSET
             if (block is BlockWithEntity<*>) flags += ENTITY
 
             if (block is CollidableBlock) {
@@ -82,8 +84,8 @@ enum class BlockStateFlags {
                     flags += FULL_OUTLINE
                 }
             }
-            if (block is VelocityBlock) flags += VELOCITY
-            if (block is JumpBlock) flags += JUMP
+            if (block is VelocityBlock && block.velocity != 1.0f) flags += VELOCITY
+            if (block is JumpBlock && block.jumpBoost != 1.0f) flags += JUMP
 
             if (block is TintedBlock) flags += TINTED
             if (block is RandomDisplayTickable) flags += RANDOM_TICKS
@@ -100,9 +102,17 @@ enum class BlockStateFlags {
                 flags += FLUID
             }
 
-            TODO("opaque, collision, outline based on block shape")
-
             return flags
+        }
+
+        fun IntInlineEnumSet<BlockStateFlags>.toSet(): BitEnumSet<BlockStateFlags> {
+            val result = set()
+            for (flag in VALUES) {
+                if (flag !in this) continue
+                result += flag
+            }
+
+            return result
         }
     }
 }

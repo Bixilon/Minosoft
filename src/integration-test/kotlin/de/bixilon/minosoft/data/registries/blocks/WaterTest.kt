@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,11 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["block"])
@@ -24,13 +28,18 @@ class WaterTest : BlockTest<Block>() {
         WaterTest0 = this
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftBlocks.WATER)
-    }
+    override val type get() = MinecraftBlocks.WATER
 
     fun testLightProperties() {
         state.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
     }
+
+    fun `block state flags`() {
+        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.FLUID + BlockStateFlags.OUTLINE + BlockStateFlags.TINTED + BlockStateFlags.RANDOM_TICKS  // TODO: kutil 1.30.1
+
+        assertEquals(expected, block.states.default.withProperties(FluidBlock.LEVEL to 1).flags)
+    }
 }
 
+@Deprecated("")
 var WaterTest0: WaterTest = unsafeNull()

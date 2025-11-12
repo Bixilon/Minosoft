@@ -26,4 +26,6 @@ object TestBlockStates {
 
     val ENTITY1 = TestBlocks.ENTITY1.states.default
     val ENTITY2 = TestBlocks.ENTITY2.states.default
+
+    val TORCH14 = TestBlocks.TORCH14.states.default
 }

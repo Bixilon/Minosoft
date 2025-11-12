@@ -92,7 +92,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     override fun getVelocityMultiplier(): Float {
-        if (entity.equipment[MovementEnchantment.SoulSpeed] > 0 && positionInfo.velocityBlock.isIn(entity.session.tags, SOUL_SPEED_BLOCKS)) { // TODO: move that to the block itself?
+        if (entity.equipment[MovementEnchantment.SoulSpeed] > 0 && positionInfo.velocityState.isIn(entity.session.tags, SOUL_SPEED_BLOCKS)) { // TODO: move that to the block itself?
             return 1.0f
         }
         return super.getVelocityMultiplier()
@@ -109,7 +109,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
             gravity = PhysicsConstants.SLOW_FALLING_GRAVITY
             fallDistance = 0.0f
         }
-        val state = this.positionInfo.block
+        val state = this.positionInfo.state
         val fluid = state?.block?.nullCast<FluidHolder>()?.fluid
         val canWalkOn = fluid != null && entity is FluidWalker && entity.canWalkOnFluid(fluid, state)
 

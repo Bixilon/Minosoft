@@ -15,38 +15,28 @@ package de.bixilon.minosoft.data.registries.blocks.types.pvp
 
 import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
-import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
-import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
-import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["block"])
-class CobwebTest : BlockTest<Block>() {
+class CobwebTest : BlockTest<CobwebBlock>() {
 
     init {
         CobwebTest0 = this
     }
 
-    fun getStone() {
-        super.retrieveBlock(CobwebBlock.identifier)
-    }
+    override val type get() = CobwebBlock.identifier
 
     fun testOutlineShape() {
-        if (block !is OutlinedBlock) throw AssertionError("Not shaped!")
-        assertEquals(Shape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
+        assertEquals(Shape.FULL, block.outlineShape)
     }
 
     fun testCollisionShape() {
-        if (block !is CollidableBlock) return
-        assertEquals(null, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state))
+        assertTrue(block !is CollidableBlock)
     }
 
     fun testStates() {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.light.breaking
 
 import de.bixilon.minosoft.data.registries.blocks.*
+import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebTest0
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -90,9 +91,9 @@ class HeightmapBreakTest {
 
     fun testTorch() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[InChunkPosition(0, 0, 0)] = TorchTest0.state
-        chunk[InChunkPosition(0, 1, 0)] = TorchTest0.state
-        chunk[InChunkPosition(0, 2, 0)] = TorchTest0.state
+        chunk[InChunkPosition(0, 0, 0)] = TestBlockStates.TORCH14
+        chunk[InChunkPosition(0, 1, 0)] = TestBlockStates.TORCH14
+        chunk[InChunkPosition(0, 2, 0)] = TestBlockStates.TORCH14
         chunk[InChunkPosition(0, 2, 0)] = null
         assertTrue(chunk.light.heightmap[0, 0] < 0)
     }

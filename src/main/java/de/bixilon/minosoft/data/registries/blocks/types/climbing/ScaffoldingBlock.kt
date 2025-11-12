@@ -43,7 +43,6 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
     override fun canPushOut(entity: Entity) = false
     override val lightProperties get() = TransparentProperty
 
-
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         if (session.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item is ClimbingItems.ScaffoldingItem) {
             return Shape.FULL

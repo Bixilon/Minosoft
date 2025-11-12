@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.building.nether
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.test.IT
-import org.testng.Assert.assertFalse
-import org.testng.Assert.assertTrue
+import org.testng.AssertJUnit.assertEquals
 import org.testng.SkipException
 import org.testng.annotations.Test
 
@@ -25,16 +25,8 @@ class SoulSandTest {
     private val block by lazy { IT.REGISTRIES.block[SoulSand] ?: throw SkipException("") }
 
     fun `block state flags`() {
-        assertTrue(BlockStateFlags.COLLISIONS in block.states.default.flags)
-        assertTrue(BlockStateFlags.VELOCITY in block.states.default.flags)
+        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.VELOCITY // TODO: kutil 1.30.1
 
-        assertTrue(BlockStateFlags.FULL_OPAQUE in block.states.default.flags)
-
-        assertTrue(BlockStateFlags.OUTLINE in block.states.default.flags)
-        assertTrue(BlockStateFlags.FULL_OUTLINE in block.states.default.flags)
-
-        assertFalse(BlockStateFlags.FULL_COLLISION in block.states.default.flags)
-
-        assertFalse(BlockStateFlags.ENTITY !in block.states.default.flags)
+        assertEquals(expected, block.states.default.flags)
     }
 }

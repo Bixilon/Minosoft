@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
@@ -40,6 +41,8 @@ class FaceCullingTest {
     private fun createBlock(transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: SideProperties? = SideProperties(arrayOf(FaceProperties(Vec2f(0), Vec2f(1), transparency)), transparency), type: Int = 0): BlockState {
         val block = object : Block(minosoft("dummy$type"), BlockSettings(IT.VERSION)) {
             override val hardness: Float get() = Broken()
+
+            override val lightProperties get() = TransparentProperty
         }
 
         return createBlock(block, transparency, properties)
@@ -225,6 +228,8 @@ class FaceCullingTest {
 
     private fun forceNoCull() = object : Block(minosoft("dummy"), BlockSettings(IT.VERSION)), CustomBlockCulling {
         override val hardness get() = Broken()
+
+        override val lightProperties get() = TransparentProperty
 
         override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {
             return false

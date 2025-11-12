@@ -61,15 +61,15 @@ class SolidSectionMesher(
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
     }
 
-    private fun areAllNeighboursFullOpaque(position: InSectionPosition, block: BlockSectionDataProvider, neighbours: Array<ChunkSection?>): Boolean {
-        return if (position.y > 0) block.fullOpaque[position.minusY().index] else neighbours[Directions.O_DOWN]?.blocks?.fullOpaque?.get(position.with(y = ChunkSize.SECTION_MAX_Y).index) == true
-                && if (position.y < ChunkSize.SECTION_MAX_Y) block.fullOpaque[position.plusY().index] else neighbours[Directions.O_UP]?.blocks?.fullOpaque?.get(position.with(y = 0).index) == true
+    private fun areAllNeighboursFullOpaque(position: InSectionPosition, blocks: BlockSectionDataProvider, neighbours: Array<ChunkSection?>): Boolean {
+        return (if (position.y > 0) blocks.fullOpaque[position.minusY().index] else (neighbours[Directions.O_DOWN]?.blocks?.fullOpaque?.get(position.with(y = ChunkSize.SECTION_MAX_Y).index) == true))
+                && (if (position.y < ChunkSize.SECTION_MAX_Y) blocks.fullOpaque[position.plusY().index] else (neighbours[Directions.O_UP]?.blocks?.fullOpaque?.get(position.with(y = 0).index) == true))
 
-                && if (position.z > 0) block.fullOpaque[position.minusZ().index] else neighbours[Directions.O_NORTH]?.blocks?.fullOpaque?.get(position.with(z = ChunkSize.SECTION_MAX_Z).index) == true
-                && if (position.z < ChunkSize.SECTION_MAX_Z) block.fullOpaque[position.plusZ().index] else neighbours[Directions.O_SOUTH]?.blocks?.fullOpaque?.get(position.with(z = 0).index) == true
+                && (if (position.z > 0) blocks.fullOpaque[position.minusZ().index] else (neighbours[Directions.O_NORTH]?.blocks?.fullOpaque?.get(position.with(z = ChunkSize.SECTION_MAX_Z).index) == true))
+                && (if (position.z < ChunkSize.SECTION_MAX_Z) blocks.fullOpaque[position.plusZ().index] else (neighbours[Directions.O_SOUTH]?.blocks?.fullOpaque?.get(position.with(z = 0).index) == true))
 
-                && if (position.x > 0) block.fullOpaque[position.minusX().index] else neighbours[Directions.O_WEST]?.blocks?.fullOpaque?.get(position.with(x = ChunkSize.SECTION_MAX_X).index) == true
-                && if (position.x < ChunkSize.SECTION_MAX_X) block.fullOpaque[position.plusX().index] else neighbours[Directions.O_EAST]?.blocks?.fullOpaque?.get(position.with(x = 0).index) == true
+                && (if (position.x > 0) blocks.fullOpaque[position.minusX().index] else (neighbours[Directions.O_WEST]?.blocks?.fullOpaque?.get(position.with(x = ChunkSize.SECTION_MAX_X).index) == true))
+                && (if (position.x < ChunkSize.SECTION_MAX_X) blocks.fullOpaque[position.plusX().index] else (neighbours[Directions.O_EAST]?.blocks?.fullOpaque?.get(position.with(x = 0).index) == true))
     }
 
     fun mesh(section: ChunkSection, cache: BlockMesherCache, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {

@@ -30,8 +30,8 @@ class EntityPositionInfo(
     val position: BlockPosition,
 
     val chunk: Chunk?,
-    val block: BlockState?,
-    val velocityBlock: BlockState?,
+    val state: BlockState?,
+    val velocityState: BlockState?,
 ) {
     val biome: Biome? get() = chunk?.getBiome(position.inChunkPosition)
 

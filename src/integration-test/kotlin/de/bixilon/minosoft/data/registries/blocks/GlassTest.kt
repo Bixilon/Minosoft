@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,13 +24,12 @@ class GlassTest : BlockTest<Block>() {
         GlassTest0 = this
     }
 
-    fun getGlass() {
-        super.retrieveBlock(MinecraftBlocks.GLASS)
-    }
+    override val type get() = MinecraftBlocks.GLASS
 
     fun testLightProperties() {
         state.testLightProperties(0, true, true, false, booleanArrayOf(true, true, true, true, true, true))
     }
 }
 
+@Deprecated("")
 var GlassTest0: GlassTest = CastUtil.unsafeNull()

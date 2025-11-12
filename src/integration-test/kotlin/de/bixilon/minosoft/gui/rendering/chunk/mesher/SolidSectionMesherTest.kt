@@ -55,6 +55,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.StaticTintProvider
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
+import de.bixilon.minosoft.protocol.versions.TestVersions
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
@@ -148,10 +149,9 @@ class SolidSectionMesherTest {
         assertEquals(meshes.entities, null)
     }
 
-    @Test(enabled = false)
     fun `optimize out when all neighbour blocks are full opaque`() {
         val queue = TestQueue()
-        val stone = queue.fullOpaque()
+        val stone = queue.fullOpaqueFlagged()
         val small = queue.nonTouching()
         mesh(mapOf(
             BlockPosition(2, 1, 2) to stone,
@@ -192,57 +192,56 @@ class SolidSectionMesherTest {
         assertEquals(meshes.entities?.size, 1)
     }
 
-    @Test(enabled = false)
     fun `optimize out block entity if all neighbour blocks are full opaque`() {
         val queue = TestQueue()
+        val opaque = queue.fullOpaqueFlagged()
         val entity = queue.blockEntity()
-        val stone = queue.fullOpaque()
         mesh(mapOf(
-            BlockPosition(2, 1, 2) to stone,
-            BlockPosition(2, 3, 2) to stone,
-            BlockPosition(2, 2, 1) to stone,
-            BlockPosition(2, 2, 3) to stone,
-            BlockPosition(1, 2, 2) to stone,
-            BlockPosition(3, 2, 2) to stone,
+            BlockPosition(2, 1, 2) to opaque,
+            BlockPosition(2, 3, 2) to opaque,
+            BlockPosition(2, 2, 1) to opaque,
+            BlockPosition(2, 2, 3) to opaque,
+            BlockPosition(1, 2, 2) to opaque,
+            BlockPosition(3, 2, 2) to opaque,
 
             BlockPosition(2, 2, 2) to entity,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), stone),
-            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), stone),
-            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), stone),
-            TestQueue.RenderedBlock(BlockPosition(2, 2, 3), stone),
-            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), stone),
-            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), opaque),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), opaque),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), opaque),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 3), opaque),
+            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), opaque),
+            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), opaque),
         )
         assertEquals(queue.entities.size, 0)
     }
 
     fun `not optimize out block entity if one neighbour blocks is not full opaque`() {
         val queue = TestQueue()
-        val stone = queue.fullOpaque()
-        val small = queue.nonTouching()
+        val opaque = queue.fullOpaqueFlagged(1)
+        val small = queue.nonTouching(1)
         mesh(mapOf(
-            BlockPosition(2, 1, 2) to stone,
-            BlockPosition(2, 3, 2) to stone,
-            BlockPosition(1, 2, 2) to stone,
-            BlockPosition(3, 2, 2) to stone,
-            BlockPosition(2, 2, 1) to stone,
+            BlockPosition(2, 1, 2) to opaque,
+            BlockPosition(2, 3, 2) to opaque,
+            BlockPosition(1, 2, 2) to opaque,
+            BlockPosition(3, 2, 2) to opaque,
+            BlockPosition(2, 2, 1) to opaque,
             BlockPosition(2, 2, 3) to small,
 
-            BlockPosition(2, 2, 2) to stone,
+            BlockPosition(2, 2, 2) to opaque,
         ))
 
         queue.assert(
-            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), stone),
-            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), stone),
-            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 1, 2), opaque),
+            TestQueue.RenderedBlock(BlockPosition(2, 3, 2), opaque),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 1), opaque),
             TestQueue.RenderedBlock(BlockPosition(2, 2, 3), small),
-            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), stone),
-            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(1, 2, 2), opaque),
+            TestQueue.RenderedBlock(BlockPosition(3, 2, 2), opaque),
 
-            TestQueue.RenderedBlock(BlockPosition(2, 2, 2), stone),
+            TestQueue.RenderedBlock(BlockPosition(2, 2, 2), opaque),
         )
         assertEquals(queue.entities.size, 0)
     }
@@ -279,11 +278,6 @@ class SolidSectionMesherTest {
         queue.assert(
             TestQueue.RenderedEntity(BlockPosition(2, 2, 2), entity, true),
         )
-    }
-
-    private operator fun ByteArray.set(x: Int, y: Int, z: Int, value: Int) {
-        val index = (y shl 8) or (z shl 4) or x
-        this[index] = value.toByte()
     }
 
     fun `simple light`() {
@@ -385,13 +379,20 @@ class SolidSectionMesherTest {
         )
     }
 
-    fun block(index: Int = 0): Block = object : Block(minosoft("test$index"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())) {
+    fun block(index: Int = 0): Block = object : Block(minosoft("test$index"), BlockSettings(TestVersions.TEST, null, null)) {
         override val hardness get() = 0.0f
     }
 
     fun TestQueue.fullOpaque(index: Int = 0): BlockState {
         val block = block(index)
         val state = BlockState(block, emptyMap(), BlockStateFlags.of(block))
+        state.model = TestModel(this, SideProperties(arrayOf(FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE))
+
+        return state
+    }
+    fun TestQueue.fullOpaqueFlagged(index: Int = 0): BlockState {
+        val block = block(index)
+        val state = BlockState(block, emptyMap(), BlockStateFlags.of(block) + BlockStateFlags.FULL_OPAQUE)
         state.model = TestModel(this, SideProperties(arrayOf(FaceProperties(Vec2f.EMPTY, Vec2f(1.0f), TextureTransparencies.OPAQUE)), TextureTransparencies.OPAQUE))
 
         return state
@@ -453,7 +454,7 @@ class SolidSectionMesherTest {
     }
 
     fun TestQueue.blockEntity(): BlockState {
-        val block = object : Block(minosoft("test2"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
+        val block = object : Block(minosoft("test2"), BlockSettings(TestVersions.TEST, null, null)), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
 
             private inner class ABlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) : BlockEntity(session, position, state) {

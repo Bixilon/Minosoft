@@ -15,8 +15,12 @@ package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.block.TestBlockEntities
+import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
@@ -26,6 +30,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.TestVersions
+import de.bixilon.minosoft.protocol.versions.Version
 
 object TestBlocks {
     val TEST1 = TestBlock(minecraft("test1"))
@@ -33,9 +38,15 @@ object TestBlocks {
     val TEST3 = TestBlock(minecraft("test3"))
 
 
-    val OPAQUE1: TestBlock = object : TestBlock(minecraft("opaque1")), FullBlock {}
-    val OPAQUE2: TestBlock = object : TestBlock(minecraft("opaque2")), FullBlock {}
-    val OPAQUE3: TestBlock = object : TestBlock(minecraft("opaque3")), FullBlock {}
+    val OPAQUE1: TestBlock = object : TestBlock(minecraft("opaque1")), FullBlock {
+        override val lightProperties get() = OpaqueProperty
+    }
+    val OPAQUE2: TestBlock = object : TestBlock(minecraft("opaque2")), FullBlock {
+        override val lightProperties get() = OpaqueProperty
+    }
+    val OPAQUE3: TestBlock = object : TestBlock(minecraft("opaque3")), FullBlock {
+        override val lightProperties get() = OpaqueProperty
+    }
 
 
     val ENTITY1: TestBlock = object : TestBlock(minecraft("entity1")), BlockWithEntity<TestBlockEntities.TestBlockEntity> {
@@ -45,11 +56,20 @@ object TestBlocks {
         override fun createBlockEntity(session: PlaySession, position: BlockPosition, state: BlockState) = TestBlockEntities.TestBlockEntity(session, position, state)
     }
 
+
+    val TORCH14: TestBlock = object : TestBlock(minecraft("light14")) {
+        override val lightProperties get() = TransparentProperty
+
+        override fun buildState(version: Version, settings: BlockStateBuilder) = settings.build(this, luminance = 14)
+    }
+
     open class TestBlock(identifier: ResourceLocation) : Block(identifier, BlockSettings(TestVersions.TEST)) {
         override val hardness get() = 1.0f
 
+        override val lightProperties: LightProperties? get() = TransparentProperty
+
         init {
-            this::states.forceSet(SingleStateManager(BlockState(this, emptyMap(), this.flags, 1, null, null)))
+            this::states.forceSet(SingleStateManager(buildState(TestVersions.TEST, BlockStateBuilder(emptyMap(), 0, null, null, lightProperties!!, flags))))
         }
     }
 }

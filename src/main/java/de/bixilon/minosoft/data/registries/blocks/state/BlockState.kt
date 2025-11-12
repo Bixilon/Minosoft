@@ -16,10 +16,15 @@ import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
@@ -27,14 +32,40 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 class BlockState(
     val block: Block,
     val properties: Map<BlockProperty<*>, Any>,
-    val flags: IntInlineEnumSet<BlockStateFlags>,
+    flags: IntInlineEnumSet<BlockStateFlags>,
     val luminance: Int = 0,
     @Deprecated("access only via block") internal val collisionShape: Shape? = null,
     @Deprecated("access only via block") internal val outlineShape: Shape? = null,
     @Deprecated("access only via block") internal val lightProperties: LightProperties? = null,
 ) {
+    val flags = updateFlags(flags)
     private val hashCode = _hashCode()
     var model: BlockRender? = null
+
+    private fun updateFlags(flags: IntInlineEnumSet<BlockStateFlags>): IntInlineEnumSet<BlockStateFlags> {
+        var flags = flags
+
+        if (BlockStateFlags.FULL_OPAQUE !in flags && block.getLightProperties(this) == OpaqueProperty) flags += BlockStateFlags.FULL_OPAQUE
+        // TODO: we don't know if there is no collision or we need to provide more data
+        // if (BlockStateFlags.FULL_COLLISION !in flags && BlockStateFlags.COLLISIONS in flags && block is CollidableBlock && block.getCollisionShape(this) == null) flags -= BlockStateFlags.COLLISIONS
+        // if (BlockStateFlags.FULL_OUTLINE !in flags && BlockStateFlags.OUTLINE in flags && block is OutlinedBlock && block.getOutlineShape(this) == null) flags -= BlockStateFlags.OUTLINE
+
+        if (BlockStateFlags.COLLISIONS in flags && BlockStateFlags.FULL_COLLISION !in flags && block is CollidableBlock && block.getCollisionShape(this) == AABB.BLOCK) flags += BlockStateFlags.FULL_COLLISION
+        if (BlockStateFlags.OUTLINE in flags && BlockStateFlags.FULL_OUTLINE !in flags && block is OutlinedBlock && block.getOutlineShape(this) == AABB.BLOCK) flags += BlockStateFlags.FULL_OUTLINE
+
+        if (block is PixLyzerBlock) {
+            if (block.getCollisionShape(this) == null) {
+                flags -= BlockStateFlags.COLLISIONS
+                flags -= BlockStateFlags.FULL_COLLISION
+            }
+            if (block.getOutlineShape(this) == null) {
+                flags -= BlockStateFlags.OUTLINE
+                flags -= BlockStateFlags.FULL_OUTLINE
+            }
+        }
+
+        return flags
+    }
 
     private fun _hashCode(): Int {
         var result = 1
@@ -118,8 +149,8 @@ class BlockState(
     }
 
     override fun toString(): String {
-        if (properties.isEmpty()) return super.toString()
+        if (properties.isEmpty()) return block.toString()
 
-        return super.toString() + "[${properties.map { "${it.key}=${it.value}" }.joinToString(",")}]"
+        return block.toString() + "[${properties.map { "${it.key}=${it.value}" }.joinToString(",")}]"
     }
 }

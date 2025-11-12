@@ -42,14 +42,14 @@ object ClimbingPhysics {
         fallDistance = 0.0f
         velocity.clamp()
 
-        if (velocity.y < 0.0 && positionInfo.block?.block !is ScaffoldingBlock && (this is ClimbablePhysics && this.isHolding()) && this is PlayerPhysics) {
+        if (velocity.y < 0.0 && positionInfo.state?.block !is ScaffoldingBlock && (this is ClimbablePhysics && this.isHolding()) && this is PlayerPhysics) {
             velocity.y = 0.0
         }
     }
 
     fun LivingEntityPhysics<*>.applyClimbingSpeed() {
         if (!horizontalCollision && !input.jumping) return
-        if (!isClimbing() && (positionInfo.block?.block !is PowderSnowBlock || !entity.canWalkOnPowderSnow())) return
+        if (!isClimbing() && (positionInfo.state?.block !is PowderSnowBlock || !entity.canWalkOnPowderSnow())) return
 
         this.velocity.y = UPWARDS
     }
@@ -58,7 +58,7 @@ object ClimbingPhysics {
         if (this is ClimbablePhysics && !this.canClimb()) return false
 
         val info = this.positionInfo
-        val state = info.block ?: return false
+        val state = info.state ?: return false
 
         if (state.isIn(entity.session.tags, TAG)) {
             return true

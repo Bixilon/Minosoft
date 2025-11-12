@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outlin
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -25,7 +24,7 @@ interface OutlinedBlock {
     val outlineShape: Shape? get() = null
 
     @Suppress("DEPRECATION")
-    fun getOutlineShape(state: BlockState): Shape? = outlineShape ?: state.outlineShape ?: AABB.BLOCK
+    fun getOutlineShape(state: BlockState): Shape? = outlineShape ?: state.outlineShape
     fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState) = getOutlineShape(state)
     fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState, entity: BlockEntity) = getOutlineShape(session, position, state)
 }

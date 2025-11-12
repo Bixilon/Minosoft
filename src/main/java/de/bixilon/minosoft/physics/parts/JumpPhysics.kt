@@ -35,7 +35,7 @@ object JumpPhysics {
 
     fun LivingEntityPhysics<*>.getJumpVelocityMultiplier(): Float {
         val info = this.positionInfo
-        var state = info.block
+        var state = info.state
 
         if (state != null && BlockStateFlags.JUMP in state.flags && state.block is JumpBlock) {
             val multiplier = state.block.jumpBoost
@@ -44,7 +44,7 @@ object JumpPhysics {
                 return multiplier * BLOCK_MODIFIER
             }
         }
-        state = info.velocityBlock ?: return BLOCK_MODIFIER
+        state = info.velocityState ?: return BLOCK_MODIFIER
 
         if (BlockStateFlags.JUMP in state.flags && state.block is JumpBlock) {
             return state.block.jumpBoost * BLOCK_MODIFIER

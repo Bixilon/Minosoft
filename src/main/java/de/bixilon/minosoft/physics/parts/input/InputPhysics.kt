@@ -44,7 +44,7 @@ object InputPhysics {
     }
 
     private fun LivingEntityPhysics<*>.travelGround(input: MovementInput): Float {
-        val friction = positionInfo.velocityBlock?.block?.nullCast<FrictionBlock>()?.friction ?: FrictionBlock.DEFAULT_FRICTION
+        val friction = positionInfo.velocityState?.block?.nullCast<FrictionBlock>()?.friction ?: FrictionBlock.DEFAULT_FRICTION
         val speed = movementSpeed * (FRICTION_WEIGHT / (friction * friction * friction))
 
         applyMovementInput(input, speed)

@@ -17,8 +17,8 @@ import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
+import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -56,7 +56,7 @@ abstract class FlowingFluidIT {
         fill(
             BlockPosition(x - size - 2, y - 1, z - size - 2),
             BlockPosition(x + size + 2, y - 1, z + size + 2),
-            StoneTest0.block.states.default
+            TestBlockStates.OPAQUE1,
         )
 
         for (offsetX in -size..size) {

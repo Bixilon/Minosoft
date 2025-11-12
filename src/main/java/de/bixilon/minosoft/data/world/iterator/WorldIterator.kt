@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 
@@ -117,7 +118,15 @@ class WorldIterator(
             if (BlockStateFlags.COLLISIONS !in state.flags || state.block !is CollidableBlock) continue
             if (predicate != null && !predicate.invoke(state)) continue
 
-            val shape = state.block.getCollisionShape(world.session, context, position, state) ?: continue // TODO: block entity
+            val entity = chunk?.getBlockEntity(position.inChunkPosition)
+
+            val block = state.block
+            val shape = when {
+                BlockStateFlags.FULL_COLLISION in state.flags -> Shape.FULL
+                else -> block.collisionShape ?: block.getCollisionShape(state) ?: block.getCollisionShape(world.session, context, position, state) ?: entity?.let { block.getCollisionShape(world.session, context, position, state, it) }
+            } ?: continue
+
+
             if ((shape + position).intersects(aabb)) {
                 return true
             }

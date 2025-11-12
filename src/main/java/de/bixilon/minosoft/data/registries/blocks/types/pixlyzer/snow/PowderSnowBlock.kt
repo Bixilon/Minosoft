@@ -46,8 +46,9 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
     override val lightProperties get() = OpaqueProperty
     override val outlineShape get() = AABB.BLOCK
 
+
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState) {
-        if (entity is LivingEntity && physics.positionInfo.block?.block !is PowderSnowBlock) {
+        if (entity is LivingEntity && physics.positionInfo.state?.block !is PowderSnowBlock) {
             return
         }
         physics.slowMovement(state, SLOW)

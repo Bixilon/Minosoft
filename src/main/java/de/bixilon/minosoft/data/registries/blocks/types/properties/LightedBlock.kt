@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.data.registries.blocks.types.properties
 
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
-import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 
 interface LightedBlock {
     val lightProperties: LightProperties? get() = null
 
     @Suppress("DEPRECATION")
-    fun getLightProperties(state: BlockState) = lightProperties ?: state.lightProperties ?: OpaqueProperty
+    fun getLightProperties(state: BlockState) = lightProperties ?: state.lightProperties ?: TransparentProperty
 }

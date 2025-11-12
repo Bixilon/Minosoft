@@ -15,11 +15,10 @@ package de.bixilon.minosoft.data.registries.blocks.handler.entity
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 
-interface EntityCollisionHandler : CollidableBlock {
+interface EntityCollisionHandler { // TODO: That is more like a inside, not really colliding
 
     fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: BlockPosition, state: BlockState)
 }

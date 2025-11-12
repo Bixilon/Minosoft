@@ -29,6 +29,14 @@ class DirectedProperty(
         return directions[direction.ordinal]
     }
 
+    override fun toString() = "Directed{directions=${directions.contentToString()}, enters=$skylightEnters, filters=$filtersSkylight}"
+
+    override fun hashCode() = directions.contentHashCode()
+    override fun equals(other: Any?) = when (other) {
+        is DirectedProperty -> directions.contentEquals(other.directions) && skylightEnters == other.skylightEnters && filtersSkylight == other.filtersSkylight
+        else -> false
+    }
+
     companion object {
         private val TRUE = BooleanArray(Directions.SIZE) { true }
         private val FALSE = BooleanArray(Directions.SIZE) { false }

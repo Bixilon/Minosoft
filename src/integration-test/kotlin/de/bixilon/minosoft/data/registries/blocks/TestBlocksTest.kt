@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
+import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
@@ -30,5 +31,9 @@ class TestBlocksTest {
         assertTrue(BlockStateFlags.FULL_OPAQUE !in TestBlocks.TEST1.flags)
         assertTrue(BlockStateFlags.FULL_OPAQUE !in TestBlocks.TEST1.flags)
         assertTrue(BlockStateFlags.FULL_OPAQUE !in TestBlocks.TEST1.flags)
+    }
+
+    fun `torch has luminance blocks are all not opaque`() {
+        assertEquals(TestBlocks.TORCH14.states.default.luminance, 14)
     }
 }

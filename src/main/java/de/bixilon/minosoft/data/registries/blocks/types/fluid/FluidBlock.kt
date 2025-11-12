@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.Ran
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
@@ -48,7 +49,7 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
         this.tintProvider = tinted.tintProvider
     }
 
-    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): AABB {
+    override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState): Shape? {
         return AABB(Vec3d.EMPTY, Vec3d(1.0f, fluid.getHeight(state), 1.0f))
     }
 

@@ -25,7 +25,9 @@ import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyL
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
@@ -107,9 +109,9 @@ class BlockStateBuilder(
             val translucent = this["translucent"]?.toBoolean() ?: true
 
             var lightProperties = when {
-                outlineShape == null || !opaque && translucent -> TransparentProperty
+                outlineShape == null || (!opaque && translucent) -> TransparentProperty
                 outlineShape == Shape.FULL -> OpaqueProperty
-                else -> DirectedProperty.of(outlineShape, opaque, !translucent)
+                else -> DirectedProperty.of(outlineShape, opaque, false)
             }
 
             if (lightProperties is OpaqueProperty && !opaque) {
@@ -120,21 +122,31 @@ class BlockStateBuilder(
         }
 
         fun of(block: Block, flags: IntInlineEnumSet<BlockStateFlags>, registries: Registries, data: JsonObject): BlockStateBuilder {
+            val implemented = !(block is PixLyzerBlock || block is LegacyBlock)
             val properties = data.getProperties(block.properties) ?: emptyMap()
-            val collisionShape = data.getCollisionShape(registries.shape)
-            val outlineShape = data.getOutlineShape(registries.shape)
+            val collisionShape = if (!implemented) data.getCollisionShape(registries.shape) else null
+            val outlineShape = if (!implemented) data.getOutlineShape(registries.shape) else null
+
 
             var flags = BlockStateFlags.update(flags, properties)
 
 
-            if (block is PixLyzerBlock && data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULL_OPAQUE
+            if (!implemented && data["solid_render"]?.toBoolean() == true) flags += BlockStateFlags.FULL_OPAQUE
+
+
+            val lightProperties = when {
+                BlockStateFlags.FULL_OPAQUE in flags -> OpaqueProperty
+                !implemented -> data.getLightProperties(outlineShape)
+                BlockStateFlags.OUTLINE in flags && block is OutlinedBlock -> data.getLightProperties(block.outlineShape) // TODO: get outline shape by block state?
+                else -> TransparentProperty
+            }
 
             return BlockStateBuilder(
                 properties = properties,
                 luminance = data.getLuminance(),
                 collisionShape = collisionShape,
                 outlineShape = outlineShape,
-                lightProperties = data.getLightProperties(outlineShape),
+                lightProperties = lightProperties,
                 flags = flags,
             )
         }

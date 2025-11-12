@@ -121,7 +121,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     open fun getVelocityMultiplier(): Float {
         val info = this.positionInfo
-        var state = info.block
+        var state = info.state
 
         if (state != null && BlockStateFlags.VELOCITY in state.flags && state.block is VelocityBlock) {
             val multiplier = state.block.velocity
@@ -130,7 +130,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
                 return multiplier
             }
         }
-        state = info.velocityBlock ?: return 1.0f
+        state = info.velocityState ?: return 1.0f
         if (BlockStateFlags.VELOCITY in state.flags && state.block is VelocityBlock) {
             return state.block.velocity
         }
@@ -224,7 +224,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     fun checkBlockCollisions() {
         for ((position, state) in WorldIterator(aabb.innerPositions(AABBIterator.IterationOrder.NATURAL), entity.session.world, positionInfo.chunk)) {
             val block = state.block
-            if (block !is EntityCollisionHandler) continue
+            if (block !is EntityCollisionHandler) continue // TODO (performance): cache with block state flags
             block.onEntityCollision(entity, this, position, state)
         }
     }

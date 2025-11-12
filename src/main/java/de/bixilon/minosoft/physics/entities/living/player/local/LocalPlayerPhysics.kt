@@ -77,7 +77,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         if (isSwimming) {
             entity.isSwimming = canSwim
         } else {
-            entity.isSwimming = canSwim && positionInfo.block?.block?.nullCast<FluidFilled>()?.fluid is WaterFluid
+            entity.isSwimming = canSwim && positionInfo.state?.block?.nullCast<FluidFilled>()?.fluid is WaterFluid
         }
     }
 

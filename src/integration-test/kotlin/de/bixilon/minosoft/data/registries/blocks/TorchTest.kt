@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,24 +13,15 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import org.testng.annotations.Test
 
 @Test(groups = ["block"])
 class TorchTest : BlockTest<Block>() {
 
-    init {
-        TorchTest0 = this
-    }
-
-    fun getTorch() {
-        super.retrieveBlock(MinecraftBlocks.TORCH)
-    }
+    override val type get() = MinecraftBlocks.TORCH
 
     fun testLightProperties() {
         state.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
     }
 }
-
-var TorchTest0: TorchTest = unsafeNull()

@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.stone
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
-import de.bixilon.minosoft.test.IT.NULL_CONNECTION
+import de.bixilon.minosoft.test.IT.NULL_SESSION
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -29,20 +30,14 @@ import org.testng.annotations.Test
 @Test(groups = ["block"])
 class StoneTest : BlockTest<StoneBlock.Block>() {
 
-    init {
-        StoneTest0 = this
-    }
-
-    fun getStone() {
-        super.retrieveBlock(StoneBlock.Block.identifier)
-    }
+    override val type get() = StoneBlock.Block.identifier
 
     fun testOutlineShape() {
         assertEquals(Shape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
     }
 
     fun testCollisionShape() {
-        assertEquals(Shape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, BlockPosition.EMPTY, state))
+        assertEquals(Shape.FULL, block.getCollisionShape(NULL_SESSION, EmptyCollisionContext, BlockPosition.EMPTY, state))
     }
 
     fun testStates() {
@@ -52,6 +47,10 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     fun testLightProperties() {
         state.testLightProperties(0, false, false, true, booleanArrayOf(false, false, false, false, false, false))
     }
-}
 
-var StoneTest0: StoneTest = unsafeNull()
+    fun `block state flags`() {
+        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE  // TODO: kutil 1.30.1
+
+        assertEquals(expected, block.states.default.flags)
+    }
+}
