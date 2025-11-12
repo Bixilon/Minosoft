@@ -44,13 +44,13 @@ class SectionOcclusion(
     fun calculate() {
         if (state == OcclusionState.VALID) return
         val occlusion = SectionOcclusionTracer.calculate(provider)
-        update(occlusion, false)
+        update(occlusion)
     }
 
     fun calculateFast() {
         if (state == OcclusionState.VALID) return
         val occlusion = SectionOcclusionTracer.calculateFast(provider) ?: return
-        update(occlusion, false)
+        update(occlusion)
     }
 
     @JvmName("notify2")
@@ -58,25 +58,19 @@ class SectionOcclusion(
         provider.section.chunk.world.occlusion++
     }
 
-    private fun update(occlusion: BooleanArray, notify: Boolean) {
+    private fun update(occlusion: BooleanArray) {
         val same = this.occlusion.contentEquals(occlusion)
         this.occlusion = occlusion
 
         this.state = OcclusionState.VALID
-
-        if (!same && notify) {
-            notify()
-        }
     }
 
     /**
      * If it is not possible to look from `in` to `out`
      */
-    fun isOccluded(`in`: Directions, out: Directions): Boolean {
-        if (`in` == out) {
-            return false
-        }
-        return isOccluded(CubeDirections.getIndex(`in`, out))
+    fun isOccluded(a: Directions, b: Directions): Boolean {
+        if (a == b) return false
+        return isOccluded(CubeDirections.getIndex(a, b))
     }
 
     fun isOccluded(index: Int): Boolean {

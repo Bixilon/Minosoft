@@ -102,8 +102,6 @@ object SectionOcclusionTracer {
         // mark regions and check direct neighbours
         Arrays.fill(array, EMPTY_REGION)
 
-        // TODO: force trace first block (might already be in a different region from a different vector)
-
         var down = IntInlineSet()
         var up = IntInlineSet()
         var north = IntInlineSet()

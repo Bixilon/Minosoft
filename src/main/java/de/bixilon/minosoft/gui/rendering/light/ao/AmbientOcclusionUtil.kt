@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_NORTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -66,8 +65,9 @@ object AmbientOcclusionUtil {
             z = 0
         }
 
-        val state = section?.blocks?.get(x, y, z) ?: return 0
-        if (BlockStateFlags.FULL_OPAQUE in state.flags) return 1
+        val blocks = section?.blocks?.fullOpaque ?: return 0
+
+        if (blocks[InSectionPosition(x, y, z).index]) return 1
 
         // TODO: more test?
 
@@ -99,7 +99,7 @@ object AmbientOcclusionUtil {
 
     fun applyBottom(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.y == 0) {
-            return setY(section.neighbours?.get(O_DOWN), position.with(y = ChunkSize.SECTION_MAX_Y), true, ao)
+            return setY(section.neighbours[O_DOWN], position.with(y = ChunkSize.SECTION_MAX_Y), true, ao)
         } else {
             return setY(section, position.minusY(), true, ao)
         }
@@ -107,7 +107,7 @@ object AmbientOcclusionUtil {
 
     fun applyTop(section: ChunkSection, position: InSectionPosition, ao: IntArray): IntArray {
         if (position.y == ChunkSize.SECTION_MAX_Y) {
-            return setY(section.neighbours?.get(O_UP), position.with(y = 0), false, ao)
+            return setY(section.neighbours[O_UP], position.with(y = 0), false, ao)
         } else {
             return setY(section, position.plusY(), false, ao)
         }
