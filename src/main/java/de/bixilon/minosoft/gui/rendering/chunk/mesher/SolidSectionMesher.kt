@@ -34,13 +34,14 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel.Companion.MAX_LEVEL
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusion
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WorldRenderProps
 import java.util.*
@@ -58,6 +59,17 @@ class SolidSectionMesher(
         val profile = context.session.profiles.rendering
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
         profile.light::ambientOcclusion.observe(this, true) { this.ambientOcclusion = it }
+    }
+
+    private fun areAllNeighboursFullOpaque(position: InSectionPosition, block: BlockSectionDataProvider, neighbours: Array<ChunkSection?>): Boolean {
+        return if (position.y > 0) block.fullOpaque[position.minusY().index] else neighbours[Directions.O_DOWN]?.blocks?.fullOpaque?.get(position.with(y = ChunkSize.SECTION_MAX_Y).index) == true
+                && if (position.y < ChunkSize.SECTION_MAX_Y) block.fullOpaque[position.plusY().index] else neighbours[Directions.O_UP]?.blocks?.fullOpaque?.get(position.with(y = 0).index) == true
+
+                && if (position.z > 0) block.fullOpaque[position.minusZ().index] else neighbours[Directions.O_NORTH]?.blocks?.fullOpaque?.get(position.with(z = ChunkSize.SECTION_MAX_Z).index) == true
+                && if (position.z < ChunkSize.SECTION_MAX_Z) block.fullOpaque[position.plusZ().index] else neighbours[Directions.O_SOUTH]?.blocks?.fullOpaque?.get(position.with(z = 0).index) == true
+
+                && if (position.x > 0) block.fullOpaque[position.minusX().index] else neighbours[Directions.O_WEST]?.blocks?.fullOpaque?.get(position.with(x = ChunkSize.SECTION_MAX_X).index) == true
+                && if (position.x < ChunkSize.SECTION_MAX_X) block.fullOpaque[position.plusX().index] else neighbours[Directions.O_EAST]?.blocks?.fullOpaque?.get(position.with(x = 0).index) == true
     }
 
     fun mesh(section: ChunkSection, cache: BlockMesherCache, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
@@ -85,14 +97,18 @@ class SolidSectionMesher(
 
         val props = WorldRenderProps(floatOffset.unsafe, mesh, random, neighbourBlocks, light, ao) // TODO: really use unsafe?
 
+        val min = blocks.minPosition
+        val max = blocks.maxPosition
 
-        for (y in blocks.minPosition.y..blocks.maxPosition.y) {
+        for (y in min.y..max.y) {
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
-            for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                for (z in blocks.minPosition.z..blocks.maxPosition.z) {
+            for (x in min.x..max.x) {
+                for (z in min.z..max.z) {
                     val inSection = InSectionPosition(x, y, z)
                     val state = blocks[inSection] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
+
+                    if (areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
 
                     val model = state.block.model ?: state.model
                     val entity = section.entities[inSection]
@@ -111,6 +127,7 @@ class SolidSectionMesher(
 
                     setZ(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
                     setX(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
+
 
                     val maxHeight = chunk.light.heightmap[inSection.xz]
                     light[SELF_LIGHT_INDEX] = section.light[inSection].raw
