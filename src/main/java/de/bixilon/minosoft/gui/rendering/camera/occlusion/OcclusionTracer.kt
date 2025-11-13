@@ -126,8 +126,8 @@ class OcclusionTracer(
     }
 
     companion object {
-        const val FREE_SIZE = 10
-        const val MAX_QUEUE_SIZE = 100
+        const val FREE_SIZE = 20
+        const val MAX_QUEUE_SIZE = 150
 
         fun Set<SectionOcclusion>.calculate() = this.forEach(SectionOcclusion::calculate)
     }
