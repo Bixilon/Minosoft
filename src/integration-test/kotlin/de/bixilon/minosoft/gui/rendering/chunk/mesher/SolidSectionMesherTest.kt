@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
@@ -89,7 +90,7 @@ class SolidSectionMesherTest {
         val mesher = SolidSectionMesher(context)
 
         val chunk = world.chunks[0, 0]!!
-        val meshes = ChunkMeshesBuilder(context, 16, 1, BlockMesherCache(context))
+        val meshes = ChunkMeshesBuilder(context, 16, 1, BlockMesherCache(context), ChunkMeshDetails.ALL)
 
         mesher.mesh(chunk.sections[0]!!, BlockMesherCache(context), chunk.neighbours, chunk.sections[0]!!.neighbours, meshes)
 
@@ -390,6 +391,7 @@ class SolidSectionMesherTest {
 
         return state
     }
+
     fun TestQueue.fullOpaqueFlagged(index: Int = 0): BlockState {
         val block = block(index)
         val state = BlockState(block, emptyMap(), BlockStateFlags.of(block) + BlockStateFlags.FULL_OPAQUE)

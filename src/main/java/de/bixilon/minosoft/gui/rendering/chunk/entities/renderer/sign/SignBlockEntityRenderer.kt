@@ -35,6 +35,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
@@ -61,6 +62,7 @@ class SignBlockEntityRenderer(
         if (entity !is SignBlockEntity) return true
 
         if (props.mesh !is ChunkMeshesBuilder) return true // TODO
+        if (ChunkMeshDetails.TEXT !in props.details) return true
 
         renderText(state, entity, props.offset, props.mesh.text, props.light[SELF_LIGHT_INDEX].toInt())
 
@@ -75,12 +77,11 @@ class SignBlockEntityRenderer(
         // TODO
     }
 
-    private fun renderText(state: BlockState, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMeshBuilder, light: Int) {
-        when (state.block) {
-            is StandingSignBlock -> renderStandingText(state.getRotation(), sign, offset, mesh, light)
-            is WallSignBlock -> renderWallText(state.getFacing(), sign, offset, mesh, light)
-            // TODO: hanging sign
-        }
+    private fun renderText(state: BlockState, sign: SignBlockEntity, offset: Vec3f, mesh: ChunkMeshBuilder, light: Int) = when (state.block) {
+        is StandingSignBlock -> renderStandingText(state.getRotation(), sign, offset, mesh, light)
+        is WallSignBlock -> renderWallText(state.getFacing(), sign, offset, mesh, light)
+        // TODO: hanging sign
+        else -> Unit
     }
 
     private fun ChunkMeshBuilder.ensureSize(text: SignBlockEntity.SignTextProperties) {

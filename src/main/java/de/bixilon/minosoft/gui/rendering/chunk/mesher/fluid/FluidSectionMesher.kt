@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshBuilder
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateCornerHeights
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidCornerHeightUtil.updateFluidHeights
@@ -58,6 +59,11 @@ class FluidSectionMesher(
     }
 
     private fun renderUp(model: FluidModel, velocity: Vec3d, heights: FloatArray, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Int, packedUV: PackedUVArray) {
+        val up = ChunkMeshDetails.SIDE_UP in meshes.details
+        val down = ChunkMeshDetails.SIDE_DOWN in meshes.details
+
+        if (!up && !down) return
+
         val texture: Texture
         var packedUV = packedUV
 
@@ -79,10 +85,12 @@ class FluidSectionMesher(
             packedUV[2] = PackedUV(center + +cos - sin, center + +cos + sin)
             packedUV[3] = PackedUV(center + -cos - sin, center + +cos - sin)
         }
+
         val mesh = meshes[texture.transparency]
 
         mesh.iterate { mesh.addVertex(offset.x + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 0], offset.y + heights[it], offset.z + POSITIONS_TOP_STILL[it * Vec2f.LENGTH + 1], packedUV[it].raw, texture, lightTint) }
-        mesh.addIndexQuad(true, true)
+
+        mesh.addIndexQuad(up, down)
     }
 
     private fun renderDown(model: FluidModel, offset: Vec3f, meshes: ChunkMeshesBuilder, lightTint: Int) {
@@ -117,7 +125,7 @@ class FluidSectionMesher(
         mesh.addIndexQuad(true, backface)
     }
 
-    fun mesh(section: ChunkSection, mesh: ChunkMeshesBuilder) {
+    fun mesh(section: ChunkSection, builder: ChunkMeshesBuilder) {
         val blocks = section.blocks
         val chunk = section.chunk
 
@@ -181,25 +189,25 @@ class FluidSectionMesher(
 
                     if (up) {
                         fluid.updateVelocity(state, position, chunk, velocity)
-                        renderUp(model, velocity.unsafe, corners, offsetPosition.unsafe, mesh, lightTint, packedUV)
+                        renderUp(model, velocity.unsafe, corners, offsetPosition.unsafe, builder, lightTint, packedUV)
                     }
-                    if (down != FluidCull.CULLED) {
-                        renderDown(model, offsetPosition.unsafe, mesh, lightTint)
+                    if (down != FluidCull.CULLED && ChunkMeshDetails.SIDE_DOWN in builder.details) {
+                        renderDown(model, offsetPosition.unsafe, builder, lightTint)
                     }
                     if (sides) {
                         val flowing = model.flowing
                         packedUV[0] = PackedUV(0.0f, 0.5f)
                         packedUV[1] = PackedUV(0.5f, 0.5f)
-                        val mesh = mesh[flowing.transparency]
+                        val mesh = builder[flowing.transparency]
                         val overlay = model.overlay
 
-                        renderSide(offsetPosition.unsafe, 0.0f, 1.0f, 0.0f, 0.0f, corners[0], corners[1], north, flowing, overlay, mesh, lightTint, positions, packedUV)
-                        renderSide(offsetPosition.unsafe, 1.0f, 0.0f, 1.0f, 1.0f, corners[2], corners[3], south, flowing, overlay, mesh, lightTint, positions, packedUV)
-                        renderSide(offsetPosition.unsafe, 0.0f, 0.0f, 1.0f, 0.0f, corners[3], corners[0], west, flowing, overlay, mesh, lightTint, positions, packedUV)
-                        renderSide(offsetPosition.unsafe, 1.0f, 1.0f, 0.0f, 1.0f, corners[1], corners[2], east, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        if (ChunkMeshDetails.SIDE_NORTH in builder.details) renderSide(offsetPosition.unsafe, 0.0f, 1.0f, 0.0f, 0.0f, corners[0], corners[1], north, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        if (ChunkMeshDetails.SIDE_SOUTH in builder.details) renderSide(offsetPosition.unsafe, 1.0f, 0.0f, 1.0f, 1.0f, corners[2], corners[3], south, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        if (ChunkMeshDetails.SIDE_WEST in builder.details) renderSide(offsetPosition.unsafe, 0.0f, 0.0f, 1.0f, 0.0f, corners[3], corners[0], west, flowing, overlay, mesh, lightTint, positions, packedUV)
+                        if (ChunkMeshDetails.SIDE_EAST in builder.details) renderSide(offsetPosition.unsafe, 1.0f, 1.0f, 0.0f, 1.0f, corners[1], corners[2], east, flowing, overlay, mesh, lightTint, positions, packedUV)
                     }
 
-                    mesh.addBlock(x, y, z)
+                    builder.addBlock(x, y, z)
 
                     if (Thread.interrupted()) throw InterruptedException()
                 }

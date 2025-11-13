@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -31,6 +32,7 @@ class ChunkMeshesBuilder(
     count: Int,
     entities: Int,
     val cache: BlockMesherCache,
+    val details: IntInlineEnumSet<ChunkMeshDetails>,
 ) : BlockVertexConsumer { // TODO: Don't inherit
     var opaque = ChunkMeshBuilder(context, count.opaqueCount())
     var translucent = ChunkMeshBuilder(context, count.translucentCount())
@@ -84,7 +86,7 @@ class ChunkMeshesBuilder(
         if (opaque == null && translucent == null && text == null && entities == null) {
             return null
         }
-        return ChunkMeshes(position, minPosition, maxPosition, opaque, translucent, text, entities, cache)
+        return ChunkMeshes(position, minPosition, maxPosition, details, opaque, translucent, text, entities, cache)
     }
 
     fun drop() {
@@ -104,6 +106,7 @@ class ChunkMeshesBuilder(
     }
 
     companion object {
+
         private fun Int.opaqueCount() = when { // Rounded mean counts of faces in a normal world
             this <= 32 -> 32
             this <= 128 -> 300

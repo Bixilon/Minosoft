@@ -16,13 +16,18 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesh
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.minosoft.data.direction.Directions
 
-enum class MeshDetails {
+enum class ChunkMeshDetails {
     ENTITIES,
     TEXT,
     AMBIENT_OCCLUSION,
 
-    MINIMUM_POSITION,
+    FAST_BEDROCK,
+
+    ANTI_MOIRE_PATTERN,
+
+    RANDOM_OFFSET,
 
 
     SIDE_DOWN,
@@ -36,11 +41,24 @@ enum class MeshDetails {
     ;
 
 
-    companion object : ValuesEnum<MeshDetails> {
+    companion object : ValuesEnum<ChunkMeshDetails> {
         override val VALUES = values()
         override val NAME_MAP = names()
 
 
-        val SIDES_ALL = IntInlineEnumSet<MeshDetails>() + SIDE_DOWN + SIDE_UP + SIDE_NORTH + SIDE_SOUTH + SIDE_WEST + SIDE_EAST // TODO: kutil 1.30.1
+        val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail }
+
+
+        val SIDES_ALL = IntInlineEnumSet<ChunkMeshDetails>() + SIDE_DOWN + SIDE_UP + SIDE_NORTH + SIDE_SOUTH + SIDE_WEST + SIDE_EAST // TODO: kutil 1.30.1
+
+
+        fun Directions.toMeshDetail() = when (this) {
+            Directions.DOWN -> SIDE_DOWN
+            Directions.UP -> SIDE_UP
+            Directions.NORTH -> SIDE_NORTH
+            Directions.SOUTH -> SIDE_SOUTH
+            Directions.WEST -> SIDE_WEST
+            Directions.EAST -> SIDE_EAST
+        }
     }
 }
