@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.biome
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.biomes.TestBiomes
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
@@ -31,9 +31,9 @@ import org.testng.annotations.Test
 
 @Test(groups = ["biomes"])
 class WorldBiomesTest {
-    private val b1 = Biome(minosoft("b1"), 0.0f, 0.0f)
-    private val b2 = Biome(minosoft("b2"), 0.0f, 0.0f)
-    private val b3 = Biome(minosoft("b3"), 0.0f, 0.0f)
+    private val b1 = TestBiomes.TEST1
+    private val b2 = TestBiomes.TEST2
+    private val b3 = TestBiomes.TEST3
 
     private fun create(noise: ((PlaySession) -> NoiseBiomeAccessor)?, source: (ChunkPosition) -> BiomeSource): World {
         val session = createSession(0)
