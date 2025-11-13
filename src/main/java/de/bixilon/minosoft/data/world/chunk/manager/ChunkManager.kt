@@ -112,9 +112,11 @@ class ChunkManager(
 
             for (neighbour in chunk.neighbours.array) {
                 if (neighbour == null || !neighbour.neighbours.complete) continue
+                if (created && neighbour.light.initial) continue
+                neighbour.light.initial = false
 
-                // TODO: This is executed WAY to often (7x per chunk), this should just run once!
-                if (!created) neighbour.light.reset()
+
+                neighbour.light.reset()
                 neighbour.light.calculate(false, ChunkLightUpdate.Causes.INITIAL)
                 neighbour.light.propagateFromNeighbours(true, ChunkLightUpdate.Causes.INITIAL)
             }
@@ -122,7 +124,7 @@ class ChunkManager(
 
         revision++
 
-        if (created || affected.isNotEmpty()) {
+        if (affected.isNotEmpty()) {
             ChunkDataUpdate(chunk, affected).fire(world.session)
         }
 

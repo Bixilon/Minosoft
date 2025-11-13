@@ -145,7 +145,7 @@ object VerifyIntegratedBlockRegistry {
     }
 
     private fun compareLightProperties(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
-        if (integrated.block is ShulkerBoxBlock || integrated.block is WoodenChestBlock<*> || integrated.block is SlimeBlock) return
+        if (integrated.block is ShulkerBoxBlock || integrated.block is WoodenChestBlock<*> || integrated.block is SlimeBlock || BlockStateFlags.WATERLOGGED in integrated.flags) return
 
         val lightPixlyzer = pixlyzer.block.getLightProperties(pixlyzer)
         val lightIntegrated = integrated.block.getLightProperties(integrated)

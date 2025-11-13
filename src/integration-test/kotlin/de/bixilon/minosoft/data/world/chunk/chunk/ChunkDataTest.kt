@@ -18,17 +18,14 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.block.TestBlockEntities
-import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.biomes.TestBiomes
 import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
-import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateTestUtil.collectUpdates
-import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkDataUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.modding.event.master.EventMaster
@@ -134,11 +131,9 @@ class ChunkDataTest {
         chunk[InChunkPosition(4, 36, 5)] = TestBlockStates.TEST1
         chunk[InChunkPosition(4, 3, 5)] = TestBlockStates.TEST1
 
-        val events = chunk.world.collectUpdates()
+        val affected = ChunkData(blocks = arrayOfNulls(16)).update(chunk, false)
 
-        ChunkData(blocks = arrayOfNulls(16)).update(chunk, false)
-
-        assertEquals(events, listOf<AbstractWorldUpdate>())
+        assertEquals(affected, listOf<ChunkSection>())
     }
 
     fun `event on block update without replace`() {
@@ -146,11 +141,9 @@ class ChunkDataTest {
         chunk[InChunkPosition(4, 3, 5)] = TestBlockStates.TEST1
         chunk[InChunkPosition(4, 36, 5)] = TestBlockStates.TEST1
 
-        val events = chunk.world.collectUpdates()
+        val affected = ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }).update(chunk, false)
 
-        ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }).update(chunk, false)
-
-        assertEquals(events, listOf(ChunkDataUpdate(chunk, setOf(chunk.sections[0]!!))))
+        assertEquals(affected, setOf(chunk.sections[0]!!))
     }
 
     fun `event on block update with replace`() {
@@ -158,11 +151,9 @@ class ChunkDataTest {
         chunk[InChunkPosition(4, 3, 5)] = TestBlockStates.TEST1
         chunk[InChunkPosition(4, 36, 5)] = TestBlockStates.TEST1
 
-        val events = chunk.world.collectUpdates()
+        val affected = ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }).update(chunk, true)
 
-        ChunkData(blocks = Array(16) { if (it == 0) arrayOfNulls(ChunkSize.BLOCKS_PER_SECTION) else null }).update(chunk, true)
-
-        assertEquals(events, listOf(ChunkDataUpdate(chunk, setOf(chunk.sections[0]!!, chunk.sections[2]!!))))
+        assertEquals(affected, setOf(chunk.sections[0]!!, chunk.sections[2]!!))
     }
 
     fun `event on biome source change`() {
@@ -171,15 +162,12 @@ class ChunkDataTest {
         // create block, so sections can be affected
         chunk.biomeSource = DummyBiomeSource(null)
         chunk[InChunkPosition(4, 3, 5)] = TestBlockStates.TEST1
-        chunk.sections.create(0)!!.biomes[1, 2, 3] = Biome(minosoft("test"), temperature = 0.0f, downfall = 0.0f)
-
-
-        val events = chunk.world.collectUpdates()
+        chunk.sections.create(0)!!.biomes[1, 2, 3] = TestBiomes.TEST1
 
         val next = DummyBiomeSource(null)
 
-        ChunkData(biomeSource = next).update(chunk, false)
+        val affected = ChunkData(biomeSource = next).update(chunk, false)
 
-        assertEquals(events, listOf(ChunkDataUpdate(chunk, setOf(chunk.sections[0]!!))))
+        assertEquals(affected, setOf(chunk.sections[0]!!))
     }
 }

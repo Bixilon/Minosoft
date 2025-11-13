@@ -36,6 +36,8 @@ class ChunkLight(
     val maxSection = chunk.world.dimension.maxSection
     val heightmap = if (chunk.world.dimension.hasSkyLight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
 
+    var initial = false
+
 
     val bottom = BottomSectionLight(chunk)
     val top = TopSectionLight(chunk)
