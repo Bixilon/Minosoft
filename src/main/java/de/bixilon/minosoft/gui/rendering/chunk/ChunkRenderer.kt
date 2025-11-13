@@ -123,7 +123,6 @@ class ChunkRenderer(
 
         profile.rendering::antiMoirePattern.observe(this) { clearCache() }
         val rendering = session.profiles.rendering
-        rendering.performance::fastBedrock.observe(this) { clearCache() }
         rendering.light::ambientOcclusion.observe(this) { clearCache() }
         rendering.performance::limitChunkTransferTime.observe(this) { this.limitChunkTransferTime = it }
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
@@ -37,7 +38,8 @@ class ChunkMesher(
         }
         val cache = item.cache ?: BlockMesherCache(renderer.context)
         cache.unmark()
-        val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count, cache)
+        val details = ChunkMeshDetails.ALL
+        val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count, cache, details)
         try {
             solid.mesh(item.section, cache, neighbours, sectionNeighbours, mesh)
 
@@ -47,7 +49,11 @@ class ChunkMesher(
             cache.cleanup()
         } catch (exception: Throwable) {
             mesh.drop()
-            if (exception !is InterruptedException) mesh.cache.drop() // TODO: Really drop it? Errors should not happen...
+            if (exception !is InterruptedException) {
+                // TODO: Really drop it? Errors should not happen...
+                // TODO: Still not ideal, we would need to mark all entries again (cache.unmark()) will delete them otherwise?
+                mesh.cache.drop()
+            }
             throw exception
         }
 

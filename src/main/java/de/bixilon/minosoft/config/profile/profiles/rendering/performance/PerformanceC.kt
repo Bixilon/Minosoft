@@ -19,12 +19,6 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 class PerformanceC(profile: RenderingProfile) {
 
     /**
-     * Does not render the bottom bedrock face when at minimum y.
-     * Kind of xray when falling out of the world.
-     */
-    var fastBedrock by BooleanDelegate(profile, true)
-
-    /**
      * Disables the voronoi noise for biome cache building.
      * Biomes may not match anymore.
      * If true, chunk receiving is way faster.

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -24,6 +25,8 @@ class ChunkMeshes(
     val position: SectionPosition,
     val min: InSectionPosition,
     val max: InSectionPosition,
+
+    val details: IntInlineEnumSet<ChunkMeshDetails>,
 
     val opaque: ChunkMesh?,
     val translucent: ChunkMesh?,
