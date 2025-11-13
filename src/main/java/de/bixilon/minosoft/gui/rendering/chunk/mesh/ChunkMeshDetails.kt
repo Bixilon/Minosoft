@@ -17,6 +17,9 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.positions.SectionPosition
+import kotlin.math.abs
 
 enum class ChunkMeshDetails {
     ENTITIES,
@@ -28,6 +31,11 @@ enum class ChunkMeshDetails {
     ANTI_MOIRE_PATTERN,
 
     RANDOM_OFFSET,
+
+    FLOWING_FLUID,
+    FLUID_HEIGHTS,
+
+    TRANSPARENCY,
 
 
     SIDE_DOWN,
@@ -49,7 +57,33 @@ enum class ChunkMeshDetails {
         val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail }
 
 
-        val SIDES_ALL = IntInlineEnumSet<ChunkMeshDetails>() + SIDE_DOWN + SIDE_UP + SIDE_NORTH + SIDE_SOUTH + SIDE_WEST + SIDE_EAST // TODO: kutil 1.30.1
+        fun of(position: SectionPosition, camera: SectionPosition, dimension: DimensionProperties): IntInlineEnumSet<ChunkMeshDetails> {
+            var details = ALL
+
+            val delta = camera - position
+            val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
+
+            if (max >= 5) details -= ENTITIES
+            if (max >= 4) details -= TEXT
+
+            if (max >= 8) details -= AMBIENT_OCCLUSION
+
+            if (max >= 10) details -= ANTI_MOIRE_PATTERN
+
+            if (max >= 5) details -= RANDOM_OFFSET
+
+            if (max >= 5) details -= FLOWING_FLUID
+            if (max >= 8) details -= FLUID_HEIGHTS
+
+            if (max >= 8) details -= TRANSPARENCY
+
+            // TODO: sides
+
+
+            if (camera.y - 3 <= dimension.minSection) details -= FAST_BEDROCK
+
+            return details
+        }
 
 
         fun Directions.toMeshDetail() = when (this) {

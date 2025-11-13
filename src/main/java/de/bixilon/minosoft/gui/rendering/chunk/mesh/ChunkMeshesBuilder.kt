@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails.TRANSPARENCY
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -100,8 +101,9 @@ class ChunkMeshesBuilder(
         mesh.addQuad(offset, positions, uv, texture, light, tint, ao)
     }
 
-    operator fun get(transparency: TextureTransparencies) = when (transparency) {
-        TextureTransparencies.TRANSLUCENT -> translucent
+    operator fun get(transparency: TextureTransparencies) = when {
+        TRANSPARENCY !in details -> opaque
+        transparency == TextureTransparencies.TRANSLUCENT -> translucent
         else -> opaque
     }
 

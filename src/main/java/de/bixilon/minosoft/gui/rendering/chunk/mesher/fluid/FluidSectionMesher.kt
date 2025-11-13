@@ -168,9 +168,13 @@ class FluidSectionMesher(
                         continue
                     }
 
-
-                    updateFluidHeights(section, inSection, fluid, heights)
-                    updateCornerHeights(heights, corners)
+                    if (ChunkMeshDetails.FLUID_HEIGHTS in builder.details) {
+                        updateFluidHeights(section, inSection, fluid, heights)
+                        updateCornerHeights(heights, corners)
+                    } else {
+                        val height = if (up) 0.88888896f else 1.0f
+                        corners.fill(height)
+                    }
                     val position = BlockPosition.of(chunk.position, section.height, inSection)
 
                     offsetPosition.x = (position.x - cameraOffset.x).toFloat()
@@ -188,7 +192,9 @@ class FluidSectionMesher(
 
 
                     if (up) {
-                        fluid.updateVelocity(state, position, chunk, velocity)
+                        if (ChunkMeshDetails.FLOWING_FLUID in builder.details) {
+                            fluid.updateVelocity(state, position, chunk, velocity)
+                        }
                         renderUp(model, velocity.unsafe, corners, offsetPosition.unsafe, builder, lightTint, packedUV)
                     }
                     if (down != FluidCull.CULLED && ChunkMeshDetails.SIDE_DOWN in builder.details) {

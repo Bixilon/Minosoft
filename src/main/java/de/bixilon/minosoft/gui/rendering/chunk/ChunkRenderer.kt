@@ -47,7 +47,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.blockPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
@@ -241,8 +240,9 @@ class ChunkRenderer(
 
     private fun onVisibilityChange() {
         var sort = false
-        val cameraPosition = Vec3f(session.player.renderInfo.eyePosition - context.camera.offset.offset)
-        val sectionPosition = cameraPosition.blockPosition.sectionPosition
+        val blockPosition = session.camera.entity.physics.positionInfo.position
+        val cameraPosition = Vec3f(blockPosition - context.camera.offset.offset)
+        val sectionPosition = blockPosition.sectionPosition
         if (this.cameraPosition != cameraPosition) {
             if (this.cameraSectionPosition != sectionPosition) {
                 this.cameraSectionPosition = sectionPosition
