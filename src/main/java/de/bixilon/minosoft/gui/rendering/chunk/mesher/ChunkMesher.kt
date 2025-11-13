@@ -47,7 +47,7 @@ class ChunkMesher(
             cache.cleanup()
         } catch (exception: Throwable) {
             mesh.drop()
-            mesh.cache.drop() // TODO: Really drop it? Errors should not happen...
+            if (exception !is InterruptedException) mesh.cache.drop() // TODO: Really drop it? Errors should not happen...
             throw exception
         }
 
