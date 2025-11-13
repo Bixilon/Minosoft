@@ -41,17 +41,17 @@ build:
   extends: .gradle
   stage: build
   script: ./gradlew --build-cache assemble -Pminosoft.updates=true
-  only:
-    - master
-    - merge_requests
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_DRAFT == "false"'
 
 test:
   extends: .gradle
   stage: test
   script: ./gradlew test
-  only:
-    - master
-    - merge_requests
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_DRAFT == "false"'
   artifacts:
     when: always
     reports:
@@ -61,9 +61,9 @@ integration test:
   extends: .gradle
   stage: test
   script: ./gradlew integrationTest
-  only:
-    - master
-    - merge_requests
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_DRAFT == "false"'
   cache:
     - key: "$CI_COMMIT_SHA"
       paths:
