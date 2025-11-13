@@ -15,7 +15,6 @@ package de.bixilon.kmath.mat.mat4.f
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
-import de.bixilon.kutil.benchmark.BenchmarkUtil
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -129,17 +128,6 @@ class Mat4fTest {
             0.0f, 0.0f, 6.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 8.0f,
         ))
-    }
-
-    // @Test
-    fun `times matrix benchmark`() {
-        val a = Mat4f(1.0f, 2.0f, 3.0f, 4.0f)
-        val b = Mat4f(2.0f, 2.0f, 3.0f, 3.0f)
-        BenchmarkUtil.benchmark(1000) {
-            for (i in 0 until 10000) {
-                a * b
-            }
-        }.println()
     }
 
     @Test
