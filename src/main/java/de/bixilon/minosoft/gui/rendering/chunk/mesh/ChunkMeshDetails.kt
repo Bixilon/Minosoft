@@ -60,7 +60,7 @@ enum class ChunkMeshDetails {
         fun of(position: SectionPosition, camera: SectionPosition, dimension: DimensionProperties): IntInlineEnumSet<ChunkMeshDetails> {
             var details = ALL
 
-            val delta = camera - position
+            val delta = position - camera
             val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
 
             if (max >= 5) details -= ENTITIES
@@ -77,7 +77,14 @@ enum class ChunkMeshDetails {
 
             if (max >= 8) details -= TRANSPARENCY
 
-            // TODO: sides
+            if (delta.y < -3) details -= SIDE_DOWN
+            if (delta.y > 3) details -= SIDE_UP
+
+            if (delta.z < -3) details -= SIDE_NORTH
+            if (delta.z > 3) details -= SIDE_SOUTH
+
+            if (delta.x < -3) details -= SIDE_WEST
+            if (delta.x > 3) details -= SIDE_EAST
 
 
             if (camera.y - 3 <= dimension.minSection) details -= FAST_BEDROCK
