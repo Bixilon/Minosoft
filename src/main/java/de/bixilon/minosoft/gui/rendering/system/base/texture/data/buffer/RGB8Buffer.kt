@@ -17,7 +17,6 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
 class RGB8Buffer(
@@ -30,7 +29,7 @@ class RGB8Buffer(
     override val alpha get() = true
 
     constructor(size: Vec2i, array: ByteArray) : this(size, ByteBuffer.wrap(array))
-    constructor(size: Vec2i) : this(size, BufferUtils.createByteBuffer(size.x * size.y * 3))
+    constructor(size: Vec2i) : this(size, ByteBuffer.allocateDirect(size.x * size.y * 3))
 
 
     fun setRGB(x: Int, y: Int, red: Int, green: Int, blue: Int) {
