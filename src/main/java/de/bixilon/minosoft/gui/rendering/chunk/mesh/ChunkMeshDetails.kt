@@ -26,8 +26,6 @@ enum class ChunkMeshDetails {
     TEXT,
     AMBIENT_OCCLUSION,
 
-    FAST_BEDROCK,
-
     ANTI_MOIRE_PATTERN,
 
     RANDOM_OFFSET,
@@ -36,6 +34,8 @@ enum class ChunkMeshDetails {
     FLUID_HEIGHTS,
 
     TRANSPARENCY,
+
+    FULL_OPAQUE_CULLED,
 
 
     SIDE_DOWN,
@@ -77,6 +77,8 @@ enum class ChunkMeshDetails {
 
             if (max >= 8) details -= TRANSPARENCY
 
+            if (max >= 2) details -= FULL_OPAQUE_CULLED
+
             if (delta.y < -3) details -= SIDE_DOWN
             if (delta.y > 3) details -= SIDE_UP
 
@@ -86,8 +88,6 @@ enum class ChunkMeshDetails {
             if (delta.x < -3) details -= SIDE_WEST
             if (delta.x > 3) details -= SIDE_EAST
 
-
-            if (camera.y - 3 <= dimension.minSection) details -= FAST_BEDROCK
 
             return details
         }
