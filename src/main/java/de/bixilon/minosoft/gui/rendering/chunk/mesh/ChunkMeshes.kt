@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 
 class ChunkMeshes(
+    val section: ChunkSection,
     val position: SectionPosition,
     val min: InSectionPosition,
     val max: InSectionPosition,

@@ -42,13 +42,18 @@ class ChunkQueueMaster(
         val visible = ignoreVisibility || renderer.visibility.isSectionVisible(section)
         if (visible) {
             val center = CHUNK_CENTER + BlockPosition.of(section.chunk.position, section.height)
-            val cache = renderer.lock.acquired { renderer.loaded.meshes[section.chunk.position]?.get(section.height)?.cache }
-            val item = WorldQueueItem(position, section, center, cache)
+            val previous = renderer.lock.acquired { renderer.loaded.meshes[section.chunk.position]?.get(section.height) }
+            val item = WorldQueueItem(position, section, center, previous?.cache, previous?.details)
             renderer.meshingQueue.queue(item)
             return true
         }
 
         renderer.culledQueue.queue(section.chunk.position, section.height)
+
+        val queuePosition = QueuePosition(position)
+        renderer.loaded.unload(position, true)
+        renderer.meshingQueue.remove(queuePosition, true)
+        renderer.loadingQueue.abort(queuePosition, true)
 
         return false
     }
@@ -63,7 +68,10 @@ class ChunkQueueMaster(
     }
 
     fun tryQueue(section: ChunkSection) {
-        if (!canQueue() || !section.chunk.neighbours.complete) return
+        if (!canQueue() || !section.chunk.neighbours.complete) {
+            renderer.unload(QueuePosition(SectionPosition.of(section.chunk.position, section.height)))
+            return
+        }
 
         if (queue(section, false)) {
             renderer.meshingQueue.sort()

@@ -246,6 +246,7 @@ class ChunkRenderer(
         if (this.cameraPosition != cameraPosition) {
             if (this.cameraSectionPosition != sectionPosition) {
                 this.cameraSectionPosition = sectionPosition
+                loaded.updateDetails()
                 sort = true
             }
             this.cameraPosition = cameraPosition

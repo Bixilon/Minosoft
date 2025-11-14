@@ -16,12 +16,12 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesh
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails.TRANSPARENCY
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -30,15 +30,14 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 
 class ChunkMeshesBuilder(
     context: RenderContext,
-    count: Int,
-    entities: Int,
+    val section: ChunkSection,
     val cache: BlockMesherCache,
     val details: IntInlineEnumSet<ChunkMeshDetails>,
 ) : BlockVertexConsumer { // TODO: Don't inherit
-    var opaque = ChunkMeshBuilder(context, count.opaqueCount())
-    var translucent = ChunkMeshBuilder(context, count.translucentCount())
-    var text = ChunkMeshBuilder(context, 128)
-    var entities: ArrayList<BlockEntityRenderer> = ArrayList(entities)
+    var opaque = ChunkMeshBuilder(context, section.blocks.count.opaqueCount())
+    var translucent = ChunkMeshBuilder(context, if (ChunkMeshDetails.TRANSPARENCY in details) section.blocks.count.translucentCount() else 0)
+    var text = ChunkMeshBuilder(context, if (ChunkMeshDetails.TEXT in details && section.entities.count > 0) 128 else 0)
+    var entities: ArrayList<BlockEntityRenderer> = ArrayList(if (ChunkMeshDetails.ENTITIES in details) section.entities.count else 0)
 
     // used for frustum culling
     var minPosition = InSectionPosition(ChunkSize.SECTION_MAX_X, ChunkSize.SECTION_MAX_Y, ChunkSize.SECTION_MAX_Z)
@@ -87,7 +86,7 @@ class ChunkMeshesBuilder(
         if (opaque == null && translucent == null && text == null && entities == null) {
             return null
         }
-        return ChunkMeshes(position, minPosition, maxPosition, details, opaque, translucent, text, entities, cache)
+        return ChunkMeshes(section, position, minPosition, maxPosition, details, opaque, translucent, text, entities, cache)
     }
 
     fun drop() {
@@ -102,7 +101,7 @@ class ChunkMeshesBuilder(
     }
 
     operator fun get(transparency: TextureTransparencies) = when {
-        TRANSPARENCY !in details -> opaque
+        ChunkMeshDetails.TRANSPARENCY !in details -> opaque
         transparency == TextureTransparencies.TRANSLUCENT -> translucent
         else -> opaque
     }

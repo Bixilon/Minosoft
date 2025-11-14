@@ -38,8 +38,12 @@ class ChunkMesher(
         }
         val cache = item.cache ?: BlockMesherCache(renderer.context)
         cache.unmark()
-        val details = ChunkMeshDetails.of(item.position, renderer.cameraSectionPosition, renderer.world.dimension)
-        val mesh = ChunkMeshesBuilder(renderer.context, item.section.blocks.count, item.section.entities.count, cache, details)
+
+        var details = item.details ?: ChunkMeshDetails.of(item.position, renderer.cameraSectionPosition)
+        details = ChunkMeshDetails.update(details, item.position, renderer.cameraSectionPosition)
+
+
+        val mesh = ChunkMeshesBuilder(renderer.context, item.section, cache, details)
         try {
             solid.mesh(item.section, cache, neighbours, sectionNeighbours, mesh)
 

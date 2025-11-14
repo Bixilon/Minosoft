@@ -57,7 +57,7 @@ enum class ChunkMeshDetails {
         val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail }
 
 
-        fun of(position: SectionPosition, camera: SectionPosition, dimension: DimensionProperties): IntInlineEnumSet<ChunkMeshDetails> {
+        fun of(position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
             var details = ALL
 
             val delta = position - camera
@@ -90,6 +90,12 @@ enum class ChunkMeshDetails {
 
 
             return details
+        }
+
+        fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+
+            // TODO
+            return previous
         }
 
 

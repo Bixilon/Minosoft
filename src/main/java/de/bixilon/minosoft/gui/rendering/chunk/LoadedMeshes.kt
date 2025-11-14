@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -99,11 +100,6 @@ class LoadedMeshes(
         while (iterator.hasNext()) {
             val (chunkPosition, meshes) = iterator.next()
 
-            if (!renderer.visibility.isInViewDistance(chunkPosition)) {
-                iterator.remove()
-                renderer.unloadingQueue.forceQueue(meshes.values, false)
-                continue
-            }
             if (!renderer.visibility.isChunkVisible(chunkPosition)) {
                 continue
             }
@@ -116,6 +112,35 @@ class LoadedMeshes(
                     continue
                 }
                 visible += mesh
+            }
+        }
+        lock.release()
+        renderer.lock.release()
+    }
+
+    fun updateDetails() {
+        renderer.lock.acquire()
+        lock.acquire()
+        val iterator = this.meshes.iterator()
+        while (iterator.hasNext()) {
+            val (chunkPosition, meshes) = iterator.next()
+
+            if (!renderer.visibility.isInViewDistance(chunkPosition)) {
+                iterator.remove()
+                renderer.unloadingQueue.forceQueue(meshes.values, false)
+                continue
+            }
+
+            val iterator = meshes.keys.intIterator()
+            while (iterator.hasNext()) {
+                val key = iterator.nextInt()
+                val mesh = meshes[key] ?: continue
+
+                val next = ChunkMeshDetails.update(mesh.details, mesh.position, renderer.cameraSectionPosition)
+
+                if (next == mesh.details) continue
+
+                renderer.master.tryQueue(mesh.section)
             }
         }
         lock.release()

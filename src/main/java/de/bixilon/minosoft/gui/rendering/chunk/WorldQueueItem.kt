@@ -14,10 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 
 class WorldQueueItem(
@@ -25,6 +27,7 @@ class WorldQueueItem(
     val section: ChunkSection,
     val center: Vec3f,
     val cache: BlockMesherCache?,
+    val details: IntInlineEnumSet<ChunkMeshDetails>? = null,
 ) {
     var mesh: ChunkMeshes? = null
 
