@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk
+package de.bixilon.minosoft.gui.rendering.chunk.queue
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
-import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 
 class WorldQueueItem(
     val position: SectionPosition,
@@ -34,17 +33,11 @@ class WorldQueueItem(
     var distance = 0
     var sort = 0
 
-    override fun equals(other: Any?): Boolean {
-        if (other is WorldQueueItem) {
-            return position == other.position
-        }
-        if (other is QueuePosition) {
-            return position == other.position
-        }
-        return false
+    override fun equals(other: Any?) = when (other) {
+        is WorldQueueItem -> position == other.position
+        is QueuePosition -> position == other.position
+        else -> false
     }
 
-    override fun hashCode(): Int {
-        return position.hashCode()
-    }
+    override fun hashCode() = position.hashCode()
 }

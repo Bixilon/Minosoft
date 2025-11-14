@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.border
+package de.bixilon.minosoft.gui.rendering.chunk.border.world
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.math.simple.FloatMath.clamp
@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.data.world.border.WorldBorderState
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.border.world.mesh.WorldBorderMesh
+import de.bixilon.minosoft.gui.rendering.chunk.border.world.mesh.WorldBorderMeshBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings

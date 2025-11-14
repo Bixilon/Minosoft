@@ -31,5 +31,4 @@ object ChunkRendererUtil {
             }
             return MOVING_LOADING_TIME
         }
-
 }

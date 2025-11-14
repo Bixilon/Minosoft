@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.queue
 
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 
 class QueuePosition(
@@ -23,18 +22,11 @@ class QueuePosition(
 
     constructor(mesh: ChunkMeshes) : this(mesh.position)
 
-
-    override fun equals(other: Any?): Boolean {
-        if (other is WorldQueueItem) {
-            return position == other.position
-        }
-        if (other is QueuePosition) {
-            return position == other.position
-        }
-        return false
+    override fun equals(other: Any?) = when (other) {
+        is WorldQueueItem -> position == other.position
+        is QueuePosition -> position == other.position
+        else -> false
     }
 
-    override fun hashCode(): Int {
-        return position.hashCode()
-    }
+    override fun hashCode() = position.hashCode()
 }

@@ -20,7 +20,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTaskManager
@@ -97,6 +97,7 @@ class ChunkMeshingQueue(
         set -= remove
     }
 
+    @Deprecated("cleanup????")
     fun cleanup(lock: Boolean) {
         if (lock) lock()
         val remove: MutableSet<WorldQueueItem> = mutableSetOf()

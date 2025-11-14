@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.queue
+package de.bixilon.minosoft.gui.rendering.chunk.queue.culled
 
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -27,9 +27,12 @@ class CulledQueue(
     private val queue: MutableMap<ChunkPosition, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val lock = RWLock.rwlock()
 
+    // TODO: split (out of view, out of frustum/occlusion)
+
     val size: Int get() = queue.size
 
 
+    @Deprecated("cleanup????")
     fun cleanup(lock: Boolean) {
         if (lock) lock()
         val iterator = queue.iterator()

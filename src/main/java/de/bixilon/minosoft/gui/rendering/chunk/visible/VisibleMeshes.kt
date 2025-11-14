@@ -11,13 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.mesh
+package de.bixilon.minosoft.gui.rendering.chunk.visible
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.util.KUtil.format
 

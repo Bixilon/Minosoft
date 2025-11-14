@@ -121,6 +121,7 @@ class MeshLoadingQueue(
     }
 
 
+    @Deprecated("cleanup????")
     fun cleanup(lock: Boolean) {
         val remove: MutableSet<QueuePosition> = mutableSetOf()
 

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.border
+package de.bixilon.minosoft.gui.rendering.chunk.border.world.mesh
 
 import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.minosoft.data.world.positions.BlockPosition

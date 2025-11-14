@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibleMeshes
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class LoadedMeshes(
@@ -108,6 +108,7 @@ class LoadedMeshes(
             while (iterator.hasNext()) {
                 val key = iterator.nextInt()
                 val mesh = meshes[key] ?: continue
+                // TODO: unload if occluded (but we can not distinct between frustum and occlusion)
                 if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, key), mesh.min, mesh.max)) {
                     continue
                 }
@@ -127,7 +128,7 @@ class LoadedMeshes(
 
             if (!renderer.visibility.isInViewDistance(chunkPosition)) {
                 iterator.remove()
-                renderer.unloadingQueue.forceQueue(meshes.values, false)
+                renderer.unloadingQueue.forceQueue(meshes.values, false) // TODO: queue again
                 continue
             }
 

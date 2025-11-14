@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.queue.queue
+package de.bixilon.minosoft.gui.rendering.chunk.queue.master
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 
 class ChunkQueueMaster(

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder

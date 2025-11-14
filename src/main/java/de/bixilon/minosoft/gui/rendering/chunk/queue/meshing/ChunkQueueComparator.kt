@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
 
 class ChunkQueueComparator : Comparator<WorldQueueItem> {
     private var sort = 1
