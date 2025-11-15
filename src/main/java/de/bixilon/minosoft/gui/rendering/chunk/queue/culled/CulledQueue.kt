@@ -13,120 +13,112 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.culled
 
-import de.bixilon.kutil.concurrent.lock.RWLock
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class CulledQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val queue: MutableMap<ChunkPosition, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
-    private val lock = RWLock.rwlock()
+    private val viewDistance: HashMap<ChunkPosition, Chunk> = HashMap()
+    private val culled: HashMap<ChunkPosition, HashSet<ChunkSection>> = HashMap()
+    private val lock = ReentrantLock()
 
-    // TODO: split (out of view, out of frustum/occlusion)
-
-    val size: Int get() = queue.size
+    val size: Int get() = viewDistance.size + culled.size
 
 
-    @Deprecated("cleanup????")
-    fun cleanup(lock: Boolean) {
-        if (lock) lock()
-        val iterator = queue.iterator()
-        for ((chunkPosition, _) in iterator) {
-            if (renderer.visibility.isChunkVisible(chunkPosition)) {
-                continue
-            }
-            iterator.remove()
+    fun clear() = lock.locked {
+        viewDistance.clear()
+        culled.clear()
+    }
+
+
+    operator fun minusAssign(chunk: Chunk) = lock.locked {
+        viewDistance -= chunk.position
+        culled -= chunk.position
+    }
+
+    operator fun minusAssign(section: ChunkSection): Unit = lock.locked {
+        culled[section.chunk.position]?.remove(section)
+    }
+
+    @Deprecated("why?")
+    operator fun plusAssign(chunk: Chunk) = lock.locked {
+        if (!renderer.visibility.isChunkVisible(chunk.position)) {
+            viewDistance[chunk.position] = chunk
+        } else {
+            TODO("Enqueue all sections of chunk?")
         }
-        if (lock) unlock()
     }
 
-    fun lock() {
-        renderer.lock.acquire()
-        this.lock.lock()
-    }
-
-    fun unlock() {
-        this.lock.unlock()
-        renderer.lock.release()
-    }
-
-
-    fun clear(lock: Boolean) {
-        if (lock) lock()
-        this.queue.clear()
-        if (lock) unlock()
-    }
-
-    fun remove(position: ChunkPosition, lock: Boolean) {
-        if (lock) lock()
-
-        queue -= position
-
-        if (lock) unlock()
-    }
-
-    fun remove(position: SectionPosition, lock: Boolean) {
-        if (lock) lock()
-
-        queue[position.chunkPosition]?.let {
-            if (it.remove(position.y) && it.isEmpty()) {
-                queue -= position.chunkPosition
-            }
+    operator fun plusAssign(section: ChunkSection): Unit = lock.locked {
+        if (!renderer.visibility.isChunkVisible(section.chunk.position)) {
+            viewDistance[section.chunk.position] = section.chunk
+        } else {
+            culled.getOrPut(section.chunk.position) { HashSet() } += section
         }
-
-        if (lock) unlock()
     }
 
-
-    fun collect(): MutableList<ChunkSection> {
-        renderer.lock.acquire()
-        lock.acquire() // The queue method needs the full lock of the culledQueue
-
-        val world = renderer.world
-
-        world.lock.acquire()
-
-        val list: MutableList<ChunkSection> = mutableListOf()
-
-        val queueIterator = this.queue.iterator()
-        for ((chunkPosition, sectionHeights) in queueIterator) {
-            if (!renderer.visibility.isChunkVisible(chunkPosition)) {
-                continue
-            }
-            val chunk = world.chunks.chunks.unsafe[chunkPosition] ?: continue
-            if (!chunk.neighbours.complete) continue
-
-            val heightIterator = sectionHeights.intIterator()
-            while (heightIterator.hasNext()) {
-                val sectionHeight = heightIterator.nextInt()
-                val section = chunk[sectionHeight] ?: continue
-                if (!renderer.visibility.isSectionVisible(section)) {
-                    continue
-                }
-                list += section
-                heightIterator.remove()
-            }
-            if (sectionHeights.isEmpty()) {
-                queueIterator.remove()
-            }
-        }
-        world.lock.release()
-
-        lock.release()
-        renderer.lock.release()
-
-
-        return list
-    }
-
-    fun queue(position: ChunkPosition, sectionHeight: SectionHeight) {
+    fun enqueueViewDistance(): Int {
+        if (viewDistance.isEmpty()) return 0
         lock.lock()
-        queue.getOrPut(position) { IntOpenHashSet() } += sectionHeight
+
+        var count = 0
+
+        val iterator = viewDistance.values.iterator()
+        while (iterator.hasNext()) {
+            val chunk = iterator.next()
+            if (!renderer.visibility.isChunkVisible(chunkPosition)) continue
+
+            iterator.remove()
+
+            for (height in chunk.sections.lowest..chunk.sections.highest) {
+                val section = chunk.sections[height] ?: continue
+
+
+                if (!renderer.visibility.isSectionVisible(section)) continue
+
+                // TODO: enqueue
+                count++
+            }
+        }
+
         lock.unlock()
+
+        return count
+    }
+
+    fun enqueue(): Int {
+        if (culled.isEmpty()) return 0
+        lock.lock()
+
+        var count = 0
+
+        val iterator = culled.values.iterator()
+        while (iterator.hasNext()) {
+            val sections = iterator.next()
+
+            val sectionIterator = sections.iterator()
+            while (sectionIterator.hasNext()) {
+                val section = sectionIterator.next()
+                if (!renderer.visibility.isSectionVisible(section)) continue
+
+                sectionIterator.remove()
+
+                // TODO: enqueue
+                count++
+            }
+
+            if (sections.isEmpty()) {
+                iterator.remove()
+            }
+        }
+
+        lock.unlock()
+
+        return count
     }
 }

@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
@@ -39,17 +41,15 @@ class ChunkMeshingQueue(
     private val queue: MutableList<WorldQueueItem> = ArrayList()
     private val set: MutableSet<WorldQueueItem> = HashSet()
 
-    private val lock = Lock.lock()
+    private val lock = ReentrantLock()
 
 
     val size: Int get() = queue.size
 
 
-    fun sort() {
-        lock()
+    fun sort() = lock.locked {
         comparator.update(renderer)
         queue.sortWith(comparator)
-        unlock()
     }
 
 
@@ -110,16 +110,6 @@ class ChunkMeshingQueue(
         }
         set -= remove
         if (lock) unlock()
-    }
-
-    fun lock() {
-        renderer.lock.acquire()
-        this.lock.lock()
-    }
-
-    fun unlock() {
-        this.lock.unlock()
-        renderer.lock.release()
     }
 
 

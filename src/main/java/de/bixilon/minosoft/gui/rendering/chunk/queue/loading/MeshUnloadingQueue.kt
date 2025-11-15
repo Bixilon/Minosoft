@@ -98,14 +98,4 @@ class MeshUnloadingQueue(
         }
         unlock()
     }
-
-    fun lock() {
-        renderer.lock.acquire()
-        this.lock.lock()
-    }
-
-    fun unlock() {
-        this.lock.unlock()
-        renderer.lock.release()
-    }
 }

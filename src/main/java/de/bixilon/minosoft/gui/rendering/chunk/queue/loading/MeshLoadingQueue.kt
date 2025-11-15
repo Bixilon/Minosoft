@@ -156,16 +156,6 @@ class MeshLoadingQueue(
     }
 
 
-    fun lock() {
-        renderer.lock.acquire()
-        this.lock.lock()
-    }
-
-    fun unlock() {
-        this.lock.unlock()
-        renderer.lock.release()
-    }
-
     companion object {
         const val BATCH_SIZE = 5
     }

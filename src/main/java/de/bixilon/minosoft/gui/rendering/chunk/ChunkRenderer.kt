@@ -21,7 +21,11 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -97,40 +101,35 @@ class ChunkRenderer(
         var paused = false
         context::state.observe(this) {
             if (it == RenderingStates.PAUSED) {
-                unloadWorld()
+                unload(world)
                 paused = true
             } else if (paused) {
-                master.tryQueue(world)
+                invalidate(world)
                 paused = false
             }
         }
-        context.camera.offset::offset.observe(this) { clearCache() }
+        context.camera.offset::offset.observe(this) { unload(world); invalidate(world) }
 
         context.input.bindings.register(minosoft("clear_chunk_cache"), KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
             KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-        )) { clearCache(true) }
+        )) {
+            unload(world); invalidate(world)
+            session.util.sendDebugMessage("Chunk cache invalidated!")
+        }
 
-        profile.rendering::antiMoirePattern.observe(this) { clearCache() }
+        profile.rendering::antiMoirePattern.observe(this) { invalidate(world) }
         val rendering = session.profiles.rendering
-        rendering.light::ambientOcclusion.observe(this) { clearCache() }
+        rendering.light::ambientOcclusion.observe(this) { invalidate(world) }
         rendering.performance::limitChunkTransferTime.observe(this) { this.limitChunkTransferTime = it }
 
         profile::viewDistance.observe(this) { viewDistance -> visibility.setViewDistance(viewDistance) }
     }
 
-    fun clearCache(message: Boolean = false) {
-        unloadWorld()
-        master.tryQueue(world)
-
-        if (message) {
-            session.util.sendDebugMessage("Chunk cache cleared!")
-        }
-    }
-
-    fun unloadWorld() {
+    fun _unloadWorld() {
         lock.lock()
 
+        TODO()
         meshingQueue.tasks.interruptAll()
 
         loaded.clear(false)
@@ -142,9 +141,17 @@ class ChunkRenderer(
         lock.unlock()
     }
 
-    @Deprecated("dubious")
-    fun unload(position: ChunkPosition) {
+    fun unload(world: World)
+    fun unload(chunk: Chunk)
+
+    fun invalidate(world: World)
+    fun invalidate(chunk: Chunk)
+    fun invalidate(section: ChunkSection)
+    fun invalidate(chunk: Chunk?, height: SectionHeight)
+
+    fun _unload(position: Chunk) {
         lock.lock()
+        TODO()
 
         meshingQueue.tasks.interrupt(position)
         culledQueue.remove(position, false)
@@ -152,24 +159,6 @@ class ChunkRenderer(
         loadingQueue.abort(position, false)
 
         loaded.unload(position, false)
-
-        lock.unlock()
-    }
-
-
-    @Deprecated("dubious")
-    fun unload(item: WorldQueueItem) = unload(QueuePosition(item.position))
-
-    @Deprecated("dubious")
-    fun unload(position: QueuePosition) {
-        lock.lock()
-
-        // TODO: queue again?
-        loaded.unload(position.position, false)
-        culledQueue.remove(position.position, false)
-        meshingQueue.remove(position, false)
-        loadingQueue.abort(position, false)
-        meshingQueue.tasks.interrupt(position.position)
 
         lock.unlock()
     }

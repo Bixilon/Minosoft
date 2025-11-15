@@ -42,69 +42,69 @@ object ChunkRendererChangeListener {
         val neighbours = update.chunk.neighbours
         val sectionHeight = update.position.sectionHeight
 
-        master.tryQueue(update.chunk, sectionHeight)
+        invalidate(update.chunk, sectionHeight)
         val inPosition = update.position.inSectionPosition
 
         if (inPosition.y == 0) {
-            master.tryQueue(update.chunk, sectionHeight - 1)
+            invalidate(update.chunk, sectionHeight - 1)
         } else if (inPosition.y == ChunkSize.SECTION_MAX_Y) {
-            master.tryQueue(update.chunk, sectionHeight + 1)
+            invalidate(update.chunk, sectionHeight + 1)
         }
         if (inPosition.z == 0) {
-            master.tryQueue(chunk = neighbours[Directions.NORTH], sectionHeight)
+            invalidate(neighbours[Directions.NORTH], sectionHeight)
         } else if (inPosition.z == ChunkSize.SECTION_MAX_Z) {
-            master.tryQueue(chunk = neighbours[Directions.SOUTH], sectionHeight)
+            invalidate(neighbours[Directions.SOUTH], sectionHeight)
         }
         if (inPosition.x == 0) {
-            master.tryQueue(chunk = neighbours[Directions.WEST], sectionHeight)
+            invalidate(neighbours[Directions.WEST], sectionHeight)
         } else if (inPosition.x == ChunkSize.SECTION_MAX_X) {
-            master.tryQueue(chunk = neighbours[Directions.EAST], sectionHeight)
+            invalidate(neighbours[Directions.EAST], sectionHeight)
         }
     }
 
     private fun ChunkRenderer.handle(update: ChunkLocalBlockUpdate) {
         if (!update.chunk.neighbours.complete) return
         val sectionHeights: Int2ObjectOpenHashMap<BooleanArray> = Int2ObjectOpenHashMap()
-        for ((position, state) in update.change) {
+        for ((position, _) in update.change) {
             val neighbours = sectionHeights.getOrPut(position.sectionHeight) { BooleanArray(Directions.SIZE) }
             val inSectionHeight = position.y.inSectionHeight
             if (inSectionHeight == 0) {
-                neighbours[0] = true
+                neighbours[Directions.O_DOWN] = true
             } else if (inSectionHeight == ChunkSize.SECTION_MAX_Y) {
-                neighbours[1] = true
+                neighbours[Directions.O_UP] = true
             }
             if (position.z == 0) {
-                neighbours[2] = true
+                neighbours[Directions.O_NORTH] = true
             } else if (position.z == ChunkSize.SECTION_MAX_Z) {
-                neighbours[3] = true
+                neighbours[Directions.O_SOUTH] = true
             }
             if (position.x == 0) {
-                neighbours[4] = true
+                neighbours[Directions.O_WEST] = true
             } else if (position.x == ChunkSize.SECTION_MAX_X) {
-                neighbours[5] = true
+                neighbours[Directions.O_EAST] = true
             }
         }
         val neighbours = update.chunk.neighbours
         for ((sectionHeight, neighbourUpdates) in sectionHeights) {
-            master.tryQueue(update.chunk, sectionHeight)
+            invalidate(update.chunk, sectionHeight)
 
             if (neighbourUpdates[0]) {
-                master.tryQueue(update.chunk, sectionHeight - 1)
+                invalidate(update.chunk, sectionHeight - 1)
             }
             if (neighbourUpdates[1]) {
-                master.tryQueue(update.chunk, sectionHeight + 1)
+                invalidate(update.chunk, sectionHeight + 1)
             }
             if (neighbourUpdates[2]) {
-                master.tryQueue(neighbours[Directions.NORTH], sectionHeight)
+                invalidate(neighbours[Directions.NORTH], sectionHeight)
             }
             if (neighbourUpdates[3]) {
-                master.tryQueue(neighbours[Directions.SOUTH], sectionHeight)
+                invalidate(neighbours[Directions.SOUTH], sectionHeight)
             }
             if (neighbourUpdates[4]) {
-                master.tryQueue(neighbours[Directions.WEST], sectionHeight)
+                invalidate(neighbours[Directions.WEST], sectionHeight)
             }
             if (neighbourUpdates[5]) {
-                master.tryQueue(neighbours[Directions.EAST], sectionHeight)
+                invalidate(neighbours[Directions.EAST], sectionHeight)
             }
         }
     }
@@ -112,21 +112,21 @@ object ChunkRendererChangeListener {
     private fun ChunkRenderer.handle(update: ChunkLightUpdate) {
         if (update.cause == ChunkLightUpdate.Causes.BLOCK_CHANGE) return // change is already covered
         // TODO: Enqueue neighbour sections (light level from cullface)
-        master.tryQueue(update.section)
+        invalidate(update.section)
     }
 
 
     private fun ChunkRenderer.handle(update: ChunkUnloadUpdate) {
-        unload(update.chunk.position)
+        unload(update.chunk)
     }
 
     private fun ChunkRenderer.handle(update: NeighbourSetUpdate) {
-        master.tryQueue(update.chunk)
+        invalidate(update.chunk)
     }
 
     private fun ChunkRenderer.handle(update: ChunkDataUpdate) {
         for (section in update.sections) {
-            master.tryQueue(section)
+            invalidate(section)
         }
     }
 
@@ -147,9 +147,9 @@ object ChunkRendererChangeListener {
     fun register(renderer: ChunkRenderer) {
         val events = renderer.session.events
 
-        events.listen<DimensionChangeEvent> { renderer.unloadWorld() }
+        events.listen<DimensionChangeEvent> { renderer.unload(renderer.world) }
         events.listen<WorldUpdateEvent> { renderer.handle(it.update) }
 
-        renderer.session::state.observe(this) { if (it == PlaySessionStates.DISCONNECTED) renderer.unloadWorld() }
+        renderer.session::state.observe(this) { if (it == PlaySessionStates.DISCONNECTED) renderer.unload(renderer.world) }
     }
 }

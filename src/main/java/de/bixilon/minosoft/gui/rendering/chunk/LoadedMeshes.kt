@@ -147,14 +147,4 @@ class LoadedMeshes(
         lock.release()
         renderer.lock.release()
     }
-
-    fun lock() {
-        renderer.lock.acquire()
-        this.lock.lock()
-    }
-
-    fun unlock() {
-        this.lock.unlock()
-        renderer.lock.release()
-    }
 }
