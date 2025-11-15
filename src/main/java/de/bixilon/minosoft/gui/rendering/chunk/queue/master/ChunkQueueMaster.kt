@@ -25,9 +25,10 @@ import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 
+@Deprecated("shit")
 class ChunkQueueMaster(
     private val renderer: ChunkRenderer,
 ) {
@@ -43,7 +44,7 @@ class ChunkQueueMaster(
         if (visible) {
             val center = CHUNK_CENTER + BlockPosition.of(section.chunk.position, section.height)
             val previous = renderer.lock.acquired { renderer.loaded.meshes[section.chunk.position]?.get(section.height) }
-            val item = WorldQueueItem(position, section, center, previous?.cache, previous?.details)
+            val item = ChunkQueueItem(position, section, center, previous?.cache, previous?.details)
             renderer.meshingQueue.queue(item)
             return true
         }

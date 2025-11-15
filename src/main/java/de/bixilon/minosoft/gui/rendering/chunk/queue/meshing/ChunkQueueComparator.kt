@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
 
-class ChunkQueueComparator : Comparator<WorldQueueItem> {
+class ChunkQueueComparator : Comparator<ChunkQueueItem> {
     private var sort = 1
     private var position = SectionPosition()
 
@@ -28,7 +28,7 @@ class ChunkQueueComparator : Comparator<WorldQueueItem> {
         sort++
     }
 
-    private fun getDistance(item: WorldQueueItem): Int {
+    private fun getDistance(item: ChunkQueueItem): Int {
         if (item.sort == this.sort) return item.distance
 
         val position = item.position
@@ -40,7 +40,7 @@ class ChunkQueueComparator : Comparator<WorldQueueItem> {
         return distance
     }
 
-    override fun compare(a: WorldQueueItem, b: WorldQueueItem): Int {
+    override fun compare(a: ChunkQueueItem, b: ChunkQueueItem): Int {
         return getDistance(a).compareTo(getDistance(b))
     }
 }

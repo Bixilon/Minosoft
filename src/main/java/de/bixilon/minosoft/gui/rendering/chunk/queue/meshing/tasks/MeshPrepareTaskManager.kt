@@ -29,7 +29,8 @@ class MeshPrepareTaskManager(
     val size: Int get() = tasks.size
 
 
-    fun add(task: MeshPrepareTask) {
+    @Deprecated("shit")
+    private fun add(task: MeshPrepareTask) {
         lock.lock()
         tasks += task
         lock.unlock()
@@ -37,7 +38,9 @@ class MeshPrepareTaskManager(
 
     operator fun plusAssign(task: MeshPrepareTask) = add(task)
 
-    fun remove(task: MeshPrepareTask) {
+
+    @Deprecated("shit")
+    private fun remove(task: MeshPrepareTask) {
         lock.lock()
         tasks -= task
         lock.unlock()
@@ -74,8 +77,8 @@ class MeshPrepareTaskManager(
     }
 
 
-    @Deprecated("cleanup????")
-    fun cleanup() {
+    @Deprecated("shit")
+    private fun cleanup() {
         lock.acquire()
         for (task in tasks) {
             if (!renderer.visibility.isChunkVisible(task.position.chunkPosition)) {

@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidSectionMesher
+import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 
 class ChunkMesher(
@@ -28,7 +28,7 @@ class ChunkMesher(
     private val solid = SolidSectionMesher(renderer.context)
     private val fluid = FluidSectionMesher(renderer.context)
 
-    private fun mesh(item: WorldQueueItem): ChunkMeshes? {
+    private fun mesh(item: ChunkQueueItem): ChunkMeshes? {
         if (item.section.blocks.isEmpty) return null
 
         val neighbours = item.section.chunk.neighbours
@@ -64,7 +64,7 @@ class ChunkMesher(
         return mesh.build(item.position)
     }
 
-    private fun mesh(item: WorldQueueItem, task: MeshPrepareTask) {
+    private fun mesh(item: ChunkQueueItem, task: MeshPrepareTask) {
         val mesh = mesh(item)
         task.interruptible = false
         if (mesh == null) {
@@ -75,7 +75,7 @@ class ChunkMesher(
         renderer.loadingQueue.queue(mesh)
     }
 
-    fun tryMesh(item: WorldQueueItem, task: MeshPrepareTask) {
+    fun tryMesh(item: ChunkQueueItem, task: MeshPrepareTask) {
         try {
             task.thread = Thread.currentThread()
             mesh(item, task)

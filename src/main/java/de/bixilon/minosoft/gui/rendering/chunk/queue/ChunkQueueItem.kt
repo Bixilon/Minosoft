@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 
-class WorldQueueItem(
+class ChunkQueueItem(
     val position: SectionPosition,
     val section: ChunkSection,
     val center: Vec3f,
@@ -34,7 +34,7 @@ class WorldQueueItem(
     var sort = 0
 
     override fun equals(other: Any?) = when (other) {
-        is WorldQueueItem -> position == other.position
+        is ChunkQueueItem -> position == other.position
         is QueuePosition -> position == other.position
         else -> false
     }

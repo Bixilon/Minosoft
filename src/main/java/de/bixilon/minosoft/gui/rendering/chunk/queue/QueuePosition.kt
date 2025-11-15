@@ -23,7 +23,7 @@ class QueuePosition(
     constructor(mesh: ChunkMeshes) : this(mesh.position)
 
     override fun equals(other: Any?) = when (other) {
-        is WorldQueueItem -> position == other.position
+        is ChunkQueueItem -> position == other.position
         is QueuePosition -> position == other.position
         else -> false
     }

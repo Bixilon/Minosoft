@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
@@ -32,12 +31,10 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.culled.CulledQueue
-import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
-import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshUnloadingQueue
-import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.master.ChunkQueueMaster
+import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.chunk.visible.ChunkVisibilityManager
@@ -77,7 +74,8 @@ class ChunkRenderer(
     val mesher = ChunkMesher(this)
 
 
-    val master = ChunkQueueMaster(this)
+    @Deprecated("shit")
+    private val master = ChunkQueueMaster(this)
 
     var limitChunkTransferTime = true
 

@@ -49,16 +49,14 @@ class MeshUnloadingQueue(
         }
     }
 
-    fun work() {
-        lock()
-        try {
-            forceWork()
-        } finally {
-            unlock()
-        }
-    }
 
-    fun forceQueue(mesh: ChunkMeshes, lock: Boolean = true) {
+    fun work()
+    fun plusAssign(mesh: ChunkMeshes)
+    fun plusAssign(meshes: Collection<ChunkMeshes>)
+
+
+    @Deprecated("shit")
+    private fun forceQueue(mesh: ChunkMeshes, lock: Boolean = true) {
         if (lock) lock()
 
         if (mesh.position.chunkPosition == renderer.session.camera.entity.physics.positionInfo.chunkPosition) {
@@ -71,7 +69,9 @@ class MeshUnloadingQueue(
         if (lock) unlock()
     }
 
-    fun queue(mesh: ChunkMeshes, lock: Boolean = true) {
+
+    @Deprecated("shit")
+    private fun queue(mesh: ChunkMeshes, lock: Boolean = true) {
         if (lock) lock()
         if (QueuePosition(mesh) in this.positions) {
             // already queued
@@ -83,7 +83,9 @@ class MeshUnloadingQueue(
         if (lock) unlock()
     }
 
-    fun forceQueue(meshes: Collection<ChunkMeshes>, lock: Boolean = true) {
+
+    @Deprecated("shit")
+    private fun forceQueue(meshes: Collection<ChunkMeshes>, lock: Boolean = true) {
         if (lock) lock()
         for (mesh in meshes) {
             forceQueue(mesh, false)
@@ -91,7 +93,9 @@ class MeshUnloadingQueue(
         if (lock) unlock()
     }
 
-    fun queue(meshes: Collection<ChunkMeshes>) {
+
+    @Deprecated("shit")
+    private fun queue(meshes: Collection<ChunkMeshes>) {
         lock()
         for (mesh in meshes) {
             queue(mesh, false)

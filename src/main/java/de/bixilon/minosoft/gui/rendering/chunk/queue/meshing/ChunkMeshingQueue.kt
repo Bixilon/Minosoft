@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.queue.WorldQueueItem
+import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTaskManager
@@ -36,10 +36,9 @@ class ChunkMeshingQueue(
     val tasks = MeshPrepareTaskManager(renderer)
     val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 100 else 60
 
-    @Volatile
     private var working = false
-    private val queue: MutableList<WorldQueueItem> = ArrayList()
-    private val set: MutableSet<WorldQueueItem> = HashSet()
+    private val queue: MutableList<ChunkQueueItem> = ArrayList()
+    private val set: MutableSet<ChunkQueueItem> = HashSet()
 
     private val lock = ReentrantLock()
 
@@ -52,6 +51,10 @@ class ChunkMeshingQueue(
         queue.sortWith(comparator)
     }
 
+    operator fun plusAssign(item: ChunkQueueItem)
+    operator fun minusAssign(position: ChunkPosition)
+    operator fun minusAssign(position: SectionPosition)
+
 
     fun work() {
         if (working) return // do not work twice
@@ -62,7 +65,7 @@ class ChunkMeshingQueue(
         working = true
 
 
-        val items: MutableList<WorldQueueItem> = ArrayList(tasks.max - size)
+        val items: MutableList<ChunkQueueItem> = ArrayList(tasks.max - size)
         lock()
         for (i in 0 until tasks.max - size) {
             if (queue.isEmpty()) {
@@ -85,8 +88,9 @@ class ChunkMeshingQueue(
     }
 
 
-    fun remove(chunkPosition: ChunkPosition) {
-        val remove: MutableSet<WorldQueueItem> = mutableSetOf()
+    @Deprecated("shit")
+    private fun remove(chunkPosition: ChunkPosition) {
+        val remove: MutableSet<ChunkQueueItem> = mutableSetOf()
         queue.removeAll {
             if (it.position.chunkPosition != chunkPosition) {
                 return@removeAll false
@@ -97,10 +101,11 @@ class ChunkMeshingQueue(
         set -= remove
     }
 
-    @Deprecated("cleanup????")
-    fun cleanup(lock: Boolean) {
+
+    @Deprecated("shit")
+    private fun cleanup(lock: Boolean) {
         if (lock) lock()
-        val remove: MutableSet<WorldQueueItem> = mutableSetOf()
+        val remove: MutableSet<ChunkQueueItem> = mutableSetOf()
         queue.removeAll {
             if (renderer.visibility.isChunkVisible(it.section.chunk)) {
                 return@removeAll false
@@ -113,7 +118,8 @@ class ChunkMeshingQueue(
     }
 
 
-    fun clear(lock: Boolean) {
+    @Deprecated("shit")
+    private fun clear(lock: Boolean) {
         if (lock) lock()
         this.queue.clear()
         this.set.clear()
@@ -121,7 +127,8 @@ class ChunkMeshingQueue(
     }
 
 
-    fun remove(item: WorldQueueItem, lock: Boolean) {
+    @Deprecated("shit")
+    private fun remove(item: ChunkQueueItem, lock: Boolean) {
         if (lock) lock()
         if (this.set.remove(item)) {
             this.queue -= item
@@ -129,7 +136,8 @@ class ChunkMeshingQueue(
         if (lock) unlock()
     }
 
-    fun remove(position: QueuePosition, lock: Boolean) {
+    @Deprecated("shit")
+    private fun remove(position: QueuePosition, lock: Boolean) {
         if (lock) lock()
         // dirty hacking
         if (this.set.unsafeCast<MutableSet<QueuePosition>>().remove(position)) {
@@ -138,8 +146,8 @@ class ChunkMeshingQueue(
         if (lock) unlock()
     }
 
-
-    fun queue(item: WorldQueueItem) {
+    @Deprecated("shit")
+    private fun queue(item: ChunkQueueItem) {
         lock()
         if (set.add(item)) {
             if (item.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {

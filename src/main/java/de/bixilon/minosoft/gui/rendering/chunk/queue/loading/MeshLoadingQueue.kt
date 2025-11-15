@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
@@ -27,7 +28,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class MeshLoadingQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val meshes: MutableList<ChunkMeshes> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshes: MutableList<ChunkMeshes> = ArrayList(100)
     private val positions: MutableSet<QueuePosition> = HashSet()
     private val lock = Lock.lock()
 
@@ -36,7 +37,7 @@ class MeshLoadingQueue(
 
     fun work() {
         if (meshes.isEmpty()) return
-        renderer.context.profiler("lock") { lock() }
+        lock()
 
         var count = 0
         val start = now()
@@ -45,7 +46,7 @@ class MeshLoadingQueue(
         var meshes: Int2ObjectOpenHashMap<ChunkMeshes> = unsafeNull()
         var position: ChunkPosition? = null
 
-        renderer.context.profiler("lock") { renderer.loaded.lock() }
+        renderer.loaded.lock()
         var index = 0
         while (true) {
             if (this.meshes.isEmpty()) break
@@ -83,7 +84,13 @@ class MeshLoadingQueue(
     }
 
 
-    fun queue(mesh: ChunkMeshes) {
+    operator fun plusAssign(mesh: ChunkMeshes)
+    operator fun minusAssign(position: ChunkPosition)
+    operator fun minusAssign(position: SectionPosition)
+    fun clear()
+
+    @Deprecated("shit")
+    private fun queue(mesh: ChunkMeshes) {
         lock()
         if (!this.positions.add(QueuePosition(mesh))) {
             // already inside, remove
@@ -98,7 +105,8 @@ class MeshLoadingQueue(
         unlock()
     }
 
-    fun abort(position: ChunkPosition, lock: Boolean = true) {
+    @Deprecated("shit")
+    private fun abort(position: ChunkPosition, lock: Boolean = true) {
         if (lock) lock()
         val positions: MutableSet<QueuePosition> = mutableSetOf()
         this.positions.removeAll {
@@ -112,7 +120,8 @@ class MeshLoadingQueue(
         if (lock) unlock()
     }
 
-    fun abort(position: QueuePosition, lock: Boolean = true) {
+    @Deprecated("shit")
+    private fun abort(position: QueuePosition, lock: Boolean = true) {
         if (lock) lock()
         if (this.positions.remove(position)) {
             this.meshes.dropIf { it.position == position.position }
@@ -121,8 +130,8 @@ class MeshLoadingQueue(
     }
 
 
-    @Deprecated("cleanup????")
-    fun cleanup(lock: Boolean) {
+    @Deprecated("shit")
+    private fun cleanup(lock: Boolean) {
         val remove: MutableSet<QueuePosition> = mutableSetOf()
 
         if (lock) lock()
@@ -144,7 +153,8 @@ class MeshLoadingQueue(
         return@removeIf true
     }
 
-    fun clear(lock: Boolean) {
+    @Deprecated("shit")
+    private fun clear(lock: Boolean) {
         if (lock) lock()
         this.positions.clear()
         while (meshes.isNotEmpty()) {

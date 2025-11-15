@@ -24,6 +24,6 @@ class MeshPrepareTask(
 
     fun interrupt() {
         if (!interruptible) return
-        thread?.interrupt()
+        thread?.interrupt() // TODO: custom interrupt routine; this might race interrupt the wrong task
     }
 }
