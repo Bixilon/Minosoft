@@ -56,7 +56,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
 
 
         particles.lock.lock()
-        renderer.queue.add(particles.particles)
+        renderer.queue.addTo(particles.particles)
 
         val iterator = particles.particles.iterator()
         var index = 0
@@ -78,7 +78,7 @@ class ParticleTicker(val renderer: ParticleRenderer) {
             }
             index++
         }
-        renderer.queue.add(particles.particles)
+        renderer.queue.addTo(particles.particles)
         particles.lock.unlock()
     }
 

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesher.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.culled.CulledQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshUnloadingQueue
-import de.bixilon.minosoft.gui.rendering.chunk.queue.master.ChunkQueueMaster
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
@@ -59,31 +58,25 @@ class ChunkRenderer(
     private val profile = session.profiles.block
     private val shader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
     private val textShader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
-    val lock = RWLock.rwlock()
     val world = session.world
     val visibility = ChunkVisibilityManager(this)
 
-    val loaded = LoadedMeshes(this)
-
-    val meshingQueue = ChunkMeshingQueue(this)
     val culledQueue = CulledQueue(this)
-
+    val meshingQueue = ChunkMeshingQueue(this)
     val loadingQueue = MeshLoadingQueue(this)
     val unloadingQueue = MeshUnloadingQueue(this)
 
     val mesher = ChunkMesher(this)
+    val loaded = LoadedMeshes(this)
 
-
-    @Deprecated("shit")
-    private val master = ChunkQueueMaster(this)
 
     var limitChunkTransferTime = true
 
     override fun registerLayers() {
-        layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visibility.visible.opaque.isEmpty() }
-        layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visibility.visible.translucent.isEmpty() }
-        layers.register(TextLayer, textShader, this::drawText) { visibility.visible.text.isEmpty() }
-        layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visibility.visible.entities.isEmpty() }
+        layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visibility.meshes.opaque.isEmpty() }
+        layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visibility.meshes.translucent.isEmpty() }
+        layers.register(TextLayer, textShader, this::drawText) { visibility.meshes.text.isEmpty() }
+        layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visibility.meshes.entities.isEmpty() }
     }
 
     override fun postInit(latch: AbstractLatch) {
@@ -117,48 +110,74 @@ class ChunkRenderer(
         }
 
         profile.rendering::antiMoirePattern.observe(this) { invalidate(world) }
-        val rendering = session.profiles.rendering
-        rendering.light::ambientOcclusion.observe(this) { invalidate(world) }
-        rendering.performance::limitChunkTransferTime.observe(this) { this.limitChunkTransferTime = it }
 
-        profile::viewDistance.observe(this) { viewDistance -> visibility.setViewDistance(viewDistance) }
+        val profile = session.profiles.rendering
+        profile.light::ambientOcclusion.observe(this) { invalidate(world) }
+        profile.performance::limitChunkTransferTime.observe(this) { this.limitChunkTransferTime = it }
     }
 
-    fun _unloadWorld() {
-        lock.lock()
+    fun unload(world: World) {
+        culledQueue.clear()
+        meshingQueue.clear()
+        loadingQueue.clear()
+        loaded.clear()
 
-        TODO()
-        meshingQueue.tasks.interruptAll()
-
-        loaded.clear(false)
-
-        culledQueue.clear(false)
-        meshingQueue.clear(false)
-        loadingQueue.clear(false)
-
-        lock.unlock()
+        context.queue += { unloadingQueue.work() }
     }
 
-    fun unload(world: World)
-    fun unload(chunk: Chunk)
+    fun unload(chunk: Chunk) {
+        culledQueue -= chunk
+        meshingQueue -= chunk.position
+        meshingQueue.tasks.interrupt(chunk.position)
 
-    fun invalidate(world: World)
-    fun invalidate(chunk: Chunk)
-    fun invalidate(section: ChunkSection)
-    fun invalidate(chunk: Chunk?, height: SectionHeight)
+        loadingQueue -= chunk.position
 
-    fun _unload(position: Chunk) {
-        lock.lock()
-        TODO()
+        loaded -= chunk.position
+    }
 
+    fun unload(section: ChunkSection) {
+        val position = SectionPosition.of(section.chunk.position, section.height)
+        culledQueue -= section
+        meshingQueue -= position
         meshingQueue.tasks.interrupt(position)
-        culledQueue.remove(position, false)
-        meshingQueue.remove(position)
-        loadingQueue.abort(position, false)
 
-        loaded.unload(position, false)
+        loadingQueue -= position
 
-        lock.unlock()
+        loaded -= position
+
+        // TODO: potential race condition (what if section is between two stages?)
+    }
+
+    fun invalidate(world: World): Unit = TODO()
+    fun invalidate(chunk: Chunk) {
+        if (chunk.position in visibility) {
+            chunk.sections.forEach { invalidate(it) }
+            // no need to unload any other sections, sections can only be created but never deleted
+            return
+        }
+        // TODO: add to culled queue
+        unload(chunk)
+    }
+
+    fun invalidate(section: ChunkSection) {
+        if (section.blocks.isEmpty) {
+            return unload(section)
+        }
+
+        // TODO: remove previous
+        // TODO: remove if can not queue (neighbours missing or invalid rendering state)
+
+        if (section in visibility) {
+            meshingQueue += section
+        } else {
+            unload(section)
+            culledQueue += section
+        }
+    }
+
+    fun invalidate(chunk: Chunk?, height: SectionHeight) {
+        val section = chunk?.get(height) ?: return
+        invalidate(section)
     }
 
     override fun prepareDrawAsync() {
@@ -170,13 +189,14 @@ class ChunkRenderer(
         context.profiler("loading") { loadingQueue.work() }
     }
 
-    private fun drawBlocksOpaque() = visibility.visible.opaque.forEach(ChunkMesh::draw)
-    private fun drawBlocksTranslucent() = visibility.visible.translucent.forEach(ChunkMesh::draw)
-    private fun drawText() = visibility.visible.text.forEach(ChunkMesh::draw)
-    private fun drawBlockEntities() = visibility.visible.entities.forEach(BlockEntityRenderer::draw)
+    private fun drawBlocksOpaque() = visibility.meshes.opaque.forEach(ChunkMesh::draw)
+    private fun drawBlocksTranslucent() = visibility.meshes.translucent.forEach(ChunkMesh::draw)
+    private fun drawText() = visibility.meshes.text.forEach(ChunkMesh::draw)
+    private fun drawBlockEntities() = visibility.meshes.entities.forEach(BlockEntityRenderer::draw)
 
     override fun unload() {
-        loadingQueue.clear(true)
+        // TODO: remove all others
+        loadingQueue.clear()
     }
 
     private object TextLayer : RenderLayer {

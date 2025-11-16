@@ -14,137 +14,129 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class LoadedMeshes(
     private val renderer: ChunkRenderer,
 ) {
-    val meshes: MutableMap<ChunkPosition, Int2ObjectOpenHashMap<ChunkMeshes>> = hashMapOf() // all prepared (and up to date) meshes
+    private val meshes: MutableMap<ChunkPosition, Int2ObjectOpenHashMap<ChunkMeshes>> = HashMap(1000)
     private val lock = RWLock.rwlock()
 
 
-    val size: Int get() = meshes.size
+    val size get() = meshes.size
 
+    operator fun get(position: SectionPosition) = lock.acquired { meshes[position.chunkPosition]?.get(position.sectionHeight) }
+    operator fun plusAssign(mesh: ChunkMeshes) {
+        lock.lock()
+        val chunk = meshes.getOrPut(mesh.position.chunkPosition) { Int2ObjectOpenHashMap() }
 
-    fun cleanup(lock: Boolean) {
-        if (lock) lock()
+        val previous = chunk.put(mesh.position.sectionHeight, mesh)
+        lock.unlock()
 
-        val iterator = meshes.iterator()
-        for ((chunkPosition, sections) in iterator) {
-            if (renderer.visibility.isInViewDistance(chunkPosition)) {
-                continue
+        if (previous != null) {
+            // TODO: remove from visible
+            renderer.unloadingQueue += previous
+        }
+
+        // TODO: add + sort visible
+    }
+
+    operator fun minusAssign(position: SectionPosition) {
+        val mesh = lock.locked {
+            val meshes = meshes.remove(position.chunkPosition) ?: return@locked null
+            val mesh = meshes.remove(position.sectionHeight)
+            if (meshes.isEmpty()) {
+                this.meshes -= position.chunkPosition
             }
-            iterator.remove()
-            renderer.unloadingQueue.forceQueue(sections.values)
+            return@locked mesh
+        } ?: return
+
+        // TODO: remove from visible
+
+        renderer.unloadingQueue += mesh
+    }
+
+    operator fun minusAssign(position: ChunkPosition) {
+        val meshes = lock.locked { meshes.remove(position) } ?: return
+        // TODO: remove from visible
+        renderer.unloadingQueue += meshes.values
+    }
+
+    fun clear() = lock.locked {
+        for (meshes in meshes.values) {
+            renderer.unloadingQueue += meshes.values
         }
-
-        if (lock) unlock()
+        meshes.clear()
     }
 
-    fun clear(lock: Boolean) {
-        if (lock) lock()
+    fun addTo(visible: VisibleMeshes) = lock.acquired {
+        // TODO: somehow cache the sorting
 
-        for (sections in meshes.values) {
-            renderer.unloadingQueue.forceQueue(sections.values, lock)
-        }
-        this.meshes.clear()
-
-        if (lock) unlock()
-    }
-
-    fun unload(position: ChunkPosition, lock: Boolean) {
-        if (lock) lock()
-
-        val meshes = this.meshes.remove(position)
-
-        if (meshes != null) {
-            renderer.unloadingQueue.forceQueue(meshes.values, lock)
-        }
-
-        if (lock) unlock()
-    }
-
-    fun unload(position: SectionPosition, lock: Boolean) {
-        if (lock) lock()
-
-        val meshes = this.meshes[position.chunkPosition]
-
-        if (meshes != null) {
-            meshes.remove(position.y)?.let {
-                renderer.unloadingQueue.forceQueue(it, lock)
-
-                if (meshes.isEmpty()) {
-                    this.meshes.remove(position.chunkPosition)
-                }
-            }
-        }
-
-        if (lock) unlock()
-    }
-
-
-    operator fun contains(position: ChunkPosition): Boolean {
-        return renderer.lock.acquired { lock.acquired { position in this.meshes } }
-    }
-
-    fun collect(visible: VisibleMeshes) {
-        renderer.lock.acquire()
-        lock.acquire()
         val iterator = this.meshes.iterator()
         while (iterator.hasNext()) {
             val (chunkPosition, meshes) = iterator.next()
 
-            if (!renderer.visibility.isChunkVisible(chunkPosition)) {
-                continue
-            }
+            if (chunkPosition !in renderer.visibility) continue
 
             val iterator = meshes.keys.intIterator()
             while (iterator.hasNext()) {
                 val key = iterator.nextInt()
                 val mesh = meshes[key] ?: continue
+
                 // TODO: unload if occluded (but we can not distinct between frustum and occlusion)
-                if (!renderer.visibility.isSectionVisible(SectionPosition.of(chunkPosition, key), mesh.min, mesh.max)) {
+                if (!renderer.visibility.contains(mesh.position, mesh.min, mesh.max)) {
                     continue
                 }
                 visible += mesh
             }
         }
-        lock.release()
-        renderer.lock.release()
     }
 
-    fun updateDetails() {
-        renderer.lock.acquire()
-        lock.acquire()
+    fun update() = lock.locked {
         val iterator = this.meshes.iterator()
         while (iterator.hasNext()) {
             val (chunkPosition, meshes) = iterator.next()
 
             if (!renderer.visibility.isInViewDistance(chunkPosition)) {
+                val values = meshes.values
                 iterator.remove()
-                renderer.unloadingQueue.forceQueue(meshes.values, false) // TODO: queue again
+                val chunk = values.iterator().next().section.chunk // dirty hack
+
+                renderer.culledQueue += chunk
+                renderer.unloadingQueue += values
                 continue
             }
 
-            val iterator = meshes.keys.intIterator()
-            while (iterator.hasNext()) {
-                val key = iterator.nextInt()
+            val sections = meshes.keys.intIterator()
+            while (sections.hasNext()) {
+                val key = sections.nextInt()
                 val mesh = meshes[key] ?: continue
 
-                val next = ChunkMeshDetails.update(mesh.details, mesh.position, renderer.cameraSectionPosition)
+                if (!renderer.visibility.isInViewDistance(mesh.position)) {
+                    sections.remove()
+                    renderer.culledQueue += mesh.section
+                    renderer.unloadingQueue += mesh
+                    continue
+                }
+
+                val next = ChunkMeshDetails.update(mesh.details, mesh.position, renderer.visibility.sectionPosition)
 
                 if (next == mesh.details) continue
 
-                renderer.master.tryQueue(mesh.section)
+                renderer.meshingQueue += mesh.section
+            }
+
+            if (meshes.isEmpty()) {
+                iterator.remove()
             }
         }
-        lock.release()
-        renderer.lock.release()
     }
 }

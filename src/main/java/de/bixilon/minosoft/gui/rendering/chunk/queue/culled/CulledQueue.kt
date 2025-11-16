@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 class CulledQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val viewDistance: HashMap<ChunkPosition, Chunk> = HashMap()
-    private val culled: HashMap<ChunkPosition, HashSet<ChunkSection>> = HashMap()
+    private val viewDistance: HashSet<Chunk> = HashSet()
+    private val culled: HashMap<ChunkPosition, HashSet<ChunkSection>> = HashMap() // TODO: flatten to set?
     private val lock = ReentrantLock()
 
     val size: Int get() = viewDistance.size + culled.size
@@ -35,9 +35,8 @@ class CulledQueue(
         culled.clear()
     }
 
-
     operator fun minusAssign(chunk: Chunk) = lock.locked {
-        viewDistance -= chunk.position
+        viewDistance -= chunk
         culled -= chunk.position
     }
 
@@ -47,55 +46,67 @@ class CulledQueue(
 
     @Deprecated("why?")
     operator fun plusAssign(chunk: Chunk) = lock.locked {
-        if (!renderer.visibility.isChunkVisible(chunk.position)) {
-            viewDistance[chunk.position] = chunk
+        if (chunk.position !in renderer.visibility) {
+            viewDistance += chunk
         } else {
             TODO("Enqueue all sections of chunk?")
         }
     }
 
     operator fun plusAssign(section: ChunkSection): Unit = lock.locked {
-        if (!renderer.visibility.isChunkVisible(section.chunk.position)) {
-            viewDistance[section.chunk.position] = section.chunk
+        if (section.chunk.position !in renderer.visibility) {
+            viewDistance += section.chunk
         } else {
             culled.getOrPut(section.chunk.position) { HashSet() } += section
         }
     }
 
-    fun enqueueViewDistance(): Int {
-        if (viewDistance.isEmpty()) return 0
-        lock.lock()
+    private fun moveToCulled() {
+        if (viewDistance.isEmpty()) return
 
-        var count = 0
-
-        val iterator = viewDistance.values.iterator()
+        val iterator = viewDistance.iterator()
         while (iterator.hasNext()) {
             val chunk = iterator.next()
-            if (!renderer.visibility.isChunkVisible(chunkPosition)) continue
+            if (chunk.position !in renderer.visibility) continue
+
+            iterator.remove()
+            if (chunk.sections.lowest > chunk.sections.highest) continue // no sections
+
+            val culled = culled.getOrPut(chunk.position) { HashSet() }
+
+            chunk.sections.forEach { section ->
+                if (section !in renderer.visibility) return@forEach
+
+                culled += section
+            }
+        }
+    }
+
+    private fun moveToViewDistance() {
+        if (culled.isEmpty()) return
+
+        val iterator = culled.iterator()
+        while (iterator.hasNext()) {
+            val (position, sections) = iterator.next()
+            if (sections.isEmpty()) {
+                iterator.remove()
+                continue
+            }
+            if (position in renderer.visibility) continue
 
             iterator.remove()
 
-            for (height in chunk.sections.lowest..chunk.sections.highest) {
-                val section = chunk.sections[height] ?: continue
-
-
-                if (!renderer.visibility.isSectionVisible(section)) continue
-
-                // TODO: enqueue
-                count++
-            }
+            this.viewDistance += sections.iterator().next().chunk // dirty hack
         }
-
-        lock.unlock()
-
-        return count
     }
 
-    fun enqueue(): Int {
-        if (culled.isEmpty()) return 0
-        lock.lock()
+    fun enqueueViewDistance() = lock.locked {
+        moveToViewDistance()
+        moveToCulled()
+    }
 
-        var count = 0
+    fun enqueue() = lock.locked {
+        if (culled.isEmpty()) return
 
         val iterator = culled.values.iterator()
         while (iterator.hasNext()) {
@@ -104,21 +115,16 @@ class CulledQueue(
             val sectionIterator = sections.iterator()
             while (sectionIterator.hasNext()) {
                 val section = sectionIterator.next()
-                if (!renderer.visibility.isSectionVisible(section)) continue
+                if (section !in renderer.visibility) continue
 
                 sectionIterator.remove()
 
-                // TODO: enqueue
-                count++
+                renderer.meshingQueue += section // TODO: batch them together
             }
 
             if (sections.isEmpty()) {
                 iterator.remove()
             }
         }
-
-        lock.unlock()
-
-        return count
     }
 }

@@ -36,7 +36,8 @@ class BlockSectionDataProviderTest {
     fun `initial empty`() {
         val blocks = create()
         assertTrue(blocks.isEmpty)
-        assertFalse(blocks.hasFluid)
+        assertEquals(blocks.fluidCount, 0)
+        assertEquals(blocks.fullOpaqueCount, 0)
         assertEquals(blocks.count, 0)
     }
 
@@ -45,7 +46,7 @@ class BlockSectionDataProviderTest {
         blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
         blocks[InSectionPosition(0, 0, 0)] = null
         assertTrue(blocks.isEmpty)
-        assertFalse(blocks.hasFluid)
+        assertEquals(blocks.fluidCount, 0)
         assertEquals(blocks.count, 0)
     }
 
@@ -73,9 +74,17 @@ class BlockSectionDataProviderTest {
 
     fun `single block set`() {
         val blocks = create()
-        blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
+        blocks[InSectionPosition(0, 0, 0)] = TestBlockStates.TEST1
         assertFalse(blocks.isEmpty)
-        assertFalse(blocks.hasFluid)
+        assertEquals(blocks.fullOpaqueCount, 0)
+        assertEquals(blocks.count, 1)
+    }
+
+    fun `single full opaque set`() {
+        val blocks = create()
+        blocks[InSectionPosition(0, 0, 0)] = TestBlockStates.OPAQUE1
+        assertFalse(blocks.isEmpty)
+        assertEquals(blocks.fullOpaqueCount, 1)
         assertEquals(blocks.count, 1)
     }
 
@@ -83,7 +92,7 @@ class BlockSectionDataProviderTest {
         val blocks = create()
         blocks[InSectionPosition(0, 0, 0)] = WaterTest0.state
         assertFalse(blocks.isEmpty)
-        assertTrue(blocks.hasFluid)
+        assertEquals(blocks.fluidCount, 1)
         assertEquals(blocks.count, 1)
     }
 

@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
-import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.util.logging.Log
@@ -132,7 +131,7 @@ object ChunkRendererChangeListener {
 
 
     private fun ChunkRenderer.handle(update: AbstractWorldUpdate) {
-        if (context.state == RenderingStates.PAUSED) return
+        if (context.state == RenderingStates.PAUSED || context.state == RenderingStates.QUITTING || context.state == RenderingStates.STOPPED) return
         when (update) {
             is NeighbourSetUpdate -> handle(update)
             is SingleBlockUpdate -> handle(update)
@@ -147,7 +146,6 @@ object ChunkRendererChangeListener {
     fun register(renderer: ChunkRenderer) {
         val events = renderer.session.events
 
-        events.listen<DimensionChangeEvent> { renderer.unload(renderer.world) }
         events.listen<WorldUpdateEvent> { renderer.handle(it.update) }
 
         renderer.session::state.observe(this) { if (it == PlaySessionStates.DISCONNECTED) renderer.unload(renderer.world) }

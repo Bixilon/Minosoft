@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidSectionMesher
-import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 
 class ChunkMesher(
     private val renderer: ChunkRenderer,
@@ -28,65 +29,41 @@ class ChunkMesher(
     private val solid = SolidSectionMesher(renderer.context)
     private val fluid = FluidSectionMesher(renderer.context)
 
-    private fun mesh(item: ChunkQueueItem): ChunkMeshes? {
-        if (item.section.blocks.isEmpty) return null
+    private fun getDetails(previous: IntInlineEnumSet<ChunkMeshDetails>?, position: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+        if (previous == null) return ChunkMeshDetails.of(position, renderer.visibility.sectionPosition)
 
-        val neighbours = item.section.chunk.neighbours
-        val sectionNeighbours = item.section.neighbours
-        if (!neighbours.complete) {
-            return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
-        }
-        val cache = item.cache ?: BlockMesherCache(renderer.context)
+        return ChunkMeshDetails.update(previous, position, renderer.visibility.sectionPosition)
+    }
+
+    fun mesh(previous: ChunkMeshes?, section: ChunkSection): ChunkMeshes? {
+        if (section.blocks.isEmpty) return null
+
+        val neighbours = section.chunk.neighbours
+        val sectionNeighbours = section.neighbours
+        if (!neighbours.complete) return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
+
+        val cache = previous?.cache ?: BlockMesherCache(renderer.context)
         cache.unmark()
 
-        var details = item.details ?: ChunkMeshDetails.of(item.position, renderer.cameraSectionPosition)
-        details = ChunkMeshDetails.update(details, item.position, renderer.cameraSectionPosition)
+        val position = SectionPosition.of(section)
+
+        val details = getDetails(previous?.details, position)
 
 
-        val mesh = ChunkMeshesBuilder(renderer.context, item.section, cache, details)
+        // TODO: put sizes of previous mesh (cache estimate)
+        val mesh = ChunkMeshesBuilder(renderer.context, section, cache, details)
         try {
-            solid.mesh(item.section, cache, neighbours, sectionNeighbours, mesh)
+            solid.mesh(section, cache, neighbours, sectionNeighbours, mesh)
 
-            if (item.section.blocks.hasFluid) {
-                fluid.mesh(item.section, mesh)
+            if (section.blocks.fluidCount > 0) {
+                fluid.mesh(section, mesh)
             }
             cache.cleanup()
-        } catch (exception: Throwable) {
+        } catch (error: Throwable) {
             mesh.drop()
-            if (exception !is InterruptedException) {
-                // TODO: Really drop it? Errors should not happen...
-                // TODO: Still not ideal, we would need to mark all entries again (cache.unmark()) will delete them otherwise?
-                mesh.cache.drop()
-            }
-            throw exception
+            throw error
         }
 
-        return mesh.build(item.position)
-    }
-
-    private fun mesh(item: ChunkQueueItem, task: MeshPrepareTask) {
-        val mesh = mesh(item)
-        task.interruptible = false
-        if (mesh == null) {
-            return renderer.unload(item)
-        }
-        if (Thread.interrupted()) throw InterruptedException()
-        item.mesh = mesh
-        renderer.loadingQueue.queue(mesh)
-    }
-
-    fun tryMesh(item: ChunkQueueItem, task: MeshPrepareTask) {
-        try {
-            task.thread = Thread.currentThread()
-            mesh(item, task)
-        } catch (ignored: InterruptedException) {
-            renderer.meshingQueue.queue(item)
-        } finally {
-            task.thread = null
-            task.interruptible = false
-            Thread.interrupted() // clear interrupted flag
-            renderer.meshingQueue.tasks -= task
-            renderer.meshingQueue.work()
-        }
+        return mesh.build(position)
     }
 }

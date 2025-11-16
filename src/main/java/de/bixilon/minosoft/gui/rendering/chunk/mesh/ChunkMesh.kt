@@ -17,7 +17,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 class ChunkMesh(buffer: VertexBuffer) : Mesh(buffer), Comparable<ChunkMesh> {
-    var distance: Float = 0.0f
+    var distance: Int = 0
 
     override fun compareTo(other: ChunkMesh): Int {
         if (distance < other.distance) return -1

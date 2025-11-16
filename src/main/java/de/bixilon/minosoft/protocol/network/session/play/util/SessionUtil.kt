@@ -141,7 +141,7 @@ class SessionUtil(
         session.player.items.reset()
         session.player.physics.reset()
         session.world.audio?.stopAll()
-        session.world.particle?.removeAllParticles()
+        session.world.particle?.removeAll()
 
         session.player.healthCondition = HealthCondition()
     }

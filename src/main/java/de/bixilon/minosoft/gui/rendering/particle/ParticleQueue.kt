@@ -14,39 +14,31 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 
 class ParticleQueue(val renderer: ParticleRenderer) {
     private val lock = Lock.lock()
-    private val queue: MutableList<Particle> = ArrayList(QUEUE_CAPACITY)
+    private val queue: MutableList<Particle> = ArrayDeque(QUEUE_CAPACITY)
 
 
     operator fun plusAssign(particle: Particle) = queue(particle)
     fun queue(particle: Particle) {
-        lock.lock()
-        val size = queue.size
-        if (size > QUEUE_CAPACITY || renderer.size + size > renderer.maxAmount) {
-            // already overloaded, ignore
-            lock.unlock()
-            return
-        }
-        queue += particle
-        lock.unlock()
+        if (queue.size > QUEUE_CAPACITY || renderer.size + queue.size > renderer.maxAmount) return
+        lock.locked { queue += particle }
     }
 
 
-    fun clear() {
-        lock.lock()
+    fun clear() = lock.locked {
         queue.clear()
-        lock.unlock()
     }
 
-    fun add(list: MutableList<Particle>) {
+    fun addTo(list: MutableList<Particle>) {
         if (queue.isEmpty()) return
         lock.lock()
 
         while (queue.isNotEmpty() && list.size < renderer.maxAmount) {
-            list.add(queue.removeAt(0))
+            list.add(queue.removeFirst())
         }
 
         lock.unlock()

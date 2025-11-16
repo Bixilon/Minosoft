@@ -61,8 +61,8 @@ class ChunkSectionManagement(val chunk: Chunk) {
     }
 
     inline fun forEach(consumer: (section: ChunkSection) -> Unit) {
-        for ((index, section) in sections.withIndex()) {
-            if (section == null) continue
+        for (height in lowest..highest) {
+            val section = this[height] ?: continue
 
             consumer.invoke(section)
         }

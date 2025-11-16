@@ -29,14 +29,13 @@ class BlockSectionDataProvider(
     val section: ChunkSection,
 ) : SectionDataProvider<BlockState>(lock, true) {
     val fullOpaque = ArrayBitSet(ChunkSize.BLOCKS_PER_SECTION)
-    private var fluidCount = 0
+    var fluidCount = 0
+        private set
     var fullOpaqueCount = 0
         private set
     var entityCount = 0
         private set
     val occlusion = SectionOcclusion(this)
-
-    val hasFluid get() = fluidCount > 0
 
     init {
         recalculate(false)

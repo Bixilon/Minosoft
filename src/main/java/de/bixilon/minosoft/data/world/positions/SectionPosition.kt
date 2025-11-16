@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.positions
 
 import de.bixilon.kmath.vec.vec3.i._Vec3i
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.assertPosition
 
 @JvmInline
@@ -154,6 +155,7 @@ value class SectionPosition(
         const val MAX_Z = BlockPosition.MAX_Z shr 4
 
 
+        fun of(section: ChunkSection) = of(section.chunk.position, section.height)
         fun of(chunkPosition: ChunkPosition, sectionHeight: Int) = SectionPosition(chunkPosition.x, sectionHeight, chunkPosition.z)
         fun of(chunkPosition: ChunkPosition, sectionIndex: SectionIndex, minSection: SectionHeight) = SectionPosition(chunkPosition.x, sectionIndex + minSection, chunkPosition.z)
 

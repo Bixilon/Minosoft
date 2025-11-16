@@ -49,7 +49,7 @@ class ChunkRendererTest {
     fun queueEmptyChunk() {
         val chunk = RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!
         val renderer = create()
-        renderer.master.tryQueue(chunk, ignoreLoaded = true, ignoreVisibility = true)
+        renderer.invalidate(chunk)
         sleep(50.milliseconds)
         renderer.frame()
         renderer.awaitQueue(0)
@@ -60,7 +60,7 @@ class ChunkRendererTest {
         val chunk = RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!
         chunk[InChunkPosition(0, 0, 0)] = IT.BLOCK_1
         val renderer = create()
-        renderer.master.tryQueue(chunk, ignoreLoaded = true, ignoreVisibility = true)
+        renderer.invalidate(chunk)
         renderer.awaitQueue(1)
         chunk[InChunkPosition(0, 0, 0)] = null // reset
         Assert.assertEquals(renderer.loaded.size, 1)
@@ -80,7 +80,7 @@ class ChunkRendererTest {
         }
         val renderer = create()
         for (chunk in chunks) {
-            renderer.master.tryQueue(chunk, ignoreLoaded = true, ignoreVisibility = true)
+            renderer.invalidate(chunk)
         }
         renderer.awaitQueue(chunks.size)
 

@@ -13,17 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.visible
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 import de.bixilon.minosoft.util.KUtil.format
+import kotlin.math.abs
 
-class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMeshes? = null) {
+class VisibleMeshes(
+    val camera: BlockPosition = BlockPosition.EMPTY,
+    previous: VisibleMeshes? = null,
+) {
     val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
     val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
     val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
@@ -34,7 +37,8 @@ class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMe
 
 
     fun add(mesh: ChunkMeshes) {
-        val distance = Vec3fUtil.distance2(cameraPosition, mesh.center)
+        val delta = (camera - mesh.center)
+        val distance = abs(delta.x) * abs(delta.y) * abs(delta.z)
         mesh.opaque?.let {
             it.distance = distance
             opaque += it
@@ -60,6 +64,7 @@ class VisibleMeshes(val cameraPosition: Vec3f = Vec3f.EMPTY, previous: VisibleMe
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
+        // TODO: sort entities
         worker.work()
     }
 

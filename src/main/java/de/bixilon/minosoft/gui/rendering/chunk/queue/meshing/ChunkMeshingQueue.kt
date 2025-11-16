@@ -13,32 +13,28 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
-import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTaskManager
-import de.bixilon.minosoft.util.SystemInformation
+import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MesherTaskManager
 import kotlin.math.abs
 
 class ChunkMeshingQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val comparator = ChunkQueueComparator()
-    val tasks = MeshPrepareTaskManager(renderer)
-    val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 100 else 60
+    private val comparator = MeshQueueComparator()
+    val tasks = MesherTaskManager()
 
     private var working = false
-    private val queue: MutableList<ChunkQueueItem> = ArrayList()
-    private val set: MutableSet<ChunkQueueItem> = HashSet()
+    private val queue = ArrayDeque<MeshQueueItem>(1000)
+    private val positions: MutableSet<SectionPosition> = HashSet(1000)
 
     private val lock = ReentrantLock()
 
@@ -47,117 +43,96 @@ class ChunkMeshingQueue(
 
 
     fun sort() = lock.locked {
-        comparator.update(renderer)
+        comparator.update(renderer.visibility.eyePosition)
         queue.sortWith(comparator)
     }
 
-    operator fun plusAssign(item: ChunkQueueItem)
-    operator fun minusAssign(position: ChunkPosition)
-    operator fun minusAssign(position: SectionPosition)
+    fun clear() = lock.locked {
+        queue.clear()
+        this.positions.clear()
+    }
 
+    operator fun plusAssign(section: ChunkSection) = lock.locked {
+        val item = MeshQueueItem(section)
+        this.queue += item
+        positions += item.position
+        queue.sortWith(comparator)
+    }
+
+    operator fun minusAssign(position: ChunkPosition) = removeIf { it.chunkPosition == position }
+
+    operator fun minusAssign(position: SectionPosition) = lock.locked {
+        if (!this.positions.remove(position)) return@locked
+        this.queue.removeIf { it.position == position } // TODO: only first
+    }
+
+    fun removeIf(predicate: (position: SectionPosition) -> Boolean) = lock.locked {
+        val iterator = queue.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (!predicate.invoke(item.position)) continue
+
+            iterator.remove()
+            this.positions -= item.position
+            // TODO: queue again?
+        }
+    }
+
+
+    private fun enqueue(section: ChunkSection) {
+        val camera = renderer.visibility.sectionPosition
+        val position = SectionPosition.of(section)
+
+        val distance = abs(position.x - camera.x) + abs(position.z - camera.z) // TODO: Should y get in here too?
+        val task = MeshPrepareTask(position)
+        tasks += task
+
+        DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) {
+            val position = SectionPosition.of(section)
+
+            val mesh = try {
+                task.thread = Thread.currentThread()
+                val previous = renderer.loaded[position]
+                renderer.mesher.mesh(previous, section)
+            } catch (_: InterruptedException) {
+                null
+            } finally {
+                task.thread = null
+                task.interruptible = false
+                Thread.interrupted() // clear interrupted flag
+                tasks -= task
+            }
+
+            if (mesh == null) {
+                renderer.loaded -= position
+            } else {
+                renderer.loadingQueue += mesh
+            }
+
+            work()
+        }
+    }
 
     fun work() {
-        if (working) return // do not work twice
-        val size = tasks.size
-        if (queue.isEmpty() || size >= tasks.max || renderer.loadingQueue.size >= maxMeshesToLoad) {
+        if (working) return
+        if (queue.isEmpty() || tasks.size >= tasks.max || renderer.loadingQueue.size >= renderer.loadingQueue.max) {
             return
         }
         working = true
 
+        // TODO: remove chunks that are out of the frustum again
 
-        val items: MutableList<ChunkQueueItem> = ArrayList(tasks.max - size)
-        lock()
-        for (i in 0 until tasks.max - size) {
-            if (queue.isEmpty()) {
-                break
-            }
-            val item = queue.removeAt(0)
-            set -= item
-            items += item
-        }
-        unlock()
-        val camera = renderer.cameraSectionPosition
-        for (item in items) {
-            val distance = abs(item.position.x - camera.x) + abs(item.position.z - camera.z) // TODO: Should y get in here too?
-            val task = MeshPrepareTask(item.position)
-            tasks += task
 
-            DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) { renderer.mesher.tryMesh(item, task) }
+        lock.lock()
+        while (queue.isNotEmpty()) {
+            if (tasks.size >= tasks.max) break
+
+            val item = queue.removeFirst()
+            positions -= item.position
+            enqueue(item.section)
         }
+        lock.unlock()
+
         working = false
-    }
-
-
-    @Deprecated("shit")
-    private fun remove(chunkPosition: ChunkPosition) {
-        val remove: MutableSet<ChunkQueueItem> = mutableSetOf()
-        queue.removeAll {
-            if (it.position.chunkPosition != chunkPosition) {
-                return@removeAll false
-            }
-            remove += it
-            return@removeAll true
-        }
-        set -= remove
-    }
-
-
-    @Deprecated("shit")
-    private fun cleanup(lock: Boolean) {
-        if (lock) lock()
-        val remove: MutableSet<ChunkQueueItem> = mutableSetOf()
-        queue.removeAll {
-            if (renderer.visibility.isChunkVisible(it.section.chunk)) {
-                return@removeAll false
-            }
-            remove += it
-            return@removeAll true
-        }
-        set -= remove
-        if (lock) unlock()
-    }
-
-
-    @Deprecated("shit")
-    private fun clear(lock: Boolean) {
-        if (lock) lock()
-        this.queue.clear()
-        this.set.clear()
-        if (lock) unlock()
-    }
-
-
-    @Deprecated("shit")
-    private fun remove(item: ChunkQueueItem, lock: Boolean) {
-        if (lock) lock()
-        if (this.set.remove(item)) {
-            this.queue -= item
-        }
-        if (lock) unlock()
-    }
-
-    @Deprecated("shit")
-    private fun remove(position: QueuePosition, lock: Boolean) {
-        if (lock) lock()
-        // dirty hacking
-        if (this.set.unsafeCast<MutableSet<QueuePosition>>().remove(position)) {
-            this.queue.unsafeCast<MutableList<QueuePosition>>() -= position
-        }
-        if (lock) unlock()
-    }
-
-    @Deprecated("shit")
-    private fun queue(item: ChunkQueueItem) {
-        lock()
-        if (set.add(item)) {
-            if (item.position.chunkPosition == renderer.cameraSectionPosition.chunkPosition) {
-                queue.add(0, item)
-            } else {
-                queue += item
-            }
-        }
-        // TODO: move to front if own chunk
-
-        unlock()
     }
 }

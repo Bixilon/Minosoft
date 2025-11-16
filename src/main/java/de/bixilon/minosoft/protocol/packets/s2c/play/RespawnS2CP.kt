@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
-import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -108,18 +107,16 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         session.util.prepareSpawn()
         session.player.additional.gamemode = gamemode
         session.player.abilities = gamemode.abilities
-        val dimensionChange = this.dimension != session.world.dimension || this.world != session.world.name
-        if (dimensionChange) {
+
+        if (this.dimension != session.world.dimension || this.world != session.world.name) {
             session.util.resetWorld()
         }
+
         session.world.dimension = dimension
         session.world.name = world
         session.world.biomes.updateNoise(hashedSeed)
 
         session.state = PlaySessionStates.SPAWNING
-        if (dimensionChange) {
-            session.events.fire(DimensionChangeEvent(session))
-        }
     }
 
     override fun log(reducedLog: Boolean) {

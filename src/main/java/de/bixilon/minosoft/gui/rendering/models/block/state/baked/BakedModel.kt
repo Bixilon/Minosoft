@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails.Companion.toMeshDetail
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails.Companion.toMeshDetail
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 
 class ChunkMeshes(
     val section: ChunkSection,
@@ -36,7 +36,10 @@ class ChunkMeshes(
     val entities: Array<BlockEntityRenderer>?,
     val cache: BlockMesherCache,
 ) {
-    val center: Vec3f = Vec3f(BlockPosition.of(position, InSectionPosition(8, 8, 8)))
+    val center = BlockPosition.of(position, InSectionPosition(8, 8, 8))
+
+    var distance = 0
+    var sort = 0
 
     fun load() {
         this.opaque?.load()

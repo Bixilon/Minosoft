@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
-import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
 import de.bixilon.minosoft.protocol.network.session.play.channel.vanila.BrandHandler.sendBrand
@@ -195,7 +194,6 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         session.player.keyManagement.sendSession()
 
-        session.events.fire(DimensionChangeEvent(session))
         session.state = PlaySessionStates.SPAWNING
     }
 

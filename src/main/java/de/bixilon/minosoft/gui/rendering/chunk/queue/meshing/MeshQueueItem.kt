@@ -11,33 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.queue
+package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshDetails
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 
-class ChunkQueueItem(
-    val position: SectionPosition,
+class MeshQueueItem(
     val section: ChunkSection,
-    val center: Vec3f,
-    val cache: BlockMesherCache?,
-    val details: IntInlineEnumSet<ChunkMeshDetails>? = null,
 ) {
-    var mesh: ChunkMeshes? = null
+    val position = SectionPosition.of(section)
+    val center = BlockPosition.of(position) + (ChunkSize.SECTION_LENGTH / 2)
 
     var distance = 0
     var sort = 0
 
     override fun equals(other: Any?) = when (other) {
-        is ChunkQueueItem -> position == other.position
-        is QueuePosition -> position == other.position
+        is MeshQueueItem -> section == other.section
         else -> false
     }
 
-    override fun hashCode() = position.hashCode()
+    override fun hashCode() = section.hashCode()
 }

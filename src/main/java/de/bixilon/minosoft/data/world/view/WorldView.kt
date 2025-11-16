@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 
+@Deprecated("biggest junk ever")
 open class WorldView(
     private val session: PlaySession,
 ) {

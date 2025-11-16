@@ -36,6 +36,7 @@ class OcclusionTracer(
     private val frustum = camera.frustum
 
     // allow tracing from above or below the world
+    // TODO: vertical view distance
     private val minSection = dimension.minSection - 1
     private val maxSection = dimension.maxSection + 1
 

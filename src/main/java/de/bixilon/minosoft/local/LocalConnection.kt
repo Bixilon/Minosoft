@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.local.generator.ChunkGenerator
 import de.bixilon.minosoft.local.storage.WorldStorage
-import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
@@ -80,7 +79,6 @@ class LocalConnection(
 
         session.player.abilities = Abilities(flying = true, allowFly = true)
 
-        session.events.fire(DimensionChangeEvent(session))
         session.state = PlaySessionStates.SPAWNING
 
         val additional = session.player.additional

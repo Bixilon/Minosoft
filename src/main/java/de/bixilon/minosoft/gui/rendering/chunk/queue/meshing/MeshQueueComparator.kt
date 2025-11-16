@@ -13,34 +13,33 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
-import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.queue.ChunkQueueItem
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import kotlin.math.abs
 
-class ChunkQueueComparator : Comparator<ChunkQueueItem> {
+class MeshQueueComparator : Comparator<MeshQueueItem> {
     private var sort = 1
-    private var position = SectionPosition()
+    private var position = BlockPosition()
 
 
-    fun update(renderer: ChunkRenderer) {
-        if (this.position == renderer.cameraSectionPosition) return
-        this.position = renderer.cameraSectionPosition
+    fun update(position: BlockPosition) {
+        if (this.position == position) return
+        this.position = position
         sort++
     }
 
-    private fun getDistance(item: ChunkQueueItem): Int {
-        if (item.sort == this.sort) return item.distance
+    private fun MeshQueueItem.distance(): Int {
+        if (sort == this@MeshQueueComparator.sort) return distance
 
-        val position = item.position
-        val distance = (position - this.position).length2()
+        val delta = (center - this@MeshQueueComparator.position)
+        val distance = abs(delta.x) + abs(delta.y / 2) + abs(delta.z)
 
-        item.distance = distance
-        item.sort = sort
+        this.distance = distance
+        this.sort = this@MeshQueueComparator.sort
 
         return distance
     }
 
-    override fun compare(a: ChunkQueueItem, b: ChunkQueueItem): Int {
-        return getDistance(a).compareTo(getDistance(b))
+    override fun compare(a: MeshQueueItem, b: MeshQueueItem): Int {
+        return a.distance().compareTo(b.distance())
     }
 }

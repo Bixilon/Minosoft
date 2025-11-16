@@ -11,13 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.mesh
+package de.bixilon.minosoft.gui.rendering.chunk.mesh.details
 
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import kotlin.math.abs
 
@@ -95,7 +94,7 @@ enum class ChunkMeshDetails {
         fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
 
             // TODO
-            return previous
+            return of(position, camera)
         }
 
 

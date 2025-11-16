@@ -13,92 +13,104 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.visible
 
-import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 
-class ChunkVisibilityManager(val renderer: ChunkRenderer) {
-    private var camera = Vec3f.EMPTY
-    private var sectionPosition = SectionPosition()
+class ChunkVisibilityManager(
+    val renderer: ChunkRenderer,
+) {
+    private val visibility = renderer.context.camera.visibility
+
+    var eyePosition = BlockPosition()
+        private set
+    var sectionPosition = SectionPosition()
+        private set
 
     private var invalid = true
+    private var viewDistance = 1
 
 
-    val visibility = context.camera.visibility
-    private var previousViewDistance = session.world.view.viewDistance
+    var meshes = VisibleMeshes()
+        private set
 
 
-    var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
+    fun isInViewDistance(position: ChunkPosition): Boolean {
+        return position.isInViewDistance(viewDistance, sectionPosition.chunkPosition)
+    }
 
+    fun isInViewDistance(position: SectionPosition) = isInViewDistance(position.chunkPosition) // TODO: vertical view distance
+
+    operator fun contains(position: ChunkPosition) = visibility.isChunkVisible(position)
+    operator fun contains(position: SectionPosition) = visibility.isSectionVisible(position)
+    operator fun contains(section: ChunkSection) = visibility.isSectionVisible(section)
+
+    fun contains(position: SectionPosition, min: InSectionPosition, max: InSectionPosition) = visibility.isSectionVisible(position, min, max)
 
     private fun onVisibilityChange() {
-        var sort = false
-        val blockPosition = session.camera.entity.physics.positionInfo.position
-        val cameraPosition = Vec3f(blockPosition - context.camera.offset.offset)
-        val sectionPosition = blockPosition.sectionPosition
-        if (this.cameraPosition != cameraPosition) {
-            if (this.cameraSectionPosition != sectionPosition) {
-                this.cameraSectionPosition = sectionPosition
-                loaded.updateDetails()
-                sort = true
+        val eyePosition = renderer.context.session.camera.entity.physics.positionInfo.eyePosition
+
+        if (this.eyePosition != eyePosition) {
+            this.eyePosition = eyePosition
+
+            val sectionPosition = eyePosition.sectionPosition
+            if (this.sectionPosition != sectionPosition) {
+                this.sectionPosition = sectionPosition
+                renderer.meshingQueue.tasks.interruptIf { !isInViewDistance(it) }
+                renderer.meshingQueue.removeIf { !isInViewDistance(it) }
+                renderer.loadingQueue.removeIf { !isInViewDistance(it) }
+                renderer.loaded.update()
+
+                // TODO: culledQueue: move to view culled
             }
-            this.cameraPosition = cameraPosition
+
+            // TODO: remove from meshing queue
+            renderer.meshingQueue.sort()
+            renderer.loadingQueue.sort()
         }
 
-        val visible = VisibleMeshes(cameraPosition, this.visible)
+        val meshes = VisibleMeshes(eyePosition, this.meshes)
 
-        loaded.collect(visible)
+        renderer.culledQueue.enqueue()
 
-        val nextQueue = culledQueue.collect()
+        meshes.sort()
 
-
-        for (section in nextQueue) {
-            master.forceQueue(section)
-        }
-
-        if (nextQueue.isNotEmpty()) {
-            if (sort) {
-                meshingQueue.sort()
-            }
-            meshingQueue.work()
-        }
-
-        visible.sort()
-
-        this.visible = visible
+        this.meshes = meshes
     }
 
 
-    fun invalidate()
-
-
-    fun onViewDistanceChange() {
-        TODO()
-
-        // Unload all chunks(-sections) that are out of view distance
-        // TODO: this is junk, do that in inVisibilityChange
-        lock.lock()
-
-        loaded.cleanup(false)
-        culledQueue.cleanup(false)
-
-        meshingQueue.cleanup(false)
-
-        meshingQueue.tasks.cleanup()
-        loadingQueue.cleanup(false)
-
-        lock.unlock()
+    fun invalidate() {
+        invalid = true
     }
 
-    fun setViewDistance(distance: Int) {
+    fun update() {
+        updateViewDistance() // TODO: delay that for 100ms to not cause rapid loading/unloading
 
-        val distance = maxOf(viewDistance, profile.simulationDistance)
-        if (distance < this.previousViewDistance) {
-
-        } else {
-            master.tryQueue(world)
+        if (invalid) {
+            onVisibilityChange()
+            invalid = false
         }
+    }
 
-        this.previousViewDistance = distance
+    private fun updateViewDistance() {
+        val view = renderer.context.session.world.view
+
+        val current = this.viewDistance
+        val next = minOf(view.serverViewDistance, view.viewDistance)
+        this.viewDistance = next
+
+        when {
+            next > current -> renderer.culledQueue.enqueueViewDistance()
+            next < current -> {
+                renderer.meshingQueue.removeIf { !isInViewDistance(it) }
+                renderer.meshingQueue.tasks.interruptIf { !isInViewDistance(it) }
+                renderer.loadingQueue.removeIf { !isInViewDistance(it) }
+                renderer.loaded.update()
+            }
+        }
     }
 }

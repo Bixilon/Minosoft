@@ -102,8 +102,6 @@ value class ChunkPosition(
     inline operator fun component1() = x
     inline operator fun component2() = z
 
-    fun sectionPosition(y: SectionHeight) = SectionPosition(x, y, z)
-
     override fun toText() = "(${this.x.format()} ${this.z.format()})"
     override fun toString() = "c($x $z)"
 

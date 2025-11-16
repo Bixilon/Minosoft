@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.manager.size
 
 import de.bixilon.kmath.vec.vec2.i.MVec2i
 
+@Deprecated("refactor")
 data class WorldSize(
     val min: MVec2i = MVec2i(Int.MAX_VALUE, Int.MAX_VALUE),
     val max: MVec2i = MVec2i(Int.MIN_VALUE, Int.MIN_VALUE),

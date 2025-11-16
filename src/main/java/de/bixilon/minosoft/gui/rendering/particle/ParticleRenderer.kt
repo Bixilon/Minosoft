@@ -73,7 +73,7 @@ class ParticleRenderer(
         set(value) {
             if (value < 0) throw IllegalStateException("Can not set negative amount of particles!")
             if (value < field) {
-                removeAllParticles()
+                removeAll()
             }
             field = value
         }
@@ -116,7 +116,7 @@ class ParticleRenderer(
         session.world.particle = this
     }
 
-    override fun addParticle(particle: Particle) {
+    override fun add(particle: Particle) {
         if (!context.state.running || !enabled) {
             return
         }
@@ -164,7 +164,7 @@ class ParticleRenderer(
         translucentMesh?.load()
     }
 
-    override fun removeAllParticles() {
+    override fun removeAll() {
         particles.clear()
         queue.clear()
     }

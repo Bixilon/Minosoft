@@ -49,8 +49,11 @@ class Camera(
     fun draw() {
         val entity = context.session.camera.entity
         context.profiler("tick") { (entity.attachment.getRootVehicle() ?: entity).tryTick() } // TODO
+        val time = now()
         if (entity is LocalPlayerEntity) {
-            context.profiler("draw") { entity._draw(now()) } // TODO: force draw if entity is camera entity?
+            context.profiler("draw") { entity._draw(time) }
+        } else {
+            entity.draw(time)
         }
         view.draw()
         matrix.draw()

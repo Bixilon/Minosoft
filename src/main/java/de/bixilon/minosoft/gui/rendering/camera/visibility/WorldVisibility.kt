@@ -38,7 +38,7 @@ class WorldVisibility(
         val dimension = camera.context.session.world.dimension
 
         for (height in dimension.minSection..dimension.maxSection) {
-            if (camera.occlusion.isSectionOccluded(position.sectionPosition(height))) continue
+            if (camera.occlusion.isSectionOccluded(SectionPosition.of(position, height))) continue
             return true
         }
 
@@ -51,19 +51,19 @@ class WorldVisibility(
 
 
         for (height in chunk.sections.lowest..chunk.sections.highest) {
-            if (camera.occlusion.isSectionOccluded(chunk.position.sectionPosition(height))) continue
+            if (camera.occlusion.isSectionOccluded(SectionPosition.of(chunk.position, height))) continue
             return true
         }
 
         return false
     }
 
-    fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section.chunk.position, section.height), section.blocks.minPosition, section.blocks.maxPosition)
+    fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section), section.blocks.minPosition, section.blocks.maxPosition)
 
-    fun isSectionVisible(position: SectionPosition, minPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, maxPosition: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION) = when {
+    fun isSectionVisible(position: SectionPosition, min: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, max: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION) = when {
         !isInViewDistance(position.chunkPosition) -> false
         camera.occlusion.isSectionOccluded(position) -> false
-        !camera.frustum.containsChunkSection(position, minPosition, maxPosition) -> false
+        !camera.frustum.containsChunkSection(position, min, max) -> false // TODO: Isn't that case done with occlusion?
         else -> true
     }
 }

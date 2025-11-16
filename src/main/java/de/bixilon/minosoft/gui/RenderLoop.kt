@@ -52,6 +52,7 @@ class RenderLoop(
         while (context.state == RenderingStates.PAUSED) {
             sleep(20.milliseconds)
             context.window.pollEvents()
+            context.queue.work()
         }
 
         context.profiler = if (RenderingOptions.profileFrames) StackedProfiler() else null
