@@ -55,7 +55,7 @@ class LoadedMeshes(
     operator fun minusAssign(position: SectionPosition) {
         val mesh = lock.locked {
             val meshes = this.meshes[position.chunkPosition] ?: return
-            val mesh = meshes.remove(position.y)
+            val mesh = meshes.remove(position.y) ?: return
             if (meshes.isEmpty()) {
                 this.meshes -= position.chunkPosition
             }
