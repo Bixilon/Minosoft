@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionVector
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.util.KUtil.format
+import kotlin.math.sqrt
 
 @JvmInline
 value class SVec3i(val raw: Int) : _Vec3i {
@@ -95,6 +96,15 @@ value class SVec3i(val raw: Int) : _Vec3i {
     inline operator fun minus(other: _Vec3i) = SVec3i(this.x - other.x, this.y - other.y, this.z - other.z)
 
     inline infix fun and(mask: Int) = SVec3i(x and mask, y and mask, z and mask)
+
+    fun length2() = x * x + y * y + z * z
+    fun length() = sqrt(length2().toFloat())
+
+    inline infix fun cross(other: _Vec3i) = SVec3i(
+        x = y * other.z - other.y * z,
+        y = z * other.x - other.z * x,
+        z = x * other.y - other.x * y,
+    )
 
     inline operator fun get(axis: Axes) = when (axis) {
         Axes.X -> x

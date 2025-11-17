@@ -58,8 +58,7 @@ class OcclusionTracer(
         return true
     }
 
-    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions, vector: SVec3i) {
-        // TODO: keep track of direction and don't allow going of the axis too far (we can not bend our look direction). This will hide caves and reveans too if they are occluded
+    private fun trace(chunk: Chunk, height: SectionHeight, direction: Directions, vector1: SVec3i, vector2: SVec3i, vector: SVec3i) {
         if (!isInViewDistance(chunk)) return
         if (height < minSection || height > maxSection) return
 
@@ -72,6 +71,15 @@ class OcclusionTracer(
             culled += position
             return
         }
+
+        if (vector1 != SVec3i.EMPTY) { // check if we are too far away from a straight line to the camera
+            val cross = vector1.cross(vector)
+
+            val distance2 = cross.length2().toFloat() / vector.length2().toFloat()
+
+            if (distance2 > 1.1f * 1.1f) return
+        }
+
         paths[direction.axis.ordinal] += position
         visible += position
 
@@ -80,25 +88,25 @@ class OcclusionTracer(
         val occlusion = chunk[height]?.blocks?.occlusion // TODO: empty section bypass?
 
 
-        if (vector.x <= 0) trace(occlusion, neighbours, height, inverted, Directions.WEST, vector)
-        if (vector.x >= 0) trace(occlusion, neighbours, height, inverted, Directions.EAST, vector)
+        if (vector.x <= 0) trace(occlusion, neighbours, height, inverted, Directions.WEST, vector2, vector)
+        if (vector.x >= 0) trace(occlusion, neighbours, height, inverted, Directions.EAST, vector2, vector)
 
-        if (vector.z <= 0) trace(occlusion, neighbours, height, inverted, Directions.NORTH, vector)
-        if (vector.z >= 0) trace(occlusion, neighbours, height, inverted, Directions.SOUTH, vector)
+        if (vector.z <= 0) trace(occlusion, neighbours, height, inverted, Directions.NORTH, vector2, vector)
+        if (vector.z >= 0) trace(occlusion, neighbours, height, inverted, Directions.SOUTH, vector2, vector)
 
-        if (vector.y <= 0) trace(occlusion, chunk, height, inverted, Directions.DOWN, vector)
-        if (vector.y >= 0) trace(occlusion, chunk, height, inverted, Directions.UP, vector)
+        if (vector.y <= 0) trace(occlusion, chunk, height, inverted, Directions.DOWN, vector2, vector)
+        if (vector.y >= 0) trace(occlusion, chunk, height, inverted, Directions.UP, vector2, vector)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbours, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
+    private inline fun trace(occlusion: SectionOcclusion?, neighbours: ChunkNeighbours, height: SectionHeight, source: Directions, destination: Directions, vector2: SVec3i, vector: SVec3i) {
         if (occlusion != null && occlusion.isOccludedQueue(source, destination)) return
         val next = neighbours[destination] ?: return
-        trace(next, height, destination, vector + destination)
+        trace(next, height, destination, vector2, vector, vector + destination)
     }
 
-    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions, destination: Directions, vector: SVec3i) {
+    private inline fun trace(occlusion: SectionOcclusion?, chunk: Chunk, height: SectionHeight, source: Directions, destination: Directions, vector2: SVec3i, vector: SVec3i) {
         if (occlusion != null && occlusion.isOccludedQueue(source, destination)) return
-        trace(chunk, height + destination.vector.y, destination, vector + destination)
+        trace(chunk, height + destination.vector.y, destination, vector2, vector, vector + destination)
     }
 
     private fun SectionOcclusion.isOccludedQueue(source: Directions, destination: Directions): Boolean {
@@ -122,7 +130,7 @@ class OcclusionTracer(
     fun trace(chunk: Chunk): OcclusionGraph {
         for (direction in Directions) {
             val neighbour = if (direction.axis == Axes.Y) chunk else chunk.neighbours[direction] ?: continue
-            trace(neighbour, position.y + direction.vector.y, direction, SVec3i(direction.vector))
+            trace(neighbour, position.y + direction.vector.y, direction, SVec3i(), SVec3i(), SVec3i(direction.vector))
         }
 
         visible += position
