@@ -21,14 +21,14 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumCulling
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 
 class WorldVisibility(
     val camera: Camera,
 ) {
+    private val world = camera.context.session.world
 
     fun isInViewDistance(position: ChunkPosition): Boolean {
-        return position.isInViewDistance(camera.context.session.world.view.viewDistance, camera.view.view.eyePosition.blockPosition.chunkPosition)
+        return position.isInViewDistance(world.view.viewDistance, camera.context.session.camera.entity.physics.positionInfo.chunkPosition)
     }
 
     fun isChunkVisible(position: ChunkPosition): Boolean {

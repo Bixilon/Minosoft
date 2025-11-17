@@ -40,13 +40,15 @@ class LoadedMeshes(
 
         val previous = chunk.put(mesh.position.sectionHeight, mesh)
         lock.unlock()
+        val meshes = renderer.visibility.meshes
 
         if (previous != null) {
-            // TODO: remove from visible
+            meshes -= previous  // TODO: lock
             renderer.unloadingQueue += previous
         }
 
-        // TODO: add + sort visible
+        meshes += mesh // TODO: lock
+        meshes.sort()
     }
 
     operator fun minusAssign(position: SectionPosition) {
@@ -61,12 +63,13 @@ class LoadedMeshes(
 
         // TODO: remove from visible
 
+        renderer.visibility.meshes -= mesh  // TODO: lock
         renderer.unloadingQueue += mesh
     }
 
     operator fun minusAssign(position: ChunkPosition) {
         val meshes = lock.locked { meshes.remove(position) } ?: return
-        // TODO: remove from visible
+        meshes.values.forEach { renderer.visibility.meshes -= it }
         renderer.unloadingQueue += meshes.values
     }
 
@@ -74,6 +77,7 @@ class LoadedMeshes(
         for (meshes in meshes.values) {
             renderer.unloadingQueue += meshes.values
         }
+        renderer.visibility.meshes.clear()  // TODO: lock
         meshes.clear()
     }
 

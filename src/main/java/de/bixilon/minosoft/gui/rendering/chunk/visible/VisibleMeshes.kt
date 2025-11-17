@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.RenderingThreadPool
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -60,7 +61,7 @@ class VisibleMeshes(
 
 
     fun sort() {
-        val worker = UnconditionalWorker()
+        val worker = UnconditionalWorker(pool = RenderingThreadPool)
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }

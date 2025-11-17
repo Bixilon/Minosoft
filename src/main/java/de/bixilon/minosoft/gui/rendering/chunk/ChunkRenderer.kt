@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
@@ -148,27 +149,33 @@ class ChunkRenderer(
         // TODO: potential race condition (what if section is between two stages?)
     }
 
-    fun invalidate(world: World): Unit = TODO()
+    fun invalidate(world: World) = world.lock.acquired {
+        for (chunk in world.chunks.chunks.unsafe.values) {
+            invalidate(chunk)
+        }
+    }
+
     fun invalidate(chunk: Chunk) {
-        if (chunk.position in visibility) {
+        if (chunk.neighbours.complete && chunk.position in visibility) {
             chunk.sections.forEach { invalidate(it) }
             // no need to unload any other sections, sections can only be created but never deleted
             return
         }
-        // TODO: add to culled queue
         unload(chunk)
+        culledQueue += chunk
     }
 
     fun invalidate(section: ChunkSection) {
-        if (section.blocks.isEmpty) {
+        if (context.state == RenderingStates.PAUSED || context.state == RenderingStates.STOPPED || context.state == RenderingStates.QUITTING) return
+        if (section.blocks.isEmpty || !section.chunk.neighbours.complete) {
             return unload(section)
         }
+        val position = SectionPosition.of(section)
 
-        // TODO: remove previous
-        // TODO: remove if can not queue (neighbours missing or invalid rendering state)
+        meshingQueue.tasks.interrupt(position)
 
         if (section in visibility) {
-            meshingQueue += section
+            meshingQueue += section // TODO: don't add multiple times
         } else {
             unload(section)
             culledQueue += section

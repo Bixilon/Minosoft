@@ -32,7 +32,7 @@ class ChunkVisibilityManager(
         private set
 
     private var invalid = true
-    private var viewDistance = 1
+    private var viewDistance = renderer.context.session.world.view.viewDistance
 
 
     var meshes = VisibleMeshes()
@@ -101,7 +101,7 @@ class ChunkVisibilityManager(
         val view = renderer.context.session.world.view
 
         val current = this.viewDistance
-        val next = minOf(view.serverViewDistance, view.viewDistance)
+        val next = view.viewDistance
         this.viewDistance = next
 
         when {
