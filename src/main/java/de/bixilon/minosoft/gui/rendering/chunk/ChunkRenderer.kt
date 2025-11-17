@@ -181,6 +181,7 @@ class ChunkRenderer(
     }
 
     override fun prepareDrawAsync() {
+        visibility.update()
         meshingQueue.work()
     }
 

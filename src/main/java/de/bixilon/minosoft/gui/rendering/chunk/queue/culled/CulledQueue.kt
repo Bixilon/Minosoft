@@ -44,12 +44,12 @@ class CulledQueue(
         culled[section.chunk.position]?.remove(section)
     }
 
-    @Deprecated("why?")
     operator fun plusAssign(chunk: Chunk) = lock.locked {
         if (chunk.position !in renderer.visibility) {
             viewDistance += chunk
         } else {
-            TODO("Enqueue all sections of chunk?")
+            val culled = culled.getOrPut(chunk.position) { HashSet() }
+            chunk.sections.forEach { culled += it }
         }
     }
 
@@ -100,12 +100,7 @@ class CulledQueue(
         }
     }
 
-    fun enqueueViewDistance() = lock.locked {
-        moveToViewDistance()
-        moveToCulled()
-    }
-
-    fun enqueue() = lock.locked {
+    private fun moveToMeshQueue() {
         if (culled.isEmpty()) return
 
         val iterator = culled.values.iterator()
@@ -127,4 +122,11 @@ class CulledQueue(
             }
         }
     }
+
+    fun enqueueViewDistance() = lock.locked {
+        moveToViewDistance()
+        moveToCulled()
+    }
+
+    fun enqueue() = lock.locked { moveToMeshQueue() }
 }

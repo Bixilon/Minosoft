@@ -65,17 +65,18 @@ class ChunkVisibilityManager(
                 renderer.loadingQueue.removeIf { !isInViewDistance(it) }
                 renderer.loaded.update()
 
-                // TODO: culledQueue: move to view culled
+                renderer.culledQueue.enqueueViewDistance()
             }
 
             // TODO: remove from meshing queue
             renderer.meshingQueue.sort()
             renderer.loadingQueue.sort()
         }
+        renderer.culledQueue.enqueue()
 
         val meshes = VisibleMeshes(eyePosition, this.meshes)
+        renderer.loaded.addTo(meshes)
 
-        renderer.culledQueue.enqueue()
 
         meshes.sort()
 

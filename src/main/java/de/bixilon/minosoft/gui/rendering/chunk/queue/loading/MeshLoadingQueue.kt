@@ -57,7 +57,6 @@ class MeshLoadingQueue(
 
             renderer.context.profiler("load$index") { mesh.load() }
 
-            mesh.load()
             renderer.loaded += mesh
         }
 
