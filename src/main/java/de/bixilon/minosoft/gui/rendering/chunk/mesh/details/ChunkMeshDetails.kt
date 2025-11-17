@@ -39,8 +39,10 @@ enum class ChunkMeshDetails {
 
     SIDE_DOWN,
     SIDE_UP,
+
     SIDE_NORTH,
     SIDE_SOUTH,
+
     SIDE_WEST,
     SIDE_EAST,
 
@@ -51,6 +53,9 @@ enum class ChunkMeshDetails {
     companion object : ValuesEnum<ChunkMeshDetails> {
         override val VALUES = values()
         override val NAME_MAP = names()
+
+        private const val SIDE_MIN = 1
+        private const val SIDE_MAX = 3
 
 
         val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail }
@@ -68,33 +73,80 @@ enum class ChunkMeshDetails {
             if (max >= 8) details -= AMBIENT_OCCLUSION
 
             if (max >= 10) details -= ANTI_MOIRE_PATTERN
-
-            if (max >= 5) details -= RANDOM_OFFSET
+            if (max >= 8) details -= RANDOM_OFFSET
 
             if (max >= 5) details -= FLOWING_FLUID
-            if (max >= 8) details -= FLUID_HEIGHTS
+            if (max >= 7) details -= FLUID_HEIGHTS
 
-            if (max >= 8) details -= TRANSPARENCY
+            if (max >= 10) details -= TRANSPARENCY
 
             if (max >= 2) details -= FULL_OPAQUE_CULLED
 
-            if (delta.y < -3) details -= SIDE_DOWN
-            if (delta.y > 3) details -= SIDE_UP
+            details = removeSides(details, delta)
 
-            if (delta.z < -3) details -= SIDE_NORTH
-            if (delta.z > 3) details -= SIDE_SOUTH
+            return details
+        }
 
-            if (delta.x < -3) details -= SIDE_WEST
-            if (delta.x > 3) details -= SIDE_EAST
 
+        private fun removeSides(details: IntInlineEnumSet<ChunkMeshDetails>, delta: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+            var details = details
+
+            if (delta.y < -SIDE_MAX) details -= SIDE_DOWN
+            if (delta.y > +SIDE_MAX) details -= SIDE_UP
+
+            if (delta.z < -SIDE_MAX) details -= SIDE_NORTH
+            if (delta.z > +SIDE_MAX) details -= SIDE_SOUTH
+
+            if (delta.x < -SIDE_MAX) details -= SIDE_WEST
+            if (delta.x > +SIDE_MAX) details -= SIDE_EAST
+
+            return details
+        }
+
+        private fun addSides(details: IntInlineEnumSet<ChunkMeshDetails>, delta: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+            var details = details
+
+            if (delta.y >= -SIDE_MIN) details += SIDE_DOWN
+            if (delta.y <= +SIDE_MIN) details += SIDE_UP
+
+            if (delta.z >= -SIDE_MIN) details += SIDE_NORTH
+            if (delta.z <= +SIDE_MIN) details += SIDE_SOUTH
+
+            if (delta.x >= -SIDE_MIN) details += SIDE_WEST
+            if (delta.x <= +SIDE_MIN) details += SIDE_EAST
 
             return details
         }
 
         fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+            var details = previous
+            val delta = position - camera
+            val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
 
-            // TODO
-            return of(position, camera)
+
+            if (max < 4) details += ENTITIES
+            if (max >= 5) details -= ENTITIES
+
+            if (max < 3) details += TEXT
+            if (max >= 4) details -= TEXT
+
+            if (max < 7) details += AMBIENT_OCCLUSION
+            if (max >= 8) details -= AMBIENT_OCCLUSION
+
+            if (max < 9) details += ANTI_MOIRE_PATTERN
+            if (max < 7) details += RANDOM_OFFSET
+
+            if (max < 5) details += FLOWING_FLUID
+            if (max < 7) details += FLUID_HEIGHTS
+
+            if (max < 9) details += TRANSPARENCY
+
+            if (max < 2) details += FULL_OPAQUE_CULLED
+
+            details = removeSides(details, delta)
+            details = addSides(details, delta)
+
+            return details
         }
 
 
