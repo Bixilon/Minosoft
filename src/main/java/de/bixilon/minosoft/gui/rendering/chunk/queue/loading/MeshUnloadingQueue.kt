@@ -49,5 +49,6 @@ class MeshUnloadingQueue(
 
 
     operator fun plusAssign(mesh: ChunkMeshes) = lock.locked { meshes += mesh }
+
     operator fun plusAssign(meshes: Collection<ChunkMeshes>) = lock.locked { this.meshes += meshes }
 }

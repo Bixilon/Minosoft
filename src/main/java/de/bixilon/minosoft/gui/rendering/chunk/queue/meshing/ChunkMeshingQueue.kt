@@ -96,7 +96,7 @@ class ChunkMeshingQueue(
                 val previous = renderer.loaded[position]
                 renderer.mesher.mesh(previous, section)
             } catch (_: InterruptedException) {
-                null
+                return@ThreadPoolRunnable
             } finally {
                 task.thread = null
                 task.interruptible = false

@@ -13,26 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kmath.vec.vec3.i._Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 object Vec3iUtil {
-
-    @Deprecated("chunk data types")
-    inline val _Vec3i.sectionHeight: Int
-        get() = y.sectionHeight
-
-    @Deprecated("chunk data types")
-    inline val _Vec3i.chunkPosition: Vec2i
-        get() = Vec2i(x shr 4, z shr 4)
-
-    @Deprecated("chunk data types")
-    inline val _Vec3i.inChunkPosition: Vec3i
-        get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
     @Deprecated("chunk data types")
     inline val _Vec3i.blockPosition get() = BlockPosition(x, y, z)

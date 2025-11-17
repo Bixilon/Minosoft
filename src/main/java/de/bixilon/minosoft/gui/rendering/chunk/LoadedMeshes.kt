@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibleMeshes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class LoadedMeshes(
@@ -33,12 +32,12 @@ class LoadedMeshes(
 
     val size get() = meshes.size
 
-    operator fun get(position: SectionPosition) = lock.acquired { meshes[position.chunkPosition]?.get(position.sectionHeight) }
+    operator fun get(position: SectionPosition) = lock.acquired { meshes[position.chunkPosition]?.get(position.y) }
     operator fun plusAssign(mesh: ChunkMeshes) {
         lock.lock()
         val chunk = meshes.getOrPut(mesh.position.chunkPosition) { Int2ObjectOpenHashMap() }
 
-        val previous = chunk.put(mesh.position.sectionHeight, mesh)
+        val previous = chunk.put(mesh.position.y, mesh)
         lock.unlock()
         val meshes = renderer.visibility.meshes
 
@@ -55,13 +54,13 @@ class LoadedMeshes(
 
     operator fun minusAssign(position: SectionPosition) {
         val mesh = lock.locked {
-            val meshes = meshes.remove(position.chunkPosition) ?: return@locked null
-            val mesh = meshes.remove(position.sectionHeight)
+            val meshes = this.meshes[position.chunkPosition] ?: return
+            val mesh = meshes.remove(position.y)
             if (meshes.isEmpty()) {
                 this.meshes -= position.chunkPosition
             }
             return@locked mesh
-        } ?: return
+        }
 
         renderer.visibility.meshes -= mesh
         renderer.unloadingQueue += mesh
@@ -110,8 +109,8 @@ class LoadedMeshes(
             val (chunkPosition, meshes) = iterator.next()
 
             if (!renderer.visibility.isInViewDistance(chunkPosition)) {
-                val values = meshes.values
                 iterator.remove()
+                val values = meshes.values
                 val chunk = values.iterator().next().section.chunk // dirty hack
 
                 meshes.values.forEach { renderer.visibility.meshes -= it }

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.AssertJUnit.assertEquals
 import org.testng.annotations.Test
@@ -32,7 +31,7 @@ class MeshQueueComparatorTest {
         val chunk = Chunk::class.java.allocate()
         chunk::position.forceSet(this.chunkPosition.raw)
         section::chunk.forceSet(chunk)
-        section::height.forceSet(this.sectionHeight)
+        section::height.forceSet(this.y)
 
         return MeshQueueItem(section)
     }

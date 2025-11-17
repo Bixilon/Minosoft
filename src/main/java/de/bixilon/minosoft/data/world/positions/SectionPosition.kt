@@ -128,6 +128,9 @@ value class SectionPosition(
     inline fun sectionIndex(minSection: SectionHeight): SectionIndex = this.y - minSection
     inline val chunkPosition get() = ChunkPosition(x, z)
 
+    @Deprecated("y", level = DeprecationLevel.ERROR)
+    val sectionHeight get() = y
+
     override fun toString() = "c($x $y $z)"
 
 
