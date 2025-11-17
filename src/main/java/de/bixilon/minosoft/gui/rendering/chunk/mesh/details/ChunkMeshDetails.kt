@@ -67,18 +67,18 @@ enum class ChunkMeshDetails {
             val delta = position - camera
             val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
 
-            if (max >= 5) details -= ENTITIES
-            if (max >= 4) details -= TEXT
+            if (max >= 8) details -= ENTITIES
+            if (max >= 5) details -= TEXT
 
-            if (max >= 8) details -= AMBIENT_OCCLUSION
+            if (max >= 20) details -= AMBIENT_OCCLUSION
 
-            if (max >= 10) details -= ANTI_MOIRE_PATTERN
+            if (max >= 15) details -= ANTI_MOIRE_PATTERN
             if (max >= 8) details -= RANDOM_OFFSET
 
             if (max >= 5) details -= FLOWING_FLUID
             if (max >= 7) details -= FLUID_HEIGHTS
 
-            if (max >= 10) details -= TRANSPARENCY
+            if (max >= 15) details -= TRANSPARENCY
 
             if (max >= 2) details -= FULL_OPAQUE_CULLED
 
@@ -124,24 +124,24 @@ enum class ChunkMeshDetails {
             val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
 
 
-            if (max < 4) details += ENTITIES
-            if (max >= 5) details -= ENTITIES
+            if (max < 8) details += ENTITIES
+            if (max >= 9) details -= ENTITIES
 
-            if (max < 3) details += TEXT
-            if (max >= 4) details -= TEXT
+            if (max < 4) details += TEXT
+            if (max >= 5) details -= TEXT
 
-            if (max < 7) details += AMBIENT_OCCLUSION
-            if (max >= 8) details -= AMBIENT_OCCLUSION
+            if (max < 18) details += AMBIENT_OCCLUSION
+            if (max >= 20) details -= AMBIENT_OCCLUSION
 
-            if (max < 9) details += ANTI_MOIRE_PATTERN
+            if (max < 13) details += ANTI_MOIRE_PATTERN
             if (max < 7) details += RANDOM_OFFSET
 
             if (max < 5) details += FLOWING_FLUID
             if (max < 7) details += FLUID_HEIGHTS
 
-            if (max < 9) details += TRANSPARENCY
+            if (max < 13) details += TRANSPARENCY
 
-            if (max < 2) details += FULL_OPAQUE_CULLED
+            if (max < 1) details += FULL_OPAQUE_CULLED
 
             details = removeSides(details, delta)
             details = addSides(details, delta)
