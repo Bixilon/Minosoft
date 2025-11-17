@@ -26,11 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val type = buffer.readParticleType()
     val longDistance = if (buffer.versionId >= ProtocolVersions.V_14W29A) buffer.readBoolean() else false
-    val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_1_15_PRE4) {
-        Vec3d(buffer.readVec3f())
-    } else {
-        buffer.readVec3d()
-    }
+    val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_1_15_PRE4) Vec3d(buffer.readVec3f()) else buffer.readVec3d()
     val offset: Vec3f = buffer.readVec3f()
     val speed: Float = buffer.readFloat()
     val count: Int = buffer.readInt()
