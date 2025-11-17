@@ -22,40 +22,28 @@ import de.bixilon.minosoft.util.KUtil.startInit
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import java.util.*
 
 class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val entityId: Int = buffer.readEntityId()
-    val entityUUID: UUID? = if (buffer.versionId >= ProtocolVersions.V_15W31A) {
-        buffer.readUUID()
-    } else {
-        null
-    }
+    val entityId = buffer.readVarInt()
+    val entityUUID = if (buffer.versionId >= ProtocolVersions.V_15W31A) buffer.readUUID() else null
     val entity: Entity
 
     init {
-        val typeId: Int = if (buffer.versionId < ProtocolVersions.V_16W32A) {
-            buffer.readUnsignedByte()
-        } else {
-            buffer.readVarInt()
-        }
+        val typeId = if (buffer.versionId < ProtocolVersions.V_16W32A) buffer.readUnsignedByte() else buffer.readVarInt()
         val position = buffer.readVec3d()
         val rotation = buffer.readEntityRotation()
         val headYaw = buffer.readAngle()
         val velocity = buffer.readVelocity()
 
-        val rawData: Int2ObjectOpenHashMap<Any?>? = if (buffer.versionId < ProtocolVersions.V_19W34A) {
-            buffer.readEntityData()
-        } else {
-            null
-        }
-        val data = EntityData(buffer.session, rawData)
+        val rawData = if (buffer.versionId < ProtocolVersions.V_19W34A) buffer.readEntityData() else null
         val entityType = buffer.session.registries.entityType[typeId]
+        val data = EntityData(buffer.session, rawData)
+
         entity = entityType.build(buffer.session, position, rotation, data, entityUUID, buffer.versionId)!!
         entity.startInit()
         entity.setHeadRotation(headYaw)
         entity.physics.velocity.put(velocity)
+
         if (rawData != null) {
             entity.data.merge(rawData)
         }

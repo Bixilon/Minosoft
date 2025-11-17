@@ -28,11 +28,7 @@ import java.util.*
 
 class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val entityId: Int = buffer.readVarInt()
-    private var entityUUID: UUID? = if (buffer.versionId >= ProtocolVersions.V_16W02A) {
-        buffer.readUUID()
-    } else {
-        null
-    }
+    private var entityUUID: UUID? = if (buffer.versionId >= ProtocolVersions.V_16W02A) buffer.readUUID() else null
     val entity: Painting
 
 
