@@ -76,8 +76,6 @@ class ChunkVisibilityManager(
 
         val meshes = VisibleMeshes(eyePosition, this.meshes)
         renderer.loaded.addTo(meshes)
-
-
         meshes.sort()
 
         this.meshes = meshes

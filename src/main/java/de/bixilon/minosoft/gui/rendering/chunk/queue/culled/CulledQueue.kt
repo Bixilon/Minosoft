@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 
 class CulledQueue(
@@ -45,7 +46,7 @@ class CulledQueue(
     }
 
     operator fun plusAssign(chunk: Chunk) = lock.locked {
-        if (chunk.position !in renderer.visibility) {
+        if (!renderer.visibility.isInViewDistance(chunk.position)) {
             viewDistance += chunk
         } else {
             val culled = culled.getOrPut(chunk.position) { HashSet() }
@@ -54,7 +55,7 @@ class CulledQueue(
     }
 
     operator fun plusAssign(section: ChunkSection): Unit = lock.locked {
-        if (section.chunk.position !in renderer.visibility) {
+        if (!renderer.visibility.isInViewDistance(SectionPosition.of(section))) {
             viewDistance += section.chunk
         } else {
             culled.getOrPut(section.chunk.position) { HashSet() } += section
@@ -67,18 +68,14 @@ class CulledQueue(
         val iterator = viewDistance.iterator()
         while (iterator.hasNext()) {
             val chunk = iterator.next()
-            if (chunk.position !in renderer.visibility) continue
+            if (!renderer.visibility.isInViewDistance(chunk.position)) continue
 
             iterator.remove()
             if (chunk.sections.lowest > chunk.sections.highest) continue // no sections
 
             val culled = culled.getOrPut(chunk.position) { HashSet() }
 
-            chunk.sections.forEach { section ->
-                if (section !in renderer.visibility) return@forEach
-
-                culled += section
-            }
+            chunk.sections.forEach { culled += it }
         }
     }
 
@@ -92,7 +89,7 @@ class CulledQueue(
                 iterator.remove()
                 continue
             }
-            if (position in renderer.visibility) continue
+            if (renderer.visibility.isInViewDistance(position)) continue
 
             iterator.remove()
 

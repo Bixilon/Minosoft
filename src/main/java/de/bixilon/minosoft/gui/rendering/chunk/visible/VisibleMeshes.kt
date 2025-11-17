@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.visible
 
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
@@ -36,8 +38,10 @@ class VisibleMeshes(
     val sizeString: String
         get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${entities.size.format()}"
 
+    val lock = ReentrantLock()
 
-    fun add(mesh: ChunkMeshes) {
+
+    private fun add(mesh: ChunkMeshes) {
         val delta = (camera - mesh.center)
         val distance = abs(delta.x) * abs(delta.y) * abs(delta.z)
         mesh.opaque?.let {
@@ -57,27 +61,27 @@ class VisibleMeshes(
         }
     }
 
-    operator fun plusAssign(mesh: ChunkMeshes) = add(mesh)
+    operator fun plusAssign(mesh: ChunkMeshes) = lock.locked { add(mesh) }
+    fun unsafeAdd(mesh: ChunkMeshes) = add(mesh)
 
 
     fun sort() {
         val worker = UnconditionalWorker(pool = RenderingThreadPool)
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
-        // TODO: sort entities
-        worker.work()
+        lock.locked {
+            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
+            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
+            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
+            // TODO: sort entities
+            worker.work()
+        }
     }
 
-
-    fun remove(mesh: ChunkMeshes) {
+    operator fun minusAssign(mesh: ChunkMeshes): Unit = lock.locked {
         mesh.opaque?.let { opaque -= it }
         mesh.translucent?.let { translucent -= it }
         mesh.text?.let { text -= it }
         mesh.entities?.let { entities -= it }
     }
-
-    operator fun minusAssign(mesh: ChunkMeshes) = remove(mesh)
 
 
     fun clear() {

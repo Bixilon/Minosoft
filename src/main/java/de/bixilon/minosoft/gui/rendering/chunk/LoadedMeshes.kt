@@ -43,12 +43,14 @@ class LoadedMeshes(
         val meshes = renderer.visibility.meshes
 
         if (previous != null) {
-            meshes -= previous  // TODO: lock
+            meshes -= previous
             renderer.unloadingQueue += previous
         }
 
-        meshes += mesh // TODO: lock
-        meshes.sort()
+        meshes.lock.locked {
+            meshes += mesh
+            meshes.sort()
+        }
     }
 
     operator fun minusAssign(position: SectionPosition) {
@@ -61,9 +63,7 @@ class LoadedMeshes(
             return@locked mesh
         } ?: return
 
-        // TODO: remove from visible
-
-        renderer.visibility.meshes -= mesh  // TODO: lock
+        renderer.visibility.meshes -= mesh
         renderer.unloadingQueue += mesh
     }
 
@@ -74,10 +74,10 @@ class LoadedMeshes(
     }
 
     fun clear() = lock.locked {
+        renderer.visibility.meshes.clear()
         for (meshes in meshes.values) {
             renderer.unloadingQueue += meshes.values
         }
-        renderer.visibility.meshes.clear()  // TODO: lock
         meshes.clear()
     }
 
@@ -99,7 +99,7 @@ class LoadedMeshes(
                 if (!renderer.visibility.contains(mesh.position, mesh.min, mesh.max)) {
                     continue
                 }
-                visible += mesh
+                visible.unsafeAdd(mesh)
             }
         }
     }
@@ -114,6 +114,7 @@ class LoadedMeshes(
                 iterator.remove()
                 val chunk = values.iterator().next().section.chunk // dirty hack
 
+                meshes.values.forEach { renderer.visibility.meshes -= it }
                 renderer.culledQueue += chunk
                 renderer.unloadingQueue += values
                 continue
@@ -127,6 +128,7 @@ class LoadedMeshes(
                 if (!renderer.visibility.isInViewDistance(mesh.position)) {
                     sections.remove()
                     renderer.culledQueue += mesh.section
+                    renderer.visibility.meshes -= mesh
                     renderer.unloadingQueue += mesh
                     continue
                 }

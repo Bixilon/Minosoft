@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
@@ -156,28 +157,32 @@ class ChunkRenderer(
     }
 
     fun invalidate(chunk: Chunk) {
-        if (chunk.neighbours.complete && chunk.position in visibility) {
+        if (!chunk.neighbours.complete) {
+            unload(chunk)
+            return
+        }
+        if (chunk.position in visibility) {
             chunk.sections.forEach { invalidate(it) }
             // no need to unload any other sections, sections can only be created but never deleted
             return
         }
-        unload(chunk)
+        unload(chunk) // TODO: don't remove from culled queue
         culledQueue += chunk
     }
 
     fun invalidate(section: ChunkSection) {
+        val position = SectionPosition.of(section)
         if (context.state == RenderingStates.PAUSED || context.state == RenderingStates.STOPPED || context.state == RenderingStates.QUITTING) return
         if (section.blocks.isEmpty || !section.chunk.neighbours.complete) {
             return unload(section)
         }
-        val position = SectionPosition.of(section)
 
         meshingQueue.tasks.interrupt(position)
 
         if (section in visibility) {
-            meshingQueue += section // TODO: don't add multiple times
+            meshingQueue += section
         } else {
-            unload(section)
+            unload(section) // TODO: don't remove from culled queue
             culledQueue += section
         }
     }
@@ -197,10 +202,10 @@ class ChunkRenderer(
         context.profiler("loading") { loadingQueue.work() }
     }
 
-    private fun drawBlocksOpaque() = visibility.meshes.opaque.forEach(ChunkMesh::draw)
-    private fun drawBlocksTranslucent() = visibility.meshes.translucent.forEach(ChunkMesh::draw)
-    private fun drawText() = visibility.meshes.text.forEach(ChunkMesh::draw)
-    private fun drawBlockEntities() = visibility.meshes.entities.forEach(BlockEntityRenderer::draw)
+    private fun drawBlocksOpaque() = visibility.meshes.apply { lock.locked { opaque.forEach(ChunkMesh::draw) } }
+    private fun drawBlocksTranslucent() = visibility.meshes.apply { lock.locked { translucent.forEach(ChunkMesh::draw) } }
+    private fun drawText() = visibility.meshes.apply { lock.locked { text.forEach(ChunkMesh::draw) } }
+    private fun drawBlockEntities() = visibility.meshes.apply { lock.locked { entities.forEach(BlockEntityRenderer::draw) } }
 
     override fun unload() {
         // TODO: remove all others

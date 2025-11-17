@@ -53,9 +53,10 @@ class ChunkMeshingQueue(
     }
 
     operator fun plusAssign(section: ChunkSection) = lock.locked {
-        val item = MeshQueueItem(section)
-        this.queue += item
-        positions += item.position
+        val position = SectionPosition.of(section)
+        if (!positions.add(position)) return@locked
+
+        this.queue += MeshQueueItem(section)
         queue.sortWith(comparator)
     }
 
@@ -119,9 +120,6 @@ class ChunkMeshingQueue(
             return
         }
         working = true
-
-        // TODO: remove chunks that are out of the frustum again
-
 
         lock.lock()
         while (queue.isNotEmpty()) {
