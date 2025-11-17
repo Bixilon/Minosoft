@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks
 
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 
 class MeshPrepareTask(
-    val position: SectionPosition,
+    val section: ChunkSection,
 ) {
+    val position = SectionPosition.of(section)
     var interruptible = true
     var thread: Thread? = null
 

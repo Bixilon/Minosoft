@@ -123,6 +123,7 @@ class ChunkRenderer(
         meshingQueue.clear()
         loadingQueue.clear()
         loaded.clear()
+        meshingQueue.tasks.interrupt(false)
 
         context.queue += { unloadingQueue.work() }
     }

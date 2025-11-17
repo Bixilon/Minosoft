@@ -72,7 +72,7 @@ class MeshLoadingQueue(
     }
 
 
-    fun removeIf(predicate: (position: SectionPosition) -> Boolean) = lock.locked {
+    fun removeIf(requeue: Boolean, predicate: (position: SectionPosition) -> Boolean) = lock.locked {
         val iterator = meshes.iterator()
         while (iterator.hasNext()) {
             val mesh = iterator.next()
@@ -83,11 +83,13 @@ class MeshLoadingQueue(
 
             mesh.drop()
 
-            // TODO: queue again?
+            if (requeue) {
+                renderer.invalidate(mesh.section)
+            }
         }
     }
 
-    operator fun minusAssign(position: ChunkPosition) = removeIf { it.chunkPosition == position }
+    operator fun minusAssign(position: ChunkPosition) = removeIf(false) { it.chunkPosition == position }
 
     operator fun minusAssign(position: SectionPosition) = lock.locked {
         if (!this.positions.remove(position)) return@locked

@@ -60,9 +60,9 @@ class ChunkVisibilityManager(
             val sectionPosition = eyePosition.sectionPosition
             if (this.sectionPosition != sectionPosition) {
                 this.sectionPosition = sectionPosition
-                renderer.meshingQueue.tasks.interruptIf { !isInViewDistance(it) }
-                renderer.meshingQueue.removeIf { !isInViewDistance(it) }
-                renderer.loadingQueue.removeIf { !isInViewDistance(it) }
+                renderer.meshingQueue.tasks.interruptIf(true) { !isInViewDistance(it) }
+                renderer.meshingQueue.removeIf(true) { !isInViewDistance(it) }
+                renderer.loadingQueue.removeIf(true) { !isInViewDistance(it) }
                 renderer.loaded.update()
 
                 renderer.culledQueue.enqueueViewDistance()
@@ -103,9 +103,9 @@ class ChunkVisibilityManager(
         when {
             next > current -> renderer.culledQueue.enqueueViewDistance()
             next < current -> {
-                renderer.meshingQueue.removeIf { !isInViewDistance(it) }
-                renderer.meshingQueue.tasks.interruptIf { !isInViewDistance(it) }
-                renderer.loadingQueue.removeIf { !isInViewDistance(it) }
+                renderer.meshingQueue.removeIf(true) { !isInViewDistance(it) }
+                renderer.meshingQueue.tasks.interruptIf(true) { !isInViewDistance(it) }
+                renderer.loadingQueue.removeIf(true) { !isInViewDistance(it) }
                 renderer.loaded.update()
             }
         }

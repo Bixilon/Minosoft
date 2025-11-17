@@ -19,8 +19,10 @@ import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 
 class MesherTaskManager(
+    val renderer: ChunkRenderer,
     val max: Int = maxOf(minOf(Runtime.getRuntime().availableProcessors() - 1, DefaultThreadPool.threadCount - 1), 1)
 ) {
     private val tasks: MutableSet<MeshPrepareTask> = HashSet(max)
@@ -31,20 +33,26 @@ class MesherTaskManager(
     operator fun plusAssign(task: MeshPrepareTask) = lock.locked { tasks += task }
     operator fun minusAssign(task: MeshPrepareTask) = lock.locked { tasks -= task }
 
-    fun interrupt() = lock.acquired {
+    fun interrupt(requeue: Boolean) = lock.acquired {
         for (task in tasks) {
             task.interrupt()
+            if (requeue) {
+                renderer.invalidate(task.section)
+            }
         }
     }
 
-    fun interruptIf(predicate: (SectionPosition) -> Boolean) = lock.acquired {
+    fun interruptIf(requeue: Boolean, predicate: (SectionPosition) -> Boolean) = lock.acquired {
         for (task in tasks) {
             if (!predicate.invoke(task.position)) continue
 
             task.interrupt()
+            if (requeue) {
+                renderer.invalidate(task.section)
+            }
         }
     }
 
-    fun interrupt(position: ChunkPosition) = interruptIf { it.chunkPosition == position }
-    fun interrupt(position: SectionPosition) = interruptIf { it == position }
+    fun interrupt(position: ChunkPosition) = interruptIf(false) { it.chunkPosition == position }
+    fun interrupt(position: SectionPosition) = interruptIf(false) { it == position }
 }

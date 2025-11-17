@@ -30,7 +30,7 @@ class ChunkMeshingQueue(
     private val renderer: ChunkRenderer,
 ) {
     private val comparator = MeshQueueComparator()
-    val tasks = MesherTaskManager()
+    val tasks = MesherTaskManager(renderer)
 
     private var working = false
     private val queue = ArrayDeque<MeshQueueItem>(1000)
@@ -60,14 +60,14 @@ class ChunkMeshingQueue(
         queue.sortWith(comparator)
     }
 
-    operator fun minusAssign(position: ChunkPosition) = removeIf { it.chunkPosition == position }
+    operator fun minusAssign(position: ChunkPosition) = removeIf(false) { it.chunkPosition == position }
 
     operator fun minusAssign(position: SectionPosition) = lock.locked {
         if (!this.positions.remove(position)) return@locked
         this.queue.removeIf { it.position == position } // TODO: only first
     }
 
-    fun removeIf(predicate: (position: SectionPosition) -> Boolean) = lock.locked {
+    fun removeIf(requeue: Boolean, predicate: (position: SectionPosition) -> Boolean) = lock.locked {
         val iterator = queue.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
@@ -75,7 +75,9 @@ class ChunkMeshingQueue(
 
             iterator.remove()
             this.positions -= item.position
-            // TODO: queue again?
+            if (requeue) {
+                renderer.invalidate(item.section)
+            }
         }
     }
 
@@ -85,7 +87,7 @@ class ChunkMeshingQueue(
         val position = SectionPosition.of(section)
 
         val distance = abs(position.x - camera.x) + abs(position.z - camera.z) // TODO: Should y get in here too?
-        val task = MeshPrepareTask(position)
+        val task = MeshPrepareTask(section)
         tasks += task
 
         DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) {
