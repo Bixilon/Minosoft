@@ -63,19 +63,24 @@ class LoadedMeshes(
         }
 
         renderer.visibility.meshes -= mesh
+
         renderer.unloadingQueue += mesh
+        renderer.unloadingQueue += mesh.cache
     }
 
     operator fun minusAssign(position: ChunkPosition) {
         val meshes = lock.locked { meshes.remove(position) } ?: return
         meshes.values.forEach { renderer.visibility.meshes -= it }
+
         renderer.unloadingQueue += meshes.values
+        renderer.unloadingQueue += meshes.values.map { it.cache }
     }
 
     fun clear() = lock.locked {
         renderer.visibility.meshes.clear()
         for (meshes in meshes.values) {
             renderer.unloadingQueue += meshes.values
+            renderer.unloadingQueue += meshes.values.map { it.cache }
         }
         meshes.clear()
     }
@@ -116,6 +121,7 @@ class LoadedMeshes(
                 meshes.values.forEach { renderer.visibility.meshes -= it }
                 renderer.culledQueue += chunk
                 renderer.unloadingQueue += values
+                renderer.unloadingQueue += values.map { it.cache }
                 continue
             }
 
@@ -129,6 +135,7 @@ class LoadedMeshes(
                     renderer.culledQueue += mesh.section
                     renderer.visibility.meshes -= mesh
                     renderer.unloadingQueue += mesh
+                    renderer.unloadingQueue += mesh.cache
                     continue
                 }
 
