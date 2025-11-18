@@ -55,7 +55,7 @@ class BakedModel(
         val aggressive = ChunkMeshDetails.AGGRESSIVE_CULLING in details
         val cave = BlockStateFlags.CAVE_SURFACE in state.flags
 
-        val darkCaveSurface = ChunkMeshDetails.DARK_CAVE_SURFACE in details
+        val darkCaveSurface = ChunkMeshDetails.DARK_CAVE_SURFACE in details // TODO: only check sky light?
 
         var rendered = false
 

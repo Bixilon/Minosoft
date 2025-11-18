@@ -159,7 +159,7 @@ class FluidSectionMesher(
                     if (position.y >= chunk.light.heightmap[inSection.xz]) {
                         light = light.with(sky = LightLevel.MAX_LEVEL)
                     }
-                    if (BlockStateFlags.CAVE_SURFACE in state.flags && ChunkMeshDetails.DARK_CAVE_SURFACE !in builder.details && light == LightLevel.EMPTY) continue
+                    if (BlockStateFlags.CAVE_SURFACE in state.flags && ChunkMeshDetails.DARK_CAVE_SURFACE !in builder.details && light == LightLevel.EMPTY) continue // TODO: only check sky light?
 
 
                     val up = !fluid.matches(section.traceBlock(inSection, Directions.UP))
