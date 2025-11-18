@@ -33,9 +33,9 @@ open class Mesh(
         state = MeshStates.UNLOADED
     }
 
-    fun draw() {
+    fun draw(): Int {
         assert(state == MeshStates.LOADED) { "Invalid mesh state: $state" }
-        buffer.draw()
+        return buffer.draw()
     }
 
     fun drop() {

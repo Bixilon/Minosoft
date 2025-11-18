@@ -21,7 +21,7 @@ interface VertexBuffer : GpuBuffer {
     val primitive: PrimitiveTypes
     val struct: MeshStruct
 
-    fun draw()
+    fun draw(): Int
 
     fun drop()
 }
