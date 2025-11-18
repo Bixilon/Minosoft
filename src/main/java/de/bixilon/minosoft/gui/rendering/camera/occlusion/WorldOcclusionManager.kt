@@ -17,6 +17,8 @@ import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourSetUpdate
 import de.bixilon.minosoft.data.world.container.block.occlusion.SectionOcclusion
@@ -43,6 +45,7 @@ class WorldOcclusionManager(
     val camera: Camera,
 ) : Drawable {
     private val session = context.session
+    private var invalid = true
     private var graph: OcclusionGraph? = null
     private var position = SectionPosition.EMPTY
 
@@ -50,18 +53,18 @@ class WorldOcclusionManager(
 
 
     init {
-        session.world::occlusion.observe(this) { invalidate() }
+        session.world::occlusion.observe(this) { invalid = true }
 
         session.events.listen<WorldUpdateEvent> {
+            // captured with occlusion update
+            if (it.update is SingleBlockUpdate) return@listen
+            if (it.update is ChunkLocalBlockUpdate) return@listen
+
             if (it.update !is NeighbourSetUpdate && it.update !is ChunkUnloadUpdate) {
                 return@listen
             }
-            invalidate()
+            invalid = true
         }
-    }
-
-    private fun invalidate() {
-        graph = null
     }
 
     fun isAABBOccluded(aabb: AABB): Boolean {
@@ -93,7 +96,7 @@ class WorldOcclusionManager(
     fun update(position: SectionPosition) {
         val dimension = context.session.world.dimension
         this.position = position.with(y = position.y.clamp(dimension.minSection - 1, dimension.maxSection + 1)) // prevent unneeded tracing to chunks
-        graph = null
+        invalid = true
     }
 
     private fun workQueue(queue: Set<SectionOcclusion>) {
@@ -109,7 +112,8 @@ class WorldOcclusionManager(
 
 
     override fun draw() {
-        if (graph != null) return
+        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) return
+        if (!invalid && graph != null) return
 
 
         val world = context.session.world
@@ -117,10 +121,8 @@ class WorldOcclusionManager(
         val viewDistance = world.view.viewDistance
 
         val tracer = OcclusionTracer(this.position, world.dimension, camera, viewDistance)
-        this.graph = tracer.trace(chunk)
-
         workQueue(tracer.queue)
-
+        this.graph = tracer.trace(chunk)
 
         session.events.fire(VisibilityGraphChangeEvent(context))
     }
