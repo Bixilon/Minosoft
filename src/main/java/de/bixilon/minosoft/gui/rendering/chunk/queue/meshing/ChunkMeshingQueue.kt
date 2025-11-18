@@ -74,17 +74,23 @@ class ChunkMeshingQueue(
         this.queue.removeIf { it.position == position } // TODO: only first
     }
 
-    fun removeIf(requeue: Boolean, predicate: (position: SectionPosition) -> Boolean) = lock.locked {
+    fun removeIf(requeue: Boolean, predicate: (position: SectionPosition) -> Boolean): Unit = lock.locked {
         val iterator = queue.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (!predicate.invoke(item.position)) continue
 
+            if (requeue) {
+                if (item.section in renderer.visibility) continue // it will just land in here again
+
+                renderer.unload(item.section) // TODO: don't remove from culled queue
+                renderer.culledQueue += item.section
+            }
+
+
+
             iterator.remove()
             this.positions -= item.position
-            if (requeue) {
-                renderer.invalidate(item.section)
-            }
         }
     }
 
