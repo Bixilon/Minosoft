@@ -75,6 +75,8 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     Tuff.Block, Tuff.Slab,
     Deepslate.Block, Deepslate.Cobbled, Deepslate.Slab,
 
+    Dripstone.Block,
+
     Gravel,
 
     Sandstone.Block, Sandstone.Slab,

@@ -17,30 +17,20 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface Tuff : Stone {
+interface Dripstone : Stone {
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Tuff {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Dripstone {
 
         override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("tuff")
+            override val identifier = minecraft("dripstone_block")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
-        }
-    }
-
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Tuff {
-
-        companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("tuff_slab")
-
-            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }
     }
 }
