@@ -32,7 +32,7 @@ class MeshLoadingQueue(
     private val lock = Lock.lock()
 
 
-    val max = if (Runtime.getRuntime().maxMemory() > 1_000_000_000) 100 else 60 // TODO: kutil 1.30.1 bytes
+    val max = if (Runtime.getRuntime().maxMemory() > 1_000_000_000) 120 else 60 // TODO: kutil 1.30.1 bytes
     val size get() = meshes.size
 
 

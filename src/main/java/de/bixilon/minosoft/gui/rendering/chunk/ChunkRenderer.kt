@@ -126,6 +126,7 @@ class ChunkRenderer(
         meshingQueue.tasks.interrupt(false)
 
         context.queue += { unloadingQueue.work() }
+        visibility.invalidate()
     }
 
     fun unload(chunk: Chunk) {

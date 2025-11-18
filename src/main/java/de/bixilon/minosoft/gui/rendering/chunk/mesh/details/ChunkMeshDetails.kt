@@ -59,8 +59,9 @@ enum class ChunkMeshDetails {
         override val VALUES = values()
         override val NAME_MAP = names()
 
-        private const val SIDE_MIN = 1
-        private const val SIDE_MAX = 2
+        private const val SIDE_MIN = 1 * 1
+        private const val SIDE_NORMAL = 3 * 3
+        private const val SIDE_MAX = 5 * 5
 
 
         val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail } - AGGRESSIVE_CULLING - CULL_FULL_OPAQUE
@@ -70,54 +71,92 @@ enum class ChunkMeshDetails {
             var details = ALL
 
             val delta = position - camera
-            val maxXZ = maxOf(abs(delta.x), abs(delta.z))
-            val max = maxOf(maxXZ, abs(delta.y))
+            val distanceXZ = delta.x * delta.x + delta.z * delta.z
+            val distance = distanceXZ + (delta.y * delta.y / 4)
 
-            if (max >= 8) details -= ENTITIES
-            if (max >= 5) details -= TEXT
+            if (distance >= 10 * 10) details -= ENTITIES
+            if (distance >= 5 * 5) details -= TEXT
 
-            if (max >= 20) details -= AMBIENT_OCCLUSION
+            if (distance >= 24 * 24) details -= AMBIENT_OCCLUSION
 
-            if (max >= 15) details -= ANTI_MOIRE_PATTERN
-            if (max >= 8) details -= RANDOM_OFFSET
+            if (distance >= 15 * 15) details -= ANTI_MOIRE_PATTERN
+            if (distance >= 12 * 12) details -= RANDOM_OFFSET
 
-            if (max >= 5) details -= FLOWING_FLUID
-            if (max >= 7) details -= FLUID_HEIGHTS
+            if (distance >= 6 * 6) details -= FLOWING_FLUID
+            if (distance >= 8 * 8) details -= FLUID_HEIGHTS
 
-            if (max >= 15) details -= TRANSPARENCY
+            if (distance >= 15 * 15) details -= TRANSPARENCY
 
-            if (max >= 2) details += CULL_FULL_OPAQUE
-            if (max >= 20) details -= NON_FULL_BLOCKS
+            if (distance >= 2 * 2) details += CULL_FULL_OPAQUE
+            if (distance >= 36 * 36) details -= NON_FULL_BLOCKS
 
-            if (max >= 12) details -= MINOR_VISUAL_IMPACT
+            if (abs(delta.y) < 3) {
+                if (distance >= 14 * 14) details -= MINOR_VISUAL_IMPACT
+            } else {
+                if (distance >= 32 * 32) details -= MINOR_VISUAL_IMPACT
+            }
 
-            if (max >= 12) details += AGGRESSIVE_CULLING
+            if (distance >= 12 * 12) details += AGGRESSIVE_CULLING
 
-            if (maxXZ >= 9) details -= DARK_CAVE_SURFACE
+            if (distanceXZ >= 8 * 8) details -= DARK_CAVE_SURFACE
 
-            details = removeSides(details, delta)
+            if (delta.y < -SIDE_NORMAL) details -= SIDE_DOWN
+            if (delta.y > +SIDE_NORMAL) details -= SIDE_UP
 
-            return details
-        }
+            if (delta.z < -SIDE_NORMAL) details -= SIDE_NORTH
+            if (delta.z > +SIDE_NORMAL) details -= SIDE_SOUTH
 
-
-        private fun removeSides(details: IntInlineEnumSet<ChunkMeshDetails>, delta: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
-            var details = details
-
-            if (delta.y < -SIDE_MAX) details -= SIDE_DOWN
-            if (delta.y > +SIDE_MAX) details -= SIDE_UP
-
-            if (delta.z < -SIDE_MAX) details -= SIDE_NORTH
-            if (delta.z > +SIDE_MAX) details -= SIDE_SOUTH
-
-            if (delta.x < -SIDE_MAX) details -= SIDE_WEST
-            if (delta.x > +SIDE_MAX) details -= SIDE_EAST
+            if (delta.x < -SIDE_NORMAL) details -= SIDE_WEST
+            if (delta.x > +SIDE_NORMAL) details -= SIDE_EAST
 
             return details
         }
 
-        private fun addSides(details: IntInlineEnumSet<ChunkMeshDetails>, delta: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
-            var details = details
+        fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+            var details = previous
+            val delta = position - camera
+
+            val distanceXZ = abs(delta.x) + abs(delta.z)
+            val distance = distanceXZ + abs(delta.y) / 2
+
+
+            if (distance < 9 * 9) details += ENTITIES
+            if (distance >= 12 * 12) details -= ENTITIES
+
+            if (distance < 4 * 4) details += TEXT
+            if (distance >= 8 * 8) details -= TEXT
+
+            if (distance < 20 * 20) details += AMBIENT_OCCLUSION
+            if (distance >= 32 * 32) details -= AMBIENT_OCCLUSION
+
+            if (distance < 13 * 13) details += ANTI_MOIRE_PATTERN
+            if (distance < 10 * 10) details += RANDOM_OFFSET
+
+            if (distance < 5 * 5) details += FLOWING_FLUID
+            if (distance < 7 * 7) details += FLUID_HEIGHTS
+
+            if (distance < 13 * 13) details += TRANSPARENCY
+            if (distance >= 18 * 18) details -= TRANSPARENCY
+
+            if (distance < 1 * 1) details -= CULL_FULL_OPAQUE
+
+            if (distance < 18 * 18) details += NON_FULL_BLOCKS
+            if (distance >= 24 * 24) details -= NON_FULL_BLOCKS
+
+            if (distance < 10 * 10) details -= AGGRESSIVE_CULLING
+            if (distance >= 16 * 16) details += AGGRESSIVE_CULLING
+
+            if (abs(delta.y) < 3) {
+                if (distance >= 18 * 18) details -= MINOR_VISUAL_IMPACT
+                if (distance <= 12 * 12) details += MINOR_VISUAL_IMPACT
+            } else {
+                if (distance >= 36 * 36) details -= MINOR_VISUAL_IMPACT
+                if (distance <= 28 * 28) details += MINOR_VISUAL_IMPACT
+            }
+
+            if (distanceXZ <= 7 * 7) details += DARK_CAVE_SURFACE
+            if (distanceXZ >= 12 * 12) details -= DARK_CAVE_SURFACE
+
 
             if (delta.y >= -SIDE_MIN) details += SIDE_DOWN
             if (delta.y <= +SIDE_MIN) details += SIDE_UP
@@ -128,53 +167,15 @@ enum class ChunkMeshDetails {
             if (delta.x >= -SIDE_MIN) details += SIDE_WEST
             if (delta.x <= +SIDE_MIN) details += SIDE_EAST
 
-            return details
-        }
 
-        fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
-            var details = previous
-            val delta = position - camera
+            if (delta.y < -SIDE_MAX) details -= SIDE_DOWN
+            if (delta.y > +SIDE_MAX) details -= SIDE_UP
 
-            val maxXZ = maxOf(abs(delta.x), abs(delta.z))
-            val max = maxOf(maxXZ, abs(delta.y))
+            if (delta.z < -SIDE_MAX) details -= SIDE_NORTH
+            if (delta.z > +SIDE_MAX) details -= SIDE_SOUTH
 
-
-            if (max < 8) details += ENTITIES
-            if (max >= 9) details -= ENTITIES
-
-            if (max < 4) details += TEXT
-            if (max >= 5) details -= TEXT
-
-            if (max < 18) details += AMBIENT_OCCLUSION
-            if (max >= 20) details -= AMBIENT_OCCLUSION
-
-            if (max < 13) details += ANTI_MOIRE_PATTERN
-            if (max < 7) details += RANDOM_OFFSET
-
-            if (max < 5) details += FLOWING_FLUID
-            if (max < 7) details += FLUID_HEIGHTS
-
-            if (max < 13) details += TRANSPARENCY
-            if (max >= 15) details -= TRANSPARENCY
-
-            if (max < 1) details -= CULL_FULL_OPAQUE
-
-            if (max < 18) details += NON_FULL_BLOCKS
-            if (max >= 20) details -= NON_FULL_BLOCKS
-
-            if (max < 10) details -= AGGRESSIVE_CULLING
-            if (max >= 12) details += AGGRESSIVE_CULLING
-
-            if (max < 12) details += MINOR_VISUAL_IMPACT
-            if (max >= 13) details -= MINOR_VISUAL_IMPACT
-
-
-            if (maxXZ >= 10) details -= DARK_CAVE_SURFACE
-            if (maxXZ <= 8) details += DARK_CAVE_SURFACE
-
-
-            details = removeSides(details, delta)
-            details = addSides(details, delta)
+            if (delta.x < -SIDE_MAX) details -= SIDE_WEST
+            if (delta.x > +SIDE_MAX) details -= SIDE_EAST
 
             return details
         }

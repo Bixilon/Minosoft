@@ -33,12 +33,13 @@ object FaceCulling {
 
 
         if (!properties.isCoveredBy(neighbourProperties)) return false
+        if (aggressive) return state.block == neighbour.block
 
         if (neighbourProperties.transparency == TextureTransparencies.OPAQUE) {
             // impossible to see that face
             return true
         }
-        if (aggressive) return true
+
         if (neighbourProperties.transparency == null) {
             for (property in neighbourProperties.faces) {
                 if (property.transparency != TextureTransparencies.OPAQUE) continue

@@ -19,7 +19,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 object ChunkRendererUtil {
     val STILL_LOADING_TIME = 20.milliseconds
-    val MOVING_LOADING_TIME = 2.milliseconds
+    val MOVING_LOADING_TIME = 3.milliseconds
 
 
     // If the player is still, then we can load more chunks (to not cause lags)
