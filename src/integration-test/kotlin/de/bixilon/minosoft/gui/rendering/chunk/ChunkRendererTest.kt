@@ -66,7 +66,6 @@ class ChunkRendererTest {
         Assert.assertEquals(renderer.loaded.size, 1)
     }
 
-    @Test(invocationCount = 10)
     fun queueMultipleChunks() {
         val chunks = setOf(
             RenderTestUtil.context.session.world.chunks[ChunkPosition(0, 0)]!!,

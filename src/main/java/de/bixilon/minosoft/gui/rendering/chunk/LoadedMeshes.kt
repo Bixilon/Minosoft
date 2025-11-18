@@ -92,13 +92,9 @@ class LoadedMeshes(
         while (iterator.hasNext()) {
             val (position, meshes) = iterator.next()
 
-            if (position !in renderer.visibility) continue
+            if (position !in renderer.context.camera.frustum) continue
 
-            val iterator = meshes.keys.intIterator()
-            while (iterator.hasNext()) {
-                val key = iterator.nextInt()
-                val mesh = meshes[key] ?: continue
-
+            for (mesh in meshes.values) {
                 // TODO: unload if occluded (but we can not distinct between frustum and occlusion)
                 if (!renderer.visibility.contains(mesh.position, mesh.min, mesh.max)) {
                     continue
@@ -109,6 +105,8 @@ class LoadedMeshes(
     }
 
     fun update() = lock.locked {
+        renderer.meshingQueue.lock.lock()
+
         val iterator = this.meshes.iterator()
         while (iterator.hasNext()) {
             val (chunkPosition, meshes) = iterator.next()
@@ -125,10 +123,9 @@ class LoadedMeshes(
                 continue
             }
 
-            val sections = meshes.keys.intIterator()
+            val sections = meshes.values.iterator()
             while (sections.hasNext()) {
-                val key = sections.nextInt()
-                val mesh = meshes[key] ?: continue
+                val mesh = sections.next() ?: continue
 
                 if (!renderer.visibility.isInViewDistance(mesh.position)) {
                     sections.remove()
@@ -143,12 +140,14 @@ class LoadedMeshes(
 
                 if (next == mesh.details) continue
 
-                renderer.meshingQueue += mesh.section // TODO: batch
+                renderer.meshingQueue.unsafeAdd(mesh.section)
             }
 
             if (meshes.isEmpty()) {
                 iterator.remove()
             }
         }
+        renderer.meshingQueue.sort()
+        renderer.meshingQueue.lock.unlock()
     }
 }

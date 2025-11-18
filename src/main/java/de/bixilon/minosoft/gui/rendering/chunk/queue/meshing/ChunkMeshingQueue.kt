@@ -36,7 +36,7 @@ class ChunkMeshingQueue(
     private val queue = ArrayDeque<MeshQueueItem>(1000)
     private val positions: MutableSet<SectionPosition> = HashSet(1000)
 
-    private val lock = ReentrantLock()
+    val lock = ReentrantLock()
 
 
     val size: Int get() = queue.size
@@ -52,11 +52,15 @@ class ChunkMeshingQueue(
         this.positions.clear()
     }
 
-    operator fun plusAssign(section: ChunkSection) = lock.locked {
+    fun unsafeAdd(section: ChunkSection) {
         val position = SectionPosition.of(section)
-        if (!positions.add(position)) return@locked
+        if (!positions.add(position)) return
 
         this.queue += MeshQueueItem(section)
+    }
+
+    operator fun plusAssign(section: ChunkSection) = lock.locked {
+        unsafeAdd(section)
         queue.sortWith(comparator)
     }
 

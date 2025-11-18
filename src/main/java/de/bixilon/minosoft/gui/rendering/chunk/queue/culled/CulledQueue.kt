@@ -100,6 +100,8 @@ class CulledQueue(
     private fun moveToMeshQueue() {
         if (culled.isEmpty()) return
 
+        renderer.meshingQueue.lock.lock()
+
         val iterator = culled.iterator()
         while (iterator.hasNext()) {
             val (position, sections) = iterator.next()
@@ -112,13 +114,16 @@ class CulledQueue(
 
                 sectionIterator.remove()
 
-                renderer.meshingQueue += section // TODO: batch them together
+                renderer.meshingQueue.unsafeAdd(section)
             }
 
             if (sections.isEmpty()) {
                 iterator.remove()
             }
         }
+
+        renderer.meshingQueue.sort()
+        renderer.meshingQueue.lock.unlock()
     }
 
     fun enqueueViewDistance() = lock.locked {
