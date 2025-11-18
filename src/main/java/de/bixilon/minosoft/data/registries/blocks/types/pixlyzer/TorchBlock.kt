@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -29,6 +30,7 @@ open class TorchBlock(identifier: ResourceLocation, registries: Registries, data
     protected val smokeParticle = registries.particleType[SmokeParticle]
     protected val flameParticle = registries.particleType[data["flame_particle"]]
 
+    override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
 
     private fun spawnSmokeParticles(session: PlaySession, blockPosition: BlockPosition) {
         val particle = session.world.particle ?: return

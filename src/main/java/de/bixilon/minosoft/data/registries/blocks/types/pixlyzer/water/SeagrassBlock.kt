@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.water
 
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
@@ -27,6 +28,9 @@ open class SeagrassBlock(identifier: ResourceLocation, registries: Registries, d
     override val fluid: Fluid = registries.fluid[WaterFluid]!!
 
     override val lightProperties get() = FluidBlock.LIGHT_PROPERTIES
+
+    override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
+
 
     companion object : PixLyzerBlockFactory<SeagrassBlock>, MultiClassFactory<SeagrassBlock> {
         override val ALIASES: Set<String> = setOf("TallSeagrassBlock")

@@ -35,6 +35,7 @@ enum class ChunkMeshDetails {
     TRANSPARENCY,
 
     CULL_FULL_OPAQUE,
+    MINOR_VISUAL_IMPACT,
     NON_FULL_BLOCKS, // TODO: That is looking bad, check if the block has at least one side that is full
     AGGRESSIVE_CULLING,
 
@@ -83,7 +84,10 @@ enum class ChunkMeshDetails {
             if (max >= 15) details -= TRANSPARENCY
 
             if (max >= 2) details += CULL_FULL_OPAQUE
-            if (max >= 10) details -= NON_FULL_BLOCKS
+            if (max >= 20) details -= NON_FULL_BLOCKS
+
+            if (max >= 12) details -= MINOR_VISUAL_IMPACT
+
             if (max >= 12) details += AGGRESSIVE_CULLING
 
             details = removeSides(details, delta)
@@ -148,11 +152,15 @@ enum class ChunkMeshDetails {
 
             if (max < 1) details -= CULL_FULL_OPAQUE
 
-            if (max < 9) details += NON_FULL_BLOCKS
-            if (max >= 11) details -= NON_FULL_BLOCKS
+            if (max < 18) details += NON_FULL_BLOCKS
+            if (max >= 20) details -= NON_FULL_BLOCKS
 
             if (max < 10) details -= AGGRESSIVE_CULLING
             if (max >= 12) details += AGGRESSIVE_CULLING
+
+            if (max < 12) details += MINOR_VISUAL_IMPACT
+            if (max >= 13) details -= MINOR_VISUAL_IMPACT
+
 
             details = removeSides(details, delta)
             details = addSides(details, delta)

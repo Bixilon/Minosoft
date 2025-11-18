@@ -17,6 +17,7 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.wawla.BlockWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -27,6 +28,8 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class CropBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(identifier, registries, data), BlockWawlaProvider {
+
+    override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
 
     override fun canPlaceOn(blockState: BlockState): Boolean {
         return blockState.block.identifier == MinecraftBlocks.FARMLAND

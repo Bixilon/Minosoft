@@ -105,6 +105,7 @@ class SolidSectionMesher(
                     val state = blocks[inSection] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
+                    if (BlockStateFlags.MINOR_VISUAL_IMPACT in state.flags && ChunkMeshDetails.MINOR_VISUAL_IMPACT !in details) continue
                     if (BlockStateFlags.FULL_OUTLINE !in state.flags && ChunkMeshDetails.NON_FULL_BLOCKS !in details) continue
                     if (ChunkMeshDetails.CULL_FULL_OPAQUE in details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
 

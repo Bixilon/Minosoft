@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.plants
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
 import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
@@ -38,6 +39,8 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, OutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ReplaceableBlock {
     override val randomOffset get() = RandomOffsetTypes.XYZ
     override val item: Item = this::item.inject(identifier)
+
+    override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
 
     override fun getOutlineShape(session: PlaySession, position: BlockPosition, state: BlockState) = SHAPE
 

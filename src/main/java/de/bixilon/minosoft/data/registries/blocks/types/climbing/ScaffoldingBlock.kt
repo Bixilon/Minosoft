@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
@@ -39,6 +40,9 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.identifier, settings: BlockSettings) : Block(identifier, settings), ClimbingBlock, InstantBreakableBlock, OutlinedBlock, CollidableBlock, BlockWithItem<ClimbingItems.ScaffoldingItem> {
     override val item: ClimbingItems.ScaffoldingItem = this::item.inject(ClimbingItems.ScaffoldingItem)
+
+    override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
+
 
     override fun canPushOut(entity: Entity) = false
     override val lightProperties get() = TransparentProperty

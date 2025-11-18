@@ -15,10 +15,13 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class SkullBlock(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(identifier, registries, data) {
+
+    override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
 
     companion object : PixLyzerBlockFactory<SkullBlock> {
         override fun build(identifier: ResourceLocation, registries: Registries, data: Map<String, Any>): SkullBlock {
