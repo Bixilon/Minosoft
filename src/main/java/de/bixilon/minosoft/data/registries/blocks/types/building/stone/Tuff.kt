@@ -22,23 +22,24 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface Granite : Stone {
+interface Tuff : Stone {
+    override val hardness get() = 1.5f
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Granite {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Tuff {
 
         override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("granite")
+            override val identifier = minecraft("tuff")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Granite {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Tuff {
 
         companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("granite_slab")
+            override val identifier = minecraft("tuff_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }

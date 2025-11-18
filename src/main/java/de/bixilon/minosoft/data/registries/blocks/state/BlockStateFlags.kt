@@ -58,7 +58,7 @@ enum class BlockStateFlags {
     RANDOM_TICKS,
     CUSTOM_CULLING,
     MINOR_VISUAL_IMPACT, // TODO: fence, vine, candle, pointed dripstone, amethyst, saplings, flowers, coral, sign, rails, sugar cane
-    CAVE_SURFACE, // TODO: gravel, tuff, dropstone block, amethyst
+    CAVE_SURFACE, // TODO: dripstone block, amethyst
     ;
 
     companion object : ValuesEnum<BlockStateFlags> {

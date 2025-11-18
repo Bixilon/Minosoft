@@ -11,36 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.stone
+package de.bixilon.minosoft.data.registries.blocks.types.building
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface Granite : Stone {
+class Gravel(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullBlock, ShovelRequirement, BlockWithItem<Item> {
+    override val item: Item = this::item.inject(identifier)
+    override val hardness get() = 0.6f
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Granite {
+    override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
-        override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
-        companion object : BlockFactory<Block> {
-            override val identifier = minecraft("granite")
+    companion object : BlockFactory<Gravel> {
+        override val identifier = minecraft("gravel")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
-        }
-    }
-
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Granite {
-
-        companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("granite_slab")
-
-            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
-        }
+        override fun build(registries: Registries, settings: BlockSettings) = Gravel(settings = settings)
     }
 }

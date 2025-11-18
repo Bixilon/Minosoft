@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.Gravel
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.brick.*
 import de.bixilon.minosoft.data.registries.blocks.types.building.copper.*
@@ -71,8 +72,10 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     PolishedDiorite.Block, PolishedDiorite.Slab,
     Andesite.Block, Andesite.Slab,
     PolishedAndesite.Block, PolishedAndesite.Slab,
-
+    Tuff.Block, Tuff.Slab,
     Deepslate.Block, Deepslate.Cobbled, Deepslate.Slab,
+
+    Gravel,
 
     Sandstone.Block, Sandstone.Slab,
     CutSandstone.Block, CutSandstone.Slab,
