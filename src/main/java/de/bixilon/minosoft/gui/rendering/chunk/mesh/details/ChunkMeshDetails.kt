@@ -70,7 +70,8 @@ enum class ChunkMeshDetails {
             var details = ALL
 
             val delta = position - camera
-            val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
+            val maxXZ = maxOf(abs(delta.x), abs(delta.z))
+            val max = maxOf(maxXZ, abs(delta.y))
 
             if (max >= 8) details -= ENTITIES
             if (max >= 5) details -= TEXT
@@ -92,7 +93,7 @@ enum class ChunkMeshDetails {
 
             if (max >= 12) details += AGGRESSIVE_CULLING
 
-            if ((camera.y >= 5 && position.y <= 2) || max >= 9) details -= DARK_CAVE_SURFACE
+            if (maxXZ >= 9) details -= DARK_CAVE_SURFACE
 
             details = removeSides(details, delta)
 
@@ -133,7 +134,9 @@ enum class ChunkMeshDetails {
         fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
             var details = previous
             val delta = position - camera
-            val max = maxOf(abs(delta.x), abs(delta.y), abs(delta.z))
+
+            val maxXZ = maxOf(abs(delta.x), abs(delta.z))
+            val max = maxOf(maxXZ, abs(delta.y))
 
 
             if (max < 8) details += ENTITIES
@@ -166,8 +169,8 @@ enum class ChunkMeshDetails {
             if (max >= 13) details -= MINOR_VISUAL_IMPACT
 
 
-            if ((camera.y >= 5 && position.y <= 2) || max >= 10) details -= DARK_CAVE_SURFACE
-            if ((camera.y <= 4 || position.x >= 4) && max <= 8) details += DARK_CAVE_SURFACE
+            if (maxXZ >= 10) details -= DARK_CAVE_SURFACE
+            if (maxXZ <= 8) details += DARK_CAVE_SURFACE
 
 
             details = removeSides(details, delta)

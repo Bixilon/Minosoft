@@ -69,10 +69,6 @@ class SolidSectionMesher(
             && (if (position.x < ChunkSize.SECTION_MAX_X) blocks.fullOpaque[position.plusX().index] else (neighbours[Directions.O_EAST]?.blocks?.fullOpaque?.get(position.with(x = 0).index) == true))
     }
 
-    private fun ByteArray.isLit(): Boolean {
-        return (this[0].toInt() or this[1].toInt() or this[2].toInt() or this[3].toInt() or this[4].toInt() or this[5].toInt() or this[6].toInt()) != 0
-    }
-
     fun mesh(section: ChunkSection, cache: BlockMesherCache, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
         val details = mesh.details
         val random = if (profile.antiMoirePattern && ChunkMeshDetails.ANTI_MOIRE_PATTERN in details) Random(0L) else null
@@ -93,7 +89,7 @@ class SolidSectionMesher(
 
         val offset = BlockPosition.of(chunk.position, section.height)
 
-        val floatOffset = MVec3f(3)
+        val floatOffset = MVec3f()
 
         val ao = if (ambientOcclusion && ChunkMeshDetails.AMBIENT_OCCLUSION in details) AmbientOcclusion(section) else null
 
@@ -109,8 +105,8 @@ class SolidSectionMesher(
                     val state = blocks[inSection] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
-                    if (BlockStateFlags.MINOR_VISUAL_IMPACT in state.flags && ChunkMeshDetails.MINOR_VISUAL_IMPACT !in details) continue
-                    if (BlockStateFlags.FULL_OUTLINE !in state.flags && ChunkMeshDetails.NON_FULL_BLOCKS !in details) continue
+                    if (ChunkMeshDetails.NON_FULL_BLOCKS !in details && BlockStateFlags.FULL_OUTLINE !in state.flags) continue
+                    if (ChunkMeshDetails.MINOR_VISUAL_IMPACT !in details && BlockStateFlags.MINOR_VISUAL_IMPACT in state.flags) continue
                     if (ChunkMeshDetails.CULL_FULL_OPAQUE in details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
 
                     val model = state.block.model ?: state.model
@@ -144,9 +140,6 @@ class SolidSectionMesher(
                     if (position.y - 1 >= maxHeight) {
                         light[O_DOWN] = LightLevel(light[O_DOWN]).with(sky = MAX_LEVEL).raw
                     }
-
-                    if (BlockStateFlags.CAVE_SURFACE in state.flags && ChunkMeshDetails.DARK_CAVE_SURFACE !in details && !light.isLit()) continue
-
 
                     if (ChunkMeshDetails.RANDOM_OFFSET in details && BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
                         val randomOffset = state.block.offsetModel(position)

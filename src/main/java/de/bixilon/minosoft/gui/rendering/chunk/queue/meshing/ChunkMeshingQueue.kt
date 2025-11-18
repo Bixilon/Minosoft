@@ -60,7 +60,10 @@ class ChunkMeshingQueue(
     }
 
     operator fun plusAssign(section: ChunkSection) = lock.locked {
-        unsafeAdd(section)
+        val position = SectionPosition.of(section)
+        if (!positions.add(position)) return
+
+        this.queue += MeshQueueItem(section)
         queue.sortWith(comparator)
     }
 

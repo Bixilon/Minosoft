@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
@@ -52,6 +53,10 @@ class BakedModel(
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
         val details = props.details
         val aggressive = ChunkMeshDetails.AGGRESSIVE_CULLING in details
+        val cave = BlockStateFlags.CAVE_SURFACE in state.flags
+
+        val darkCaveSurface = ChunkMeshDetails.DARK_CAVE_SURFACE in details
+
         var rendered = false
 
         val offset = props.offset
@@ -66,6 +71,7 @@ class BakedModel(
             val direction = Directions.VALUES[directionIndex]
             if (direction.toMeshDetail() !in details) continue
             val inverted = direction.inverted
+            if (cave && !darkCaveSurface && light[directionIndex] == 0.toByte() && neighbours[directionIndex] == null) continue
 
 
             for (face in faces) {
