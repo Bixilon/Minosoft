@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.fluid.water
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -22,6 +23,8 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class WaterFluidBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FluidBlock(identifier, settings) {
     override val fluid: WaterFluid = this::fluid.inject(WaterFluid)
+
+    override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
     companion object : BlockFactory<WaterFluidBlock> {
         override val identifier = WaterFluid.identifier

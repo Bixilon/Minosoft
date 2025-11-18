@@ -111,6 +111,8 @@ object VerifyIntegratedBlockRegistry {
         flags -= BlockStateFlags.TINTED
         flags -= BlockStateFlags.ENTITY
         flags -= BlockStateFlags.CUSTOM_CULLING
+        flags -= BlockStateFlags.CAVE_SURFACE
+        flags -= BlockStateFlags.MINOR_VISUAL_IMPACT
 
         if (block is ShulkerBoxBlock) {
             flags -= BlockStateFlags.FULL_COLLISION

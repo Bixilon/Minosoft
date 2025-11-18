@@ -39,6 +39,8 @@ enum class ChunkMeshDetails {
     NON_FULL_BLOCKS, // TODO: That is looking bad, check if the block has at least one side that is full
     AGGRESSIVE_CULLING,
 
+    DARK_CAVE_SURFACE,
+
     SIDE_DOWN,
     SIDE_UP,
 
@@ -89,6 +91,8 @@ enum class ChunkMeshDetails {
             if (max >= 12) details -= MINOR_VISUAL_IMPACT
 
             if (max >= 12) details += AGGRESSIVE_CULLING
+
+            if ((camera.y >= 5 && position.y <= 2) || max >= 9) details -= DARK_CAVE_SURFACE
 
             details = removeSides(details, delta)
 
@@ -160,6 +164,10 @@ enum class ChunkMeshDetails {
 
             if (max < 12) details += MINOR_VISUAL_IMPACT
             if (max >= 13) details -= MINOR_VISUAL_IMPACT
+
+
+            if ((camera.y >= 5 && position.y <= 2) || max >= 10) details -= DARK_CAVE_SURFACE
+            if ((camera.y <= 4 || position.x >= 4) && max <= 8) details += DARK_CAVE_SURFACE
 
 
             details = removeSides(details, delta)

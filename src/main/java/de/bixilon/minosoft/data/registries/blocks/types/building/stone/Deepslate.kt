@@ -22,24 +22,34 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface StoneBlock : Stone {
+interface Deepslate : Stone {
+    override val hardness get() = 3.5f
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), StoneBlock {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Deepslate {
+        override val hardness get() = 3.0f
 
         override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("stone")
+            override val identifier = minecraft("deepslate")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), StoneBlock {
-        override val hardness get() = 2.0f
+    open class Cobbled(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Deepslate {
+
+        companion object : BlockFactory<Cobbled> {
+            override val identifier = minecraft("cobbled_deepslate")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Cobbled(settings = settings)
+        }
+    }
+
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Deepslate {
 
         companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("stone_slab")
+            override val identifier = minecraft("cobbled_deepslate_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }

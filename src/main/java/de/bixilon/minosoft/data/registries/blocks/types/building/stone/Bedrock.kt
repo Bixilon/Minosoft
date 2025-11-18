@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.building.stone
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.UnbreakableBlock
@@ -26,6 +27,9 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class Bedrock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullBlock, BlockWithItem<Item>, UnbreakableBlock {
     override val item: Item = this::item.inject(identifier)
+
+    override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
+
 
     companion object : BlockFactory<Bedrock> {
         override val identifier = minecraft("bedrock")

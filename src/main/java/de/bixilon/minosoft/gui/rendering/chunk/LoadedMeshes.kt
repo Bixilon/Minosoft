@@ -48,7 +48,7 @@ class LoadedMeshes(
 
         meshes.lock.locked {
             meshes += mesh
-            meshes.sort()
+            meshes.sort() // TODO: replace mesh (no need to sort again)
         }
     }
 
@@ -90,9 +90,9 @@ class LoadedMeshes(
 
         val iterator = this.meshes.iterator()
         while (iterator.hasNext()) {
-            val (chunkPosition, meshes) = iterator.next()
+            val (position, meshes) = iterator.next()
 
-            if (chunkPosition !in renderer.visibility) continue
+            if (position !in renderer.visibility) continue
 
             val iterator = meshes.keys.intIterator()
             while (iterator.hasNext()) {
@@ -143,7 +143,7 @@ class LoadedMeshes(
 
                 if (next == mesh.details) continue
 
-                renderer.meshingQueue += mesh.section
+                renderer.meshingQueue += mesh.section // TODO: batch
             }
 
             if (meshes.isEmpty()) {

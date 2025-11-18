@@ -49,7 +49,7 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun `block state flags`() {
-        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE  // TODO: kutil 1.30.1
+        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.CAVE_SURFACE  // TODO: kutil 1.30.1
 
         assertEquals(expected, block.states.default.flags)
     }

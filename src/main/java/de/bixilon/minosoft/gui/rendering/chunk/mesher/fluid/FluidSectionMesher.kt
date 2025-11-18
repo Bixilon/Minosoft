@@ -153,6 +153,15 @@ class FluidSectionMesher(
                     val height = fluid.getHeight(state)
                     if (height <= 0.0f) continue
 
+                    val position = BlockPosition.of(chunk.position, section.height, inSection)
+
+                    var light = section.light[inSection]
+                    if (position.y >= chunk.light.heightmap[inSection.xz]) {
+                        light = light.with(sky = LightLevel.MAX_LEVEL)
+                    }
+                    if (BlockStateFlags.CAVE_SURFACE in state.flags && ChunkMeshDetails.DARK_CAVE_SURFACE !in builder.details && light == LightLevel.EMPTY) continue
+
+
                     val up = !fluid.matches(section.traceBlock(inSection, Directions.UP))
                     // TODO: height depends on the corners. Do the culling twice?
                     val down = canFluidCull(section, inSection, Directions.DOWN, fluid, 1.0f)
@@ -175,19 +184,12 @@ class FluidSectionMesher(
                         val height = if (up) 0.88888896f else 1.0f
                         corners.fill(height)
                     }
-                    val position = BlockPosition.of(chunk.position, section.height, inSection)
-
                     offsetPosition.x = (position.x - cameraOffset.x).toFloat()
                     offsetPosition.y = (position.y - cameraOffset.y).toFloat()
                     offsetPosition.z = (position.z - cameraOffset.z).toFloat()
 
 
                     val tint = tints.getFluidTint(chunk, fluid, height, position)
-                    var light = section.light[inSection]
-                    if (position.y >= chunk.light.heightmap[inSection.xz]) {
-                        light = light.with(sky = LightLevel.MAX_LEVEL)
-                    }
-
                     val lightTint = (light.index shl 24) or tint.rgb
 
 

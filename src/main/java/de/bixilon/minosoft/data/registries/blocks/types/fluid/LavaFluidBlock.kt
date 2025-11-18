@@ -15,12 +15,15 @@ package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 class LavaFluidBlock(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FluidBlock(identifier, settings) {
     override val fluid: LavaFluid = this::fluid.inject(LavaFluid)
+
+    override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
     companion object : BlockFactory<LavaFluidBlock> {
         override val identifier = LavaFluid.identifier

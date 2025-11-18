@@ -100,9 +100,10 @@ class CulledQueue(
     private fun moveToMeshQueue() {
         if (culled.isEmpty()) return
 
-        val iterator = culled.values.iterator()
+        val iterator = culled.iterator()
         while (iterator.hasNext()) {
-            val sections = iterator.next()
+            val (position, sections) = iterator.next()
+            if (position !in renderer.visibility) continue
 
             val sectionIterator = sections.iterator()
             while (sectionIterator.hasNext()) {
