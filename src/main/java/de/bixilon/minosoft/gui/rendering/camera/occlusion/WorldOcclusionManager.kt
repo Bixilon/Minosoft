@@ -123,6 +123,7 @@ class WorldOcclusionManager(
         val tracer = OcclusionTracer(this.position, world.dimension, camera, viewDistance)
         workQueue(tracer.queue)
         this.graph = tracer.trace(chunk)
+        invalid = false
 
         session.events.fire(VisibilityGraphChangeEvent(context))
     }
