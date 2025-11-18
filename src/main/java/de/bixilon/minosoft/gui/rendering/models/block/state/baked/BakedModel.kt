@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails.Companion.toMeshDetail
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
@@ -49,6 +50,8 @@ class BakedModel(
     override fun getParticleTexture(random: Random?, position: BlockPosition) = particle
 
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
+        val details = props.details
+        val aggressive = ChunkMeshDetails.AGGRESSIVE_CULLING in details
         var rendered = false
 
         val offset = props.offset
@@ -61,12 +64,12 @@ class BakedModel(
         for ((directionIndex, faces) in faces.withIndex()) {
             val neighbour = neighbours[directionIndex]
             val direction = Directions.VALUES[directionIndex]
-            if (direction.toMeshDetail() !in props.details) continue
+            if (direction.toMeshDetail() !in details) continue
             val inverted = direction.inverted
 
 
             for (face in faces) {
-                if (FaceCulling.canCull(state, face.properties, inverted, neighbour)) {
+                if (FaceCulling.canCull(state, face.properties, inverted, neighbour, aggressive)) {
                     continue
                 }
 

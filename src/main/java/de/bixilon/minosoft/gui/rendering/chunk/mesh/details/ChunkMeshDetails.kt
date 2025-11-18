@@ -34,8 +34,9 @@ enum class ChunkMeshDetails {
 
     TRANSPARENCY,
 
-    FULL_OPAQUE_CULLED,
-
+    CULL_FULL_OPAQUE,
+    NON_FULL_BLOCKS, // TODO: That is looking bad, check if the block has at least one side that is full
+    AGGRESSIVE_CULLING,
 
     SIDE_DOWN,
     SIDE_UP,
@@ -46,7 +47,8 @@ enum class ChunkMeshDetails {
     SIDE_WEST,
     SIDE_EAST,
 
-    // TODO: border blocks, texture animations, leaves, biome blending, ... See https://gitlab.bixilon.de/bixilon/minosoft/-/issues/128
+
+    // TODO: border blocks, texture animations, biome blending, ... See https://gitlab.bixilon.de/bixilon/minosoft/-/issues/128
     ;
 
 
@@ -58,7 +60,7 @@ enum class ChunkMeshDetails {
         private const val SIDE_MAX = 2
 
 
-        val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail }
+        val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail } - AGGRESSIVE_CULLING - CULL_FULL_OPAQUE
 
 
         fun of(position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
@@ -80,7 +82,9 @@ enum class ChunkMeshDetails {
 
             if (max >= 15) details -= TRANSPARENCY
 
-            if (max >= 2) details -= FULL_OPAQUE_CULLED
+            if (max >= 2) details += CULL_FULL_OPAQUE
+            if (max >= 10) details -= NON_FULL_BLOCKS
+            if (max >= 12) details += AGGRESSIVE_CULLING
 
             details = removeSides(details, delta)
 
@@ -140,8 +144,15 @@ enum class ChunkMeshDetails {
             if (max < 7) details += FLUID_HEIGHTS
 
             if (max < 13) details += TRANSPARENCY
+            if (max >= 15) details -= TRANSPARENCY
 
-            if (max < 1) details += FULL_OPAQUE_CULLED
+            if (max < 1) details -= CULL_FULL_OPAQUE
+
+            if (max < 9) details += NON_FULL_BLOCKS
+            if (max >= 11) details -= NON_FULL_BLOCKS
+
+            if (max < 10) details -= AGGRESSIVE_CULLING
+            if (max >= 12) details += AGGRESSIVE_CULLING
 
             details = removeSides(details, delta)
             details = addSides(details, delta)

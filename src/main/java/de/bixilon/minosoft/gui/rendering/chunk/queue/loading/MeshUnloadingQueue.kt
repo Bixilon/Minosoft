@@ -51,8 +51,12 @@ class MeshUnloadingQueue(
 
 
     operator fun plusAssign(cache: BlockMesherCache) = lock.locked { caches += cache }
+
+    @JvmName("plusAssignCache")
     operator fun plusAssign(caches: Collection<BlockMesherCache>) = lock.locked { this.caches += caches }
 
     operator fun plusAssign(mesh: ChunkMeshes) = lock.locked { meshes += mesh }
+
+    @JvmName("plusAssignMesh")
     operator fun plusAssign(meshes: Collection<ChunkMeshes>) = lock.locked { this.meshes += meshes }
 }

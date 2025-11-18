@@ -22,7 +22,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 
 object FaceCulling {
 
-    fun canCull(state: BlockState, properties: FaceProperties?, direction: Directions, neighbour: BlockState?): Boolean {
+    fun canCull(state: BlockState, properties: FaceProperties?, direction: Directions, neighbour: BlockState?) = canCull(state, properties, direction, neighbour, false)
+    fun canCull(state: BlockState, properties: FaceProperties?, direction: Directions, neighbour: BlockState?, aggressive: Boolean): Boolean {
         if (neighbour == null) return false
         if (properties == null) return false
         if (BlockStateFlags.FULL_OPAQUE in neighbour.flags) return true
@@ -37,6 +38,7 @@ object FaceCulling {
             // impossible to see that face
             return true
         }
+        if (aggressive) return true
         if (neighbourProperties.transparency == null) {
             for (property in neighbourProperties.faces) {
                 if (property.transparency != TextureTransparencies.OPAQUE) continue

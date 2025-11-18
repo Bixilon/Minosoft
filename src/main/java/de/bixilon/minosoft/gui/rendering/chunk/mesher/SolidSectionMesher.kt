@@ -70,7 +70,8 @@ class SolidSectionMesher(
     }
 
     fun mesh(section: ChunkSection, cache: BlockMesherCache, neighbourChunks: ChunkNeighbours, neighbours: Array<ChunkSection?>, mesh: ChunkMeshesBuilder) {
-        val random = if (profile.antiMoirePattern && ChunkMeshDetails.ANTI_MOIRE_PATTERN in mesh.details) Random(0L) else null
+        val details = mesh.details
+        val random = if (profile.antiMoirePattern && ChunkMeshDetails.ANTI_MOIRE_PATTERN in details) Random(0L) else null
 
         val chunk = section.chunk
 
@@ -78,7 +79,7 @@ class SolidSectionMesher(
         val isLowestSection = section.height == chunk.world.dimension.minSection
         val isHighestSection = section.height == chunk.world.dimension.maxSection
         val blocks = section.blocks
-        val entities: ArrayList<BlockEntityRenderer> = if (ChunkMeshDetails.ENTITIES in mesh.details) ArrayList(section.entities.count) else EMPTY_ARRAY_LIST
+        val entities: ArrayList<BlockEntityRenderer> = if (ChunkMeshDetails.ENTITIES in details) ArrayList(section.entities.count) else EMPTY_ARRAY_LIST
 
         val tint = RGBArray(1)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
@@ -90,9 +91,9 @@ class SolidSectionMesher(
 
         val floatOffset = MVec3f(3)
 
-        val ao = if (ambientOcclusion && ChunkMeshDetails.AMBIENT_OCCLUSION in mesh.details) AmbientOcclusion(section) else null
+        val ao = if (ambientOcclusion && ChunkMeshDetails.AMBIENT_OCCLUSION in details) AmbientOcclusion(section) else null
 
-        val props = WorldRenderProps(floatOffset.unsafe, mesh, random, neighbourBlocks, light, mesh.details, ao) // TODO: really use unsafe?
+        val props = WorldRenderProps(floatOffset.unsafe, mesh, random, neighbourBlocks, light, details, ao) // TODO: really use unsafe?
 
         val min = blocks.minPosition
         val max = blocks.maxPosition
@@ -104,10 +105,11 @@ class SolidSectionMesher(
                     val state = blocks[inSection] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
-                    if (ChunkMeshDetails.FULL_OPAQUE_CULLED !in mesh.details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
+                    if (BlockStateFlags.FULL_OUTLINE !in state.flags && ChunkMeshDetails.NON_FULL_BLOCKS !in details) continue
+                    if (ChunkMeshDetails.CULL_FULL_OPAQUE in details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
 
                     val model = state.block.model ?: state.model
-                    val entity = if (ChunkMeshDetails.ENTITIES in mesh.details) section.entities[inSection] else null
+                    val entity = if (ChunkMeshDetails.ENTITIES in details) section.entities[inSection] else null
                     val entityRenderer = entity?.let { cache.createEntity(inSection, entity) }
                     if (model == null && entityRenderer == null) continue
 
@@ -118,10 +120,10 @@ class SolidSectionMesher(
                     floatOffset.z = (position.z - cameraOffset.z).toFloat()
 
 
-                    if (ChunkMeshDetails.SIDE_DOWN in mesh.details) setDown(state, inSection, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
-                    if (ChunkMeshDetails.SIDE_UP in mesh.details) setUp(isHighestSection, inSection, neighbourBlocks, neighbours, light, section, chunk)
+                    if (ChunkMeshDetails.SIDE_DOWN in details) setDown(inSection, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
+                    if (ChunkMeshDetails.SIDE_UP in details) setUp(isHighestSection, inSection, neighbourBlocks, neighbours, light, section, chunk)
 
-                    // TODO: mesh details
+                    // TODO: mesh details (sides)
                     setZ(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
                     setX(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
 
@@ -137,10 +139,9 @@ class SolidSectionMesher(
                     if (position.y - 1 >= maxHeight) {
                         light[O_DOWN] = LightLevel(light[O_DOWN]).with(sky = MAX_LEVEL).raw
                     }
-                    // TODO: cull neighbours
 
 
-                    if (ChunkMeshDetails.RANDOM_OFFSET in mesh.details && BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
+                    if (ChunkMeshDetails.RANDOM_OFFSET in details && BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
                         val randomOffset = state.block.offsetModel(position)
                         floatOffset.x += randomOffset.x
                         floatOffset.y += randomOffset.y
@@ -170,7 +171,7 @@ class SolidSectionMesher(
         mesh.entities = entities
     }
 
-    private inline fun setDown(state: BlockState, position: InSectionPosition, lowest: Boolean, neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, light: ByteArray, section: ChunkSection, chunk: Chunk) {
+    private inline fun setDown(position: InSectionPosition, lowest: Boolean, neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, light: ByteArray, section: ChunkSection, chunk: Chunk) {
         if (position.y == 0) {
             neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.let { it[position.with(y = ChunkSize.SECTION_MAX_Y)] }
             light[O_DOWN] = (if (lowest) chunk.light.bottom else neighbours[O_DOWN]?.light)?.get(position.with(y = ChunkSize.SECTION_MAX_Y))?.raw ?: 0x00

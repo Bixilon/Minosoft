@@ -209,7 +209,9 @@ class ChunkRenderer(
     private fun drawBlockEntities() = visibility.meshes.apply { lock.locked { entities.forEach(BlockEntityRenderer::draw) } }
 
     override fun unload() {
-        // TODO: remove all others
+        culledQueue.clear()
+        meshingQueue.clear()
+        meshingQueue.tasks.interrupt(false)
         loadingQueue.clear()
     }
 
