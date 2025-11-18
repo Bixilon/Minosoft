@@ -21,10 +21,15 @@ class SectionPositionSet private constructor(
     val offset: SectionPosition,
     val size: SectionPosition,
 ) { // Don't inherit from set, it will box primitives
-    private val set = AbstractBitSet.of(size.x * size.y * size.z) // TODO: cache old set one
+    private val set = AbstractBitSet.of((size.x + 1) * (size.y + 1) * (size.z + 1)) // TODO: cache old set one
 
+    init {
+        assert(size.x > 0)
+        assert(size.y > 0)
+        assert(size.z > 0)
+    }
 
-    constructor(center: ChunkPosition, radius: Int, minSection: Int, sections: Int) : this(SectionPosition(center.x - radius, minSection, center.z - radius), SectionPosition(radius * 2 + 1, sections, radius * 2 + 1))
+    constructor(center: ChunkPosition, radius: Int, minSection: Int, maxSection: Int) : this(SectionPosition(center.x - radius, minSection, center.z - radius), SectionPosition(radius * 2 + 1, maxSection - minSection, radius * 2 + 1))
 
 
     operator fun plusAssign(position: SectionPosition) {

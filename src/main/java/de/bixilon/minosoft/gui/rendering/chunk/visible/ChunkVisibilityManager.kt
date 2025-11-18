@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.visible
 
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import kotlin.math.abs
 
 class ChunkVisibilityManager(
     val renderer: ChunkRenderer,
@@ -43,7 +45,10 @@ class ChunkVisibilityManager(
         return position.isInViewDistance(viewDistance, sectionPosition.chunkPosition)
     }
 
-    fun isInViewDistance(position: SectionPosition) = isInViewDistance(position.chunkPosition) // TODO: vertical view distance
+    fun isInViewDistance(position: SectionPosition): Boolean {
+        if (abs(position.y - this.sectionPosition.y) > World.MAX_VERTICAL_VIEW_DISTANCE) return false
+        return isInViewDistance(position.chunkPosition)
+    }
 
     operator fun contains(position: ChunkPosition) = visibility.isChunkVisible(position)
     operator fun contains(position: SectionPosition) = visibility.isSectionVisible(position)

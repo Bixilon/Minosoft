@@ -68,7 +68,6 @@ class WorldOcclusionManager(
     }
 
     fun isAABBOccluded(aabb: AABB): Boolean {
-        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) return false
         val graph = this.graph ?: return false
 
         val min = aabb.min.blockPosition.sectionPosition
@@ -88,7 +87,6 @@ class WorldOcclusionManager(
     }
 
     fun isSectionOccluded(position: SectionPosition): Boolean {
-        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) return false
         val graph = this.graph ?: return false
         return graph.isOccluded(position)
     }
@@ -121,7 +119,7 @@ class WorldOcclusionManager(
         val chunk = world.chunks[this.position.chunkPosition] ?: return // TODO: optimize camera chunk retrieval
         val viewDistance = world.view.viewDistance
 
-        val tracer = OcclusionTracer(this.position, world.dimension, camera, viewDistance)
+        val tracer = OcclusionTracer(this.position, world.dimension, camera, maxOf(2, viewDistance))
         this.graph = tracer.trace(chunk)
         invalid = false
 

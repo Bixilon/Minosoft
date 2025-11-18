@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.i.SVec3i
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.World.Companion.MAX_VERTICAL_VIEW_DISTANCE
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
@@ -35,15 +36,18 @@ class OcclusionTracer(
     val chunkPosition = position.chunkPosition
     private val frustum = camera.frustum
 
+    init {
+        assert(viewDistance >= 2)
+    }
+
     // allow tracing from above or below the world
-    // TODO: vertical view distance
-    private val minSection = dimension.minSection - 1
-    private val maxSection = dimension.maxSection + 1
+    private val minSection = maxOf(dimension.minSection, position.y - MAX_VERTICAL_VIEW_DISTANCE) - 1
+    private val maxSection = minOf(dimension.maxSection, position.y + MAX_VERTICAL_VIEW_DISTANCE) + 1
 
     // TODO: reuse those (reduce allocations)
-    private val culled = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
-    private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2)
-    private val paths = Array(Axes.VALUES.size) { SectionPositionSet(chunkPosition, viewDistance, minSection, dimension.sections + 2) }
+    private val culled = SectionPositionSet(chunkPosition, viewDistance, minSection, maxSection)
+    private val visible = SectionPositionSet(chunkPosition, viewDistance, minSection, maxSection)
+    private val paths = Array(Axes.VALUES.size) { SectionPositionSet(chunkPosition, viewDistance, minSection, maxSection) }
 
     private var free = FREE_SIZE
     val queue: HashSet<SectionOcclusion> = HashSet(MAX_QUEUE_SIZE)

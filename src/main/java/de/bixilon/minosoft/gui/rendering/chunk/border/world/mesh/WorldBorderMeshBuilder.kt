@@ -32,7 +32,7 @@ class WorldBorderMeshBuilder(
 ) : QuadMeshBuilder(context, WorldBorderMeshStruct, 4) {
 
     init {
-        val radius = minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
+        val radius = minOf(radius.toFloat(), World.MAX_VIEW_DISTANCE.toFloat() * ChunkSize.SECTION_WIDTH_X)
 
         val x1 = (maxOf(-WorldBorder.MAX_RADIUS, center.x - radius) - offset.x).toFloat()
         val y1 = (maxOf(-WorldBorder.MAX_RADIUS, center.y - radius) - offset.z).toFloat()

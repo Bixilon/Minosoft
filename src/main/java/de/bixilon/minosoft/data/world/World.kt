@@ -195,7 +195,8 @@ class World(
         const val MAX_SIZE = BlockPosition.MAX_X
         const val MAX_SIZEf = MAX_SIZE.toFloat()
         const val MAX_SIZEd = MAX_SIZE.toDouble()
-        const val MAX_RENDER_DISTANCE = 64
-        const val MAX_CHUNKS_SIZE = MAX_RENDER_DISTANCE * 2 + 1
+        const val MAX_VIEW_DISTANCE = 64
+        const val MAX_VERTICAL_VIEW_DISTANCE = 12
+        const val MAX_CHUNKS_SIZE = MAX_VIEW_DISTANCE * 2 + 1
     }
 }

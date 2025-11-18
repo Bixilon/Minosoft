@@ -21,6 +21,7 @@ import de.bixilon.kutil.avg._float.FloatAverage
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.FloatUtil.rad
+import de.bixilon.minosoft.data.world.World.Companion.MAX_VERTICAL_VIEW_DISTANCE
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
@@ -32,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
+import kotlin.math.sqrt
 
 class MatrixHandler(
     private val context: RenderContext,
@@ -90,9 +92,12 @@ class MatrixHandler(
 
     private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2f = Vec2f(context.window.size)) {
         val fog = camera.fog.state
-        var far = (session.world.view.viewDistance + 1) * ChunkSize.SECTION_LENGTH.toFloat()
-        if (fog.enabled) {
-            far = fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
+        val far = when {
+            fog.enabled -> fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
+            else -> {
+                val viewDistance = (session.world.view.viewDistance + 1) * ChunkSize.SECTION_LENGTH
+                sqrt((viewDistance * MAX_VERTICAL_VIEW_DISTANCE * ChunkSize.SECTION_LENGTH * viewDistance).toFloat())
+            }
         }
         projectionMatrix = CameraUtil.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, maxOf(far, 5.0f))
     }
