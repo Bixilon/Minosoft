@@ -107,6 +107,7 @@ class WorldOcclusionManager(
         context.runAsync(forcePool = true) {
             queue.calculate()
             this.queue = false
+            invalid = true
         }
     }
 
@@ -121,9 +122,10 @@ class WorldOcclusionManager(
         val viewDistance = world.view.viewDistance
 
         val tracer = OcclusionTracer(this.position, world.dimension, camera, viewDistance)
-        workQueue(tracer.queue)
         this.graph = tracer.trace(chunk)
         invalid = false
+
+        workQueue(tracer.queue)
 
         session.events.fire(VisibilityGraphChangeEvent(context))
     }
