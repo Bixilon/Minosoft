@@ -57,9 +57,9 @@ enum class ChunkMeshDetails {
         override val VALUES = values()
         override val NAME_MAP = names()
 
-        private const val SIDE_MIN = 1 * 1
-        private const val SIDE_NORMAL = 3 * 3
-        private const val SIDE_MAX = 5 * 5
+        private const val SIDE_MIN = 2
+        private const val SIDE_NORMAL = 3
+        private const val SIDE_MAX = 5
 
 
         val ALL = VALUES.foldRight(IntInlineEnumSet<ChunkMeshDetails>()) { detail, accumulator -> accumulator + detail } - AGGRESSIVE_CULLING - CULL_FULL_OPAQUE
