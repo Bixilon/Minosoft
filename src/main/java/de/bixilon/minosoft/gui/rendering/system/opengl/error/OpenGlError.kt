@@ -27,6 +27,8 @@ class OpenGlError(
     val type = OpenGLErrors.CODES[id]
     override val message = ChatComponent.of("§cOpenGL error: §e$id ($type)")
 
+    override fun toString() = "id=$id, type=$type"
+
     enum class OpenGLErrors(val code: Int) {
         INVALID_ENUM(GL_INVALID_ENUM),
         INVALID_VALUE(GL_INVALID_VALUE),

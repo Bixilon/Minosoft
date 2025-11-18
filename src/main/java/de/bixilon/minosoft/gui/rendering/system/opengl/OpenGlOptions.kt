@@ -16,6 +16,6 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 object OpenGlOptions {
     const val ASSERT_THREAD = false
     const val ASSERT_BEFORE = false
-    const val ASSERT_AFTER = false
+    const val ASSERT_AFTER = true
     const val DEBUG_OUTPUT = false
 }
