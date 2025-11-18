@@ -36,7 +36,7 @@ class ChunkMeshesBuilder(
     val details: IntInlineEnumSet<ChunkMeshDetails>,
 ) : BlockVertexConsumer { // TODO: Don't inherit
     var opaque = ChunkMeshBuilder(context, section.blocks.count.opaqueCount())
-    var translucent = ChunkMeshBuilder(context, if (ChunkMeshDetails.TRANSPARENCY in details) section.blocks.count.translucentCount() else 0)
+    var translucent = ChunkMeshBuilder(context, section.blocks.count.translucentCount())
     var text = ChunkMeshBuilder(context, if (ChunkMeshDetails.TEXT in details && section.entities.count > 0) 128 else 0)
     var entities: ArrayList<BlockEntityRenderer> = ArrayList(if (ChunkMeshDetails.ENTITIES in details) section.entities.count else 0)
 
@@ -102,7 +102,6 @@ class ChunkMeshesBuilder(
     }
 
     operator fun get(transparency: TextureTransparencies) = when {
-        ChunkMeshDetails.TRANSPARENCY !in details -> opaque
         transparency == TextureTransparencies.TRANSLUCENT -> translucent
         else -> opaque
     }

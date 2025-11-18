@@ -32,8 +32,6 @@ enum class ChunkMeshDetails {
     FLOWING_FLUID,
     FLUID_HEIGHTS,
 
-    TRANSPARENCY,
-
     CULL_FULL_OPAQUE,
     MINOR_VISUAL_IMPACT,
     NON_FULL_BLOCKS, // TODO: That is looking bad, check if the block has at least one side that is full
@@ -85,8 +83,6 @@ enum class ChunkMeshDetails {
             if (distance >= 6 * 6) details -= FLOWING_FLUID
             if (distance >= 8 * 8) details -= FLUID_HEIGHTS
 
-            if (distance >= 15 * 15) details -= TRANSPARENCY
-
             if (distance >= 2 * 2) details += CULL_FULL_OPAQUE
             if (distance >= 36 * 36) details -= NON_FULL_BLOCKS
 
@@ -134,9 +130,6 @@ enum class ChunkMeshDetails {
 
             if (distance < 5 * 5) details += FLOWING_FLUID
             if (distance < 7 * 7) details += FLUID_HEIGHTS
-
-            if (distance < 13 * 13) details += TRANSPARENCY
-            if (distance >= 18 * 18) details -= TRANSPARENCY
 
             if (distance < 1 * 1) details -= CULL_FULL_OPAQUE
 
