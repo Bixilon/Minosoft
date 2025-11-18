@@ -52,18 +52,18 @@ class ChunkMeshingQueue(
         this.positions.clear()
     }
 
-    fun unsafeAdd(section: ChunkSection) {
+    fun unsafeAdd(section: ChunkSection, cause: ChunkMeshingCause) {
         val position = SectionPosition.of(section)
         if (!positions.add(position)) return
 
-        this.queue += MeshQueueItem(section)
+        this.queue += MeshQueueItem(section, cause)
     }
 
     operator fun plusAssign(section: ChunkSection) = lock.locked {
         val position = SectionPosition.of(section)
         if (!positions.add(position)) return
 
-        this.queue += MeshQueueItem(section)
+        this.queue += MeshQueueItem(section, ChunkMeshingCause.UNKNOWN)
         queue.sortWith(comparator)
     }
 

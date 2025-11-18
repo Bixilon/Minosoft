@@ -26,14 +26,14 @@ import org.testng.annotations.Test
 @Test(groups = ["rendering"])
 class MeshQueueComparatorTest {
 
-    private fun SectionPosition.item(): MeshQueueItem {
+    private fun SectionPosition.item(cause: ChunkMeshingCause = ChunkMeshingCause.UNKNOWN): MeshQueueItem {
         val section = ChunkSection::class.java.allocate()
         val chunk = Chunk::class.java.allocate()
         chunk::position.forceSet(this.chunkPosition.raw)
         section::chunk.forceSet(chunk)
         section::height.forceSet(this.y)
 
-        return MeshQueueItem(section)
+        return MeshQueueItem(section, cause)
     }
 
     fun `sort initially by distance`() {
@@ -68,4 +68,32 @@ class MeshQueueComparatorTest {
 
         assertEquals(list, listOf(b, c, d, a))
     }
+
+    fun `level of detail update has lower priority`() {
+        val comparator = MeshQueueComparator()
+        comparator.update(BlockPosition(0, 0, 0))
+
+        val a = SectionPosition(9, 0, 0).item(ChunkMeshingCause.LEVEL_OF_DETAIL_UPDATE)
+        val b = SectionPosition(10, 0, 0).item(ChunkMeshingCause.UNKNOWN)
+
+        val list = mutableListOf(a, b)
+        list.sortWith(comparator)
+
+        assertEquals(list, listOf(b, a))
+    }
+
+    fun `culled has lower priority than unknown`() {
+        val comparator = MeshQueueComparator()
+        comparator.update(BlockPosition(0, 0, 0))
+
+        val a = SectionPosition(9, 0, 0).item(ChunkMeshingCause.CULLED)
+        val b = SectionPosition(10, 0, 0).item(ChunkMeshingCause.UNKNOWN)
+
+        val list = mutableListOf(a, b)
+        list.sortWith(comparator)
+
+        assertEquals(list, listOf(b, a))
+    }
+
+    // TODO: more tests
 }

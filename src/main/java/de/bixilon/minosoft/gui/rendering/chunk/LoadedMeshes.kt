@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
+import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingCause
 import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibleMeshes
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -140,7 +141,7 @@ class LoadedMeshes(
 
                 if (next == mesh.details) continue
 
-                renderer.meshingQueue.unsafeAdd(mesh.section)
+                renderer.meshingQueue.unsafeAdd(mesh.section, ChunkMeshingCause.LEVEL_OF_DETAIL_UPDATE)
             }
 
             if (meshes.isEmpty()) {

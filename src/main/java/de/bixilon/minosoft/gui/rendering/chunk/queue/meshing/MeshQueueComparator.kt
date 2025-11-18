@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
+import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import kotlin.math.abs
 
 class MeshQueueComparator : Comparator<MeshQueueItem> {
     private var sort = 1
@@ -31,7 +31,7 @@ class MeshQueueComparator : Comparator<MeshQueueItem> {
         if (sort == this@MeshQueueComparator.sort) return distance
 
         val delta = (center - this@MeshQueueComparator.position)
-        val distance = abs(delta.x) + abs(delta.y / 2) + abs(delta.z)
+        val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
 
         this.distance = distance
         this.sort = this@MeshQueueComparator.sort
@@ -40,6 +40,19 @@ class MeshQueueComparator : Comparator<MeshQueueItem> {
     }
 
     override fun compare(a: MeshQueueItem, b: MeshQueueItem): Int {
-        return a.distance().compareTo(b.distance())
+        val distanceA = a.distance()
+        val distanceB = b.distance()
+
+        return when {
+            distanceA < FORCE_DISTANCE_MIN * FORCE_DISTANCE_MIN || distanceB < FORCE_DISTANCE_MIN * FORCE_DISTANCE_MIN -> distanceA.compareTo(distanceB)
+            distanceA > FORCE_DISTANCE_MAX * FORCE_DISTANCE_MAX || distanceB > FORCE_DISTANCE_MAX * FORCE_DISTANCE_MAX -> distanceA.compareTo(distanceB)
+            a.cause != b.cause -> a.cause.compareTo(b.cause)
+            else -> distanceA.compareTo(distanceB)
+        }
+    }
+
+    companion object {
+        const val FORCE_DISTANCE_MIN = 8 * ChunkSize.SECTION_LENGTH
+        const val FORCE_DISTANCE_MAX = 16 * ChunkSize.SECTION_LENGTH
     }
 }

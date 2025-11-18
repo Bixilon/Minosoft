@@ -13,27 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
 
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.chunk.ChunkSize
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.SectionPosition
-
-class MeshQueueItem(
-    val section: ChunkSection,
-    val cause: ChunkMeshingCause,
-) {
-    val position = SectionPosition.of(section)
-    val center = BlockPosition.of(position) + (ChunkSize.SECTION_LENGTH / 2)
-
-    var distance = 0
-    var sort = 0
-
-    override fun toString() = "MeshQueueItem(position=$position)"
-
-    override fun equals(other: Any?) = when (other) {
-        is MeshQueueItem -> section == other.section
-        else -> false
-    }
-
-    override fun hashCode() = section.hashCode()
+enum class ChunkMeshingCause {
+    UNKNOWN,
+    CULLED,
+    LEVEL_OF_DETAIL_UPDATE,
 }

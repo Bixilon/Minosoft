@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingCause
 
 class CulledQueue(
     private val renderer: ChunkRenderer,
@@ -114,7 +115,7 @@ class CulledQueue(
 
                 sectionIterator.remove()
 
-                renderer.meshingQueue.unsafeAdd(section)
+                renderer.meshingQueue.unsafeAdd(section, ChunkMeshingCause.CULLED)
             }
 
             if (sections.isEmpty()) {
