@@ -40,6 +40,9 @@ class LoadedMeshes(
 
         val previous = chunk.put(mesh.position.y, mesh)
         lock.unlock()
+        if (!renderer.visibility.contains(mesh.position, mesh.min, mesh.max)) {
+            return
+        }
         val meshes = renderer.visibility.meshes
 
         if (previous != null) {
