@@ -15,10 +15,15 @@ package de.bixilon.minosoft.data.registries.blocks.state
 
 import de.bixilon.minosoft.data.registries.blocks.TestBlocks
 
+@Suppress("UNUSED")
 object TestBlockStates {
     val TEST1 = TestBlocks.TEST1.states.default
     val TEST2 = TestBlocks.TEST2.states.default
     val TEST3 = TestBlocks.TEST3.states.default
+
+    val MODEL1 = TestBlocks.MODEL1.states.default
+    val MODEL2 = TestBlocks.MODEL2.states.default
+    val MODEL3 = TestBlocks.MODEL3.states.default
 
     val OPAQUE1 = TestBlocks.OPAQUE1.states.default
     val OPAQUE2 = TestBlocks.OPAQUE2.states.default

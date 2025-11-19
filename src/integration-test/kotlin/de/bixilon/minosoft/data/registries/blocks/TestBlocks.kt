@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.TestBlockModels
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.TestVersions
 import de.bixilon.minosoft.protocol.versions.Version
@@ -36,6 +37,10 @@ object TestBlocks {
     val TEST1 = TestBlock(minecraft("test1"))
     val TEST2 = TestBlock(minecraft("test2"))
     val TEST3 = TestBlock(minecraft("test3"))
+
+    val MODEL1 = TestBlock(minecraft("model1")).apply { states.default.model = TestBlockModels.TEST1 }
+    val MODEL2 = TestBlock(minecraft("model2")).apply { states.default.model = TestBlockModels.TEST2 }
+    val MODEL3 = TestBlock(minecraft("model3")).apply { states.default.model = TestBlockModels.TEST3 }
 
 
     val OPAQUE1: TestBlock = object : TestBlock(minecraft("opaque1")), FullBlock {
