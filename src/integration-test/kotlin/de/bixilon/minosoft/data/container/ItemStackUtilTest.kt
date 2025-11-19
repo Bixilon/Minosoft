@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.data.container
 
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import org.testng.Assert.assertEquals
+import org.testng.AssertJUnit.assertNotNull
 import org.testng.AssertJUnit.assertNull
 import org.testng.annotations.Test
 
@@ -22,6 +26,37 @@ class ItemStackUtilTest {
     fun `no count null`() {
         val item = ItemStackUtil.of(TestItem1, 0)
         assertNull(item)
+    }
+
+    fun `create item with legacy meta data == 0`() {
+        val item = ItemStackUtil.of(TestItem1, 1, 0, createSession(), mutableMapOf("test" to "something"))
+        assertNotNull(item)
+
+        assertNull(item!!.durability)
+        assertEquals(item.count, 1)
+    }
+
+    fun `create item with discarded legacy meta data`() {
+        val item = ItemStackUtil.of(TestItem1, 1, 123, createSession(), mutableMapOf("test" to "something"))
+        assertNotNull(item)
+
+        assertNull(item!!.durability)
+        assertEquals(item.count, 1)
+    }
+
+    fun `create item with legacy meta as durability`() {
+        val item = ItemStackUtil.of(DurableTestItem1 as Item, 1, 40, createSession(), mutableMapOf("test" to "something"))
+        assertNotNull(item)
+
+        assertEquals(item!!.durability?.durability, 60)
+        assertEquals(item.count, 1)
+    }
+
+    fun `create item with nbt`() {
+        val item = ItemStackUtil.of(TestItem1, 1, createSession(), mutableMapOf("something" to "test"), null)
+        assertNotNull(item)
+
+        assertNull(item!!.durability)
     }
 
     // TODO: dye color
