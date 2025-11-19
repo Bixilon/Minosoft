@@ -20,12 +20,10 @@ class MeshPrepareTask(
     val section: ChunkSection,
 ) {
     val position = SectionPosition.of(section)
-    var interruptible = true
     var thread: Thread? = null
 
 
     fun interrupt() {
-        if (!interruptible) return
         thread?.interrupt() // TODO: custom interrupt routine; this might race interrupt the wrong task
     }
 }

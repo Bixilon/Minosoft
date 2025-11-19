@@ -107,18 +107,19 @@ class ChunkMeshingQueue(
         DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) {
             val position = SectionPosition.of(section)
 
+            val previous = renderer.loaded[position]
+
             val mesh = try {
                 task.thread = Thread.currentThread()
-                val previous = renderer.loaded[position]
                 renderer.mesher.mesh(previous, section)
             } catch (_: InterruptedException) {
                 return@ThreadPoolRunnable
             } finally {
                 task.thread = null
-                task.interruptible = false
                 Thread.interrupted() // clear interrupted flag
                 tasks -= task
             }
+            Thread.interrupted() // clear interrupted flag
 
             if (mesh == null) {
                 renderer.loaded -= position
