@@ -82,14 +82,15 @@ class ChunkMeshingQueue(
 
             if (requeue) {
                 if (item.section in renderer.visibility) continue // it will just land in here again
+                iterator.remove()
 
-                renderer.unload(item.section) // TODO: don't remove from culled queue
+                renderer.unload(item.section) // TODO: don't remove from culled queue (and from meshing queue)
                 renderer.culledQueue += item.section
+            } else {
+                iterator.remove()
             }
 
 
-
-            iterator.remove()
             this.positions -= item.position
         }
     }
