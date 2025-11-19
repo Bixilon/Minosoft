@@ -28,6 +28,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.ste
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
+import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
+import de.bixilon.minosoft.gui.rendering.system.base.query.RenderQuery
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
@@ -38,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlIndex
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlError
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlException
+import de.bixilon.minosoft.gui.rendering.system.opengl.query.OpenGlQuery
 import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGlVendor
@@ -250,6 +253,8 @@ class OpenGlRenderSystem(
     override fun createFramebuffer(size: Vec2i, scale: Float, texture: TextureModes?, depth: DepthModes?, stencil: StencilModes?): OpenGlFramebuffer {
         return OpenGlFramebuffer(this, size, scale, texture, depth, stencil)
     }
+
+    override fun createQuery(type: QueryTypes) = OpenGlQuery(type)
 
     override fun createTextureManager() = OpenGlTextureManager(this)
 

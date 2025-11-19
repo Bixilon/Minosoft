@@ -11,17 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
+package de.bixilon.minosoft.gui.rendering.system.base.query
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
-import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
+interface RenderQuery {
+    val type: QueryTypes
 
-interface VertexBuffer : GpuBuffer {
-    val vertices: Int
-    val primitive: PrimitiveTypes
-    val struct: MeshStruct
-
-    fun draw()
-
-    fun drop()
+    val isReady: Boolean
+    val result: Int
 }

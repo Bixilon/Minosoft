@@ -33,8 +33,7 @@ class DummyVertexBuffer(
     override val vertices: Int = 0
     override val primitive: PrimitiveTypes = PrimitiveTypes.QUAD
 
-    override fun draw() {
-    }
+    override fun draw() = Unit
 
     override fun drop() = Unit
 }
