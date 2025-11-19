@@ -98,9 +98,9 @@ class ChunkMeshingQueue(
 
     private fun enqueue(section: ChunkSection) {
         val camera = renderer.visibility.sectionPosition
-        val position = SectionPosition.of(section)
+        val delta = SectionPosition.of(section) - camera
 
-        val distance = abs(position.x - camera.x) + abs(position.z - camera.z) // TODO: Should y get in here too?
+        val distance = maxOf(abs(delta.x), abs(delta.y) - 2, abs(delta.z))
         val task = MeshPrepareTask(section)
         tasks += task
 
