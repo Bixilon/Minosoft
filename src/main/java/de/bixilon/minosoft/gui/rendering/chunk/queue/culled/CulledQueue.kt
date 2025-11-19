@@ -26,7 +26,7 @@ class CulledQueue(
     private val renderer: ChunkRenderer,
 ) {
     private val viewDistance: HashSet<Chunk> = HashSet()
-    private val culled: HashMap<ChunkPosition, HashSet<ChunkSection>> = HashMap() // TODO: flatten to set?
+    private val culled: HashMap<ChunkPosition, HashSet<ChunkSection>> = HashMap()
     private val lock = ReentrantLock()
 
     val size: Int get() = viewDistance.size + culled.size

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
@@ -35,7 +36,7 @@ class WaterTest : BlockTest<Block>() {
     }
 
     fun `block state flags`() {
-        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.FLUID + BlockStateFlags.OUTLINE + BlockStateFlags.TINTED + BlockStateFlags.RANDOM_TICKS + BlockStateFlags.CAVE_SURFACE  // TODO: kutil 1.30.1
+        val expected = BlockStateFlags.FLUID + BlockStateFlags.OUTLINE + BlockStateFlags.TINTED + BlockStateFlags.RANDOM_TICKS + BlockStateFlags.CAVE_SURFACE
 
         assertEquals(expected, block.states.default.withProperties(FluidBlock.LEVEL to 1).flags)
     }

@@ -17,6 +17,8 @@ import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.kutil.unit.Bytes.Companion.bytes
+import de.bixilon.kutil.unit.Bytes.Companion.gigabytes
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
@@ -32,7 +34,7 @@ class MeshLoadingQueue(
     private val lock = Lock.lock()
 
 
-    val max = if (Runtime.getRuntime().maxMemory() > 1_000_000_000) 120 else 60 // TODO: kutil 1.30.1 bytes
+    val max = if (Runtime.getRuntime().maxMemory().bytes > 1.gigabytes) 120 else 60
     val size get() = meshes.size
 
 

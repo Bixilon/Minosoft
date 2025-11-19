@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk
 
+import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.objenesis.ObjenesisStd
-import java.util.concurrent.locks.ReentrantReadWriteLock
 
 const val SECTIONS = 16
 
@@ -57,7 +57,7 @@ object LightTestingUtil {
 
     fun createEmptyChunk(position: ChunkPosition): Chunk {
         val chunk = Chunk::class.java.allocate()
-        chunk::lock.forceSet(ReentrantReadWriteLock())
+        chunk::lock.forceSet(ReentrantRWLock())
         chunk::position.forceSet(position.raw)
         chunk::world.forceSet(world)
         chunk::light.forceSet(ChunkLight(chunk))

@@ -83,7 +83,7 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath("de.bixilon:kutil:1.30")
+        classpath("de.bixilon:kutil:1.30.1")
     }
 }
 

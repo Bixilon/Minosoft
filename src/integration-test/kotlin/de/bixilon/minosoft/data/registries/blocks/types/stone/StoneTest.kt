@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.stone
 
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
@@ -49,7 +50,7 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun `block state flags`() {
-        val expected = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.CAVE_SURFACE  // TODO: kutil 1.30.1
+        val expected = BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.CAVE_SURFACE
 
         assertEquals(expected, block.states.default.flags)
     }

@@ -46,7 +46,7 @@ class ChunkMesher(
     private fun updateDetails() {
         var details = IntInlineEnumSet<ChunkMeshDetails>()
 
-        if (!profile.enabled) details = ChunkMeshDetails.ALL // TODO: kutil 1.30.1 +=
+        if (!profile.enabled) details += ChunkMeshDetails.ALL
 
         if (!profile.minorVisualImpact) details += ChunkMeshDetails.MINOR_VISUAL_IMPACT
         if (!profile.aggressiveCulling) details += ChunkMeshDetails.AGGRESSIVE_CULLING
@@ -75,7 +75,7 @@ class ChunkMesher(
 
         val position = SectionPosition.of(section)
 
-        val details = if (this.details.size > 0) this.details else getDetails(previous?.details, position) // TODO: kutil 1.30.1 +
+        val details = getDetails(previous?.details, position) + this.details
 
 
         // TODO: put sizes of previous mesh (cache estimate)

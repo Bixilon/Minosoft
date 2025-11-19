@@ -21,8 +21,8 @@ import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.string.StringUtil.truncate
+import de.bixilon.kutil.unit.Bytes.Companion.bytes
 import de.bixilon.kutil.unit.UnitFormatter.format
-import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -198,25 +198,25 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 1, RIGHT) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s" }
+        layout += AutoTextElement(guiRenderer, 1, RIGHT) { "Allocation rate ${AllocationRate.allocationRate}/s" }
 
         SystemInformation.RUNTIME.apply {
             layout += AutoTextElement(guiRenderer, 1, RIGHT) {
-                val total = maxMemory()
-                val used = totalMemory() - freeMemory()
-                "Memory ${(used * 100.0 / total).rounded10}% ${used.formatBytes()} / ${total.formatBytes()}"
+                val total = maxMemory().bytes
+                val used = totalMemory().bytes - freeMemory().bytes
+                "Memory ${(used.bytes * 100.0 / total.bytes).rounded10}% $used / $total"
             }
             layout += AutoTextElement(guiRenderer, 1, RIGHT) {
-                val total = maxMemory()
-                val allocated = totalMemory()
-                "Allocated ${(allocated * 100.0 / total).rounded10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
+                val total = maxMemory().bytes
+                val allocated = totalMemory().bytes
+                "Allocated ${(allocated.bytes * 100.0 / total.bytes).rounded10}% $allocated / $total"
             }
         }
 
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", properties = RIGHT)
-        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}", properties = RIGHT)
+        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY}", properties = RIGHT)
 
 
         layout += LineSpacerElement(guiRenderer)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.kutil.unit.UnitFormatter.formatBytes
+import de.bixilon.kutil.unit.Bytes.Companion.bytes
 import oshi.SystemInfo
 
 @Deprecated(message = "Will be refactored")
@@ -22,17 +22,8 @@ object SystemInformation {
     val SYSTEM_INFO = SystemInfo()
     val HARDWARE_SYSTEM_INFO = SYSTEM_INFO.hardware
 
-    val SYSTEM_MEMORY = HARDWARE_SYSTEM_INFO.memory.total
+    val SYSTEM_MEMORY = HARDWARE_SYSTEM_INFO.memory.total.bytes
     val OS_TEXT: String = "${System.getProperty("os.name")}: ${SYSTEM_INFO.operatingSystem.family} ${SYSTEM_INFO.operatingSystem.bitness}bit"
 
     val PROCESSOR_TEXT = "${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
-
-
-    private fun getMaxMemory(): Long {
-        return RUNTIME.maxMemory()
-    }
-
-    private fun getFormattedMaxMemory(): String {
-        return getMaxMemory().formatBytes()
-    }
 }
