@@ -40,7 +40,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.ChunkMeshCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -91,9 +91,9 @@ class SolidSectionMesherTest {
 
         val chunk = world.chunks[0, 0]!!
         val section = chunk.sections[0]!!
-        val meshes = ChunkMeshesBuilder(context, section, BlockMesherCache(context), ChunkMeshDetails.ALL + ChunkMeshDetails.CULL_FULL_OPAQUE)
+        val meshes = ChunkMeshesBuilder(context, section, ChunkMeshDetails.ALL + ChunkMeshDetails.CULL_FULL_OPAQUE)
 
-        mesher.mesh(section, BlockMesherCache(context), chunk.neighbours, section.neighbours, meshes)
+        mesher.mesh(section, ChunkMeshCache(context), chunk.neighbours, section.neighbours, meshes)
 
         return meshes.build(SectionPosition.of(chunk.position, 0))
     }

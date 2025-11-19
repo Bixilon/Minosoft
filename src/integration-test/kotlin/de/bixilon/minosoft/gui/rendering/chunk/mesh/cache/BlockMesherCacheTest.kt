@@ -31,16 +31,16 @@ import org.testng.annotations.Test
 
 @Test(groups = ["mesher"])
 class BlockMesherCacheTest {
-    private val ENTITIES by lazy { BlockMesherCache::class.java.getFieldOrNull("entities")!!.field }
+    private val ENTITIES by lazy { ChunkMeshCache::class.java.getFieldOrNull("entities")!!.field }
 
-    private fun BlockMesherCache.entities(): BlockEntityCacheState? = ENTITIES[this]
+    private fun ChunkMeshCache.entities(): BlockEntityCacheState? = ENTITIES[this]
 
-    private fun create(): BlockMesherCache {
+    private fun create(): ChunkMeshCache {
         val context = RenderContext::class.java.allocate()
         context::queue.forceSet(Queue(1))
 
 
-        return BlockMesherCache(context)
+        return ChunkMeshCache(context)
     }
 
     fun `entities initially null`() {

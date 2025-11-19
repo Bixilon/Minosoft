@@ -18,14 +18,14 @@ import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.ChunkMeshCache
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
 
 class MeshUnloadingQueue(
     private val renderer: ChunkRenderer,
 ) {
     private val meshes = ArrayDeque<ChunkMeshes>()
-    private val caches = ArrayDeque<BlockMesherCache>()
+    private val caches = ArrayDeque<ChunkMeshCache>()
     private val lock = Lock.lock()
 
 
@@ -46,14 +46,14 @@ class MeshUnloadingQueue(
 
     fun work() = lock.locked {
         work(this.meshes, ChunkMeshes::unload)
-        work(this.caches, BlockMesherCache::unload)
+        work(this.caches, ChunkMeshCache::unload)
     }
 
 
-    operator fun plusAssign(cache: BlockMesherCache) = lock.locked { caches += cache }
+    operator fun plusAssign(cache: ChunkMeshCache) = lock.locked { caches += cache }
 
     @JvmName("plusAssignCache")
-    operator fun plusAssign(caches: Collection<BlockMesherCache>) = lock.locked { this.caches += caches }
+    operator fun plusAssign(caches: Collection<ChunkMeshCache>) = lock.locked { this.caches += caches }
 
     operator fun plusAssign(mesh: ChunkMeshes) = lock.locked { meshes += mesh }
 

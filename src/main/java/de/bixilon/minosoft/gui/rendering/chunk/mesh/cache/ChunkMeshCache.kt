@@ -19,10 +19,12 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 
-class BlockMesherCache(
+class ChunkMeshCache(
     val context: RenderContext,
 ) {
     private var entities: BlockEntityCacheState? = null
+
+    val isEmpty get() = entities == null
 
     fun createEntity(position: InSectionPosition, entity: BlockEntity): BlockEntityRenderer? {
         var renderer: BlockEntityRenderer? = null
@@ -71,7 +73,8 @@ class BlockMesherCache(
 
             entities.entities[index] = null
             remove += entity
-            entities.count--
+
+            if (--entities.count == 0) break
         }
         if (entities.count == 0) {
             this.entities = null
@@ -81,12 +84,12 @@ class BlockMesherCache(
     }
 
     fun unload() {
-        entities?.entities?.forEach { it?.unload() }
+        entities?.unload()
         entities = null
     }
 
     fun drop() {
-        entities?.entities?.forEach { it?.drop() }
+        entities?.drop()
         entities = null
     }
 }

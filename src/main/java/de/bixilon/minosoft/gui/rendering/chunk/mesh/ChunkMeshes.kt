@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 
 class ChunkMeshes(
@@ -34,7 +33,6 @@ class ChunkMeshes(
     val translucent: ChunkMesh?,
     val text: ChunkMesh?,
     val entities: Array<BlockEntityRenderer>?,
-    val cache: BlockMesherCache,
 ) {
     val center = BlockPosition.of(position, InSectionPosition(8, 8, 8))
 

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.ChunkMeshCache
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MesherTaskManager
 import kotlin.math.abs
@@ -108,10 +109,11 @@ class ChunkMeshingQueue(
             val position = SectionPosition.of(section)
 
             val previous = renderer.loaded[position]
+            val cache = renderer.cache[position] ?: ChunkMeshCache(renderer.context)
 
             val mesh = try {
                 task.thread = Thread.currentThread()
-                renderer.mesher.mesh(previous, section)
+                renderer.mesher.mesh(previous, cache, section)
             } catch (_: InterruptedException) {
                 return@ThreadPoolRunnable
             } finally {
@@ -121,8 +123,15 @@ class ChunkMeshingQueue(
             }
             Thread.interrupted() // clear interrupted flag
 
+            if (cache.isEmpty) {
+                cache.drop()
+            } else {
+                renderer.cache[position] = cache
+            }
+
             if (mesh == null) {
                 renderer.loaded -= position
+                cache.drop()
             } else {
                 renderer.loadingQueue += mesh
             }

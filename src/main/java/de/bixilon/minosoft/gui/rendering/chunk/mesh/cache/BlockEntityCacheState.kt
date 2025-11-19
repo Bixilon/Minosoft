@@ -34,4 +34,19 @@ class BlockEntityCacheState {
             count--
         }
     }
+
+    inline fun forEach(consumer: (renderer: BlockEntityRenderer) -> Unit) {
+        if (count == 0) return
+
+        var left = count
+        for (index in 0 until ChunkSize.BLOCKS_PER_SECTION) {
+            val renderer = entities[index] ?: continue
+
+            consumer.invoke(renderer)
+            if (--left == 0) break
+        }
+    }
+
+    fun drop() = forEach(BlockEntityRenderer::drop)
+    fun unload() = forEach(BlockEntityRenderer::unload)
 }

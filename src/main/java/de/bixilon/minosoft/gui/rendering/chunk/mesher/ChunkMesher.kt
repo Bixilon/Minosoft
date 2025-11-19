@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshesBuilder
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.BlockMesherCache
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.ChunkMeshCache
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.fluid.FluidSectionMesher
 
@@ -64,14 +64,13 @@ class ChunkMesher(
         return ChunkMeshDetails.update(previous, position, renderer.visibility.sectionPosition)
     }
 
-    fun mesh(previous: ChunkMeshes?, section: ChunkSection): ChunkMeshes? {
+    fun mesh(previous: ChunkMeshes?, cache: ChunkMeshCache, section: ChunkSection): ChunkMeshes? {
         if (section.blocks.isEmpty) return null
 
         val neighbours = section.chunk.neighbours
         val sectionNeighbours = section.neighbours
         if (!neighbours.complete) return null // TODO: Requeue the chunk? (But on a neighbour update the chunk gets queued again?)
 
-        val cache = previous?.cache ?: BlockMesherCache(renderer.context)
         cache.unmark()
 
         val position = SectionPosition.of(section)
@@ -80,7 +79,7 @@ class ChunkMesher(
 
 
         // TODO: put sizes of previous mesh (cache estimate)
-        val mesh = ChunkMeshesBuilder(renderer.context, section, cache, details)
+        val mesh = ChunkMeshesBuilder(renderer.context, section, details)
         try {
             solid.mesh(section, cache, neighbours, sectionNeighbours, mesh)
 

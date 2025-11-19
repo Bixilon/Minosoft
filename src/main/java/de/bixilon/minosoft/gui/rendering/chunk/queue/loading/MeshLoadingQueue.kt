@@ -86,7 +86,7 @@ class MeshLoadingQueue(
             if (requeue) {
                 renderer.invalidate(mesh.section)
             } else {
-                mesh.cache.drop()
+                renderer.cache -= mesh.position
             }
         }
     }
@@ -104,7 +104,7 @@ class MeshLoadingQueue(
             iterator.remove()
 
             mesh.drop()
-            mesh.cache.drop()
+            renderer.cache -= mesh.position
             break
         }
     }
@@ -112,7 +112,7 @@ class MeshLoadingQueue(
     fun clear() = lock.locked {
         for (mesh in meshes) {
             mesh.drop()
-            mesh.cache.drop()
+            renderer.cache -= mesh.position
         }
         meshes.clear()
         positions.clear()

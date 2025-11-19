@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.ChunkCacheManager
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.culled.CulledQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue
@@ -70,6 +71,7 @@ class ChunkRenderer(
 
     val mesher = ChunkMesher(this)
     val loaded = LoadedMeshes(this)
+    val cache = ChunkCacheManager(this)
 
 
     var limitChunkTransferTime = true
@@ -123,6 +125,7 @@ class ChunkRenderer(
         meshingQueue.clear()
         loadingQueue.clear()
         loaded.clear()
+        cache.clear()
         meshingQueue.tasks.interrupt(false)
 
         context.queue += { unloadingQueue.work() }
