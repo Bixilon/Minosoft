@@ -140,7 +140,7 @@ class LoadedMeshes(
                     continue
                 }
 
-                val next = ChunkMeshDetails.update(mesh.details, mesh.position, renderer.visibility.sectionPosition)
+                val next = if (renderer.mesher.details.size > 0) renderer.mesher.details else ChunkMeshDetails.update(mesh.details, mesh.position, renderer.visibility.sectionPosition) // TODO: kutil 1.30.1 +
 
                 if (next == mesh.details) continue
 

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.profile.ProfileLock
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.profiles.block.lod.LodC
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
 import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
@@ -56,6 +57,7 @@ class BlockProfile(
 
     val outline = OutlineC(this)
     val rendering = RenderingC(this)
+    val lod = LodC(this)
 
 
     override fun toString(): String {
