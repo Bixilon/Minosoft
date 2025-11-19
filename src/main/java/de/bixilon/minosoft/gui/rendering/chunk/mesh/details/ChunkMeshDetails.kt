@@ -95,7 +95,8 @@ enum class ChunkMeshDetails {
             if (distance >= 12 * 12) details += AGGRESSIVE_CULLING
 
             if (distanceXZ >= 8 * 8) details -= DARK_CAVE_SURFACE
-            if ((distanceXZ > 5 * 5 && abs(delta.y) >= 6) || abs(delta.y) >= 10) details -= DARK_CAVE_SURFACE
+            if ((distanceXZ >= 5 * 5 && abs(delta.y) >= 5)) details -= DARK_CAVE_SURFACE
+            if (distanceXZ >= 2 * 2 && abs(delta.y) >= 8) details -= DARK_CAVE_SURFACE
 
             if (delta.y < -SIDE_NORMAL) details -= SIDE_DOWN
             if (delta.y > +SIDE_NORMAL) details -= SIDE_UP
@@ -110,11 +111,16 @@ enum class ChunkMeshDetails {
         }
 
         fun update(previous: IntInlineEnumSet<ChunkMeshDetails>, position: SectionPosition, camera: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+
+            if (position == SectionPosition(-54, 0, 70)) {
+                println()
+            }
+
             var details = previous
             val delta = position - camera
 
-            val distanceXZ = abs(delta.x) + abs(delta.z)
-            val distance = distanceXZ + abs(delta.y) / 2
+            val distanceXZ = delta.x * delta.x + delta.z * delta.z
+            val distance = distanceXZ + (delta.y * delta.y / 4)
 
 
             if (distance < 9 * 9) details += ENTITIES
@@ -149,12 +155,12 @@ enum class ChunkMeshDetails {
             }
 
             if (distanceXZ <= 7 * 7) details += DARK_CAVE_SURFACE
-            if (distanceXZ <= 3 * 3 && abs(delta.y) < 5) details += DARK_CAVE_SURFACE
-            if (abs(delta.y) < 8) details += DARK_CAVE_SURFACE
+            if (distanceXZ <= 3 * 3 && abs(delta.y) < 4) details += DARK_CAVE_SURFACE
+            if (distanceXZ <= 5 * 5 && abs(delta.y) < 7) details += DARK_CAVE_SURFACE
 
-            if (distanceXZ >= 12 * 12) details -= DARK_CAVE_SURFACE
-            if ((distanceXZ > 7 * 7 && abs(delta.y) >= 8) || abs(delta.y) >= 12) details -= DARK_CAVE_SURFACE
-
+            if (distanceXZ >= 10 * 10) details -= DARK_CAVE_SURFACE
+            if ((distanceXZ >= 7 * 7 && abs(delta.y) >= 6)) details -= DARK_CAVE_SURFACE
+            if (distanceXZ >= 3 * 3 && abs(delta.y) >= 10) details -= DARK_CAVE_SURFACE
 
 
 
