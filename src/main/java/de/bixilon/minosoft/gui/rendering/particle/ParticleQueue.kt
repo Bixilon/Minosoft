@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 
 class ParticleQueue(val renderer: ParticleRenderer) {
     private val lock = Lock.lock()
-    private val queue: MutableList<Particle> = ArrayDeque(QUEUE_CAPACITY)
+    private val queue: ArrayDeque<Particle> = ArrayDeque(QUEUE_CAPACITY)
 
 
     operator fun plusAssign(particle: Particle) = queue(particle)

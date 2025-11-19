@@ -103,10 +103,12 @@ class CulledQueue(
 
         renderer.meshingQueue.lock.lock()
 
+        val frustum = renderer.context.camera.frustum
+
         val iterator = culled.iterator()
         while (iterator.hasNext()) {
             val (position, sections) = iterator.next()
-            if (position !in renderer.visibility) continue
+            if (position !in frustum) continue
 
             val sectionIterator = sections.iterator()
             while (sectionIterator.hasNext()) {

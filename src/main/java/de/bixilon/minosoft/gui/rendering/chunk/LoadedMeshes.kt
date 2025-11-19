@@ -91,11 +91,13 @@ class LoadedMeshes(
     fun addTo(visible: VisibleMeshes) = lock.acquired {
         // TODO: somehow cache the sorting
 
+        val frustum = renderer.context.camera.frustum
+
         val iterator = this.meshes.iterator()
         while (iterator.hasNext()) {
             val (position, meshes) = iterator.next()
 
-            if (position !in renderer.context.camera.frustum) continue
+            if (position !in frustum) continue
 
             for (mesh in meshes.values) {
                 // TODO: unload if occluded (but we can not distinct between frustum and occlusion)
