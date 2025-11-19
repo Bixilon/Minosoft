@@ -58,7 +58,7 @@ value class BlockPosition(
     }
 
     inline fun plusX(): BlockPosition {
-        assertPosition(this.x < MAX_X)
+        assertPosition(this.x < MAX_X, "max x: $x")
         return modifyX(X * 1)
     }
 
@@ -68,12 +68,12 @@ value class BlockPosition(
     }
 
     inline fun minusX(): BlockPosition {
-        assertPosition(this.x > -MAX_X)
+        assertPosition(this.x > -MAX_X, "min x: $x")
         return modifyX(-X * 1)
     }
 
     inline fun plusY(): BlockPosition {
-        assertPosition(this.y < MAX_Y)
+        assertPosition(this.y < MAX_Y, "max y: $y")
         return modifyY(Y * 1)
     }
 
@@ -83,12 +83,12 @@ value class BlockPosition(
     }
 
     inline fun minusY(): BlockPosition {
-        assertPosition(this.y > -MAX_Y)
+        assertPosition(this.y > -MAX_Y, "min y: $y")
         return modifyY(-Y * 1)
     }
 
     inline fun plusZ(): BlockPosition {
-        assertPosition(this.z < MAX_Y)
+        assertPosition(this.z < MAX_Z, "max z: $z")
         return modifyZ(Z * 1)
     }
 
@@ -98,7 +98,7 @@ value class BlockPosition(
     }
 
     inline fun minusZ(): BlockPosition {
-        assertPosition(this.z > -MAX_Z)
+        assertPosition(this.z > -MAX_Z, "min z: $z")
         return modifyZ(-Z * 1)
     }
 

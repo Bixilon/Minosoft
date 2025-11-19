@@ -66,7 +66,7 @@ value class SVec3i(val raw: Int) : _Vec3i {
     }
 
     inline fun plusZ(): SVec3i {
-        assertVec(this.z < MAX_Y)
+        assertVec(this.z < MAX_Z)
         return SVec3i(raw + Z * 1)
     }
 
