@@ -74,25 +74,18 @@ class OpenGlVertexBuffer(
     }
 
 
-    override fun draw(): Int {
+    override fun draw() {
         check(state == GpuBufferStates.INITIALIZED) { "Vertex buffer is not uploaded: $state" }
 
         bind()
 
-        val query = gl { glGenQueries() }
-        glBeginQuery(GL_SAMPLES_PASSED, query)
         if (index == null) {
             gl { glDrawArrays(primitive.gl, 0, vertices) }
         } else {
             gl { glDrawElements(primitive.gl, vertices, GL_UNSIGNED_INT, 0); }
         }
-        gl { glEndQuery(GL_SAMPLES_PASSED) }
-        val fragments = gl { glGetQueryObjecti(query, GL_QUERY_RESULT) }
-        gl { glDeleteQueries(query) }
 
         unbind()
-
-        return fragments
     }
 
     override fun drop() {

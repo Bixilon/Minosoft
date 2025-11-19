@@ -25,12 +25,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyFloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyIntUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.dummy.query.DummyQuery
 import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
@@ -102,6 +104,8 @@ class DummyRenderSystem(
     override fun createTextureManager(): TextureManager {
         return DummyTextureManager(context)
     }
+
+    override fun createQuery(type: QueryTypes) = DummyQuery(type)
 
     override fun clear(vararg buffers: IntegratedBufferTypes) = Unit
 
