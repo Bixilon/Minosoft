@@ -98,6 +98,15 @@ class SolidSectionMesher(
         val min = blocks.minPosition
         val max = blocks.maxPosition
 
+        val entitiesDetail = ChunkMeshDetails.ENTITIES in details
+
+        val nonFullBlocks = ChunkMeshDetails.NON_FULL_BLOCKS in details
+        val minorVisualImpact = ChunkMeshDetails.MINOR_VISUAL_IMPACT in details
+        val cullFullOpaque = ChunkMeshDetails.CULL_FULL_OPAQUE in details
+
+        val down = ChunkMeshDetails.SIDE_DOWN in details
+        val up = ChunkMeshDetails.SIDE_UP in details
+
         for (y in min.y..max.y) {
             for (x in min.x..max.x) {
                 for (z in min.z..max.z) {
@@ -105,12 +114,12 @@ class SolidSectionMesher(
                     val state = blocks[inSection] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
-                    if (ChunkMeshDetails.NON_FULL_BLOCKS !in details && BlockStateFlags.FULL_OUTLINE !in state.flags) continue
-                    if (ChunkMeshDetails.MINOR_VISUAL_IMPACT !in details && BlockStateFlags.MINOR_VISUAL_IMPACT in state.flags) continue
-                    if (ChunkMeshDetails.CULL_FULL_OPAQUE in details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
+                    if (!nonFullBlocks && BlockStateFlags.FULL_OUTLINE !in state.flags) continue
+                    if (!minorVisualImpact && BlockStateFlags.MINOR_VISUAL_IMPACT in state.flags) continue
+                    if (!cullFullOpaque && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
 
                     val model = state.block.model ?: state.model
-                    val entity = if (ChunkMeshDetails.ENTITIES in details) section.entities[inSection] else null
+                    val entity = if (entitiesDetail) section.entities[inSection] else null
                     val entityRenderer = entity?.let { cache.createEntity(inSection, entity) }
                     if (model == null && entityRenderer == null) continue
 
@@ -121,8 +130,8 @@ class SolidSectionMesher(
                     floatOffset.z = (position.z - cameraOffset.z).toFloat()
 
 
-                    if (ChunkMeshDetails.SIDE_DOWN in details) setDown(inSection, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
-                    if (ChunkMeshDetails.SIDE_UP in details) setUp(isHighestSection, inSection, neighbourBlocks, neighbours, light, section, chunk)
+                    if (down) setDown(inSection, isLowestSection, neighbourBlocks, neighbours, light, section, chunk)
+                    if (up) setUp(isHighestSection, inSection, neighbourBlocks, neighbours, light, section, chunk)
 
                     // TODO: mesh details (sides)
                     setZ(neighbourBlocks, inChunk, neighbours, light, neighbourChunks, section, chunk)
