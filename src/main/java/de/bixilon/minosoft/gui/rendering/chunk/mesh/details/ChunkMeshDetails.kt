@@ -104,11 +104,6 @@ object ChunkMeshDetails {
     }
 
     fun update(previous: IntInlineSet, position: SectionPosition, camera: SectionPosition): IntInlineSet {
-
-        if (position == SectionPosition(-54, 0, 70)) {
-            println()
-        }
-
         var details = previous
         val delta = position - camera
 

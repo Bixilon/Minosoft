@@ -107,7 +107,7 @@ class SolidSectionMesher(
 
                     if (ChunkMeshDetails.NON_FULL_BLOCKS !in details && BlockStateFlags.FULL_OUTLINE !in state.flags) continue
                     if (ChunkMeshDetails.MINOR_VISUAL_IMPACT !in details && BlockStateFlags.MINOR_VISUAL_IMPACT in state.flags) continue
-                    if (ChunkMeshDetails.CULL_FULL_OPAQUE !in details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
+                    if (ChunkMeshDetails.CULL_FULL_OPAQUE in details && areAllNeighboursFullOpaque(inSection, blocks, neighbours)) continue
 
                     val model = state.block.model ?: state.model
                     val entity = if (ChunkMeshDetails.ENTITIES in details) section.entities[inSection] else null
