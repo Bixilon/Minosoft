@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags.toFlagSet
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.building.fence.FenceBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FlowerBlock
@@ -135,6 +136,10 @@ object VerifyIntegratedBlockRegistry {
         if (block is FlowerBlock) {
             flags -= BlockStateFlags.OFFSET
         }
+        if (block is FenceBlock) {
+            flags -= BlockStateFlags.FULL_COLLISION
+            flags -= BlockStateFlags.FULL_OUTLINE
+        }
 
         return flags
     }
@@ -152,7 +157,7 @@ object VerifyIntegratedBlockRegistry {
     }
 
     private fun compareLightProperties(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
-        if (integrated.block is ShulkerBoxBlock || integrated.block is WoodenChestBlock<*> || integrated.block is SlimeBlock || BlockStateFlags.WATERLOGGED in integrated.flags) return
+        if (integrated.block is ShulkerBoxBlock || integrated.block is WoodenChestBlock<*> || integrated.block is SlimeBlock || BlockStateFlags.WATERLOGGED in integrated.flags || integrated.block is FenceBlock) return
 
         val lightPixlyzer = pixlyzer.block.getLightProperties(pixlyzer)
         val lightIntegrated = integrated.block.getLightProperties(integrated)

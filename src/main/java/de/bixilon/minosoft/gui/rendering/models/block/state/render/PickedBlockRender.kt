@@ -13,55 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
-import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
-import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import java.util.*
 
-interface PickedBlockRender : BlockRender {
-    val default: BlockRender?
-
+interface PickedBlockRender : NeighbourBlockRender {
     fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender?
-
-
-    override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) {
-        default?.render(gui, offset, consumer, options, size, stack, tints)
-    }
 
     override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
         return pick(state, props.neighbours)?.render(props, position, state, entity, tints) ?: false
-    }
-
-    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        default?.render(consumer, state, tints)
-    }
-
-    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {
-        default?.render(offset, consumer, stack, tints)
-    }
-
-    override fun getProperties(direction: Directions): SideProperties? {
-        return default?.getProperties(direction) // both models should have the same properties
-    }
-
-    override fun getDisplay(position: DisplayPositions): ModelDisplay? {
-        return default?.getDisplay(position)
-    }
-
-    override fun getParticleTexture(random: Random?, position: BlockPosition): Texture? {
-        return default?.getParticleTexture(random, position)
     }
 }

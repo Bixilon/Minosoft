@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
 class PrimitiveCondition private constructor(val matches: Boolean) : BuilderCondition {
+
+    override fun toString() = matches.toString()
 
     override fun matches(properties: Map<BlockProperty<*>, Any>) = matches
 

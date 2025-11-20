@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.fence.FenceBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -56,6 +57,14 @@ interface Acacia {
             override val identifier = minecraft("acacia_planks")
 
             override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
+        }
+    }
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Acacia {
+
+        companion object : BlockFactory<Fence> {
+            override val identifier = minecraft("acacia_fence")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Fence(settings = settings)
         }
     }
 }

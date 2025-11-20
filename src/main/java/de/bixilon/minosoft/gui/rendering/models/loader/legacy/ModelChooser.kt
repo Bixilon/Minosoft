@@ -24,6 +24,7 @@ interface ModelChooser : StatedBlock {
     }
 
     companion object {
+
         fun fallback(model: DirectBlockModel, block: StatedBlock) {
             for (state in block.states) {
                 val apply = model.choose(state.properties) ?: continue
