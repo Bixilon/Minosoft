@@ -49,6 +49,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.WoodenChe
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.light.torch.RedstoneTorchBlock
+import de.bixilon.minosoft.data.registries.blocks.types.light.torch.TorchBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.SlimeBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
@@ -158,6 +160,10 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     ShulkerBoxBlock, ShulkerBoxBlock.White, ShulkerBoxBlock.Orange, ShulkerBoxBlock.Magenta, ShulkerBoxBlock.LightBlue, ShulkerBoxBlock.Yellow, ShulkerBoxBlock.Lime, ShulkerBoxBlock.Pink, ShulkerBoxBlock.Gray, ShulkerBoxBlock.LightGray, ShulkerBoxBlock.Cyan, ShulkerBoxBlock.Purple, ShulkerBoxBlock.Blue, ShulkerBoxBlock.Brown, ShulkerBoxBlock.Green, ShulkerBoxBlock.Green, ShulkerBoxBlock.Red, ShulkerBoxBlock.Black,
 
     Netherrack, SoulSand, SoulSoil,
+
+    RedstoneTorchBlock.Standing, RedstoneTorchBlock.Wall,
+    TorchBlock.NormalTorchBlock.Standing, TorchBlock.NormalTorchBlock.Wall,
+    TorchBlock.SoulTorchBlock.Standing, TorchBlock.SoulTorchBlock.Wall,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {

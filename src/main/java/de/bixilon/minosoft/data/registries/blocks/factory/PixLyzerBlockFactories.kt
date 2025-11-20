@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.factory
 
+import de.bixilon.minosoft.data.registries.blocks.types.light.torch.RedstoneTorchBlock
+import de.bixilon.minosoft.data.registries.blocks.types.light.torch.AbstractTorchBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.*
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button.WoodenButtonBlock
@@ -45,9 +47,7 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     RepeaterBlock,
     ComparatorBlock,
     CampfireBlock,
-    TorchBlock,
     NetherPortalBlock,
-    RedstoneTorchBlock,
     KelpBlock,
     KelpPlantBlock,
     SeagrassBlock,
