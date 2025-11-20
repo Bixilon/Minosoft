@@ -32,6 +32,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import org.jline.reader.*
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
+import java.io.IOException
 
 object CLI {
     const val CLI_PREFIX = '.'
@@ -85,6 +86,8 @@ object CLI {
             } catch (exception: EndOfFileException) {
                 eol(exception); break
             } catch (exception: LastErrorException) {
+                eol(exception); break
+            } catch (exception: IOException) {
                 eol(exception); break
             } catch (exception: UserInterruptException) {
                 ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
