@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.util.KUtil.format
-import kotlin.math.abs
 
 class VisibleMeshes(
     val camera: BlockPosition = BlockPosition.EMPTY,
@@ -43,7 +42,7 @@ class VisibleMeshes(
 
     private fun add(mesh: ChunkMeshes) {
         val delta = (camera - mesh.center)
-        val distance = abs(delta.x) * abs(delta.y) * abs(delta.z)
+        val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
         mesh.opaque?.let {
             it.distance = distance
             opaque += it

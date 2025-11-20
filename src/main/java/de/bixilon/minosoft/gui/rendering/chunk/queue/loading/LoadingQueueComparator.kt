@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import kotlin.math.abs
 
 class LoadingQueueComparator : Comparator<ChunkMeshes> {
     private var sort = 1
@@ -32,7 +31,7 @@ class LoadingQueueComparator : Comparator<ChunkMeshes> {
         if (sort == this@LoadingQueueComparator.sort) return distance
 
         val delta = (center - this@LoadingQueueComparator.position)
-        val distance = abs(delta.x) + abs(delta.y / 2) + abs(delta.z)
+        val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
 
         this.distance = distance
         this.sort = this@LoadingQueueComparator.sort
