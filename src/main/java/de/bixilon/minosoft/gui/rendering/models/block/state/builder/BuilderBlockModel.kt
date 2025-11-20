@@ -61,7 +61,7 @@ class BuilderBlockModel(
     companion object {
 
         fun deserialize(loader: BlockLoader, block: Block, data: List<JsonObject>): BuilderBlockModel? {
-            val parts: MutableList<Apply> = mutableListOf()
+            val parts: MutableList<Apply> = ArrayList(data.size)
 
             for (entry in data) {
                 val apply = entry["apply"]?.let { BlockStateApply.deserialize(loader, it) } ?: continue
