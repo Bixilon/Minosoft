@@ -514,6 +514,7 @@ kotlin {
         languageVersion.set(KotlinVersion.KOTLIN_2_1)
         freeCompilerArgs.add("-Xskip-prerelease-check")
         freeCompilerArgs.add("-Xallow-unstable-dependencies")
+        freeCompilerArgs.add("-Xwarning-level=NOTHING_TO_INLINE:disabled")
     }
 }
 
