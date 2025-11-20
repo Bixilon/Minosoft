@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.CarpetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.Gravel
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.brick.*
@@ -129,6 +130,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     CobwebBlock,
 
     WoolBlock.White, WoolBlock.Orange, WoolBlock.Magenta, WoolBlock.LightBlue, WoolBlock.Yellow, WoolBlock.Lime, WoolBlock.Pink, WoolBlock.Gray, WoolBlock.LightGray, WoolBlock.Cyan, WoolBlock.Purple, WoolBlock.Blue, WoolBlock.Brown, WoolBlock.Green, WoolBlock.Green, WoolBlock.Red, WoolBlock.Black,
+    CarpetBlock.White, CarpetBlock.Orange, CarpetBlock.Magenta, CarpetBlock.LightBlue, CarpetBlock.Yellow, CarpetBlock.Lime, CarpetBlock.Pink, CarpetBlock.Gray, CarpetBlock.LightGray, CarpetBlock.Cyan, CarpetBlock.Purple, CarpetBlock.Blue, CarpetBlock.Brown, CarpetBlock.Green, CarpetBlock.Green, CarpetBlock.Red, CarpetBlock.Black,
 
     ScaffoldingBlock,
 
