@@ -56,7 +56,7 @@ object BlockStateFlags {
     const val TINTED = 11
     const val RANDOM_TICKS = 12
     const val CUSTOM_CULLING = 13
-    const val MINOR_VISUAL_IMPACT = 14 // TODO: fence, vine, candle, pointed dripstone, amethyst, saplings, flowers, coral, sign, rails, sugar cane
+    const val MINOR_VISUAL_IMPACT = 14 // TODO: fence, vine, candle, pointed dripstone, amethyst, saplings, coral, sign, rails, sugar cane
     const val CAVE_SURFACE = 15 // TODO: dripstone block, amethyst
 
     fun of(block: Block): IntInlineSet {

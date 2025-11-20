@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags.toFlagSe
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FlowerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
@@ -130,6 +131,9 @@ object VerifyIntegratedBlockRegistry {
         }
         if (block is SoulSand) {
             flags -= BlockStateFlags.VELOCITY // TODO: Only in <1.14.4
+        }
+        if (block is FlowerBlock) {
+            flags -= BlockStateFlags.OFFSET
         }
 
         return flags

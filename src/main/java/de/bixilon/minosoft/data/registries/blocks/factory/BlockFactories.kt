@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSoil
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FlowerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.DarkPrismarine
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.Prismarine
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.PrismarineBrick
@@ -156,6 +157,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     SnowBlock, SnowLayerBlock,
     FernBlock.DeadBush, FernBlock.Grass, FernBlock.ShortGrass, FernBlock.Fern,
     DoublePlant.Sunflower, DoublePlant.Lilac, DoublePlant.TallGrass, DoublePlant.LargeFern, DoublePlant.RoseBush, DoublePlant.Peony, DoublePlant.UpperBlock,
+    FlowerBlock.Dandelion, FlowerBlock.Torchflower, FlowerBlock.Poppy, FlowerBlock.BlueOrchid, FlowerBlock.Allium, FlowerBlock.AzureBluet, FlowerBlock.RedTulip, FlowerBlock.OrangeTulip, FlowerBlock.WhiteTulip, FlowerBlock.PinkTulip, FlowerBlock.OxeyeDaisy, FlowerBlock.Cornflower, FlowerBlock.WitherRose, FlowerBlock.LilyOfTheValley,
 
 
     WoodenChestBlock.Chest, WoodenChestBlock.TrappedChest, EnderChestBlock,
