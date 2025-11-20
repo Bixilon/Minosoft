@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -31,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
 class ChunkMeshesBuilder(
     context: RenderContext,
     val section: ChunkSection,
-    val details: IntInlineEnumSet<ChunkMeshDetails>,
+    val details: IntInlineSet,
 ) : BlockVertexConsumer { // TODO: Don't inherit
     var opaque = ChunkMeshBuilder(context, section.blocks.count.opaqueCount())
     var translucent = ChunkMeshBuilder(context, section.blocks.count.translucentCount())

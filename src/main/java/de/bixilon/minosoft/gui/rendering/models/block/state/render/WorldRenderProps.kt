@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
@@ -27,6 +28,6 @@ class WorldRenderProps(
     val random: Random?,
     val neighbours: Array<BlockState?>,
     val light: ByteArray,
-    val details: IntInlineEnumSet<ChunkMeshDetails>,
+    val details: IntInlineSet,
     val ao: AmbientOcclusion?,
 )

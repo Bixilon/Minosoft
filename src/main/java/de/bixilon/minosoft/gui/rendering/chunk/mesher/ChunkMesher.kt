@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -31,7 +32,7 @@ class ChunkMesher(
     private val solid = SolidSectionMesher(renderer.context)
     private val fluid = FluidSectionMesher(renderer.context)
 
-    var details = IntInlineEnumSet<ChunkMeshDetails>()
+    var details = IntInlineSet()
         private set
 
     init {
@@ -44,7 +45,7 @@ class ChunkMesher(
     }
 
     private fun updateDetails() {
-        var details = IntInlineEnumSet<ChunkMeshDetails>()
+        var details = IntInlineSet()
 
         if (!profile.enabled) details += ChunkMeshDetails.ALL
 
@@ -58,7 +59,7 @@ class ChunkMesher(
         renderer.invalidate(renderer.world)
     }
 
-    private fun getDetails(previous: IntInlineEnumSet<ChunkMeshDetails>?, position: SectionPosition): IntInlineEnumSet<ChunkMeshDetails> {
+    private fun getDetails(previous: IntInlineSet?, position: SectionPosition): IntInlineSet {
         if (previous == null) return ChunkMeshDetails.of(position, renderer.visibility.sectionPosition)
 
         return ChunkMeshDetails.update(previous, position, renderer.visibility.sectionPosition)
