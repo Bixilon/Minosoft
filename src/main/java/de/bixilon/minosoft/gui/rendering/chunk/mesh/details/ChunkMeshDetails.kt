@@ -79,7 +79,7 @@ object ChunkMeshDetails {
         if (distance >= 2 * 2) details += CULL_FULL_OPAQUE
         if (distance >= 36 * 36) details -= NON_FULL_BLOCKS
 
-        if (abs(delta.y) < 3) {
+        if (abs(delta.y) < 2) {
             if (distance >= 14 * 14) details -= MINOR_VISUAL_IMPACT
         } else {
             if (distance >= 32 * 32) details -= MINOR_VISUAL_IMPACT
@@ -134,7 +134,7 @@ object ChunkMeshDetails {
         if (distance < 10 * 10) details -= AGGRESSIVE_CULLING
         if (distance >= 16 * 16) details += AGGRESSIVE_CULLING
 
-        if (abs(delta.y) < 3) {
+        if (abs(delta.y) < 2) {
             if (distance >= 18 * 18) details -= MINOR_VISUAL_IMPACT
             if (distance <= 12 * 12) details += MINOR_VISUAL_IMPACT
         } else {
