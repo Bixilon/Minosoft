@@ -15,19 +15,23 @@ package de.bixilon.minosoft.data.registries.blocks.types.light.torch
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
-import de.bixilon.minosoft.data.registries.blocks.types.light.torch.RedstoneTorchBlock.Standing
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
@@ -36,13 +40,19 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Version
 import java.util.*
 
-abstract class TorchBlock(identifier: ResourceLocation, registries: Registries, settings: BlockSettings) : AbstractTorchBlock(identifier, settings), RandomDisplayTickable {
+abstract class TorchBlock(identifier: ResourceLocation, registries: Registries, settings: BlockSettings) : AbstractTorchBlock(identifier, settings), RandomDisplayTickable, ModelChooser {
     protected val smokeParticle = registries.particleType[SmokeParticle]
     protected val flameParticle = registries.particleType[flameParticleType]
 
     protected abstract val flameParticleType: ParticleFactory<*>?
 
     override val flags get() = super.flags + BlockStateFlags.MINOR_VISUAL_IMPACT
+
+    override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
+        if (context.session.version.flattened || this is WallTorch) return super.bakeModel(context, model)
+
+        this.model = model.choose(mapOf(BlockProperties.FACING to Directions.UP))?.bake()
+    }
 
     private fun spawnSmokeParticles(session: PlaySession, blockPosition: BlockPosition) {
         val particle = session.world.particle ?: return
