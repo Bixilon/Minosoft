@@ -66,28 +66,28 @@ abstract class FenceBlock(identifier: ResourceLocation, settings: BlockSettings)
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
         if (context.session.version.flattened) return super.bakeModel(context, model)
 
-        val all = model.choose(mapOf())?.bake()
-        val north = model.choose(mapOf(NORTH to true))?.bake()
-        val south = model.choose(mapOf(SOUTH to true))?.bake()
-        val west = model.choose(mapOf(WEST to true))?.bake()
-        val east = model.choose(mapOf(EAST to true))?.bake()
+        val all = model.choose(mapOf(), true)?.bake()
+        val north = model.choose(mapOf(NORTH to true), false)?.bake()
+        val south = model.choose(mapOf(SOUTH to true), false)?.bake()
+        val west = model.choose(mapOf(WEST to true), false)?.bake()
+        val east = model.choose(mapOf(EAST to true), false)?.bake()
 
         this.model = FenceRenderer(all, arrayOf(north, south, west, east))
     }
 
 
     class FenceRenderer(
-        val all: BlockRender?,
+        val none: BlockRender?,
         val sides: Array<BlockRender?>,
     ) : NeighbourBlockRender {
-        override val default: BlockRender? get() = all
+        override val default: BlockRender? get() = none
 
         override fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean {
             val neighbours = props.neighbours
 
             var rendered = false
 
-            all?.render(props, position, state, entity, tints)?.takeIf { it }?.let { rendered = true }
+            none?.render(props, position, state, entity, tints)?.takeIf { it }?.let { rendered = true }
 
             for (direction in Directions.SIDES) {
                 // TODO: Only fence blocks?

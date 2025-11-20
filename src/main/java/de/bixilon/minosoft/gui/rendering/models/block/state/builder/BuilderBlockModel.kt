@@ -30,10 +30,11 @@ class BuilderBlockModel(
     val parts: List<Apply>,
 ) : DirectBlockModel {
 
-    override fun choose(properties: Map<BlockProperty<*>, Any>): BlockStateApply? {
+    override fun choose(properties: Map<BlockProperty<*>, Any>, unconditional: Boolean): BlockStateApply? {
         val applies: MutableList<BlockStateApply> = mutableListOf()
 
         for ((condition, apply) in parts) {
+            if (!unconditional && condition is NoCondition) continue
             if (!condition.matches(properties)) continue
 
             applies += apply

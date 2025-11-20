@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,10 +33,11 @@ data class PropertyVariantBlockModel(
         return true
     }
 
-    override fun choose(properties: Map<BlockProperty<*>, Any>): BlockStateApply? {
+    override fun choose(properties: Map<BlockProperty<*>, Any>, unconditional: Boolean): BlockStateApply? {
         if (properties.isEmpty()) return null
 
         for ((variant, apply) in this.variants) {
+            if (!unconditional && variant.isEmpty()) continue
             if (!variant.matches(properties)) continue
 
             return apply
