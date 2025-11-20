@@ -77,7 +77,7 @@ class OcclusionTracer(
 
             val distance2 = cross.length2().toFloat() / vector.length2().toFloat()
 
-            if (distance2 > 1.1f * 1.1f) return
+            if (distance2 > 1.2f * 1.2f) return
         }
 
         paths[direction.axis.ordinal] += position
