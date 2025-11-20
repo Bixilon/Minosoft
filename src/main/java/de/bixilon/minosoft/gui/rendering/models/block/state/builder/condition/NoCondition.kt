@@ -15,15 +15,9 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
-class PrimitiveCondition private constructor(val matches: Boolean) : BuilderCondition {
+object NoCondition : BuilderCondition {
 
-    override fun toString() = matches.toString()
+    override fun toString() = "true"
 
-    override fun matches(properties: Map<BlockProperty<*>, Any>) = matches
-
-
-    companion object {
-        val TRUE = PrimitiveCondition(true)
-        val FALSE = PrimitiveCondition(false)
-    }
+    override fun matches(properties: Map<BlockProperty<*>, Any>) = true
 }
