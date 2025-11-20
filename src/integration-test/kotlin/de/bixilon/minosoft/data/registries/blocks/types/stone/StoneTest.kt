@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.stone
 
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
@@ -50,7 +51,7 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     }
 
     fun `block state flags`() {
-        val expected = BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.CAVE_SURFACE
+        val expected = IntInlineSet() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_COLLISION + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.CAVE_SURFACE
 
         assertEquals(expected, block.states.default.flags)
     }

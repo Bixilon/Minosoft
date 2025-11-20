@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.field
@@ -109,7 +110,7 @@ object LightTestingUtil {
 
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
         val block = TestBlock(minosoft(name), BlockSettings(Versions.AUTOMATIC))
-        val state = BlockState(block, properties = emptyMap(), luminance = luminance, lightProperties = lightProperties, flags = IntInlineEnumSet<BlockStateFlags>() + BlockStateFlags.FULL_OPAQUE)
+        val state = BlockState(block, properties = emptyMap(), luminance = luminance, lightProperties = lightProperties, flags = IntInlineSet() + BlockStateFlags.FULL_OPAQUE)
 
         block::states.forceSet(SingleStateManager(state))
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.building.nether
 
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.test.IT
@@ -25,7 +26,7 @@ class SoulSandTest {
     private val block by lazy { IT.REGISTRIES.block[SoulSand] ?: throw SkipException("") }
 
     fun `block state flags`() {
-        val expected = BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.VELOCITY
+        val expected = IntInlineSet() + BlockStateFlags.OUTLINE + BlockStateFlags.FULL_OUTLINE + BlockStateFlags.COLLISIONS + BlockStateFlags.FULL_OPAQUE + BlockStateFlags.VELOCITY
 
         assertEquals(expected, block.states.default.flags)
     }

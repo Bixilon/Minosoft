@@ -17,8 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStasteCodec
-import de.bixilon.minosoft.data.registries.blocks.registry.codec.LegacyBlockStasteCodec
+import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStateCodec
+import de.bixilon.minosoft.data.registries.blocks.registry.codec.LegacyBlockStateCodec
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
@@ -50,8 +50,8 @@ class BlockRegistry(
         val flags = block.flags
 
         val manager = when {
-            flattened -> FlattenedBlockStasteCodec.deserialize(block, flags, data, version, registries)
-            else -> LegacyBlockStasteCodec.deserialize(block, flags, data, version, registries)
+            flattened -> FlattenedBlockStateCodec.deserialize(block, flags, data, version, registries)
+            else -> LegacyBlockStateCodec.deserialize(block, flags, data, version, registries)
         }
 
         Block.STATES[block] = manager

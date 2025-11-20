@@ -15,16 +15,16 @@ package de.bixilon.minosoft.data.registries.blocks.factory
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStasteCodec
+import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStateCodec
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags.Companion.toSet
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags.toFlagSet
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
@@ -106,7 +106,7 @@ object VerifyIntegratedBlockRegistry {
         errors.append(actual)
     }
 
-    private fun IntInlineEnumSet<BlockStateFlags>.fixed(block: Block): IntInlineEnumSet<BlockStateFlags> {
+    private fun IntInlineSet.fixed(block: Block): IntInlineSet {
         var flags = this
         flags -= BlockStateFlags.TINTED
         flags -= BlockStateFlags.ENTITY
@@ -142,9 +142,9 @@ object VerifyIntegratedBlockRegistry {
 
         errors.appendState(pixlyzer, integrated)
         errors.append("flags: p=")
-        errors.append(pixlyzerFixed.toSet())
+        errors.append(pixlyzerFixed.toFlagSet())
         errors.append(", i=")
-        errors.append(fixedIntegrated.toSet())
+        errors.append(fixedIntegrated.toFlagSet())
     }
 
     private fun compareLightProperties(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
@@ -232,7 +232,7 @@ object VerifyIntegratedBlockRegistry {
             fake.setParent(registries)
             SHAPES[fake] = registries.shape
 
-            val states = FlattenedBlockStasteCodec.deserialize(parsed, BlockStateFlags.of(parsed), value, version, fake)
+            val states = FlattenedBlockStateCodec.deserialize(parsed, BlockStateFlags.of(parsed), value, version, fake)
 
             Block.STATES[parsed] = states
 

@@ -121,7 +121,7 @@ object SectionOcclusionTracer {
             // TODO: don't trace one side (all others should already have traced in that direction)
         }
 
-        return intArrayOf(down.raw() and REGION_MASK, up.raw() and REGION_MASK, north.raw() and REGION_MASK, south.raw() and REGION_MASK, west.raw() and REGION_MASK, east.raw() and REGION_MASK)
+        return intArrayOf(down.data and REGION_MASK, up.data and REGION_MASK, north.data and REGION_MASK, south.data and REGION_MASK, west.data and REGION_MASK, east.data and REGION_MASK)
     }
 
     private fun calculateOcclusion(sides: IntArray): BooleanArray {
@@ -136,17 +136,5 @@ object SectionOcclusionTracer {
     inline fun BlockState?.isFullyOpaque(): Boolean {
         if (this == null) return false
         return BlockStateFlags.FULL_OPAQUE in flags
-    }
-
-    @Deprecated("Kutil 1.30.1")
-    private val RAW_FIELD by lazy { InlineRaw::set.field }
-
-    @Deprecated("Kutil 1.30.1")
-    private class InlineRaw(val set: IntInlineSet)
-
-    @Deprecated("Kutil 1.30.1")
-    fun IntInlineSet.raw(): Int {
-        val wrapped = InlineRaw(this)
-        return RAW_FIELD.getInt(wrapped)
     }
 }

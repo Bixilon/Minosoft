@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state.builder
 
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
@@ -40,12 +41,12 @@ class BlockStateBuilder(
     val collisionShape: Shape?,
     val outlineShape: Shape?,
     val lightProperties: LightProperties,
-    val flags: IntInlineEnumSet<BlockStateFlags>,
+    val flags: IntInlineSet,
 ) {
 
     fun build(block: Block) = BlockState(block, properties, flags, luminance, collisionShape, outlineShape, lightProperties)
 
-    fun build(block: Block, luminance: Int = this.luminance, collisionShape: Shape? = this.collisionShape, outlineShape: Shape? = this.outlineShape, lightProperties: LightProperties = this.lightProperties, flags: IntInlineEnumSet<BlockStateFlags> = this.flags): BlockState {
+    fun build(block: Block, luminance: Int = this.luminance, collisionShape: Shape? = this.collisionShape, outlineShape: Shape? = this.outlineShape, lightProperties: LightProperties = this.lightProperties, flags: IntInlineSet = this.flags): BlockState {
         return BlockState(block, properties, flags, luminance, collisionShape, outlineShape, lightProperties)
     }
 
@@ -122,7 +123,7 @@ class BlockStateBuilder(
             return lightProperties
         }
 
-        fun of(block: Block, flags: IntInlineEnumSet<BlockStateFlags>, registries: Registries, data: JsonObject): BlockStateBuilder {
+        fun of(block: Block, flags: IntInlineSet, registries: Registries, data: JsonObject): BlockStateBuilder {
             val implemented = !(block is PixLyzerBlock || block is LegacyBlock)
             val properties = data.getProperties(block.properties) ?: emptyMap()
             val collisionShape = if (!implemented) data.getCollisionShape(registries.shape) else null

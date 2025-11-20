@@ -15,12 +15,11 @@ package de.bixilon.minosoft.data.registries.blocks.registry.codec
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
 import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
@@ -30,9 +29,9 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
-object FlattenedBlockStasteCodec {
+object FlattenedBlockStateCodec {
 
-    fun deserialize(block: Block, flags: IntInlineEnumSet<BlockStateFlags>, data: JsonObject, version: Version, registries: Registries): BlockStateManager {
+    fun deserialize(block: Block, flags: IntInlineSet, data: JsonObject, version: Version, registries: Registries): BlockStateManager {
         val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()

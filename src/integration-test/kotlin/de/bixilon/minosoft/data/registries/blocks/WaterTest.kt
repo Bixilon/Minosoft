@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
@@ -36,7 +37,7 @@ class WaterTest : BlockTest<Block>() {
     }
 
     fun `block state flags`() {
-        val expected = BlockStateFlags.FLUID + BlockStateFlags.OUTLINE + BlockStateFlags.TINTED + BlockStateFlags.RANDOM_TICKS + BlockStateFlags.CAVE_SURFACE
+        val expected = IntInlineSet() + BlockStateFlags.FLUID + BlockStateFlags.OUTLINE + BlockStateFlags.TINTED + BlockStateFlags.RANDOM_TICKS + BlockStateFlags.CAVE_SURFACE
 
         assertEquals(expected, block.states.default.withProperties(FluidBlock.LEVEL to 1).flags)
     }

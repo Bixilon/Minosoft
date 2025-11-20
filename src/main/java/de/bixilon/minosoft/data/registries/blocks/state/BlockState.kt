@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.blocks.state
 
 import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
@@ -32,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 class BlockState(
     val block: Block,
     val properties: Map<BlockProperty<*>, Any>,
-    flags: IntInlineEnumSet<BlockStateFlags>,
+    flags: IntInlineSet,
     val luminance: Int = 0,
     @Deprecated("access only via block") internal val collisionShape: Shape? = null,
     @Deprecated("access only via block") internal val outlineShape: Shape? = null,
@@ -42,7 +43,7 @@ class BlockState(
     private val hashCode = _hashCode()
     var model: BlockRender? = null
 
-    private fun updateFlags(flags: IntInlineEnumSet<BlockStateFlags>): IntInlineEnumSet<BlockStateFlags> {
+    private fun updateFlags(flags: IntInlineSet): IntInlineSet {
         var flags = flags
 
         if (BlockStateFlags.FULL_OPAQUE !in flags && block.getLightProperties(this) == OpaqueProperty) flags += BlockStateFlags.FULL_OPAQUE

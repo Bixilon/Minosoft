@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state
 
-import de.bixilon.kutil.enums.BitEnumSet
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.kutil.enums.ValuesEnum.Companion.names
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
@@ -34,87 +32,87 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
+import kotlin.reflect.KVisibility
 
-enum class BlockStateFlags {
-    FLUID,
-    WATERLOGGED,
-    OFFSET,
-    ENTITY,
+object BlockStateFlags {
+    const val FLUID = 0
+    const val WATERLOGGED = 1
+    const val OFFSET = 2
+    const val ENTITY = 3
 
-    OUTLINE,
-    FULL_OUTLINE,
+    const val OUTLINE = 4
+    const val FULL_OUTLINE = 5
 
-    COLLISIONS,
-    FULL_COLLISION,
+    const val COLLISIONS = 6
+    const val FULL_COLLISION = 7
 
-    FULL_OPAQUE,
+    const val FULL_OPAQUE = 8
 
     // physics
-    VELOCITY,
-    JUMP,
+    const val VELOCITY = 9
+    const val JUMP = 10
 
     // rendering
-    TINTED,
-    RANDOM_TICKS,
-    CUSTOM_CULLING,
-    MINOR_VISUAL_IMPACT, // TODO: fence, vine, candle, pointed dripstone, amethyst, saplings, flowers, coral, sign, rails, sugar cane
-    CAVE_SURFACE, // TODO: dripstone block, amethyst
-    ;
+    const val TINTED = 11
+    const val RANDOM_TICKS = 12
+    const val CUSTOM_CULLING = 13
+    const val MINOR_VISUAL_IMPACT = 14 // TODO: fence, vine, candle, pointed dripstone, amethyst, saplings, flowers, coral, sign, rails, sugar cane
+    const val CAVE_SURFACE = 15 // TODO: dripstone block, amethyst
 
-    companion object : ValuesEnum<BlockStateFlags> {
-        override val VALUES = values()
-        override val NAME_MAP = names()
+    fun of(block: Block): IntInlineSet {
+        var flags = IntInlineSet()
 
-        fun of(block: Block): IntInlineEnumSet<BlockStateFlags> {
-            var flags = IntInlineEnumSet<BlockStateFlags>()
+        if (block.lightProperties == OpaqueProperty) flags += FULL_OPAQUE
 
-            if (block.lightProperties == OpaqueProperty) flags += FULL_OPAQUE
+        if (block is FluidHolder) flags += FLUID
+        if (block is OffsetBlock && (block !is RandomOffsetBlock || block.randomOffset != null)) flags += OFFSET
+        if (block is BlockWithEntity<*>) flags += ENTITY
 
-            if (block is FluidHolder) flags += FLUID
-            if (block is OffsetBlock && (block !is RandomOffsetBlock || block.randomOffset != null)) flags += OFFSET
-            if (block is BlockWithEntity<*>) flags += ENTITY
-
-            if (block is CollidableBlock) {
-                flags += COLLISIONS
-                if (block.collisionShape == AABB.BLOCK) {
-                    flags += FULL_COLLISION
-                }
+        if (block is CollidableBlock) {
+            flags += COLLISIONS
+            if (block.collisionShape == AABB.BLOCK) {
+                flags += FULL_COLLISION
             }
-            if (block is OutlinedBlock) {
-                flags += OUTLINE
-                if (block.outlineShape == AABB.BLOCK) {
-                    flags += FULL_OUTLINE
-                }
+        }
+        if (block is OutlinedBlock) {
+            flags += OUTLINE
+            if (block.outlineShape == AABB.BLOCK) {
+                flags += FULL_OUTLINE
             }
-            if (block is VelocityBlock && block.velocity != 1.0f) flags += VELOCITY
-            if (block is JumpBlock && block.jumpBoost != 1.0f) flags += JUMP
+        }
+        if (block is VelocityBlock && block.velocity != 1.0f) flags += VELOCITY
+        if (block is JumpBlock && block.jumpBoost != 1.0f) flags += JUMP
 
-            if (block is TintedBlock) flags += TINTED
-            if (block is RandomDisplayTickable) flags += RANDOM_TICKS
-            if (block is CustomBlockCulling) flags += CUSTOM_CULLING
+        if (block is TintedBlock) flags += TINTED
+        if (block is RandomDisplayTickable) flags += RANDOM_TICKS
+        if (block is CustomBlockCulling) flags += CUSTOM_CULLING
 
-            return flags
+        return flags
+    }
+
+    fun update(flags: IntInlineSet, properties: Map<BlockProperty<*>, Any>): IntInlineSet {
+        var flags = flags
+
+        if (properties[BlockProperties.WATERLOGGED]?.toBoolean() == true) { // TODO: Check if WaterloggableBlock
+            flags += WATERLOGGED
+            flags += FLUID
         }
 
-        fun update(flags: IntInlineEnumSet<BlockStateFlags>, properties: Map<BlockProperty<*>, Any>): IntInlineEnumSet<BlockStateFlags> {
-            var flags = flags
+        return flags
+    }
 
-            if (properties[BlockProperties.WATERLOGGED]?.toBoolean() == true) { // TODO: Check if WaterloggableBlock
-                flags += WATERLOGGED
-                flags += FLUID
-            }
+    fun IntInlineSet.toFlagSet(): Set<String> {
+        val result = HashSet<String>()
 
-            return flags
+        for (field in BlockStateFlags::class.members.filter { it.isFinal && it.visibility == KVisibility.PUBLIC }) {
+            val java = BlockStateFlags::class.java.getFieldOrNull(field.name) ?: continue
+            if (java.type != Int::class.java) continue
+            val bit = java.getInt(null)
+
+            if (bit !in this) continue
+            result += java.name
         }
 
-        fun IntInlineEnumSet<BlockStateFlags>.toSet(): BitEnumSet<BlockStateFlags> {
-            val result = set()
-            for (flag in VALUES) {
-                if (flag !in this) continue
-                result += flag
-            }
-
-            return result
-        }
+        return result
     }
 }
