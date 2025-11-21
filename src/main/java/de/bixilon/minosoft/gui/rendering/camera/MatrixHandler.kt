@@ -93,7 +93,7 @@ class MatrixHandler(
     private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2f = Vec2f(context.window.size)) {
         val fog = camera.fog.state
         val far = when {
-            fog.enabled -> fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
+            fog.enabled -> sqrt(3 * (fog.end * fog.end)) * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
             else -> {
                 val viewDistance = (session.world.view.viewDistance + 1) * ChunkSize.SECTION_LENGTH
                 sqrt((viewDistance * MAX_VERTICAL_VIEW_DISTANCE * ChunkSize.SECTION_LENGTH * viewDistance).toFloat())

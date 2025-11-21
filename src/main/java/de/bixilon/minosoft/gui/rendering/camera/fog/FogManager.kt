@@ -18,15 +18,14 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -56,11 +55,11 @@ class FogManager(
         return when {
             fluid is FoggedFluid -> fluid.getFogOptions(context.session.world, player.physics.positionInfo)
             player.effects[VisionEffect.Blindness] != null -> VisionEffect.Blindness.FOG_OPTIONS
-            // TODO: void fog (if under minY)
+            player.physics.positionInfo.eyePosition.y + 3 < context.session.world.dimension.minY -> VOID_OFG
             // TODO: powder snow
             else -> {
-                val end = (context.session.world.view.viewDistance - 1.0f) * ChunkSize.SECTION_WIDTH_X
-                val distance = end / 10.0f
+                val end = context.session.world.view.viewDistance.toFloat() * ChunkSize.SECTION_WIDTH_X
+                val distance = end / 8.0f
 
                 FogOptions(effects.start * (end - distance), end)
             }
@@ -76,7 +75,7 @@ class FogManager(
         state.enabled = enabled
         if (!enabled) return
 
-        val options = getOptions(effects!!)
+        val options = getOptions(effects)
         if (this.options == options) {
             return
         }
@@ -167,5 +166,6 @@ class FogManager(
 
     companion object {
         private val INTERPOLATE_DURATION = 300.milliseconds
+        val VOID_OFG = FogOptions(start = 10.0f, end = 15.0f, color = ChatColors.BLACK.rgb())
     }
 }

@@ -48,7 +48,7 @@ float fog_calculate_distance() {
 
 
 float fog_calculate_alpha() {
-    if (uFogStart > 10000.0f) return 1.0f;
+    if (uFogStart > 1000.0f * 1000.0f) return 1.0f;
 
     float distance = fog_calculate_distance();
     return fog_alpha_from_distance(distance * DISTANCE_MULTIPLIER);
