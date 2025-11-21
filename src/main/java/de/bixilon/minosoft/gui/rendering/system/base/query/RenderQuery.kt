@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.query
 
 interface RenderQuery {
+    val recordings: Int
     val type: QueryTypes
     val state: QueryStates
 

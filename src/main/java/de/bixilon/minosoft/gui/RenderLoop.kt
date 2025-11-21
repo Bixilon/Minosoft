@@ -43,6 +43,17 @@ class RenderLoop(
         context.profile.performance::slowRendering.observe(this) { this.slowRendering = it }
     }
 
+    private fun RenderContext.burn() {
+        while (!query.isReady) {
+            var burned = false
+            if (queue.size > 0) burned = true
+            profiler("queue") { queue.work(5) }
+            profiler("burn") { renderer.forEach { if (it.burnTime()) burned = true } }
+            if (!burned) {
+                profiler("sleep") { sleep(1.milliseconds) }
+            }
+        }
+    }
 
     private fun loop() {
         if (context.state == RenderingStates.PAUSED) {
@@ -84,7 +95,14 @@ class RenderLoop(
 
         context.profiler("animations") { context.textures.static.animator.update() }
 
+        context.query.begin()
         context.profiler("draw") { context.renderer.draw() }
+        context.query.end()
+
+        context.profiler("burn") { context.burn() }
+
+
+        context.profiler("post draw") { context.renderer.forEach { it.postDraw() } }
 
         context.profiler("reset") { context.system.reset() } // Reset to enable depth mask, etc again
 

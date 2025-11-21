@@ -129,7 +129,7 @@ class ChunkMeshingQueue(
                 renderer.cache[position] = cache
             }
 
-            if (mesh == null) {
+            if (mesh == null) { // TODO: Store lod and check if it changed (not that it got completely optimized out and never updated)
                 renderer.loaded -= position
                 cache.drop()
             } else {

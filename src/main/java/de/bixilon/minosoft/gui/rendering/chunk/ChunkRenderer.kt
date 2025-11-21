@@ -207,6 +207,19 @@ class ChunkRenderer(
         context.profiler("loading") { loadingQueue.work() }
     }
 
+    override fun burnTime(): Boolean {
+        return loadingQueue.burn()
+    }
+
+    override fun postDraw() {
+        val meshes = visibility.meshes
+        meshes.lock.locked {
+            meshes.opaque.forEach { it.updateOcclusion() }
+            meshes.translucent.forEach { it.updateOcclusion() }
+            meshes.text.forEach { it.updateOcclusion() }
+        }
+    }
+
     private fun drawBlocksOpaque() = visibility.meshes.apply { lock.locked { opaque.forEach(ChunkMesh::draw) } }
     private fun drawBlocksTranslucent() = visibility.meshes.apply { lock.locked { translucent.forEach(ChunkMesh::draw) } }
     private fun drawText() = visibility.meshes.apply { lock.locked { text.forEach(ChunkMesh::draw) } }
