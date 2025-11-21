@@ -14,14 +14,34 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.query.RenderQuery
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
-class ChunkMesh(buffer: VertexBuffer) : Mesh(buffer), Comparable<ChunkMesh> {
+class ChunkMesh(
+    buffer: VertexBuffer,
+    val query: RenderQuery,
+) : Mesh(buffer), Comparable<ChunkMesh> {
     var distance: Int = 0
 
     override fun compareTo(other: ChunkMesh): Int {
         if (distance < other.distance) return -1
         if (distance > other.distance) return 1
         return 0
+    }
+
+    override fun load() {
+        super.load()
+        query.init()
+    }
+
+    override fun draw() {
+        query.begin()
+        super.draw()
+        query.end()
+    }
+
+    override fun unload() {
+        super.unload()
+        query.destroy()
     }
 }

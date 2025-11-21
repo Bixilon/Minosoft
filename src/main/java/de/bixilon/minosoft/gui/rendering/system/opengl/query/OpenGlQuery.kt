@@ -14,43 +14,65 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.query
 
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.time.TimeUtil.sleep
+import de.bixilon.minosoft.gui.rendering.system.base.query.QueryStates
 import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.base.query.RenderQuery
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL15.glDeleteQueries
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL33.GL_TIME_ELAPSED
+import kotlin.time.Duration.Companion.milliseconds
 
 class OpenGlQuery(
     override val type: QueryTypes,
 ) : RenderQuery {
+    override val state = QueryStates.WAITING
     private var query = -1
 
     override val isReady: Boolean
-        get() = gl { glGetQueryObjecti(query, GL_QUERY_RESULT_AVAILABLE) }.toBoolean()
+        get() {
+            assert(state == QueryStates.INITIALIZED)
+            return gl { glGetQueryObjecti(query, GL_QUERY_RESULT_AVAILABLE) }.toBoolean()
+        }
 
 
-    override val result: Int
-        get() = gl { glGetQueryObjecti(query, GL_QUERY_RESULT) }
+    override var result: Int = -1
+        get() {
+            assert(field > 0)
 
-    fun init() {
+            return field
+        }
+        private set
+
+    override fun init() {
+        assert(state == QueryStates.WAITING)
         assert(query < 0)
         query = gl { glGenQueries() }
     }
 
-    fun destroy() {
-        assert(query >= 0)
+    override fun destroy() {
+        assert(state == QueryStates.INITIALIZED)
         gl { glDeleteQueries(query) }
     }
 
 
-    fun begin() {
-        assert(query >= 0)
+    override fun begin() {
+        assert(state == QueryStates.INITIALIZED)
+        result = -1
         glBeginQuery(type.gl, query)
     }
 
-    fun end() {
-        assert(query >= 0)
+    override fun end() {
+        assert(state == QueryStates.RECORDING)
         gl { glEndQuery(type.gl) }
+    }
+
+    override fun collect() {
+        while (!isReady) {
+            sleep(1.milliseconds)
+        }
+        result = gl { glGetQueryObjecti(query, GL_QUERY_RESULT) }
     }
 
 
@@ -58,7 +80,8 @@ class OpenGlQuery(
 
         val QueryTypes.gl
             get() = when (this) {
-                QueryTypes.FRAGMENTS_PASSED -> GL_SAMPLES_PASSED
+                QueryTypes.FRAGMENTS -> GL_SAMPLES_PASSED
+                QueryTypes.TIME -> GL_TIME_ELAPSED
                 else -> throw IllegalArgumentException("Query type $this not supported in opengl")
             }
     }

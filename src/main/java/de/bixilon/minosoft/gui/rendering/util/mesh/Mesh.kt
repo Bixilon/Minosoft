@@ -13,27 +13,28 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 
 open class Mesh(
     val buffer: VertexBuffer,
-) {
+) : Drawable {
     var state = MeshStates.PREPARING
         private set
 
-    fun load() {
+    open fun load() {
         assert(state == MeshStates.PREPARING) { "Invalid mesh state: $state" }
         buffer.init()
         state = MeshStates.LOADED
     }
 
-    fun unload() {
+    open fun unload() {
         assert(state == MeshStates.LOADED) { "Invalid mesh state: $state" }
         buffer.unload()
         state = MeshStates.UNLOADED
     }
 
-    fun draw() {
+    override fun draw() {
         assert(state == MeshStates.LOADED) { "Invalid mesh state: $state" }
         return buffer.draw()
     }
