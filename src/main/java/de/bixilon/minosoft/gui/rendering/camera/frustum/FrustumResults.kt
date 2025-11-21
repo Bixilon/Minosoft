@@ -13,10 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
-interface Frustum {
-
-    fun containsSphere(x: Float, y: Float, z: Float, radius: Float): FrustumResults
-    fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): FrustumResults
-
-    fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float, full: Boolean): FrustumResults
+enum class FrustumResults {
+    OUTSIDE,
+    PARTLY_INSIDE,
+    FULLY_INSIDE,
 }

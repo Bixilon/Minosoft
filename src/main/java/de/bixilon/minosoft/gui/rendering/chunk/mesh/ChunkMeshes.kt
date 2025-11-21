@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kutil.enums.inline.IntInlineSet
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 
 class ChunkMeshes(
     val section: ChunkSection,
@@ -36,6 +35,9 @@ class ChunkMeshes(
     val entities: Array<BlockEntityRenderer>?,
 ) {
     val center = BlockPosition.of(position, InSectionPosition(8, 8, 8))
+
+    var delta = BlockPosition()
+    var result = FrustumResults.FULLY_INSIDE
 
     var distance = 0
     var sort = 0

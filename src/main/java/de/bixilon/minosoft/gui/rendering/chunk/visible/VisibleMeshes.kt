@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderingThreadPool
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -40,22 +41,42 @@ class VisibleMeshes(
     val lock = ReentrantLock()
 
 
-    private fun add(mesh: ChunkMeshes) {
+    private fun add(mesh: ChunkMeshes, frustum: FrustumResults) {
         val delta = (camera - mesh.center)
         val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
+
+        assert(frustum != FrustumResults.OUTSIDE)
+        var occlusion = frustum == FrustumResults.PARTLY_INSIDE || mesh.result == FrustumResults.PARTLY_INSIDE
+        // TODO: fog
+        // TODO: handle block changes
+
+        if (distance >= 128 * 128) {
+            val next = delta - mesh.delta
+            val length2 = next.x * next.x + next.y * next.y + next.z * next.z
+
+            if (length2 >= 2 * 2) {
+                mesh.delta = delta
+                occlusion = true
+            }
+        } else {
+            occlusion = true
+        }
+        mesh.result = frustum
+
+
         mesh.opaque?.let {
             it.distance = distance
-            it.empty = ChunkMesh.Emptiness.MAYBE
+            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
             opaque += it
         }
         mesh.translucent?.let {
             it.distance = -distance
-            it.empty = ChunkMesh.Emptiness.MAYBE
+            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
             translucent += it
         }
         mesh.text?.let {
             it.distance = distance
-            it.empty = ChunkMesh.Emptiness.MAYBE
+            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
             text += it
         }
         mesh.entities?.let {
@@ -63,8 +84,7 @@ class VisibleMeshes(
         }
     }
 
-    operator fun plusAssign(mesh: ChunkMeshes) = lock.locked { add(mesh) }
-    fun unsafeAdd(mesh: ChunkMeshes) = add(mesh)
+    fun unsafeAdd(mesh: ChunkMeshes, frustum: FrustumResults) = add(mesh, frustum)
 
 
     fun sort() {

@@ -23,6 +23,7 @@ class DummyQuery(
     override var state = QueryStates.WAITING
     override val isReady get() = true
 
+    override val recordings get() = 1
     override val result get() = 1
 
     override fun init() {

@@ -22,7 +22,7 @@ class ChunkMesh(
     val query: RenderQuery,
 ) : Mesh(buffer), Comparable<ChunkMesh> {
     var distance: Int = 0
-    var empty = Emptiness.MAYBE
+    var occlusion = OcclusionStates.MAYBE
 
     override fun compareTo(other: ChunkMesh): Int {
         if (distance < other.distance) return -1
@@ -36,9 +36,9 @@ class ChunkMesh(
     }
 
     override fun draw() {
-        if (empty == Emptiness.EMPTY) return
+        if (occlusion == OcclusionStates.INVISIBLE) return
 
-        val query = empty == Emptiness.MAYBE
+        val query = occlusion == OcclusionStates.MAYBE
 
         if (query) this.query.begin()
         super.draw()
@@ -46,11 +46,11 @@ class ChunkMesh(
     }
 
     fun updateOcclusion() {
-        if (empty != Emptiness.MAYBE) return
+        if (occlusion != OcclusionStates.MAYBE) return
         if (query.recordings == 0) return
 
         query.collect()
-        empty = if (query.result > 0) Emptiness.NOT_EMPTY else Emptiness.EMPTY
+        occlusion = if (query.result > 0) OcclusionStates.VISIBLE else OcclusionStates.INVISIBLE
     }
 
     override fun unload() {
@@ -58,9 +58,9 @@ class ChunkMesh(
         query.destroy()
     }
 
-    enum class Emptiness {
-        EMPTY,
-        NOT_EMPTY,
+    enum class OcclusionStates {
+        INVISIBLE,
+        VISIBLE,
         MAYBE,
     }
 }

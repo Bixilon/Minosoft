@@ -24,16 +24,16 @@ class Frustum1(
 
     private fun Vec4f.dot(x: Float, y: Float, z: Float) = this.x * x + this.y * y + this.z * z + this.w
 
-    override fun containsSphere(x: Float, y: Float, z: Float, radius: Float): Boolean {
+    override fun containsSphere(x: Float, y: Float, z: Float, radius: Float): FrustumResults {
         for (index in 0 until planes.size) {
             val plane = planes[index]
 
-            if (plane.dot(x, y, z) < -radius) return false
+            if (plane.dot(x, y, z) < -radius) return FrustumResults.OUTSIDE
         }
-        return true
+        return FrustumResults.PARTLY_INSIDE
     }
 
-    override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
+    override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): FrustumResults {
         for (i in 0 until planes.size) {
             val plane = planes[i]
 
@@ -41,9 +41,25 @@ class Frustum1(
             val y = if (plane.y >= 0.0f) maxY else minY
             val z = if (plane.z >= 0.0f) maxZ else minZ
 
-            if (plane.dot(x, y, z) < 0.0f) return false
+            if (plane.dot(x, y, z) < 0.0f) return FrustumResults.OUTSIDE
         }
-        return true
+        return FrustumResults.PARTLY_INSIDE
+    }
+
+    override fun containsAABB(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float, full: Boolean): FrustumResults {
+        if (containsAABB(minX, minY, minZ, maxX, maxY, maxZ) == FrustumResults.OUTSIDE) return FrustumResults.OUTSIDE
+        if (!full) return FrustumResults.PARTLY_INSIDE
+
+        for (i in 0 until planes.size) {
+            val plane = planes[i]
+
+            val x = if (plane.x >= 0.0f) minX else maxX
+            val y = if (plane.y >= 0.0f) minY else maxY
+            val z = if (plane.z >= 0.0f) minZ else maxZ
+
+            if (plane.dot(x, y, z) < 0.0f) return FrustumResults.PARTLY_INSIDE
+        }
+        return FrustumResults.FULLY_INSIDE
     }
 
     companion object {
@@ -57,7 +73,7 @@ class Frustum1(
                 matrix[3] - matrix[1], // top
 
                 matrix[3] + matrix[2], // near
-                matrix[3] - matrix[2],  // far
+                matrix[3] - matrix[2], // far
             )
 
             for (i in 0 until planes.size) {

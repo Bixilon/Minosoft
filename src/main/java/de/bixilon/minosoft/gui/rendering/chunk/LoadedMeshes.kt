@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingCause
@@ -40,7 +41,8 @@ class LoadedMeshes(
 
         val previous = chunk.put(mesh.position.y, mesh)
         lock.unlock()
-        if (!renderer.visibility.contains(mesh.position, mesh.min, mesh.max)) {
+        val frustum = renderer.visibility.contains(mesh.position, mesh.min, mesh.max)
+        if (frustum == FrustumResults.OUTSIDE) {
             return
         }
         val meshes = renderer.visibility.meshes
@@ -51,7 +53,7 @@ class LoadedMeshes(
         }
 
         meshes.lock.locked {
-            meshes += mesh
+            meshes.unsafeAdd(mesh, frustum)
             meshes.sort() // TODO: replace mesh (no need to sort again)
         }
     }
@@ -101,10 +103,10 @@ class LoadedMeshes(
 
             for (mesh in meshes.values) {
                 // TODO: unload if occluded (but we can not distinct between frustum and occlusion)
-                if (!renderer.visibility.contains(mesh.position, mesh.min, mesh.max)) {
-                    continue
-                }
-                visible.unsafeAdd(mesh)
+                val result = renderer.visibility.contains(mesh.position, mesh.min, mesh.max)
+                if (result == FrustumResults.OUTSIDE) continue
+
+                visible.unsafeAdd(mesh, result)
             }
         }
     }

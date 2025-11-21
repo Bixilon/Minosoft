@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumCulling
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 
 class WorldVisibility(
     val camera: Camera,
@@ -58,12 +59,11 @@ class WorldVisibility(
         return false
     }
 
-    fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section), section.blocks.minPosition, section.blocks.maxPosition)
+    fun isSectionVisible(section: ChunkSection): Boolean = isSectionVisible(SectionPosition.of(section), section.blocks.minPosition, section.blocks.maxPosition, false) >= FrustumResults.PARTLY_INSIDE
 
-    fun isSectionVisible(position: SectionPosition, min: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, max: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION) = when {
-        !isInViewDistance(position.chunkPosition) -> false
-        camera.occlusion.isSectionOccluded(position) -> false
-        !camera.frustum.containsChunkSection(position, min, max) -> false // TODO: Isn't that case done with occlusion?
-        else -> true
+    fun isSectionVisible(position: SectionPosition, min: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, max: InSectionPosition = FrustumCulling.SECTION_MIN_POSITION, full: Boolean) = when {
+        !isInViewDistance(position.chunkPosition) -> FrustumResults.OUTSIDE
+        camera.occlusion.isSectionOccluded(position) -> FrustumResults.OUTSIDE
+        else -> camera.frustum.containsChunkSection(position, min, max, full)
     }
 }

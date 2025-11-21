@@ -214,9 +214,9 @@ class ChunkRenderer(
     override fun postDraw() {
         val meshes = visibility.meshes
         meshes.lock.locked {
-            meshes.opaque.forEach { it.updateOcclusion() }
-            meshes.translucent.forEach { it.updateOcclusion() }
-            meshes.text.forEach { it.updateOcclusion() }
+            meshes.opaque.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
+            meshes.translucent.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
+            meshes.text.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
         }
     }
 

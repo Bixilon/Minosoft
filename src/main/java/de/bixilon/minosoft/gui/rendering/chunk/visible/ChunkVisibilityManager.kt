@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
+import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import kotlin.math.abs
 
@@ -51,10 +52,10 @@ class ChunkVisibilityManager(
     }
 
     operator fun contains(position: ChunkPosition) = visibility.isChunkVisible(position)
-    operator fun contains(position: SectionPosition) = visibility.isSectionVisible(position)
+    operator fun contains(position: SectionPosition) = visibility.isSectionVisible(position, full = false) >= FrustumResults.PARTLY_INSIDE
     operator fun contains(section: ChunkSection) = visibility.isSectionVisible(section)
 
-    fun contains(position: SectionPosition, min: InSectionPosition, max: InSectionPosition) = visibility.isSectionVisible(position, min, max)
+    fun contains(position: SectionPosition, min: InSectionPosition, max: InSectionPosition) = visibility.isSectionVisible(position, min, max, true)
 
     private fun onVisibilityChange() {
         val eyePosition = renderer.context.session.camera.entity.physics.positionInfo.eyePosition
