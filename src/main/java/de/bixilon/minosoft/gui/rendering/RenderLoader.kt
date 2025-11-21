@@ -145,6 +145,8 @@ object RenderLoader {
         textures.dynamic.activate()
         textures.static.activate()
 
+        query.init()
+
 
         renderLatch.dec() // initial count from rendering
         renderLatch.await()

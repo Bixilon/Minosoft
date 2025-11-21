@@ -43,6 +43,25 @@ class MeshLoadingQueue(
         meshes.sortWith(comparator)
     }
 
+    fun burn(): Boolean {
+        if (meshes.isEmpty()) return false
+        lock.lock()
+
+        var index = 0
+        while (meshes.isNotEmpty()) {
+            if (++index % BATCH_SIZE == 0) break
+            val mesh = this.meshes.removeFirst()
+            this.positions -= mesh.position
+
+            renderer.context.profiler("load") { mesh.load() }
+
+            renderer.loaded += mesh
+        }
+
+        lock.unlock()
+        return true
+    }
+
     fun work() {
         if (meshes.isEmpty()) return
         lock.lock()
@@ -52,7 +71,7 @@ class MeshLoadingQueue(
 
         var index = 0
         while (meshes.isNotEmpty()) {
-            if (index++ % BATCH_SIZE == 0 && now() - start >= maxTime) break
+            if (++index % BATCH_SIZE == 0 && now() - start >= maxTime) break
 
             val mesh = this.meshes.removeFirst()
             this.positions -= mesh.position

@@ -17,5 +17,5 @@ enum class QueryStates {
     WAITING,
     INITIALIZED,
     RECORDING,
-    UNLOADED,
+    DESTROYED,
 }

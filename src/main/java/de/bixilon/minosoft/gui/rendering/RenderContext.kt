@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
+import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -64,6 +65,8 @@ class RenderContext(
 
     var renderStats: AbstractRenderStats = RenderStats()
         private set
+
+    val query = system.createQuery(QueryTypes.TIME)
 
     var font: FontManager = unsafeNull()
 

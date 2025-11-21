@@ -45,14 +45,17 @@ class VisibleMeshes(
         val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
         mesh.opaque?.let {
             it.distance = distance
+            it.empty = ChunkMesh.Emptiness.MAYBE
             opaque += it
         }
         mesh.translucent?.let {
             it.distance = -distance
+            it.empty = ChunkMesh.Emptiness.MAYBE
             translucent += it
         }
         mesh.text?.let {
             it.distance = distance
+            it.empty = ChunkMesh.Emptiness.MAYBE
             text += it
         }
         mesh.entities?.let {

@@ -27,19 +27,24 @@ import kotlin.time.Duration.Companion.milliseconds
 class OpenGlQuery(
     override val type: QueryTypes,
 ) : RenderQuery {
-    override val state = QueryStates.WAITING
+    override var recordings = 0
+        private set
+    override var state = QueryStates.WAITING
+        private set
     private var query = -1
 
     override val isReady: Boolean
         get() {
             assert(state == QueryStates.INITIALIZED)
+            assert(recordings > 0)
             return gl { glGetQueryObjecti(query, GL_QUERY_RESULT_AVAILABLE) }.toBoolean()
         }
 
 
     override var result: Int = -1
         get() {
-            assert(field > 0)
+            assert(field >= 0)
+            assert(recordings > 0)
 
             return field
         }
@@ -49,23 +54,28 @@ class OpenGlQuery(
         assert(state == QueryStates.WAITING)
         assert(query < 0)
         query = gl { glGenQueries() }
+        state = QueryStates.INITIALIZED
     }
 
     override fun destroy() {
         assert(state == QueryStates.INITIALIZED)
         gl { glDeleteQueries(query) }
+        state = QueryStates.DESTROYED
     }
 
 
     override fun begin() {
         assert(state == QueryStates.INITIALIZED)
         result = -1
-        glBeginQuery(type.gl, query)
+        gl { glBeginQuery(type.gl, query) }
+        state = QueryStates.RECORDING
     }
 
     override fun end() {
         assert(state == QueryStates.RECORDING)
         gl { glEndQuery(type.gl) }
+        recordings++
+        state = QueryStates.INITIALIZED
     }
 
     override fun collect() {
