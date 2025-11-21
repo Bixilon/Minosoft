@@ -15,7 +15,16 @@ package de.bixilon.minosoft.gui.rendering.system.base.query
 
 interface RenderQuery {
     val type: QueryTypes
+    val state: QueryStates
 
     val isReady: Boolean
     val result: Int
+
+    fun init()
+    fun destroy()
+
+    fun collect()
+
+    fun begin()
+    fun end()
 }

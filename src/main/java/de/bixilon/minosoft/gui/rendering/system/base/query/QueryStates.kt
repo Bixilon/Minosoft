@@ -11,11 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl
+package de.bixilon.minosoft.gui.rendering.system.base.query
 
-object OpenGlOptions {
-    const val ASSERT_THREAD = false
-    const val ASSERT_BEFORE = false
-    const val ASSERT_AFTER = false
-    const val DEBUG_OUTPUT = false
+enum class QueryStates {
+    WAITING,
+    INITIALIZED,
+    RECORDING,
+    UNLOADED,
 }

@@ -13,15 +13,33 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.query
 
+import de.bixilon.minosoft.gui.rendering.system.base.query.QueryStates
 import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.base.query.RenderQuery
 
 class DummyQuery(
     override val type: QueryTypes,
 ) : RenderQuery {
-    override val isReady: Boolean
-        get() = false
+    override var state = QueryStates.WAITING
+    override val isReady get() = true
 
-    override val result: Int
-        get() = 1
+    override val result get() = 1
+
+    override fun init() {
+        state = QueryStates.INITIALIZED
+    }
+
+    override fun begin() {
+        state = QueryStates.RECORDING
+    }
+
+    override fun end() {
+        state = QueryStates.INITIALIZED
+    }
+
+    override fun collect() {
+    }
+
+    override fun destroy() {
+    }
 }

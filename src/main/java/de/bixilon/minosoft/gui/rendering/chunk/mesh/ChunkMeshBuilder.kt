@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
@@ -63,7 +64,7 @@ class ChunkMeshBuilder(context: RenderContext, estimate: Int) : QuadMeshBuilder(
         addIndexQuad()
     }
 
-    override fun bake() = ChunkMesh(createVertexBuffer())
+    override fun bake() = ChunkMesh(createVertexBuffer(), context.system.createQuery(QueryTypes.FRAGMENTS))
 
     data class ChunkMeshStruct(
         val position: Vec3f,

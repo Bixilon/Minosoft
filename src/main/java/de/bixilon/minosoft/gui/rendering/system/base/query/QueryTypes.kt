@@ -14,5 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.base.query
 
 enum class QueryTypes {
-    FRAGMENTS_PASSED,
+    FRAGMENTS,
+    TIME,
 }
