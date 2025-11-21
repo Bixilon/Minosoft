@@ -29,7 +29,9 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.FileOutputStream
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.measureTime
 
 class RenderLoop(
     private val context: RenderContext,
@@ -44,13 +46,23 @@ class RenderLoop(
     }
 
     private fun RenderContext.burn() {
-        while (!query.isReady) {
+        var time = Duration.ZERO
+        while (true) {
             var burned = false
-            if (queue.size > 0) burned = true
-            profiler("queue") { queue.work(5) }
-            profiler("burn") { renderer.forEach { if (it.burnTime()) burned = true } }
-            if (!burned) {
-                profiler("sleep") { sleep(1.milliseconds) }
+
+            time += measureTime {
+                if (queue.size > 0) burned = true
+                profiler("queue") { queue.work(5) }
+                profiler("burn") { renderer.forEach { if (it.burnTime()) burned = true } }
+
+                if (!burned) {
+                    profiler("sleep") { sleep(1.milliseconds) }
+                }
+            }
+
+            if (time >= 1.milliseconds) {
+                if (query.isReady) break
+                time = Duration.ZERO
             }
         }
     }
