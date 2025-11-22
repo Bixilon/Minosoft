@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -52,16 +52,16 @@ abstract class AbstractButtonElement(
             }
 
             textElement.prefMaxSize = if (value) {
-                Vec2(-1, -1)
+                Vec2f(-1, -1)
             } else {
-                size - Vec2(TEXT_PADDING * 2, TEXT_PADDING * 2)
+                size - Vec2f(TEXT_PADDING * 2, TEXT_PADDING * 2)
             }
             _dynamicSized = value
             forceApply()
         }
 
 
-    override var size: Vec2
+    override var size: Vec2f
         get() = super.size
         set(value) {
             _dynamicSized = false
@@ -99,10 +99,10 @@ abstract class AbstractButtonElement(
 
 
     init {
-        size = textElement.size + Vec2(TEXT_PADDING * 2, TEXT_PADDING * 2)
+        size = textElement.size + Vec2f(TEXT_PADDING * 2, TEXT_PADDING * 2)
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         val texture = when {
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
@@ -118,7 +118,7 @@ abstract class AbstractButtonElement(
         val renderOptions = if (disabled) GUIVertexOptions(alpha = 0.4f) else options
 
         background.render(offset, consumer, renderOptions)
-        textElement.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, renderOptions)
+        textElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, renderOptions)
     }
 
     override fun forceSilentApply() {
@@ -126,7 +126,7 @@ abstract class AbstractButtonElement(
         cacheUpToDate = false
     }
 
-    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (disabled) {
             return true
         }
@@ -158,7 +158,7 @@ abstract class AbstractButtonElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
+    override fun onMouseEnter(position: Vec2f, absolute: Vec2f): Boolean {
         hovered = true
         context.window.cursorShape = CursorShapes.HAND
 
@@ -176,7 +176,7 @@ abstract class AbstractButtonElement(
 
     private fun _submit() {
         if (guiRenderer.session.profiles.audio.gui.button) {
-            guiRenderer.session.world.play2DSound(CLICK_SOUND)
+            guiRenderer.session.world.audio?.play2D(CLICK_SOUND)
         }
         submit()
     }
