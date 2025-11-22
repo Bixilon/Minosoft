@@ -173,6 +173,7 @@ class CloudRenderer(
 
     private fun draw() {
         shader.cloudsColor = color.calculate()
+        shader.fullbright = context.session.profiles.rendering.light.fullbright
         setYOffset()
 
 
