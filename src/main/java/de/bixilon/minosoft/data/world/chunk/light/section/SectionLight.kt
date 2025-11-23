@@ -68,7 +68,7 @@ class SectionLight(
     private fun decreaseLight(position: InSectionPosition, light: Int, reset: Boolean) {
         decreaseCheckLevel(position.x, position.z, light, reset)
 
-        val neighbours = section.neighbours ?: return
+        val neighbours = section.neighbours
         val chunk = section.chunk
         if (position.y - light < 0) {
             if (section.height == minSection) {
@@ -88,7 +88,7 @@ class SectionLight(
 
     private fun decreaseCheckLevel(x: Int, z: Int, light: Int, reset: Boolean) {
         decreaseCheckX(z, light, reset)
-        val neighbours = section.neighbours ?: return
+        val neighbours = section.neighbours
 
         if (x - light < 0) {
             neighbours[Directions.O_WEST]?.light?.decreaseCheckX(z, light - x, reset)
@@ -99,7 +99,7 @@ class SectionLight(
     }
 
     private fun decreaseCheckX(z: Int, light: Int, reset: Boolean) {
-        val neighbours = section.neighbours ?: return
+        val neighbours = section.neighbours
         if (reset) reset() else calculate()
 
         if (z - light < 0) {
@@ -149,7 +149,7 @@ class SectionLight(
         }
         val chunk = section.chunk
         val chunkNeighbours = chunk.neighbours
-        val neighbours = section.neighbours ?: return
+        val neighbours = section.neighbours
 
         if (nextLuminance == 1) {
             neighbours.invalidateLight(position)
@@ -225,8 +225,8 @@ class SectionLight(
         calculate()
     }
 
-    fun calculate() {
-        update = true
+    private fun calculateBlock() {
+        if (section.blocks.luminantCount <= 0) return
 
         section.blocks.forEach { position, state ->
             val luminance = state.luminance
@@ -236,6 +236,11 @@ class SectionLight(
             }
             traceBlockIncrease(position, luminance, null)
         }
+    }
+
+    fun calculate() {
+        update = true
+        calculateBlock()
 
         section.chunk.light.sky.recalculate(section.height)
     }
@@ -327,7 +332,7 @@ class SectionLight(
             return
         }
 
-        val neighbours = this.section.neighbours ?: return
+        val neighbours = this.section.neighbours
 
         this.light[position] = light.with(sky = nextLevel)
 
@@ -405,7 +410,7 @@ class SectionLight(
             return
         }
 
-        val neighbours = this.section.neighbours ?: return
+        val neighbours = this.section.neighbours
 
         this.light[position] = this.light[position].with(sky = ChunkSize.MAX_LIGHT_LEVEL_I)
 
@@ -428,7 +433,7 @@ class SectionLight(
     }
 
     fun propagateFromNeighbours(position: InSectionPosition) {
-        val neighbours = section.neighbours ?: return
+        val neighbours = section.neighbours
 
         var level = LightLevel(0, 0)
 

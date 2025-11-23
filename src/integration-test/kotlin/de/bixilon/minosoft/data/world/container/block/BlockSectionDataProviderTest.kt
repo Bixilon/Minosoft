@@ -36,24 +36,42 @@ class BlockSectionDataProviderTest {
     fun `initial empty`() {
         val blocks = create()
         assertTrue(blocks.isEmpty)
-        assertEquals(blocks.fluidCount, 0)
-        assertEquals(blocks.fullOpaqueCount, 0)
         assertEquals(blocks.count, 0)
+        assertEquals(blocks.fluidCount, 0)
+        assertEquals(blocks.entityCount, 0)
+        assertEquals(blocks.luminantCount, 0)
+        assertEquals(blocks.fullOpaqueCount, 0)
     }
 
     fun `single block set and removed`() {
         val blocks = create()
-        blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
+        blocks[InSectionPosition(0, 0, 0)] = TestBlockStates.TEST1
         blocks[InSectionPosition(0, 0, 0)] = null
         assertTrue(blocks.isEmpty)
-        assertEquals(blocks.fluidCount, 0)
         assertEquals(blocks.count, 0)
+        assertEquals(blocks.fluidCount, 0)
+        assertEquals(blocks.entityCount, 0)
+        assertEquals(blocks.luminantCount, 0)
+        assertEquals(blocks.fullOpaqueCount, 0)
     }
 
     fun `full opaque is set`() {
         val blocks = create()
         blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.OPAQUE1
         assertTrue(blocks.fullOpaque[InSectionPosition(3, 2, 1).index])
+        assertEquals(blocks.fullOpaqueCount, 1)
+    }
+
+    fun `entity is set`() {
+        val blocks = create()
+        blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.ENTITY1
+        assertEquals(blocks.entityCount, 1)
+    }
+
+    fun `luminant is set`() {
+        val blocks = create()
+        blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.TORCH14
+        assertEquals(blocks.luminantCount, 1)
     }
 
     fun `full opaque is removed null`() {
@@ -61,6 +79,7 @@ class BlockSectionDataProviderTest {
         blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.OPAQUE1
         blocks[InSectionPosition(3, 2, 1)] = null
         assertFalse(blocks.fullOpaque[InSectionPosition(3, 2, 1).index])
+        assertEquals(blocks.fullOpaqueCount, 0)
     }
 
     fun `full opaque is removed non opaque`() {
@@ -68,6 +87,7 @@ class BlockSectionDataProviderTest {
         blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.OPAQUE1
         blocks[InSectionPosition(3, 2, 1)] = TestBlockStates.TEST1
         assertFalse(blocks.fullOpaque[InSectionPosition(3, 2, 1).index])
+        assertEquals(blocks.fullOpaqueCount, 0)
     }
 
     // TODO: full opaque initially
@@ -104,31 +124,31 @@ class BlockSectionDataProviderTest {
 
     fun `set min max position`() {
         val blocks = create()
-        blocks[InSectionPosition(0, 0, 0)] = IT.BLOCK_1
+        blocks[InSectionPosition(0, 0, 0)] = TestBlockStates.TEST1
         assertEquals(blocks.minPosition, InSectionPosition(0, 0, 0))
         assertEquals(blocks.maxPosition, InSectionPosition(0, 0, 0))
     }
 
     fun `set min max position but block not on edge`() {
         val blocks = create()
-        blocks[3, 5, 8] = IT.BLOCK_1
+        blocks[3, 5, 8] = TestBlockStates.TEST1
         assertEquals(blocks.minPosition, InSectionPosition(3, 5, 8))
         assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 8))
     }
 
     fun `set min max position but multiple blocks set`() {
         val blocks = create()
-        blocks[3, 5, 8] = IT.BLOCK_1
-        blocks[1, 2, 12] = IT.BLOCK_1
+        blocks[3, 5, 8] = TestBlockStates.TEST1
+        blocks[1, 2, 12] = TestBlockStates.TEST1
         assertEquals(blocks.minPosition, InSectionPosition(1, 2, 8))
         assertEquals(blocks.maxPosition, InSectionPosition(3, 5, 12))
     }
 
     fun `remove one min max position but multiple blocks set`() {
         val blocks = create()
-        blocks[3, 5, 8] = IT.BLOCK_1
-        blocks[1, 2, 12] = IT.BLOCK_1
-        blocks[15, 14, 13] = IT.BLOCK_1
+        blocks[3, 5, 8] = TestBlockStates.TEST1
+        blocks[1, 2, 12] = TestBlockStates.TEST1
+        blocks[15, 14, 13] = TestBlockStates.TEST1
         assertEquals(blocks.minPosition, InSectionPosition(1, 2, 8))
         assertEquals(blocks.maxPosition, InSectionPosition(15, 14, 13))
         blocks[15, 14, 13] = null
@@ -139,7 +159,7 @@ class BlockSectionDataProviderTest {
     @Test(enabled = false)
     fun benchmark() {
         val water = WaterTest0.state
-        val stone = IT.BLOCK_1
+        val stone = TestBlockStates.TEST1
         val random = Random(12)
 
         val data = create()
