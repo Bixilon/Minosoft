@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -70,6 +71,7 @@ class RGBA8BufferTest {
         assertEquals(source.getB(3, 3), 0x33)
         assertEquals(source.getA(3, 3), 0x44)
     }
+
     fun `get rgb at 3,3`() {
         val source = RGBA8Buffer(Vec2i(12, 13))
         source.data.put(156 + 0, 0x11).put(156 + 1, 0x22).put(156 + 2, 0x33).put(156 + 3, 0x44)
@@ -103,5 +105,38 @@ class RGBA8BufferTest {
 
         assertEquals(destination.getRGBA(3, 3), 0x11223344.rgba())
         assertEquals(destination.getRGBA(5, 5), 0x11223344.rgba())
+    }
+
+    fun `check transparency level opaque`() {
+        val source = RGBA8Buffer(Vec2i(5, 4))
+        source.fill(0xAA, 0xBB, 0xCC, 0xFF)
+        source.setRGBA(1, 1, 0x11, 0x22, 0x33, 0xFF)
+
+        assertEquals(source.getTransparency(), TextureTransparencies.OPAQUE)
+    }
+
+    fun `check transparency level transparent`() {
+        val source = RGBA8Buffer(Vec2i(5, 4))
+        source.fill(0xAA, 0xBB, 0xCC, 0xFF)
+        source.setRGBA(1, 1, 0x11, 0x22, 0x33, 0x00)
+
+        assertEquals(source.getTransparency(), TextureTransparencies.TRANSPARENT)
+    }
+
+    fun `check transparency level translucent`() {
+        val source = RGBA8Buffer(Vec2i(5, 4))
+        source.fill(0xAA, 0xBB, 0xCC, 0xFF)
+        source.setRGBA(1, 1, 0x11, 0x22, 0x33, 0x01)
+
+        assertEquals(source.getTransparency(), TextureTransparencies.TRANSLUCENT)
+    }
+
+    fun `check transparency level transparent translucent`() {
+        val source = RGBA8Buffer(Vec2i(5, 4))
+        source.fill(0xAA, 0xBB, 0xCC, 0xFF)
+        source.setRGBA(1, 1, 0x11, 0x22, 0x33, 0x00)
+        source.setRGBA(1, 2, 0x11, 0x22, 0x33, 0x01)
+
+        assertEquals(source.getTransparency(), TextureTransparencies.TRANSLUCENT)
     }
 }

@@ -33,10 +33,10 @@ class RGB8Buffer(
 
 
     fun setRGB(x: Int, y: Int, red: Int, green: Int, blue: Int) {
-        val stride = stride(x, y)
-        data.put(stride + 0, red.toByte())
-        data.put(stride + 1, green.toByte())
-        data.put(stride + 2, blue.toByte())
+        val offset = offset(x, y)
+        data.put(offset + 0, red.toByte())
+        data.put(offset + 1, green.toByte())
+        data.put(offset + 2, blue.toByte())
     }
 
     override fun setRGBA(x: Int, y: Int, red: Int, green: Int, blue: Int, alpha: Int) {
@@ -55,23 +55,23 @@ class RGB8Buffer(
     }
 
     override fun getRGBA(x: Int, y: Int): RGBAColor {
-        val stride = stride(x, y)
-        return RGBAColor(this[stride + 0], this[stride + 1], this[stride + 2])
+        val offset = offset(x, y)
+        return RGBAColor(this[offset + 0], this[offset + 1], this[offset + 2])
     }
 
     override fun getRGB(x: Int, y: Int): RGBColor {
-        val stride = stride(x, y)
-        return RGBColor(this[stride + 0], this[stride + 1], this[stride + 2])
+        val offset = offset(x, y)
+        return RGBColor(this[offset + 0], this[offset + 1], this[offset + 2])
     }
 
 
-    override fun getR(x: Int, y: Int) = this[stride(x, y) + 0]
-    override fun getG(x: Int, y: Int) = this[stride(x, y) + 1]
-    override fun getB(x: Int, y: Int) = this[stride(x, y) + 2]
+    override fun getR(x: Int, y: Int) = this[offset(x, y) + 0]
+    override fun getG(x: Int, y: Int) = this[offset(x, y) + 1]
+    override fun getB(x: Int, y: Int) = this[offset(x, y) + 2]
     override fun getA(x: Int, y: Int) = 0xFF
 
 
-    private fun stride(x: Int, y: Int): Int {
+    private fun offset(x: Int, y: Int): Int {
         if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
     }
