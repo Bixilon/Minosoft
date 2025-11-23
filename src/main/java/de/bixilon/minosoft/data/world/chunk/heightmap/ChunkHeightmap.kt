@@ -26,7 +26,6 @@ abstract class ChunkHeightmap(
 ) : Heightmap {
     protected val heightmap = IntArray(SECTION_WIDTH_X * SECTION_WIDTH_Z) { Int.MIN_VALUE }
     protected val minSection = chunk.world.dimension.minSection
-    protected val maxSection = chunk.world.dimension.maxSection
 
     override fun get(index: Int) = heightmap[index]
     override fun get(x: Int, z: Int) = this[(z shl 4) or x]
@@ -39,7 +38,7 @@ abstract class ChunkHeightmap(
 
 
     override fun recalculate() {
-        val maxY = (maxSection + 1) * SECTION_HEIGHT_Y
+        val maxY = (chunk.sections.highest + 1) * SECTION_HEIGHT_Y
 
         chunk.lock.lock()
         for (xz in 0 until SECTION_WIDTH_X * SECTION_WIDTH_Z) {
