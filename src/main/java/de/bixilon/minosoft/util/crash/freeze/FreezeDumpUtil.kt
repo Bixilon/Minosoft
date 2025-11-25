@@ -17,12 +17,14 @@ import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.io.DefaultIOPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.file.FileUtil.div
 import de.bixilon.kutil.file.PathUtil.div
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.reflection.ReflectionUtil.static
 import de.bixilon.kutil.time.TimeUtil.format1
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -36,54 +38,55 @@ import kotlin.time.ExperimentalTime
 
 
 object FreezeDumpUtil {
+    private val SCHEDULER_REPEATED = TaskScheduler::class.java.getFieldOrNull("repeated")!!.static
+    private val SCHEDULER_QUEUED = TaskScheduler::class.java.getFieldOrNull("queued")!!.static
+    private val THREAD_POOL_QUEUE = ThreadPool::class.java.getFieldOrNull("queue")!!.field
+
     private var id = 0
 
+
+    private val SECTIONS = listOf(
+        "Thread dump" to this::createThreadDump,
+        "Thread Pool" to this::createThreadPoolDump,
+        "IO Pool" to this::createIOPoolDump,
+        "Scheduler Queued" to this::createSchedulerDumpQueued,
+        "Scheduler Repeated" to this::createSchedulerDumpRepeated,
+        "Locks" to this::createLockDump,
+    )
+
     fun catchAsync(callback: (FreezeDump) -> Unit) {
-        val thread = Thread { catch(callback) }
+        val thread = Thread {
+            val dump = catch()
+            callback.invoke(dump)
+        }
         thread.name = "FreezeDump#${id++}"
         thread.start()
     }
 
-    @OptIn(ExperimentalTime::class)
-    fun catch(callback: (FreezeDump) -> Unit) {
+    fun dump(): String {
         val builder = StringBuilder()
+
 
         builder.append("--- Freeze dump ----")
         builder.appendLine()
         builder.appendLine()
         builder.appendLine()
-        ignoreAll {
-            builder.append("-- Thread dump --")
+
+        for ((title, runnable) in SECTIONS) {
+            val data = ignoreAll { runnable.invoke() } ?: continue
+            builder.append("-- ").append(title).append(" --")
             builder.appendLine()
-            builder.append(createThreadDump())
-            builder.appendLine()
-            builder.appendLine()
-        }
-        ignoreAll {
-            builder.append("-- Pool --")
-            builder.appendLine()
-            builder.append(createThreadPoolDump())
-            builder.appendLine()
-            builder.appendLine()
-        }
-        ignoreAll {
-            builder.append("-- Scheduler --")
-            builder.appendLine()
-            builder.append(createSchedulerDump())
-            builder.appendLine()
-            builder.appendLine()
-        }
-        ignoreAll {
-            builder.append("-- Locks --")
-            builder.appendLine()
-            builder.append(createLockDump())
+            builder.append(data)
             builder.appendLine()
             builder.appendLine()
         }
 
+        return builder.toString()
+    }
 
-        val dump = builder.toString()
-
+    @OptIn(ExperimentalTime::class)
+    fun catch(): FreezeDump {
+        val dump = dump()
 
         var path: File?
         try {
@@ -101,7 +104,7 @@ object FreezeDumpUtil {
             path = null
         }
 
-        callback(FreezeDump(dump, path))
+        return FreezeDump(dump, path)
     }
 
     private fun createThreadDump(): StringBuffer {
@@ -114,16 +117,10 @@ object FreezeDumpUtil {
         return dump
     }
 
-    private fun createThreadPoolDump(): String {
-        val queue = ThreadPool::class.java.getFieldOrNull("queue")!!
-        return queue.get(DefaultThreadPool).toString()
-    }
-
-    private fun createSchedulerDump(): String {
-        val tasks = TaskScheduler::class.java.getFieldOrNull("tasks")!!
-
-        return tasks.get(TaskScheduler).toString()
-    }
+    private fun createThreadPoolDump() = THREAD_POOL_QUEUE.getAny(DefaultThreadPool).toString()
+    private fun createIOPoolDump() = THREAD_POOL_QUEUE.getAny(DefaultIOPool).toString()
+    private fun createSchedulerDumpQueued() = SCHEDULER_QUEUED.getAny().toString()
+    private fun createSchedulerDumpRepeated() = SCHEDULER_REPEATED.getAny().toString()
 
     private fun RWLock.owner() = when (this) {
         is ReentrantRWLock -> owner()
