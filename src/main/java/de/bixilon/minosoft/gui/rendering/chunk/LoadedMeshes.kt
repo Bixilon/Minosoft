@@ -53,7 +53,7 @@ class LoadedMeshes(
         }
 
         meshes.lock.locked {
-            meshes.unsafeAdd(mesh, frustum)
+            meshes.unsafeAdd(mesh, frustum, true)
             meshes.sort() // TODO: replace mesh (no need to sort again)
         }
     }
@@ -90,7 +90,7 @@ class LoadedMeshes(
         meshes.clear()
     }
 
-    fun addTo(visible: VisibleMeshes) = lock.acquired {
+    fun addTo(visible: VisibleMeshes, force: Boolean) = lock.acquired {
         // TODO: somehow cache the sorting
 
         val frustum = renderer.context.camera.frustum
@@ -106,7 +106,7 @@ class LoadedMeshes(
                 val result = renderer.visibility.contains(mesh.position, mesh.min, mesh.max)
                 if (result == FrustumResults.OUTSIDE) continue
 
-                visible.unsafeAdd(mesh, result)
+                visible.unsafeAdd(mesh, result, force)
             }
         }
     }

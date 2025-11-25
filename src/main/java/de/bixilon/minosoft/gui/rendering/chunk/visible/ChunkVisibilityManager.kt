@@ -36,6 +36,7 @@ class ChunkVisibilityManager(
 
     private var invalid = true
     private var viewDistance = renderer.context.session.world.view.viewDistance
+    private var fog = -1
 
 
     var meshes = VisibleMeshes()
@@ -56,6 +57,12 @@ class ChunkVisibilityManager(
     operator fun contains(section: ChunkSection) = visibility.isSectionVisible(section)
 
     fun contains(position: SectionPosition, min: InSectionPosition, max: InSectionPosition) = visibility.isSectionVisible(position, min, max, true)
+
+    private fun updateVisibleMeshes(force: Boolean) {
+        this.meshes = VisibleMeshes(eyePosition, this.meshes)
+        renderer.loaded.addTo(meshes, force)
+        meshes.sort()
+    }
 
     private fun onVisibilityChange() {
         val eyePosition = renderer.context.session.camera.entity.physics.positionInfo.eyePosition
@@ -78,11 +85,8 @@ class ChunkVisibilityManager(
             renderer.meshingQueue.sort()
             renderer.loadingQueue.sort()
         }
-        renderer.culledQueue.enqueue()
 
-        this.meshes = VisibleMeshes(eyePosition, this.meshes)
-        renderer.loaded.addTo(meshes)
-        meshes.sort()
+        renderer.culledQueue.enqueue()
     }
 
 
@@ -93,9 +97,16 @@ class ChunkVisibilityManager(
     fun update() {
         updateViewDistance() // TODO: delay that for 100ms to not cause rapid loading/unloading
 
+        val fog = renderer.context.camera.fog.revision
+        val force = this.fog != fog
+        this.fog = fog
+
         if (invalid) {
             onVisibilityChange()
+            updateVisibleMeshes(force)
             invalid = false
+        } else if (force) {
+            updateVisibleMeshes(true)
         }
     }
 

@@ -39,7 +39,8 @@ class FogManager(
     private var options: FogOptions? = null
 
 
-    private var shaderRevision = -1
+    var revision = -1
+        private set
 
     fun draw() {
         update()
@@ -55,7 +56,7 @@ class FogManager(
         return when {
             fluid is FoggedFluid -> fluid.getFogOptions(context.session.world, player.physics.positionInfo)
             player.effects[VisionEffect.Blindness] != null -> VisionEffect.Blindness.FOG_OPTIONS
-            player.physics.positionInfo.eyePosition.y + 3 < context.session.world.dimension.minY -> VOID_OFG
+            player.physics.positionInfo.eyePosition.y + 3 < context.session.world.dimension.minY -> VOID_FOG
             // TODO: powder snow
             else -> {
                 val end = context.session.world.view.viewDistance.toFloat() * ChunkSize.SECTION_WIDTH_X
@@ -121,7 +122,7 @@ class FogManager(
     private fun updateShaders() {
         val revision = state.revision
 
-        if (revision == this.shaderRevision) {
+        if (revision == this.revision) {
             return
         }
 
@@ -137,7 +138,7 @@ class FogManager(
             }
             shader.update(start, end, distance, color, flags)
         }
-        this.shaderRevision = revision
+        this.revision = revision
     }
 
     fun use(shader: AbstractShader) {
@@ -166,6 +167,6 @@ class FogManager(
 
     companion object {
         private val INTERPOLATE_DURATION = 300.milliseconds
-        val VOID_OFG = FogOptions(start = 10.0f, end = 15.0f, color = ChatColors.BLACK.rgb())
+        val VOID_FOG = FogOptions(start = 10.0f, end = 15.0f, color = ChatColors.BLACK.rgb())
     }
 }

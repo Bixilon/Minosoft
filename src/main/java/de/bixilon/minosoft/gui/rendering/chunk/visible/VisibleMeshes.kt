@@ -41,12 +41,13 @@ class VisibleMeshes(
     val lock = ReentrantLock()
 
 
-    private fun add(mesh: ChunkMeshes, frustum: FrustumResults) {
+    private fun add(mesh: ChunkMeshes, frustum: FrustumResults, force: Boolean) {
         val delta = (camera - mesh.center)
         val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
 
         assert(frustum != FrustumResults.OUTSIDE)
-        var occlusion = frustum == FrustumResults.PARTLY_INSIDE || mesh.result == FrustumResults.PARTLY_INSIDE
+        var occlusion = force || frustum == FrustumResults.PARTLY_INSIDE || mesh.result == FrustumResults.PARTLY_INSIDE
+
         // TODO: fog
         // TODO: handle block changes
 
@@ -55,12 +56,15 @@ class VisibleMeshes(
             val length2 = next.x * next.x + next.y * next.y + next.z * next.z
 
             if (length2 >= 2 * 2) {
-                mesh.delta = delta
                 occlusion = true
             }
         } else {
             occlusion = true
         }
+        if (occlusion) {
+            mesh.delta = delta
+        }
+
         mesh.result = frustum
 
 
@@ -84,7 +88,7 @@ class VisibleMeshes(
         }
     }
 
-    fun unsafeAdd(mesh: ChunkMeshes, frustum: FrustumResults) = add(mesh, frustum)
+    fun unsafeAdd(mesh: ChunkMeshes, frustum: FrustumResults, force: Boolean) = add(mesh, frustum, force)
 
 
     fun sort() {
