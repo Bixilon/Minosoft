@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.gui.RenderLoop
@@ -51,16 +53,11 @@ class Rendering(private val session: PlaySession) {
                 audioPlayer.init(audioLatch)
                 latch.dec() // initial count
                 audioPlayer.startLoop()
-                audioPlayer.exit()
             } catch (exception: Throwable) {
                 exception.printStackTrace()
                 latch.minus(audioLatch.count)
             } finally {
-                try {
-                    audioPlayer.exit()
-                } catch (error: Throwable) {
-                    error.printStackTrace()
-                }
+                ignoreAll { audioPlayer.exit() }
 
                 session.terminate()
             }
