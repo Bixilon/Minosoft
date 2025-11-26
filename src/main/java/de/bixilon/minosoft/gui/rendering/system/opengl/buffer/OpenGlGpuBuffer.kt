@@ -93,7 +93,7 @@ abstract class OpenGlGpuBuffer(
 
     protected fun finalize() {
         if (state == GpuBufferStates.INITIALIZED && system.active) {
-            throw MemoryLeakException("Buffer has not been unloaded!")
+            MemoryLeakException("Buffer has not been unloaded!").printStackTrace()
         }
     }
 }

@@ -119,7 +119,7 @@ class OpenGlFramebuffer(
 
     protected fun finalize() {
         if (state == FramebufferState.COMPLETE && system.active) {
-            throw MemoryLeakException("Buffer has not been unloaded!")
+            MemoryLeakException("Framebuffer has not been unloaded!").printStackTrace()
         }
     }
 

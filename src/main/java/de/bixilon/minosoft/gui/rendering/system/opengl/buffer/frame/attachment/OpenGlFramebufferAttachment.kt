@@ -29,7 +29,7 @@ abstract class OpenGlFramebufferAttachment(
 
     protected fun finalize() {
         if (state == AttachmentStates.GENERATED && system.active) {
-            throw MemoryLeakException("Renderbuffer has not been unloaded!")
+            MemoryLeakException("Framebuffer attachment has not been unloaded!").printStackTrace()
         }
     }
 }

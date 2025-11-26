@@ -121,6 +121,10 @@ abstract class MeshBuilder(
     }
 
     protected fun finalize() {
-        if (_index != null || _data != null) throw MemoryLeakException("Mesh builder was not dropped nor loaded!")
+        if (reused) return
+
+        if (_index != null || _data != null) {
+            MemoryLeakException("Mesh builder was not dropped nor loaded!").printStackTrace()
+        }
     }
 }
