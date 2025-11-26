@@ -41,15 +41,17 @@ class LoadedMeshes(
 
         val previous = chunk.put(mesh.position.y, mesh)
         lock.unlock()
-        val frustum = renderer.visibility.contains(mesh.position, mesh.min, mesh.max)
-        if (frustum == FrustumResults.OUTSIDE) {
-            return
-        }
         val meshes = renderer.visibility.meshes
 
         if (previous != null) {
             meshes -= previous
             renderer.unloadingQueue += previous
+        }
+
+
+        val frustum = renderer.visibility.contains(mesh.position, mesh.min, mesh.max)
+        if (frustum == FrustumResults.OUTSIDE) {
+            return
         }
 
         meshes.lock.locked {
