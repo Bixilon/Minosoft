@@ -78,18 +78,15 @@ abstract class Particle(
     override var onGround: Boolean = true
     var alreadyCollided = false
     var accelerateIfYBlocked = false
-    override var aabb: AABB = AABB.INFINITY
     var spacing: Vec3f = Vec3f.EMPTY
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
 
-            val x = ((aabb.min.x + aabb.max.x) - spacing.x) / 2.0
-            val z = ((aabb.min.z + aabb.max.z) - spacing.z) / 2.0
+    val aabb: AABB
+        get() {
+            val spacing = spacing
+            val position = position
 
-            aabb = AABB(Vec3d(x, aabb.min.y, z), Vec3d(x + spacing.x, aabb.min.y + spacing.y, z + spacing.z))
+
+            return AABB(Vec3d(position.x - spacing.x, position.y - spacing.y, position.z - spacing.z), Vec3d(position.x + spacing.x, position.y + spacing.y, position.z + spacing.z))
         }
 
     protected fun getChunk(): Chunk? {
@@ -138,6 +135,7 @@ abstract class Particle(
 
     private fun collide(movement: Vec3d): Vec3d {
         val aabb = aabb + movement
+
         val context = ParticleCollisionContext(this)
         val collisions = CollisionShape(session.world, context, aabb, movement, getChunk())
         val adjusted = collide(movement, aabb, collisions)

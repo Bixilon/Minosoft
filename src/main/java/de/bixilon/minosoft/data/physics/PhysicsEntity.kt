@@ -22,5 +22,4 @@ interface PhysicsEntity {
     var position: Vec3d
     val velocity: MVec3d
     var onGround: Boolean
-    var aabb: AABB
 }
