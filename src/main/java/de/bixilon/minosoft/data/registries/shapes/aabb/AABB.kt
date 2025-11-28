@@ -38,9 +38,9 @@ data class AABB(
     override val _max get() = max
 
     init {
-        assert(min.x <= max.x) { "${min.x} > ${max.x}" }
-        assert(min.y <= max.y) { "${min.y} > ${max.y}" }
-        assert(min.z <= max.z) { "${min.z} > ${max.z}" }
+        assert(min.x < max.x) { "${min.x} > ${max.x}" }
+        assert(min.y < max.y) { "${min.y} > ${max.y}" }
+        assert(min.z < max.z) { "${min.z} > ${max.z}" }
     }
 
     @Deprecated("mutable")
@@ -135,7 +135,7 @@ data class AABB(
 
     companion object {
         val BLOCK = AABB(Vec3d.EMPTY, Vec3d.ONE)
-        val INVALID = AABB(Vec3d.EMPTY, Vec3d.EMPTY)
+        val INFINITY = AABB(Vec3d(Double.NEGATIVE_INFINITY), Vec3d(Double.POSITIVE_INFINITY))
 
         fun of(data: JsonObject): AABB {
             val from = data["from"]!!.toVec3d(Vec3d.EMPTY)

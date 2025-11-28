@@ -21,7 +21,7 @@ class AABBIteratorTest {
 
     @Test
     fun empty() {
-        val positions = AABB.INVALID.positions()
+        val positions = AABB.INFINITY.positions()
         assertEquals(0, positions.size)
         assertFalse(positions.hasNext())
     }

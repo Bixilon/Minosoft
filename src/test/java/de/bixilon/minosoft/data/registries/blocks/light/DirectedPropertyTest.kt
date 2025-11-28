@@ -35,12 +35,12 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered2() {
-        assertFalse(AABB.INVALID.isSideCovered(Directions.DOWN))
-        assertFalse(AABB.INVALID.isSideCovered(Directions.UP))
-        assertFalse(AABB.INVALID.isSideCovered(Directions.NORTH))
-        assertFalse(AABB.INVALID.isSideCovered(Directions.SOUTH))
-        assertFalse(AABB.INVALID.isSideCovered(Directions.WEST))
-        assertFalse(AABB.INVALID.isSideCovered(Directions.EAST))
+        assertFalse(AABB.INFINITY.isSideCovered(Directions.DOWN))
+        assertFalse(AABB.INFINITY.isSideCovered(Directions.UP))
+        assertFalse(AABB.INFINITY.isSideCovered(Directions.NORTH))
+        assertFalse(AABB.INFINITY.isSideCovered(Directions.SOUTH))
+        assertFalse(AABB.INFINITY.isSideCovered(Directions.WEST))
+        assertFalse(AABB.INFINITY.isSideCovered(Directions.EAST))
     }
 
     @Test

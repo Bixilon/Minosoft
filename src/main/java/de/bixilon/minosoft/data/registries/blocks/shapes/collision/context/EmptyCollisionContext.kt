@@ -16,5 +16,5 @@ package de.bixilon.minosoft.data.registries.blocks.shapes.collision.context
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 
 object EmptyCollisionContext : CollisionContext {
-    override val aabb: AABB get() = AABB.INVALID
+    override val aabb: AABB get() = AABB.INFINITY
 }
