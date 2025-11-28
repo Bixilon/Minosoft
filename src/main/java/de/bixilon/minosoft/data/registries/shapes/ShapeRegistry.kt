@@ -32,7 +32,7 @@ class ShapeRegistry {
         loadShapes(data["shapes"].unsafeCast(), aabbs)
     }
 
-    private fun loadShapes(data: Collection<Any>, aabbs: Array<AABB>) {
+    private fun loadShapes(data: Collection<Any>, aabbs: Array<AABB?>) {
         this.shapes = arrayOfNulls(data.size)
 
         for ((index, shape) in data.withIndex()) {
@@ -40,13 +40,13 @@ class ShapeRegistry {
         }
     }
 
-    private fun loadAABBs(data: Collection<Map<String, Any>>): Array<AABB> {
+    private fun loadAABBs(data: Collection<Map<String, Any>>): Array<AABB?> {
         val aabbs: Array<AABB?> = arrayOfNulls(data.size)
 
         for ((index, aabb) in data.withIndex()) {
             aabbs[index] = AABB.of(aabb)
         }
-        return aabbs.cast()
+        return aabbs
     }
 
     fun cleanup() {

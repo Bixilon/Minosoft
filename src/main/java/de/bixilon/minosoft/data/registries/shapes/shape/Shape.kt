@@ -46,19 +46,25 @@ interface Shape {
     companion object {
         val FULL = AABB.BLOCK
 
-        fun Array<AABB>.deserialize(index: Int) = this[index]
-        fun Array<AABB>.deserialize(indices: Collection<*>): AABBList? {
+        fun Array<AABB?>.deserialize(index: Int) = this[index]
+        fun Array<AABB?>.deserialize(indices: Collection<*>): AABBList? {
             if (indices.isEmpty()) return null
 
-            val aabbs: Array<AABB> = arrayOfNulls<AABB?>(indices.size).cast()
-            for ((index, id) in indices.withIndex()) {
-                aabbs[index] = this[id.toInt()]
+            var aabbs: Array<AABB?> = arrayOfNulls(indices.size)
+            var offset = 0
+            for (id in indices) {
+                val aabb = this[id.toInt()] ?: continue
+                aabbs[offset++] = aabb
             }
 
-            return AABBList(aabbs)
+            if (offset != aabbs.size) {
+                aabbs = aabbs.slice(0 until offset).toTypedArray()
+            }
+
+            return AABBList(aabbs.cast())
         }
 
-        fun Array<AABB>.deserialize(data: Any) = when (data) {
+        fun Array<AABB?>.deserialize(data: Any) = when (data) {
             is Int -> deserialize(data)
             is Collection<*> -> deserialize(data)
             else -> Broken("Don't know how to get shape from data: $data")
