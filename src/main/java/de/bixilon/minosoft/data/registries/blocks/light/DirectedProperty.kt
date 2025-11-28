@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.registries.blocks.light
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.registries.shapes.side.SideQuad
 
@@ -75,48 +77,56 @@ class DirectedProperty(
             return if (simple) TransparentProperty else OpaqueProperty
         }
 
-        private fun Shape.getSideArea(direction: Directions, target: SideQuad): Float {
-            // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
-            // ToDo: This whole calculation is technically wrong, it could be that 2 different sides of 2 blocks are "free". That means that light can still not pass the blocks, but
-            // this algorithm does not cover it. Let's see it as performance hack
-            var area = 0.0f
+        private fun AABB.getSideArea(direction: Directions, target: SideQuad): Float {
+            val a: Float
+            val b: Float
+            val c: Float
+            val d: Float
 
-
-            for (aabb in this) {
-                val a: Float
-                val b: Float
-                val c: Float
-                val d: Float
-
-                when (direction.axis) {
-                    Axes.Y -> {
-                        if ((direction == Directions.DOWN && aabb.min.y != 0.0) || (direction == Directions.UP && aabb.max.y != 1.0)) {
-                            continue
-                        }
-                        a = aabb.min.x.toFloat(); b = aabb.min.z.toFloat(); c = aabb.max.x.toFloat(); d = aabb.max.z.toFloat()
+            when (direction.axis) {
+                Axes.Y -> {
+                    if ((direction == Directions.DOWN && min.y != 0.0) || (direction == Directions.UP && max.y != 1.0)) {
+                        return 0.0f
                     }
-
-                    Axes.X -> {
-                        if ((direction == Directions.WEST && aabb.min.x != 0.0) || (direction == Directions.EAST && aabb.max.x != 1.0)) {
-                            continue
-                        }
-                        a = aabb.min.y.toFloat(); b = aabb.min.z.toFloat(); c = aabb.max.y.toFloat(); d = aabb.max.z.toFloat()
-                    }
-
-                    Axes.Z -> {
-                        if ((direction == Directions.NORTH && aabb.min.z != 0.0) || (direction == Directions.SOUTH && aabb.max.z != 1.0)) {
-                            continue
-                        }
-                        a = aabb.min.x.toFloat(); b = aabb.min.y.toFloat(); c = aabb.max.x.toFloat(); d = aabb.max.y.toFloat()
-                    }
+                    a = min.x.toFloat(); b = min.z.toFloat(); c = max.x.toFloat(); d = max.z.toFloat()
                 }
-                val width = minOf(target.max.x, c) - maxOf(a, target.min.x)
-                val height = minOf(target.max.y, d) - maxOf(b, target.min.y)
 
-                area += width * height
+                Axes.X -> {
+                    if ((direction == Directions.WEST && min.x != 0.0) || (direction == Directions.EAST && max.x != 1.0)) {
+                        return 0.0f
+                    }
+                    a = min.y.toFloat(); b = min.z.toFloat(); c = max.y.toFloat(); d = max.z.toFloat()
+                }
+
+                Axes.Z -> {
+                    if ((direction == Directions.NORTH && min.z != 0.0) || (direction == Directions.SOUTH && max.z != 1.0)) {
+                        return 0.0f
+                    }
+                    a = min.x.toFloat(); b = min.y.toFloat(); c = max.x.toFloat(); d = max.y.toFloat()
+                }
             }
+            val width = minOf(target.max.x, c) - maxOf(a, target.min.x)
+            val height = minOf(target.max.y, d) - maxOf(b, target.min.y)
 
-            return area
+            return width * height
+        }
+
+        private fun AABBList.getSideArea(direction: Directions, target: SideQuad): Float {
+            var total = 0.0f
+            for (aabb in this) {
+                total += aabb.getSideArea(direction, target)
+            }
+            return total
+        }
+
+
+        // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
+        // ToDo: This whole calculation is technically wrong, it could be that 2 different sides of 2 blocks are "free". That means that light can still not pass the blocks, but
+        // this algorithm does not cover it. Let's see it as performance hack
+        private fun Shape.getSideArea(direction: Directions, target: SideQuad) = when (this) {
+            is AABB -> getSideArea(direction, target)
+            is AABBList -> getSideArea(direction, target)
+            else -> 0.0f
         }
 
         fun Shape.isSideCovered(direction: Directions): Boolean {

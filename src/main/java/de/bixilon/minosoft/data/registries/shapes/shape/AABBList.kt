@@ -14,19 +14,22 @@
 package de.bixilon.minosoft.data.registries.shapes.shape
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
-class CombinedShape(
-    val aabbs: Array<AABB>, // TODO: primitive float list
-) : Shape {
+class AABBList(
+    val aabbs: Array<AABB>, // TODO: primitive double array
+) : Shape, Iterable<AABB> {
 
     init {
-        if (aabbs.isEmpty()) Broken("Empty voxel shape == null")
-        if (aabbs.size == 1) Broken("Combined shape must have at least 2 aabbs (has 1)")
+        assert(aabbs.size > 1) { "Must have at least one AABB: ${aabbs.size}" }
     }
 
     @Deprecated("AABB", level = DeprecationLevel.ERROR)
@@ -36,7 +39,7 @@ class CombinedShape(
     constructor(aabb: AABB) : this(aabbs = arrayOf(aabb))
 
 
-    override fun intersects(other: AABB): Boolean {
+    override fun intersects(other: AbstractAABB): Boolean {
         for (aabb in this) {
             if (!aabb.intersects(other)) continue
             return true
@@ -44,7 +47,7 @@ class CombinedShape(
         return false
     }
 
-    override fun intersects(other: AABB, offset: BlockPosition): Boolean {
+    override fun intersects(other: AbstractAABB, offset: BlockPosition): Boolean {
         for (aabb in this) {
             if (!aabb.intersects(other, offset)) continue
             return true
@@ -53,7 +56,7 @@ class CombinedShape(
     }
 
 
-    override fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
         for (aabb in this) {
             distance = aabb.calculateMaxDistance(other, distance, axis)
@@ -61,7 +64,7 @@ class CombinedShape(
         return distance
     }
 
-    override fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
         for (aabb in this) {
             distance = aabb.calculateMaxDistance(other, offset, distance, axis)
@@ -69,8 +72,8 @@ class CombinedShape(
         return distance
     }
 
-    override fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit? {
-        var hit: AABBRaycastHit? = null
+    override fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit? {
+        var hit: ShapeRaycastHit? = null
         for (aabb in this) {
             val aabbHit = aabb.raycast(position, direction) ?: continue
             if (hit == null || aabbHit.inside || hit.distance > aabbHit.distance) {
@@ -82,22 +85,32 @@ class CombinedShape(
 
     override fun iterator() = aabbs.iterator()
 
-    override fun toString(): String {
-        return "CombinedShape{$aabbs}"
-    }
+    override fun toString() = "AABBList[${aabbs.contentToString()}]"
 
     override fun hashCode() = aabbs.contentHashCode()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Shape) return false
-        if (other is CombinedShape) return aabbs.contentEquals(other.aabbs)
-        if (other is AABB) return false // one aabb is not a combined shape
-        TODO("Can not compare $this with $other")
+    override fun equals(other: Any?) = when {
+        other is AABBList -> aabbs.contentEquals(other.aabbs)
+        else -> false
     }
+
+    private inline fun modify(modify: (AABB) -> AABB): AABBList {
+        val next: Array<AABB> = arrayOfNulls<AABB?>(this.aabbs.size).cast()
+        for ((index, aabb) in this.aabbs.withIndex()) {
+            next[index] = modify.invoke(this.aabbs[index])
+        }
+        return AABBList(next)
+    }
+
+    override fun plus(offset: Vec3d) = modify { it + offset }
+    override fun plus(offset: Vec3i) = modify { it + offset }
+
+    override fun plus(offset: BlockPosition) = modify { it + offset }
+    override fun plus(offset: InChunkPosition) = modify { it + offset }
+    override fun plus(offset: InSectionPosition) = modify { it + offset }
 
     companion object {
 
-        operator fun invoke(vararg aabb: AABB) = CombinedShape(aabbs = aabb.unsafeCast())
+        operator fun invoke(vararg aabb: AABB) = AABBList(aabbs = aabb.unsafeCast())
     }
 }

@@ -14,103 +14,54 @@
 package de.bixilon.minosoft.data.registries.shapes.shape
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.cast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
-interface Shape : Iterable<AABB> {
+interface Shape {
 
-    fun intersects(other: AABB): Boolean
-    fun intersects(other: AABB, offset: BlockPosition): Boolean
+    fun intersects(other: AbstractAABB): Boolean
+    fun intersects(other: AbstractAABB, offset: BlockPosition): Boolean
 
-    private inline fun modify(modify: (AABB) -> AABB): Shape {
-        val result: MutableList<AABB> = ArrayList()
-        for (aabb in this) {
-            result.add(modify.invoke(aabb))
-        }
-        return CombinedShape(result.toTypedArray())
-    }
+    operator fun plus(offset: Vec3d): Shape
+    operator fun plus(offset: Vec3i): Shape
 
-    operator fun plus(offset: Vec3d) = modify { it + offset }
-    operator fun plus(offset: Vec3f) = modify { it + offset }
-    operator fun plus(offset: Vec3i) = modify { it + offset }
+    operator fun plus(offset: BlockPosition): Shape
+    operator fun plus(offset: InChunkPosition): Shape
+    operator fun plus(offset: InSectionPosition): Shape
 
-    operator fun plus(offset: BlockPosition) = modify { it.offset(offset) }
+    fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes): Double
+    fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double
 
-    operator fun plus(offset: InChunkPosition) = modify { it.offset(offset) }
+    fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit?
 
-    operator fun plus(offset: InSectionPosition) = modify { it.offset(offset) }
-
-    fun add(other: Shape): Shape {
-        val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
-        aabbs += this
-        aabbs += other
-        return CombinedShape(aabbs.toTypedArray())
-    }
-
-    fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double
-    fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double
-    fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit?
-
-    fun shouldDrawLine(start: Vec3d, end: Vec3d): Boolean {
-        var count = 0
-        val min = min(start, end)
-        val max = max(start, end)
-        for (aabb in this) {
-            if (aabb.isOnEdge(min, max)) {
-                count++
-            }
-            if (count > 1) {
-                return false
-            }
-        }
-        return true
-    }
-
-    fun shouldDrawLine(start: Vec3f, end: Vec3f): Boolean {
-        return shouldDrawLine(Vec3d(start), Vec3d(end))
-    }
 
     companion object {
         val FULL = AABB.BLOCK
 
-        fun ShapeRegistry.deserialize(data: Any): Shape? {
-            when (data) {
-                is Int -> return this[data]
-                is Collection<*> -> {
-                    if (data.isEmpty()) return null
-                    val shape: MutableSet<AABB> = ObjectOpenHashSet()
-                    for (id in data) {
-                        shape += this[id.toInt()] ?: continue
-                    }
-                    return CombinedShape(shape.toTypedArray())
-                }
+        fun Array<AABB>.deserialize(index: Int) = this[index]
+        fun Array<AABB>.deserialize(indices: Collection<*>): AABBList? {
+            if (indices.isEmpty()) return null
+
+            val aabbs: Array<AABB> = arrayOfNulls<AABB?>(indices.size).cast()
+            for ((index, id) in indices.withIndex()) {
+                aabbs[index] = this[id.toInt()]
             }
-            TODO("Can not deserialize voxel shape")
+
+            return AABBList(aabbs)
         }
 
-        fun deserialize(data: Any, aabbs: Array<AABB>): Shape? {
-            when (data) {
-                is Int -> return aabbs[data]
-                is Collection<*> -> {
-                    if (data.isEmpty()) return null
-                    val shape: MutableSet<AABB> = ObjectOpenHashSet()
-                    for (id in data) {
-                        shape.add(aabbs[id.toInt()])
-                    }
-                    return CombinedShape(shape.toTypedArray())
-                }
-            }
-            TODO("Can not deserialize voxel shape: $data")
+        fun Array<AABB>.deserialize(data: Any) = when (data) {
+            is Int -> deserialize(data)
+            is Collection<*> -> deserialize(data)
+            else -> Broken("Don't know how to get shape from data: $data")
         }
     }
 }

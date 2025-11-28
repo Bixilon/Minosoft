@@ -76,7 +76,6 @@ import kotlin.time.Duration.Companion.seconds
 object KUtil {
     private val OBJECT_NODE_CHILDREN = ObjectNode::class.java.getUnsafeField("_children").field
     val NULL_UUID = UUID(0L, 0L)
-    val RANDOM = Random()
     val EMPTY_BYTE_ARRAY = ByteArray(0)
 
     fun bitSetOf(long: Long): BitSet {
@@ -181,16 +180,6 @@ object KUtil {
         return null
     }
 
-    val BooleanArray.isTrue: Boolean
-        get() {
-            for (boolean in this) {
-                if (!boolean) {
-                    return false
-                }
-            }
-            return true
-        }
-
 
     fun initBootClasses() {
         DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { GlobalEventMaster::class.java.forceInit() }
@@ -235,13 +224,6 @@ object KUtil {
             }
         }
     }
-
-    val Any.charCount: Int
-        get() {
-            if (this is ChatComponent) return this.length
-            if (this is CharSequence) return this.length
-            return toString().length
-        }
 
     fun secureRandomUUID(): UUID {
         val random = SecureRandom()

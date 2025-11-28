@@ -139,7 +139,7 @@ class BlockOutlineRenderer(
 
         val outline = block.outlineShape ?: block.getOutlineShape(state) ?: block.getOutlineShape(session, target.blockPosition, state) ?: target.entity?.let { block.getOutlineShape(session, target.blockPosition, state, it) }
 
-        outline?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
+        outline?.let { mesh.drawShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor.rgba()) }
 
 
         if (BlockStateFlags.COLLISIONS in state.flags && state.block is CollidableBlock && profile.collisions) { // TODO: block entity
@@ -149,7 +149,7 @@ class BlockOutlineRenderer(
                 collision = block.getCollisionShape(session, context, target.blockPosition, state) ?: target.entity?.let { block.getCollisionShape(session, context, target.blockPosition, state, it) }
             }
 
-            collision?.let { mesh.drawVoxelShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
+            collision?.let { mesh.drawShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }
         }
 
         this.nextMesh = mesh.bake()

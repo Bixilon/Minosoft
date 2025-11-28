@@ -15,9 +15,11 @@ package de.bixilon.minosoft.data.registries.shapes
 
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape.Companion.deserialize
 
 class ShapeRegistry {
     private var shapes: Array<Shape?> = emptyArray()
@@ -34,7 +36,7 @@ class ShapeRegistry {
         this.shapes = arrayOfNulls(data.size)
 
         for ((index, shape) in data.withIndex()) {
-            this.shapes[index] = Shape.deserialize(shape, aabbs)
+            this.shapes[index] = aabbs.deserialize(shape)
         }
     }
 
@@ -42,7 +44,7 @@ class ShapeRegistry {
         val aabbs: Array<AABB?> = arrayOfNulls(data.size)
 
         for ((index, aabb) in data.withIndex()) {
-            aabbs[index] = AABB(aabb)
+            aabbs[index] = AABB.of(aabb)
         }
         return aabbs.cast()
     }
@@ -51,8 +53,12 @@ class ShapeRegistry {
         this.shapes = emptyArray()
     }
 
-
     operator fun get(index: Int): Shape? {
         return shapes[index]
+    }
+
+    operator fun get(data: Any) = when (data) {
+        is Int -> this[data]
+        else -> Broken("Don't know how to get shape from data: $data")
     }
 }

@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
+import de.bixilon.minosoft.data.registries.shapes.shape.ShapeRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
@@ -93,7 +93,7 @@ class TargetHandler(
         return target
     }
 
-    private fun raycast(origin: Vec3d, front: Vec3d, state: BlockState, position: BlockPosition): AABBRaycastHit? {
+    private fun raycast(origin: Vec3d, front: Vec3d, state: BlockState, position: BlockPosition): ShapeRaycastHit? {
         val block = state.block
         if (BlockStateFlags.OUTLINE !in state.flags || block !is OutlinedBlock) {
             // no block, continue going into that direction
@@ -108,7 +108,7 @@ class TargetHandler(
         }
         if (shape == null) return null
         if (BlockStateFlags.OFFSET in state.flags && block is OffsetBlock) {
-            shape += block.offsetShape(position)
+            shape += Vec3d(block.offsetShape(position))
         }
 
         shape += position

@@ -16,8 +16,10 @@ package de.bixilon.minosoft.gui.rendering.util.mesh.integrated
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.MVec3f
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -59,20 +61,6 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
         drawLineQuad(startX, startY, startZ, endX, endY, endZ, invertedNormal1.unsafe, invertedNormal2.unsafe, direction.unsafe, color)
     }
 
-    fun tryDrawLine(start: Vec3f, end: Vec3f, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {
-        if (shape != null && !shape.shouldDrawLine(start, end)) {
-            return
-        }
-        drawLine(start.x, start.y, start.z, end.x, end.y, end.z, lineWidth, color)
-    }
-
-    fun tryDrawLine(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, shape: Shape? = null) {
-        if (shape != null && !shape.shouldDrawLine(Vec3f(startX, startY, startZ), Vec3f(endX, endY, endZ))) {
-            return
-        }
-        drawLine(startX, startY, startZ, endX, endY, endZ, lineWidth, color)
-    }
-
     private fun drawLineQuad(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, normal1: Vec3f, normal2: Vec3f, directionWidth: Vec3f, color: RGBAColor) {
         addVertex(startX - directionWidth.x + normal2.x, startY - directionWidth.y + normal2.y, startZ - directionWidth.z + normal2.z, color)
         addVertex(startX - directionWidth.x + normal1.x, startY - directionWidth.y + normal1.y, startZ - directionWidth.z + normal1.z, color)
@@ -80,10 +68,6 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
         addVertex(endX + directionWidth.x + normal2.x, endY + directionWidth.y + normal2.y, endZ + directionWidth.z + normal2.z, color)
 
         addIndexQuad()
-    }
-
-    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
-        drawAABB(aabb + position, lineWidth, color, margin, shape)
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBAColor) {
@@ -99,37 +83,42 @@ open class LineMeshBuilder(context: RenderContext, estimate: Int = 6) : GenericC
         }
     }
 
-    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f, shape: Shape? = null) {
+    fun drawShape(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBAColor, margin: Float = 0.0f) {
         ensureSize(12)
         val offset = context.camera.offset.offset
         val min = Vec3f.Companion(aabb.min) - margin - offset
         val max = Vec3f.Companion(aabb.max) + margin - offset
 
         // left quad
-        tryDrawLine(min.x, min.y, min.z, min.x, max.y, min.z, lineWidth, color, shape)
-        tryDrawLine(min.x, min.y, min.z, min.x, min.y, max.z, lineWidth, color, shape)
-        tryDrawLine(min.x, max.y, min.z, min.x, max.y, max.z, lineWidth, color, shape)
-        tryDrawLine(min.x, min.y, max.z, min.x, max.y, max.z, lineWidth, color, shape)
+        drawLine(min.x, min.y, min.z, min.x, max.y, min.z, lineWidth, color)
+        drawLine(min.x, min.y, min.z, min.x, min.y, max.z, lineWidth, color)
+        drawLine(min.x, max.y, min.z, min.x, max.y, max.z, lineWidth, color)
+        drawLine(min.x, min.y, max.z, min.x, max.y, max.z, lineWidth, color)
 
 
         // right quad
-        tryDrawLine(max.x, min.y, min.z, max.x, max.y, min.z, lineWidth, color, shape)
-        tryDrawLine(max.x, min.y, min.z, max.x, min.y, max.z, lineWidth, color, shape)
-        tryDrawLine(max.x, max.y, min.z, max.x, max.y, max.z, lineWidth, color, shape)
-        tryDrawLine(max.x, min.y, max.z, max.x, max.y, max.z, lineWidth, color, shape)
+        drawLine(max.x, min.y, min.z, max.x, max.y, min.z, lineWidth, color)
+        drawLine(max.x, min.y, min.z, max.x, min.y, max.z, lineWidth, color)
+        drawLine(max.x, max.y, min.z, max.x, max.y, max.z, lineWidth, color)
+        drawLine(max.x, min.y, max.z, max.x, max.y, max.z, lineWidth, color)
 
         // connections between 2 quads
-        tryDrawLine(min.x, min.y, min.z, max.x, min.y, min.z, lineWidth, color, shape)
-        tryDrawLine(min.x, max.y, min.z, max.x, max.y, min.z, lineWidth, color, shape)
-        tryDrawLine(min.x, max.y, max.z, max.x, max.y, max.z, lineWidth, color, shape)
-        tryDrawLine(min.x, min.y, max.z, max.x, min.y, max.z, lineWidth, color, shape)
+        drawLine(min.x, min.y, min.z, max.x, min.y, min.z, lineWidth, color)
+        drawLine(min.x, max.y, min.z, max.x, max.y, min.z, lineWidth, color)
+        drawLine(min.x, max.y, max.z, max.x, max.y, max.z, lineWidth, color)
+        drawLine(min.x, min.y, max.z, max.x, min.y, max.z, lineWidth, color)
     }
 
-    fun drawVoxelShape(shape: Shape, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f) {
-        val positionedShape = shape + position
-
+    fun drawShape(shape: AABBList, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f) {
         for (aabb in shape) {
-            drawAABB(aabb + position, lineWidth, color, margin, positionedShape)
+            drawShape(aabb + position, lineWidth, color, margin)
         }
     }
+
+    fun drawShape(shape: Shape, position: Vec3d, lineWidth: Float, color: RGBAColor, margin: Float = 0.0f) = when (shape) {
+        is AABB -> drawShape(shape + position, lineWidth, color, margin)
+        is AABBList -> drawShape(shape, position, lineWidth, color, margin)
+        else -> Broken("Don't know how to draw shape: $shape")
+    }
+
 }

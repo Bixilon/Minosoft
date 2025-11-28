@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.block.climbing.ClimbingItems
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -69,14 +69,14 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
     companion object : BlockFactory<ScaffoldingBlock> {
         override val identifier = minecraft("scaffolding")
         private val COLLISION = AABB(0.0, 0.0, 0.0, 1.0, 0.125, 1.0)
-        private val OUTLINE = CombinedShape(
+        private val OUTLINE = AABBList(
             AABB(0.0, 0.875, 0.0, 1.0, 1.0, 1.0),      // top
             AABB(0.0, 0.0, 0.0, 0.125, 0.875, 0.125),
             AABB(0.875, 0.0, 0.0, 1.0, 0.875, 0.125),
             AABB(0.0, 0.0, 0.875, 0.125, 0.875, 1.0),
             AABB(0.875, 0.0, 0.875, 1.0, 0.875, 1.0),
         )
-        private val BOTTOM_OUTLINE = CombinedShape(
+        private val BOTTOM_OUTLINE = AABBList(
             AABB(0.0, 0.875, 0.0, 1.0, 1.0, 1.0),       // top
             AABB(0.0, 0.0, 0.0, 1.0, 0.125, 1.0),       // bottom
             AABB(0.0, 0.125, 0.0, 0.125, 0.875, 0.125),

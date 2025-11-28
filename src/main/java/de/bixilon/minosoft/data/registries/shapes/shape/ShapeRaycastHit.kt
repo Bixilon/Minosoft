@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.shapes.shape
 
 import de.bixilon.minosoft.data.direction.Directions
 
-data class AABBRaycastHit(
+data class ShapeRaycastHit(
     val distance: Double,
     val direction: Directions,
     val inside: Boolean,

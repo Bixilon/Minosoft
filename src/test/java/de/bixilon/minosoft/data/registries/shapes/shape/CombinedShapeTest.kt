@@ -23,15 +23,15 @@ internal class CombinedShapeTest {
 
     @Test
     fun testEquals() {
-        val a = CombinedShape(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
-        val b = CombinedShape(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
+        val a = AABBList(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
+        val b = AABBList(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
         assertEquals(a, b)
     }
 
     @Test
     fun testNotEquals() {
-        val a = CombinedShape(AABB(Vec3d(0.1), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
-        val b = CombinedShape(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
+        val a = AABBList(AABB(Vec3d(0.1), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
+        val b = AABBList(AABB(Vec3d(0.0), Vec3d(1.0)), AABB(Vec3d(5.0), Vec3d(6.0)))
         assertNotEquals(a, b)
     }
 

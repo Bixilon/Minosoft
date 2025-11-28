@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.state.builder
 
 import de.bixilon.kutil.enums.inline.IntInlineSet
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -52,23 +51,18 @@ class BlockStateBuilder(
 
     companion object {
 
-        private fun Any.getShape(shapes: ShapeRegistry): Shape? {
-            if (this is Int) {
-                return shapes[this]
-            }
-            return shapes.deserialize(this)
-        }
+        private fun Any.getFromShapes(shapes: ShapeRegistry) = shapes[this]
 
         private fun JsonObject.getCollisionShape(shapes: ShapeRegistry): Shape? {
             this["is_collision_shape_full_block"]?.toBoolean()?.let { if (it) return Shape.FULL else null }
 
-            this["collision_shape"]?.getShape(shapes)?.let { return it }
+            this["collision_shape"]?.getFromShapes(shapes)?.let { return it }
 
             return null
         }
 
         private fun JsonObject.getOutlineShape(shapes: ShapeRegistry): Shape? {
-            this["outline_shape"]?.getShape(shapes)?.let { return it }
+            this["outline_shape"]?.getFromShapes(shapes)?.let { return it }
 
             return null
         }

@@ -138,7 +138,6 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         update(fluid, aabb, pushable, previousHeight)
     }
 
-    @Deprecated("performance")
     private fun update(type: Identified, aabb: AABB, pushable: Boolean, previous: Double) = update(type.identifier, aabb, pushable, previous)
 
     private fun updateWaterSubmersion() {

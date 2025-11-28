@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
 
@@ -53,19 +53,19 @@ internal class CombinedShapeLineDrawingTest {
 
     @Test
     fun test6() {
-        val shape = CombinedShape(AABB(Vec3d.EMPTY, Vec3d(1f, 0.5f, 1f)), AABB(Vec3d(0f, 0.5f, 0f), Vec3d(1, 1, 1)))
+        val shape = AABBList(AABB(Vec3d.EMPTY, Vec3d(1f, 0.5f, 1f)), AABB(Vec3d(0f, 0.5f, 0f), Vec3d(1, 1, 1)))
         // assertFalse { shape.shouldDrawLine(Vec3d.EMPTY, Vec3d(1, 0, 0)) }
     }
 
     @Test
     fun test7() {
-        val shape = CombinedShape(AABB(Vec3d.EMPTY, Vec3d(1f, 0.5f, 1f)), AABB(Vec3d(0f, 0.5f, 0f), Vec3d(1, 1, 1)))
+        val shape = AABBList(AABB(Vec3d.EMPTY, Vec3d(1f, 0.5f, 1f)), AABB(Vec3d(0f, 0.5f, 0f), Vec3d(1, 1, 1)))
         // ToDo    assertFalse { shape.shouldDrawLine(Vec3d.EMPTY, Vec3d(1, 1, 0)) }
     }
 
     @Test
     fun test8() {
-        val shape = CombinedShape(AABB(Vec3d.EMPTY, Vec3d(1f, 0.5f, 1f)), AABB(Vec3d(0f, 0.5f, 0f), Vec3d(0.5f, 1f, 1f)))
+        val shape = AABBList(AABB(Vec3d.EMPTY, Vec3d(1f, 0.5f, 1f)), AABB(Vec3d(0f, 0.5f, 0f), Vec3d(0.5f, 1f, 1f)))
         // assertFalse { shape.shouldDrawLine(Vec3d(0, 0.5, 0), Vec3d(0, 0.5, 1)) }
     }
 }

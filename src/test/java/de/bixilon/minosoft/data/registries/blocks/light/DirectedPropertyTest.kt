@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.light
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty.Companion.isSideCovered
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.shape.CombinedShape
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -67,7 +67,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered5() {
-        val shape = CombinedShape(
+        val shape = AABBList(
             AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
             AABB(0.0, 0.5, 0.0, 1.0, 1.0, 1.0),
         )
@@ -82,7 +82,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered6() {
-        val shape = CombinedShape(
+        val shape = AABBList(
             AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
             AABB(0.0, 0.5, 0.0, 1.0, 1.0, 0.5),
         )
@@ -97,7 +97,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered7() {
-        val shape = CombinedShape(
+        val shape = AABBList(
             AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
             AABB(0.0, 0.5, 0.5, 1.0, 1.0, 1.0),
         )
@@ -112,7 +112,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered8() {
-        val shape = CombinedShape(
+        val shape = AABBList(
             AABB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0),
             AABB(0.0, 0.5, 0.5, 1.0, 1.0, 1.0),
         )
@@ -128,7 +128,7 @@ internal class DirectedPropertyTest {
 
     @Test
     fun testSideCovered9() { // overlapping
-        val shape = CombinedShape(
+        val shape = AABBList(
             AABB(0.0, 0.0, 0.0, 1.0, 0.6, 1.0),
             AABB(0.0, 0.4, 0.5, 1.0, 1.0, 1.0),
         )
@@ -143,7 +143,7 @@ internal class DirectedPropertyTest {
 
     // @Test // TODO: This test is correct, isSideCovered is broken
     fun testSideCovered10() { // overlapping
-        val shape = CombinedShape(
+        val shape = AABBList(
             AABB(0.0, 0.0, 0.0, 1.0, 0.6, 1.0),
             AABB(0.1, 0.0, 0.0, 0.9, 0.8, 1.0),
             AABB(0.0, 0.4, 0.5, 1.0, 0.9, 1.0),

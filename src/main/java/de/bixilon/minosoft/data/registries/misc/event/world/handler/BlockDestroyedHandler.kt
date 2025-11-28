@@ -14,12 +14,17 @@
 package de.bixilon.minosoft.data.registries.misc.event.world.handler
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
+import de.bixilon.kutil.collections.iterator.EmptyIterator
+import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.misc.event.world.WorldEventHandler
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
+import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ceil
@@ -41,6 +46,13 @@ object BlockDestroyedHandler : WorldEventHandler {
         }
 
         addBlockBreakParticles(session, position, state)
+    }
+
+    @Deprecated("replace")
+    operator fun Shape.iterator(): Iterator<AABB> = when (this) {
+        is AABB -> SingleIterator(this)
+        is AABBList -> this.iterator()
+        else -> EmptyIterator.emptyIterator()
     }
 
     private fun addBlockBreakParticles(session: PlaySession, position: BlockPosition, state: BlockState) {

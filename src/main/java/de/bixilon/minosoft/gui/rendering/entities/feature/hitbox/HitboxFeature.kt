@@ -104,7 +104,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
         if (manager.profile.lazy) {
             mesh.drawLazyAABB(aabb, color)
         } else {
-            mesh.drawAABB(aabb, color = color)
+            mesh.drawShape(aabb, color = color)
         }
 
         val center = Vec3f(aabb.center)

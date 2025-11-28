@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.data.registries.shapes.collision
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.memory.allocator.LongAllocator
@@ -27,7 +29,8 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
-import de.bixilon.minosoft.data.registries.shapes.shape.AABBRaycastHit
+import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
+import de.bixilon.minosoft.data.registries.shapes.shape.ShapeRaycastHit
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -36,6 +39,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampX
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 class CollisionShape(
     val world: World,
@@ -105,11 +110,7 @@ class CollisionShape(
         this.positions = positions
     }
 
-    override fun iterator(): Iterator<AABB> {
-        TODO("Not yet implemented")
-    }
-
-    override fun intersects(other: AABB): Boolean {
+    override fun intersects(other: AbstractAABB): Boolean {
         for (index in 0 until count) {
             val position = BlockPosition(this.positions[index])
             val shape = this.shapes[index]
@@ -119,19 +120,16 @@ class CollisionShape(
         return false
     }
 
-    override fun intersects(other: AABB, offset: BlockPosition): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun intersects(other: AbstractAABB, offset: BlockPosition) = Broken()
 
-    override fun calculateMaxDistance(other: AABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
-        TODO("Not yet implemented")
-    }
+    override fun plus(offset: Vec3d) = Broken()
+    override fun plus(offset: Vec3i) = Broken()
 
-    override fun raycast(position: Vec3d, direction: Vec3d): AABBRaycastHit {
-        TODO("Not yet implemented")
-    }
+    override fun plus(offset: BlockPosition) = Broken()
+    override fun plus(offset: InChunkPosition) = Broken()
+    override fun plus(offset: InSectionPosition) = Broken()
 
-    override fun calculateMaxDistance(other: AABB, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
 
         for (index in 0 until count) {
@@ -142,6 +140,14 @@ class CollisionShape(
         }
 
         return distance
+    }
+
+    override fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit? {
+        TODO("Not yet implemented")
     }
 
     fun free() {
