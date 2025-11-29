@@ -49,7 +49,7 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
 
     override val canRaycast: Boolean get() = !isMarker && super.canRaycast
     override val hitboxColor: RGBAColor? get() = if (isMarker) null else super.hitboxColor
-    override var defaultAABB: AABB = AABB.INFINITY
+    override var defaultAABB: AABB = createDefaultAABB()
     override var dimensions: Vec2f = DIMENSIONS
         private set
 

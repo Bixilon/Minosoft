@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.shapes
 
-import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
@@ -40,7 +39,7 @@ class ShapeRegistry {
         }
     }
 
-    private fun loadAABBs(data: Collection<Map<String, Any>>): Array<AABB?> {
+    private fun loadAABBs(data: Collection<JsonObject>): Array<AABB?> {
         val aabbs: Array<AABB?> = arrayOfNulls(data.size)
 
         for ((index, aabb) in data.withIndex()) {

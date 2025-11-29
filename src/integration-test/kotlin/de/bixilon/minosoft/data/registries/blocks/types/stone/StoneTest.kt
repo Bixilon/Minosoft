@@ -17,13 +17,13 @@ import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
-import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SingleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil.createSession
+import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.IT.NULL_SESSION
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
@@ -35,11 +35,11 @@ class StoneTest : BlockTest<StoneBlock.Block>() {
     override val type get() = StoneBlock.Block.identifier
 
     fun testOutlineShape() {
-        assertEquals(Shape.FULL, block.getOutlineShape(createSession(), BlockPosition.EMPTY, state))
+        assertEquals(Shape.FULL, block.getOutlineShape(NULL_SESSION, BlockPosition.EMPTY, state))
     }
 
     fun testCollisionShape() {
-        assertEquals(Shape.FULL, block.getCollisionShape(NULL_SESSION, EmptyCollisionContext, BlockPosition.EMPTY, state))
+        assertEquals(Shape.FULL, block.getCollisionShape(state))
     }
 
     fun testStates() {

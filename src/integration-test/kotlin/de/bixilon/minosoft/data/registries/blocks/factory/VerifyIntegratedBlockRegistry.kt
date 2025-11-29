@@ -21,7 +21,6 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.registry.codec.FlattenedBlockStateCodec
-import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags.toFlagSet
@@ -78,8 +77,8 @@ object VerifyIntegratedBlockRegistry {
 
     private fun compareCollisionShape(session: PlaySession, pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
         if (integrated.block is ScaffoldingBlock) return
-        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(session, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer) else null
-        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(session, EmptyCollisionContext, BlockPosition.EMPTY, pixlyzer) else null
+        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(pixlyzer) else null
+        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(integrated) else null
 
         if (expected == actual) {
             return

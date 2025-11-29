@@ -97,7 +97,7 @@ class AABBList(
     private inline fun modify(modify: (AABB) -> AABB): AABBList {
         val next: Array<AABB> = arrayOfNulls<AABB?>(this.aabbs.size).cast()
         for ((index, aabb) in this.aabbs.withIndex()) {
-            next[index] = modify.invoke(this.aabbs[index])
+            next[index] = modify.invoke(aabb)
         }
         return AABBList(next)
     }

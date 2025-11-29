@@ -92,6 +92,7 @@ object EntityRendererTestUtil {
 
     fun <E : Entity> EntitiesRenderer.create(factory: EntityFactory<E>): EntityRenderer<E> {
         val entity = createEntity(factory)
+        entity.init()
         this.renderers.add(entity)
         this.queue.work()
         return entity.renderer!!.unsafeCast()

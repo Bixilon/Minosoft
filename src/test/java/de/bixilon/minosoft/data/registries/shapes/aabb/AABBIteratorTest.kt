@@ -20,13 +20,6 @@ import org.junit.jupiter.api.Test
 class AABBIteratorTest {
 
     @Test
-    fun empty() {
-        val positions = AABB.INFINITY.positions()
-        assertEquals(0, positions.size)
-        assertFalse(positions.hasNext())
-    }
-
-    @Test
     fun `correct min and max`() {
         val iterator = AABBIterator(1, 2, 3, 4, 5, 6)
         assertEquals(iterator.min, BlockPosition(1, 2, 3))

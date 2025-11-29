@@ -15,6 +15,7 @@ package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.cast.CollectionCast.asAnyList
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -53,7 +54,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         protected set
 
 
-    override var aabb = AABB.INFINITY
+    override var aabb = entity.defaultAABB
         protected set
     open var onGround = false
 

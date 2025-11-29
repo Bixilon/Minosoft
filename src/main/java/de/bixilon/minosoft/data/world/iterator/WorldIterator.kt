@@ -17,7 +17,6 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
-import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
@@ -102,12 +101,11 @@ class WorldIterator(
     }
 
 
-    fun hasCollisions(fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(EmptyCollisionContext, fluids, predicate)
-    fun hasCollisions(entity: Entity, fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(EntityCollisionContext(entity), fluids, predicate)
-    fun hasCollisions(entity: Entity, aabb: AABB, fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(EntityCollisionContext(entity, aabb = aabb), fluids, predicate)
+    fun hasCollisions(fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(null, null, fluids, predicate)
+    fun hasCollisions(entity: Entity, fluids: Boolean = true, predicate: CollisionPredicate? = null) = EntityCollisionContext(entity).let { hasCollisions(it.aabb, it, fluids, predicate) }
+    fun hasCollisions(entity: Entity, aabb: AABB, fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(aabb, EntityCollisionContext(entity, aabb = aabb), fluids, predicate)
 
-    fun hasCollisions(context: CollisionContext, fluids: Boolean = true, predicate: CollisionPredicate? = null): Boolean {
-        val aabb = context.aabb
+    fun hasCollisions(aabb: AABB?, context: CollisionContext?, fluids: Boolean = true, predicate: CollisionPredicate? = null): Boolean {
         for ((position, state) in this) {
             if (fluids && (BlockStateFlags.FLUID in state.flags && state.block is FluidHolder)) {
                 //   val height = state.block.fluid.getHeight(state)
@@ -123,8 +121,10 @@ class WorldIterator(
             val block = state.block
             val shape = when {
                 BlockStateFlags.FULL_COLLISION in state.flags -> Shape.FULL
-                else -> block.collisionShape ?: block.getCollisionShape(state) ?: block.getCollisionShape(world.session, context, position, state) ?: entity?.let { block.getCollisionShape(world.session, context, position, state, it) }
+                else -> block.collisionShape ?: block.getCollisionShape(state) ?: context?.let { block.getCollisionShape(world.session, context, position, state) ?: entity?.let { block.getCollisionShape(world.session, context, position, state, it) } }
             } ?: continue
+
+            if (aabb == null) return true
 
 
             if ((shape + position).intersects(aabb)) {

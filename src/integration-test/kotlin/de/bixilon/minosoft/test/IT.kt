@@ -61,5 +61,6 @@ object IT {
     val BLOCK_3 = REGISTRIES.block[Andesite.Block]!!.states.default
 
 
+    // TODO: move this, it does not require the registries to be loaded
     val NULL_SESSION = PlaySession::class.java.allocate()
 }

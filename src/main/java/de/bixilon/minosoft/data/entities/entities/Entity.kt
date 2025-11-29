@@ -81,7 +81,7 @@ abstract class Entity(
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
     open val dimensions = Vec2f(type.width, type.height)
-    open val defaultAABB: AABB = AABB.INFINITY
+    open val defaultAABB: AABB = unsafeNull()
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
     open val heightOffset: Double get() = 0.0
@@ -261,12 +261,12 @@ abstract class Entity(
 
 
     override fun init() {
-        DEFAULT_AABB.set(this, createDefaultAABB())
-        PHYSICS.set(this, createPhysics())
+        DEFAULT_AABB[this] = createDefaultAABB()
+        PHYSICS[this] = createPhysics()
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
         if (!RenderingOptions.disabled) {
-            RENDER_INFO.set(this, EntityRenderInfo(this))
+            RENDER_INFO[this] = EntityRenderInfo(this)
         }
     }
 

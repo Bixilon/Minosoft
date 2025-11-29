@@ -36,7 +36,7 @@ class EntityRenderInfo(private val entity: Entity) : Tickable {
         private set
     var eyePosition: Vec3d = position
         private set
-    var cameraAABB: AABB = AABB.INFINITY
+    var cameraAABB: AABB = defaultAABB
         private set
 
     private var rotation0 = EntityRotation.EMPTY
