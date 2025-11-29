@@ -88,7 +88,7 @@ abstract class Entity(
 
 
     protected fun createDefaultAABB(): AABB {
-        val halfWidth = dimensions.x / 2
+        val halfWidth = dimensions.x / 2.0f
         return AABB(Vec3d(-halfWidth, 0.0f, -halfWidth), Vec3d(halfWidth, dimensions.y, halfWidth))
     }
 

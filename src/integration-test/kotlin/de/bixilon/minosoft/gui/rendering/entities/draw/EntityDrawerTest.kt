@@ -38,7 +38,10 @@ class EntityDrawerTest {
     }
 
     private fun EntityDrawer.entity(): Entity {
-        return Pig(renderer.session, EntityRendererTestUtil.PIG, EntityData(renderer.session, Int2ObjectOpenHashMap()), Vec3d(), EntityRotation.EMPTY)
+        val entity = Pig(renderer.session, EntityRendererTestUtil.PIG, EntityData(renderer.session, Int2ObjectOpenHashMap()), Vec3d(), EntityRotation.EMPTY)
+        entity.init()
+
+        return entity
     }
 
     private fun EntityDrawer.feature(layer: EntityLayer, priority: Int = 0, distance: Double = 0.0) = object : EntityRenderer<Entity>(this.renderer, entity()) {

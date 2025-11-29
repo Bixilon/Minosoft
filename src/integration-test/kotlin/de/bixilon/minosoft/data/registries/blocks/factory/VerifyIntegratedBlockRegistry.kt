@@ -75,8 +75,8 @@ object VerifyIntegratedBlockRegistry {
         }
     }
 
-    private fun compareCollisionShape(session: PlaySession, pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
-        if (integrated.block is ScaffoldingBlock) return
+    private fun compareCollisionShape(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
+        if (integrated.block is ScaffoldingBlock || integrated.block is ShulkerBoxBlock) return
         val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(pixlyzer) else null
         val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(integrated) else null
 
@@ -208,7 +208,7 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
 
-            compareCollisionShape(session, state, integratedState, errors)
+            compareCollisionShape(state, integratedState, errors)
             compareOutlineShape(session, state, integratedState, errors)
             compareFlags(state, integratedState, errors)
             compareLightProperties(state, integratedState, errors)

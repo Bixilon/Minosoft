@@ -87,7 +87,10 @@ object EntityRendererTestUtil {
         }
         val renderer = DefaultEntityModels[factory.identifier]
         val type = PIG.copy(identifier = factory.identifier, modelFactory = renderer)
-        return factory.build(session, type, EntityData(session), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
+        val entity = factory.build(session, type, EntityData(session), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
+        entity.init()
+
+        return entity
     }
 
     fun <E : Entity> EntitiesRenderer.create(factory: EntityFactory<E>): EntityRenderer<E> {

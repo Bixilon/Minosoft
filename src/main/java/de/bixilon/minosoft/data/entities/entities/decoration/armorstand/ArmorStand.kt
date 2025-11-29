@@ -16,6 +16,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -49,7 +50,7 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
 
     override val canRaycast: Boolean get() = !isMarker && super.canRaycast
     override val hitboxColor: RGBAColor? get() = if (isMarker) null else super.hitboxColor
-    override var defaultAABB: AABB = createDefaultAABB()
+    override var defaultAABB: AABB = unsafeNull()
     override var dimensions: Vec2f = DIMENSIONS
         private set
 
