@@ -56,15 +56,7 @@ class AABBList(
     }
 
 
-    override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes): Double {
-        var distance = maxDistance
-        for (aabb in this) {
-            distance = aabb.calculateMaxDistance(other, distance, axis)
-        }
-        return distance
-    }
-
-    override fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
         for (aabb in this) {
             distance = aabb.calculateMaxDistance(other, offset, distance, axis)

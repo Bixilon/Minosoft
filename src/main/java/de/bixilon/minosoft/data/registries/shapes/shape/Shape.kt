@@ -37,8 +37,7 @@ interface Shape {
     operator fun plus(offset: InChunkPosition): Shape
     operator fun plus(offset: InSectionPosition): Shape
 
-    fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes): Double
-    fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double
+    fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double
 
     fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit?
 

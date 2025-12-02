@@ -34,8 +34,7 @@ object EmptyShape : Shape {
     override fun plus(offset: InChunkPosition) = EmptyShape
     override fun plus(offset: InSectionPosition) = EmptyShape
 
-    override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes) = maxDistance
-    override fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes) = maxDistance
+    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes) = maxDistance
 
     override fun raycast(position: Vec3d, direction: Vec3d) = null
 }

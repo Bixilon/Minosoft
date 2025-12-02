@@ -43,9 +43,6 @@ data class AABB(
         assert(min.z < max.z) { "${min.z} >= ${max.z}" }
     }
 
-    @Deprecated("mutable")
-    constructor(aabb: AABB) : this(Vec3d(aabb.min.unsafe), Vec3d(aabb.max.unsafe))
-
     constructor(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))
 
     override operator fun plus(offset: Vec3d): AABB = this.offset(offset)
@@ -70,43 +67,39 @@ data class AABB(
         return AABB(newMin, newMax)
     }
 
-    fun extend(vec3: Vec3d): AABB {
+    @Deprecated("Same AABB")
+    fun extend() = this
+    fun extend(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): AABB {
+        if (x == 0.0 && y == 0.0 && z == 0.0) return this
+
         val newMin = MVec3d(min)
         val newMax = MVec3d(max)
 
-        if (vec3.x < 0) {
-            newMin.x += vec3.x
+        if (x < 0) {
+            newMin.x += x
         } else {
-            newMax.x += vec3.x
+            newMax.x += x
         }
 
-        if (vec3.y < 0) {
-            newMin.y += vec3.y
+        if (y < 0) {
+            newMin.y += y
         } else {
-            newMax.y += vec3.y
+            newMax.y += y
         }
 
-        if (vec3.z < 0) {
-            newMin.z += vec3.z
+        if (z < 0) {
+            newMin.z += z
         } else {
-            newMax.z += vec3.z
+            newMax.z += z
         }
 
         return AABB(newMin.unsafe, newMax.unsafe)
     }
 
-    fun extend(direction: Directions): AABB {
-        return this.extend(direction.vectord)
-    }
+    fun extend(vec3: Vec3d) = extend(vec3.x, vec3.y, vec3.z)
 
     fun grow(size: Double = 1.0E-7): AABB {
         return AABB(min - size, max + size)
-    }
-
-    @Deprecated("mutable")
-    fun unsafePlus(axis: Axes, value: Double) {
-        min.unsafe[axis] += value
-        max.unsafe[axis] += value
     }
 
     fun offset(axis: Axes, offset: Double) = when (axis) {

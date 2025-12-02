@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.shapes.collision
 
+import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
@@ -53,6 +54,8 @@ class CollisionShape(
     private var count: Int
     private val positions: LongArray
     private val shapes: Array<Shape>
+
+    private val offset = MVec3d()
 
 
     private fun iterator(aabb: AABB, movement: Vec3d): AABBIterator {
@@ -129,26 +132,24 @@ class CollisionShape(
     override fun plus(offset: InChunkPosition) = Broken()
     override fun plus(offset: InSectionPosition) = Broken()
 
-    override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
 
+
         for (index in 0 until count) {
-            val position = BlockPosition(this.positions[index])
+            this.offset.invoke(offset)
+            this.offset += -BlockPosition(this.positions[index])
+
             val shape = this.shapes[index]
 
-            distance = shape.calculateMaxDistance(other, -position, distance, axis)
+            distance = shape.calculateMaxDistance(other, this.offset.unsafe, distance, axis)
+            // TODO: short circuit if distance is already 0.0?
         }
 
         return distance
     }
 
-    override fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit? {
-        TODO("Not yet implemented")
-    }
+    override fun raycast(position: Vec3d, direction: Vec3d) = Broken("This is for collisions only.")
 
     fun free() {
         POSITIONS.free(this.positions)

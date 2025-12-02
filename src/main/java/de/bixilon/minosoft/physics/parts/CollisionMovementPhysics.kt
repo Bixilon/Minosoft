@@ -32,15 +32,12 @@ object CollisionMovementPhysics {
         return CollisionShape(this.entity.session.world, EntityCollisionContext(entity, this, aabb), aabb, movement, positionInfo.chunk, predicate)
     }
 
-    private fun checkMovement(axis: Axes, originalValue: Double, offsetAABB: Boolean, aabb: AABB, collisions: Shape): Double {
+    private fun checkMovement(axis: Axes, originalValue: Double, offset: Vec3d, aabb: AABB, collisions: Shape): Double {
         var value = originalValue
         if (value == 0.0 || abs(value) < 1.0E-7) {
             return 0.0
         }
-        value = collisions.calculateMaxDistance(aabb, value, axis)
-        if (offsetAABB && value != 0.0) {
-            aabb.unsafePlus(axis, value)
-        }
+        value = collisions.calculateMaxDistance(aabb, offset, value, axis)
         return value
     }
 
@@ -48,21 +45,24 @@ object CollisionMovementPhysics {
         val length2 = movement.length2()
         if (length2 < 1.0E-7) return MVec3d.EMPTY
 
-        val adjustedAABB = AABB(aabb)
         val adjusted = MVec3d(movement)
+        val offset = MVec3d.EMPTY
 
-        adjusted.y = checkMovement(Axes.Y, adjusted.y, true, adjustedAABB, collisions)
+        adjusted.y = checkMovement(Axes.Y, adjusted.y, offset.unsafe, aabb, collisions)
+        offset.y = adjusted.y
 
         val zPriority = adjusted.z > adjusted.x
 
         if (zPriority) {
-            adjusted.z = checkMovement(Axes.Z, adjusted.z, true, adjustedAABB, collisions)
+            adjusted.z = checkMovement(Axes.Z, adjusted.z, offset.unsafe, aabb, collisions)
+            offset.z = adjusted.z
         }
 
-        adjusted.x = checkMovement(Axes.X, adjusted.x, true, adjustedAABB, collisions)
+        adjusted.x = checkMovement(Axes.X, adjusted.x, offset.unsafe, aabb, collisions)
+        offset.x = adjusted.x
 
         if (!zPriority) {
-            adjusted.z = checkMovement(Axes.Z, adjusted.z, false, adjustedAABB, collisions)
+            adjusted.z = checkMovement(Axes.Z, adjusted.z, offset.unsafe, aabb, collisions)
         }
 
 
@@ -102,7 +102,7 @@ object CollisionMovementPhysics {
         val stepHeight = stepHeight.toDouble()
 
         var total = collide(Vec3d(movement.x, stepHeight, movement.z), aabb, collisions)
-        val vertical = collide(Vec3d(0.0, stepHeight, 0.0), aabb.extend(Vec3d(movement.x, 0.0, movement.z)), collisions)
+        val vertical = collide(Vec3d(0.0, stepHeight, 0.0), aabb.extend(movement.x, 0.0, movement.z), collisions)
 
         if (vertical.y < stepHeight) {
             val horizontal = collide(Vec3d(movement.x, 0.0, movement.z), aabb.offset(vertical), collisions) + vertical

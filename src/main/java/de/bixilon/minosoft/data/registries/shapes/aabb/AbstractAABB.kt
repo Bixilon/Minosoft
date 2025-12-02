@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampZ
 import kotlin.math.abs
 
 
+@Deprecated("merge with AABB again")
 interface AbstractAABB : Shape {
     val _min: Vec3d
     val _max: Vec3d
@@ -62,7 +63,7 @@ interface AbstractAABB : Shape {
         return AABBIterator(min, max, order)
     }
 
-    private fun intersects(axis: Axes, other: AbstractAABB, offset: BlockPosition): Boolean {
+    private fun intersects(axis: Axes, other: AbstractAABB, offset: Vec3d): Boolean {
         val min = _min[axis]
         val max = _max[axis]
 
@@ -73,8 +74,7 @@ interface AbstractAABB : Shape {
         return intersects(min, max, otherMin, otherMax)
     }
 
-    override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes) = calculateMaxDistance(other, BlockPosition(), maxDistance, axis)
-    override fun calculateMaxDistance(other: AbstractAABB, offset: BlockPosition, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
         if (!intersects(axis.next(), other, offset) || !intersects(axis.previous(), other, offset)) {
             return maxDistance
         }
