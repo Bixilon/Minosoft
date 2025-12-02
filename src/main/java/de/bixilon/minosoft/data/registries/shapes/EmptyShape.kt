@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.shapes
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.registries.shapes.shape.ShapeRaycastHit
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 object EmptyShape : Shape {
-    override fun intersects(other: AbstractAABB) = false
-    override fun intersects(other: AbstractAABB, offset: BlockPosition) = false
+    override fun intersects(other: AABB) = false
+    override fun intersects(other: AABB, offset: BlockPosition) = false
 
     override fun plus(offset: Vec3d) = EmptyShape
     override fun plus(offset: Vec3i) = EmptyShape
@@ -34,7 +34,7 @@ object EmptyShape : Shape {
     override fun plus(offset: InChunkPosition) = EmptyShape
     override fun plus(offset: InSectionPosition) = EmptyShape
 
-    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes) = maxDistance
+    override fun calculateMaxDistance(other: AABB, offset: Vec3d, maxDistance: Double, axis: Axes) = maxDistance
 
     override fun raycast(position: Vec3d, direction: Vec3d) = null
 }

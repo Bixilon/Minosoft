@@ -11,17 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.shapes
+package de.bixilon.minosoft.data.registries.shapes.aabb
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.i.Vec3i
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -288,5 +288,36 @@ internal class AABBTest {
         assertNotNull(hit)
         assertEquals(hit.direction, Directions.NORTH)
         assertTrue(hit.distance in 10.0..11.0, "Distance wrong: ${hit.distance}")
+    }
+
+
+    @Test
+    fun `line intersection 1`() {
+        val intersects = AABB.intersects(0.0, 1.0, 1.0, 2.0)
+        assertFalse(intersects)
+    }
+
+    @Test
+    fun `line intersection 2`() {
+        val intersects = AABB.intersects(0.0, 1.5, 1.0, 2.0)
+        assertTrue(intersects)
+    }
+
+    @Test
+    fun `line intersection 3`() {
+        val intersects = AABB.intersects(0.0, 0.9, 1.0, 2.0)
+        assertFalse(intersects)
+    }
+
+    @Test
+    fun `line intersection 4`() {
+        val intersects = AABB.intersects(5.0, 6.0, 1.0, 2.0)
+        assertFalse(intersects)
+    }
+
+    @Test
+    fun `line intersection 5`() {
+        val intersects = AABB.intersects(5.0, 6.0, 1.0, 5.0)
+        assertFalse(intersects)
     }
 }

@@ -30,7 +30,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
-import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
 import de.bixilon.minosoft.data.registries.shapes.shape.ShapeRaycastHit
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.World
@@ -113,7 +112,7 @@ class CollisionShape(
         this.positions = positions
     }
 
-    override fun intersects(other: AbstractAABB): Boolean {
+    override fun intersects(other: AABB): Boolean {
         for (index in 0 until count) {
             val position = BlockPosition(this.positions[index])
             val shape = this.shapes[index]
@@ -123,7 +122,7 @@ class CollisionShape(
         return false
     }
 
-    override fun intersects(other: AbstractAABB, offset: BlockPosition) = Broken()
+    override fun intersects(other: AABB, offset: BlockPosition) = Broken()
 
     override fun plus(offset: Vec3d) = Broken()
     override fun plus(offset: Vec3i) = Broken()
@@ -132,7 +131,7 @@ class CollisionShape(
     override fun plus(offset: InChunkPosition) = Broken()
     override fun plus(offset: InSectionPosition) = Broken()
 
-    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
 
 

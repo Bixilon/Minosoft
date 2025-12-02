@@ -20,15 +20,14 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
 
 interface Shape {
 
-    fun intersects(other: AbstractAABB): Boolean
-    fun intersects(other: AbstractAABB, offset: BlockPosition): Boolean
+    fun intersects(other: AABB): Boolean
+    fun intersects(other: AABB, offset: BlockPosition): Boolean
 
     operator fun plus(offset: Vec3d): Shape
     operator fun plus(offset: Vec3i): Shape
@@ -37,7 +36,7 @@ interface Shape {
     operator fun plus(offset: InChunkPosition): Shape
     operator fun plus(offset: InSectionPosition): Shape
 
-    fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double
+    fun calculateMaxDistance(other: AABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double
 
     fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit?
 

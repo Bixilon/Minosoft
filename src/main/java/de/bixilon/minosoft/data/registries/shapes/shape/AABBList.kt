@@ -19,7 +19,6 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.aabb.AbstractAABB
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InSectionPosition
@@ -39,7 +38,7 @@ class AABBList(
     constructor(aabb: AABB) : this(aabbs = arrayOf(aabb))
 
 
-    override fun intersects(other: AbstractAABB): Boolean {
+    override fun intersects(other: AABB): Boolean {
         for (aabb in this) {
             if (!aabb.intersects(other)) continue
             return true
@@ -47,7 +46,7 @@ class AABBList(
         return false
     }
 
-    override fun intersects(other: AbstractAABB, offset: BlockPosition): Boolean {
+    override fun intersects(other: AABB, offset: BlockPosition): Boolean {
         for (aabb in this) {
             if (!aabb.intersects(other, offset)) continue
             return true
@@ -56,7 +55,7 @@ class AABBList(
     }
 
 
-    override fun calculateMaxDistance(other: AbstractAABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
+    override fun calculateMaxDistance(other: AABB, offset: Vec3d, maxDistance: Double, axis: Axes): Double {
         var distance = maxDistance
         for (aabb in this) {
             distance = aabb.calculateMaxDistance(other, offset, distance, axis)
