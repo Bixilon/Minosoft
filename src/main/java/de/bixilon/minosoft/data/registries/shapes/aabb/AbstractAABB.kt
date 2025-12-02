@@ -15,14 +15,13 @@ package de.bixilon.minosoft.data.registries.shapes.aabb
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.i.Vec3i
-import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.shapes.shape.ShapeRaycastHit
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
+import de.bixilon.minosoft.data.registries.shapes.shape.ShapeRaycastHit
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampX
 import de.bixilon.minosoft.data.world.positions.BlockPosition.Companion.clampY
@@ -63,11 +62,6 @@ interface AbstractAABB : Shape {
         return AABBIterator(min, max, order)
     }
 
-
-    private fun Double.isIn(min: Double, max: Double): Boolean {
-        return this > min && this < max
-    }
-
     private fun intersects(axis: Axes, other: AbstractAABB, offset: BlockPosition): Boolean {
         val min = _min[axis]
         val max = _max[axis]
@@ -75,11 +69,8 @@ interface AbstractAABB : Shape {
         val otherMin = other._min[axis] + offset[axis]
         val otherMax = other._max[axis] + offset[axis]
 
-        return min.isIn(otherMin, otherMax)
-            || max.isIn(otherMin, otherMax)
-            || otherMin.isIn(min, max)
-            || otherMax.isIn(min, max)
-            || (min == otherMin && max == otherMax)
+
+        return intersects(min, max, otherMin, otherMax)
     }
 
     override fun calculateMaxDistance(other: AbstractAABB, maxDistance: Double, axis: Axes) = calculateMaxDistance(other, BlockPosition(), maxDistance, axis)
@@ -108,7 +99,7 @@ interface AbstractAABB : Shape {
      */
     // this was a test, but credit is needed where credit belongs: https://chat.openai.com/chat (but heavily refactored and improved :D)
     override fun raycast(position: Vec3d, direction: Vec3d): ShapeRaycastHit? {
-        var minAxis = -1
+        var minAxis: Axes? = null
         var min = Double.NEGATIVE_INFINITY
         var max = Double.POSITIVE_INFINITY
 
@@ -130,13 +121,15 @@ interface AbstractAABB : Shape {
             }
 
             if (minDistance > min) {
-                minAxis = axis.ordinal
+                minAxis = axis
                 min = minDistance
             }
             if (maxDistance < max) max = maxDistance
         }
 
         val inside = position in this
+
+        if (minAxis == null) return null
 
         if (inside) {
             min = abs(min)
@@ -145,8 +138,8 @@ interface AbstractAABB : Shape {
         }
 
         // calculate direction ordinal from axis, depending on positive or negative
-        var ordinal = minAxis * 2
-        if (direction[Axes[minAxis]] <= 0) ordinal++
+        var ordinal = minAxis.ordinal * 2
+        if (direction[minAxis] <= 0) ordinal++
 
         val target = Directions.XYZ[ordinal]
         return ShapeRaycastHit(min, if (inside) target.inverted else target, inside)
@@ -171,6 +164,16 @@ interface AbstractAABB : Shape {
 
         inline fun getRange(min: Double, max: Double): IntRange {
             return min.floor until max.ceil
+        }
+
+
+        fun intersects(min1: Double, max1: Double, min2: Double, max2: Double): Boolean {
+            // TODO: cleanup
+            return (min1 > min2 && min1 < max2)
+                || (max1 > min2 && max1 < max2)
+                || (min2 > min1 && min2 < max1)
+                || (max2 > min1 && max2 < max1)
+                || (min1 == min2 && max1 == max2)
         }
     }
 }
