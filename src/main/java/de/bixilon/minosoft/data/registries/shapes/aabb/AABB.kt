@@ -155,7 +155,6 @@ data class AABB(
         val otherMin = other.min[axis] + offset[axis]
         val otherMax = other.max[axis] + offset[axis]
 
-
         return intersects(min, max, otherMin, otherMax)
     }
 
@@ -272,12 +271,7 @@ data class AABB(
         }
 
         fun intersects(min1: Double, max1: Double, min2: Double, max2: Double): Boolean {
-            // TODO: cleanup
-            return (min1 > min2 && min1 < max2)
-                || (max1 > min2 && max1 < max2)
-                || (min2 > min1 && min2 < max1)
-                || (max2 > min1 && max2 < max1)
-                || (min1 == min2 && max1 == max2)
+            return max1 > min2 && max2 > min1
         }
     }
 }
