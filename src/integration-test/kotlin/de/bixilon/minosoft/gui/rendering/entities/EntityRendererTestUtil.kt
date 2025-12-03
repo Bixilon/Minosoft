@@ -44,6 +44,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.protocol.network.session.play.SessionTestUtil
 import de.bixilon.minosoft.test.ITUtil.allocate
+import de.bixilon.minosoft.util.KUtil.startInit
 import java.util.*
 
 object EntityRendererTestUtil {
@@ -88,14 +89,13 @@ object EntityRendererTestUtil {
         val renderer = DefaultEntityModels[factory.identifier]
         val type = PIG.copy(identifier = factory.identifier, modelFactory = renderer)
         val entity = factory.build(session, type, EntityData(session), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
-        entity.init()
+        entity.startInit()
 
         return entity
     }
 
     fun <E : Entity> EntitiesRenderer.create(factory: EntityFactory<E>): EntityRenderer<E> {
         val entity = createEntity(factory)
-        entity.init()
         this.renderers.add(entity)
         this.queue.work()
         return entity.renderer!!.unsafeCast()

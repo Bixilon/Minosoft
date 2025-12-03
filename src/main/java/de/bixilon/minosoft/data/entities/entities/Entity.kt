@@ -55,6 +55,7 @@ abstract class Entity(
     private var initialPosition: Vec3d,
     private var initialRotation: EntityRotation,
 ) : Initializable, EntityAttachable {
+    private var initialied = false
     private val lock = Lock.lock()
     private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
     protected val random = Random()
@@ -235,6 +236,7 @@ abstract class Entity(
     }
 
     open fun tick() {
+        assert(initialied) { "Entity was not initialized!" }
         physics.tick()
     }
 
@@ -261,6 +263,7 @@ abstract class Entity(
 
 
     override fun init() {
+        assert(!initialied) { "Already initialized!" }
         DEFAULT_AABB[this] = createDefaultAABB()
         PHYSICS[this] = createPhysics()
         forceTeleport(initialPosition)
@@ -268,6 +271,7 @@ abstract class Entity(
         if (!RenderingOptions.disabled) {
             RENDER_INFO[this] = EntityRenderInfo(this)
         }
+        initialied = true
     }
 
     open fun tickRiding() {

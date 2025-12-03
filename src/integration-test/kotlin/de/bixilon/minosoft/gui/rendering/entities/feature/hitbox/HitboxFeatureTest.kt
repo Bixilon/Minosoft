@@ -44,7 +44,6 @@ class HitboxFeatureTest {
     private fun create(entity: EntityFactory<*>): HitboxFeature {
         val renderer = create().create(entity)
         renderer::hitbox.forceSet(null) // remove
-        renderer.entity.startInit()
         renderer.entity.draw(now())
         renderer.renderer.context::input.forceSet(InputManager(renderer.renderer.context))
         renderer.renderer.features.hitbox.init() // register listeners
