@@ -34,12 +34,13 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(session, entityType, data, position, rotation) {
     private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
 
-    private fun updateFlags() {
-        this.dimensions = when {
+    private fun updateFlags(force: Boolean) {
+        val dimensions = when {
             isMarker -> DIMENSIONS_MARKER
             isSmall -> DIMENSIONS_SMALL
             else -> DIMENSIONS
         }
+        if (!force && this.dimensions == dimensions) return
         this.defaultAABB = createDefaultAABB()
     }
 
@@ -95,7 +96,8 @@ class ArmorStand(session: PlaySession, entityType: EntityType, data: EntityData,
     }
 
     override fun init() {
-        this::flags.observe(this, true) { updateFlags() }
+        this::flags.observe(this) { updateFlags(false) }
+        updateFlags(true)
         super.init()
     }
 
