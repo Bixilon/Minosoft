@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
@@ -46,7 +47,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierC
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.versions.Versions
 
@@ -88,14 +88,22 @@ open class PixLyzerBlock(
 
     override fun isCorrectTool(item: Item) = false
 
-    override fun offsetShape(position: BlockPosition): Vec3f {
+    override fun getModelOffset(position: BlockPosition): Vec3f {
         val offset = randomOffset ?: return Vec3f.EMPTY
-        return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
+        return super.getModelOffset(position) + if (offset == RandomOffsetTypes.XYZ) NULL_OFFSET_MODEL_XYZ else NULL_OFFSET_MODEL_XZ  // this corrects wrong pixlyzer data
+    }
+
+    override fun getShapeOffset(position: BlockPosition): Vec3d {
+        val offset = randomOffset ?: return Vec3d.EMPTY
+        return super.getShapeOffset(position) + if (offset == RandomOffsetTypes.XYZ) NULL_OFFSET_SHAPE_XYZ else NULL_OFFSET_SHAPE_XZ   // this corrects wrong pixlyzer data
     }
 
     companion object : IdentifierCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
-        private val NULL_OFFSET_XYZ = BlockPosition(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)
-        private val NULL_OFFSET_XZ = BlockPosition(0, 0, 0).getWorldOffset(RandomOffsetTypes.XZ)
+        private val NULL_OFFSET_MODEL_XYZ = RandomOffsetBlock.getModelOffset(BlockPosition.EMPTY, RandomOffsetTypes.XYZ)
+        private val NULL_OFFSET_MODEL_XZ = RandomOffsetBlock.getModelOffset(BlockPosition.EMPTY, RandomOffsetTypes.XZ)
+
+        private val NULL_OFFSET_SHAPE_XYZ = RandomOffsetBlock.getShapeOffset(BlockPosition.EMPTY, RandomOffsetTypes.XYZ)
+        private val NULL_OFFSET_SHAPE_XZ = RandomOffsetBlock.getShapeOffset(BlockPosition.EMPTY, RandomOffsetTypes.XZ)
         private val ITEM_FIELD = PixLyzerBlock::item.field
         override val ALIASES: Set<String> = setOf("Block")
 

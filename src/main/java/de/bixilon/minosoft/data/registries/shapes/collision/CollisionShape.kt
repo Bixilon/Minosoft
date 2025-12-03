@@ -100,6 +100,8 @@ class CollisionShape(
                 else -> block.collisionShape ?: block.getCollisionShape(state) ?: block.getCollisionShape(world.session, context, position, state) ?: entity?.let { block.getCollisionShape(world.session, context, position, state, it) }
             } ?: continue
 
+            // TODO: offset shape
+
             if (position in aabb && shape.intersects(aabb, -position)) {
                 continue
             }

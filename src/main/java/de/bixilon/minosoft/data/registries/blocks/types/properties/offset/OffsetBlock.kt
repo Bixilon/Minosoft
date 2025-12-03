@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 interface OffsetBlock {
 
-    fun offsetShape(position: BlockPosition): Vec3f
-    fun offsetModel(position: BlockPosition): Vec3f
+    fun getShapeOffset(position: BlockPosition): Vec3d
+    fun getModelOffset(position: BlockPosition): Vec3f
 }

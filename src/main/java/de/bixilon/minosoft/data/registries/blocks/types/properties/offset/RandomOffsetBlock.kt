@@ -13,18 +13,44 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
+import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 
 interface RandomOffsetBlock : OffsetBlock {
     val randomOffset: RandomOffsetTypes? // TODO: make non nullable
 
 
-    override fun offsetShape(position: BlockPosition): Vec3f {
-        val offset = this.randomOffset ?: return Vec3f.EMPTY
-        return position.getWorldOffset(offset)
-    }
+    override fun getShapeOffset(position: BlockPosition) = randomOffset?.let { getShapeOffset(position, it) } ?: Vec3d.EMPTY
 
-    override fun offsetModel(position: BlockPosition): Vec3f = offsetShape(position)
+    override fun getModelOffset(position: BlockPosition) = randomOffset?.let { getModelOffset(position, it) } ?: Vec3f.EMPTY
+
+
+    companion object {
+        private const val MASK = 0x0F
+
+        private fun horizontal(hash: Int): Float {
+            return (((hash and MASK) / 15.0f) - 0.5f) / 2.0f
+        }
+
+        private fun vertical(hash: Int): Float {
+            return (((hash and MASK) / 15.0f) - 1.0f) / 5.0f
+        }
+
+        fun getModelOffset(position: BlockPosition, type: RandomOffsetTypes): Vec3f {
+            val hash = position.hash.toInt()
+
+            val y = if (type == RandomOffsetTypes.XYZ) vertical(hash shr 4) else 0.0f
+
+            return Vec3f(horizontal(hash shr 0), y, horizontal(hash shr 8))
+        }
+
+        fun getShapeOffset(position: BlockPosition, type: RandomOffsetTypes): Vec3d {
+            val hash = position.hash.toInt()
+
+            val y = if (type == RandomOffsetTypes.XYZ) vertical(hash shr 4) else 0.0f
+
+            return Vec3d(horizontal(hash shr 0), y, horizontal(hash shr 8))
+        }
+    }
 }

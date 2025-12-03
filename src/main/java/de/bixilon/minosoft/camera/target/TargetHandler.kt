@@ -108,7 +108,7 @@ class TargetHandler(
         }
         if (shape == null) return null
         if (BlockStateFlags.OFFSET in state.flags && block is OffsetBlock) {
-            shape += Vec3d(block.offsetShape(position))
+            shape += block.getShapeOffset(position)
         }
 
         shape += position

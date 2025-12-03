@@ -142,7 +142,7 @@ class SolidSectionMesher(
                     }
 
                     if (ChunkMeshDetails.RANDOM_OFFSET in details && BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
-                        val randomOffset = state.block.offsetModel(position)
+                        val randomOffset = state.block.getModelOffset(position)
                         floatOffset.x += randomOffset.x
                         floatOffset.y += randomOffset.y
                         floatOffset.z += randomOffset.z

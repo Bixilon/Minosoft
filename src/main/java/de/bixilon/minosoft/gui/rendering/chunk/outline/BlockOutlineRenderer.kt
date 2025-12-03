@@ -133,7 +133,7 @@ class BlockOutlineRenderer(
 
         val blockOffset = MVec3d(target.blockPosition)
         if (BlockStateFlags.OFFSET in state.flags && state.block is OffsetBlock) {
-            blockOffset += target.state.block.offsetShape(target.blockPosition)
+            blockOffset += target.state.block.getShapeOffset(target.blockPosition)
         }
         val block = state.block
 

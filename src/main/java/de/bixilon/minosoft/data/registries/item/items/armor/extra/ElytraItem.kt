@@ -28,13 +28,6 @@ open class ElytraItem(identifier: ResourceLocation = this.identifier) : Item(ide
     override val maxDurability: Int get() = 432
 
 
-    fun isUsable(stack: ItemStack): Boolean {
-        if ((stack.durability?.durability ?: maxDurability) <= 0) {
-            return false
-        }
-        return true
-    }
-
     companion object : ItemFactory<ElytraItem> {
         override val identifier = minecraft("elytra")
 

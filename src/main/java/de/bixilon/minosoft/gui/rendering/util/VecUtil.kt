@@ -41,27 +41,6 @@ object VecUtil {
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
 
 
-    fun BlockPosition.getWorldOffset(offsetType: RandomOffsetTypes): Vec3f {
-        val positionHash = hash
-        val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
-
-        fun horizontal(axisHash: Long): Float {
-            return (((axisHash and 0xF) / 15.0f) - 0.5f) / 2.0f
-        }
-
-        val offset = MVec3f(
-            x = horizontal(positionHash),
-            y = if (offsetType === RandomOffsetTypes.XYZ) {
-                (((positionHash shr 4 and 0xF) / 15.0f) - 1.0f) / 5.0f
-            } else {
-                0.0f
-            },
-            z = horizontal(positionHash shr 8))
-
-        offset.clampAssign(-maxModelOffset, maxModelOffset)
-
-        return offset.unsafe
-    }
 
     fun Double.noised(random: Random): Double {
         return random.nextDouble() / this * if (random.nextBoolean()) 1.0 else -1.0
