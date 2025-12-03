@@ -42,9 +42,8 @@ object ElytraPhysics {
 
         val chestplate = entity.equipment[EquipmentSlots.CHEST]
         val item = chestplate?.item
-        if (item !is ElytraItem || !item.isUsable(chestplate)) {
-            return false
-        }
+        if (item !is ElytraItem) return false
+
         if (onGround) return false
         if (entity.isFlyingWithElytra) return false
         if (submersion[WaterFluid] > 0.0) return false
