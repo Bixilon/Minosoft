@@ -13,17 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-class GaussianTintSampler(val radius: Int = 5) : TintSampler {
+class SampledColor {
+    var count = 0
 
-    override fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition, provider: TintProvider): RGBColor {
-        val biome = chunk.getBiome(position.inChunkPosition)
-        // TODO
-        return provider.getFluidTint(fluid, biome, height, position)
+    var red = 0
+    var green = 0
+    var blue = 0
+
+    fun add(color: RGBColor, weight: Int) {
+        assert(weight >= 1)
+        this.red += color.red * weight
+        this.green += color.green * weight
+        this.blue += color.blue * weight
+
+        this.count += weight
     }
+
+    fun toColor() = RGBColor(this.red / count, this.green / count, this.blue / count)
 }

@@ -74,7 +74,7 @@ data class ModelFace(
             }
 
             val rotation = data["rotation"]?.toInt()?.rotation() ?: 0
-            val tintIndex = data["tintindex"]?.toInt() ?: TintManager.DEFAULT_TINT_INDEX
+            val tintIndex = data["tintindex"]?.toInt() ?: TintManager.NO_TINT
 
             return ModelFace(texture, uv, rotation, tintIndex)
         }

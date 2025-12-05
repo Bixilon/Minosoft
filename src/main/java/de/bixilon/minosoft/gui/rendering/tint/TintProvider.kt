@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.tint
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -31,5 +30,5 @@ interface TintProvider {
 
     fun getItemColor(stack: ItemStack, tintIndex: Int): RGBColor = Colors.WHITE_RGB
 
-    fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, position: BlockPosition): RGBColor = Colors.WHITE_RGB
+    fun getFluidTint(biome: Biome?, position: BlockPosition): RGBColor = Colors.WHITE_RGB
 }

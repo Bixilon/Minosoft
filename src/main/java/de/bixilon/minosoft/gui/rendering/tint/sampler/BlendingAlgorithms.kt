@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
-import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 
-class SingleTintSampler : TintSampler {
+enum class BlendingAlgorithms {
+    SIMPLE,
+    GAUSSIAN,
+    ;
 
-    override fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition, provider: TintProvider): RGBColor {
-        val biome = chunk.getBiome(position.inChunkPosition)
-        return provider.getFluidTint(biome, position)
+    companion object : ValuesEnum<BlendingAlgorithms> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
     }
 }
