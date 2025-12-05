@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ internal class VoxelSideTest {
                 SideQuad(0.0f, 0.5f, 1.0f, 1.0f),
                 SideQuad(0.5f, 0.0f, 1.0f, 1.0f),
             ),
-            result.sides
+            result?.sides
         )
     }
 
@@ -48,7 +48,7 @@ internal class VoxelSideTest {
                 SideQuad(1.0f, 3.0f, 4.0f, 4.0f),
                 SideQuad(1.0f, 1.0f, 2.0f, 4.0f),
             ),
-            result.sides
+            result?.sides
         )
     }
 
@@ -59,7 +59,7 @@ internal class VoxelSideTest {
 
         val result = a - b
 
-        assertEquals(emptySet<SideQuad>(), result.sides)
+        assertNull(result)
     }
 
     @Test
@@ -69,7 +69,7 @@ internal class VoxelSideTest {
 
         val result = a - b
 
-        assertEquals(emptySet<SideQuad>(), result.sides)
+        assertNull(result)
     }
 
 

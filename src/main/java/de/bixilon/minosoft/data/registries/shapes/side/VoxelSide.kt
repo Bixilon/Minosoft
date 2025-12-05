@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,19 +17,16 @@ class VoxelSide(
     val sides: Set<SideQuad>,
 ) : Iterable<SideQuad> {
 
-    fun isEmpty(): Boolean = sides.isEmpty()
-
-    override fun iterator(): Iterator<SideQuad> {
-        return sides.iterator()
+    init {
+        assert(sides.isNotEmpty())
     }
 
-    override fun hashCode(): Int {
-        return sides.hashCode()
-    }
+    override fun iterator() = sides.iterator()
 
-    override fun equals(other: Any?): Boolean {
-        if (other !is VoxelSide) return false
-        if (hashCode() != other.hashCode()) return false
-        return sides == other.sides
+    override fun hashCode() = sides.hashCode()
+
+    override fun equals(other: Any?) = when (other) {
+        is VoxelSide -> sides == other.sides
+        else -> false
     }
 }

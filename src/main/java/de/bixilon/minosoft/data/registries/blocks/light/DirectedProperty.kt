@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.light
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.data.registries.shapes.shape.AABBList
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABBList
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.registries.shapes.side.SideQuad
 

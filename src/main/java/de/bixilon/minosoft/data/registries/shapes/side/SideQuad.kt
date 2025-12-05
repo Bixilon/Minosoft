@@ -30,18 +30,20 @@ data class SideQuad(
         return !(this.min.x > other.max.x || other.min.x > this.max.x || this.min.y > other.max.y || other.min.y > this.max.y)
     }
 
-    infix operator fun minus(set: VoxelSide): VoxelSide {
-        val result: MutableSet<SideQuad> = ObjectOpenHashSet()
+    infix operator fun minus(set: VoxelSide): VoxelSide? {
+        val result: MutableSet<SideQuad> = ObjectOpenHashSet(set.sides.size)
 
         for (side in set.sides) {
-            result += (this minus side).sides
+            result += (this minus side)?.sides ?: continue
         }
+
+        if (result.isEmpty()) return null
 
         return VoxelSide(result)
     }
 
-    infix operator fun minus(other: SideQuad): VoxelSide {
-        val result: MutableSet<SideQuad> = ObjectOpenHashSet()
+    infix operator fun minus(other: SideQuad): VoxelSide? {
+        val result: MutableSet<SideQuad> = ObjectOpenHashSet(4)
 
 
         if (other.min.x > min.x && other.min.x < max.x) {
@@ -57,6 +59,8 @@ data class SideQuad(
         if (max.y > other.max.y) {
             result += SideQuad(min.x, other.max.y, max.x, max.y)
         }
+
+        if (result.isEmpty()) return null
 
 
         return VoxelSide(result)
