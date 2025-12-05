@@ -126,7 +126,7 @@ class TintManager(val session: PlaySession) {
     }
 
     companion object {
-        const val DEFAULT_TINT_INDEX = -1
+        const val NO_TINT = -1
 
         fun getJsonColor(color: Int): RGBColor? {
             if (color == 0) {

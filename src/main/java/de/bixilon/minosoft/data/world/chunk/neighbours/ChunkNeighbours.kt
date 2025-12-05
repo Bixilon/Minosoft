@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.chunk.neighbours
 import de.bixilon.kutil.exception.Unreachable
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -123,4 +124,13 @@ class ChunkNeighbours(val chunk: Chunk) {
 
     fun traceBlock(origin: InChunkPosition, offset: BlockPosition) = traceBlock(BlockPosition.of(chunk.position, origin) + offset)
     fun traceBlock(origin: InChunkPosition, direction: Directions) = traceBlock(BlockPosition.of(chunk.position, origin) + direction)
+
+    fun traceBiome(position: BlockPosition): Biome? {
+        val chunkPosition = position.chunkPosition
+        val chunkDelta = (chunkPosition - chunk.position)
+        val chunk = traceChunk(chunkDelta)
+        return chunk?.getBiome(position.inChunkPosition)
+    }
+
+    fun traceBiome(origin: InChunkPosition, offset: BlockPosition) = traceBiome(BlockPosition.of(chunk.position, origin) + offset)
 }

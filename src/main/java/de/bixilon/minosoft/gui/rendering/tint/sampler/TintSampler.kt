@@ -29,7 +29,7 @@ interface TintSampler {
         // TODO: Optimize the special case of VoronoiBiomeAccessor (we know what points are next and then can use sample those instead of the naive gaussian sampler)
         fun of(enabled: Boolean, radius: Int) = when {
             !enabled || radius <= 0 -> SingleTintSampler()
-            else -> GaussianTintSampler(radius)
+            else -> SimpleTintSampler(radius)
         }
     }
 }

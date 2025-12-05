@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.tint.tints.fluid
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -28,7 +27,7 @@ object WaterTintProvider : TintProvider {
         return biome?.waterColor ?: Colors.WHITE_RGB // ToDo: Fallback color
     }
 
-    override fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, position: BlockPosition): RGBColor {
+    override fun getFluidTint(biome: Biome?, position: BlockPosition): RGBColor {
         return biome?.waterColor ?: Colors.WHITE_RGB // ToDo: Fallback color
     }
 }
