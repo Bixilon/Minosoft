@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -30,13 +31,22 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.gui.rendering.tint.sampler.SingleTintSampler
+import de.bixilon.minosoft.gui.rendering.tint.sampler.TintSampler
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
 import de.bixilon.minosoft.gui.rendering.tint.tints.plants.FoliageTintCalculator
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class TintManager(val session: PlaySession) {
+    private val profile = session.profiles.rendering.biome
     val grass = GrassTintCalculator()
     val foliage = FoliageTintCalculator()
+
+    var sampler: TintSampler = SingleTintSampler()
+
+    private fun updateSampler(enabled: Boolean = profile.blending.enabled, radius: Int = profile.blending.radius) {
+        this.sampler = TintSampler.of(enabled, radius)
+    }
 
     fun init(assetsManager: AssetsManager) {
         grass.init(assetsManager)
@@ -52,6 +62,9 @@ class TintManager(val session: PlaySession) {
         }
 
         DefaultTints.init(this)
+
+        profile.blending::enabled.observe(this) { updateSampler(enabled = it) }
+        profile.blending::radius.observe(this) { updateSampler(radius = it) }
     }
 
     fun getBlockTint(state: BlockState, position: BlockPosition, biome: Biome?, cache: RGBArray?, tintProvider: TintProvider? = null): RGBArray? {
@@ -89,8 +102,7 @@ class TintManager(val session: PlaySession) {
 
     fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): RGBColor {
         val provider = fluid.model?.tint ?: return Colors.WHITE_RGB
-        val biome = chunk.getBiome(position.inChunkPosition)
-        return provider.getFluidTint(fluid, biome, height, position)
+        return sampler.getFluidTint(chunk, fluid, height, position, provider)
     }
 
     private fun Item.getTintProvider(): TintProvider? {
