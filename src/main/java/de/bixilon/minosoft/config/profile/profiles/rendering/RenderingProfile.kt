@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.rendering.advanced.AdvancedC
 import de.bixilon.minosoft.config.profile.profiles.rendering.animations.AnimationsC
+import de.bixilon.minosoft.config.profile.profiles.rendering.biome.BiomeC
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.CameraC
 import de.bixilon.minosoft.config.profile.profiles.rendering.chunkborder.ChunkBorderC
 import de.bixilon.minosoft.config.profile.profiles.rendering.experimental.ExperimentalC
@@ -55,6 +56,7 @@ class RenderingProfile(
     val sky = SkyC(this)
     val textures = TexturesC(this)
     val quality = QualityC(this)
+    val biome = BiomeC(this)
 
 
     override fun toString(): String {
