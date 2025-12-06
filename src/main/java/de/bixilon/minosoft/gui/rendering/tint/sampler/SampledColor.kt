@@ -32,4 +32,13 @@ class SampledColor {
     }
 
     fun toColor() = RGBColor(this.red / count, this.green / count, this.blue / count)
+
+
+    fun clear() {
+        count = 0
+
+        red = 0
+        green = 0
+        blue = 0
+    }
 }

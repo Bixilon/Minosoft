@@ -22,7 +22,8 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-class SimpleTintSampler(val radius: Int = 5) : TintSampler {
+class RadiusTintSampler(val radius: Int = 5) : TintSampler {
+    private val sampled = SampledColor()
 
     private inline fun SampledColor.sample(chunk: Chunk, position: BlockPosition, offset: BlockPosition, weight: Int, sampler: (biome: Biome, position: BlockPosition) -> RGBColor) {
         val biome = chunk.neighbours.traceBiome(position.inChunkPosition, offset) ?: return
@@ -34,8 +35,8 @@ class SimpleTintSampler(val radius: Int = 5) : TintSampler {
     }
 
     // TODO: check if biome source actually supports 3d biomes
-    override fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition, provider: TintProvider): RGBColor {
-        val sampled = SampledColor() // TODO: mutable
+    override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
+        sampled.clear()
 
         sampled.sample(chunk, position, BlockPosition(0, 0, 0), 10, provider::getFluidTint)
 

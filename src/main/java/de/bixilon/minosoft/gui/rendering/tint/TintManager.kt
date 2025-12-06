@@ -42,11 +42,6 @@ class TintManager(val session: PlaySession) {
     val grass = GrassTintCalculator()
     val foliage = FoliageTintCalculator()
 
-    var sampler: TintSampler = SingleTintSampler()
-
-    private fun updateSampler(enabled: Boolean = profile.blending.enabled, radius: Int = profile.blending.radius) {
-        this.sampler = TintSampler.of(enabled, radius)
-    }
 
     fun init(assetsManager: AssetsManager) {
         grass.init(assetsManager)
@@ -62,9 +57,13 @@ class TintManager(val session: PlaySession) {
         }
 
         DefaultTints.init(this)
+    }
 
-        profile.blending::enabled.observe(this) { updateSampler(enabled = it) }
-        profile.blending::radius.observe(this) { updateSampler(radius = it) }
+    fun createSampler(): TintSampler {
+        val blending = profile.blending.enabled
+        val radius = profile.blending.radius
+
+        return TintSampler.of(blending, radius)
     }
 
     fun getBlockTint(state: BlockState, position: BlockPosition, biome: Biome?, cache: RGBArray?, tintProvider: TintProvider? = null): RGBArray? {
@@ -100,9 +99,10 @@ class TintManager(val session: PlaySession) {
         return tintProvider.getParticleColor(state, biome, position)
     }
 
-    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition): RGBColor {
+    fun getFluidTint(chunk: Chunk, fluid: Fluid, position: BlockPosition): RGBColor {
         val provider = fluid.model?.tint ?: return Colors.WHITE_RGB
-        return sampler.getFluidTint(chunk, fluid, height, position, provider)
+        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition]
+        return provider.getFluidTint(biome, position)
     }
 
     private fun Item.getTintProvider(): TintProvider? {

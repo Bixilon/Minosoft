@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-class SingleTintSampler : TintSampler {
+object SingleTintSampler : TintSampler {
 
-    override fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition, provider: TintProvider): RGBColor {
-        val biome = chunk.world.biomes.accessor.get(chunk, position.inChunkPosition)
+    override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
+        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition]
         return provider.getFluidTint(biome, position)
     }
 }
