@@ -81,6 +81,16 @@ class TintManager(val session: PlaySession) {
         return tints
     }
 
+    fun getBlockTint(state: BlockState, chunk: Chunk, position: InChunkPosition, cache: RGBArray?): RGBArray? {
+        if (BlockStateFlags.TINTED !in state.flags) return null
+        val tintProvider = state.block.unsafeCast<TintedBlock>().tintProvider ?: return null
+
+        val biome = session.world.biomes.accessor.get(chunk, position)
+        val offset = chunk.position.blockPosition(position)
+
+        return getBlockTint(state, offset, biome, cache, tintProvider)
+    }
+
     fun getParticleTint(state: BlockState, position: BlockPosition): RGBColor {
         if (BlockStateFlags.TINTED !in state.flags || state.block !is TintedBlock) return Colors.WHITE_RGB
         val provider = state.block.tintProvider ?: return Colors.WHITE_RGB
