@@ -25,10 +25,11 @@ class StaticTintProvider(
     val item: RGBColor = block,
     val particle: RGBColor = block,
 ) : TintProvider {
+    override val sampling get() = false
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int) = this.block
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int) = this.block
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int) = this.item
+    override fun getItemTint(stack: ItemStack, tintIndex: Int) = this.item
 
-    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition) = this.particle
+    override fun getParticleTint(state: BlockState, biome: Biome?, position: BlockPosition) = this.particle
 }

@@ -20,11 +20,12 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 class TallGrassTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
+    override val sampling get() = true
 
     fun getColor(state: BlockState, biome: Biome?): RGBColor {
         return grassTintCalculator.getBlockColor(biome) // TODO: check for top/bottom
     }
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int) = getColor(state, biome)
-    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition) = getColor(state, biome)
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int) = getColor(state, biome)
+    override fun getParticleTint(state: BlockState, biome: Biome?, position: BlockPosition) = getColor(state, biome)
 }

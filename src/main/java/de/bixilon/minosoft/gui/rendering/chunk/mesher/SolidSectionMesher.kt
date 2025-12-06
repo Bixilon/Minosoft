@@ -81,7 +81,8 @@ class SolidSectionMesher(
         val blocks = section.blocks
         val entities: ArrayList<BlockEntityRenderer> = if (ChunkMeshDetails.ENTITIES in details) ArrayList(section.entities.count) else EMPTY_ARRAY_LIST
 
-        val tint = RGBArray(1)
+        val sampler = tints.createSampler()
+        var tints = RGBArray(1)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
@@ -151,9 +152,12 @@ class SolidSectionMesher(
                     ao?.clear()
 
 
-                    val tints = tints.getBlockTint(state, chunk, InChunkPosition(x, position.y, z), tint)
+                    val providedTints = sampler.getBlockTint(chunk, state, position, tints)
+                    if (providedTints != null) {
+                        tints = providedTints
+                    }
                     var rendered = false
-                    model?.render(props, position, state, entity, tints)?.let { if (it) rendered = true }
+                    model?.render(props, position, state, entity, providedTints)?.let { if (it) rendered = true }
 
                     if (entityRenderer != null) {
                         entityRenderer.update(LightLevel(light[SELF_LIGHT_INDEX]))

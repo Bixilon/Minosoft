@@ -25,6 +25,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 object RedstoneWireTintCalculator : TintProvider {
+    override val sampling get() = false
+
     private val COLORS = RGBArray(16) {
         val level = it / 15.0f
         val red = level * 0.6f + (if (it > 0) 0.4f else 0.3f)
@@ -34,7 +36,7 @@ object RedstoneWireTintCalculator : TintProvider {
     }
 
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         val power = state.properties[BlockProperties.REDSTONE_POWER]?.toInt() ?: return Colors.WHITE_RGB
 
         return COLORS[power]

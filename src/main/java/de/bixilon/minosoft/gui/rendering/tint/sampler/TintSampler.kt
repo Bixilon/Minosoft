@@ -13,12 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 interface TintSampler {
 
@@ -26,9 +31,30 @@ interface TintSampler {
 
     fun getFluidTint(chunk: Chunk, fluid: Fluid, position: BlockPosition): RGBColor {
         val provider = fluid.model?.tint ?: return Colors.WHITE_RGB
-        return getFluidTint(chunk, position, provider)
+        if (provider.sampling) {
+            return getFluidTint(chunk, position, provider)
+        }
+        return SingleTintSampler.getFluidTint(chunk, position, provider)
     }
 
+    fun getBlockTint(chunk: Chunk, state: BlockState, position: BlockPosition, result: RGBArray, provider: TintProvider)
+
+
+    fun getBlockTint(chunk: Chunk, state: BlockState, position: BlockPosition, cache: RGBArray?): RGBArray? {
+        if (BlockStateFlags.TINTED !in state.flags) return null
+        val provider = state.block.unsafeCast<TintedBlock>().tintProvider ?: return null
+
+        val size = provider.count
+        val tints = if (cache != null && cache.size >= size) cache else RGBArray(size)
+
+        if (provider.sampling) {
+            getBlockTint(chunk, state, position, tints, provider)
+        } else {
+            SingleTintSampler.getBlockTint(chunk, state, position, tints, provider)
+        }
+
+        return tints
+    }
 
 
     companion object {

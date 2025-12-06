@@ -21,9 +21,10 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 object WaterTintProvider : TintProvider {
+    override val sampling get() = true
 
     // cauldron
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         return biome?.waterColor ?: Colors.WHITE_RGB // ToDo: Fallback color
     }
 

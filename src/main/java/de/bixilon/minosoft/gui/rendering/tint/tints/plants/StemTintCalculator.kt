@@ -23,8 +23,9 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 object StemTintCalculator : TintProvider {
+    override val sampling get() = false
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         val age = state.properties[BlockProperties.AGE]?.toInt() ?: return Colors.WHITE_RGB
 
         return RGBColor(age * 32, 0xFF - age * 8, age * 4)
