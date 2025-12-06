@@ -33,7 +33,7 @@ class EntityPositionInfo(
     val state: BlockState?,
     val velocityState: BlockState?,
 ) {
-    val biome: Biome? get() = chunk?.getBiome(position.inChunkPosition)
+    val biome: Biome? get() = chunk?.world?.biomes?.accessor?.get(chunk, position.inChunkPosition)
 
     companion object {
         const val VELOCITY_POSITION_OFFSET = 0.5000001

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 class SingleTintSampler : TintSampler {
 
     override fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition, provider: TintProvider): RGBColor {
-        val biome = chunk.getBiome(position.inChunkPosition)
+        val biome = chunk.world.biomes.accessor.get(chunk, position.inChunkPosition)
         return provider.getFluidTint(biome, position)
     }
 }

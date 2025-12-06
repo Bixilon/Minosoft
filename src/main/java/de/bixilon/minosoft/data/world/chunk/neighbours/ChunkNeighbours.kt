@@ -129,7 +129,7 @@ class ChunkNeighbours(val chunk: Chunk) {
         val chunkPosition = position.chunkPosition
         val chunkDelta = (chunkPosition - chunk.position)
         val chunk = traceChunk(chunkDelta)
-        return chunk?.getBiome(position.inChunkPosition)
+        return chunk?.world?.biomes?.accessor?.get(chunk, position.inChunkPosition)
     }
 
     fun traceBiome(origin: InChunkPosition, offset: BlockPosition) = traceBiome(BlockPosition.of(chunk.position, origin) + offset)

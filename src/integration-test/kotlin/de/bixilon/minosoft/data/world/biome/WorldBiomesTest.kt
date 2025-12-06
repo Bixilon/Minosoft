@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.TestBiomes
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
+import de.bixilon.minosoft.data.world.biome.accessor.SourceBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
@@ -37,7 +38,7 @@ class WorldBiomesTest {
 
     private fun create(noise: ((PlaySession) -> NoiseBiomeAccessor)?, source: (ChunkPosition) -> BiomeSource): World {
         val session = createSession(0)
-        session.world.biomes.noise = noise?.invoke(session)
+        session.world.biomes.accessor = noise?.invoke(session) ?: SourceBiomeAccessor
         session.world.initialize(1, source)
 
         return session.world
@@ -53,18 +54,11 @@ class WorldBiomesTest {
         assertEquals(world.biomes[BlockPosition(16, 2, 4)], b2)
     }
 
-    fun `from chunk`() {
-        val world = create(null) { if (it.x == 0 && it.z == 0) PositionedSource(InChunkPosition(1, 2, 3), b1, b3) else DummyBiomeSource(b2) }
-        val chunk = world.chunks[0, 0]!!
-        assertEquals(chunk.getBiome(InChunkPosition(1, 2, 3)), b1)
-        assertEquals(chunk.getBiome(InChunkPosition(1, 2, 4)), b3)
-    }
-
     fun `from world with chunk `() {
         val world = create(null) { if (it.x == 0 && it.z == 0) PositionedSource(InChunkPosition(1, 2, 3), b1, b3) else DummyBiomeSource(b2) }
         val chunk = world.chunks[0, 0]!!
-        assertEquals(world.biomes[InChunkPosition(1, 2, 3), chunk], b1)
-        assertEquals(world.biomes[InChunkPosition(1, 2, 4), chunk], b3)
+        assertEquals(world.biomes.accessor[chunk, InChunkPosition(1, 2, 3)], b1)
+        assertEquals(world.biomes.accessor[chunk, InChunkPosition(1, 2, 4)], b3)
     }
 
     fun `from world with negative coordinates`() {
@@ -143,8 +137,8 @@ class WorldBiomesTest {
 
     private class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
 
-        override fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-            return chunk.biomeSource?.get(position)
+        override fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
+            return chunk.biomeSource?.get(InChunkPosition(x, y, z))
         }
     }
 }

@@ -44,9 +44,6 @@ class Chunk(
     val sections = ChunkSectionManagement(this)
     var biomeSource: BiomeSource? = null
 
-    @Deprecated("move to biome source?")
-    val cacheBiomes = world.biomes.noise != null
-
     val neighbours = ChunkNeighbours(this)
 
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections[sectionHeight]
@@ -135,16 +132,6 @@ class Chunk(
     override fun tick() {
         if (!neighbours.complete) return
         lock.acquired { sections.forEach { it.tick() } }
-    }
-
-    fun getBiome(position: InChunkPosition): Biome? {
-        val position = position.with(y = position.y.clamp(world.dimension.minY, world.dimension.maxY))
-        if (!cacheBiomes) {
-            return biomeSource?.get(position)
-        }
-        this[position.sectionHeight]?.let { return it.biomes[position] }
-
-        return world.biomes.noise?.get(position, this)
     }
 
     override fun toString() = "Chunk($position)"

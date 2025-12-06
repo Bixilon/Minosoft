@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.source
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
