@@ -34,18 +34,9 @@ class BiomeSectionDataProvider(
         return super.get(position)
     }
 
-    @Deprecated("Wrong y coordinate for biomes", level = DeprecationLevel.ERROR)
+    @Deprecated("Use world biome accessor", level = DeprecationLevel.ERROR)
     override fun get(position: InSectionPosition) = Broken()
 
-    operator fun get(position: InChunkPosition): Biome? {
-        super.get(position.inSectionPosition)?.let { return it }
-
-        val biome = section.chunk.world.biomes.noise?.get(position, section.chunk)
-        unsafeSet(position.inSectionPosition, biome)
-
-        return biome
-    }
-
-    @Deprecated("Wrong y coordinate for biomes", level = DeprecationLevel.ERROR)
+    @Deprecated("Use world biome accessor", level = DeprecationLevel.ERROR)
     override fun get(x: Int, y: Int, z: Int) = Broken()
 }

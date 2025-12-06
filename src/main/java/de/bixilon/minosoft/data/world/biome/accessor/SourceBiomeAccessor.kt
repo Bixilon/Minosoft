@@ -11,34 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome.accessor.noise
+package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
-abstract class NoiseBiomeAccessor(
-    val world: World,
-    val seed: Long = 0L,
-) : BiomeAccessor {
-
-    protected abstract fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome?
+object SourceBiomeAccessor : BiomeAccessor {
 
     override fun get(chunk: Chunk, position: InChunkPosition): Biome? {
-        val biomeY = if (world.dimension.supports3DBiomes) position.y.clamp(world.dimension.minY, world.dimension.maxY) else 0
-
-        val cache = chunk.sections[biomeY.sectionHeight]?.biomes
-
-        cache?.getCached(position.inSectionPosition)?.let { return it }
-
-        val biome = get(position.x, biomeY, position.z, chunk)
-
-        cache?.set(position.inSectionPosition, biome)
-
-        return biome
+        return chunk.biomeSource?.get(position)
     }
 }

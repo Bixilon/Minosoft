@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.biome.source
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
-class DummyBiomeSource(private val biome: Biome?) : BiomeSource {
-
+class DummyBiomeSource(val biome: Biome?) : BiomeSource {
     override fun get(position: InChunkPosition) = biome
 }

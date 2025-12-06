@@ -11,18 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome.accessor.noise
+package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
-class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
+interface BiomeAccessor {
 
-    override fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-        val biomeY = if (world.dimension.supports3DBiomes) position.y else 0
-
-        return chunk.biomeSource?.get(InChunkPosition(position.x, biomeY, position.z)) // TODO: this is really dirty hack
-    }
+    operator fun get(chunk: Chunk, position: InChunkPosition): Biome? // TODO: fixup position (clamp y)
 }

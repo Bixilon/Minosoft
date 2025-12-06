@@ -44,10 +44,12 @@ class SkyboxColor(
     var color: RGBColor? = null
         private set
 
+    @Deprecated("biome sampler")
     private fun calculateBiomeAvg(average: (Biome) -> RGBColor?): RGBColor? {
         val entity = sky.session.camera.entity
         val eyePosition = entity.renderInfo.eyePosition
         val chunk = entity.physics.positionInfo.chunk ?: return null
+        val accessor = sky.session.world.biomes.accessor
 
         var radius = sky.profile.biomeRadius
         radius *= radius
@@ -84,7 +86,7 @@ class SkyboxColor(
                     }
                     val blockPosition = BlockPosition(offset.x + xOffset, offset.y + yOffset, offset.z + zOffset)
                     val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
-                    val biome = neighbour.getBiome(blockPosition.inChunkPosition) ?: continue
+                    val biome = accessor.get(neighbour, blockPosition.inChunkPosition) ?: continue
 
                     count++
                     val color = average.invoke(biome) ?: continue

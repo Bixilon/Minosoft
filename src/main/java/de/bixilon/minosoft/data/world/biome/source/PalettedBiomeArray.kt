@@ -18,15 +18,15 @@ import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class PalettedBiomeArray(
     private val containers: Array<Array<Biome?>?>,
-    private val lowestSection: Int,
-    val edgeBits: Int,
+    private val minSection: Int,
+    val bits: Int,
 ) : BiomeSource {
-    private val mask = (1 shl edgeBits) - 1
+    private val mask = (1 shl bits) - 1
 
     override fun get(position: InChunkPosition): Biome? {
-        val container = containers.getOrNull(position.sectionHeight - lowestSection) ?: return null
+        val container = containers.getOrNull(position.sectionHeight - minSection) ?: return null
 
-        val index = ((((position.inSectionPosition.y and mask) shl edgeBits) or (position.z and mask)) shl edgeBits) or (position.x and mask)
+        val index = ((((position.inSectionPosition.y and mask) shl bits) or (position.z and mask)) shl bits) or (position.x and mask)
         return container[index]
     }
 }

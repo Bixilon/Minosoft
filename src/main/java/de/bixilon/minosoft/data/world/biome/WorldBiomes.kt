@@ -13,21 +13,20 @@
 
 package de.bixilon.minosoft.data.world.biome
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
-import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.biome.accessor.noise.FastNoiseAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.SourceBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
 class WorldBiomes(val world: World) {
-    var noise: NoiseBiomeAccessor? = null
+    var accessor: BiomeAccessor = SourceBiomeAccessor
         set(value) {
             field = value
             resetCache()
@@ -36,30 +35,24 @@ class WorldBiomes(val world: World) {
     operator fun get(position: BlockPosition): Biome? {
         val chunk = world.chunks[position.chunkPosition] ?: return null
         val inChunk = position.inChunkPosition
-        return get(inChunk, chunk)
-    }
-
-    operator fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-        val position = position.with(y = position.y.clamp(world.dimension.minY, world.dimension.maxY))
-        if (this.noise == null) {
-            return chunk.biomeSource?.get(position)
-        }
-
-        return chunk.getBiome(position)
+        return accessor.get(chunk, inChunk)
     }
 
     fun updateNoise(seed: Long) {
         val session = world.session
         val fast = session.profiles.rendering.performance.fastBiomeNoise
-        noise = when {
-            session.version < V_19W36A -> null
-            fast -> FastNoiseAccessor(world)
+
+        this.accessor = when {
+            session.version < V_19W36A -> SourceBiomeAccessor
+            fast -> SourceBiomeAccessor
             else -> VoronoiBiomeAccessor(world, seed)
         }
     }
 
     fun init() {
-        world.session.profiles.rendering.performance::fastBiomeNoise.observe(this) { updateNoise(noise?.seed ?: 0L) }
+        world.session.profiles.rendering.performance::fastBiomeNoise.observe(this) {
+            updateNoise(this.accessor.nullCast<NoiseBiomeAccessor>()?.seed ?: 0L)
+        }
     }
 
     fun resetCache() = world.lock.locked {

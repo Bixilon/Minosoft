@@ -26,13 +26,7 @@ class VoronoiBiomeAccessor(
     seed: Long = 0L,
 ) : NoiseBiomeAccessor(world, seed) {
 
-    override fun get(position: InChunkPosition, chunk: Chunk): Biome? {
-        val biomeY = if (world.dimension.supports3DBiomes) position.y else 0
-
-        return getBiome(seed, position.x, biomeY, position.z, chunk)
-    }
-
-    private fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
+    override fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
         val offset = getBiomeOffset(seed, x, y, z) // TODO: minecraft supplies absolut values here, hence the biome noise is broken
         val biomeX = unpackX(offset)
         val biomeY = unpackY(offset)
