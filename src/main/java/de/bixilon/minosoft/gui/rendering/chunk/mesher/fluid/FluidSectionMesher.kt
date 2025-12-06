@@ -51,7 +51,6 @@ class FluidSectionMesher(
     val context: RenderContext,
 ) {
     private val water = context.session.registries.fluid[WaterFluid.Companion]
-    private val tints = context.tints
 
     private fun BlockState.getFluid() = when {
         BlockStateFlags.FLUID !in flags -> null
@@ -143,6 +142,8 @@ class FluidSectionMesher(
         val positions = FloatArray(4 * Vec3f.LENGTH)
         val offsetPosition = MVec3f()
 
+        val sampler = context.tints.createSampler()
+
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                 for (x in blocks.minPosition.x..blocks.maxPosition.x) {
@@ -191,7 +192,7 @@ class FluidSectionMesher(
                     offsetPosition.z = (position.z - cameraOffset.z).toFloat()
 
 
-                    val tint = tints.getFluidTint(chunk, fluid, height, position)
+                    val tint = sampler.getFluidTint(chunk, fluid, position)
                     val lightShifted = (light.index shl 24)
 
 

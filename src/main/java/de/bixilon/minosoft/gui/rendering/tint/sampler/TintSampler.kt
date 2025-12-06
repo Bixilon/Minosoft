@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -21,15 +22,21 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 interface TintSampler {
 
-    fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, position: BlockPosition, provider: TintProvider): RGBColor
+    fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor
+
+    fun getFluidTint(chunk: Chunk, fluid: Fluid, position: BlockPosition): RGBColor {
+        val provider = fluid.model?.tint ?: return Colors.WHITE_RGB
+        return getFluidTint(chunk, position, provider)
+    }
+
 
 
     companion object {
 
         // TODO: Optimize the special case of VoronoiBiomeAccessor (we know what points are next and then can use sample those instead of the naive gaussian sampler)
         fun of(enabled: Boolean, radius: Int) = when {
-            !enabled || radius <= 0 -> SingleTintSampler()
-            else -> SimpleTintSampler(radius)
+            !enabled || radius <= 0 -> SingleTintSampler
+            else -> RadiusTintSampler(radius)
         }
     }
 }
