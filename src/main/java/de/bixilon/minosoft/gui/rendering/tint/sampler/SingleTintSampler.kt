@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
-import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -24,5 +25,12 @@ object SingleTintSampler : TintSampler {
     override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
         val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition]
         return provider.getFluidTint(biome, position)
+    }
+
+    override fun getBlockTint(chunk: Chunk, state: BlockState, position: BlockPosition, result: RGBArray, provider: TintProvider) {
+        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition]
+        for (tintIndex in 0 until provider.count) {
+            result[tintIndex] = provider.getBlockTint(state, biome, position, tintIndex)
+        }
     }
 }

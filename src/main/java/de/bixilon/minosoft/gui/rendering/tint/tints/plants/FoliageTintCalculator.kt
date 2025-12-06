@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
 class FoliageTintCalculator : ColorMapTint(FILE) {
+    override val sampling get() = true
 
     fun getBlockColor(biome: Biome?, y: Int): RGBColor {
         if (biome == null) return FALLBACK_COLOR
@@ -35,15 +36,15 @@ class FoliageTintCalculator : ColorMapTint(FILE) {
         return map[biome.downfallIndex shl 8 or temperature]
     }
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         return getBlockColor(biome, position.y)
     }
 
-    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): RGBColor {
+    override fun getParticleTint(state: BlockState, biome: Biome?, position: BlockPosition): RGBColor {
         return getBlockColor(biome, position.y)
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): RGBColor {
+    override fun getItemTint(stack: ItemStack, tintIndex: Int): RGBColor {
         return FALLBACK_COLOR
     }
 

@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
 class GrassTintCalculator : ColorMapTint(FILE) {
+    override val sampling get() = true
 
     fun getColor(downfallIndex: Int, temperatureIndex: Int): RGBColor {
         val map = map ?: return FALLBACK
@@ -49,18 +50,18 @@ class GrassTintCalculator : ColorMapTint(FILE) {
         }
     }
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         return getBlockColor(biome)
     }
 
-    override fun getParticleColor(state: BlockState, biome: Biome?, position: BlockPosition): RGBColor {
+    override fun getParticleTint(state: BlockState, biome: Biome?, position: BlockPosition): RGBColor {
         if (state.block is GrassBlock) { // dirt particles
             return Colors.WHITE_RGB
         }
         return getBlockColor(biome)
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): RGBColor {
+    override fun getItemTint(stack: ItemStack, tintIndex: Int): RGBColor {
         return getColor(173, 50) // TODO: plains, verify
     }
 

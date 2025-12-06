@@ -22,13 +22,14 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
 
-class SugarCaneTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
+class SugarCaneTintCalculator(val grass: GrassTintCalculator) : TintProvider {
+    override val sampling get() = true
 
-    override fun getBlockColor(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
-        return grassTintCalculator.getBlockColor(state, biome, position, tintIndex)
+    override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
+        return grass.getBlockTint(state, biome, position, tintIndex)
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): RGBColor {
+    override fun getItemTint(stack: ItemStack, tintIndex: Int): RGBColor {
         return Colors.WHITE_RGB
     }
 }
