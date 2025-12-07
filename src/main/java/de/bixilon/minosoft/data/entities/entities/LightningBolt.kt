@@ -24,6 +24,7 @@ import de.bixilon.minosoft.util.Backports.nextIntPort
 
 class LightningBolt(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d) : Entity(session, entityType, data, position, EntityRotation(0.0f, 0.0f)) {
     val duration = random.nextIntPort(50, 150).ticks
+    override val defaultAABB get() = null
 
     companion object : EntityFactory<LightningBolt> {
         override val identifier = minecraft("lightning_bolt")

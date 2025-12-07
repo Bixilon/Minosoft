@@ -87,7 +87,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     fun doesNotCollide(offset: Vec3d): Boolean {
-        val aabb = aabb.offset(offset)
+        val aabb = aabb?.offset(offset) ?: return false
         return entity.session.world.isSpaceEmpty(entity, aabb, positionInfo.chunk, fluids = true)
     }
 

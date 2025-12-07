@@ -81,7 +81,7 @@ abstract class PlayerEntity(
         get() = data.get(SCORE_DATA, 0)
 
     protected var aabbPose = pose
-    override var defaultAABB: AABB = createDefaultAABB()
+    override var defaultAABB: AABB? = createDefaultAABB()
         get() {
             val pose = pose
             if (aabbPose == pose) return field

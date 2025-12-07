@@ -164,7 +164,8 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
     }
 
 
-    fun updateWater(aabb: AABB = physics.aabb.shrink(0.001), pushable: Boolean = physics.fluidPushable, previous: Double = heights.getDouble(WaterFluid)) {
+    fun updateWater(aabb: AABB? = physics.aabb?.shrink(0.001), pushable: Boolean = physics.fluidPushable, previous: Double = heights.getDouble(WaterFluid)) {
+        if (aabb == null) return
         val vehicle = physics.entity.attachment.vehicle
         if (vehicle is SwimmingVehicle && !vehicle.canUpdatePassengerFluidMovement(WaterFluid)) {
             return
@@ -183,7 +184,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
 
         clear()
 
-        val aabb = physics.aabb.shrink(0.001)
+        val aabb = physics.aabb?.shrink(0.001) ?: return
         val pushable = physics.fluidPushable
 
         updateWater(aabb, pushable, previousWater)

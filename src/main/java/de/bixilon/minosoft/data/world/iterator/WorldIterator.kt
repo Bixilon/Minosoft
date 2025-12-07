@@ -102,7 +102,7 @@ class WorldIterator(
 
 
     fun hasCollisions(fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(null, null, fluids, predicate)
-    fun hasCollisions(entity: Entity, fluids: Boolean = true, predicate: CollisionPredicate? = null) = EntityCollisionContext(entity).let { hasCollisions(it.aabb, it, fluids, predicate) }
+    fun hasCollisions(entity: Entity, fluids: Boolean = true, predicate: CollisionPredicate? = null) = EntityCollisionContext.of(entity)?.let { hasCollisions(it.aabb, it, fluids, predicate) }
     fun hasCollisions(entity: Entity, aabb: AABB, fluids: Boolean = true, predicate: CollisionPredicate? = null) = hasCollisions(aabb, EntityCollisionContext(entity, aabb = aabb), fluids, predicate)
 
     fun hasCollisions(aabb: AABB?, context: CollisionContext?, fluids: Boolean = true, predicate: CollisionPredicate? = null): Boolean {

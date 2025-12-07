@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -98,6 +97,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<Mesh>(renderer)
     }
 
     private fun createMesh() {
+        val aabb = aabb ?: return
         val mesh = LineMeshBuilder(renderer.renderer.context)
 
         val color = color.value

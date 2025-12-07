@@ -12,16 +12,42 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 class InteractionEntity(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
+
+    override var defaultAABB: AABB? = null
+
+    @get:SynchronizedEntityData
+    val width: Float by data(WIDTH, 1.0f) // TODO: default
+
+    @get:SynchronizedEntityData
+    val height: Float by data(HEIGHT, 1.0f) // TODO: default
+
+    private fun updateFlags(force: Boolean) {
+        val dimensions = Vec2f(width, height)
+        if (!force && this.dimensions == dimensions) return
+        this.defaultAABB = createDefaultAABB()
+    }
+
+
+    override fun init() {
+        super.init()
+
+        updateFlags(true)
+        this::width.observe(this) { updateFlags(false) }
+        this::height.observe(this) { updateFlags(false) }
+    }
 
     companion object : EntityFactory<InteractionEntity> {
         override val identifier = minecraft("interaction")

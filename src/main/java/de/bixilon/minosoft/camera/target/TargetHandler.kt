@@ -79,7 +79,7 @@ class TargetHandler(
             if (Vec3dUtil.distance2(entity.renderInfo.position, origin) > MAX_ENTITY_DISTANCE) {
                 continue
             }
-            val aabb = entity.renderInfo.cameraAABB
+            val aabb = entity.renderInfo.cameraAABB ?: continue
             val (distance, direction) = aabb.raycast(origin, front) ?: continue
 
             if (distance > maxDistance) continue // other target is already closer

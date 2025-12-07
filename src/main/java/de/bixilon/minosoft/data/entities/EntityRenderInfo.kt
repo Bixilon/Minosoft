@@ -36,7 +36,7 @@ class EntityRenderInfo(private val entity: Entity) : Tickable {
         private set
     var eyePosition: Vec3d = position
         private set
-    var cameraAABB: AABB = defaultAABB
+    var cameraAABB: AABB? = defaultAABB
         private set
 
     private var rotation0 = EntityRotation.EMPTY
@@ -70,7 +70,7 @@ class EntityRenderInfo(private val entity: Entity) : Tickable {
         if (!force && this.defaultAABB === defaultAABB) {
             return
         }
-        cameraAABB = defaultAABB + position
+        cameraAABB = defaultAABB?.let { it + position }
     }
 
     private fun interpolateRotation(delta: Float) {

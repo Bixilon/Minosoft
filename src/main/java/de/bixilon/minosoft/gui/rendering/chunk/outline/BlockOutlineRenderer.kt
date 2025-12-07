@@ -145,8 +145,8 @@ class BlockOutlineRenderer(
         if (BlockStateFlags.COLLISIONS in state.flags && state.block is CollidableBlock && profile.collisions) { // TODO: block entity
             var collision = block.collisionShape ?: block.getCollisionShape(state)
             if (collision == null) {
-                val context = EntityCollisionContext(session.player)
-                collision = block.getCollisionShape(session, context, target.blockPosition, state) ?: target.entity?.let { block.getCollisionShape(session, context, target.blockPosition, state, it) }
+                val context = EntityCollisionContext.of(session.player)
+                collision = context?.let { block.getCollisionShape(session, context, target.blockPosition, state) ?: target.entity?.let { block.getCollisionShape(session, context, target.blockPosition, state, it) } }
             }
 
             collision?.let { mesh.drawShape(it, blockOffset.unsafe, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor.rgba(), 0.005f) }

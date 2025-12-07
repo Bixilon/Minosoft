@@ -15,7 +15,6 @@ package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
-import de.bixilon.kutil.cast.CollectionCast.asAnyList
 import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -31,7 +30,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABBIterator
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -85,7 +83,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     override fun forceTeleport(position: Vec3d) {
         super.forceTeleport(position)
-        aabb = entity.defaultAABB + position
+        aabb = entity.defaultAABB?.let { it + position }
         updatePositionInfo()
     }
 
@@ -223,6 +221,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
     }
 
     fun checkBlockCollisions() {
+        val aabb = this.aabb ?: return
         for ((position, state) in WorldIterator(aabb.innerPositions(AABBIterator.IterationOrder.NATURAL), entity.session.world, positionInfo.chunk)) {
             val block = state.block
             if (block !is EntityCollisionHandler) continue // TODO (performance): cache with block state flags

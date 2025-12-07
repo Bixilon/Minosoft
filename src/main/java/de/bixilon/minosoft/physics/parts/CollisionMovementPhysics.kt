@@ -74,7 +74,7 @@ object CollisionMovementPhysics {
     }
 
     fun EntityPhysics<*>.collide(movement: Vec3d): MVec3d {
-        val aabb = aabb
+        val aabb = aabb ?: return MVec3d(movement)
         if (aabb.min.y <= BlockPosition.MIN_Y || aabb.max.y >= BlockPosition.MAX_Y) return MVec3d(movement) // TODO: also check movement
 
         val collisions = collectCollisions(movement, aabb)
@@ -101,6 +101,7 @@ object CollisionMovementPhysics {
 
         val stepHeight = stepHeight.toDouble()
 
+        val aabb = aabb ?: return collision
         var total = collide(Vec3d(movement.x, stepHeight, movement.z), aabb, collisions)
         val vertical = collide(Vec3d(0.0, stepHeight, 0.0), aabb.extend(movement.x, 0.0, movement.z), collisions)
 

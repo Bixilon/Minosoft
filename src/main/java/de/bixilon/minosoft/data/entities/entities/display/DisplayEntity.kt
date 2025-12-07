@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.display
 
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
@@ -23,7 +24,10 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 @Deprecated("TODO")
 abstract class DisplayEntity(session: PlaySession, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(session, entityType, data, position, rotation) {
 
+    override val dimensions get() = SIZE // TODO
+
     private companion object {
+        val SIZE = Vec2f(1.0f)
         private val INTERPOLATION_START = EntityDataField("INTERPOLATION_START")
         private val INTERPOLATION_DURATION = EntityDataField("INTERPOLATION_DURATION")
         private val TRANSLATION = EntityDataField("TRANSLATION")

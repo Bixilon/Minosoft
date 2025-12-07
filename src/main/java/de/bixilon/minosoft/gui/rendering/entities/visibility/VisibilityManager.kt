@@ -58,6 +58,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         val aabb = if (!renderer.isVisible()) entity.physics.aabb else entity.renderInfo.cameraAABB // cameraAABB is only updated if entity is visible
 
         return when {
+            aabb == null -> EntityVisibilityLevels.VISIBLE // TODO: Undecidable...
             // TODO: renderer/features: renderOccluded -> occlusion culling is faster than frustum culling
             aabb !in frustum -> EntityVisibilityLevels.OUT_OF_FRUSTUM
             graph.isAABBOccluded(aabb) -> EntityVisibilityLevels.OCCLUDED

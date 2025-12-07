@@ -175,7 +175,7 @@ class WorldEntities : Iterable<Entity> {
             if (!entity.canRaycast && (entity !is LocalPlayerEntity || !local)) {
                 continue
             }
-            val aabb = entity.physics.aabb
+            val aabb = entity.physics.aabb ?: continue
 
             if (shape.intersects(aabb)) {
                 return@acquired true

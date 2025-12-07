@@ -45,6 +45,7 @@ interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {
     }
 
     fun adjustMovementForSneaking(movement: MVec3d) {
+        val aabb = aabb ?: return
         if (!shouldAdjustForSneaking(movement)) {
             return
         }

@@ -100,12 +100,13 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         if (movement.y > 0.0) return false
         if (entity.abilities.flying) return false
         if (!onGround) return false
+        val aabb = aabb ?: return false
 
         return (fallDistance < stepHeight && !entity.session.world.isSpaceEmpty(entity, aabb.offset(Vec3d(0.0, fallDistance.toDouble() - stepHeight, 0.0)), positionInfo.chunk))
     }
 
     fun wouldCollideAt(position: BlockPosition, predicate: CollisionPredicate? = null): Boolean {
-        val aabb = aabb
+        val aabb = aabb ?: return false
         val offset = AABB(position.x + 0.0, aabb.min.y, position.z + 0.0, position.x + 1.0, aabb.max.y, position.z + 1.0).shrink(1.0E-7)
         val collisions = collectCollisions(Vec3d.EMPTY, offset, predicate = predicate)
         val intersects = collisions.intersects(aabb)
