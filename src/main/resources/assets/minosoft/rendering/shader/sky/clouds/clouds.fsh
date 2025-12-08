@@ -18,7 +18,6 @@
 out lowp vec4 foutColor;
 
 uniform vec3 uCloudsColor;
-uniform bool uFullbright;
 
 flat in float finBrightness;
 
@@ -26,9 +25,7 @@ flat in float finBrightness;
 #include "minosoft:fog"
 
 void main() {
-    // When fullbright is enabled, use white color instead of sky-tinted color
-    vec3 cloudColor = uFullbright ? vec3(1.0f, 1.0f, 1.0f) : uCloudsColor;
-    foutColor = vec4(cloudColor, 1.0f);
+    foutColor = vec4(uCloudsColor, 1.0f);
     foutColor.rgb *= finBrightness;
     fog_set();
 }

@@ -204,7 +204,8 @@ minosoft:menu.pause.exit.confirm=§cClick again to exit
 ### Options Menu
 
 minosoft:menu.options.title=Options
-minosoft:menu.options.fov=FOV: 90
+minosoft:menu.options.fov=FOV
+minosoft:menu.options.master_volume=Master Volume
 minosoft:menu.options.realms_notifications=Realms Notifications: ON
 minosoft:menu.options.skin_customization=Skin Customization...
 minosoft:menu.options.secret_settings=Super Secret Settings...
@@ -217,6 +218,49 @@ minosoft:menu.options.chat=Chat Settings...
 minosoft:menu.options.resource_packs=Resource Packs...
 minosoft:menu.options.snooper=Snooper Settings...
 minosoft:menu.options.done=Done
+
+### Video Settings
+
+minosoft:menu.options.video.title=Video Settings
+minosoft:menu.options.video.gui=GUI Settings...
+minosoft:menu.options.video.clouds=Clouds...
+minosoft:menu.options.video.fullscreen=Fullscreen
+minosoft:menu.options.video.render_distance=Render Distance
+minosoft:menu.options.video.biome_radius=Biome Radius
+minosoft:menu.options.video.brightness=Brightness
+minosoft:menu.options.video.view_bobbing=View Bobbing
+minosoft:menu.options.video.fullbright=Fullbright
+minosoft:menu.options.video.fog=Fog
+minosoft:menu.options.video.dynamic_fov=Dynamic FOV
+
+### Cloud Settings
+
+minosoft:menu.options.clouds.title=Cloud Settings
+minosoft:menu.options.clouds.enabled=Clouds
+minosoft:menu.options.clouds.flat=Flat Clouds
+minosoft:menu.options.clouds.movement=Cloud Movement
+minosoft:menu.options.clouds.max_distance=Max Distance
+minosoft:menu.options.clouds.layers=Cloud Layers
+
+### Chat Settings
+
+minosoft:menu.options.chat.title=Chat Settings
+minosoft:menu.options.chat.hidden=Hidden
+minosoft:menu.options.chat.text_filtering=Text Filtering
+minosoft:menu.options.chat.colors=Chat Colors
+minosoft:menu.options.chat.mode=Chat Mode
+
+### GUI Settings
+
+minosoft:menu.options.gui.title=GUI Settings
+minosoft:menu.options.gui.hud_scale=HUD Scale
+minosoft:menu.options.gui.wawla=WAWLA
+minosoft:menu.options.gui.wawla_limit_reach=WAWLA Limit Reach
+minosoft:menu.options.gui.wawla_identifier=WAWLA Identifier
+minosoft:menu.options.gui.wawla_block=WAWLA Block Info
+minosoft:menu.options.gui.wawla_entity=WAWLA Entity Info
+minosoft:menu.options.gui.wawla_entity_health=WAWLA Entity Health
+minosoft:menu.options.gui.wawla_entity_hand=WAWLA Entity Hand
 
 
 minosoft:main.about.text=Glad that you test my software :)\nThis project is in a really early stage, don't use it on online servers!\nI am looking for contributors :) Please help me and make this usable
