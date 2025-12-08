@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.now
@@ -172,8 +173,8 @@ class CloudRenderer(
     }
 
     private fun draw() {
-        shader.cloudsColor = color.calculate()
-        shader.fullbright = context.session.profiles.rendering.light.fullbright
+        val fullbright = context.session.profiles.rendering.light.fullbright
+        shader.cloudsColor = if (fullbright) Vec3f(1.0f, 1.0f, 1.0f) else color.calculate()
         setYOffset()
 
 
