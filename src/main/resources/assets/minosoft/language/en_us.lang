@@ -250,6 +250,10 @@ minosoft:menu.options.chat.text_filtering=Text Filtering
 minosoft:menu.options.chat.colors=Chat Colors
 minosoft:menu.options.chat.mode=Chat Mode
 
+### Language Settings
+
+minosoft:menu.options.language.title=Language Settings
+
 ### GUI Settings
 
 minosoft:menu.options.gui.title=GUI Settings

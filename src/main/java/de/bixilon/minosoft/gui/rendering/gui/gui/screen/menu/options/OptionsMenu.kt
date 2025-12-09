@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.options
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -53,7 +52,7 @@ class OptionsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WIDTH)
             guiRenderer.gui.push(ChatSettingsMenu)
         }
         this += ButtonElement(guiRenderer, "menu.options.language".i18n()) {
-            JavaFXUtil.runLater { Eros.setVisibility(true) }
+            guiRenderer.gui.push(LanguageSettingsMenu)
         }
         this += ButtonElement(guiRenderer, "menu.options.resource_packs".i18n()) {
             JavaFXUtil.runLater { Eros.setVisibility(true) }
@@ -67,10 +66,6 @@ class OptionsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WIDTH)
 
         this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
-    }
-
-    private fun translate(key: String): String {
-        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<OptionsMenu>> {

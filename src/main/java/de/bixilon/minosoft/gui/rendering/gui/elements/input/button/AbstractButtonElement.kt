@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -28,10 +27,11 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 
 abstract class AbstractButtonElement(
     guiRenderer: GUIRenderer,
@@ -114,8 +114,7 @@ abstract class AbstractButtonElement(
         background.size = size
         val textSize = textElement.size
 
-        // Apply reduced opacity when disabled
-        val renderOptions = if (disabled) GUIVertexOptions(alpha = 0.4f) else options
+        val renderOptions = if (disabled) options.copy(alpha = 0.4f) else options
 
         background.render(offset, consumer, renderOptions)
         textElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, renderOptions)
@@ -184,7 +183,7 @@ abstract class AbstractButtonElement(
     override fun onChildChange(child: Element) {
         if (child == textElement) {
             if (dynamicSized) {
-                size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+                size = textElement.size + Vec2f(TEXT_PADDING * 2, TEXT_PADDING * 2)
             }
             cacheUpToDate = false
         }
@@ -192,7 +191,7 @@ abstract class AbstractButtonElement(
     }
 
     private companion object {
-        val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
+        val CLICK_SOUND = minecraft("ui.button.click") // This still doesnt play sound for some reason...
         const val TEXT_PADDING = 4
     }
 }

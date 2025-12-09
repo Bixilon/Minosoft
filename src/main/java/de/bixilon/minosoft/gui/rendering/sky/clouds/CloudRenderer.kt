@@ -174,7 +174,7 @@ class CloudRenderer(
 
     private fun draw() {
         val fullbright = context.session.profiles.rendering.light.fullbright
-        shader.cloudsColor = if (fullbright) Vec3f(1.0f, 1.0f, 1.0f) else color.calculate()
+        shader.cloudsColor = if (fullbright) WHITE else color.calculate()
         setYOffset()
 
 
@@ -189,6 +189,7 @@ class CloudRenderer(
     }
 
     companion object : RendererBuilder<CloudRenderer> {
+        private val WHITE = Vec3f(1.0f, 1.0f, 1.0f)
 
         override fun build(session: PlaySession, context: RenderContext): CloudRenderer? {
             val sky = context.renderer[SkyRenderer] ?: return null
