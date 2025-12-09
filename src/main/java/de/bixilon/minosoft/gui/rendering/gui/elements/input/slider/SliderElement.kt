@@ -54,7 +54,7 @@ class SliderElement(
     init {
         textElement = TextElement(guiRenderer, getDisplayText(), background = null, parent = this)
         updateText()
-        // Set initial size based on text element size plus padding (similar to ButtonElement)
+        // Set initial size based on text element size with padding (similar to ButtonElement)
         size = Vec2f(textElement.size.x + TEXT_PADDING * 2, 20.0f)
     }
 
@@ -65,7 +65,6 @@ class SliderElement(
     private fun updateText() {
         textElement.text = getDisplayText()
         textElement.silentApply()
-        // Update size when text changes
         if (size.x == 0.0f) {
             size = Vec2f(textElement.size.x + TEXT_PADDING * 2, 20.0f)
         }
@@ -80,23 +79,17 @@ class SliderElement(
         val size = size
         val sliderHeight = 20.0f
 
-        // Render background (button texture)
         val background = AtlasImageElement(guiRenderer, buttonAtlas?.get("normal") ?: guiRenderer.context.textures.whiteTexture)
         background.size = size
         background.render(offset, consumer, options)
 
-        // Calculate slider position (0.0 to 1.0)
         val normalizedValue = (value - min) / (max - min)
         val sliderWidth = 8.0f
         val trackWidth = size.x - sliderWidth
         val sliderX = trackWidth * normalizedValue
-
-        // Render slider handle as a raised button (hovered state for popped-out look)
         val slider = AtlasImageElement(guiRenderer, buttonAtlas?.get("hovered") ?: guiRenderer.context.textures.whiteTexture)
         slider.size = Vec2f(sliderWidth, sliderHeight)
         slider.render(offset + Vec2f(sliderX, 0.0f), consumer, options)
-
-        // Render text centered
         val textSize = textElement.size
         val textX = (size.x - textSize.x) / 2
         val textY = (size.y - textSize.y) / 2
@@ -129,7 +122,6 @@ class SliderElement(
     }
 
     override fun onMouseLeave(): Boolean {
-        // Stop dragging when mouse leaves the element
         isDragging = false
         return super.onMouseLeave()
     }

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.options
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -41,14 +40,14 @@ class GUISettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WI
 
     init {
         this += TextElement(guiRenderer, "menu.options.gui.title".i18n(), background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 2.0f))
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
 
         val currentHudScale = guiProfile.scale.toInt().coerceIn(1, 4)
         hudScaleButton = ButtonElement(guiRenderer, "${translate("menu.options.gui.hud_scale")}: ${currentHudScale}x") {
             val currentIndex = HUD_SCALE_OPTIONS.indexOf(guiProfile.scale).let { if (it == -1) 0 else it }
             val nextIndex = (currentIndex + 1) % HUD_SCALE_OPTIONS.size
             guiProfile.scale = HUD_SCALE_OPTIONS[nextIndex]
-            hudScaleButton.textElement.text = "${translate("menu.options.gui.hud_scale")}: ${HUD_SCALE_OPTIONS[nextIndex].toInt()}x"
+            hudScaleButton.textElement.text = "${translate("menu.options.gui.hud_scale")}: ${HUD_SCALE_OPTIONS[nextIndex].toInt()}x" // The text breaks when clicked if we dont do it like this... TODO: HUD scaling should be related to window size percentage! But I'm tired for now.
         }
         this += hudScaleButton
 
@@ -95,7 +94,7 @@ class GUISettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WI
         }
         this += wawlaEntityHandButton
 
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
 
         updateDisabledStates()
@@ -109,14 +108,6 @@ class GUISettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WI
         wawlaEntityEnabledButton.disabled = wawlaDisabled
         wawlaEntityHealthButton.disabled = wawlaDisabled
         wawlaEntityHandButton.disabled = wawlaDisabled
-    }
-
-    private fun translate(key: String): String {
-        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
-    }
-
-    private fun formatEnabled(key: String, enabled: Boolean): String {
-        return "${translate(key)}: ${if (enabled) "ON" else "OFF"}"
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<GUISettingsMenu>> {

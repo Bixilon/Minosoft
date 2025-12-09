@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.options
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -36,7 +37,7 @@ class ChatSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_W
 
     init {
         this += TextElement(guiRenderer, "menu.options.chat.title".i18n(), background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 2.0f))
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
 
         hiddenButton = ButtonElement(guiRenderer, formatEnabled("menu.options.chat.hidden", chatProfile.hidden)) {
             chatProfile.hidden = !chatProfile.hidden
@@ -61,20 +62,12 @@ class ChatSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_W
             val currentIndex = modes.indexOf(chatProfile.chatMode)
             val nextIndex = (currentIndex + 1) % modes.size
             chatProfile.chatMode = modes[nextIndex]
-            chatModeButton.textElement.text = "${translate("menu.options.chat.mode")}: ${chatProfile.chatMode.name}"
+            chatModeButton.textElement.text = BaseComponent("menu.options.chat.mode".i18n(), TextComponent(": ${chatProfile.chatMode.name}"))
         }
         this += chatModeButton
 
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
-    }
-
-    private fun translate(key: String): String {
-        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
-    }
-
-    private fun formatEnabled(key: String, enabled: Boolean): String {
-        return "${translate(key)}: ${if (enabled) "ON" else "OFF"}"
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<ChatSettingsMenu>> {

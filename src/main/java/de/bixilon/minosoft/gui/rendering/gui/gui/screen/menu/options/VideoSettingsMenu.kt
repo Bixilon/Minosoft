@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.options
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -43,7 +42,7 @@ class VideoSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_
 
     init {
         this += TextElement(guiRenderer, "menu.options.video.title".i18n(), background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 2.0f))
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
 
         this += ButtonElement(guiRenderer, "menu.options.video.gui".i18n()) {
             guiRenderer.gui.push(GUISettingsMenu)
@@ -58,16 +57,16 @@ class VideoSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_
         }
         this += fullscreenButton
 
-        this += SliderElement(guiRenderer, translate("menu.options.video.render_distance"), 2f, 32f, blockProfile.viewDistance.toFloat()) {
+        this += SliderElement(guiRenderer, translate("menu.options.video.render_distance"), 2.0f, 32.0f, blockProfile.viewDistance.toFloat()) {
             blockProfile.viewDistance = it.toInt()
         }
 
-        this += SliderElement(guiRenderer, translate("menu.options.video.biome_radius"), 0f, 5f, skyProfile.biomeRadius.toFloat()) {
+        this += SliderElement(guiRenderer, translate("menu.options.video.biome_radius"), 0.0f, 5.0f, skyProfile.biomeRadius.toFloat()) {
             skyProfile.biomeRadius = it.toInt()
         }
 
-        this += SliderElement(guiRenderer, translate("menu.options.video.brightness"), 0f, 100f, lightProfile.gamma * 100f) {
-            lightProfile.gamma = it / 100f
+        this += SliderElement(guiRenderer, translate("menu.options.video.brightness"), 0.0f, 100.0f, lightProfile.gamma * 100.0f) {
+            lightProfile.gamma = it / 100.0f
         }
 
         viewBobbingButton = ButtonElement(guiRenderer, formatEnabled("menu.options.video.view_bobbing", cameraProfile.shaking.walking)) {
@@ -94,16 +93,8 @@ class VideoSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_
         }
         this += dynamicFovButton
 
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
-    }
-
-    private fun translate(key: String): String {
-        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
-    }
-
-    private fun formatEnabled(key: String, enabled: Boolean): String {
-        return "${translate(key)}: ${if (enabled) "ON" else "OFF"}"
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<VideoSettingsMenu>> {

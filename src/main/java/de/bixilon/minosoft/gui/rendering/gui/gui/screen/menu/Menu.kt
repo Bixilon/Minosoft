@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.language.IntegratedLanguage
+import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -220,5 +222,13 @@ abstract class Menu(
 
     private companion object {
         const val BUTTON_Y_MARGIN = 5.0f
+    }
+
+    protected fun translate(key: String): String {
+        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
+    }
+
+    protected fun formatEnabled(key: String, enabled: Boolean): String {
+        return "${translate(key)}: ${if (enabled) "ON" else "OFF"}"
     }
 }

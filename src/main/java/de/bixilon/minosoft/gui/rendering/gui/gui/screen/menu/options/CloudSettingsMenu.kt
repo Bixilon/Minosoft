@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.options
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -30,18 +29,24 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 class CloudSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WIDTH) {
     private val cloudProfile = guiRenderer.context.profile.sky.clouds
 
-    private val cloudsEnabledButton: ButtonElement
-    private val cloudsFlatButton: ButtonElement
-    private val cloudsMovementButton: ButtonElement
-
     init {
         this += TextElement(guiRenderer, "menu.options.clouds.title".i18n(), background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 2.0f))
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
 
+        lateinit var cloudsFlatButton: ButtonElement
+        lateinit var cloudsMovementButton: ButtonElement
+
+        fun updateCloudsDisabledStates() {
+            val cloudsDisabled = !cloudProfile.enabled
+            cloudsFlatButton.disabled = cloudsDisabled
+            cloudsMovementButton.disabled = cloudsDisabled
+        }
+
+        lateinit var cloudsEnabledButton: ButtonElement
         cloudsEnabledButton = ButtonElement(guiRenderer, formatEnabled("menu.options.clouds.enabled", cloudProfile.enabled)) {
             cloudProfile.enabled = !cloudProfile.enabled
             cloudsEnabledButton.textElement.text = formatEnabled("menu.options.clouds.enabled", cloudProfile.enabled)
-            updateDisabledStates()
+            updateCloudsDisabledStates()
         }
         this += cloudsEnabledButton
 
@@ -57,32 +62,18 @@ class CloudSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_
         }
         this += cloudsMovementButton
 
-        this += SliderElement(guiRenderer, translate("menu.options.clouds.max_distance"), 0f, 200f, cloudProfile.maxDistance) {
+        this += SliderElement(guiRenderer, translate("menu.options.clouds.max_distance"), 0.0f, 200.0f, cloudProfile.maxDistance) {
             cloudProfile.maxDistance = it
         }
 
-        this += SliderElement(guiRenderer, translate("menu.options.clouds.layers"), 1f, 3f, cloudProfile.layers.toFloat()) {
+        this += SliderElement(guiRenderer, translate("menu.options.clouds.layers"), 1.0f, 3.0f, cloudProfile.layers.toFloat()) {
             cloudProfile.layers = it.toInt()
         }
 
-        this += SpacerElement(guiRenderer, Vec2f(0f, 10f))
+        this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
 
-        updateDisabledStates()
-    }
-
-    private fun updateDisabledStates() {
-        val cloudsDisabled = !cloudProfile.enabled
-        cloudsFlatButton.disabled = cloudsDisabled
-        cloudsMovementButton.disabled = cloudsDisabled
-    }
-
-    private fun translate(key: String): String {
-        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
-    }
-
-    private fun formatEnabled(key: String, enabled: Boolean): String {
-        return "${translate(key)}: ${if (enabled) "ON" else "OFF"}"
+        updateCloudsDisabledStates()
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<CloudSettingsMenu>> {
