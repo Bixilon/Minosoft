@@ -59,6 +59,7 @@ class GUIRenderer(
         gui.init()
         hud.init()
         popper.init()
+        atlas.load()
     }
 
     override fun postInit(latch: AbstractLatch) {
