@@ -32,7 +32,7 @@ interface TintSampler {
 
     fun getFluidTint(chunk: Chunk, fluid: Fluid, position: BlockPosition): RGBColor {
         val provider = fluid.model?.tint ?: return Colors.WHITE_RGB
-        if (TintProviderFlags.BIOME !in provider.flags) {
+        if (TintProviderFlags.BIOME in provider.flags) {
             return getFluidTint(chunk, position, provider)
         }
         return SingleTintSampler.getFluidTint(chunk, position, provider)
@@ -48,7 +48,7 @@ interface TintSampler {
         val size = provider.count
         val tints = if (cache != null && cache.size >= size) cache else RGBArray(size)
 
-        if (TintProviderFlags.BIOME !in provider.flags) {
+        if (TintProviderFlags.BIOME in provider.flags) {
             getBlockTint(chunk, state, position, tints, provider)
         } else {
             SingleTintSampler.getBlockTint(chunk, state, position, tints, provider)
