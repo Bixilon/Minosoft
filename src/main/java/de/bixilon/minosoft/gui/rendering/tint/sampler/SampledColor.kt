@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 class SampledColor {
@@ -31,8 +32,12 @@ class SampledColor {
         this.count += weight
     }
 
-    fun toColor() = RGBColor(this.red / count, this.green / count, this.blue / count)
-
+    fun toColor(): RGBColor {
+        if (count == 0) {
+            return Colors.WHITE_RGB
+        }
+        return RGBColor(this.red / count, this.green / count, this.blue / count)
+    }
 
     fun clear() {
         count = 0
