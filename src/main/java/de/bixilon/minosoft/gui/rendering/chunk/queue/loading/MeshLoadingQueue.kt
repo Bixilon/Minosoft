@@ -45,43 +45,40 @@ class MeshLoadingQueue(
 
     fun burn(): Boolean {
         if (meshes.isEmpty()) return false
-        lock.lock()
 
-        var index = 0
-        while (meshes.isNotEmpty()) {
-            if (++index % BATCH_SIZE == 0) break
-            val mesh = this.meshes.removeFirst()
-            this.positions -= mesh.position
+        lock.locked {
+            var index = 0
+            while (meshes.isNotEmpty()) {
+                if (++index >= BATCH_SIZE) break
+                val mesh = this.meshes.removeFirst()
+                this.positions -= mesh.position
 
-            renderer.context.profiler("load") { mesh.load() }
+                renderer.context.profiler("load") { mesh.load() }
 
-            renderer.loaded += mesh
+                renderer.loaded += mesh
+            }
         }
-
-        lock.unlock()
         return true
     }
 
     fun work() {
         if (meshes.isEmpty()) return
-        lock.lock()
-
         val start = now()
         val maxTime = renderer.maxBusyTime
 
         var index = 0
-        while (meshes.isNotEmpty()) {
-            if (++index % BATCH_SIZE == 0 && now() - start >= maxTime) break
+        lock.locked {
+            while (meshes.isNotEmpty()) {
+                if (++index % BATCH_SIZE == 0 && now() - start >= maxTime) break
 
-            val mesh = this.meshes.removeFirst()
-            this.positions -= mesh.position
+                val mesh = this.meshes.removeFirst()
+                this.positions -= mesh.position
 
-            renderer.context.profiler("load$index") { mesh.load() }
+                renderer.context.profiler("load$index") { mesh.load() }
 
-            renderer.loaded += mesh
+                renderer.loaded += mesh
+            }
         }
-
-        lock.unlock()
     }
 
 
