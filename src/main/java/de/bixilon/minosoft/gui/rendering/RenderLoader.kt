@@ -100,8 +100,6 @@ object RenderLoader {
         initLatch.await()
         models.loadDynamic(latch)
 
-        renderer[GUIRenderer]?.atlas?.load() // TODO: remove this
-
         // Post init stage
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.lab().format()})..." }
         // TODO: async load both
