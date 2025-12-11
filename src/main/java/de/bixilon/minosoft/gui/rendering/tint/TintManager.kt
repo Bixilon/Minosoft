@@ -96,7 +96,7 @@ class TintManager(val session: PlaySession) {
         val provider = state.block.tintProvider ?: return Colors.WHITE_RGB
 
         // TODO: cache chunk of particle
-        val biome = session.world.biomes[position]
+        val biome = if (TintProviderFlags.BIOME in provider.flags) session.world.biomes[position] else null
         return provider.getParticleTint(state, biome, position)
     }
 

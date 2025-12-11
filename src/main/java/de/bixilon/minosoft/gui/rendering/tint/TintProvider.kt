@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.gui.rendering.tint
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -20,8 +21,8 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 
 interface TintProvider {
+    val flags: IntInlineEnumSet<TintProviderFlags>
     val count get() = 1
-    val sampling: Boolean
 
     fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor = Colors.WHITE_RGB
 

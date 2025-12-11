@@ -13,19 +13,21 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 
 class StaticTintProvider(
     val block: RGBColor,
     val item: RGBColor = block,
     val particle: RGBColor = block,
 ) : TintProvider {
-    override val sampling get() = false
+    override val flags get() = IntInlineEnumSet<TintProviderFlags>()
 
     override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int) = this.block
 

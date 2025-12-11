@@ -13,15 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.fluid
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 
 object WaterTintProvider : TintProvider {
-    override val sampling get() = true
+    override val flags get() = IntInlineEnumSet<TintProviderFlags>() + TintProviderFlags.BIOME
 
     // cauldron
     override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {

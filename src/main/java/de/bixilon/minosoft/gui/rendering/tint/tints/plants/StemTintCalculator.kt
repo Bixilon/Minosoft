@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.plants
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -21,9 +23,10 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 
 object StemTintCalculator : TintProvider {
-    override val sampling get() = false
+    override val flags get() = IntInlineEnumSet<TintProviderFlags>()
 
     override fun getBlockTint(state: BlockState, biome: Biome?, position: BlockPosition, tintIndex: Int): RGBColor {
         val age = state.properties[BlockProperties.AGE]?.toInt() ?: return Colors.WHITE_RGB
