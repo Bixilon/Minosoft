@@ -26,6 +26,10 @@ class RadiusTintSampler(val radius: Int = 5) : TintSampler {
     private val sampled = SampledColor()
     private var multiple = Array(1) { SampledColor() }
 
+    init {
+        assert(radius >= 0) { "Invalid radius: $radius" }
+    }
+
     private fun ensureSize(size: Int) {
         if (multiple.size >= size) return
 
@@ -45,7 +49,7 @@ class RadiusTintSampler(val radius: Int = 5) : TintSampler {
     override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
         sampled.clear()
 
-        sampleFluid(chunk, position, BlockPosition(0, 0, 0), 10, provider)
+        sampleFluid(chunk, position, BlockPosition(0, 0, 0), 5, provider)
 
         var offset = 1
         while (true) {
@@ -87,19 +91,19 @@ class RadiusTintSampler(val radius: Int = 5) : TintSampler {
             this.multiple[index].clear()
         }
 
-        sampleBlock(chunk, state, position, BlockPosition(0, 0, 0), 10, provider)
+        sampleBlock(chunk, state, position, BlockPosition(0, 0, 0), 5, provider)
 
         var offset = 1
         while (true) {
             val weight = (radius - offset).pow(2)
-            sampleBlock(chunk, state, position, BlockPosition(-radius, 0, 0), weight, provider)
-            sampleBlock(chunk, state, position, BlockPosition(radius, 0, 0), weight, provider)
+            sampleBlock(chunk, state, position, BlockPosition(-offset, 0, 0), weight, provider)
+            sampleBlock(chunk, state, position, BlockPosition(offset, 0, 0), weight, provider)
 
-            sampleBlock(chunk, state, position, BlockPosition(0, -radius, 0), weight, provider)
-            sampleBlock(chunk, state, position, BlockPosition(0, radius, 0), weight, provider)
+            sampleBlock(chunk, state, position, BlockPosition(0, -offset, 0), weight, provider)
+            sampleBlock(chunk, state, position, BlockPosition(0, offset, 0), weight, provider)
 
-            sampleBlock(chunk, state, position, BlockPosition(0, 0, -radius), weight, provider)
-            sampleBlock(chunk, state, position, BlockPosition(0, 0, radius), weight, provider)
+            sampleBlock(chunk, state, position, BlockPosition(0, 0, -offset), weight, provider)
+            sampleBlock(chunk, state, position, BlockPosition(0, 0, offset), weight, provider)
 
             offset += radius / 3
             if (offset >= radius) break
