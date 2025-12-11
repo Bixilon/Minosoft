@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.redstone
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -23,9 +24,10 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 
 object RedstoneWireTintCalculator : TintProvider {
-    override val sampling get() = false
+    override val flags get() = IntInlineEnumSet<TintProviderFlags>()
 
     private val COLORS = RGBArray(16) {
         val level = it / 15.0f

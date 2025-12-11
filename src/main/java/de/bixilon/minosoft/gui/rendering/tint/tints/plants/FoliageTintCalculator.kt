@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.plants
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet.Companion.plus
 import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -22,10 +24,11 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
 class FoliageTintCalculator : ColorMapTint(FILE) {
-    override val sampling get() = true
+    override val flags get() = IntInlineEnumSet<TintProviderFlags>() + TintProviderFlags.BIOME
 
     fun getBlockColor(biome: Biome?, y: Int): RGBColor {
         if (biome == null) return FALLBACK_COLOR
