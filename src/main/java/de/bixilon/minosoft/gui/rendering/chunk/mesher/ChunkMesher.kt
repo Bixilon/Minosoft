@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kutil.enums.inline.IntInlineSet
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.SectionPosition
@@ -59,13 +58,7 @@ class ChunkMesher(
         renderer.invalidate(renderer.world)
     }
 
-    private fun getDetails(previous: IntInlineSet?, position: SectionPosition): IntInlineSet {
-        if (previous == null) return ChunkMeshDetails.of(position, renderer.visibility.sectionPosition)
-
-        return ChunkMeshDetails.update(previous, position, renderer.visibility.sectionPosition)
-    }
-
-    fun mesh(previous: ChunkMeshes?, cache: ChunkMeshCache, section: ChunkSection): ChunkMeshes? {
+    fun mesh(cache: ChunkMeshCache, section: ChunkSection): ChunkMeshes? {
         if (section.blocks.isEmpty) return null
 
         val neighbours = section.chunk.neighbours
@@ -76,7 +69,7 @@ class ChunkMesher(
 
         val position = SectionPosition.of(section)
 
-        val details = getDetails(previous?.details, position) + this.details
+        val details = ChunkMeshDetails.of(position, renderer.visibility.sectionPosition) + this.details
 
 
         // TODO: put sizes of previous mesh (cache estimate)
