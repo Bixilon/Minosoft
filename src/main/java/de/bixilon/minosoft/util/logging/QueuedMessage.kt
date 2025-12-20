@@ -11,12 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package de.bixilon.minosoft.util.logging
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 data class QueuedMessage(

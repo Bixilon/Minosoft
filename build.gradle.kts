@@ -526,7 +526,7 @@ java {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_11)
-        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        languageVersion.set(KotlinVersion.KOTLIN_2_3)
         freeCompilerArgs.add("-Xskip-prerelease-check")
         freeCompilerArgs.add("-Xallow-unstable-dependencies")
         freeCompilerArgs.add("-Xwarning-level=NOTHING_TO_INLINE:disabled")

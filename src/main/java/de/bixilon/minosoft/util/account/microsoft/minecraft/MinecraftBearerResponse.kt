@@ -11,8 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package de.bixilon.minosoft.util.account.microsoft.minecraft
 
 import de.bixilon.minosoft.util.account.microsoft.AuthenticationResponse
@@ -20,7 +18,6 @@ import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
 import java.util.*
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 data class MinecraftBearerResponse(
     val username: UUID,

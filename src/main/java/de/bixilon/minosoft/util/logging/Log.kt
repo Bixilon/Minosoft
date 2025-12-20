@@ -32,8 +32,6 @@ import java.text.SimpleDateFormat
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
-
 
 object Log {
     private val MINOSOFT_START_TIME = now()
@@ -61,7 +59,6 @@ object Log {
         ShutdownManager.addHook { LogOptions.async = false; catchAll { await() } }
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun QueuedMessage.print() {
         try {
             val message = BaseComponent()
@@ -119,7 +116,6 @@ object Log {
     }
 
     @JvmStatic
-    @OptIn(ExperimentalTime::class)
     fun logInternal(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, message: Any?, vararg formatting: Any) {
         val formatted = formatMessage(message, *formatting)
         if (formatted.length <= 0) return
