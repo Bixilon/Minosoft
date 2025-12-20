@@ -87,6 +87,14 @@ buildscript {
     }
 }
 
+enum class Rendering {
+    OPENGL,
+    ;
+}
+
+val renderings = properties["rendering"]?.let { it.toString().split(",", ";").map { Rendering.valueOf(it.lowercase()) }.toSet() } ?: Rendering.values().toSet()
+logger.info("Render system backends: $renderings")
+
 var lwjglNatives = ""
 var zstdNatives = ""
 var javafxNatives = ""
@@ -348,13 +356,17 @@ fun DependencyHandler.netty(name: String) {
     implementation("io.netty", "netty-$name", nettyVersion)
 }
 
-fun DependencyHandler.lwjgl(name: String? = null) {
+fun DependencyHandler.lwjgl(name: String? = null, classpath: Boolean = true) {
     var artifactId = "lwjgl"
     if (name != null) {
         artifactId += "-$name"
     }
-    implementation("org.lwjgl", artifactId, lwjglVersion)
-    runtimeOnly("org.lwjgl", artifactId, lwjglVersion, classifier = "natives-$lwjglNatives")
+    if (classpath) {
+        implementation("org.lwjgl", artifactId, lwjglVersion)
+        runtimeOnly("org.lwjgl", artifactId, lwjglVersion, classifier = "natives-$lwjglNatives")
+    } else {
+        compileOnly("org.lwjgl", artifactId, lwjglVersion)
+    }
 }
 
 dependencies {
@@ -395,10 +407,13 @@ dependencies {
     // lwjgl
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
     lwjgl()
-    lwjgl("glfw")
     lwjgl("openal")
-    lwjgl("opengl")
     lwjgl("stb")
+
+    val glfw = Rendering.OPENGL in renderings
+    lwjgl("glfw", classpath = glfw)
+
+    lwjgl("opengl", classpath = Rendering.OPENGL in renderings)
 
     // kotlin
     implementation(kotlin("reflect", "2.2.20"))
