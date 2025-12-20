@@ -37,6 +37,6 @@ interface EntityLayer : RenderLayer {
     }
 
     companion object {
-        val LAYERS = listOf(Opaque, Translucent)
+        val LAYERS by lazy { arrayOf(Opaque, Translucent) } // This is screwed, the companion instance is null during initialization since kotlin 2.3
     }
 }
