@@ -39,8 +39,8 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
     override fun apply() {
         RenderingOptions.disabled = _disable || disable
         RenderingOptions.cursorCatch = !(_noCursorCatch || noCursorCatch)
-        WindowFactory.factory = windowApi?.let { if (it == NONE) null else (WindowFactory.factories[it] ?: throw IllegalArgumentException("Can not find window api: $it")) }
-        RenderSystemFactory.factory = renderApi?.let { if (it == NONE) null else (RenderSystemFactory.factories[it] ?: throw IllegalArgumentException("Can not find render system: $it")) }
+        windowApi?.let { WindowFactory.factory = if (it == NONE) null else (WindowFactory.factories[it] ?: throw IllegalArgumentException("Can not find window api: $it")) }
+        renderApi?.let { RenderSystemFactory.factory = if (it == NONE) null else (RenderSystemFactory.factories[it] ?: throw IllegalArgumentException("Can not find render system: $it")) }
 
         MemoryOptions.native = !noNativeMemory
         RenderingOptions.profileFrames = profileFrames
