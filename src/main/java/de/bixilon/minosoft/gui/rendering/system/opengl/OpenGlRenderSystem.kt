@@ -53,6 +53,7 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
 import org.lwjgl.opengl.GL43.glDebugMessageCallback
+import org.lwjgl.system.Configuration
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
@@ -309,6 +310,7 @@ class OpenGlRenderSystem(
         private val INITIALIZE = GL::class.java.getDeclaredMethod("initialize").apply { setUnsafeAccessible() }
 
         init {
+            Configuration.OPENGL_EXPLICIT_INIT.set(true)
             DefaultThreadPool += { INITIALIZE.invoke(null) }
         }
 
