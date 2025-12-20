@@ -17,12 +17,15 @@ import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.math.simple.DoubleMath.clamp
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 class DebugView(private val camera: Camera) : CameraView {
     override val context: RenderContext get() = camera.context
@@ -35,7 +38,7 @@ class DebugView(private val camera: Camera) : CameraView {
     override var front = Vec3f.EMPTY
 
 
-    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
+    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Duration) {
         camera.context.session.player.input = PlayerMovementInput()
         var speedMultiplier = 10
         if (input.sprint) {
@@ -61,7 +64,7 @@ class DebugView(private val camera: Camera) : CameraView {
             movement.normalizeAssign()
         }
         movement *= speedMultiplier
-        movement *= delta
+        movement *= delta.toDouble(DurationUnit.SECONDS).clamp(0.0, 1.0)
 
         eyePosition += movement
     }
