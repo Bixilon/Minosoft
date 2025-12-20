@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.terminal.arguments.ui
 
 import com.github.ajalt.clikt.parameters.groups.OptionGroup
-import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.options.deprecated
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
@@ -27,8 +29,8 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
     val disable by option("--no-rendering").flag(default = RenderingOptions.disabled)
     val _noCursorCatch by option("--disable_cursor_catch").flag(default = !RenderingOptions.cursorCatch).deprecated("--disable_cursor_catch is deprecated, use --no-cursor-catch instead")
     val noCursorCatch by option("--no-cursor-catch").flag(default = !RenderingOptions.cursorCatch)
-    val windowApi by option("--window-api").choice(choices = WindowFactory.FACTORIES.map { it.key }.toTypedArray()).convert { WindowFactory.FACTORIES[it] ?: fail("No such window api: $it") }.defaultLazy { WindowFactory.factory!! }
-    val renderApi by option("--render-api").choice(choices = RenderSystemFactory.FACTORIES.map { it.key }.toTypedArray()).convert { RenderSystemFactory.FACTORIES[it] ?: fail("No such render api: $it") }.defaultLazy { RenderSystemFactory.factory!! }
+    val windowApi by option("--window-api").choice(choices = WindowFactory.factories.map { it.key }.toTypedArray() + NONE)
+    val renderApi by option("--render-api").choice(choices = RenderSystemFactory.factories.map { it.key }.toTypedArray() + NONE)
 
     val noNativeMemory by option("--no-native-memory").flag(default = !MemoryOptions.native)
     val profileFrames by option("--profile-frames").flag(default = RenderingOptions.profileFrames)
@@ -37,10 +39,14 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
     override fun apply() {
         RenderingOptions.disabled = _disable || disable
         RenderingOptions.cursorCatch = !(_noCursorCatch || noCursorCatch)
-        WindowFactory.factory = windowApi
-        RenderSystemFactory.factory = renderApi
+        WindowFactory.factory = windowApi?.let { if (it == NONE) null else (WindowFactory.factories[it] ?: throw IllegalArgumentException("Can not find window api: $it")) }
+        RenderSystemFactory.factory = renderApi?.let { if (it == NONE) null else (RenderSystemFactory.factories[it] ?: throw IllegalArgumentException("Can not find render system: $it")) }
 
         MemoryOptions.native = !noNativeMemory
         RenderingOptions.profileFrames = profileFrames
+    }
+
+    companion object {
+        const val NONE = "none"
     }
 }

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindowFactory
 
 interface WindowFactory {
 
@@ -22,9 +22,12 @@ interface WindowFactory {
 
 
     companion object {
-        val FACTORIES: Map<String, WindowFactory> = mapOf(
-            "glfw" to GlfwWindowFactory,
-        )
-        var factory: WindowFactory? = GlfwWindowFactory
+        val factories: MutableMap<String, WindowFactory> = LinkedHashMap()
+
+        init {
+            catchAll { de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindowFactory }?.let { factories["glfw"] = it }
+        }
+
+        var factory: WindowFactory? = factories.values.firstOrNull()
     }
 }

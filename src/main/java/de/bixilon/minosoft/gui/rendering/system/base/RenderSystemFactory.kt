@@ -13,17 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base
 
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 
 interface RenderSystemFactory {
 
     fun create(context: RenderContext): RenderSystem
 
     companion object {
-        val FACTORIES: Map<String, RenderSystemFactory> = mapOf(
-            "gl" to OpenGlRenderSystem
-        )
-        var factory: RenderSystemFactory? = OpenGlRenderSystem
+        val factories: MutableMap<String, RenderSystemFactory> = LinkedHashMap()
+
+        init {
+            catchAll { de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem }?.let { factories["gl"] = it }
+        }
+
+        var factory: RenderSystemFactory? = factories.values.firstOrNull()
     }
 }

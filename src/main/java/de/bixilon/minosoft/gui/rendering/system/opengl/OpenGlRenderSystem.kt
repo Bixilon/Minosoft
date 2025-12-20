@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.tex
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
-import de.bixilon.minosoft.gui.rendering.system.base.query.RenderQuery
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
@@ -292,14 +291,6 @@ class OpenGlRenderSystem(
             gl { glPolygonOffset(factor, unit) }
             this.polygonOffsetFactor = factor
             this.polygonOffsetUnit = unit
-        }
-    }
-
-    fun assertThread() {
-        val thread = thread ?: throw IllegalStateException("Not yet initialized!")
-        val current = Thread.currentThread()
-        if (thread !== current) {
-            throw Exception("Thread mismatch: thread=$thread, current=$current")
         }
     }
 
