@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
+import kotlin.time.Duration
 
 interface CameraView {
     val context: RenderContext
@@ -39,7 +40,7 @@ interface CameraView {
     val fovMultiplier: Float get() = 1.0f
 
 
-    fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) = Unit
+    fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Duration) = Unit
     fun onMouse(delta: Vec2d) = Unit
     fun onScroll(scroll: Double) = Unit
 

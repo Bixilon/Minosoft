@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
+import kotlin.time.Duration
 
 interface PersonView : CameraView {
     val camera: Camera
@@ -31,7 +32,7 @@ interface PersonView : CameraView {
             return base
         }
 
-    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
+    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Duration) {
         val isCamera = camera.context.session.camera.entity is LocalPlayerEntity
         val player = camera.context.session.player
 

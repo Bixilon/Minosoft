@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
+import kotlin.time.Duration
 
 // TODO: handle block changes
 class ThirdPersonView(
@@ -35,7 +36,7 @@ class ThirdPersonView(
     override var rotation = EntityRotation.EMPTY
     override var front = Vec3f.EMPTY
 
-    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
+    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Duration) {
         super.onInput(input, actions, delta)
         update(eyePosition, front)
     }

@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
+import kotlin.time.Duration
 
 class CameraInput(
     private val context: RenderContext,
@@ -85,7 +86,7 @@ class CameraInput(
         registerKeyBindings()
     }
 
-    fun updateInput(delta: Double) {
+    fun updateInput(delta: Duration) {
         val input = PlayerMovementInput(
             forward = MOVE_FORWARDS_KEYBINDING in context.input.bindings,
             backward = MOVE_BACKWARDS_KEYBINDING in context.input.bindings,

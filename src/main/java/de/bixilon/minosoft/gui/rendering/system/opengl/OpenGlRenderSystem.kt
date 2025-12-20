@@ -103,7 +103,6 @@ class OpenGlRenderSystem(
         GL.createCapabilities()
 
         this.vendorString = gl { glGetString(GL_VENDOR) } ?: "UNKNOWN"
-        val vendorString = vendorString.lowercase()
 
         vendor = OpenGlVendor.of(vendorString.lowercase())
         if (context.profile.advanced.preferQuads) {

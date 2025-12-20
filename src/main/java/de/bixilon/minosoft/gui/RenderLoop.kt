@@ -91,11 +91,7 @@ class RenderLoop(
         }
 
 
-        val time = context.window.time
-        val delta = time - lastFrame
-        lastFrame = time
-
-        context.profiler("input") { context.input.draw(delta) }
+        context.profiler("input") { context.input.draw() }
         context.profiler("camera") { context.camera.draw() }
 
         context.profiler("light") {

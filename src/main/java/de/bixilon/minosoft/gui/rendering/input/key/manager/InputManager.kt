@@ -37,6 +37,7 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 class InputManager(
     val context: RenderContext,
 ) {
+    private var time = now()
     val session: PlaySession = context.session
     val cameraInput = CameraInput(context, context.camera.matrix)
     val bindings = BindingsManager(this)
@@ -142,7 +143,10 @@ class InputManager(
         return isKeyDown(*modifier.codes)
     }
 
-    fun draw(delta: Double) {
+    fun draw() {
+        val now = now()
+        val delta = now - this.time
+        this.time = now
         cameraInput.updateInput(delta)
         interaction.draw()
     }
