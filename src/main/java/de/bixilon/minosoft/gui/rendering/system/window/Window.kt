@@ -41,9 +41,6 @@ interface Window {
 
 
     var title: String
-    val version: String
-
-    val time: Double
 
     val iconified: Boolean
     val focused: Boolean
@@ -70,9 +67,6 @@ interface Window {
     fun swapBuffers()
 
     fun pollEvents()
-
-    fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean)
-
 
     fun setIcon(buffer: TextureBuffer)
 
