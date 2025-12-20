@@ -47,7 +47,7 @@ import java.util.stream.Collectors
 
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.3.0"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.3.3"
@@ -180,7 +180,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
+                implementation("org.jetbrains.kotlin:kotlin-test:2.3.0")
                 implementation("com.github.ajalt.clikt:clikt:5.0.3")
             }
 
@@ -416,7 +416,7 @@ dependencies {
     lwjgl("opengl", classpath = Rendering.OPENGL in renderings)
 
     // kotlin
-    implementation(kotlin("reflect", "2.2.20"))
+    implementation(kotlin("reflect", "2.3.0"))
 
 
     // platform specific
