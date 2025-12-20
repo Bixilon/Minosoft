@@ -79,6 +79,7 @@ logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase(
 
 repositories {
     mavenCentral()
+    maven("https://central.sonatype.com/repository/maven-snapshots")
 }
 
 buildscript {
@@ -89,6 +90,7 @@ buildscript {
 
 enum class Rendering {
     OPENGL,
+    SDL3
     ;
 }
 
@@ -414,6 +416,7 @@ dependencies {
     lwjgl("glfw", classpath = glfw)
 
     lwjgl("opengl", classpath = Rendering.OPENGL in renderings)
+    lwjgl("sdl", classpath = Rendering.SDL3 in renderings)
 
     // kotlin
     implementation(kotlin("reflect", "2.2.20"))
