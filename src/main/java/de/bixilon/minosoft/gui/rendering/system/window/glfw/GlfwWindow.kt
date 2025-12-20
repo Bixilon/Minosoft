@@ -159,12 +159,6 @@ class GlfwWindow(
             field = value
         }
 
-    override val version: String
-        get() = glfwGetVersionString()
-
-    override val time: Double
-        get() = glfwGetTime()
-
     override var title: String = "Window"
         set(value) {
             if (field == value) {
@@ -287,7 +281,7 @@ class GlfwWindow(
         glfwPollEvents()
     }
 
-    override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) {
+    private fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor)
         if (PlatformInfo.OS == OSTypes.MAC) {

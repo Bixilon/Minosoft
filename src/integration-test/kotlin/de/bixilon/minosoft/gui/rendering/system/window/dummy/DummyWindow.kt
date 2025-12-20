@@ -35,8 +35,6 @@ class DummyWindow : Window {
     override var cursorMode: CursorModes = CursorModes.NORMAL
     override var cursorShape: CursorShapes = CursorShapes.ARROW
     override var title: String = ""
-    override val version: String = "dummy"
-    override val time: Double get() = System.currentTimeMillis() / 1000.0
     override val iconified: Boolean by observed(false)
     override val focused: Boolean by observed(false)
 
@@ -50,8 +48,6 @@ class DummyWindow : Window {
         Thread.sleep(100) // otherwise a million frames are drawn in test mode
     }
     override fun pollEvents() = Unit
-
-    override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) = Unit
 
     override fun setIcon(buffer: TextureBuffer) = Unit
 
