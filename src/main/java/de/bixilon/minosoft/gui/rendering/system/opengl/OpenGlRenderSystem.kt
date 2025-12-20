@@ -306,14 +306,12 @@ class OpenGlRenderSystem(
             gl { glViewport(0, 0, viewport.x, viewport.y) }
         }
 
-    companion object : RenderSystemFactory {
+    companion object {
         private val INITIALIZE = GL::class.java.getDeclaredMethod("initialize").apply { setUnsafeAccessible() }
 
         init {
             DefaultThreadPool += { INITIALIZE.invoke(null) }
         }
-
-        override fun create(context: RenderContext) = OpenGlRenderSystem(context)
 
         private val RenderingCapabilities.gl: Int
             get() = when (this) {

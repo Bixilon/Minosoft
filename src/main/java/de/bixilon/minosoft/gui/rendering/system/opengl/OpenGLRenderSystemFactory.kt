@@ -11,22 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base
+package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
+import org.lwjgl.opengl.GL
 
-interface RenderSystemFactory {
+// not the companion object, we don't want to initialize opengl at boot
+object OpenGLRenderSystemFactory : RenderSystemFactory {
 
-    fun create(context: RenderContext): RenderSystem
-
-    companion object {
-        val factories: MutableMap<String, RenderSystemFactory> = LinkedHashMap()
-
-        init {
-            catchAll { de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystemFactory }?.let { factories["gl"] = it }
-        }
-
-        var factory: RenderSystemFactory? = factories.values.firstOrNull()
+    init {
+        GL::class.java.toString() // check if class is in classpath
     }
+
+    override fun create(context: RenderContext) = OpenGlRenderSystem(context)
 }
