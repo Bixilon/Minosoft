@@ -15,9 +15,14 @@ package de.bixilon.minosoft.gui.rendering.system.window.glfw
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
+import org.lwjgl.glfw.GLFW
 
 // not the companion object, we don't want to initialize glfw on boot
 object GlfwWindowFactory : WindowFactory {
+
+    init {
+        GLFW::class.toString() // check if class is in classpath
+    }
 
     override fun create(context: RenderContext) = GlfwWindow(context)
 }
