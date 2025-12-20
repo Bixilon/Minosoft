@@ -11,8 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package de.bixilon.minosoft.data.accounts.types.microsoft
 
 import com.fasterxml.jackson.annotation.JacksonInject
@@ -40,7 +38,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.ConnectException
 import java.util.*
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class MicrosoftAccount(
     override val uuid: UUID,

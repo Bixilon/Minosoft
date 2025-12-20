@@ -11,11 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-@file:OptIn(ExperimentalTime::class)
 
 package de.bixilon.minosoft.data.accounts.types.microsoft
 
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 data class MicrosoftTokens(

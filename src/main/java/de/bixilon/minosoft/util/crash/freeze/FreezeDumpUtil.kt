@@ -34,7 +34,6 @@ import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 
 object FreezeDumpUtil {
@@ -84,7 +83,6 @@ object FreezeDumpUtil {
         return builder.toString()
     }
 
-    @OptIn(ExperimentalTime::class)
     fun catch(): FreezeDump {
         val dump = dump()
 

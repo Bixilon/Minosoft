@@ -48,7 +48,6 @@ import java.io.FileOutputStream
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 
 class ErosCrashReport : JavaFXWindowController() {
@@ -84,7 +83,6 @@ class ErosCrashReport : JavaFXWindowController() {
         UnsafeUtil.hardCrash()
     }
 
-    @OptIn(ExperimentalTime::class)
     companion object {
 
         /**
