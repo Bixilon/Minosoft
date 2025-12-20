@@ -273,7 +273,9 @@ class GlfwWindow(
         glfwSetWindowShouldClose(window, true)
     }
 
-    override fun swapBuffers() {
+    override fun begin() = Unit
+
+    override fun end() {
         glfwSwapBuffers(window)
     }
 

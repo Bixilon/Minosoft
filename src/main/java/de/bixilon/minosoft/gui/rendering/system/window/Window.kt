@@ -58,13 +58,14 @@ interface Window {
         maxSize = DEFAULT_MAXIMUM_WINDOW_SIZE
     }
 
+    fun begin()
+    fun end()
+
     fun destroy()
 
     fun close()
 
     fun forceClose()
-
-    fun swapBuffers()
 
     fun pollEvents()
 

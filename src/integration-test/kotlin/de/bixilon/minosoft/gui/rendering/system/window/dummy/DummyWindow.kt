@@ -44,9 +44,13 @@ class DummyWindow : Window {
 
     override fun forceClose() = Unit
 
-    override fun swapBuffers() {
+    override fun begin() {
+    }
+
+    override fun end() {
         Thread.sleep(100) // otherwise a million frames are drawn in test mode
     }
+
     override fun pollEvents() = Unit
 
     override fun setIcon(buffer: TextureBuffer) = Unit

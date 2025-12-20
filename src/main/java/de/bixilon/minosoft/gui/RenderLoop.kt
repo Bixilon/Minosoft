@@ -83,6 +83,8 @@ class RenderLoop(
 
         context.profiler("window poll events") { context.window.pollEvents() }
 
+        context.profiler("begin") { context.window.begin() }
+
         context.profiler("framebuffer update") {
             context.framebuffer.update()
             context.framebuffer.clear()
@@ -120,15 +122,7 @@ class RenderLoop(
         context.renderStats.endDraw()
 
 
-        context.profiler("swap buffers") { context.window.swapBuffers() }
-
-        context.profiler("clear framebuffer") {
-            // glClear waits for any unfinished operation, so it might wait for the buffer swap and makes frame times really long.
-            context.framebuffer.clear()
-            context.system.framebuffer = null
-            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
-        }
-
+        context.profiler("end") { context.window.end() }
 
         if (context.state == RenderingStates.BACKGROUND && slowRendering) {
             sleep(100.milliseconds)
