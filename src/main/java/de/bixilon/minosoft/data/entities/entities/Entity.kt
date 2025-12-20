@@ -243,7 +243,7 @@ abstract class Entity(
 
     open fun postTick() {
         physics.postTick()
-        if (!RenderingOptions.disabled) {
+        if (renderInfo != null) { // unsafeNull
             renderInfo.tick()
         }
     }
