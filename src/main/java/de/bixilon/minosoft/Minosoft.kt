@@ -62,6 +62,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.system.DesktopAPI
 import de.bixilon.minosoft.util.system.SystemUtil
+import kotlin.system.exitProcess
 
 
 object Minosoft {
@@ -151,8 +152,7 @@ object Minosoft {
         DefaultThreadPool += ThreadPoolRunnable(forcePool = true) { ChatColors }
     }
 
-    @JvmStatic
-    fun main(args: Array<String>) {
+    private fun _main(args: Array<String>) {
         val start = now()
         initLog()
 
@@ -170,6 +170,16 @@ object Minosoft {
 
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Post booting..." }
         postBoot()
+    }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        try {
+            _main(args)
+        } catch (error: Throwable) {
+            error.printStackTrace()
+            exitProcess(1) // no shutdown manager, not sure what went wrong
+        }
     }
 
     private fun loadLanguageFiles(latch: AbstractLatch?) {
