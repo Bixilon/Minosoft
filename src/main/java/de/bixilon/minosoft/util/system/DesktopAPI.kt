@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,8 @@ import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.IntegratedAssets
 import java.awt.Taskbar
 import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.net.URL
 
@@ -28,6 +30,18 @@ open class DesktopAPI : SystemAPI {
 
     override fun openFile(file: File) = Unit
     override fun openURL(url: URL) = Unit
+
+    override fun getClipboard(): String? {
+        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+
+        return DataFlavor.plainTextFlavor.getReaderForText(clipboard.getContents(null)).readText()
+    }
+
+    override fun setClipboard(data: String) {
+        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+
+        clipboard.setContents(StringSelection(data), null)
+    }
 
     private fun Taskbar.setDockIcon() {
         iconImage = Toolkit.getDefaultToolkit().createImage(IntegratedAssets.DEFAULT[SystemUtil.ICON].readAll())

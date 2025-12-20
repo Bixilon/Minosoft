@@ -33,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.util.system.SystemUtil
 
 open class TextInputElement(
     guiRenderer: GUIRenderer,
@@ -233,7 +234,7 @@ open class TextInputElement(
         when (key) {
             KeyCodes.KEY_V -> {
                 if (controlDown) {
-                    insert(guiRenderer.context.window.clipboardText)
+                    SystemUtil.api?.getClipboard()?.let { insert(it) }
                 }
             }
             KeyCodes.KEY_X -> {
