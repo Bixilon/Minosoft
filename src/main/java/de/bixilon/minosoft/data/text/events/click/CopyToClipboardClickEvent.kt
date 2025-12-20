@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.CopyToClipboardDialog
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.util.system.SystemUtil
 
 class CopyToClipboardClickEvent(
     val text: String,
@@ -29,7 +30,7 @@ class CopyToClipboardClickEvent(
             return
         }
         if (!guiRenderer.session.profiles.gui.confirmation.copyToClipboard) {
-            guiRenderer.context.window.clipboardText = text
+            SystemUtil.api?.setClipboard(text)
             return
         }
         val dialog = CopyToClipboardDialog(guiRenderer, text)

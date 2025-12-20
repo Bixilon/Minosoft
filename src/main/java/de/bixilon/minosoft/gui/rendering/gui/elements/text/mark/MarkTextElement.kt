@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.util.system.SystemUtil
 
 class MarkTextElement(
     guiRenderer: GUIRenderer,
@@ -120,6 +121,6 @@ class MarkTextElement(
         if (markedText.isEmpty()) {
             return
         }
-        context.window.clipboardText = markedText
+        SystemUtil.api?.setClipboard(markedText)
     }
 }

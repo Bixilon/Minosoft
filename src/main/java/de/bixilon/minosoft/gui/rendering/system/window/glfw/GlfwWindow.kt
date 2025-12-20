@@ -159,12 +159,6 @@ class GlfwWindow(
             field = value
         }
 
-    override var clipboardText: String
-        get() = glfwGetClipboardString(window) ?: ""
-        set(value) {
-            glfwSetClipboardString(window, value)
-        }
-
     override val version: String
         get() = glfwGetVersionString()
 

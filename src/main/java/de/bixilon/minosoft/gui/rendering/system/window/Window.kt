@@ -40,7 +40,6 @@ interface Window {
     var cursorShape: CursorShapes
 
 
-    var clipboardText: String
     var title: String
     val version: String
 

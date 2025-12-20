@@ -34,7 +34,6 @@ class DummyWindow : Window {
     override var swapInterval: Int = 1
     override var cursorMode: CursorModes = CursorModes.NORMAL
     override var cursorShape: CursorShapes = CursorShapes.ARROW
-    override var clipboardText: String = ""
     override var title: String = ""
     override val version: String = "dummy"
     override val time: Double get() = System.currentTimeMillis() / 1000.0

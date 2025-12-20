@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,8 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.system.DesktopAPI
+import javafx.scene.input.Clipboard
+import javafx.scene.input.DataFormat
 import java.io.File
 import java.net.URL
 
@@ -41,5 +43,17 @@ class JavaFXSystemAPI : DesktopAPI() {
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }
+    }
+
+    override fun getClipboard(): String? {
+        val clipboard = Clipboard.getSystemClipboard()
+
+        return clipboard.string
+    }
+
+    override fun setClipboard(data: String) {
+        val clipboard = Clipboard.getSystemClipboard()
+
+        clipboard.setContent(mapOf(DataFormat.PLAIN_TEXT to data))
     }
 }

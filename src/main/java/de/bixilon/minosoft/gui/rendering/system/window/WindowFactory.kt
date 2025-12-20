@@ -26,6 +26,7 @@ interface WindowFactory {
 
         init {
             catchAll { de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindowFactory }?.let { factories["glfw"] = it }
+            catchAll { de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlWindowFactory }?.let { factories["sdl"] = it }
         }
 
         var factory: WindowFactory? = factories.values.firstOrNull()

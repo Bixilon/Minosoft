@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
+import de.bixilon.minosoft.util.system.SystemUtil
 
 abstract class AbstractConfirmationMenu(
     guiRenderer: GUIRenderer,
@@ -41,7 +42,7 @@ abstract class AbstractConfirmationMenu(
 
     protected fun createCopyToClipboardButton(text: String): ButtonElement {
         return ButtonElement(guiRenderer, "Copy to clipboard") {
-            context.window.clipboardText = text
+            SystemUtil.api?.setClipboard(text)
             close()
         }
     }
