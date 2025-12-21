@@ -101,10 +101,6 @@ interface RenderSystem {
     var polygonMode: PolygonModes
 
 
-    val usedVRAM: Long
-    val availableVRAM: Long
-    val maximumVRAM: Long
-
     val vendorString: String
     val version: String
     val gpuType: String

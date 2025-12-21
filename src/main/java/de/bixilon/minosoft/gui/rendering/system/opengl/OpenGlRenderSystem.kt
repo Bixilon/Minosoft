@@ -213,15 +213,6 @@ class OpenGlRenderSystem(
             field = value
         }
 
-    override val usedVRAM: Long
-        get() = vendor.usedVRAM
-
-    override val availableVRAM: Long
-        get() = vendor.availableVRAM
-
-    override val maximumVRAM: Long
-        get() = vendor.maximumVRAM
-
     override lateinit var vendorString: String
         private set
     override lateinit var version: String

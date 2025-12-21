@@ -19,12 +19,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 interface OpenGlVendor : GPUVendor {
-    val usedVRAM: Long
-        get() = -1L
-    val availableVRAM: Long
-        get() = -1L
-    val maximumVRAM: Long
-        get() = -1L
 
 
     companion object {
