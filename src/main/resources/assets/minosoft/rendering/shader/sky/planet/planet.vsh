@@ -15,7 +15,7 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinIndexLayerAnimation;
+layout (location = 2) in float vinTexture;
 
 #include "minosoft:animation"
 
@@ -24,5 +24,5 @@ uniform mat4 uMatrix;
 void main() {
     gl_Position = uMatrix * vec4(vinPosition, 1.0f);
 
-    setTexture(vinUV, vinIndexLayerAnimation);
+    setTexture(vinUV, vinTexture);
 }

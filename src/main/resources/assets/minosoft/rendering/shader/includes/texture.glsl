@@ -19,7 +19,7 @@
 
 uniform sampler2DArray uTextures[10];
 
-// ToDo: Those methods are just stupid and workaround an opengl crash with mesa drivers
+// TODO: This is dumb (and probably slow), use bindless textures and remove all the array crap
 
 
 lowp vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {

@@ -15,7 +15,7 @@
 
 layout (location = 0) in vec2 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000)
+layout (location = 2) in float vinTexture;
 layout (location = 3) in float vinTint;
 
 uniform mat4 uViewProjectionMatrix;
@@ -35,5 +35,5 @@ void main() {
     finTintColor = getRGBAColor(floatBitsToUint(vinTint)) * uTintColor;
     finFragmentPosition = position.xyz;
 
-    setTexture(vinUV, vinIndexLayerAnimation);
+    setTexture(vinUV, vinTexture);
 }

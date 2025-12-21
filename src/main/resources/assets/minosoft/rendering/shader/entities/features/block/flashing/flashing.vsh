@@ -15,7 +15,7 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in float vinUV;
-layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000)
+layout (location = 2) in float vinTexture;
 layout (location = 3) in float vinTint;
 
 uniform mat4 uViewProjectionMatrix;
@@ -40,6 +40,6 @@ void main() {
 
 
     vec2 uv = uv_unpack(floatBitsToUint(vinUV));
-    setTexture(uv, vinIndexLayerAnimation);
+    setTexture(uv, vinTexture);
     finFlashColor = uFlashColor;
 }

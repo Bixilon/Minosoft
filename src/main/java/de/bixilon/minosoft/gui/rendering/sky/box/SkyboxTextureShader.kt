@@ -27,6 +27,6 @@ class SkyboxTextureShader(
     override var textures: TextureManager by textureManager()
 
     var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())
-    var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
+    var textureIndexLayer by uniform("uTexture", 0, NativeShader::setUInt)
     override var tint by uniform("uTintColor", RGBColor(0.15f, 0.15f, 0.15f))
 }

@@ -62,8 +62,4 @@ abstract class TextureManager {
     fun reload() {
         dynamic.reload()
     }
-
-    fun unload() {
-        static.animator.unload()
-    }
 }

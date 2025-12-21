@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.shader.generic
 
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class Generic2dTextureShader(
     native: NativeShader,
-) : Shader(native), TextureShader, AnimatedShader {
+) : Shader(native), TextureShader {
     override var textures: TextureManager by textureManager()
 }

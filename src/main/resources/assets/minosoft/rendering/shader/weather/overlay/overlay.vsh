@@ -22,7 +22,7 @@ layout (location = 4) in float vinAlphaMultiplicator;
 
 uniform float uIntensity;
 uniform float uOffset;
-uniform uint uIndexLayerAnimation;
+uniform uint uTexture;
 
 #include "minosoft:animation"
 
@@ -33,5 +33,5 @@ void main() {
 
     vec2 uv = vinUV;
     uv.y += offset;
-    setTexture(uv, uIndexLayerAnimation);
+    setTexture(uv, uTexture);
 }

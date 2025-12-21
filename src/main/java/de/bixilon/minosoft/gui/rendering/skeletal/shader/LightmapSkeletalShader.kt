@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.shader
 
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
-import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
 import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-class LightmapSkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), AnimatedShader, LightShader {
+class LightmapSkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), LightShader {
     var light by uniform("uLight", 0xFF, NativeShader::setUInt) // TODO: LightLevel
     override val lightmap: LightmapBuffer by lightmap()
 }

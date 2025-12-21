@@ -18,7 +18,7 @@ layout (location = 1) in float vinUVIndex;
 layout (location = 2) in float vinWidth;
 
 uniform mat4 uViewProjectionMatrix;
-uniform uint uIndexLayerAnimation;
+uniform uint uTexture;
 uniform float uTextureOffset;
 
 uniform vec3 uCameraPosition;
@@ -50,6 +50,6 @@ void main() {
 
     uv.x += uTextureOffset; uv.y += uTextureOffset;
 
-    setTexture(uv, uIndexLayerAnimation);
+    setTexture(uv, uTexture);
     finFragmentPosition = position.xyz;
 }

@@ -35,6 +35,6 @@ class WorldBorderShader(
 
     var tint by uniform("uTintColor", ChatColors.BLACK)
 
-    var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
+    var textureIndexLayer by uniform("uTexture", 0, NativeShader::setUInt)
     var textureOffset by uniform("uTextureOffset", 0.0f)
 }

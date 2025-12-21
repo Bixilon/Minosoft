@@ -17,7 +17,7 @@ layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in uint uvIndex;
 
 uniform mat4 uSkyViewProjectionMatrix;
-uniform uint uIndexLayerAnimation;
+uniform uint uTexture;
 
 #include "minosoft:uv"
 #include "minosoft:color"
@@ -28,5 +28,5 @@ void main() {
     gl_Position = uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f);
 
     vec2 uv = CONST_UV[uvIndex] * 20.0f;
-    setTexture(uv, uIndexLayerAnimation);
+    setTexture(uv, uTexture);
 }

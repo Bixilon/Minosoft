@@ -16,43 +16,32 @@
 
 /*
 * Available defines:
-* - ANIMATED_TEXTURE_COUNT
 * - FIXED_MIPMAP_LEVEL
 * - TRANSPARENT
 * - FOG
 */
 
-// buffer
-#ifdef SHADER_TYPE_VERTEX
-layout(std140) uniform uSpriteBuffer
-{
-    uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
-};
-#endif
-
-
 // in/out
 
-#if defined SHADER_TYPE_VERTEX
-uint animationArray;
-float animationLayer1; float animationLayer2;
-lowp float animationInterpolation;
+#ifdef SHADER_TYPE_VERTEX
+uint textureArray;
+float textureLayer;
+
 #ifndef HAS_GEOMETRY_SHADER
- flat out uint finAnimationArray;
-out float finAnimationLayer1; out float finAnimationLayer2;
-out mediump vec2 finAnimationUV;
-out lowp float finAnimationInterpolation;
+flat out uint finTextureArray;
+out float finTextureLayer;
+out mediump vec2 finTextureUV;
 #endif
+
 #elif defined SHADER_TYPE_GEOMETRY
- flat out uint finAnimationArray;
-out float finAnimationLayer1; out float finAnimationLayer2;
-out mediump vec2 finAnimationUV;
-out lowp float finAnimationInterpolation;
+ flat out uint finTextureArray;
+out float finTextureLayer;
+out mediump vec2 finTextureUV;
+
 #elif defined SHADER_TYPE_FRAGMENT
- flat in uint finAnimationArray;
-in float finAnimationLayer1; in float finAnimationLayer2;
-in mediump vec2 finAnimationUV;
-in lowp float finAnimationInterpolation;
+ flat in uint finTextureArray;
+in float finTextureLayer;
+in mediump vec2 finTextureUV;
 #endif
 
 
@@ -61,25 +50,12 @@ in lowp float finAnimationInterpolation;
 #include "minosoft:texture"
 #include "minosoft:alpha"
 
-vec4 getAnimationTexture() {
-vec4 texel1 = getTexture(finAnimationArray, vec3(finAnimationUV, finAnimationLayer1));
-    discard_if_0(texel1.a);
-
-    float interpolation = finAnimationInterpolation;
-
-    if (interpolation == 0.0f) { // no animation
-        return texel1;
-    }
-
-vec4 texel2 = getTexture(finAnimationArray, vec3(finAnimationUV, finAnimationLayer2));
-    discard_if_0(texel2.a);
-
-    return mix(texel1, texel2, interpolation);
-}
 
 void applyTexel() {
-    vec4 texel = getAnimationTexture();
-    foutColor *= texel;
+vec4 texel = getTexture(finTextureArray, vec3(finTextureUV, finTextureLayer));
+discard_if_0(texel.a);
+
+foutColor *= texel;
 
     #ifdef FOG
     fog_set();
@@ -89,44 +65,16 @@ void applyTexel() {
 #endif
 
 #ifdef SHADER_TYPE_VERTEX
-#define INVALID_ANIMATION uint(-1)
 
-uint animation_extractAnimationId(uint animation) {
-    return (animation & 0xFFFu) - 1u;
-}
 uint animation_extractArray(uint animation) {
     return animation >> 28u;
 }
 uint animation_extractLayer(uint animation) {
     return (animation >> 12) & 0xFFFFu;
 }
-
-void animation_notAnimated(uint animation) {
-animationArray = animation_extractArray(animation);
-    animationLayer1 = animation_extractLayer(animation);
-    animationInterpolation = 0.0f;
-}
-
-void animation_animated(uint animationId) {
-    uvec4 data = uAnimationData[animationId];
-
-    uint texture1 = data.x;
-uint texture2 = data.y;
-animationArray = animation_extractArray(texture1);
-
-animationLayer1 = animation_extractLayer(texture1);
-    animationLayer2 = animation_extractLayer(texture2);
-
-    animationInterpolation = uintBitsToFloat(data.z);
-}
-
 void setTexture(uint animation) {
-    uint animationId = animation_extractAnimationId(animation);
-    if (animationId == INVALID_ANIMATION) {
-        animation_notAnimated(animation);
-        return;
-    }
-    animation_animated(animationId);
+textureArray = animation_extractArray(animation);
+textureLayer = animation_extractLayer(animation);
 }
 
 void setTexture(float animation) {
@@ -136,11 +84,10 @@ void setTexture(float animation) {
 #ifndef HAS_GEOMETRY_SHADER
 void setTexture(vec2 uv, uint animation) {
     setTexture(animation);
-    finAnimationUV = uv;
+    finTextureUV = uv;
 
-    finAnimationArray = animationArray;
-finAnimationLayer1 = animationLayer1; finAnimationLayer2 = animationLayer2;
-    finAnimationInterpolation = animationInterpolation;
+    finTextureArray = textureArray;
+finTextureLayer = textureLayer;
 }
 
 void setTexture(vec2 uv, float animation) {

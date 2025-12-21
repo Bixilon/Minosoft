@@ -15,7 +15,7 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
+layout (location = 2) in float vinTexture;
 layout (location = 3) in float vinTintColor;
 
 #include "minosoft:tint"
@@ -26,5 +26,5 @@ void main() {
     gl_Position = vec4(vinPosition, 1.0f);
     finTintColor = getRGBAColor(floatBitsToUint(vinTintColor));
 
-    setTexture(vinUV, vinIndexLayerAnimation);
+    setTexture(vinUV, vinTexture);
 }
