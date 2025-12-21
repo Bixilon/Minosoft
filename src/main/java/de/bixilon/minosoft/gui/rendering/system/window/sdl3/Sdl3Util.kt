@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.window.sdl
+package de.bixilon.minosoft.gui.rendering.system.window.sdl3
 
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import org.lwjgl.sdl.SDLMouse.*
 import org.lwjgl.sdl.SDLScancode.*
 
-object SdlUtil {
+object Sdl3Util {
     val KEY_CODE_MAPPING = mapOf(
         SDL_SCANCODE_SPACE to KeyCodes.KEY_SPACE,
         SDL_SCANCODE_APOSTROPHE to KeyCodes.KEY_APOSTROPHE,

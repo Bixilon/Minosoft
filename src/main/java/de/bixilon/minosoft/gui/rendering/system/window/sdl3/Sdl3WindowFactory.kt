@@ -11,14 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.window.sdl.api
+package de.bixilon.minosoft.gui.rendering.system.window.sdl3
 
-interface SdlWindowRenderApi {
-    var swapInterval: Int
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
+import org.lwjgl.sdl.SDL
 
-    fun init()
-    fun destroy()
+object Sdl3WindowFactory : WindowFactory {
 
-    fun begin()
-    fun end()
+    init {
+        SDL::class.toString() // TODO: This initializes the library
+    }
+
+    override fun create(context: RenderContext) = Sdl3Window(context)
 }

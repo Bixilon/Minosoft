@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.window.sdl
+package de.bixilon.minosoft.gui.rendering.system.window.sdl3
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
@@ -37,10 +37,10 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
 import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_WINDOW_SIZE
-import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.MOUSE_CODE_MAPPING
-import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.sdl3
-import de.bixilon.minosoft.gui.rendering.system.window.sdl.api.GlSdlApi
-import de.bixilon.minosoft.gui.rendering.system.window.sdl.api.SdlWindowRenderApi
+import de.bixilon.minosoft.gui.rendering.system.window.sdl3.Sdl3Util.MOUSE_CODE_MAPPING
+import de.bixilon.minosoft.gui.rendering.system.window.sdl3.Sdl3Util.sdl3
+import de.bixilon.minosoft.gui.rendering.system.window.sdl3.api.GlSdlApi
+import de.bixilon.minosoft.gui.rendering.system.window.sdl3.api.SdlWindowRenderApi
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import org.lwjgl.sdl.*
@@ -56,7 +56,7 @@ import org.lwjgl.sdl.SDLVideo.*
 import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil
 
-class SdlWindow(
+class Sdl3Window(
     val context: RenderContext,
 ) : Window {
     private var mouse = Vec2f.EMPTY
@@ -238,7 +238,7 @@ class SdlWindow(
     }
 
     private fun onKeyInput(event: SDL_KeyboardEvent) {
-        val code = SdlUtil.KEY_CODE_MAPPING[event.scancode()] ?: KeyCodes.UNKNOWN
+        val code = Sdl3Util.KEY_CODE_MAPPING[event.scancode()] ?: KeyCodes.UNKNOWN
 
         val action = when {
             event.repeat() -> KeyChangeTypes.REPEAT
