@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.dep
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
@@ -31,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyFloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyIntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.query.DummyQuery
 import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
@@ -84,10 +82,6 @@ class DummyRenderSystem(
 
     override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntBuffer?, reused: Boolean): VertexBuffer {
         return DummyVertexBuffer(struct)
-    }
-
-    override fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer {
-        return DummyIntUniformBuffer(data)
     }
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer {
