@@ -27,8 +27,8 @@ in Vertex
 {
     vec2 minUV;
     vec2 maxUV;
-    flat uint array1; flat float layer1;
-    flat uint array2; flat float layer2;
+    flat uint array;
+    flat float layer1; flat float layer2;
     flat float interpolation;
 
     float scale;
@@ -52,8 +52,8 @@ void emit(vec3 offset, vec2 uv) {
 
 void main() {
     finTintColor = ginVertex[0].tintColor;
-    finAnimationArray1 = ginVertex[0].array1; finAnimationLayer1 = ginVertex[0].layer1;
-    finAnimationArray2 = ginVertex[0].array2; finAnimationLayer2 = ginVertex[0].layer2;
+    finAnimationArray = ginVertex[0].array;
+    finAnimationLayer1 = ginVertex[0].layer1; finAnimationLayer2 = ginVertex[0].layer2;
     finAnimationInterpolation = ginVertex[0].interpolation;
 
 

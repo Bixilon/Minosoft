@@ -136,7 +136,7 @@ class FogManager(
             if (shader !is FogShader || shader.fog != this) {
                 continue
             }
-            shader.update(start, end, distance, color, flags)
+            shader.update(start, distance, color, flags)
         }
         this.revision = revision
     }
@@ -148,16 +148,15 @@ class FogManager(
         val color = state.color
         val flags = state.flags()
 
-        shader.update(start, end, distance, color, flags)
+        shader.update(start, distance, color, flags)
     }
 
-    private fun AbstractShader.update(start: Float, end: Float, distance: Float, color: RGBAColor?, flags: Int) {
+    private fun AbstractShader.update(start: Float, distance: Float, color: RGBAColor?, flags: Int) {
         use()
 
         val native = native
 
         native["uFogStart"] = start
-        native["uFogEnd"] = end
         native["uFogDistance"] = distance
 
         color?.let { native["uFogColor"] = it }
