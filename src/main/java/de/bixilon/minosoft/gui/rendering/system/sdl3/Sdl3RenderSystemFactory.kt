@@ -11,23 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base
+package de.bixilon.minosoft.gui.rendering.system.sdl3
 
-import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
+import org.lwjgl.sdl.SDL_GPUVertexAttribute
 
-interface RenderSystemFactory {
+object Sdl3RenderSystemFactory : RenderSystemFactory {
 
-    fun create(context: RenderContext): RenderSystem
-
-    companion object {
-        val factories: MutableMap<String, RenderSystemFactory> = LinkedHashMap()
-
-        init {
-            catchAll { de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystemFactory }?.let { factories["gl"] = it }
-            catchAll { de.bixilon.minosoft.gui.rendering.system.sdl3.Sdl3RenderSystemFactory }?.let { factories["sdl3"] = it }
-        }
-
-        var factory: RenderSystemFactory? = factories.values.firstOrNull()
+    init {
+        SDL_GPUVertexAttribute::class.java.toString() // check if class is in classpath
     }
+
+    override fun create(context: RenderContext) = Sdl3RenderSystem(context)
 }

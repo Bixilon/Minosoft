@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buf
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.sdl3.Sdl3RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -40,6 +41,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_
 import de.bixilon.minosoft.gui.rendering.system.window.sdl3.Sdl3Util.MOUSE_CODE_MAPPING
 import de.bixilon.minosoft.gui.rendering.system.window.sdl3.Sdl3Util.sdl3
 import de.bixilon.minosoft.gui.rendering.system.window.sdl3.api.GlSdlApi
+import de.bixilon.minosoft.gui.rendering.system.window.sdl3.api.SdlGpuSdlApi
 import de.bixilon.minosoft.gui.rendering.system.window.sdl3.api.SdlWindowRenderApi
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -169,6 +171,7 @@ class Sdl3Window(
 
         this.api = when (context.system) {
             is OpenGlRenderSystem -> GlSdlApi(window)
+            is Sdl3RenderSystem -> SdlGpuSdlApi(window)
             else -> throw UnsupportedOperationException("SDL3 does not support using ${context.system} render system!")
         }
         api.init()
@@ -180,8 +183,6 @@ class Sdl3Window(
             if (_size == size) return@observeRendering
             SDL_SetWindowSize(window, it.x, it.y)
         }
-
-
 
         super.init(profile)
     }
