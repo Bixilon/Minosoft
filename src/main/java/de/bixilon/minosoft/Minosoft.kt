@@ -21,6 +21,7 @@ import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.concurrent.worker.tree.TaskTreeBuilder
 import de.bixilon.kutil.concurrent.worker.tree.TreeTask
 import de.bixilon.kutil.concurrent.worker.tree.TreeWorker
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -66,6 +67,7 @@ import kotlin.system.exitProcess
 
 
 object Minosoft {
+    val GROUP_ID = catchAll { Minosoft::class.java.packageName } ?: "de.bixilon.minosoft"
 
 
     private fun preBoot(args: Array<String>) {
