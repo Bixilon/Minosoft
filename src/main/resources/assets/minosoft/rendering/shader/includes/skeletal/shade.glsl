@@ -32,8 +32,7 @@ vec3 transformNormal(vec3 normal, mat4 transform) {
 }
 
 float interpolateShade(float normal, float max) {
-    float delta = normal;
-    if (delta < 0.0f) delta = -delta;
+    float delta = abs(normal);
     if (delta <= 0.003f) return 0.0f;
     if (delta >= 1.0f) return max;
     delta = asin(delta) / DEGREE_90;  // asin is just defined in |x| <= 1
@@ -43,12 +42,14 @@ float interpolateShade(float normal, float max) {
 
 float getShade(vec3 normal) {
     float x = interpolateShade(normal.x, 0.6f);
-    float y;
+
+    float yShade;
     if (normal.y < 0.0f) {
-        y = interpolateShade(normal.y, 0.5f);
+        yShade = 0.5f;
     } else {
-        y = interpolateShade(normal.y, 1.0f);
+        yShade = 1.0f;
     }
+    float y = interpolateShade(normal.y, yShade);
     float z = interpolateShade(normal.z, 0.8f);
 
     return (x + y + z);
