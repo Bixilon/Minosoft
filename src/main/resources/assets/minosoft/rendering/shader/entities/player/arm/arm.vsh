@@ -22,7 +22,7 @@ layout (location = 2) in float vinPartTransformNormal; // part(0x1FD0000) transf
 out vec3 finFragmentPosition;
 
 
-uniform uint uIndexLayerAnimation;
+uniform uint uTexture;
 uniform vec4 uTintColor;
 uniform uint uSkinParts;
 
@@ -59,5 +59,5 @@ void main() {
     run_skeletal(partTransformNormal, vinPosition);
     finTintColor *= uTintColor;
 
-    setTexture(vinUV, uIndexLayerAnimation);
+    setTexture(vinUV, uTexture);
 }

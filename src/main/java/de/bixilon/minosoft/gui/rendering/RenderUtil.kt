@@ -57,7 +57,6 @@ object RenderUtil {
         skeletal.unload()
 
         light.unload()
-        textures.unload()
 
         queue.work()
     }

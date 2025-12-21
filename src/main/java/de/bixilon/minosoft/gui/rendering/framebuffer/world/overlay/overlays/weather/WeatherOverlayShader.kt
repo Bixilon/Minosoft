@@ -25,5 +25,5 @@ class WeatherOverlayShader(
 
     var intensity by uniform("uIntensity", 0.0f)
     var offset by uniform("uOffset", 0.0f)
-    var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
+    var textureIndexLayer by uniform("uTexture", 0, NativeShader::setUInt)
 }

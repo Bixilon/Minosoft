@@ -18,14 +18,17 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
 import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.types.*
+import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
+import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
+import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class ParticleShader(
     native: NativeShader,
-) : Shader(native), TextureShader, AnimatedShader, LightShader, ViewProjectionShader, FogShader {
+) : Shader(native), TextureShader, LightShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
     override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4f by viewProjectionMatrix()

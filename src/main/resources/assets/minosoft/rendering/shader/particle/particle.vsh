@@ -16,7 +16,7 @@
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in float vinMinUV;
 layout (location = 2) in float vinMaxUV;
-layout (location = 3) in float vinIndexLayerAnimation;
+layout (location = 3) in float vinTexture;
 
 layout (location = 4) in float vinScale;
 layout (location = 5) in float vinTintColor;
@@ -31,9 +31,7 @@ out Vertex
 {
     vec2 minUV;
     vec2 maxUV;
-    flat uint array;
-    flat float layer1; flat float layer2;
-    flat float interpolation;
+    flat uint array; flat float layer;
 
     float scale;
     vec4 tintColor;
@@ -51,8 +49,7 @@ void main() {
     ginVertex.scale = vinScale;
     ginVertex.tintColor = getRGBAColor(floatBitsToUint(vinTintColor)) * getLight(floatBitsToUint(vinLight) & 0xFFu);
 
-    setTexture(vinIndexLayerAnimation);
-    ginVertex.array = animationArray;
-    ginVertex.layer1 = animationLayer1; ginVertex.layer2 = animationLayer2;
-    ginVertex.interpolation = animationInterpolation;
+    setTexture(vinTexture);
+    ginVertex.array = textureArray;
+    ginVertex.layer = textureLayer;
 }

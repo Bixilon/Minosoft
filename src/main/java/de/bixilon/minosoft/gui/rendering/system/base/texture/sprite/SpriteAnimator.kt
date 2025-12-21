@@ -19,8 +19,6 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
@@ -30,35 +28,16 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.lwjgl.system.MemoryUtil.memAllocInt
-import java.nio.IntBuffer
 import kotlin.time.Duration
 
 class SpriteAnimator(val context: RenderContext) {
     private val animations: MutableList<TextureAnimation> = ArrayList()
-    private var buffer: IntUniformBuffer? = null // size is dynamic
     private var enabled = true
     private var previous = TimeUtil.NULL
     val size get() = animations.size
 
     fun init() {
-        check(animations.size < MAX_ANIMATED_TEXTURES) { "Can not have more than $MAX_ANIMATED_TEXTURES animated textures!" }
-        buffer = createBuffer()
-        upload()
         context.profile.animations::sprites.observe(this, true) { enabled = it }
-    }
-
-    private fun createBuffer(): IntUniformBuffer {
-        if (buffer != null) throw IllegalStateException("Already initialized")
-        val buffer = context.system.createIntUniformBuffer(memAllocInt(animations.size * INTS_PER_ANIMATED_TEXTURE))
-        buffer.init()
-
-        return buffer
-    }
-
-    private fun upload() {
-        val buffer = this.buffer ?: throw NullPointerException("Buffer not initialized!")
-        buffer.upload()
     }
 
     fun update() {
@@ -68,16 +47,12 @@ class SpriteAnimator(val context: RenderContext) {
         previous = now
     }
 
-    private operator fun IntBuffer.set(offset: Int, value: Int) {
-        put(offset, value)
-    }
-
     fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {
-        val buffer = buffer!!
-        val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
-        buffer.data[offset + 0] = first.shaderId
-        buffer.data[offset + 1] = second.shaderId
-        buffer.data[offset + 2] = progress.toBits()
+        // val buffer = buffer!!
+        // val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
+        // buffer.data[offset + 0] = first.shaderId
+        // buffer.data[offset + 1] = second.shaderId
+        // buffer.data[offset + 2] = progress.toBits()
     }
 
     private fun update(delta: Duration) {
@@ -86,13 +61,9 @@ class SpriteAnimator(val context: RenderContext) {
 
             update(animation, animation.frame1, animation.frame2, animation.progress)
         }
-        upload()
+        //    upload()
     }
 
-
-    fun use(shader: AbstractShader, bufferName: String = "uSpriteBuffer") {
-        buffer!!.use(shader, bufferName)
-    }
 
     @Synchronized
     fun create(texture: Texture, source: TextureBuffer, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
@@ -121,14 +92,5 @@ class SpriteAnimator(val context: RenderContext) {
         this.animations += animation
 
         return Pair(data, animation)
-    }
-
-    fun unload() {
-        buffer?.unload()
-    }
-
-    companion object {
-        const val MAX_ANIMATED_TEXTURES = 1024 // 16kb / 4 (ints per animation) / 4 bytes per int
-        private const val INTS_PER_ANIMATED_TEXTURE = 4
     }
 }
