@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlUtil.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGlFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGlUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGlUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlIndexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlError
@@ -243,10 +242,6 @@ class OpenGlRenderSystem(
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGlUniformBuffer {
         return FloatOpenGlUniformBuffer(this, nextUniformBufferIndex++, data)
-    }
-
-    override fun createIntUniformBuffer(data: IntBuffer): IntOpenGlUniformBuffer {
-        return IntOpenGlUniformBuffer(this, nextUniformBufferIndex++, data)
     }
 
     override fun createFramebuffer(size: Vec2i, scale: Float, texture: TextureModes?, depth: DepthModes?, stencil: StencilModes?): OpenGlFramebuffer {

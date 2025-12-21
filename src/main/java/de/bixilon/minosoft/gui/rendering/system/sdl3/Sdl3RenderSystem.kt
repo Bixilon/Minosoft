@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.dep
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.stencil.StencilModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.attachment.texture.TextureModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
@@ -83,10 +82,6 @@ class Sdl3RenderSystem(
     }
 
     override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntBuffer?, reused: Boolean): VertexBuffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun createIntUniformBuffer(data: IntBuffer): IntUniformBuffer {
         TODO("Not yet implemented")
     }
 
