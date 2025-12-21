@@ -24,7 +24,6 @@ import org.lwjgl.glfw.GLFW.*
 object GlfwUtil {
 
     val KEY_CODE_MAPPING = mapOf(
-        GLFW_KEY_UNKNOWN to KeyCodes.KEY_UNKNOWN,
         GLFW_KEY_SPACE to KeyCodes.KEY_SPACE,
         GLFW_KEY_APOSTROPHE to KeyCodes.KEY_APOSTROPHE,
         GLFW_KEY_COMMA to KeyCodes.KEY_COMMA,
