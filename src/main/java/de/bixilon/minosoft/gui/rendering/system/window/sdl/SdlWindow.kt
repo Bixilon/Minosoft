@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -38,9 +39,10 @@ import de.bixilon.minosoft.gui.rendering.system.window.Window
 import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.MOUSE_CODE_MAPPING
 import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.sdl3
+import de.bixilon.minosoft.gui.rendering.system.window.sdl.api.GlSdlApi
+import de.bixilon.minosoft.gui.rendering.system.window.sdl.api.SdlWindowRenderApi
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
-import org.lwjgl.opengl.GL
 import org.lwjgl.sdl.*
 import org.lwjgl.sdl.SDLEvents.*
 import org.lwjgl.sdl.SDLInit.*
@@ -53,7 +55,6 @@ import org.lwjgl.sdl.SDLSurface.SDL_SURFACE_PREALLOCATED
 import org.lwjgl.sdl.SDLVideo.*
 import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil
-import java.nio.ByteBuffer
 
 class SdlWindow(
     val context: RenderContext,
@@ -97,11 +98,10 @@ class SdlWindow(
             field = value
             SDL_SetWindowFullscreen(window, value)
         }
-    override var swapInterval = 1
+    override var swapInterval
+        get() = api.swapInterval
         set(value) {
-            if (field == value) return
-            field = value
-            SDL_GL_SetSwapInterval(value)
+            api.swapInterval = value
         }
     override var cursorMode: CursorModes = CursorModes.NORMAL
         set(value) {
@@ -137,7 +137,7 @@ class SdlWindow(
     override var focused by observed(true)
 
     private var window = -1L
-    private var sdlContext = -1L
+    private lateinit var api: SdlWindowRenderApi
 
 
     @Deprecated("unsupported")
@@ -160,13 +160,6 @@ class SdlWindow(
         SDL_SetBooleanProperty(properties, SDL_PROP_WINDOW_CREATE_HIDDEN_BOOLEAN, true)
         SDL_SetBooleanProperty(properties, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true)
 
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3)
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0)
-        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0)
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0)
 
 
         val window = SDL_CreateWindowWithProperties(properties)
@@ -174,12 +167,12 @@ class SdlWindow(
         if (window == MemoryUtil.NULL) throw Exception("null")
         this.window = window
 
+        this.api = when (context.system) {
+            is OpenGlRenderSystem -> GlSdlApi(window)
+            else -> throw UnsupportedOperationException("SDL3 does not support using ${context.system} render system!")
+        }
+        api.init()
 
-        val context = SDL_GL_CreateContext(window)
-        this.sdlContext = context
-        SDL_GL_LoadLibrary(null as ByteBuffer?)
-
-        GL.create(SDLVideo::SDL_GL_GetProcAddress)
 
         SDL_StartTextInput(window)
 
@@ -188,7 +181,6 @@ class SdlWindow(
             SDL_SetWindowSize(window, it.x, it.y)
         }
 
-        SDL_GL_SetSwapInterval(swapInterval)
 
 
         super.init(profile)
@@ -197,8 +189,7 @@ class SdlWindow(
     override fun destroy() {
         SDL_DestroyWindow(window)
         this.window = -1
-        SDL_GL_DestroyContext(sdlContext)
-        this.sdlContext = -1
+        api.destroy()
     }
 
     override fun close() {
@@ -213,10 +204,11 @@ class SdlWindow(
     }
 
     override fun begin() {
+        api.begin()
     }
 
     override fun end() {
-        SDL_GL_SwapWindow(window)
+        api.end()
     }
 
     private fun onClose(event: SDL_CommonEvent) {

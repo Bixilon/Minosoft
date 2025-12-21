@@ -452,7 +452,7 @@ class GlfwWindow(
                 log { "Initializing library..." }
                 GLFWErrorCallback.createPrint(Log.FATAL_PRINT_STREAM).set()
                 if (PlatformInfo.OS == OSTypes.LINUX) {
-                    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11)
+                    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11) // TODO: wayland, but it is so buggy (windows not closing, lack of functionality, ...)
                 }
                 check(glfwInit()) { "Unable to initialize GLFW" }
                 log { "Initialized library!" }
