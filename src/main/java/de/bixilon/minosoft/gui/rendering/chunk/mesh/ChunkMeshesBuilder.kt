@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.enums.inline.IntInlineSet
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
@@ -34,7 +35,6 @@ class ChunkMeshesBuilder(
     val details: IntInlineSet,
 ) : BlockVertexConsumer { // TODO: Don't inherit
     var opaque = ChunkMeshBuilder(context, section.blocks.count.opaqueCount())
-    var transparent = ChunkMeshBuilder(context, section.blocks.count.transparentCount())
     var translucent = ChunkMeshBuilder(context, section.blocks.count.translucentCount())
     var text = ChunkMeshBuilder(context, if (ChunkMeshDetails.TEXT in details && section.entities.count > 0) 128 else 0)
     var entities: ArrayList<BlockEntityRenderer> = ArrayList(if (ChunkMeshDetails.ENTITIES in details) section.entities.count else 0)
@@ -79,7 +79,6 @@ class ChunkMeshesBuilder(
 
     fun build(position: SectionPosition): ChunkMeshes? {
         val opaque = opaque.takeIfNotEmpty()?.bake()
-        val transparent = transparent.takeIfNotEmpty()?.bake()
         val translucent = translucent.takeIfNotEmpty()?.bake()
         val text = text.takeIfNotEmpty()?.bake()
         val entities = entities.takeIf { it.isNotEmpty() }?.toTypedArray()
@@ -87,12 +86,11 @@ class ChunkMeshesBuilder(
         if (opaque == null && translucent == null && text == null && entities == null) {
             return null
         }
-        return ChunkMeshes(section, position, minPosition, maxPosition, details, opaque, transparent, translucent, text, entities)
+        return ChunkMeshes(section, position, minPosition, maxPosition, details, opaque, translucent, text, entities)
     }
 
     fun drop() {
         opaque.drop()
-        transparent.drop()
         translucent.drop()
         text.drop()
     }
@@ -104,7 +102,6 @@ class ChunkMeshesBuilder(
 
     operator fun get(transparency: TextureTransparencies) = when {
         transparency == TextureTransparencies.TRANSLUCENT -> translucent
-        transparency == TextureTransparencies.TRANSPARENT -> transparent
         else -> opaque
     }
 
@@ -119,11 +116,6 @@ class ChunkMeshesBuilder(
             else -> 280
         }
 
-        private fun Int.transparentCount() = when {
-            this <= 32 -> 32
-            this <= 4064 -> 256
-            else -> 32
-        }
         private fun Int.translucentCount() = when {
             this <= 32 -> 32
             this <= 4064 -> 256

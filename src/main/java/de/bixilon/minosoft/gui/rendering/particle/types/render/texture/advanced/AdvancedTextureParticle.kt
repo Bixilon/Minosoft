@@ -27,16 +27,13 @@ abstract class AdvancedTextureParticle(session: PlaySession, position: Vec3d, ve
     var minUV: Vec2f = Vec2f(0.0f, 0.0f)
     var maxUV: Vec2f = Vec2f(1.0f, 1.0f)
 
-    override fun addVertex(opaque: ParticleMeshBuilder, transparent: ParticleMeshBuilder, translucent: ParticleMeshBuilder, time: ValueTimeMark) {
-        val color = color
-        if (color.alpha == 0x00) return
+    override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) {
         val light = light
 
         val texture = texture ?: return
         when {
-            texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> translucent
-            texture.transparency == TextureTransparencies.TRANSPARENT -> transparent
-            else -> opaque
+            texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> translucentMesh
+            else -> mesh
         }.addVertex(getCameraPosition(time), scale, texture, color, minUV, maxUV, light.index)
     }
 }

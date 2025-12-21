@@ -31,13 +31,12 @@ class VisibleMeshes(
     previous: VisibleMeshes? = null,
 ) {
     val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
-    val transparent: ArrayList<ChunkMesh> = ArrayList(previous?.transparent?.size ?: 64)
     val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
     val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
     val entities: ArrayList<BlockEntityRenderer> = ArrayList(previous?.entities?.size ?: 128)
 
     val sizeString: String
-        get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${text.size.format()}|${entities.size.format()}"
+        get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${entities.size.format()}"
 
     val lock = ReentrantLock()
 
@@ -74,11 +73,6 @@ class VisibleMeshes(
             if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
             opaque += it
         }
-        mesh.transparent?.let {
-            it.distance = distance
-            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
-            transparent += it
-        }
         mesh.translucent?.let {
             it.distance = -distance
             if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
@@ -101,7 +95,6 @@ class VisibleMeshes(
         val worker = UnconditionalWorker(pool = RenderingThreadPool)
         lock.locked {
             worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
-            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { transparent.sort() }
             worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
             worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
             // TODO: sort entities
@@ -111,7 +104,6 @@ class VisibleMeshes(
 
     operator fun minusAssign(mesh: ChunkMeshes): Unit = lock.locked {
         mesh.opaque?.let { opaque -= it }
-        mesh.transparent?.let { transparent -= it }
         mesh.translucent?.let { translucent -= it }
         mesh.text?.let { text -= it }
         mesh.entities?.let { entities -= it }
@@ -120,7 +112,6 @@ class VisibleMeshes(
 
     fun clear() {
         opaque.clear()
-        transparent.clear()
         translucent.clear()
         text.clear()
         entities.clear()
