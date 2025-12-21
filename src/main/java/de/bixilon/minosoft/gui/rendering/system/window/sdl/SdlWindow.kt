@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.window.sdl
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -27,18 +28,28 @@ import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
+import de.bixilon.minosoft.gui.rendering.system.window.Window.Companion.DEFAULT_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.MOUSE_CODE_MAPPING
+import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.sdl3
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import org.lwjgl.opengl.GL
 import org.lwjgl.sdl.*
 import org.lwjgl.sdl.SDLEvents.*
 import org.lwjgl.sdl.SDLInit.*
+import org.lwjgl.sdl.SDLKeyboard.SDL_StartTextInput
+import org.lwjgl.sdl.SDLMouse.*
+import org.lwjgl.sdl.SDLPixels.SDL_PIXELFORMAT_RGB24
+import org.lwjgl.sdl.SDLPixels.SDL_PIXELFORMAT_RGBA8888
 import org.lwjgl.sdl.SDLProperties.*
+import org.lwjgl.sdl.SDLSurface.SDL_SURFACE_PREALLOCATED
 import org.lwjgl.sdl.SDLVideo.*
 import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil
@@ -50,21 +61,90 @@ class SdlWindow(
     private var mouse = Vec2f.EMPTY
     private var skipMouse = false
 
-    override val systemScale by observed(Vec2f(1.0f))
-    override var size by observed(Window.DEFAULT_WINDOW_SIZE)
+    private var _size = DEFAULT_WINDOW_SIZE
+    override var size by observed(DEFAULT_WINDOW_SIZE)
     override var minSize = Window.DEFAULT_MINIMUM_WINDOW_SIZE
+        set(value) {
+            if (field == value) return
+            field = value
+            SDL_SetWindowMinimumSize(window, value.x, value.y)
+        }
     override var maxSize = Window.DEFAULT_MAXIMUM_WINDOW_SIZE
+        set(value) {
+            if (field == value) return
+            field = value
+            SDL_SetWindowMaximumSize(window, value.x, value.y)
+        }
     override var visible = false
+        set(value) {
+            if (field == value) return
+            field = value
+            if (value) {
+                SDL_ShowWindow(window)
+            } else {
+                SDL_HideWindow(window)
+            }
+        }
     override var resizable = true
+        set(value) {
+            if (field == value) return
+            field = value
+            SDL_SetWindowResizable(window, value)
+        }
     override var fullscreen = false
+        set(value) {
+            if (field == value) return
+            field = value
+            SDL_SetWindowFullscreen(window, value)
+        }
     override var swapInterval = 1
-    override var cursorMode = CursorModes.NORMAL
-    override var cursorShape = CursorShapes.ARROW
+        set(value) {
+            if (field == value) return
+            field = value
+            SDL_GL_SetSwapInterval(value)
+        }
+    override var cursorMode: CursorModes = CursorModes.NORMAL
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            if (value == CursorModes.NORMAL) {
+                SDL_ShowCursor()
+            } else {
+                SDL_HideCursor()
+            }
+            SDL_CaptureMouse(value != CursorModes.NORMAL)
+            skipMouse = true
+        }
+    override var cursorShape: CursorShapes = CursorShapes.ARROW
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            val cursor = SDL_CreateSystemCursor(value.sdl3)
+            SDL_SetCursor(cursor)
+        }
     override var title = RunConfiguration.APPLICATION_NAME
-    override val iconified by observed(false)
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            SDL_SetWindowTitle(window, value)
+        }
     override var focused by observed(true)
 
     private var window = -1L
+    private var sdlContext = -1L
+
+
+    @Deprecated("unsupported")
+    override val systemScale by observed(Vec2f(1.0f))
+
+    @Deprecated("unsupported")
+    override val iconified by observed(false)
 
 
     override fun init(profile: RenderingProfile) {
@@ -94,33 +174,45 @@ class SdlWindow(
         if (window == MemoryUtil.NULL) throw Exception("null")
         this.window = window
 
-        // val device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, false, null as ByteBuffer?)
-        // if (device == MemoryUtil.NULL) throw Exception("null")
-        // assert(SDL_ClaimWindowForGPUDevice(device, window))
-
 
         val context = SDL_GL_CreateContext(window)
+        this.sdlContext = context
         SDL_GL_LoadLibrary(null as ByteBuffer?)
 
         GL.create(SDLVideo::SDL_GL_GetProcAddress)
 
+        SDL_StartTextInput(window)
+
+        this::size.observeRendering(this) {
+            if (_size == size) return@observeRendering
+            SDL_SetWindowSize(window, it.x, it.y)
+        }
+
+        SDL_GL_SetSwapInterval(swapInterval)
 
 
         super.init(profile)
     }
 
     override fun destroy() {
+        SDL_DestroyWindow(window)
+        this.window = -1
+        SDL_GL_DestroyContext(sdlContext)
+        this.sdlContext = -1
     }
 
     override fun close() {
+        if (fire(WindowCloseEvent(context, window = this))) {
+            return
+        }
+        forceClose()
     }
 
     override fun forceClose() {
+        SDL_PushEvent(SDL_Event.calloc().apply { this.type(SDL_EVENT_QUIT) })
     }
 
     override fun begin() {
-        SDL_GL_SetSwapInterval(1)
-        SDL_ShowWindow(window)
     }
 
     override fun end() {
@@ -132,7 +224,9 @@ class SdlWindow(
     }
 
     private fun onResize(event: SDL_WindowEvent) {
-        this.size = Vec2i(event.data1(), event.data2())
+        val size = Vec2i(event.data1(), event.data2())
+        this._size = size
+        this.size = size
         this.skipMouse = true
     }
 
@@ -161,8 +255,13 @@ class SdlWindow(
         }
 
         fire(KeyInputEvent(context, code = code, change = action))
-        if (action == KeyChangeTypes.PRESS || action == KeyChangeTypes.REPEAT) {
-            fire(CharInputEvent(context, char = event.key()))
+    }
+
+    private fun onCharInput(event: SDL_TextInputEvent) {
+        val string = event.textString() ?: return
+        val iterator = string.codePoints().iterator()
+        while (iterator.hasNext()) {
+            fire(CharInputEvent(context, char = iterator.nextInt()))
         }
     }
 
@@ -179,6 +278,14 @@ class SdlWindow(
         fire(MouseScrollEvent(context, offset = offset))
     }
 
+    private fun onFullscreenChange(event: SDL_WindowEvent, fullscreen: Boolean) {
+        this.fullscreen = fullscreen // TODO: skip setter
+    }
+
+    private fun onWindowVisibilityChange(event: SDL_WindowEvent, visible: Boolean) {
+        this.visible = visible // TODO: skip setter
+    }
+
     private fun handleEvent(event: SDL_Event) = when (event.type()) {
         SDL_EVENT_QUIT -> onClose(event.common())
         SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED, SDL_EVENT_WINDOW_METAL_VIEW_RESIZED -> onResize(event.window())
@@ -187,6 +294,9 @@ class SdlWindow(
         SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP -> onMouseKeyInput(event.button())
         SDL_EVENT_MOUSE_WHEEL -> onScroll(event.wheel())
         SDL_EVENT_WINDOW_FOCUS_LOST, SDL_EVENT_WINDOW_FOCUS_GAINED -> onFocusChange(event.window(), event.type() == SDL_EVENT_WINDOW_FOCUS_GAINED)
+        SDL_EVENT_WINDOW_ENTER_FULLSCREEN, SDL_EVENT_WINDOW_LEAVE_FULLSCREEN -> onFullscreenChange(event.window(), event.type() == SDL_EVENT_WINDOW_ENTER_FULLSCREEN)
+        SDL_EVENT_WINDOW_SHOWN, SDL_EVENT_WINDOW_HIDDEN -> onWindowVisibilityChange(event.window(), event.type() == SDL_EVENT_WINDOW_SHOWN)
+        SDL_EVENT_TEXT_INPUT -> onCharInput(event.text())
         else -> Unit
     }
 
@@ -198,6 +308,18 @@ class SdlWindow(
     }
 
     override fun setIcon(buffer: TextureBuffer) {
+        val surface = SDL_Surface.calloc()
+        surface.flags(SDL_SURFACE_PREALLOCATED)
+        surface.w(buffer.size.x)
+        surface.h(buffer.size.y)
+        surface.pitch(buffer.components * buffer.size.x)
+        surface.pixels(buffer.data)
+        surface.format(when (buffer) {
+            is RGB8Buffer -> SDL_PIXELFORMAT_RGB24
+            is RGBA8Buffer -> SDL_PIXELFORMAT_RGBA8888
+            else -> Broken("")
+        })
+        SDL_SetWindowIcon(window, surface)
     }
 
 
@@ -206,7 +328,7 @@ class SdlWindow(
             event.context.queue += { event.context.session.events.fire(event) }
             return false
         }
-        return context.session.events.fire(event)
+        return event.context.session.events.fire(event)
     }
 
     companion object {

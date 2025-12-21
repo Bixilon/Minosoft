@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.window.sdl
 
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import org.lwjgl.sdl.SDLMouse.*
 import org.lwjgl.sdl.SDLScancode.*
 
@@ -146,4 +147,14 @@ object SdlUtil {
         SDL_BUTTON_X1 to KeyCodes.MOUSE_BUTTON_1, // TODO
         SDL_BUTTON_X2 to KeyCodes.MOUSE_BUTTON_2, // TODO
     )
+
+    val CursorShapes.sdl3
+        get() = when (this) {
+            CursorShapes.ARROW -> SDL_SYSTEM_CURSOR_DEFAULT
+            CursorShapes.IBEAM -> SDL_SYSTEM_CURSOR_TEXT
+            CursorShapes.CROSSHAIR -> SDL_SYSTEM_CURSOR_CROSSHAIR
+            CursorShapes.HAND -> SDL_SYSTEM_CURSOR_POINTER
+            CursorShapes.HORIZONTAL_RESIZE -> SDL_SYSTEM_CURSOR_EW_RESIZE
+            CursorShapes.VERTICAL_RESIZE -> SDL_SYSTEM_CURSOR_NS_RESIZE
+        }
 }
