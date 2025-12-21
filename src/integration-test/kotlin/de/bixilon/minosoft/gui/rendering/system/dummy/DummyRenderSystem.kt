@@ -73,9 +73,6 @@ class DummyRenderSystem(
     override var depth: DepthFunctions = DepthFunctions.NOT_EQUAL
     override var depthMask: Boolean = true
     override var polygonMode: PolygonModes = PolygonModes.FILL
-    override val usedVRAM: Long = -1
-    override val availableVRAM: Long = -1
-    override val maximumVRAM: Long = -1
     override val vendorString: String = "Bixilon's hand made super gpu"
     override val version: String = "dummy"
     override val gpuType: String = "dummy"

@@ -25,6 +25,7 @@ interface RenderSystemFactory {
 
         init {
             catchAll { de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystemFactory }?.let { factories["gl"] = it }
+            catchAll { de.bixilon.minosoft.gui.rendering.system.sdl3.SDL3RenderSystemFactory }?.let { factories["sdl3"] = it }
         }
 
         var factory: RenderSystemFactory? = factories.values.firstOrNull()
