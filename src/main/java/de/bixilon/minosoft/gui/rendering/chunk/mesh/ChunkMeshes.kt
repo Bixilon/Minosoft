@@ -30,6 +30,7 @@ class ChunkMeshes(
     val details: IntInlineSet,
 
     val opaque: ChunkMesh?,
+    val transparent: ChunkMesh?,
     val translucent: ChunkMesh?,
     val text: ChunkMesh?,
     val entities: Array<BlockEntityRenderer>?,
@@ -44,6 +45,7 @@ class ChunkMeshes(
 
     fun load() {
         this.opaque?.load()
+        this.transparent?.load()
         this.translucent?.load()
         this.text?.load()
         entities?.forEach { it.load() }
@@ -51,12 +53,14 @@ class ChunkMeshes(
 
     fun unload() {
         opaque?.unload()
+        transparent?.unload()
         translucent?.unload()
         text?.unload()
     }
 
     fun drop() {
         this.opaque?.drop()
+        this.transparent?.drop()
         this.translucent?.drop()
         this.text?.drop()
     }

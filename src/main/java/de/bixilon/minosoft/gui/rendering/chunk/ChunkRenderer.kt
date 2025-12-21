@@ -49,6 +49,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
+import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -59,7 +60,9 @@ class ChunkRenderer(
 ) : WorldRenderer, AsyncRenderer {
     override val layers = LayerSettings()
     private val profile = session.profiles.block
-    private val shader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
+    private val opaqueShader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
+    private val transparentShader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
+    private val translucentShader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
     private val textShader = context.system.shader.create(minosoft("chunk")) { ChunkShader(it) }
     val world = session.world
     val visibility = ChunkVisibilityManager(this)
@@ -77,14 +80,20 @@ class ChunkRenderer(
     var limitChunkTransferTime = true
 
     override fun registerLayers() {
-        layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visibility.meshes.opaque.isEmpty() }
-        layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visibility.meshes.translucent.isEmpty() }
+        layers.register(OpaqueLayer, opaqueShader, this::drawBlocksOpaque) { visibility.meshes.opaque.isEmpty() }
+        layers.register(TransparentLayer, transparentShader, this::drawBlocksTransparent) { visibility.meshes.transparent.isEmpty() }
+        layers.register(TranslucentLayer, translucentShader, this::drawBlocksTranslucent) { visibility.meshes.translucent.isEmpty() }
         layers.register(TextLayer, textShader, this::drawText) { visibility.meshes.text.isEmpty() }
-        layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visibility.meshes.entities.isEmpty() }
+        layers.register(BlockEntitiesLayer, transparentShader, this::drawBlockEntities) { visibility.meshes.entities.isEmpty() }
     }
 
     override fun postInit(latch: AbstractLatch) {
-        shader.load()
+        opaqueShader.native.defines["TRANSPARENCY_OPAQUE"] = ""
+        opaqueShader.load()
+        transparentShader.native.defines["TRANSPARENCY_TRANSPARENT"] = ""
+        transparentShader.load()
+        translucentShader.native.defines["TRANSPARENCY_TRANSLUCENT"] = ""
+        translucentShader.load()
         textShader.native.defines["DISABLE_MIPMAPS"] = ""
         textShader.load()
 
@@ -215,12 +224,14 @@ class ChunkRenderer(
         val meshes = visibility.meshes
         meshes.lock.locked {
             meshes.opaque.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
+            meshes.transparent.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
             meshes.translucent.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
             meshes.text.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
         }
     }
 
     private fun drawBlocksOpaque() = visibility.meshes.apply { lock.locked { opaque.forEach(ChunkMesh::draw) } }
+    private fun drawBlocksTransparent() = visibility.meshes.apply { lock.locked { transparent.forEach(ChunkMesh::draw) } }
     private fun drawBlocksTranslucent() = visibility.meshes.apply { lock.locked { translucent.forEach(ChunkMesh::draw) } }
     private fun drawText() = visibility.meshes.apply { lock.locked { text.forEach(ChunkMesh::draw) } }
     private fun drawBlockEntities() = visibility.meshes.apply { lock.locked { entities.forEach(BlockEntityRenderer::draw) } }

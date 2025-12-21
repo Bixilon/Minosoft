@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,28 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#ifndef INCLUDE_MINOSOFT_ALPHA
-#define INCLUDE_MINOSOFT_ALPHA
+package de.bixilon.minosoft.gui.rendering.system.base.layer
 
-void discard_if_0(float value) {
-    #ifdef TRANSPARENCY_OPAQUE
-        return;
-    #endif
-    #ifndef DISABLE_ALPHA_DISCARD
-    if (value <= 0.0f) {
-        discard;
-    }
-    #endif
-}
+import de.bixilon.minosoft.gui.rendering.system.base.settings.DefaultSettings
 
-void discard_alpha() {
-    #ifdef TRANSPARENCY_OPAQUE
-        return;
-    #endif
-    #ifndef DISABLE_ALPHA_DISCARD
-    if (foutColor.a <= 0.0f) {
-        discard;
-    }
-    #endif
+object TransparentLayer : RenderLayer {
+    override val settings get() = DefaultSettings.TRANSPARENT
+    override val priority: Int get() = 100
 }
-#endif
