@@ -59,12 +59,12 @@ class GLSLShaderCode(
 
                         code.appendLine()
                         code.append("// ").append(STAR).appendLine()
-                        code.append("// Begin included from $include:\n")
+                        code.append("// Begin included from ").append(include).appendLine()
                         code.append("// ").append(STAR).appendLine()
                         code.append(includeCode.code)
                         code.appendLine()
                         code.append("// ").append(STAR).appendLine()
-                        code.append("// End include from $include:\n")
+                        code.append("// End include from ").append(include).appendLine()
                         code.append("// ").append(STAR).appendLine()
                     }
 
