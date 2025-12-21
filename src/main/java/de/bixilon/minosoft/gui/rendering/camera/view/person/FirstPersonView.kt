@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view.person
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -43,7 +43,7 @@ class FirstPersonView(override val camera: Camera) : PersonView {
     override var front = Vec3f.EMPTY
 
 
-    override fun onMouse(delta: Vec2d) {
+    override fun onMouse(delta: Vec2f) {
         val rotation = super.handleMouse(delta) ?: return
         this.rotation = rotation
         this.front = rotation.front

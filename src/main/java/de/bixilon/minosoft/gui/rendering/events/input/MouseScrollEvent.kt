@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.events.input
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
-import de.bixilon.minosoft.modding.event.events.CancelableEvent
 
 class MouseScrollEvent(
     context: RenderContext,
-    val offset: Vec2d,
-) : RenderEvent(context), CancelableEvent
+    val offset: Vec2f,
+) : RenderEvent(context)
