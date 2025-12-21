@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
-import de.bixilon.kutil.math.simple.DoubleMath.clamp
+import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -110,11 +110,11 @@ class CameraInput(
         context.camera.view.view.onInput(input, inputActions, delta)
     }
 
-    fun updateMouse(movement: Vec2d) {
+    fun updateMouse(movement: Vec2f) {
         context.camera.view.view.onMouse(movement)
     }
 
-    fun calculateRotation(delta: Vec2d, rotation: EntityRotation): EntityRotation {
+    fun calculateRotation(delta: Vec2f, rotation: EntityRotation): EntityRotation {
         val delta = delta * 0.1f * controlsProfile.mouse.sensitivity
         var yaw = delta.x + rotation.yaw
         if (yaw > HALF_CIRCLE_DEGREE) {
@@ -123,8 +123,8 @@ class CameraInput(
             yaw += CIRCLE_DEGREE
         }
         yaw %= HALF_CIRCLE_DEGREE
-        val pitch = (delta.y + rotation.pitch).clamp(-89.9, 89.9)
-        return EntityRotation(yaw.toFloat(), pitch.toFloat())
+        val pitch = (delta.y + rotation.pitch).clamp(-89.9f, 89.9f)
+        return EntityRotation(yaw, pitch)
     }
 
     private companion object {

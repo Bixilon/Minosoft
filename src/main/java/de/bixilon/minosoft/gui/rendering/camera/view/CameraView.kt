@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -41,7 +41,7 @@ interface CameraView {
 
 
     fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Duration) = Unit
-    fun onMouse(delta: Vec2d) = Unit
+    fun onMouse(delta: Vec2f) = Unit
     fun onScroll(scroll: Double) = Unit
 
     fun onAttach(previous: CameraView?) = Unit

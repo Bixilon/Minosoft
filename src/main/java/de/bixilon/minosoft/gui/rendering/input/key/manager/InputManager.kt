@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.time.TimeUtil.now
@@ -48,7 +47,7 @@ class InputManager(
     private val pressed: BitEnumSet<KeyCodes> = KeyCodes.set()
     private val times: EnumMap<KeyCodes, ValueTimeMark> = EnumMap(KeyCodes::class.java)
 
-    var mousePosition: Vec2d = Vec2d.EMPTY
+    var mousePosition: Vec2f = Vec2f.EMPTY
         private set
 
 
@@ -57,7 +56,7 @@ class InputManager(
 
         session.events.listen<CharInputEvent> { onChar(it.char) }
         session.events.listen<KeyInputEvent> { onKey(it.code, it.change) }
-        session.events.listen<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) }
+        session.events.listen<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset) }
         session.events.listen<MouseMoveEvent> { onMouse(it.delta, it.position) }
 
         cameraInput.init()
@@ -69,9 +68,9 @@ class InputManager(
         bindings.clear()
     }
 
-    private fun onMouse(delta: Vec2d, position: Vec2d) {
+    private fun onMouse(delta: Vec2f, position: Vec2f) {
         this.mousePosition = position
-        if (handler.onMouse(Vec2f(position))) return
+        if (handler.onMouse(position)) return
         cameraInput.updateMouse(delta)
     }
 
@@ -107,9 +106,8 @@ class InputManager(
         handler.onChar(char)
     }
 
-    private fun scroll(scrollOffset: Vec2d, event: MouseScrollEvent) {
-        if (!handler.onScroll(Vec2f(scrollOffset))) return
-        event.cancelled = true
+    private fun scroll(scrollOffset: Vec2f) {
+        if (!handler.onScroll(scrollOffset)) return
     }
 
     fun areKeysDown(vararg keys: KeyCodes): Boolean {

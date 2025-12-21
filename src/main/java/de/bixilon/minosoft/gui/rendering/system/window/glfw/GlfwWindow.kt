@@ -63,8 +63,8 @@ class GlfwWindow(
     private val context: RenderContext,
     private val eventMaster: AbstractEventMaster = context.session.events,
 ) : Window {
-    private var mousePosition = Vec2d.EMPTY
-    private var skipNextMouseEvent = true
+    private var mouse = Vec2f.EMPTY
+    private var skipMouse = true
     private var window = -1L
 
 
@@ -77,7 +77,7 @@ class GlfwWindow(
             }
             glfwSetInputMode(window, GLFW_CURSOR, value.glfw)
             field = value
-            skipNextMouseEvent = true
+            skipMouse = true
         }
     override var cursorShape: CursorShapes = CursorShapes.ARROW
         set(value) {
@@ -263,7 +263,7 @@ class GlfwWindow(
     }
 
     override fun close() {
-        if (fireGLFWEvent(WindowCloseEvent(context, window = this))) {
+        if (fire(WindowCloseEvent(context, window = this))) {
             return
         }
         forceClose()
@@ -350,7 +350,7 @@ class GlfwWindow(
     private fun onClose(window: Long) {
         log { "Close (window=$window)" }
         if (window != this.window) return
-        val cancelled = fireGLFWEvent(WindowCloseEvent(context, window = this))
+        val cancelled = fire(WindowCloseEvent(context, window = this))
 
         if (cancelled) {
             glfwSetWindowShouldClose(window, false)
@@ -367,7 +367,7 @@ class GlfwWindow(
         if (nextSize.x <= 0 || nextSize.y <= 0) return  // windows returns size (0,0) if minimized
         if (this.size == nextSize) return
         this.size = nextSize
-        this.skipNextMouseEvent = true
+        this.skipMouse = true
     }
 
     private fun onMouseKeyInput(windowId: Long, button: Int, action: Int, modifierKey: Int) {
@@ -380,7 +380,7 @@ class GlfwWindow(
 
         val keyCode = KEY_CODE_MAPPING[key] ?: KeyCodes.KEY_UNKNOWN
 
-        val keyAction = when (action) {
+        val action = when (action) {
             GLFW_PRESS -> KeyChangeTypes.PRESS
             GLFW_RELEASE -> KeyChangeTypes.RELEASE
             GLFW_REPEAT -> KeyChangeTypes.REPEAT
@@ -390,34 +390,31 @@ class GlfwWindow(
             }
         }
 
-        fireGLFWEvent(KeyInputEvent(context, code = keyCode, change = keyAction))
+        fire(KeyInputEvent(context, code = code, change = action))
     }
 
     private fun onCharInput(windowId: Long, char: Int) {
         log { "Char input (window=$window, char=${char.toHex()})" }
         if (windowId != window) return
-        fireGLFWEvent(CharInputEvent(context, char = char))
+        fire(CharInputEvent(context, char = char))
     }
 
     private fun onMouseMove(windowId: Long, x: Double, y: Double) {
         log { "Mouse move (window=$window, x=$x, y=$y)" }
         if (windowId != window) return
 
-        val position = unscalePosition(Vec2d(x, y))
-        val previous = this.mousePosition
-        val delta = position - previous
-        this.mousePosition = position
-        if (!skipNextMouseEvent) {
-            fireGLFWEvent(MouseMoveEvent(context, position = position, previous = previous, delta = delta))
-        } else {
-            skipNextMouseEvent = false
-        }
+        val position = Vec2f(unscalePosition(Vec2d(x, y)))
+        val previous = this.mouse
+        val delta = if (skipMouse) Vec2f.EMPTY else position - previous
+        this.mouse = position
+        fire(MouseMoveEvent(context, position = position, delta = delta))
+        skipMouse = false
     }
 
     private fun onScroll(window: Long, xOffset: Double, yOffset: Double) {
         log { "Scroll (window=$window, x=$xOffset, y=$yOffset)" }
         if (window != this.window) return
-        fireGLFWEvent(MouseScrollEvent(context, offset = Vec2d(xOffset, yOffset)))
+        fire(MouseScrollEvent(context, offset = Vec2f(xOffset.toFloat(), yOffset.toFloat())))
     }
 
     override fun setIcon(buffer: TextureBuffer) {
@@ -434,13 +431,13 @@ class GlfwWindow(
         glfwSetWindowIcon(window, images)
     }
 
-    private fun fireGLFWEvent(event: RenderEvent): Boolean {
-        // ToDo: It looks like glfwPollEvents is mixing threads. This should not happen.
+    private fun fire(event: RenderEvent): Boolean {
+        // It looks like glfwPollEvents is mixing threads
         if (Rendering.currentContext != event.context) {
-            event.context.queue += { eventMaster.fire(event) }
+            event.context.queue += { event.context.session.events.fire(event) }
             return false
         }
-        return eventMaster.fire(event)
+        return context.session.events.fire(event)
     }
 
     companion object {

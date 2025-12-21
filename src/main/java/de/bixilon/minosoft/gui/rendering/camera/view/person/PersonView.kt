@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view.person
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -47,7 +47,7 @@ interface PersonView : CameraView {
         }
     }
 
-    fun handleMouse(delta: Vec2d): EntityRotation? {
+    fun handleMouse(delta: Vec2f): EntityRotation? {
         val entity = camera.context.session.camera.entity
         if (entity !is LocalPlayerEntity) {
             return null

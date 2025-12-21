@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.MVec3d
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
@@ -69,7 +69,7 @@ class DebugView(private val camera: Camera) : CameraView {
         eyePosition += movement
     }
 
-    override fun onMouse(delta: Vec2d) {
+    override fun onMouse(delta: Vec2f) {
         val rotation = context.input.cameraInput.calculateRotation(delta, this.rotation)
         if (rotation == this.rotation) {
             return

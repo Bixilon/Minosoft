@@ -13,13 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.events.input
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 
 class MouseMoveEvent(
     context: RenderContext,
-    val position: Vec2d,
-    val previous: Vec2d,
-    val delta: Vec2d,
+    val position: Vec2f,
+    val delta: Vec2f,
 ) : RenderEvent(context)

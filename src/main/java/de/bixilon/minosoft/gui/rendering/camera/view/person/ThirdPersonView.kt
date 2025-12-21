@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view.person
 
-import de.bixilon.kmath.vec.vec2.d.Vec2d
+import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -42,7 +42,7 @@ class ThirdPersonView(
     }
 
 
-    override fun onMouse(delta: Vec2d) {
+    override fun onMouse(delta: Vec2f) {
         val rotation = super.handleMouse(delta)?.update() ?: return
         this.rotation = rotation
         update(eyePosition, rotation.front)
