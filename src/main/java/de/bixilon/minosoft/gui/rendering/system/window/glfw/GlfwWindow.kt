@@ -441,6 +441,8 @@ class GlfwWindow(
         return event.context.session.events.fire(event)
     }
 
+    override fun toString() = "GlfwWindow"
+
     companion object {
         private val initLatch = SimpleLatch(1)
 

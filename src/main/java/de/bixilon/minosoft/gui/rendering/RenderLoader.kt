@@ -23,7 +23,6 @@ import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
@@ -58,7 +57,7 @@ object RenderLoader {
 
         val renderLatch = ParentLatch(1, latch)
         setThread()
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating window..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Initializing window ($window)..." }
         val stopwatch = Stopwatch()
         registerRenderer()
 
@@ -68,7 +67,7 @@ object RenderLoader {
         camera.init()
 
 
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.lab().format()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Initializing render system ($system) (after ${stopwatch.lab().format()})..." }
 
         system.init()
         system.reset()

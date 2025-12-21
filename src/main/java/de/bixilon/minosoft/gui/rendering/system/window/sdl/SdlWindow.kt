@@ -323,6 +323,9 @@ class SdlWindow(
         return event.context.session.events.fire(event)
     }
 
+    override fun toString() = "SdlWindow"
+
+
     companion object {
 
         init {

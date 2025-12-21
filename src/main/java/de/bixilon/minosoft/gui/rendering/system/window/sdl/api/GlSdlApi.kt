@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window.sdl.api
 
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL
 import org.lwjgl.sdl.SDLVideo
 import org.lwjgl.sdl.SDLVideo.*
@@ -38,9 +42,6 @@ class GlSdlApi(val window: Long) : SdlWindowRenderApi {
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0)
 
         this.context = SDL_GL_CreateContext(window)
-        SDL_GL_LoadLibrary(null as ByteBuffer?)
-
-        GL.create(SDLVideo::SDL_GL_GetProcAddress)
 
         SDL_GL_SetSwapInterval(swapInterval)
     }
@@ -54,5 +55,17 @@ class GlSdlApi(val window: Long) : SdlWindowRenderApi {
 
     override fun end() {
         SDL_GL_SwapWindow(window)
+    }
+
+    companion object {
+
+        init {
+            OpenGlRenderSystem.init = {
+                Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading SDL opengl library" }
+                SDL_GL_LoadLibrary(null as ByteBuffer?)
+
+                GL.create(SDLVideo::SDL_GL_GetProcAddress)
+            }
+        }
     }
 }

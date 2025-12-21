@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
-import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -97,10 +97,18 @@ class OpenGlRenderSystem(
             field = value
         }
 
+    init {
+        if (latch.count == 2) {
+            latch.dec()
+            DefaultThreadPool += { init.invoke(); latch.dec() }
+        }
+    }
+
 
     override fun init() {
         if (thread != null) throw IllegalStateException("Already initialized!")
         thread = Thread.currentThread()
+        latch.await()
         GL.createCapabilities()
 
         this.vendorString = gl { glGetString(GL_VENDOR) } ?: "UNKNOWN"
@@ -306,12 +314,18 @@ class OpenGlRenderSystem(
             gl { glViewport(0, 0, viewport.x, viewport.y) }
         }
 
+    override fun toString() = "OpenGlSystem"
+
+
     companion object {
-        private val INITIALIZE = GL::class.java.getDeclaredMethod("initialize").apply { setUnsafeAccessible() }
+        private var latch = SimpleLatch(2)
+        var init: () -> Unit = {
+            Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading default opengl library" }
+            GL.create()
+        }
 
         init {
             Configuration.OPENGL_EXPLICIT_INIT.set(true)
-            DefaultThreadPool += { INITIALIZE.invoke(null) }
         }
 
         private val RenderingCapabilities.gl: Int
