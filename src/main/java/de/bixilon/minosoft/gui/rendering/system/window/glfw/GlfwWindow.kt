@@ -378,7 +378,7 @@ class GlfwWindow(
         log { "Key input (window=$window, key=$key, char=$char, action=$action)" }
         if (window != this.window) return
 
-        val keyCode = KEY_CODE_MAPPING[key] ?: KeyCodes.KEY_UNKNOWN
+        val code = KEY_CODE_MAPPING[key] ?: KeyCodes.UNKNOWN
 
         val action = when (action) {
             GLFW_PRESS -> KeyChangeTypes.PRESS
