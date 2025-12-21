@@ -15,9 +15,6 @@
 #define INCLUDE_MINOSOFT_ALPHA
 
 void discard_if_0(float value) {
-    #ifdef TRANSPARENCY_OPAQUE
-        return;
-    #endif
     #ifndef DISABLE_ALPHA_DISCARD
     if (value <= 0.0f) {
         discard;
@@ -26,9 +23,6 @@ void discard_if_0(float value) {
 }
 
 void discard_alpha() {
-    #ifdef TRANSPARENCY_OPAQUE
-        return;
-    #endif
     #ifndef DISABLE_ALPHA_DISCARD
     if (foutColor.a <= 0.0f) {
         discard;

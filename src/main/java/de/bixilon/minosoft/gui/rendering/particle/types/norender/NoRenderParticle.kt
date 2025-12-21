@@ -23,5 +23,5 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class NoRenderParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData?) : Particle(session, position, velocity, data) {
 
-    override fun addVertex(opaque: ParticleMeshBuilder, transparent: ParticleMeshBuilder, translucent: ParticleMeshBuilder, time: ValueTimeMark) = Unit
+    override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) = Unit
 }
