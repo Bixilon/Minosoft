@@ -14,25 +14,41 @@
 package de.bixilon.minosoft.gui.rendering.system.window.sdl
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.events.RenderEvent
+import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
+import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
+import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
+import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
+import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.Window
+import de.bixilon.minosoft.gui.rendering.system.window.sdl.SdlUtil.MOUSE_CODE_MAPPING
 import de.bixilon.minosoft.terminal.RunConfiguration
 import org.lwjgl.opengl.GL
+import org.lwjgl.sdl.*
+import org.lwjgl.sdl.SDLEvents.*
 import org.lwjgl.sdl.SDLInit.*
 import org.lwjgl.sdl.SDLProperties.*
-import org.lwjgl.sdl.SDLVideo
 import org.lwjgl.sdl.SDLVideo.*
+import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 class SdlWindow(
     val context: RenderContext,
 ) : Window {
+    private var mouse = Vec2f.EMPTY
+    private var skipMouse = false
+
     override val systemScale by observed(Vec2f(1.0f))
     override var size by observed(Window.DEFAULT_WINDOW_SIZE)
     override var minSize = Window.DEFAULT_MINIMUM_WINDOW_SIZE
@@ -45,7 +61,7 @@ class SdlWindow(
     override var cursorShape = CursorShapes.ARROW
     override var title = RunConfiguration.APPLICATION_NAME
     override val iconified by observed(false)
-    override val focused by observed(true)
+    override var focused by observed(true)
 
     private var window = -1L
 
@@ -67,8 +83,9 @@ class SdlWindow(
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3)
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8)
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0)
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0)
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0)
 
 
         val window = SDL_CreateWindowWithProperties(properties)
@@ -109,10 +126,86 @@ class SdlWindow(
         SDL_GL_SwapWindow(window)
     }
 
-    override fun pollEvents() {
+    private fun onClose(event: SDL_CommonEvent) {
+        fire(WindowCloseEvent(context, window = this))
+    }
+
+    private fun onResize(event: SDL_WindowEvent) {
+        this.size = Vec2i(event.data1(), event.data2())
+        this.skipMouse = true
+    }
+
+    private fun onFocusChange(event: SDL_WindowEvent, focused: Boolean) {
+        this.focused = focused
+    }
+
+    private fun onMouseKeyInput(event: SDL_MouseButtonEvent) {
+        val button = MOUSE_CODE_MAPPING[event.button().toInt()] ?: KeyCodes.UNKNOWN
+
+        val action = when {
+            event.down() -> KeyChangeTypes.PRESS
+            else -> KeyChangeTypes.RELEASE
+        }
+
+        fire(KeyInputEvent(context, code = button, change = action))
+    }
+
+    private fun onKeyInput(event: SDL_KeyboardEvent) {
+        val code = SdlUtil.KEY_CODE_MAPPING[event.scancode()] ?: KeyCodes.UNKNOWN
+
+        val action = when {
+            event.repeat() -> KeyChangeTypes.REPEAT
+            event.down() -> KeyChangeTypes.PRESS
+            else -> KeyChangeTypes.RELEASE
+        }
+
+        fire(KeyInputEvent(context, code = code, change = action))
+        if (action == KeyChangeTypes.PRESS || action == KeyChangeTypes.REPEAT) {
+            fire(CharInputEvent(context, char = event.key()))
+        }
+    }
+
+    private fun onMouseMove(event: SDL_MouseMotionEvent) {
+        val position = Vec2f(event.x(), event.y())
+        val delta = if (skipMouse) Vec2f.EMPTY else position - this.mouse
+        this.mouse = position
+        fire(MouseMoveEvent(context, position, delta))
+        this.skipMouse = false
+    }
+
+    private fun onScroll(event: SDL_MouseWheelEvent) {
+        val offset = Vec2f(event.x(), event.y())
+        fire(MouseScrollEvent(context, offset = offset))
+    }
+
+    private fun handleEvent(event: SDL_Event) = when (event.type()) {
+        SDL_EVENT_QUIT -> onClose(event.common())
+        SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED, SDL_EVENT_WINDOW_METAL_VIEW_RESIZED -> onResize(event.window())
+        SDL_EVENT_MOUSE_MOTION -> onMouseMove(event.motion())
+        SDL_EVENT_KEY_DOWN, SDL_EVENT_KEY_UP -> onKeyInput(event.key())
+        SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP -> onMouseKeyInput(event.button())
+        SDL_EVENT_MOUSE_WHEEL -> onScroll(event.wheel())
+        SDL_EVENT_WINDOW_FOCUS_LOST, SDL_EVENT_WINDOW_FOCUS_GAINED -> onFocusChange(event.window(), event.type() == SDL_EVENT_WINDOW_FOCUS_GAINED)
+        else -> Unit
+    }
+
+    override fun pollEvents() = stackPush().use {
+        val event = SDL_Event.calloc(it)
+        while (SDL_PollEvent(event)) {
+            handleEvent(event)
+        }
     }
 
     override fun setIcon(buffer: TextureBuffer) {
+    }
+
+
+    private fun fire(event: RenderEvent): Boolean {
+        if (Rendering.currentContext != event.context) {
+            event.context.queue += { event.context.session.events.fire(event) }
+            return false
+        }
+        return context.session.events.fire(event)
     }
 
     companion object {
