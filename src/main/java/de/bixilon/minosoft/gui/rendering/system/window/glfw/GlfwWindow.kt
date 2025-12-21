@@ -22,6 +22,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.primitive.IntUtil.toHex
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -159,7 +160,7 @@ class GlfwWindow(
             field = value
         }
 
-    override var title: String = "Window"
+    override var title: String = RunConfiguration.APPLICATION_NAME
         set(value) {
             if (field == value) {
                 return
@@ -195,7 +196,7 @@ class GlfwWindow(
             }
 
             OSTypes.LINUX -> {
-                glfwWindowHintString(GLFW_X11_CLASS_NAME, "de.bixilon.minosoft")
+                glfwWindowHintString(GLFW_X11_CLASS_NAME, Minosoft.GROUP_ID)
                 glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "Minosoft")
             }
 
@@ -437,7 +438,7 @@ class GlfwWindow(
             event.context.queue += { event.context.session.events.fire(event) }
             return false
         }
-        return context.session.events.fire(event)
+        return event.context.session.events.fire(event)
     }
 
     companion object {

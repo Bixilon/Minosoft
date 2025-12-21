@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.window.sdl
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -211,7 +212,7 @@ class SdlWindow(
     companion object {
 
         init {
-            assert(SDL_SetAppMetadata("Minosoft", RunConfiguration.APPLICATION_NAME, "de.bixilon.minosoft"))
+            assert(SDL_SetAppMetadata("Minosoft", RunConfiguration.APPLICATION_NAME, Minosoft.GROUP_ID))
             assert(SDL_Init(SDL_INIT_VIDEO))
         }
     }
