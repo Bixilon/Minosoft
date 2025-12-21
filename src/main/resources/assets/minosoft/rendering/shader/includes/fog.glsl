@@ -18,7 +18,6 @@ in vec3 finFragmentPosition;
 
 uniform vec3 uCameraPosition;
 uniform float uFogStart = 60.0f * 60.0f;
-uniform float uFogEnd = 75.0f * 75.0f;
 uniform float uFogDistance = 15.0f * 15.0f;
 uniform vec4 uFogColor;
 uniform uint uFogFlags = 0u;
@@ -32,10 +31,7 @@ uniform uint uFogFlags = 0u;
 #endif
 
 float fog_alpha_from_distance(float distance2) {
-    if (distance2 < uFogStart) return 1.0f;
-    if (distance2 > uFogEnd) return 0.0f;
-
-    float alpha = 1.0f - (distance2 - uFogStart) / uFogDistance;
+    float alpha = 1.0f - clamp((distance2 - uFogStart) / uFogDistance, 0.0f, 1.0f);
 
     return alpha * alpha;
 }
@@ -48,8 +44,6 @@ float fog_calculate_distance() {
 
 
 float fog_calculate_alpha() {
-    if (uFogStart > 1000.0f * 1000.0f) return 1.0f;
-
     float distance = fog_calculate_distance();
     return fog_alpha_from_distance(distance * DISTANCE_MULTIPLIER);
 }
