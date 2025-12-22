@@ -18,7 +18,6 @@ import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.TextureParticle
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.FileTexture
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
 abstract class SimpleTextureParticle(session: PlaySession, position: Vec3d, velocity: MVec3d, data: ParticleData? = null) : TextureParticle(session, position, velocity, data) {
