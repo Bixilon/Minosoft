@@ -21,9 +21,8 @@ class OpenGlTextureData(
     val array: Int,
     val index: Int,
     val uvEnd: Vec2f?,
-    override val animationData: Int = -1,
 ) : TextureRenderData {
-    override val shaderTextureId: Int = (array shl 28) or (index shl 12) or (animationData + 1)
+    override val shaderTextureId: Int = (array shl 28) or (index shl 12)
 
     override fun transformUV(uv: Vec2f): Vec2f {
         if (uvEnd == null) return uv

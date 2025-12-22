@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 object DummyTextureRenderData : TextureRenderData {
     override val shaderTextureId: Int = 0
-    override val animationData: Int = -1
 
     override fun transformUV(uv: Vec2f) = uv
     override fun transformUV(u: Float, v: Float) = PackedUV(u, v)

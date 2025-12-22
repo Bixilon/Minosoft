@@ -11,11 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.loader
 
-enum class TextureStates {
-    DECLARED,
-    LOADED,
-    UNLOADED,
-    ;
+import de.bixilon.minosoft.gui.rendering.RenderContext
+
+interface TextureLoader {
+
+    fun load(context: RenderContext): TextureLoaderResult
 }

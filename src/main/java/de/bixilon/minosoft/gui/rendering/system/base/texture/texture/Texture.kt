@@ -15,36 +15,98 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.TextureLoader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.TextureLoaderResult
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
+import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.FileNotFoundException
 
-interface Texture : ShaderTexture {
-    var array: TextureArrayProperties
-    val state: TextureStates
-    val size: Vec2i
-    override val transparency: TextureTransparencies
-    val properties: ImageProperties
-    val animation: TextureAnimation? get() = null
+class Texture(
+    val loader: TextureLoader,
+    val mipmaps: Int = 1,
+) : ShaderTexture {
+    var state = TextureStates.DECLARED
+    var size: Vec2i = unsafeNull()
+    var properties: ImageProperties = unsafeNull()
+    var animation: TextureAnimation? = null
+    override var transparency: TextureTransparencies = unsafeNull()
 
-    var renderData: TextureRenderData
+    var renderData: TextureRenderData = unsafeNull()
 
-    var data: TextureData
-    val mipmaps: Int
-
-
-    fun load(context: RenderContext)
+    var data: TextureData = unsafeNull()
 
     override val shaderId get() = renderData.shaderTextureId
 
+
+    @Synchronized
+    fun load(context: RenderContext) {
+        if (state == TextureStates.LOADED) return
+
+        val (buffer, properties) = tryRead(context)
+        this.data = createData(mipmaps, buffer)
+        this.properties = properties ?: ImageProperties.DEFAULT
+
+
+        this.properties.animation?.let { loadSprites(context, it, buffer) } ?: load(buffer)
+
+        state = TextureStates.LOADED
+    }
+
+
+    private fun loadSprites(context: RenderContext, properties: AnimationProperties, buffer: TextureBuffer) {
+        val (frames, animation) = context.textures.static.animator.create(this, buffer, properties)
+        this.animation = animation
+        this.size = frames.size
+
+        var transparency = TextureTransparencies.OPAQUE
+
+        // TODO:
+        // for (sprite in animation.sprites) {
+        //     when (sprite.transparency) {
+        //         TextureTransparencies.OPAQUE -> continue
+        //         TextureTransparencies.TRANSPARENT -> transparency = TextureTransparencies.TRANSPARENT
+        //         TextureTransparencies.TRANSLUCENT -> {
+        //             transparency = TextureTransparencies.TRANSLUCENT; break
+        //         }
+        //     }
+        // }
+        this.transparency = transparency
+    }
+
+    private fun load(buffer: TextureBuffer) {
+        val data = createData(mipmaps, buffer)
+
+        this.size = data.size
+        this.transparency = buffer.getTransparency()
+        this.data = data
+    }
+
+    private fun tryRead(context: RenderContext): TextureLoaderResult {
+        try {
+            return loader.load(context)
+        } catch (error: Throwable) {
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load texture ${loader}: $error" }
+            if (error !is FileNotFoundException) {
+                Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
+            }
+            return TextureLoaderResult(context.session.assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture(), null)
+        }
+    }
 
     override fun transformUV(uv: Vec2f) = renderData.transformUV(uv)
     override fun transformUV(u: Float, v: Float) = renderData.transformUV(u, v)

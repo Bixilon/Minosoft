@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
+import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.RWLock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -57,16 +58,12 @@ abstract class DynamicTexture(
     override fun transformUV(u: Float, v: Float) = PackedUV(u, v)
 
     operator fun plusAssign(callback: DynamicTextureListener) = addListener(callback)
-    fun addListener(callback: DynamicTextureListener) {
-        lock.lock()
+    fun addListener(callback: DynamicTextureListener) = lock.locked {
         callbacks += callback
-        lock.unlock()
     }
 
     operator fun minusAssign(callback: DynamicTextureListener) = removeListener(callback)
-    fun removeListener(callback: DynamicTextureListener) {
-        lock.lock()
+    fun removeListener(callback: DynamicTextureListener) = lock.locked {
         callbacks -= callback
-        lock.unlock()
     }
 }

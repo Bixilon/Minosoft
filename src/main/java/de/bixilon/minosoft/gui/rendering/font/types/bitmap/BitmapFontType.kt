@@ -31,8 +31,8 @@ import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.file.PNGTextureLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.isBlack
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -81,7 +81,7 @@ class BitmapFontType(
 
         private fun load(file: ResourceLocation, height: Int, ascent: Int, chars: List<String>, context: RenderContext): BitmapFontType? {
             if (chars.isEmpty() || height <= 0) return null
-            val texture = PNGTexture(file, 0)
+            val texture = Texture(PNGTextureLoader(file), 0)
             texture.load(context) // force load it, we need to calculate the width of every char
             context.textures.font += texture // TODO: convert to font array size and remove empty lines
 
@@ -128,7 +128,7 @@ class BitmapFontType(
             val start = IntArray(ROW) { width }
             val end = IntArray(ROW)
 
-            val renderer = Int2ObjectOpenHashMap<CodePointRenderer>()
+            val renderer = Int2ObjectOpenHashMap<CodePointRenderer>(rows * ROW)
 
             val pixel = Vec2f(1.0f / texture.size.x, 1.0f / texture.size.y)
             val offset = MVec2f()

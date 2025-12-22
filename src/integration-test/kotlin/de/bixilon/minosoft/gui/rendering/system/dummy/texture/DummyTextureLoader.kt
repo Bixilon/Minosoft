@@ -11,11 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
-enum class TextureStates {
-    DECLARED,
-    LOADED,
-    UNLOADED,
-    ;
+import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.TextureLoader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.TextureLoaderResult
+
+object DummyTextureLoader : TextureLoader {
+
+    override fun load(context: RenderContext) = TextureLoaderResult(RGBA8Buffer(Vec2i(1, 1)), null)
 }

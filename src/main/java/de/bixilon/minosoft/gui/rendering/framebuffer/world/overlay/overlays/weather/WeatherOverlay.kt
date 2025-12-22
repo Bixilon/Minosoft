@@ -65,7 +65,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             val offsetMultiplicator = random.nextFloatPort(0.8f, 1.2f)
             val alpha = random.nextFloatPort(0.8f, 1.0f)
             mesh.addZQuad(
-                Vec2f(offset, 0f), OVERLAY_Z, Vec2f(offset + step, windowSize.y), Vec2f.EMPTY, texture.array.uvEnd ?: Vec2f.ONE
+                Vec2f(offset, 0f), OVERLAY_Z, Vec2f(offset + step, windowSize.y), Vec2f.EMPTY, texture.transformUV(Vec2f.ONE)
             ) { position, uv ->
                 val transformed = Vec3f(
                     position.x / (windowSize.x / 2) - 1.0f,
