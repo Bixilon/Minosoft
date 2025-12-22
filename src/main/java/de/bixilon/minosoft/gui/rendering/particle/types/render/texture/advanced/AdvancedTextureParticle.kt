@@ -28,6 +28,8 @@ abstract class AdvancedTextureParticle(session: PlaySession, position: Vec3d, ve
     var maxUV: Vec2f = Vec2f(1.0f, 1.0f)
 
     override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) {
+        val color = color
+        if (color.alpha == 0) return
         val light = light
 
         val texture = texture ?: return

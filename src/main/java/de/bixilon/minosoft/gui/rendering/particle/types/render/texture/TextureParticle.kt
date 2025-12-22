@@ -28,6 +28,8 @@ abstract class TextureParticle(session: PlaySession, position: Vec3d, velocity: 
 
 
     override fun addVertex(mesh: ParticleMeshBuilder, translucentMesh: ParticleMeshBuilder, time: ValueTimeMark) {
+        val color = color
+        if (color.alpha == 0) return
         val light = light
 
         val texture = texture ?: return
