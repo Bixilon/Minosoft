@@ -50,7 +50,7 @@ plugins {
     kotlin("jvm") version "2.3.0"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.3.3"
+    id("org.ajoberstar.grgit.service") version "5.3.3" // TODO: replace with id("org.eclipse.jgit:org.eclipse.jgit") version "7.5.0.202512021534-r"
     id("com.github.ben-manes.versions") version "0.53.0"
 }
 
@@ -63,12 +63,16 @@ group = "de.bixilon.minosoft"
 version = "0.1-pre"
 var stable = false
 
+val java8 = true
+
+
 val javafxVersion = getProperty("javafx.version")
 val lwjglVersion = getProperty("lwjgl.version")
 val ikonliVersion = getProperty("ikonli.version")
 val nettyVersion = getProperty("netty.version")
 val jacksonVersion = getProperty("jackson.version")
 val kutilVersion = getProperty("kutil.version")
+val testNgVersion = if (java8) "7.5.1" else "7.11.0"
 
 val updates = properties["minosoft.updates"]?.toBoolean() ?: false
 
@@ -214,7 +218,7 @@ testing {
 
 
         val integrationTest by registering(JvmTestSuite::class) {
-            useTestNG("7.7.1")
+            useTestNG(testNgVersion)
 
             dependencies {
                 implementation(project())
@@ -273,7 +277,7 @@ testing {
             }
         }
         val benchmark by registering(JvmTestSuite::class) {
-            useTestNG("7.7.1")
+            useTestNG(testNgVersion)
 
             dependencies {
                 implementation(project())
@@ -519,13 +523,13 @@ tasks.getByName("processResources") {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = if (java8) JavaVersion.VERSION_1_8 else JavaVersion.VERSION_11
+    targetCompatibility = if (java8) JavaVersion.VERSION_1_8 else JavaVersion.VERSION_11
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
+        jvmTarget.set(if (java8) JvmTarget.JVM_1_8 else JvmTarget.JVM_11)
         languageVersion.set(KotlinVersion.KOTLIN_2_3)
         freeCompilerArgs.add("-Xskip-prerelease-check")
         freeCompilerArgs.add("-Xallow-unstable-dependencies")
