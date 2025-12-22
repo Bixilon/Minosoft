@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.file.PNGTextureLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.io.IOException
@@ -89,7 +89,7 @@ class LegacyUnicodeFontType(
                 return
             }
 
-            val texture = PNGTexture(textureFile, 0)
+            val texture = Texture(PNGTextureLoader(textureFile), 0)
             textures += texture
 
             loadPage(pageId, texture, chars, sizes)

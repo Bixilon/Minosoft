@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
-import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
+import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.AnimationFrame
+import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.TextureAnimation
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureLoader
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertSame
 import org.testng.annotations.Test
@@ -23,12 +25,12 @@ import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["textures"])
 class TextureAnimationTest {
-    private val a = DummyTexture()
-    private val b = DummyTexture()
-    private val c = DummyTexture()
+    private val a = Texture(DummyTextureLoader, 0)
+    private val b = Texture(DummyTextureLoader, 0)
+    private val c = Texture(DummyTextureLoader, 0)
 
     private fun create(frames: Array<AnimationFrame> = arrayOf(AnimationFrame(0, 500.milliseconds, a), AnimationFrame(1, 1.seconds, b), AnimationFrame(2, 2.seconds, c))): TextureAnimation {
-        return TextureAnimation(0, frames, true, frames.map { it.texture }.toList().toTypedArray())
+        return TextureAnimation(frames, true, frames.map { it.texture }.toList().toTypedArray())
     }
 
     fun `first frame`() {

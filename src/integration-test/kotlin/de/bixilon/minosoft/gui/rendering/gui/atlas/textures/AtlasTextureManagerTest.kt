@@ -51,7 +51,7 @@ class AtlasTextureManagerTest {
     }
 
     private fun AtlasTexture.getR(x: Int, y: Int): Int {
-        return data.buffer.getR(x, y)
+        return buffer.getR(x, y)
     }
 
     fun `copy simple texture to atlas texture`() {

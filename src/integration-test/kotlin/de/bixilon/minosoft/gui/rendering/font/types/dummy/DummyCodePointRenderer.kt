@@ -16,7 +16,8 @@ package de.bixilon.minosoft.gui.rendering.font.types.dummy
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer.Companion.DEFAULT_ASCENT
-import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureLoader
 
 class DummyCodePointRenderer(
     override val uvStart: Vec2f = Vec2f(0.1f, 0.2f),
@@ -25,5 +26,5 @@ class DummyCodePointRenderer(
     override val ascent: Float = DEFAULT_ASCENT,
     override val height: Float = 8.0f,
 ) : AscentedCodePointRenderer {
-    override val texture = DummyTexture()
+    override val texture = Texture(DummyTextureLoader)
 }

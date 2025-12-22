@@ -18,7 +18,6 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -92,27 +91,12 @@ class OpenGlTextureArray(
 
     private fun prepareUpload(arrayId: Int, texture: Texture) {
         val resolution = RESOLUTIONS[arrayId]
-        val pixel = PIXEL[arrayId]
         val size = texture.size
 
         val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
-        val array = TextureArrayProperties(uvEnd, resolution, pixel)
 
-        val animation = texture.animation
-        if (animation == null) {
-            this.resolution[arrayId] += texture
-            texture.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
-            texture.array = array
-            return
-        }
-
-        texture.renderData = OpenGlTextureData(-1, -1, uvEnd, animation.animationData)
-
-        for (sprite in animation.sprites) {
-            sprite.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animation.animationData)
-            sprite.array = array
-            this.resolution[arrayId] += sprite
-        }
+        this.resolution[arrayId] += texture
+        texture.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd)
     }
 
 
@@ -175,6 +159,5 @@ class OpenGlTextureArray(
     private companion object {
         const val MAX_RESOLUTION = 2048
         val RESOLUTIONS = intArrayOf(16, 32, 64, 128, 256, 512, 1024, MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
-        val PIXEL = FloatArray(RESOLUTIONS.size) { 1.0f / RESOLUTIONS[it] }
     }
 }

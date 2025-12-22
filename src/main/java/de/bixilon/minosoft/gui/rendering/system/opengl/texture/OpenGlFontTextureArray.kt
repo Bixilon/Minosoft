@@ -17,12 +17,11 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.file.PNGTextureLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureUtil.glFormat
@@ -62,7 +61,7 @@ class OpenGlFontTextureArray(
             val buffer = texture.data.buffer
             buffer.data.position(0)
             buffer.data.limit(buffer.data.capacity())
-            if (compression != FontCompressions.NONE && texture is PNGTexture) {
+            if (compression != FontCompressions.NONE && texture.loader is PNGTextureLoader) {
                 buffer.data.copyAlphaToRGB()
             }
             gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
@@ -89,15 +88,11 @@ class OpenGlFontTextureArray(
 
     private fun load(texture: Texture) {
         if (texture.state != TextureStates.LOADED) texture.load(context)
-        val pixel = 1.0f / resolution
         val size = texture.size
 
         val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
-        val array = TextureArrayProperties(uvEnd, resolution, pixel)
 
-        texture.renderData = OpenGlTextureData(this.index, textureIndex++, uvEnd, -1)
-        texture.array = array
-
+        texture.renderData = OpenGlTextureData(this.index, textureIndex++, uvEnd)
     }
 
     override fun load(latch: AbstractLatch?) {

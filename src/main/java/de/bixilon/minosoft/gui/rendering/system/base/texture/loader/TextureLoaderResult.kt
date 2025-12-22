@@ -11,13 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures.properties
+package de.bixilon.minosoft.gui.rendering.system.base.texture.loader
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import kotlin.time.Duration
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
-data class AnimationFrame(
-    val index: Int,
-    val time: Duration,
-    val texture: Texture,
+data class TextureLoaderResult(
+    val buffer: TextureBuffer,
+    val properties: ImageProperties?,
 )

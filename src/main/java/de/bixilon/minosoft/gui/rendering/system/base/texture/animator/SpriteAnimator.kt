@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.sprite
+package de.bixilon.minosoft.gui.rendering.system.base.texture.animator
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.array.ArrayUtil.cast
@@ -21,9 +21,6 @@ import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
-import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
-import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -47,7 +44,7 @@ class SpriteAnimator(val context: RenderContext) {
         previous = now
     }
 
-    fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {
+    fun update(animation: TextureAnimation, first: TextureBuffer, second: TextureBuffer, progress: Float) {
         // val buffer = buffer!!
         // val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
         // buffer.data[offset + 0] = first.shaderId
@@ -61,7 +58,6 @@ class SpriteAnimator(val context: RenderContext) {
 
             update(animation, animation.frame1, animation.frame2, animation.progress)
         }
-        //    upload()
     }
 
 
@@ -69,12 +65,12 @@ class SpriteAnimator(val context: RenderContext) {
     fun create(texture: Texture, source: TextureBuffer, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
         val data = properties.create(source.size)
 
-        val sprites: Array<Texture> = arrayOfNulls<Texture?>(data.textures).cast()
+        val sprites: Array<TextureBuffer> = arrayOfNulls<TextureBuffer?>(data.textures).cast()
         for (i in 0 until data.textures) {
             val buffer = source.create(data.size)
             buffer.put(source, Vec2i(0, i * buffer.size.y), Vec2i.EMPTY, data.size)
 
-            sprites[i] = MemoryTexture(size = data.size, texture.properties, texture.mipmaps, buffer)
+            sprites[i] = buffer
         }
 
         val frames: Array<AnimationFrame> = arrayOfNulls<AnimationFrame?>(data.frames.size).cast()
@@ -88,7 +84,7 @@ class SpriteAnimator(val context: RenderContext) {
             frames[index] = AnimationFrame(index, frame.time, sprite)
         }
 
-        val animation = TextureAnimation(animations.size, frames, properties.interpolate, sprites)
+        val animation = TextureAnimation(frames, properties.interpolate, sprites)
         this.animations += animation
 
         return Pair(data, animation)

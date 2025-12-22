@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GuiMeshBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
@@ -72,7 +71,7 @@ open class ImageElement(
     }
 
 
-    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2f = Vec2f(texture.size), tint: RGBAColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2f(uvStart) * texture.array.pixel, Vec2f(uvEnd) * texture.array.pixel, size, tint)
+    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2f = Vec2f(texture.size), tint: RGBAColor = ChatColors.WHITE) : this(guiRenderer, texture, texture.transformUV(Vec2f(uvStart)), texture.transformUV(Vec2f(uvEnd)), size, tint)
 
     override fun forceRender(offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)

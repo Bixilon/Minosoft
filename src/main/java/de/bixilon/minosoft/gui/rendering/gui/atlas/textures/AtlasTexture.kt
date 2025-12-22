@@ -15,39 +15,25 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.MemoryLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
-import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 class AtlasTexture(
-    override val size: Vec2i,
-) : Texture {
-    override val transparency: TextureTransparencies = TextureTransparencies.TRANSLUCENT
-    override val mipmaps: Int get() = 0
+    val size: Vec2i,
+) {
     private val pixel = Vec2f(1.0f) / size
-
-    override lateinit var array: TextureArrayProperties
-    override lateinit var renderData: TextureRenderData
-    override var data: TextureData = TextureData(RGBA8Buffer(size))
-    override var properties = ImageProperties.DEFAULT
-    override val state: TextureStates = TextureStates.LOADED
-
-    override fun load(context: RenderContext) = Unit
+    val buffer = RGBA8Buffer(size)
+    val texture = Texture(MemoryLoader { buffer }, 0)
 
     fun request(size: Vec2i): Vec2i? = null
 
     fun put(offset: Vec2i, source: TextureBuffer, start: Vec2i, size: Vec2i): CodeTexturePart {
-        this.data.buffer.put(source, start, offset, size)
+        this.buffer.put(source, start, offset, size)
 
-        return CodeTexturePart(this, (pixel * offset).apply { unsafe.fixUVStart() }, (pixel * (offset + size)).apply { unsafe.fixUVEnd() }, size)
+        return CodeTexturePart(this.texture, (pixel * offset).apply { unsafe.fixUVStart() }, (pixel * (offset + size)).apply { unsafe.fixUVEnd() }, size)
     }
 }

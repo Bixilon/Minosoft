@@ -11,27 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures
+package de.bixilon.minosoft.gui.rendering.system.base.texture.animator
 
 import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.time.DurationUtil.rem
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import kotlin.time.Duration
 
 class TextureAnimation(
-    val animationData: Int,
     val frames: Array<AnimationFrame>,
     val interpolate: Boolean,
-    val sprites: Array<Texture>,
+    val sprites: Array<TextureBuffer>,
 ) {
     private val totalTime = frames.getTotalTime()
     private var frame = frames.first()
     private var time = Duration.ZERO
 
-    var frame1: Texture = frame.texture
+    var frame1: TextureBuffer = frame.buffer
         private set
-    var frame2: Texture = frame.next().texture
+    var frame2: TextureBuffer = frame.next().buffer
         private set
     var progress = 0.0f
         private set
@@ -60,8 +58,8 @@ class TextureAnimation(
         }
         this.frame = frame
         this.time = left
-        this.frame1 = frame.texture
-        this.frame2 = frame.next().texture
+        this.frame1 = frame.buffer
+        this.frame2 = frame.next().buffer
         this.progress = if (left == Duration.ZERO) 0.0f else (left / frame.time).toFloat()
     }
 

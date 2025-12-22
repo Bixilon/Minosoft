@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.animator
 
-enum class TextureStates {
-    DECLARED,
-    LOADED,
-    UNLOADED,
-    ;
-}
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import kotlin.time.Duration
+
+data class AnimationFrame(
+    val index: Int,
+    val time: Duration,
+    val buffer: TextureBuffer,
+)

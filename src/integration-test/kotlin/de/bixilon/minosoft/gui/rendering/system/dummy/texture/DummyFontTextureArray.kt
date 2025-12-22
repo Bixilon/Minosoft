@@ -16,9 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 
@@ -27,8 +25,7 @@ class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 
     override fun upload(latch: AbstractLatch?) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData
-            texture.array = TextureArrayProperties(null, 1024, 1.0f / 1024)
-            if (texture !is DummyTexture) continue
+            if (texture.loader !is DummyTextureLoader) continue
             texture.state = TextureStates.LOADED
         }
     }

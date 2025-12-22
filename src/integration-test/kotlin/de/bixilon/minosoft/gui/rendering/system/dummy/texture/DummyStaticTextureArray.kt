@@ -15,13 +15,10 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(context, false, 0) {
@@ -29,8 +26,7 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
     override fun upload(textures: Collection<Texture>) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData
-            texture.array = TextureArrayProperties(null, 1024, 1.0f / 1024)
-            if (texture !is DummyTexture) continue
+            if (texture.loader !is DummyTextureLoader) continue
             texture.state = TextureStates.LOADED
         }
     }
@@ -38,10 +34,6 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
     override fun upload(latch: AbstractLatch?) {
         super.upload(latch)
         animator.init()
-    }
-
-    override fun create(name: ResourceLocation, mipmaps: Boolean, factory: (mipmaps: Int) -> Texture): Texture {
-        return super.create(name, mipmaps) { DummyTexture() }
     }
 
     override fun findResolution(size: Vec2i) = size

@@ -17,40 +17,29 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor.Companion.rgba
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
 import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.MemoryLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
-import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 class UnifontTexture(
     val rows: Int,
-) : Texture {
+) {
     private val resolution = rows * UnifontRasterizer.HEIGHT
-    override val size: Vec2i = Vec2i(resolution)
+    val size: Vec2i = Vec2i(resolution)
     private val pixel = 1.0f / size.x
-    override val transparency: TextureTransparencies = TextureTransparencies.TRANSPARENT
-    override val mipmaps: Int get() = 0
 
-    override lateinit var array: TextureArrayProperties
-    override lateinit var renderData: TextureRenderData
-    override var data: TextureData = TextureData(RGBA8Buffer(size))
-    override var properties = ImageProperties.DEFAULT
-    override val state: TextureStates = TextureStates.LOADED
+    val buffer = RGBA8Buffer(size)
+    val texture = Texture(MemoryLoader { buffer }, 0)
 
     val remaining = IntArray(rows) { resolution }
     var totalRemaining = resolution * rows
 
-    override fun load(context: RenderContext) = Unit
 
     fun add(dataWidth: Int, width: Int, start: Int, end: Int, data: ByteArray): CodePointRenderer? {
         for ((index, remaining) in remaining.withIndex()) {
@@ -63,8 +52,8 @@ class UnifontTexture(
         return null
     }
 
-    private fun TextureData.set(row: Int, offset: Int, x: Int, y: Int) {
-        buffer.setRGBA(offset + x, (row * UnifontRasterizer.HEIGHT + y), 0xFFFFFFFF.toInt().rgba())
+    private fun TextureBuffer.set(row: Int, offset: Int, x: Int, y: Int) {
+        setRGBA(offset + x, (row * UnifontRasterizer.HEIGHT + y), 0xFFFFFFFF.toInt().rgba())
     }
 
     private fun rasterize(row: Int, offset: Int, start: Int, end: Int, dataWidth: Int, data: ByteArray): CodePointRenderer {
@@ -72,7 +61,7 @@ class UnifontTexture(
             for (x in start until end) {
                 val index = (y * dataWidth) + x
                 if (!data.isPixelSet(index)) continue
-                this.data.set(row, offset, x - start, y)
+                this.buffer.set(row, offset, x - start, y)
             }
         }
 
@@ -80,7 +69,7 @@ class UnifontTexture(
         val uvEnd = Vec2f(pixel * (offset + (end - start)), pixel * ((row + 1) * UnifontRasterizer.HEIGHT)).unsafe.apply { fixUVEnd() }.unsafe
         val width = (end - start) * (FontProperties.CHAR_BASE_HEIGHT.toFloat() / UnifontRasterizer.HEIGHT)
 
-        return UnicodeCodeRenderer(this, uvStart, uvEnd, width)
+        return UnicodeCodeRenderer(texture, uvStart, uvEnd, width)
     }
 
     companion object {

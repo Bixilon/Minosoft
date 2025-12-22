@@ -23,9 +23,10 @@ import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
+import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.SpriteAnimator
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.TextureLoader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.file.PNGTextureLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 
 abstract class StaticTextureArray(
     val context: RenderContext,
@@ -65,11 +66,11 @@ abstract class StaticTextureArray(
         }
     }
 
-    open fun create(name: ResourceLocation, mipmaps: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(name, mipmaps = it) }): Texture {
+    open fun create(name: ResourceLocation, mipmaps: Boolean = true, loader: TextureLoader = PNGTextureLoader(name)): Texture {
         if (state != TextureArrayStates.PREPARING) throw IllegalStateException("Already loaded!")
         lock.lock()
         named[name]?.let { lock.unlock(); return it }
-        val texture = factory.invoke(if (mipmaps) this.mipmaps else 0)
+        val texture = Texture(loader, if (mipmaps) this.mipmaps else 0)
 
         named[name] = texture
         lock.unlock()

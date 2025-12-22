@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 
 interface TextureRenderData {
     val shaderTextureId: Int
-    val animationData: Int
 
     fun transformUV(uv: Vec2f): Vec2f
     fun transformUV(u: Float, v: Float): PackedUV
