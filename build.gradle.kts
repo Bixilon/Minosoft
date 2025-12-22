@@ -395,7 +395,7 @@ dependencies {
 
     // de.bixilon
     implementation("de.bixilon", "kutil", kutilVersion)
-    implementation("de.bixilon", "jiibles", "1.1.1")
+    implementation("de.bixilon", "jiibles", "1.2")
     implementation("de.bixilon", "mbf-kotlin", "1.0.3") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3.1") { exclude("org.openjfx", "javafx-controls") } // TODO: remove this, it is really large
 

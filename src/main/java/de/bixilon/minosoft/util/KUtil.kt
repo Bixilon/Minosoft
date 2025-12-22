@@ -15,7 +15,6 @@ package de.bixilon.minosoft.util
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
 import de.bixilon.kmath.vec.vec3.d.Vec3d
@@ -238,17 +237,6 @@ object KUtil {
 
     fun Vec3d.matches(other: Vec3d, margin: Double = DoubleUtil.DEFAULT_MARGIN): Boolean {
         return x.matches(other.x, margin) && y.matches(other.y, margin) && z.matches(other.z, margin)
-    }
-
-    @Deprecated("jiibles 1.2")
-    fun <T> table(elements: Collection<T>, vararg headers: AnyString, builder: (T) -> Array<Any?>?): Table {
-        val table = Table(headers.unsafeCast())
-
-        for (element in elements) {
-            table += builder(element) ?: continue
-        }
-
-        return table
     }
 
     fun PlayInByteBuffer.dump(name: String) {

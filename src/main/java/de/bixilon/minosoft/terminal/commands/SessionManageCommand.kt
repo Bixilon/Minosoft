@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.terminal.commands
 
+import de.bixilon.jiibles.JiiblesUtil.table
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.CommandNode
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.commands.parser.selector.AbstractTarget
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.terminal.cli.CLI
-import de.bixilon.minosoft.util.KUtil.table
 
 object SessionManageCommand : Command {
     override var node = LiteralNode("session", aliases = setOf("connection"))
