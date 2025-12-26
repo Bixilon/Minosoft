@@ -13,10 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.assets.TestAssetsManager.box
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
@@ -24,11 +27,18 @@ import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyStaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureLoader
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureRenderData
 import de.bixilon.minosoft.test.ITUtil.allocate
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ModelTestUtil {
-    private val cache = BlockLoader::class.java.getFieldOrNull("cache")!!
+    private val cache = BlockLoader::class.java.getFieldOrNull("cache")!!.field
+    private val named = DummyStaticTextureArray::class.java.getFieldOrNull("named")!!.field
+    private val context = RenderContext::class.java.allocate()
 
     fun createLoader(): ModelLoader {
         val instance = ModelLoader::class.java.allocate()
@@ -62,6 +72,9 @@ object ModelTestUtil {
 
     fun SingleBlockStateApply.bake(textures: TextureManager): BakedModel? {
         load(textures)
+
+        named.get<Map<String, Texture>>(textures.static).values.forEach { it::loader.forceSet(DummyTextureLoader); it.load(context); it.renderData = DummyTextureRenderData; it.transparency = TextureTransparencies.OPAQUE }
+
         return bake()
     }
 

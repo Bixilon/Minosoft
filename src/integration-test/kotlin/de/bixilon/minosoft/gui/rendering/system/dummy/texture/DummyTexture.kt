@@ -11,21 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.types.dummy
+package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
-import de.bixilon.kmath.vec.vec2.f.Vec2f
-import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer
-import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer.Companion.DEFAULT_ASCENT
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
-import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureLoader
+import de.bixilon.minosoft.test.ITUtil.allocate
 
-class DummyCodePointRenderer(
-    override val uvStart: Vec2f = Vec2f(0.1f, 0.2f),
-    override val uvEnd: Vec2f = Vec2f(0.6f, 0.7f),
-    override val width: Float = 5.0f,
-    override val ascent: Float = DEFAULT_ASCENT,
-    override val height: Float = 8.0f,
-) : AscentedCodePointRenderer {
-    override val texture = DummyTexture()
-}
+private val CONTEXT = RenderContext::class.java.allocate()
+
+fun DummyTexture() = Texture(DummyTextureLoader).apply { load(CONTEXT); renderData = DummyTextureRenderData }
+
