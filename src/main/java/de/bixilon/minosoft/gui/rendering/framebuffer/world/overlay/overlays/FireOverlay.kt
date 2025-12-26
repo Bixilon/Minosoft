@@ -54,7 +54,8 @@ class FireOverlay(
     private fun updateMesh() {
         val mesh = SimpleTextureMeshBuilder(context)
 
-        // ToDo: Minecraft does this completely different...
+        // ToDo: Minecraft does this completely different...#
+        // TODO: flip upside down
         mesh.addQuad(arrayOf(
             Vec3f(-2.0f, -2.4f, +0.0f),
             Vec3f(-2.0f, +0.4f, +0.0f),

@@ -22,8 +22,6 @@ interface TextureArray {
     fun upload(latch: AbstractLatch?)
     fun load(latch: AbstractLatch?)
 
-    fun activate()
-
     @Deprecated("use safe uniforms")
     fun use(shader: TextureShader, name: String = ShaderUniforms.TEXTURES)
 }

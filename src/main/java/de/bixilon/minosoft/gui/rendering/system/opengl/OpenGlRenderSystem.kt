@@ -81,6 +81,7 @@ class OpenGlRenderSystem(
 
     var nextUniformBufferIndex = 0
     var nextTextureIndex = 0
+    val framebufferTextureIndex = nextTextureIndex++
 
     override var framebuffer: Framebuffer? = null
         set(value) {

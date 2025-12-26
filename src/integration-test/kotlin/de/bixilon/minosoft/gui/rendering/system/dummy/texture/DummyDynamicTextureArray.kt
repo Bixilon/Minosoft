@@ -24,7 +24,6 @@ class DummyDynamicTextureArray(context: RenderContext) : DynamicTextureArray(con
 
     override fun unload() = Unit
     override fun unsafeUse(shader: TextureShader, name: String) = Unit
-    override fun activate() = Unit
     override fun upload() = Unit
     override fun upload(index: Int, texture: DynamicTexture) {
 

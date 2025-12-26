@@ -114,7 +114,7 @@ class OpenGlFramebuffer(
 
     override fun bindTexture() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
-        texture?.bind(0)
+        texture?.bind()
     }
 
     protected fun finalize() {
