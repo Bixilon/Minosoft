@@ -41,7 +41,8 @@ class Texture(
     val mipmaps: Int = 1,
 ) : ShaderTexture {
     var state = TextureStates.DECLARED
-    var size: Vec2i = unsafeNull()
+    private var _size: Vec2i? = null
+    val size: Vec2i get() = _size!!
     var properties: ImageProperties = unsafeNull()
     var animation: TextureAnimation? = null
     override var transparency: TextureTransparencies = unsafeNull()
@@ -58,7 +59,6 @@ class Texture(
         if (state == TextureStates.LOADED) return
 
         val (buffer, properties) = tryRead(context)
-        this.data = createData(mipmaps, buffer)
         this.properties = properties ?: ImageProperties.DEFAULT
 
 
@@ -71,7 +71,11 @@ class Texture(
     private fun loadSprites(context: RenderContext, properties: AnimationProperties, buffer: TextureBuffer) {
         val (frames, animation) = context.textures.static.animator.create(this, buffer, properties)
         this.animation = animation
-        this.size = frames.size
+        this._size = frames.size
+
+        this.data = createData(mipmaps, animation.frame1)
+
+
 
         var transparency = TextureTransparencies.OPAQUE
 
@@ -91,7 +95,7 @@ class Texture(
     private fun load(buffer: TextureBuffer) {
         val data = createData(mipmaps, buffer)
 
-        this.size = data.size
+        this._size = data.size
         this.transparency = buffer.getTransparency()
         this.data = data
     }

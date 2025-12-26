@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
+import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.TextureAnimation
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureLoader
 import org.testng.Assert.assertEquals
@@ -25,12 +27,12 @@ import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["textures"])
 class TextureAnimationTest {
-    private val a = Texture(DummyTextureLoader, 0)
-    private val b = Texture(DummyTextureLoader, 0)
-    private val c = Texture(DummyTextureLoader, 0)
+    private val a = RGBA8Buffer(Vec2i(1, 1))
+    private val b = RGBA8Buffer(Vec2i(1, 1))
+    private val c = RGBA8Buffer(Vec2i(1, 1))
 
     private fun create(frames: Array<AnimationFrame> = arrayOf(AnimationFrame(0, 500.milliseconds, a), AnimationFrame(1, 1.seconds, b), AnimationFrame(2, 2.seconds, c))): TextureAnimation {
-        return TextureAnimation(frames, true, frames.map { it.texture }.toList().toTypedArray())
+        return TextureAnimation(frames, true, frames.map { it.buffer }.toList().toTypedArray())
     }
 
     fun `first frame`() {

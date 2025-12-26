@@ -16,10 +16,12 @@ package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.MemoryLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
 import java.util.stream.IntStream
@@ -58,9 +60,8 @@ class BitmapFontTypeTest {
         }
         assertEquals(buffer.data.position(), buffer.data.limit())
 
-        val texture = DummyTexture()
-        texture.size = size
-        texture.data = TextureData(buffer)
+        val texture = Texture(MemoryLoader { buffer })
+        texture.load(RenderContext::class.java.allocate())
 
         return texture
     }
