@@ -36,6 +36,8 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
         animator.init()
     }
 
+    override fun update(texture: Texture) = Unit
+
     override fun findResolution(size: Vec2i) = size
 
     override fun activate() = Unit
