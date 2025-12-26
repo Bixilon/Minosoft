@@ -40,6 +40,5 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
 
     override fun findResolution(size: Vec2i) = size
 
-    override fun activate() = Unit
     override fun use(shader: TextureShader, name: String) = Unit
 }

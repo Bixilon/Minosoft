@@ -34,6 +34,7 @@ class OpenGlTextureAttachment(
         if (state != AttachmentStates.PREPARING) throw IllegalStateException("Already initialized (state=$state)")
 
         id = gl { glGenTextures() }
+        gl { glActiveTexture(GL_TEXTURE0 + system.framebufferTextureIndex) }
         gl { glBindTexture(GL_TEXTURE_2D, id) }
         gl { glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
@@ -43,10 +44,10 @@ class OpenGlTextureAttachment(
     }
 
 
-    fun bind(target: Int) {
+    fun bind() {
         if (state != AttachmentStates.GENERATED) throw IllegalStateException("Not loaded (state=$state)")
-        check(target in 0 until 12)
-        gl { glActiveTexture(GL_TEXTURE0 + target) }
+
+        glActiveTexture(GL_TEXTURE0 + system.framebufferTextureIndex)
         gl { glBindTexture(GL_TEXTURE_2D, id) }
     }
 

@@ -104,6 +104,8 @@ class Texture(
     override fun transformV(v: Float) = renderData.transformV(v)
     override fun transformUV(uv: PackedUV) = renderData.transformUV(uv)
 
+    override fun toString() = loader.toString()
+
     fun createData(mipmaps: Int = this.mipmaps, buffer: TextureBuffer): TextureData {
         if (mipmaps <= 0) return TextureData(buffer)
         return MipmapTextureData(buffer, mipmaps)

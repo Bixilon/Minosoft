@@ -140,9 +140,6 @@ object RenderLoader {
             }
         }
 
-        textures.dynamic.activate()
-        textures.static.activate()
-
         query.init()
 
 

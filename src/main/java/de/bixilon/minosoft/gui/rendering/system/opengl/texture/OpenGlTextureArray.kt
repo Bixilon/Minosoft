@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
@@ -39,35 +40,19 @@ class OpenGlTextureArray(
     mipmaps: Int,
 ) : StaticTextureArray(system.context, async, mipmaps) {
     private var handles = IntArray(RESOLUTIONS.size) { -1 }
+    private var indices = IntArray(RESOLUTIONS.size) { -1 }
 
     private val resolution = Array<MutableList<Texture>>(RESOLUTIONS.size) { mutableListOf() }
-    private val lastTextureId = IntArray(RESOLUTIONS.size)
 
-    init {
-        system.nextTextureIndex += RESOLUTIONS.size
-    }
-
-    override fun activate() {
-        system.log { "Activating static texture array" }
-        for ((index, textureId) in handles.withIndex()) {
-            if (textureId == -1) {
-                continue
-            }
-            gl { glActiveTexture(GL_TEXTURE0 + index) }
-            gl { glBindTexture(GL_TEXTURE_2D_ARRAY, textureId) }
-        }
-    }
 
     override fun use(shader: TextureShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         system.log { "Binding static textures to $shader" }
         shader.use()
-        activate()
 
-        for ((index, textureId) in handles.withIndex()) {
-            if (textureId == -1) continue
+        for (index in indices) {
+            if (index == -1) continue
 
-            gl { glBindTexture(GL_TEXTURE_2D_ARRAY, textureId) }
             shader.native.setTexture("$name[$index]", index)
         }
     }
@@ -88,16 +73,6 @@ class OpenGlTextureArray(
         return -1
     }
 
-    private fun prepareUpload(arrayId: Int, texture: Texture) {
-        val resolution = RESOLUTIONS[arrayId]
-        val size = texture.size
-
-        val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
-
-        this.resolution[arrayId] += texture
-        texture.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd)
-    }
-
     private fun glUpload(texture: Texture) {
         val data = texture.renderData.cast<OpenGlTextureData>()
 
@@ -110,15 +85,20 @@ class OpenGlTextureArray(
     }
 
 
-    private fun upload(resolution: Int, textures: List<Texture>): Int {
+    private fun upload(active: Int, resolution: Int, textures: List<Texture>): Int {
         system.log { "Uploading ${resolution}x${resolution} static textures" }
-        val handle = OpenGlTextureUtil.createTextureArray(mipmaps)
+        val handle = OpenGlTextureUtil.createTextureArray(active, mipmaps)
 
         for (level in 0..mipmaps) {
             gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         }
 
+        var textureId = 0
         for (texture in textures) {
+            val size = texture.size
+            val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
+            texture.renderData = OpenGlTextureData(active, textureId++, uvEnd)
+
             glUpload(texture)
 
             if (texture.animation == null) {
@@ -132,8 +112,11 @@ class OpenGlTextureArray(
     override fun update(texture: Texture) {
         val data = texture.renderData.cast<OpenGlTextureData>()
 
-        val handle = handles[data.array]
-        if (handle < 0) return
+        val handle = handles[indices.indexOf(data.array)]
+        assert(handle >= 0)
+
+
+        gl { glActiveTexture(GL_TEXTURE0 + data.array) }
         gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
 
         glUpload(texture)
@@ -154,7 +137,8 @@ class OpenGlTextureArray(
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find texture array for $arrayId" }
                 continue
             }
-            prepareUpload(arrayId, texture)
+
+            this.resolution[arrayId] += texture
         }
     }
 
@@ -163,10 +147,19 @@ class OpenGlTextureArray(
         var total = 0
         for ((index, textures) in resolution.withIndex()) {
             if (textures.isEmpty()) continue
-            handles[index] = upload(RESOLUTIONS[index], textures)
+
+            val active = system.nextTextureIndex++
+            indices[index] = active
+
+            handles[index] = upload(active, RESOLUTIONS[index], textures)
             total += textures.size
         }
+
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.size} animated ones, split into $total layers!" }
+
+        this::named.forceSet(null)
+        this::resolution.forceSet(null)
+        this::other.forceSet(null)
 
         animator.init()
         state = TextureArrayStates.UPLOADED

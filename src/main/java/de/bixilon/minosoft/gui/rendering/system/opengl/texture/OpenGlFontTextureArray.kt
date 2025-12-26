@@ -39,11 +39,11 @@ class OpenGlFontTextureArray(
 ) : FontTextureArray(system.context, RESOLUTION, compressed) {
     val index = system.nextTextureIndex++
     private var handle = -1
-    private var textureIndex = 0
 
 
     override fun upload(latch: AbstractLatch?) {
-        this.handle = OpenGlTextureUtil.createTextureArray(0)
+        this.handle = OpenGlTextureUtil.createTextureArray(index, 0)
+
         // Texture alpha format is also available in OpenGL compatibility profile and WebGL but was removed in OpenGL core profile. An alternative is to rely on texture red format and texture swizzle as shown with the following code samples. (see https://www.g-truc.net/post-0734.html)
         val format = when (compression) {
             FontCompressions.NONE -> GL_RGBA8
@@ -56,43 +56,37 @@ class OpenGlFontTextureArray(
 
         gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
 
+        var index = 0
         for (texture in textures) {
-            val renderData = texture.renderData as OpenGlTextureData
+            val size = texture.size
+
+            val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
+
+            texture.renderData = OpenGlTextureData(this.index, index++, uvEnd)
+
             val buffer = texture.data.buffer
             buffer.data.position(0)
             buffer.data.limit(buffer.data.capacity())
             if (compression != FontCompressions.NONE && texture.loader is PNGTextureLoader) {
                 buffer.data.copyAlphaToRGB()
             }
-            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
+            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, index - 1, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
         }
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${textures.size} font textures" }
         state = TextureArrayStates.UPLOADED
     }
 
-    override fun activate() {
-        gl { glActiveTexture(GL_TEXTURE0 + index) }
-        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
-    }
-
     override fun use(shader: TextureShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         shader.use()
-        activate()
 
-        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
         shader.native.setTexture("$name[$index]", index)
     }
 
 
     private fun load(texture: Texture) {
         if (texture.state != TextureStates.LOADED) texture.load(context)
-        val size = texture.size
-
-        val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2f(size) / resolution
-
-        texture.renderData = OpenGlTextureData(this.index, textureIndex++, uvEnd)
     }
 
     override fun load(latch: AbstractLatch?) {

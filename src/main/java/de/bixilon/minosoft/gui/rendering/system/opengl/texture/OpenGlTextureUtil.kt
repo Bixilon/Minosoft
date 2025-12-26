@@ -19,13 +19,19 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LEVEL
+import org.lwjgl.opengl.GL13.GL_TEXTURE0
+import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 
 object OpenGlTextureUtil {
 
-    fun createTextureArray(mipmaps: Int): Int {
+    fun createTextureArray(index: Int, mipmaps: Int): Int {
+        assert(index >= 0)
         val textureId = gl { glGenTextures() }
+
+        gl { glActiveTexture(GL_TEXTURE0 + index) }
         gl { glBindTexture(GL_TEXTURE_2D_ARRAY, textureId) }
+
         gl { glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT) }
         gl { glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT) }
         gl { glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, if (mipmaps == 0) GL_NEAREST else GL_NEAREST_MIPMAP_NEAREST) }

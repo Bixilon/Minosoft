@@ -24,6 +24,11 @@ class OpenGlTextureData(
 ) : TextureRenderData {
     override val shaderTextureId: Int = (array shl 28) or (index shl 12)
 
+    init {
+        assert(array >= 0 && array <= 15) // update in texture.glsl too
+        assert(index >= 0)
+    }
+
     override fun transformUV(uv: Vec2f): Vec2f {
         if (uvEnd == null) return uv
 

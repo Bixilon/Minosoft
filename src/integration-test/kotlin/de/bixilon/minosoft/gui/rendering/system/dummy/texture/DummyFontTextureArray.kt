@@ -33,8 +33,6 @@ class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 
     override fun load(latch: AbstractLatch?) {
     }
 
-    override fun activate() {
-    }
 
     override fun use(shader: TextureShader, name: String) {
     }

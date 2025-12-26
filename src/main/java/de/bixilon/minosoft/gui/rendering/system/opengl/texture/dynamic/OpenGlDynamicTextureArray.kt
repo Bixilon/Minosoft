@@ -51,10 +51,10 @@ class OpenGlDynamicTextureArray(
             context.queue += { upload(index, texture) }
             return
         }
+        gl { glActiveTexture(GL_TEXTURE0 + this.index) }
         gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
 
         unsafeUpload(index, texture)
-        context.textures.static.activate() // TODO: why?
         texture.state = DynamicTextureState.LOADED
     }
 
@@ -78,7 +78,8 @@ class OpenGlDynamicTextureArray(
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
         system.log { "Uploading dynamic textures" }
-        val handle = OpenGlTextureUtil.createTextureArray(mipmaps)
+        val handle = OpenGlTextureUtil.createTextureArray(index, mipmaps)
+
         for (level in 0..mipmaps) {
             gl { glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         }
@@ -93,15 +94,6 @@ class OpenGlDynamicTextureArray(
         for (shader in shaders) {
             unsafeUse(shader)
         }
-
-        context.textures.static.activate() // TODO: why?
-
-    }
-
-    override fun activate() {
-        system.log { "Activating dynamic textures" }
-        gl { glActiveTexture(GL_TEXTURE0 + index) }
-        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
     }
 
     override fun unsafeUse(shader: TextureShader, name: String) {
@@ -109,12 +101,13 @@ class OpenGlDynamicTextureArray(
         system.log { "Binding dynamic textures to $shader" }
         val native = shader.native.unsafeCast<OpenGlNativeShader>()
         shader.use()
-        activate()
+
         native.setTexture("$name[$index]", index)
     }
 
     override fun unload() {
         if (handle < 0) throw IllegalStateException("Not loaded!")
+        gl { glActiveTexture(GL_TEXTURE0 + index) }
         gl { glDeleteTextures(handle) }
         this.handle = -1
     }
