@@ -26,9 +26,6 @@ class GLSLShaderCode(
     val defines: MutableMap<String, Any> = mutableMapOf()
 
     init {
-        for ((name, value) in NativeShader.DEFAULT_DEFINES) {
-            value(context)?.let { defines[name] = it }
-        }
         defines[context.system.vendor.define] = ""
     }
 

@@ -11,24 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.data
+package de.bixilon.minosoft.gui.rendering.system.base.texture.animator
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
-import org.objenesis.ObjenesisStd
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 
-open class TextureData(
-    val buffer: TextureBuffer,
-) {
-    val size: Vec2i get() = buffer.size
-
-    open fun collect(): Array<TextureBuffer> = arrayOf(buffer)
+object SpriteUtil {
+    private val NEXT = AnimationFrame::next.field
 
 
-    open fun copy() = TextureData(buffer.copy())
-
-
-    companion object {
-        val NULL = ObjenesisStd().newInstance(TextureData::class.java)
+    fun Array<AnimationFrame>.mapNext() {
+        for ((index, frame) in this.withIndex()) {
+            NEXT[frame] = this[(index + 1) % this.size]
+        }
     }
 }
