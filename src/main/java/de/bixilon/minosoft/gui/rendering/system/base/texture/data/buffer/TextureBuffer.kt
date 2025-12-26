@@ -52,6 +52,23 @@ interface TextureBuffer {
         return target
     }
 
+    fun interpolate(a: TextureBuffer, b: TextureBuffer, progress: Float) {
+        assert(a.size == b.size)
+        assert(a.size == size)
+
+        // TODO: optimize (specialize; simd)
+        for (y in 0 until size.y) {
+            for (x in 0 until size.x) {
+                val a = a.getRGBA(x, y)
+                val b = b.getRGBA(x, y)
+
+                val destination = a.mix(b, progress)
+
+                this.setRGBA(x, y, destination)
+            }
+        }
+    }
+
     operator fun get(x: Int, y: Int) = getRGBA(x, y)
 
     fun getR(x: Int, y: Int): Int

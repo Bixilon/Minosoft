@@ -69,27 +69,12 @@ class Texture(
 
 
     private fun loadSprites(context: RenderContext, properties: AnimationProperties, buffer: TextureBuffer) {
-        val (frames, animation) = context.textures.static.animator.create(this, buffer, properties)
+        val animation = context.textures.static.animator.create(this, buffer, properties)
         this.animation = animation
-        this._size = frames.size
+        this._size = animation.frame.data.size
 
-        this.data = createData(mipmaps, animation.frame1)
-
-
-
-        var transparency = TextureTransparencies.OPAQUE
-
-        // TODO:
-        // for (sprite in animation.sprites) {
-        //     when (sprite.transparency) {
-        //         TextureTransparencies.OPAQUE -> continue
-        //         TextureTransparencies.TRANSPARENT -> transparency = TextureTransparencies.TRANSPARENT
-        //         TextureTransparencies.TRANSLUCENT -> {
-        //             transparency = TextureTransparencies.TRANSLUCENT; break
-        //         }
-        //     }
-        // }
-        this.transparency = transparency
+        this.data = animation.frame.data
+        this.transparency = buffer.getTransparency()
     }
 
     private fun load(buffer: TextureBuffer) {

@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.animator
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import kotlin.time.Duration
 
 data class AnimationFrame(
-    val index: Int,
     val time: Duration,
-    val buffer: TextureBuffer,
-)
+    val data: TextureData,
+) {
+    val next: AnimationFrame = unsafeNull()
+}

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.text.formatting.color
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec4.f.Vec4f
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -68,6 +69,13 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
 
     fun mix(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
     fun mixRGB(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, alpha * other.alpha)
+
+    fun mix(other: RGBAColor, progress: Float) = RGBAColor(
+        interpolateLinear(redf, other.redf, progress),
+        interpolateLinear(greenf, other.greenf, progress),
+        interpolateLinear(bluef, other.bluef, progress),
+        interpolateLinear(alphaf, other.alphaf, progress),
+    )
 
 
     fun toVec3f() = Vec3f(redf, greenf, bluef)

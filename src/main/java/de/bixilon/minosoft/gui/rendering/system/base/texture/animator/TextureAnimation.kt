@@ -13,61 +13,49 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.animator
 
-import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.time.DurationUtil.rem
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import kotlin.time.Duration
 
 class TextureAnimation(
+    val texture: Texture,
     val frames: Array<AnimationFrame>,
     val interpolate: Boolean,
-    val sprites: Array<TextureBuffer>,
 ) {
-    private val totalTime = frames.getTotalTime()
-    private var frame = frames.first()
+    private val total = frames.sumOf { it.time }
     private var time = Duration.ZERO
 
-    var frame1: TextureBuffer = frame.buffer
-        private set
-    var frame2: TextureBuffer = frame.next().buffer
+    var frame: AnimationFrame = frames.first()
         private set
     var progress = 0.0f
         private set
 
+    val data = frame.data.copy()
+
     init {
-        assert(frames.isNotEmpty() && totalTime > Duration.ZERO) { "Invalid texture animation!" }
+        assert(frames.isNotEmpty() && total > Duration.ZERO) { "Invalid texture animation!" }
     }
 
-    private fun Array<AnimationFrame>.getTotalTime(): Duration {
-        var total = Duration.ZERO
-        for (frame in this) {
-            total += frame.time
+    @Deprecated("kutil 1.30.3")
+    inline fun <E> Array<E>.sumOf(selector: (E) -> Duration): Duration {
+        var sum = Duration.ZERO
+        for (element in this) {
+            sum += selector.invoke(element)
         }
 
-        return total
+        return sum
     }
 
-
     fun update(delta: Duration) {
-        val delta = delta % totalTime
+        val delta = delta % total
         var frame = this.frame
         var left = this.time + delta
         while (left >= frame.time) {
             left -= frame.time
-            frame = frame.next()
+            frame = frame.next
         }
         this.frame = frame
         this.time = left
-        this.frame1 = frame.buffer
-        this.frame2 = frame.next().buffer
         this.progress = if (left == Duration.ZERO) 0.0f else (left / frame.time).toFloat()
-    }
-
-    private fun AnimationFrame.next(): AnimationFrame {
-        var next = index + 1
-        if (!frames.isIndex(next)) {
-            next = 0
-        }
-        return frames[next]
     }
 }

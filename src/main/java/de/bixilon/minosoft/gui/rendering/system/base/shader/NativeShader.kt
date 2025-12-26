@@ -68,11 +68,6 @@ interface NativeShader {
     operator fun set(uniform: String, value: UniformBuffer) = setUniformBuffer(uniform, value)
 
     companion object {
-        val DEFAULT_DEFINES: Map<String, (context: RenderContext) -> Any?> = mapOf(
-            "ANIMATED_TEXTURE_COUNT" to {
-                max(it.textures.static.animator.size, 1)
-            }
-        )
 
         fun ResourceLocation.shader(): ResourceLocation {
             return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")

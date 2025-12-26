@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.AnimationFrame
+import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.SpriteUtil.mapNext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.TextureAnimation
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureLoader
@@ -27,90 +29,94 @@ import kotlin.time.Duration.Companion.seconds
 
 @Test(groups = ["textures"])
 class TextureAnimationTest {
-    private val a = RGBA8Buffer(Vec2i(1, 1))
-    private val b = RGBA8Buffer(Vec2i(1, 1))
-    private val c = RGBA8Buffer(Vec2i(1, 1))
+    private val a = TextureData(RGBA8Buffer(Vec2i(1, 1)))
+    private val b = TextureData(RGBA8Buffer(Vec2i(1, 1)))
+    private val c = TextureData(RGBA8Buffer(Vec2i(1, 1)))
 
-    private fun create(frames: Array<AnimationFrame> = arrayOf(AnimationFrame(0, 500.milliseconds, a), AnimationFrame(1, 1.seconds, b), AnimationFrame(2, 2.seconds, c))): TextureAnimation {
-        return TextureAnimation(frames, true, frames.map { it.buffer }.toList().toTypedArray())
+    private fun create(frames: Array<AnimationFrame> = arrayOf(AnimationFrame(500.milliseconds, a), AnimationFrame(1.seconds, b), AnimationFrame(2.seconds, c))): TextureAnimation {
+        frames.mapNext()
+        return TextureAnimation(Texture(DummyTextureLoader), frames, true)
+    }
+
+    private fun assertSame(frame: AnimationFrame, data: TextureData) {
+        assertSame(frame.data, data)
+    }
+
+    fun `corrext next frame pointer`() {
+        val animation = create()
+
+        assertSame(animation.frame, a)
+        assertSame(animation.frame.next, b)
+        assertSame(animation.frame.next.next, c)
+        assertSame(animation.frame.next.next.next, a)
     }
 
     fun `first frame`() {
         val animation = create()
-        assertSame(animation.frame1, a)
-        assertSame(animation.frame2, b)
+        assertSame(animation.frame, a)
         assertEquals(animation.progress, 0.0f)
     }
 
     fun `draw 0,5 frames`() {
         val animation = create()
         animation.update(0.25f)
-        assertSame(animation.frame1, a)
-        assertSame(animation.frame2, b)
+        assertSame(animation.frame, a)
         assertEquals(animation.progress, 0.5f)
     }
 
     fun `draw 1,0 frames`() {
         val animation = create()
         animation.update(0.5f)
-        assertSame(animation.frame1, b)
-        assertSame(animation.frame2, c)
+        assertSame(animation.frame, b)
         assertEquals(animation.progress, 0.0f)
     }
 
     fun `draw 1,5 frames`() {
         val animation = create()
         animation.update(1.0f)
-        assertSame(animation.frame1, b)
-        assertSame(animation.frame2, c)
+        assertSame(animation.frame, b)
         assertEquals(animation.progress, 0.5f)
     }
 
     fun `draw 2,0 frames`() {
         val animation = create()
         animation.update(1.5f)
-        assertSame(animation.frame1, c)
-        assertSame(animation.frame2, a)
+        assertSame(animation.frame, c)
         assertEquals(animation.progress, 0.0f)
     }
 
     fun `draw 2,5 frames`() {
         val animation = create()
         animation.update(2.5f)
-        assertSame(animation.frame1, c)
-        assertSame(animation.frame2, a)
+        assertSame(animation.frame, c)
         assertEquals(animation.progress, 0.5f)
     }
 
     fun `draw 3,0 frames`() {
         val animation = create()
         animation.update(3.0f)
-        assertSame(animation.frame1, c)
-        assertSame(animation.frame2, a)
+        assertSame(animation.frame, c)
         assertEquals(animation.progress, 0.75f)
     }
 
     fun `draw 3,5 frames`() {
         val animation = create()
         animation.update(3.5f)
-        assertSame(animation.frame1, a)
-        assertSame(animation.frame2, b)
+        assertSame(animation.frame, a)
         assertEquals(animation.progress, 0.0f)
     }
 
     fun `draw 2 frames at once`() {
         val animation = create()
         animation.update(2.0f)
-        assertSame(animation.frame1, c)
-        assertSame(animation.frame2, a)
+        assertSame(animation.frame, c)
         assertEquals(animation.progress, 0.25f)
     }
 
     fun `draw but just one frame available`() {
-        val animation = create(arrayOf(AnimationFrame(0, 1.seconds, a)))
+        val animation = create(arrayOf(AnimationFrame(1.seconds, a)))
         animation.update(2.0f)
-        assertSame(animation.frame1, a)
-        assertSame(animation.frame2, a)
+        assertSame(animation.frame, a)
         assertEquals(animation.progress, 0.0f)
     }
 
@@ -119,8 +125,7 @@ class TextureAnimationTest {
         animation.update(1.0f)
         animation.update(1.0f)
         animation.update(0.5f)
-        assertSame(animation.frame1, c)
-        assertSame(animation.frame2, a)
+        assertSame(animation.frame, c)
         assertEquals(animation.progress, 0.5f)
     }
 

@@ -19,6 +19,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.SpriteUtil.mapNext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
@@ -38,31 +39,37 @@ class SpriteAnimator(val context: RenderContext) {
     }
 
     fun update() {
+        if (!enabled) return
         val now = now()
         val delta = now - previous
         update(delta)
         previous = now
     }
 
-    fun update(animation: TextureAnimation, first: TextureBuffer, second: TextureBuffer, progress: Float) {
-        // val buffer = buffer!!
-        // val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
-        // buffer.data[offset + 0] = first.shaderId
-        // buffer.data[offset + 1] = second.shaderId
-        // buffer.data[offset + 2] = progress.toBits()
+    fun update(animation: TextureAnimation) {
+        val destination = animation.data.collect()
+        val a = animation.frame.data.collect()
+        val b = animation.frame.next.data.collect()
+
+        assert(destination.size == a.size && destination.size == b.size)
+
+
+        for (index in 0 until destination.size) {
+            destination[index].interpolate(a[index], b[index], if (animation.interpolate) animation.progress else 0.0f)
+        }
+
+        // TODO: context.textures.static.update(animation.texture)
     }
 
     private fun update(delta: Duration) {
         for (animation in animations) {
             animation.update(delta)
 
-            update(animation, animation.frame1, animation.frame2, animation.progress)
+            update(animation)
         }
     }
 
-
-    @Synchronized
-    fun create(texture: Texture, source: TextureBuffer, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
+    fun create(texture: Texture, source: TextureBuffer, properties: AnimationProperties): TextureAnimation {
         val data = properties.create(source.size)
 
         val sprites: Array<TextureBuffer> = arrayOfNulls<TextureBuffer?>(data.textures).cast()
@@ -81,12 +88,18 @@ class SpriteAnimator(val context: RenderContext) {
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Animation is referencing invalid frame: $texture (frame=${frame.texture})" }
                 sprite = sprites.first()
             }
-            frames[index] = AnimationFrame(index, frame.time, sprite)
+            frames[index] = AnimationFrame(frame.time, texture.createData(buffer = sprite))
         }
 
-        val animation = TextureAnimation(frames, properties.interpolate, sprites)
-        this.animations += animation
+        frames.mapNext()
 
-        return Pair(data, animation)
+
+        val animation = TextureAnimation(texture, frames, properties.interpolate)
+
+        synchronized(this) {
+            this.animations += animation
+        }
+
+        return animation
     }
 }
