@@ -18,6 +18,7 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.SpriteUtil.mapNext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -47,7 +48,7 @@ class SpriteAnimator(val context: RenderContext) {
     }
 
     fun update(animation: TextureAnimation) {
-        val destination = animation.data.collect()
+        val destination = animation.texture.data.collect()
         val a = animation.frame.data.collect()
         val b = animation.frame.next.data.collect()
 
@@ -58,7 +59,7 @@ class SpriteAnimator(val context: RenderContext) {
             destination[index].interpolate(a[index], b[index], if (animation.interpolate) animation.progress else 0.0f)
         }
 
-        // TODO: context.textures.static.update(animation.texture)
+        context.textures.static.update(animation.texture) // TODO: split from interpolation (async)?
     }
 
     private fun update(delta: Duration) {

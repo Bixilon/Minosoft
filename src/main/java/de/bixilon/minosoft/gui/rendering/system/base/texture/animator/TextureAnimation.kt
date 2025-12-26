@@ -30,7 +30,6 @@ class TextureAnimation(
     var progress = 0.0f
         private set
 
-    val data = frame.data.copy()
 
     init {
         assert(frames.isNotEmpty() && total > Duration.ZERO) { "Invalid texture animation!" }

@@ -120,5 +120,22 @@ class RGBAColorTest {
         assertEquals(grey * grey, RGBAColor(0.25f, 0.25f, 0.25f, 1.0f))
     }
 
+    @Test
+    fun `mix max`() {
+        val a = RGBAColor(0xFF, 0x00, 0x00, 0xFF)
+        val b = RGBAColor(0x00, 0xFF, 0xFF, 0x00)
+
+        assertEquals(a.mix(b, 0.5f), RGBAColor(0x7F, 0x7F, 0x7F, 0x7F))
+    }
+
+    @Test
+    fun `mix 50`() {
+        val a = RGBAColor(0x12, 0x34, 0x56, 0x78)
+        val b = RGBAColor(0x9A, 0xBC, 0xDE, 0xFF)
+
+        assertEquals(a.mix(b, 0.5f), RGBAColor(0x56, 0x78, 0x9A, 0xBB))
+    }
+
+
     // TODO: operations (plus, times), toString, mix
 }

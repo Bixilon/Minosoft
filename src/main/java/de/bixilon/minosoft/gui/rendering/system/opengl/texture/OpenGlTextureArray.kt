@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
@@ -64,9 +65,7 @@ class OpenGlTextureArray(
         activate()
 
         for ((index, textureId) in handles.withIndex()) {
-            if (textureId == -1) {
-                continue
-            }
+            if (textureId == -1) continue
 
             gl { glBindTexture(GL_TEXTURE_2D_ARRAY, textureId) }
             shader.native.setTexture("$name[$index]", index)
@@ -99,6 +98,17 @@ class OpenGlTextureArray(
         texture.renderData = OpenGlTextureData(arrayId, lastTextureId[arrayId]++, uvEnd)
     }
 
+    private fun glUpload(texture: Texture) {
+        val data = texture.renderData.cast<OpenGlTextureData>()
+
+        for ((level, buffer) in texture.data.collect().withIndex()) {
+            if (level > this.mipmaps) break
+            buffer.data.position(0)
+            buffer.data.limit(buffer.data.capacity())
+            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, data.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
+        }
+    }
+
 
     private fun upload(resolution: Int, textures: List<Texture>): Int {
         system.log { "Uploading ${resolution}x${resolution} static textures" }
@@ -109,18 +119,24 @@ class OpenGlTextureArray(
         }
 
         for (texture in textures) {
-            val renderData = texture.renderData as OpenGlTextureData
-            for ((level, buffer) in texture.data.collect().withIndex()) {
-                if (level > this.mipmaps) break
-                buffer.data.position(0)
-                buffer.data.limit(buffer.data.capacity())
-                gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
-            }
+            glUpload(texture)
 
-            texture.data = TextureData.NULL
+            if (texture.animation == null) {
+                texture.data = TextureData.NULL
+            }
         }
 
         return handle
+    }
+
+    override fun update(texture: Texture) {
+        val data = texture.renderData.cast<OpenGlTextureData>()
+
+        val handle = handles[data.array]
+        if (handle < 0) return
+        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
+
+        glUpload(texture)
     }
 
 

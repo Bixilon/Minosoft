@@ -95,6 +95,8 @@ abstract class StaticTextureArray(
 
     protected abstract fun upload(textures: Collection<Texture>)
 
+    abstract fun update(texture: Texture)
+
     override fun load(latch: AbstractLatch?) {
         if (state != TextureArrayStates.PREPARING) throw IllegalStateException("Already loaded!")
         val latch = latch.child(0)

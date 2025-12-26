@@ -71,10 +71,10 @@ value class RGBAColor(val rgba: Int) : Color, TextFormattable {
     fun mixRGB(other: RGBAColor) = RGBAColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, alpha * other.alpha)
 
     fun mix(other: RGBAColor, progress: Float) = RGBAColor(
-        interpolateLinear(redf, other.redf, progress),
-        interpolateLinear(greenf, other.greenf, progress),
-        interpolateLinear(bluef, other.bluef, progress),
-        interpolateLinear(alphaf, other.alphaf, progress),
+        interpolateLinear(progress, redf, other.redf),
+        interpolateLinear(progress, greenf, other.greenf),
+        interpolateLinear(progress, bluef, other.bluef),
+        interpolateLinear(progress, alphaf, other.alphaf),
     )
 
 
