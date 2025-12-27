@@ -81,7 +81,7 @@ class SpriteAnimator(val context: RenderContext) {
         val sprites: Array<TextureBuffer> = arrayOfNulls<TextureBuffer?>(data.textures).cast()
         for (i in 0 until data.textures) {
             val buffer = source.create(data.size)
-            buffer.put(source, Vec2i(0, i * buffer.size.y), Vec2i.EMPTY, data.size)
+            buffer.put(source, Vec2i(0, i * data.size.y), Vec2i.EMPTY, data.size)
 
             sprites[i] = buffer
         }

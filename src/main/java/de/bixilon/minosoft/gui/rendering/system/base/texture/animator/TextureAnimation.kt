@@ -47,13 +47,11 @@ class TextureAnimation(
 
     fun update(delta: Duration) {
         val delta = delta % total
-        var frame = this.frame
         var left = this.time + delta
         while (left >= frame.time) {
             left -= frame.time
             frame = frame.next
         }
-        this.frame = frame
         this.time = left
         this.progress = if (left == Duration.ZERO) 0.0f else (left / frame.time).toFloat()
     }

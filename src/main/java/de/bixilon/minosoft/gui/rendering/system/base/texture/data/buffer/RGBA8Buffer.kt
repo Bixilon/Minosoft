@@ -63,7 +63,7 @@ class RGBA8Buffer(
     override fun setRGB(x: Int, y: Int, value: RGBColor) = setRGBA(x, y, value.red, value.green, value.blue, 0xFF)
     override fun setRGBA(x: Int, y: Int, value: RGBAColor) = setRGBA(x, y, value.red, value.green, value.blue, value.alpha)
 
-    override fun copy() = RGBA8Buffer(size, data.duplicate())
+    override fun copy() = RGBA8Buffer(size, ByteBuffer.allocateDirect(data.limit()).apply { put(data) })
 
     override fun create(size: Vec2i) = RGBA8Buffer(size)
 

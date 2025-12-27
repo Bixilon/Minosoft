@@ -204,7 +204,7 @@ class PlaySession(
 
             worker += {
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
-                assetsManager = AssetsLoader.create(profiles.resources, version, latch.child(0))
+                assetsManager = AssetsLoader.create(profiles.resources, version)
                 assetsManager.load(latch)
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             }

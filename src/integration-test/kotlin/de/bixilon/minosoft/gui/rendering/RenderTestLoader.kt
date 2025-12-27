@@ -31,7 +31,7 @@ class RenderTestLoader {
     fun init() {
         val session = createSession(5)
         val latch = SimpleLatch(1)
-        session::assetsManager.forceSet(AssetsLoader.create(session.profiles.resources, session.version, latch))
+        session::assetsManager.forceSet(AssetsLoader.create(session.profiles.resources, session.version))
         session.assetsManager.load(latch)
         session::error.forceSet(DataObserver(null))
         RenderTestUtil.rendering = Rendering(session)

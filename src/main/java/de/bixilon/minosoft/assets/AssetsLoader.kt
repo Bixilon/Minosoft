@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,22 +36,21 @@ object AssetsLoader {
         return AssetsManagerProperties(PackProperties(packFormat))
     }
 
-    private fun SessionAssetsManager.addPacks(profile: ResourcesProfile, latch: AbstractLatch) {
+    private fun SessionAssetsManager.addPacks(profile: ResourcesProfile) {
         for (resourcePack in profile.assets.resourcePacks.reversed()) {
             val manager = resourcePack.type.creator.invoke(resourcePack)
-            manager.load(latch)
             this += manager
         }
     }
 
-    fun create(profile: ResourcesProfile, version: Version, latch: AbstractLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): SessionAssetsManager {
+    fun create(profile: ResourcesProfile, version: Version, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): SessionAssetsManager {
         val properties = profile.createPackProperties(version)
 
         val assetsManager = SessionAssetsManager(properties)
 
         assetsManager += IntegratedAssets.OVERRIDE
 
-        assetsManager.addPacks(profile, latch)
+        assetsManager.addPacks(profile)
 
         if (!profile.assets.disableIndexAssets) {
             assetsManager += IndexAssetsManager(profile, property.indexVersion, property.indexHash, profile.assets.indexAssetsTypes.toSet(), version.packFormat)

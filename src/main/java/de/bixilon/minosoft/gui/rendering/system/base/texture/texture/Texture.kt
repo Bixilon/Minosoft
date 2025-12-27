@@ -73,7 +73,7 @@ class Texture(
         this.animation = animation
         this._size = animation.frame.data.size
 
-        this.data = animation.frame.data.copy()
+        this.data = animation.frame.data.copy() // TODO: use native memory
 
         this.transparency = buffer.getTransparency()
     }
