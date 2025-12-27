@@ -97,7 +97,7 @@ class Registries(
     val statusEffect: Registry<StatusEffectType> = register("mob_effect", Registry(codec = PixlyzerStatusEffectType, integrated = IntegratedStatusEffects))
     val statistic: Registry<Statistic> = register("custom_stat", Registry(codec = Statistic))
     val biome: Registry<Biome> = register("biome", Registry(codec = Biome))
-    val dimension: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))
+    val dimension: Registry<Dimension> = register("dimension", Registry(codec = Dimension))
     val material: Registry<Material> = register("material", Registry(codec = Material))
     val fluid: FluidRegistry = register("fluid", FluidRegistry())
     val soundEvent: ResourceLocationRegistry = register("sound_event", ResourceLocationRegistry())
