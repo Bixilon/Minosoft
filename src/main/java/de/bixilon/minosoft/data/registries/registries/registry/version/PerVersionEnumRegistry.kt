@@ -15,34 +15,5 @@ package de.bixilon.minosoft.data.registries.registries.registry.version
 
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.registries.registry.enums.EnumRegistry
-import de.bixilon.minosoft.protocol.versions.Version
-import java.util.*
 
-class PerVersionEnumRegistry<T : Enum<*>>(
-    val values: ValuesEnum<T>,
-) {
-    private lateinit var versions: Map<Int, EnumRegistry<T>>
-
-
-    fun forVersion(version: Version): EnumRegistry<T>? {
-        // must loop from the highest version to lowest!
-        for ((versionId, registry) in versions) {
-            if (version.versionId < versionId) {
-                continue
-            }
-            return registry
-        }
-
-        return null
-    }
-
-    fun initialize(data: Map<String, Any>) {
-        check(!this::versions.isInitialized) { "Already initialized!" }
-
-        val versions: SortedMap<Int, EnumRegistry<T>> = sortedMapOf({ t, t2 -> t2 - t })
-        for ((versionId, json) in data) {
-            versions[versionId.toInt()] = EnumRegistry(values = values, mutable = false).initialize(json)
-        }
-        this.versions = versions
-    }
-}
+fun <T : Enum<*>> PerVersionEnumRegistry(values: ValuesEnum<T>) = PerVersionEntry { _, json -> EnumRegistry(values = values, mutable = false).initialize(json) }

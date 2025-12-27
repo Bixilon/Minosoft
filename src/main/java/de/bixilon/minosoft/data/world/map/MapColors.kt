@@ -11,14 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry.version
+package de.bixilon.minosoft.data.world.map
 
-import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.kutil.cast.CastUtil.cast
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 
-fun <E, R : AbstractRegistry<E>> PerVersionRegistry(factory: () -> R) = PerVersionEntry { versionId, json ->
-    val registry = factory.invoke()
-    registry.updatePixlyzer(json.toJsonObject(), Versions.getById(versionId)!!, null)
-    return@PerVersionEntry registry
+object MapColors {
+
+    fun deserialize(data: Any) = when (data) {
+        is IntArray -> RGBArray(data)
+        is Array<*> -> RGBArray(data.size) { data.cast<Array<Any>>()[it].toInt().rgb() }
+        is List<*> -> RGBArray(data.size) {
+            val string = data.cast<List<Any>>()[it].toString()
+            if (string.startsWith("#")) return@RGBArray string.rgb()
+            return@RGBArray string.toInt().rgb()
+        }
+
+        else -> TODO("Can not deserialize color array: $data")
+    }
 }

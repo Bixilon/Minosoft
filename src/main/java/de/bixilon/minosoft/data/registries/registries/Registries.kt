@@ -48,6 +48,7 @@ import de.bixilon.minosoft.data.registries.entities.damage.DamageType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
+import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fluid.FluidRegistry
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
@@ -60,6 +61,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.enums.FakeEnumReg
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
 import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer
 import de.bixilon.minosoft.datafixer.rls.ContainerTypeFixer
@@ -134,6 +136,7 @@ class Registries(
     val gameEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val worldEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val vibrationSource: ResourceLocationRegistry = ResourceLocationRegistry()
+
     val mapPinTypes: ResourceLocationRegistry = ResourceLocationRegistry()
 
     val argumentType: ResourceLocationRegistry = ResourceLocationRegistry()
