@@ -64,7 +64,7 @@ object FallbackRegistries {
 
     fun load() {
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading default registries..." }
-        if (this.registries.isEmpty() || this.enums.isEmpty()) throw IllegalArgumentException("Empty register?")
+        if (this.registries.isEmpty() || this.enums.isEmpty() || this.other.isEmpty()) throw IllegalArgumentException("No fallback registries?")
 
         for ((registry, file) in registries) {
             val data = IntegratedAssets.DEFAULT[file.prefix("mappings/registries/").suffix(".json")].readJsonObject()
@@ -76,6 +76,7 @@ object FallbackRegistries {
         }
         this.registries.clear()
         this.enums.clear()
+        this.other.clear()
 
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded default registries!" }
     }
