@@ -11,15 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.map
+package de.bixilon.minosoft.protocol.packets.s2c.play.map
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 
-class MapPin(
-    val position: Vec2i,
-    val direction: Int,
-    val type: ResourceLocation,
-    val displayName: ChatComponent? = null,
-)
+
+data class MapColorPatch(
+    val offset: Vec2i,
+    val size: Vec2i,
+    val data: RGBArray,
+) {
+    init {
+        assert(data.size == size.x * size.y)
+    }
+}

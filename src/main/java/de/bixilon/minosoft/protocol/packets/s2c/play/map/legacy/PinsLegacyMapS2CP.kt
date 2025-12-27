@@ -24,18 +24,20 @@ class PinsLegacyMapS2CP(
     val id: Int,
     buffer: PlayInByteBuffer,
 ) : LegacyMapS2CP {
-    val pins: Map<Vec2i, MapPin>
+    val pins: List<MapPin>
 
     init {
-        val pins: MutableMap<Vec2i, MapPin> = mutableMapOf()
-        for (i in 0 until buffer.size / 3) {
+        val count = buffer.size / 3
+        val pins: MutableList<MapPin> = ArrayList(count)
+        for (i in 0 until count) {
             val raw = buffer.readUnsignedByte()
             val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
 
             val direction = raw shr 4
             val type = buffer.session.registries.mapPinTypes[raw and 0x0F]
 
-            pins[position] = MapPin(direction, type)
+
+            pins += MapPin(position, direction, type)
         }
 
 

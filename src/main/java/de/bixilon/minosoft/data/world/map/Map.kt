@@ -16,11 +16,12 @@ package de.bixilon.minosoft.data.world.map
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 
 class Map(
     val id: Int,
     var scale: Int,
-    val data: IntArray = IntArray(WIDTH * HEIGHT),
+    val data: RGBArray = RGBArray(WIDTH * HEIGHT),
     val pins: SynchronizedMap<Vec2i, MapPin> = synchronizedMapOf(),
 ) {
 

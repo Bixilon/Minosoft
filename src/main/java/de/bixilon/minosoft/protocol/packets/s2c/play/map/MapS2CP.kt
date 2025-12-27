@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.map
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.map.MapPin
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34A
@@ -31,7 +33,8 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val scale = buffer.readUnsignedByte()
     val trackPosition = if (buffer.versionId in V_15W34A until V_20W46A) buffer.readBoolean() else true
     val locked = if (buffer.versionId >= V_19W02A) buffer.readBoolean() else true
-    val pins: Map<Vec2i, MapPin>
+    val pins: List<MapPin>
+    val patch: MapColorPatch?
 
 
     init {
@@ -39,7 +42,7 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.versionId < V_20W46A -> buffer.readVarInt()
             else -> buffer.readOptional { buffer.readVarInt() } ?: 0
         }
-        val pins: MutableMap<Vec2i, MapPin> = mutableMapOf()
+        val pins: MutableList<MapPin> = ArrayList(count)
         for (i in 0 until count) {
             if (buffer.versionId < V_18W19A) {
                 val raw = buffer.readUnsignedByte()
@@ -55,29 +58,42 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     type = raw and 0x0F
                 }
 
-                pins[position] = MapPin(direction, buffer.session.registries.mapPinTypes[type])
+                pins += MapPin(position, direction, buffer.session.registries.mapPinTypes[type])
                 continue
             }
             val type = buffer.readRegistryItem(buffer.session.registries.mapPinTypes)
             val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
             val direction = buffer.readUnsignedByte()
             val displayName = buffer.readOptional { buffer.readChatComponent() }
-            pins[position] = MapPin(direction, type, displayName)
+
+            pins += MapPin(position, direction, type, displayName)
         }
 
         this.pins = pins
     }
 
     init {
-        val columns = buffer.readUnsignedByte()
-        if (columns > 0) {
-            val rows = buffer.readUnsignedByte()
-            val xOffset = buffer.readUnsignedByte()
-            val yOffset = buffer.readUnsignedByte()
+        val sizeY = buffer.readUnsignedByte()
+        if (sizeY > 0) {
+            val size = Vec2i(buffer.readUnsignedByte(), sizeY)
+            val offset = Vec2i(buffer.readUnsignedByte(), buffer.readUnsignedByte())
             val colors = buffer.readByteArray()
+            val mapped = colors.mapColors(FallbackRegistries.MAP_COLORS.forVersion(buffer.session.version))
 
-            // ToDo
+            this.patch = MapColorPatch(offset, size, mapped)
+        } else {
+            this.patch = null
         }
+    }
+
+    private fun ByteArray.mapColors(colors: RGBArray): RGBArray {
+        val output = RGBArray(this.size)
+
+        for ((index, unmapped) in this.withIndex()) {
+            output[index] = colors[unmapped.toInt() and 0xFF]
+        }
+
+        return output
     }
 
     override fun log(reducedLog: Boolean) {
