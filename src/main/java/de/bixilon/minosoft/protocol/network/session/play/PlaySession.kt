@@ -44,6 +44,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.map.MapManagement
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
@@ -93,6 +94,8 @@ class PlaySession(
     val channels = SessionChannelHandler(this)
     val serverInfo = ServerInfo()
     val sequence = AtomicInteger(1)
+
+    val maps = MapManagement()
 
 
     lateinit var assetsManager: SessionAssetsManager

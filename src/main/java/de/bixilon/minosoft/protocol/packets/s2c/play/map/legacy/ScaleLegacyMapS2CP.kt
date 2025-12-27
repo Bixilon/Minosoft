@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.map.legacy
 
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -29,5 +30,10 @@ class ScaleLegacyMapS2CP(
             return
         }
         Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Scale legacy map (scale=$scale)" }
+    }
+
+    override fun handle(session: PlaySession) {
+        val map = session.maps.create(id)
+        map.scale = scale
     }
 }

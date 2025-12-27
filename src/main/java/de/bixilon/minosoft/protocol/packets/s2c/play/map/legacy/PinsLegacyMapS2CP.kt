@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.map.legacy
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -49,5 +50,10 @@ class PinsLegacyMapS2CP(
             return
         }
         Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Pins legacy map (pins=$pins)" }
+    }
+
+    override fun handle(session: PlaySession) {
+        val map = session.maps.create(id)
+        map.pins = pins
     }
 }

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.map
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
-import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.map.MapPin
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W19A
@@ -78,7 +78,7 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val size = Vec2i(buffer.readUnsignedByte(), sizeY)
             val offset = Vec2i(buffer.readUnsignedByte(), buffer.readUnsignedByte())
             val colors = buffer.readByteArray()
-            val mapped = colors.mapColors(FallbackRegistries.MAP_COLORS.forVersion(buffer.session.version))
+            val mapped = MapColorPatch.map(colors, FallbackRegistries.MAP_COLORS.forVersion(buffer.session.version))
 
             this.patch = MapColorPatch(offset, size, mapped)
         } else {
@@ -86,20 +86,18 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    private fun ByteArray.mapColors(colors: RGBArray): RGBArray {
-        val output = RGBArray(this.size)
-
-        for ((index, unmapped) in this.withIndex()) {
-            output[index] = colors[unmapped.toInt() and 0xFF]
-        }
-
-        return output
-    }
-
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
         Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Map (id=$id, scale=$scale, trackPosition=$trackPosition, pins=$pins)" }
+    }
+
+    override fun handle(session: PlaySession) {
+        val map = session.maps.create(id)
+
+        map.scale = scale
+        map.pins = pins
+        patch?.let { map.patch(it) } // TODO: overwrite?
     }
 }

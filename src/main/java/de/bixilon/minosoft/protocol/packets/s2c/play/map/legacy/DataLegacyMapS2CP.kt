@@ -14,6 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.map.legacy
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
+import de.bixilon.minosoft.data.world.map.Map
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.packets.s2c.play.map.MapColorPatch
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -23,13 +27,21 @@ class DataLegacyMapS2CP(
     val id: Int,
     buffer: PlayInByteBuffer,
 ) : LegacyMapS2CP {
-    val start = Vec2i(buffer.readUnsignedByte(), buffer.readUnsignedByte())
-    val colors = buffer.readRemaining()
+    val offset = Vec2i(buffer.readUnsignedByte(), buffer.readUnsignedByte())
+    val data = buffer.readRemaining()
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Data legacy map (start=$start, colors=$colors)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Data legacy map (start=$offset, data=$data)" }
+    }
+
+    override fun handle(session: PlaySession) {
+        val colors = MapColorPatch.map(data, FallbackRegistries.MAP_COLORS.forVersion(session.version))
+        val patch = MapColorPatch(offset, Vec2i(1, Map.HEIGHT - offset.y), colors)
+
+        val map = session.maps.create(id)
+        map.patch(patch)
     }
 }

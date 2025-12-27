@@ -17,13 +17,16 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
+import de.bixilon.minosoft.protocol.packets.s2c.play.map.MapColorPatch
 
 class Map(
     val id: Int,
-    var scale: Int,
-    val data: RGBArray = RGBArray(WIDTH * HEIGHT),
-    val pins: SynchronizedMap<Vec2i, MapPin> = synchronizedMapOf(),
 ) {
+    var scale = 1
+    val data = RGBArray(WIDTH * HEIGHT)
+    var pins: List<MapPin> = listOf()
+
+    fun patch(patch: MapColorPatch) {}
 
 
     companion object {
