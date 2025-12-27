@@ -96,25 +96,15 @@ class RenderLoop(
         context.profiler("input") { context.input.draw() }
         context.profiler("camera") { context.camera.draw() }
 
-        context.profiler("light") {
-            context.light.updateAsync() // ToDo: do async
-            context.light.update()
-        }
-
-
-
-        context.profiler("animations") { context.textures.static.animator.update() }
-
         context.query.begin()
         context.profiler("draw") { context.renderer.draw() }
         context.query.end()
+
 
         context.profiler("burn") { context.burn() }
 
 
         context.profiler("post draw") { context.renderer.forEach { it.postDraw() } }
-
-        context.profiler("reset") { context.system.reset() } // Reset to enable depth mask, etc again
 
         // handle opengl context tasks, but limit it per frame
         context.profiler("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
@@ -122,7 +112,18 @@ class RenderLoop(
         context.renderStats.endDraw()
 
 
+        context.profiler("light") {
+            context.light.updateAsync() // TODO: do async
+            context.light.update()
+        }
+
+        context.profiler("animations") {
+            context.textures.static.animator.updateAsync() // TODO: do async
+            context.textures.static.animator.update()
+        }
+
         context.profiler("end") { context.window.end() }
+
 
         if (context.state == RenderingStates.BACKGROUND && slowRendering) {
             sleep(100.milliseconds)

@@ -104,6 +104,34 @@ class RGB8BufferTest {
         assertEquals(destination.getRGBA(5, 5), 0x112233FF.rgba())
     }
 
+    fun `interpolate 0`() {
+        val a = RGB8Buffer(Vec2i(2, 2))
+        a.setRGB(0, 0, RGBColor(255, 0, 0))
+
+        val b = RGB8Buffer(Vec2i(2, 2))
+        b.setRGB(0, 0, RGBColor(0, 255, 0))
+
+        val destination = RGB8Buffer(Vec2i(2, 2))
+
+        destination.interpolate(a, b, 0.0f)
+
+        assertEquals(destination.getRGB(0, 0), RGBColor(255, 0, 0))
+    }
+
+    fun `interpolate 100`() {
+        val a = RGB8Buffer(Vec2i(2, 2))
+        a.setRGB(0, 0, RGBColor(255, 0, 0))
+
+        val b = RGB8Buffer(Vec2i(2, 2))
+        b.setRGB(0, 0, RGBColor(0, 255, 0))
+
+        val destination = RGB8Buffer(Vec2i(2, 2))
+
+        destination.interpolate(a, b, 1.0f)
+
+        assertEquals(destination.getRGB(0, 0), RGBColor(0, 255, 0))
+    }
+
     fun `interpolate 50`() {
         val a = RGB8Buffer(Vec2i(2, 2))
         a.setRGB(0, 0, RGBColor(255, 0, 0))

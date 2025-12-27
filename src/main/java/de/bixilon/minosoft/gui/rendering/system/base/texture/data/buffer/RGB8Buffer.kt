@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.util.collections.bytes.ByteListUtil.copy
 import java.nio.ByteBuffer
 
 class RGB8Buffer(
@@ -75,6 +76,16 @@ class RGB8Buffer(
         if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
     }
+
+    override fun interpolate(a: TextureBuffer, b: TextureBuffer, progress: Float) {
+        assert(a.size == b.size)
+        assert(a.size == size)
+
+        if (a !is RGB8Buffer || b !is RGB8Buffer) return super.interpolate(a, b, progress)
+
+        ColorBufferUtil.interpolate(a.data, b.data, this.data, progress)
+    }
+
 
     override fun getTransparency() = TextureTransparencies.OPAQUE
 }

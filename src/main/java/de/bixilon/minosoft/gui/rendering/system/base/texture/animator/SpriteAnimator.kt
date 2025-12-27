@@ -18,7 +18,6 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.animator.SpriteUtil.mapNext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -39,15 +38,23 @@ class SpriteAnimator(val context: RenderContext) {
         context.profile.animations::sprites.observe(this, true) { enabled = it }
     }
 
-    fun update() {
+    fun updateAsync() {
         if (!enabled) return
         val now = now()
         val delta = now - previous
-        update(delta)
+        updateAsync(delta)
         previous = now
     }
 
-    fun update(animation: TextureAnimation) {
+    fun update() {
+        if (!enabled) return
+
+        for (animation in animations) {
+            context.textures.static.update(animation.texture) // TODO: split from interpolation (async)?
+        }
+    }
+
+    fun interpolate(animation: TextureAnimation) {
         val destination = animation.texture.data.collect()
         val a = animation.frame.data.collect()
         val b = animation.frame.next.data.collect()
@@ -58,15 +65,13 @@ class SpriteAnimator(val context: RenderContext) {
         for (index in 0 until destination.size) {
             destination[index].interpolate(a[index], b[index], if (animation.interpolate) animation.progress else 0.0f)
         }
-
-        context.textures.static.update(animation.texture) // TODO: split from interpolation (async)?
     }
 
-    private fun update(delta: Duration) {
+    private fun updateAsync(delta: Duration) {
         for (animation in animations) {
             animation.update(delta)
 
-            update(animation)
+            interpolate(animation)
         }
     }
 

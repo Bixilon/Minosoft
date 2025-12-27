@@ -135,7 +135,7 @@ class OpenGlNativeShader(
         if (location < 0) {
             val error = "No uniform named $uniform in $this, maybe you use something that has been optimized out? Check your shader code!"
             if (!context.profile.advanced.allowUniformErrors) {
-                // throw IllegalArgumentException(error) // TODO
+                throw IllegalArgumentException(error)
             }
             Log.log(LogMessageType.RENDERING, LogLevels.WARN, error)
         }

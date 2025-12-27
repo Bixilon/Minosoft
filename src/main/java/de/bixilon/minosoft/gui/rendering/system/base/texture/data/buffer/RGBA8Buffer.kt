@@ -91,6 +91,15 @@ class RGBA8Buffer(
         return ((size.x * y) + x) * bytes
     }
 
+    override fun interpolate(a: TextureBuffer, b: TextureBuffer, progress: Float) {
+        assert(a.size == b.size)
+        assert(a.size == size)
+
+        if (a !is RGBA8Buffer || b !is RGBA8Buffer) return super.interpolate(a, b, progress)
+
+        ColorBufferUtil.interpolate(a.data, b.data, this.data, progress)
+    }
+
 
     override fun getTransparency(): TextureTransparencies {
         var transparency = TextureTransparencies.OPAQUE
