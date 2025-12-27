@@ -1,0 +1,85 @@
+{
+  "0": {
+    "minecraft:white_marker": {
+      "id": 0
+    },
+    "minecraft:green_marker": {
+      "id": 1
+    },
+    "minecraft:red_marker": {
+      "id": 2
+    },
+    "minecraft:blue_marker": {
+      "id": 3
+    },
+    "minecraft:white_cross": {
+      "id": 4
+    },
+    "minecraft:red_pointer": {
+      "id": 5
+    },
+    "minecraft:white_dot": {
+      "id": 6
+    },
+    "minecraft:small_white_circle": {
+      "id": 7
+    },
+    "minecraft:mansion": {
+      "id": 8
+    },
+    "minecraft:monument": {
+      "id": 9
+    },
+    "minecraft:white_banner": {
+      "id": 10
+    },
+    "minecraft:orange_banner": {
+      "id": 11
+    },
+    "minecraft:magenta_banner": {
+      "id": 12
+    },
+    "minecraft:light_blue_banner": {
+      "id": 13
+    },
+    "minecraft:yellow_banner": {
+      "id": 14
+    },
+    "minecraft:lime_banner": {
+      "id": 15
+    },
+    "minecraft:pink_banner": {
+      "id": 16
+    },
+    "minecraft:gray_banner": {
+      "id": 17
+    },
+    "minecraft:light_gray_banner": {
+      "id": 18
+    },
+    "minecraft:cyan_banner": {
+      "id": 19
+    },
+    "minecraft:purple_banner": {
+      "id": 20
+    },
+    "minecraft:blue_banner": {
+      "id": 21
+    },
+    "minecraft:brown_banner": {
+      "id": 22
+    },
+    "minecraft:green_banner": {
+      "id": 23
+    },
+    "minecraft:red_banner": {
+      "id": 24
+    },
+    "minecraft:black_banner": {
+      "id": 25
+    },
+    "minecraft:teasure_marker": {
+      "id": 26
+    }
+  }
+}

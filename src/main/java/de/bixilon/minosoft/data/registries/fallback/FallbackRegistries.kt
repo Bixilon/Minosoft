@@ -61,6 +61,8 @@ object FallbackRegistries {
     val GAME_EVENT: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }.register(minecraft("game_events"))
     val WORLD_EVENT: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }.register(minecraft("world_events"))
 
+    val MAP_PIN_TYPES: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }.register(minecraft("map_pin_types"))
+
 
     fun load() {
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading default registries..." }

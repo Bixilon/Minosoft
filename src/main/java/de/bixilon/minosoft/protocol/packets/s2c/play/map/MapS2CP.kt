@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.map
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
-import de.bixilon.minosoft.data.world.map.MapPinTypes
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W19A
@@ -36,30 +35,30 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     init {
-        val pinCount = when {
+        val count = when {
             buffer.versionId < V_20W46A -> buffer.readVarInt()
             else -> buffer.readOptional { buffer.readVarInt() } ?: 0
         }
         val pins: MutableMap<Vec2i, MapPin> = mutableMapOf()
-        for (i in 0 until pinCount) {
+        for (i in 0 until count) {
             if (buffer.versionId < V_18W19A) {
-                val rawDirection = buffer.readUnsignedByte()
+                val raw = buffer.readUnsignedByte()
                 val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
 
                 val direction: Int
-                val type: MapPinTypes
+                val type: Int
                 if (buffer.versionId >= V_1_12_2) { // ToDo
-                    type = MapPinTypes[rawDirection shr 4]
-                    direction = rawDirection and 0x0F
+                    type = raw shr 4
+                    direction = raw and 0x0F
                 } else {
-                    direction = rawDirection shr 4
-                    type = MapPinTypes[rawDirection and 0x0F]
+                    direction = raw shr 4
+                    type = raw and 0x0F
                 }
 
-                pins[position] = MapPin(direction, type)
+                pins[position] = MapPin(direction, buffer.session.registries.mapPinTypes[type])
                 continue
             }
-            val type = MapPinTypes[buffer.readVarInt()]
+            val type = buffer.readRegistryItem(buffer.session.registries.mapPinTypes)
             val position = Vec2i(buffer.readByte().toInt(), buffer.readByte().toInt())
             val direction = buffer.readUnsignedByte()
             val displayName = buffer.readOptional { buffer.readChatComponent() }

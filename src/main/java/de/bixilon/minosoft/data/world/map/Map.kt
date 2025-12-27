@@ -20,6 +20,13 @@ import de.bixilon.kutil.collections.map.SynchronizedMap
 class Map(
     val id: Int,
     var scale: Int,
-    val data: IntArray = IntArray(128 * 128),
+    val data: IntArray = IntArray(WIDTH * HEIGHT),
     val pins: SynchronizedMap<Vec2i, MapPin> = synchronizedMapOf(),
-)
+) {
+
+
+    companion object {
+        const val WIDTH = 128
+        const val HEIGHT = 128
+    }
+}

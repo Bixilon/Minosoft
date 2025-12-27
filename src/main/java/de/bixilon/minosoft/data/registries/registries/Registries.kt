@@ -134,6 +134,7 @@ class Registries(
     val gameEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val worldEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val vibrationSource: ResourceLocationRegistry = ResourceLocationRegistry()
+    val mapPinTypes: ResourceLocationRegistry = ResourceLocationRegistry()
 
     val argumentType: ResourceLocationRegistry = ResourceLocationRegistry()
     val messageType: Registry<ChatMessageType> = register("chat_type", Registry(codec = ChatMessageType))
@@ -175,6 +176,7 @@ class Registries(
         worker += TreeTask(this::gameEvent.i) { gameEvent.updatePixlyzer(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
         worker += TreeTask(this::worldEvent.i) { worldEvent.updatePixlyzer(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
         worker += TreeTask(this::vibrationSource.i) { vibrationSource.updatePixlyzer(pixlyzerData["vibration_source"]?.toJsonObject(), version, this) }
+        worker += TreeTask(this::mapPinTypes.i) { mapPinTypes.updatePixlyzer(pixlyzerData["map_pin_types"]?.toJsonObject(), version, this) }
         worker += TreeTask(this::argumentType.i) { argumentType.updatePixlyzer(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
         worker += TreeTask(this::messageType.i) { messageType.updatePixlyzer(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
 

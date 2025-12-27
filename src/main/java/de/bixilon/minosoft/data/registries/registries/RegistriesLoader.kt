@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -44,5 +44,7 @@ object RegistriesLoader {
         blockDataType.parent = FallbackRegistries.BLOCK_DATA_TYPE.forVersion(version)
         vibrationSource.parent = FallbackRegistries.VIBRATION_SOURCE.forVersion(version)
         catVariants.parent = FallbackRegistries.CAT_VARIANT.forVersion(version)
+
+        mapPinTypes.parent = FallbackRegistries.MAP_PIN_TYPES.forVersion(version)
     }
 }
