@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.box
+package de.bixilon.minosoft.gui.rendering.sky.box.color
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.PositionOnlyMeshStruct
 
-class SkyboxMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, PositionOnlyMeshStruct, 6) {
+class SkyboxMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, PositionOnlyMeshStruct.Companion, 6) {
 
     private inline fun addVertex(x: Float, y: Float, z: Float) = data.add(
         x, y, z,

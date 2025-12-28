@@ -11,18 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.box
+package de.bixilon.minosoft.gui.rendering.sky.box.texture
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
-import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TintedShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-class SkyboxColorShader(
+class SkyboxTextureShader(
     native: NativeShader,
-) : Shader(native) {
-    var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())
-    var skyColor by uniform("uSkyColor", ChatColors.YELLOW)
-    var sunPosition by uniform("uSunPosition", Vec3f(1, 0, 0))
+) : Shader(native), TextureShader, TintedShader {
+    override var textures: TextureManager by textureManager()
+
+    var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f.Companion())
+    var texture by uniform("uTexture", 0, NativeShader::setUInt)
+    override var tint by uniform("uTintColor", RGBColor(0.15f, 0.15f, 0.15f))
 }
