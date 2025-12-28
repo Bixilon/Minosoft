@@ -25,6 +25,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.reflection.ReflectionUtil.field
@@ -268,5 +269,15 @@ object KUtil {
             "ns" -> value.nanoseconds
             else -> throw IllegalArgumentException("Unexpected time unit: $unit (value: $value)")
         }
+    }
+
+    fun smoothstep(edge0: Float, edge1: Float, x: Float): Float {
+        val value = (x - edge0) / (edge1 - edge0)
+        return smoothstep(value)
+    }
+
+    fun smoothstep(value: Float): Float {
+        val value = value.clamp(0.0f, 1.0f)
+        return value * value * (3.0f - 2.0f * value)
     }
 }

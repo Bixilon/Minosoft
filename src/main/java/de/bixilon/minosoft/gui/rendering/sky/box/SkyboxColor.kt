@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kmath.vec.vec3.i.MVec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
+import de.bixilon.kutil.math.simple.FloatMath.clamp
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -25,9 +26,9 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
-import kotlin.math.abs
+import de.bixilon.minosoft.util.KUtil
+import kotlin.math.exp
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 class SkyboxColor(
     val sky: SkyRenderer,
@@ -35,6 +36,9 @@ class SkyboxColor(
     private var lastStrike = TimeUtil.NULL
     private var strikeDuration = Duration.ZERO
 
+
+    var lightning = 0.0f
+        private set
     var baseColor: RGBColor? = null
 
     var color: RGBColor = DEFAULT_SKY_COLOR
@@ -97,16 +101,37 @@ class SkyboxColor(
         return RGBColor(red / count, green / count, blue / count)
     }
 
-    fun lightning(original: Vec3f): Vec3f {
+    private fun updateLightning() {
         val duration = this.strikeDuration
         val delta = now() - lastStrike
         if (delta > duration) {
-            return original
+            this.lightning = 0.0f
+            return
         }
+
         val progress = (delta / duration).toFloat()
 
-        val sine = abs(sin(progress * PIf * (duration / 80.milliseconds).toInt()))
-        return interpolateLinear(sine, original, Vec3f(1.0f))
+        var intensity: Float
+
+        if (progress < LIGHTNING_PEAK_TIME) {
+            intensity = KUtil.smoothstep(progress / LIGHTNING_PEAK_TIME)
+        } else {
+            val decay = (progress - LIGHTNING_PEAK_TIME) / (1.0f - LIGHTNING_PEAK_TIME)
+            intensity = exp(-8.0f * decay)
+        }
+
+        if (progress < 0.5f) {
+            val flickerTime = (delta.inWholeMilliseconds / 20.0f)
+            val flicker = 0.9f + 0.1f * sin(flickerTime * PIf * 2.0f * 4f)
+            intensity *= flicker
+        }
+
+        this.lightning = intensity.clamp(0.0f, 1.0f)
+    }
+
+    fun lightning(original: Vec3f): Vec3f {
+        updateLightning()
+        return interpolateLinear(this.lightning, original, LIGHTNING_COLOR)
     }
 
     private fun calculate(): RGBColor {
@@ -123,11 +148,13 @@ class SkyboxColor(
         }
         // TODO: Check if wither is present
 
+
         val base = this.baseColor ?: DEFAULT_SKY_COLOR
-        return lightning(base.toVec3f()).let { RGBColor(it) }
+        return base
     }
 
     fun update(): RGBColor {
+        this.updateLightning()
         val color = calculate()
         this.color = color
         return color
@@ -143,6 +170,9 @@ class SkyboxColor(
     }
 
     companion object {
+        const val LIGHTNING_PEAK_TIME = 0.02f
+        val LIGHTNING_COLOR = Vec3f(1.0f, 1.0f, 1.0f)
+
         val DEFAULT_SKY_COLOR = "#ecff89".rgb()
     }
 }
