@@ -34,7 +34,7 @@ open class DesktopAPI : SystemAPI {
     override fun getClipboard(): String? {
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 
-        return DataFlavor.plainTextFlavor.getReaderForText(clipboard.getContents(null)).readText()
+        return clipboard.getData(DataFlavor.stringFlavor).toString()
     }
 
     override fun setClipboard(data: String) {
