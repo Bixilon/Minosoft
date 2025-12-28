@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,10 @@ import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
+import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.util.KUtil.startInit
 
 object DebugCommand : SessionCommand {
     override var node = LiteralNode("debug")
@@ -28,6 +31,7 @@ object DebugCommand : SessionCommand {
             LiteralNode("detach", executor = { it.session.connection.detach(); it.print.sendDebugMessage("Now you are alone on the wire...") }),
         ))
         .addChild(LiteralNode("cache").addChild(LiteralNode("biome", executor = { it.session.world.biomes.resetCache(); it.print.sendDebugMessage("Biome cache cleared!") })))
+        .addChild(LiteralNode("lightning", executor = { it.lightning() }))
 
 
     private fun CommandStack.fly() {
@@ -39,6 +43,15 @@ object DebugCommand : SessionCommand {
             session.player.abilities = abilities.copy(allowFly = value)
             print.sendDebugMessage("Allow fly set to ${value.format()}§r!")
         }
+    }
+
+    private fun CommandStack.lightning() {
+        val type = session.registries.entityType[LightningBolt] ?: return
+        val entity = LightningBolt(session, type, EntityData(session), session.camera.entity.physics.position)
+        entity.startInit()
+        session.world.entities.add(null, null, entity)
+        session.world.entities.remove(entity)
+        print.sendDebugMessage("Lightning shall struck you!")
     }
 
 
