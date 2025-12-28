@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
+import de.bixilon.kmath.mat.mat4.f.MMat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
+import de.bixilon.kutil.primitive.FloatUtil.rad
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -97,8 +100,20 @@ class SkyboxRenderer(
         sky.context.textures.static.use(textureShader)
     }
 
+
+    private fun calculateSunPosition(): Vec3f {
+        val matrix = MMat4f().apply {
+            rotateZAssign((sky.sun.calculateAngle() + 90.0f).rad)
+        }
+
+        val barePosition = Vec3f(1.0f, 0.0f, 0.0f)
+
+        return (matrix * barePosition).unsafe
+    }
+
     private fun updateColorShader() {
         colorShader.skyColor = (color.color ?: DEFAULT_SKY_COLOR).rgba()
+        colorShader.sunPosition = calculateSunPosition()
         if (updateMatrix) {
             colorShader.skyViewProjectionMatrix = sky.matrix
             updateMatrix = false

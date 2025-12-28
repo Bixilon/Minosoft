@@ -17,7 +17,11 @@ layout (location = 0) in vec3 vinPosition;
 
 uniform mat4 uSkyViewProjectionMatrix;
 
+out vec3 finPosition;
+
+
 
 void main() {
+    finPosition = vinPosition;
     gl_Position = uSkyViewProjectionMatrix * vec4(vinPosition, 1.0);
 }

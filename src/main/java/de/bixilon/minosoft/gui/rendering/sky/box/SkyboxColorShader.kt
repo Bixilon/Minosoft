@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kmath.mat.mat4.f.Mat4f
+import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -22,5 +23,6 @@ class SkyboxColorShader(
     native: NativeShader,
 ) : Shader(native) {
     var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4f())
-    var skyColor by uniform("uSkyColor", ChatColors.BLACK)
+    var skyColor by uniform("uSkyColor", ChatColors.YELLOW)
+    var sunPosition by uniform("uSunPosition", Vec3f(1, 0, 0))
 }

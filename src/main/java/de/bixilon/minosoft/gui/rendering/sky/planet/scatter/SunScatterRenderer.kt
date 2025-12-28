@@ -42,17 +42,6 @@ class SunScatterRenderer(
         return maxOf(sin(delta * PIf / 2.0f), 0.5f)
     }
 
-    private fun calculateSunPosition(): Vec3f {
-        val matrix = MMat4f().apply {
-            rotateZAssign((sun.calculateAngle() + 90.0f).rad)
-        }
-
-        val barePosition = Vec4f(1.0f, 0.128f, 0.0f, 1.0f)
-
-        return (matrix * barePosition).xyz
-    }
-
-
     override fun draw() {
         val weather = sky.session.world.weather
         val weatherLevel = maxOf(weather.rain, weather.thunder)
