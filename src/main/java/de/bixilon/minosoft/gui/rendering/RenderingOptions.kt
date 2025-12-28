@@ -17,4 +17,5 @@ object RenderingOptions {
     var disabled = false
     var cursorCatch = true
     var profileFrames = false
+    var debugGpuMemoryLeaks = false
 }

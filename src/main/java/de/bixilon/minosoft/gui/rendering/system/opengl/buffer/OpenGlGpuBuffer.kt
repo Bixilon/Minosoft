@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
@@ -24,6 +25,7 @@ import org.lwjgl.opengl.GL15.*
 abstract class OpenGlGpuBuffer(
     protected var system: OpenGlRenderSystem,
 ) : GpuBuffer {
+    private val creation: Exception? = if (RenderingOptions.debugGpuMemoryLeaks) Exception() else null
     final override var state: GpuBufferStates = GpuBufferStates.PREPARING
         private set
 
@@ -93,7 +95,7 @@ abstract class OpenGlGpuBuffer(
 
     protected fun finalize() {
         if (state == GpuBufferStates.INITIALIZED && system.active) {
-            MemoryLeakException("Buffer has not been unloaded!").printStackTrace()
+            MemoryLeakException("Buffer has not been unloaded!", cause = this.creation).printStackTrace()
         }
     }
 }

@@ -15,4 +15,4 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.error
 
 import de.bixilon.kutil.exception.FastException
 
-class MemoryLeakException(message: String? = null) : FastException(message)
+class MemoryLeakException(message: String? = null, override val cause: Throwable? = null) : FastException(message)

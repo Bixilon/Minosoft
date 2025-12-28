@@ -34,6 +34,7 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
 
     val noNativeMemory by option("--no-native-memory").flag(default = !MemoryOptions.native)
     val profileFrames by option("--profile-frames").flag(default = RenderingOptions.profileFrames)
+    val debugGpuMemoryLeaks by option("--debug-gpu-memory-leaks").flag(default = RenderingOptions.debugGpuMemoryLeaks)
 
 
     override fun apply() {
@@ -44,6 +45,7 @@ class RenderingArgument : OptionGroup(), AppliedArgument {
 
         MemoryOptions.native = !noNativeMemory
         RenderingOptions.profileFrames = profileFrames
+        RenderingOptions.debugGpuMemoryLeaks = debugGpuMemoryLeaks
     }
 
     companion object {
