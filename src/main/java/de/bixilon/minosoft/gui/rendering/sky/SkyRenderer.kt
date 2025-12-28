@@ -48,12 +48,10 @@ class SkyRenderer(
 
     val box = SkyboxRenderer(this)
     val sun = SunRenderer(this)
-    val sunScatter = SunScatterRenderer(this, sun)
     val moon = MoonRenderer(this)
 
     override fun init(latch: AbstractLatch) {
         box.register()
-        sunScatter.register()
         sun.register()
         moon.register()
 
