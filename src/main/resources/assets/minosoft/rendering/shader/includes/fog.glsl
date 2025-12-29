@@ -10,7 +10,6 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 #define FOG
 
 in vec3 finFragmentPosition;
@@ -22,30 +21,33 @@ uniform float uFogDistance = 15.0f * 15.0f;
 uniform vec4 uFogColor;
 uniform uint uFogFlags = 0u;
 
-
-#define FOG_ENABLE 0x01u << 0u
-#define FOG_USE_COLOR 0x01u << 1u
+#define FOG_ENABLE    (0x01u << 0u)
+#define FOG_USE_COLOR (0x01u << 1u)
 
 #ifndef DISTANCE_MULTIPLIER
 #define DISTANCE_MULTIPLIER 1.0f
 #endif
 
-float fog_alpha_from_distance(float distance2) {
-    float alpha = 1.0f - clamp((distance2 - uFogStart) / uFogDistance, 0.0f, 1.0f);
-
-    return alpha * alpha;
+float smoothstep(float value) {
+    return value * value * (3.0f - 2.0f * value);
 }
 
 float fog_calculate_distance() {
     vec3 distance = finFragmentPosition.xyz - uCameraPosition.xyz;
     distance.y *= 0.7f;// increase possible distance on y axis; if you change this, also update fog clipping in MatrixHandler.kt
-    return dot(distance, distance);
+
+    return dot(distance, distance) * DISTANCE_MULTIPLIER - uFogStart;
 }
 
 
 float fog_calculate_alpha() {
     float distance = fog_calculate_distance();
-    return fog_alpha_from_distance(distance * DISTANCE_MULTIPLIER);
+
+    if (distance <= 0.0f) return 1.0f;
+
+    float level = clamp(distance / uFogDistance, 0.0f, 1.0f);
+
+    return 1.0f - smoothstep(level);
 }
 
 void fog_mix_alpha(float alpha) {
@@ -58,11 +60,11 @@ void fog_mix_color(float alpha) {
     foutColor.a = 1.0f;
 }
 
+
 void fog_set() {
     if ((uFogFlags & FOG_ENABLE) == 0u) return;
 
     float alpha = fog_calculate_alpha();
-
 
     if ((uFogFlags & FOG_USE_COLOR) != 0u) {
         fog_mix_color(alpha);

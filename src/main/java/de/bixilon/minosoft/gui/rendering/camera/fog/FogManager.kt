@@ -60,7 +60,7 @@ class FogManager(
             // TODO: powder snow
             else -> {
                 val end = context.session.world.view.viewDistance.toFloat() * ChunkSize.SECTION_WIDTH_X
-                val distance = end / 8.0f
+                val distance = end * 0.3f
 
                 FogOptions(effects.start * (end - distance), end)
             }
