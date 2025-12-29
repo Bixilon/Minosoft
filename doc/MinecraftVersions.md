@@ -78,7 +78,7 @@ There are quite some steps to make a new minecraft version/snapshot work:
    All mappings for the newer version should the be pushed to (gitlab.bixilon.de, github.com and gitlab.com). Minosoft will download them from there.
 2. Run the `assets_properties_generator` util python script, it will create the assets index (including pixlyzer data). The generated json file is automatically put into the resources folder,
    it is shipped with minosoft.
-3. Use Burger, wiki.vg or the deobfuscated jar to generate a network diff
+3. Use Burger, ~~wiki.vg~~ or the deobfuscated jar to generate a network diff
    (may use a java decompiler and a diff tool like meld, you can also just diff the bytecode class files, the second option may be harder first, but will be easier once you are used to it)
    between the latest supported version and the version you are trying to support (probably the next snapshot).
    Packet Ids may have shifted, you manually need to put the new data to `src/main/resources/minosoft/mapping/versions.json`. Assign a new version id (that is higher than the previous one).

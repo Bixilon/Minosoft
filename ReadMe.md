@@ -5,15 +5,17 @@
 <img src="https://shields-io.bixilon.de/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(This is not a classical clone of minecraft, it completely re implements it!)  
+(This is not a classical *clone* of minecraft, it completely re implements it!)  
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
 New: There is an minimal education edition available, just check out the `education` branch.
 
-<h2>Notice: I am *not* responsible for anti cheat banned accounts, this project ~~is heavily in development~~!</h2>
+<h2>Notice: I am *not* responsible for anti cheat banned accounts, this project is still in development!</h2>
 
-This project is not actively developed anymore. This is due to time reasons and newer minecraft updates are getting larger and larger and I honestly can't keep up.
-I will still bring up fixes from time to time, might do some changes but don't expect too much. I am still happy to receive feedback and contributions are always welcome.
+I am semi actively developing this project at the moment. That means I am working on it if I am bored or got some spare time (or sitting in the subway). I am not really adding a lot of features (that time is over),
+but improving performance, refactoring and improving code (and sometimes new features land). Sometimes trying new things. I am not adding support for new protocol version, I am bored of if.
+Vanilla updates get larger and larger and I honestly can't keep up.
+Don't expect too much from me. I am still happy to receive feedback and contributions are always welcome. Feel free to join the matrix chat to say hello.
 
 ## Feature overview
 
@@ -22,7 +24,7 @@ I will still bring up fixes from time to time, might do some changes but don't e
 - [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
-- Multiple connections to servers in 1 process
+- Multiple connections to servers in one process
 - Multithreading and asynchronous loading
 - [Original physics](/doc/Physics.md)
 - Debugging on protocol layer
@@ -43,7 +45,7 @@ I will still bring up fixes from time to time, might do some changes but don't e
 - Disk space: 80 MiB + assets (~ 300 MiB per version)
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
 - Java 11+ (Java 8 is **not** supported).
-- A minecraft server (local or online)
+- ~~A minecraft server (local or online)~~ (there is a flat world single player for testing purposes)
 
 ## Rendering
 
@@ -54,9 +56,11 @@ I will still bring up fixes from time to time, might do some changes but don't e
 - Block entities (e.g. signs, chests)
 - HUD and GUI (inventory, menus, ...)
 - Particles
-- Basic block and skylight (custom light engine)
-- Block and item interactions (e.g. place, break, mining)
-- A lot more, only listing major things here, see the screenshots:
+- Block and skylight (custom light engine)
+- World interactions (e.g. place, break, mining)
+- A lot more, only listing major things here, see the screenshots
+
+You can actually use this as a complete vanilla replacement (and speedrun minecraft), but a lot is still missing.
 
 ![Rendering](doc/img/rendering5.png)  
 A world, with a ton of hud features exposed
@@ -76,16 +80,12 @@ A beautiful sunset
 ![Eros](doc/img/eros.png)  
 [Eros](https://en.wikipedia.org/wiki/Eros) is the main gui. You can select your account/favorite server and then connect to it. Once everything is prepared, the rendering will start.
 
-Some screenshots are years old, try the latest version to see how it actually looks.
+Some screenshots are **years** old, try the latest version to see how it actually looks.
 
 ## Version support
 
-I always try to add support for the newest version of minecraft. Mostly it is pretty easy, just declaring it and generate all data. After pushing it, it is supported. Some versions are more complicated and need a bit of coding. I always try it as fast as possible, but sometimes I just need time.
-
-### Supported versions
-
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.4 as of writing this) are supported.  
-I plan to maintain Minosoft to at least version 1.20, so stay tuned, and support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.  
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.4 as of writing this) are supported.
+My initial goal was to support up to 1.20, that is done. 1.21.X is not supported at the moment, see the [issue](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/127).
 See [Version support](/doc/VersionSupport.md) for more details.
 
 ## Modding
@@ -98,7 +98,7 @@ Will be improved in the future.
 
 ## Contribution or helping out
 
-Please do it. I am completely busy with the development. Grab pretty much whatever you want and start developing.
+Please do it if you are interested in it. Grab pretty much whatever you want and start developing.
 (But before please take a look at [Contributing.md](/Contributing.md))
 
 ## Credits and thanking words

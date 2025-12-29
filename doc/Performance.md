@@ -58,7 +58,7 @@ Minecraft often still uses legacy opengl (i.e. pushing matrices, ...).
 
 ## Multithreading
 
-Most modern cpus have 8 cores. Minecraft does most important stuff on one thread (one cpu core).
+Most modern cpus have 8+ cores. Minecraft does most important stuff on one thread (one cpu core).
 Minosoft is mostly not aware of "static threads". That means that all operations are executed
 in parallel and timed that almost all operations can make use of modern cpus.
 
