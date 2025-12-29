@@ -185,11 +185,11 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
 ) {
 
     fun buildEntity(factory: EntityFactory<out Entity>, session: PlaySession, position: Vec3d, rotation: EntityRotation, data: EntityData?, uuid: UUID?, versionId: Int): Entity? {
-        val tweakedResourceLocation = factory.tweak(session, data, versionId)
+        val tweaked = factory.tweak(session, data, versionId)
 
-        val tweakedFactory = this[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")
+        val tweakedFactory = this[tweaked] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweaked for $factory")
 
-        val tweakedEntityType = session.registries.entityType[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${session.version}: $tweakedResourceLocation for $factory")
+        val tweakedEntityType = session.registries.entityType[tweaked] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${session.version}: $tweaked for $factory")
         return tweakedFactory.build(session, tweakedEntityType, data ?: EntityData(session), position, rotation, uuid)
     }
 

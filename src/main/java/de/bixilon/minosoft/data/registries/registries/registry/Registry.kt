@@ -64,7 +64,7 @@ open class Registry<T : RegistryItem>(
 
     open operator fun set(any: Any, value: T) = when (any) {
         is Int -> set(any, value)
-        is ResourceLocation -> identifierMap[any] = value
+        is ResourceLocation -> identifierMap[fixer?.fix(any) ?: any] = value
         is Identified -> identifierMap[any.identifier] = value
         is AliasedIdentified -> {
             for (identifier in any.identifiers) {
@@ -123,23 +123,20 @@ open class Registry<T : RegistryItem>(
     }
 
     override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T? {
-        val item = deserialize(fixer?.fix(identifier) ?: identifier, data, version, registries) ?: return null
+        val fixed = fixer?.fix(identifier) ?: identifier
+        val item = deserialize(fixed, data, version, registries) ?: return null
 
-        add(identifier, id, item)
+        add(id, item)
 
         return item
     }
 
-    fun add(identifier: ResourceLocation, id: Int?, item: T) {
+    fun add(id: Int?, item: T) {
         if (id != null) {
             idValueMap[id] = item
             valueIdMap[item] = id
         }
-        identifierMap[identifier] = item
-    }
-
-    fun add(id: Int?, item: T) {
-        add(item.identifier, id, item)
+        identifierMap[item.identifier] = item
     }
 
     open fun postInit(registries: Registries) {
