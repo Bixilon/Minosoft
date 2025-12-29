@@ -53,6 +53,12 @@ class SkyboxNormalType(val sky: SkyRenderer) : SkyboxType {
         shader.skyColor = sky.box.color.color.rgba()
         shader.sunPosition = calculateSunPosition()
 
+        val weather = sky.session.world.weather
+        shader.rain = weather.rain
+        shader.thunder = weather.thunder
+
+        shader.lightning = sky.box.color.lightning
+
         // TODO: lightning, rain, thunder
 
         if (updateMatrix) {

@@ -271,11 +271,13 @@ object KUtil {
         }
     }
 
-    fun smoothstep(edge0: Float, edge1: Float, x: Float): Float {
-        val value = (x - edge0) / (edge1 - edge0)
+    @Deprecated("kutil 1.30.3")
+    fun smoothstep(lower: Float, upper: Float, x: Float): Float {
+        val value = (x - lower) / (upper - lower)
         return smoothstep(value)
     }
 
+    @Deprecated("kutil 1.30.3")
     fun smoothstep(value: Float): Float {
         val value = value.clamp(0.0f, 1.0f)
         return value * value * (3.0f - 2.0f * value)
