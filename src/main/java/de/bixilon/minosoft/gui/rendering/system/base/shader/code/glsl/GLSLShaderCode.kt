@@ -17,11 +17,11 @@ import de.bixilon.kutil.stream.InputStreamUtil.readAsString
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class GLSLShaderCode(
     private val context: RenderContext,
     private val rawCode: String,
+    private val file: ResourceLocation? = null,
 ) {
     val defines: MutableMap<String, Any> = mutableMapOf()
 
@@ -49,14 +49,42 @@ class GLSLShaderCode(
                         // TODO: Don't include multiple times, cache include
                         val reader = GLSLStringReader(remaining.removePrefix("#include "))
                         reader.skipWhitespaces()
+                        val rawInclude = reader.readString()!!
 
-                        val include = ResourceLocation.of(reader.readString()!!)
+                        val include = when {
+                            rawInclude.startsWith("../") -> {
+                                if (file == null) throw IllegalStateException("Can not include from relative paths: file is null!")
 
-                        val includeCode = GLSLShaderCode(context, context.session.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
+                                var normalized = rawInclude
+                                var up = 0
+                                while (normalized.startsWith("../")) {
+                                    normalized = normalized.removePrefix("../")
+                                    up += 1
+                                }
+
+                                var split = file.path.split("/")
+                                if (split.size <= up) throw IllegalArgumentException("Can not traverse relative path: $rawInclude (parent does not exist)")
+
+                                split = split.subList(0, split.size - up)
+
+                                ResourceLocation(file.namespace, split.joinToString("/") + "/" + normalized.appendEnding())
+                            }
+
+                            rawInclude.startsWith("./") -> {
+                                if (file == null) throw IllegalStateException("Can not include from relative paths: file is null!")
+
+                                ResourceLocation(file.namespace, file.path.split("/").let { it.subList(0, it.size - 1) }.joinToString("/") + "/" + rawInclude.removePrefix("./").appendEnding())
+                            }
+
+                            else -> ResourceLocation.of(rawInclude).let { ResourceLocation(it.namespace, "rendering/shader/includes/${it.path.appendEnding()}") }
+
+                        }
+
+                        val includeCode = GLSLShaderCode(context, context.session.assetsManager[include].readAsString())
 
                         code.appendLine()
                         code.append("// ").append(STAR).appendLine()
-                        code.append("// Begin included from ").append(include).appendLine()
+                        code.append("// Begin included from ").append(rawInclude).appendLine()
                         code.append("// ").append(STAR).appendLine()
                         code.append(includeCode.code)
                         code.appendLine()
@@ -90,5 +118,14 @@ class GLSLShaderCode(
 
     private companion object {
         val STAR = "*".repeat(100)
+
+        private fun String.appendEnding(): String {
+            if (this.endsWith(".vsh")) return this
+            if (this.endsWith(".gsh")) return this
+            if (this.endsWith(".fsh")) return this
+            if (this.endsWith(".glsl")) return this
+
+            return "$this.glsl"
+        }
     }
 }
