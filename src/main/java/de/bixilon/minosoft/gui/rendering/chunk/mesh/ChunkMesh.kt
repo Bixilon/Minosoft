@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
+import de.bixilon.minosoft.gui.rendering.RenderConstants.GPU_OCCLUSION_CULLING
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.query.RenderQuery
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -38,7 +39,7 @@ class ChunkMesh(
     override fun draw() {
         if (occlusion == OcclusionStates.INVISIBLE) return
 
-        val query = occlusion == OcclusionStates.MAYBE
+        val query = if (GPU_OCCLUSION_CULLING) occlusion == OcclusionStates.MAYBE else false
 
         if (query) this.query.begin()
         super.draw()

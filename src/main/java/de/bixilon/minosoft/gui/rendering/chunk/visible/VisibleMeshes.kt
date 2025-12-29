@@ -46,7 +46,7 @@ class VisibleMeshes(
         val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
 
         assert(frustum != FrustumResults.OUTSIDE)
-        var occlusion = force || frustum == FrustumResults.PARTLY_INSIDE || mesh.result == FrustumResults.PARTLY_INSIDE
+        var occlusion = force || frustum == FrustumResults.PARTLY_INSIDE || (mesh.result == FrustumResults.PARTLY_INSIDE)
 
         // TODO: fog
         // TODO: handle block changes

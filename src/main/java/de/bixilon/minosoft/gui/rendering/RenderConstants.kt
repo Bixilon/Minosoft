@@ -25,7 +25,8 @@ object RenderConstants {
     const val FRUSTUM_CULLING_ENABLED = true
     const val FRUSTUM_CULLING_SPHERE = false
 
-    const val OCCLUSION_CULLING_ENABLED = true
+    const val CPU_OCCLUSION_CULLING = true
+    const val GPU_OCCLUSION_CULLING = true
     const val SHOW_FPS_IN_WINDOW_TITLE = true
 
     val MAXIMUM_QUEUE_TIME_PER_FRAME = 3.milliseconds

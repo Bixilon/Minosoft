@@ -49,6 +49,8 @@ class WorldOcclusionManager(
     private var graph: OcclusionGraph? = null
     private var position = SectionPosition.EMPTY
 
+    private var frustum = -1
+
     private var queue = false
 
 
@@ -111,7 +113,17 @@ class WorldOcclusionManager(
 
 
     override fun draw() {
-        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) return
+        val revision = camera.frustum.revision
+        if (frustum != revision) {
+            invalid = true
+            this.frustum = revision
+        }
+        if (!RenderConstants.CPU_OCCLUSION_CULLING) {
+            if (!invalid) return
+            session.events.fire(VisibilityGraphChangeEvent(context))
+            invalid = false
+            return
+        }
         if (!invalid && graph != null) return
 
 

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants.DISABLE_GUI_CACHE
 import de.bixilon.minosoft.gui.rendering.RenderConstants.FRUSTUM_CULLING_ENABLED
-import de.bixilon.minosoft.gui.rendering.RenderConstants.OCCLUSION_CULLING_ENABLED
+import de.bixilon.minosoft.gui.rendering.RenderConstants.CPU_OCCLUSION_CULLING
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -28,7 +28,7 @@ class RenderConstantsTest {
 
     @Test
     fun `occlusion culling enabled`() {
-        assertTrue(OCCLUSION_CULLING_ENABLED)
+        assertTrue(CPU_OCCLUSION_CULLING)
     }
 
     @Test
