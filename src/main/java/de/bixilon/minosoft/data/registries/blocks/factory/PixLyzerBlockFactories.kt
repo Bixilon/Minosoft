@@ -30,7 +30,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Wal
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.CropBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.PlantBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.SweetBerryBushBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.redstone.RepeaterBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.wall.LeverBlock
@@ -47,7 +46,6 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     RepeaterBlock,
     ComparatorBlock,
     CampfireBlock,
-    NetherPortalBlock,
     KelpBlock,
     KelpPlantBlock,
     SeagrassBlock,

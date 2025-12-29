@@ -55,6 +55,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.light.torch.RedstoneTorc
 import de.bixilon.minosoft.data.registries.blocks.types.light.torch.TorchBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.SlimeBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
+import de.bixilon.minosoft.data.registries.blocks.types.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
 import de.bixilon.minosoft.data.registries.blocks.types.wood.*
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
@@ -168,6 +169,8 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     RedstoneTorchBlock.Standing, RedstoneTorchBlock.Wall,
     TorchBlock.NormalTorchBlock.Standing, TorchBlock.NormalTorchBlock.Wall,
     TorchBlock.SoulTorchBlock.Standing, TorchBlock.SoulTorchBlock.Wall,
+
+    NetherPortalBlock,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {
