@@ -106,7 +106,7 @@ open class NetherPortalBlock(identifier: ResourceLocation = NetherPortalBlock.id
         override val identifier = minecraft("nether_portal")
         val LEGACY_MODEL = minecraft("portal")
 
-        val AXIS = EnumProperty("axis", Axes) // TODO: horizontal axes only
+        val AXIS = EnumProperty("axis", Axes, Axes.set(Axes.X, Axes.Z))
 
 
         private val SHAPE_X = AABB(0.0, 0.0, 0.375, 1.0, 1.0, 0.625)
