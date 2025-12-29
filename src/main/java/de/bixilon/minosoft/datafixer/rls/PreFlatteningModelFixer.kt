@@ -11,28 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.datafixer.rls
 
-import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
-import de.bixilon.minosoft.datafixer.rls.*
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-object DataFixer {
-    val fixer = listOf(
-        EntityDataTypesFixer,
-        EntityTypeFixer,
-
-        BlockEntityFixer,
-        EntityAttributeFixer,
-        RegistryFixer,
-        MotifFixer,
-        ContainerTypeFixer,
-        PreFlatteningModelFixer,
-    )
-
-
-    fun load() {
-        for (fixer in this.fixer) {
-            fixer.load()
-        }
-    }
-}
+@Deprecated("implement blocks")
+object PreFlatteningModelFixer : ResourceLocationFixer(minosoft("pre_flattening_models"))

@@ -1,0 +1,21 @@
+{
+  "nether_bricks": "nether_brick",
+  "bricks": "brick_block",
+  "terracotta": "hardened_clay",
+  "white_terracotta": "white_stained_hardened_clay",
+  "orange_terracotta": "orange_stained_hardened_clay",
+  "magenta_terracotta": "magenta_stained_hardened_clay",
+  "light_blue_terracotta": "light_blue_stained_hardened_clay",
+  "yellow_terracotta": "yellow_stained_hardened_clay",
+  "lime_terracotta": "lime_stained_hardened_clay",
+  "pink_terracotta": "pink_stained_hardened_clay",
+  "gray_terracotta": "gray_stained_hardened_clay",
+  "light_gray_terracotta": "silver_stained_hardened_clay",
+  "cyan_terracotta": "cyan_stained_hardened_clay",
+  "purple_terracotta": "purple_stained_hardened_clay",
+  "blue_terracotta": "blue_stained_hardened_clay",
+  "brown_terracotta": "brown_stained_hardened_clay",
+  "green_terracotta": "green_stained_hardened_clay",
+  "red_terracotta": "red_stained_hardened_clay",
+  "black_terracotta": "black_stained_hardened_clay"
+}

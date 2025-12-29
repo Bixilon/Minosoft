@@ -23,6 +23,7 @@ import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.datafixer.rls.PreFlatteningModelFixer
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
@@ -65,9 +66,13 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun loadState(block: Block): BlockModelPrototype? {
         if (block is CustomModel) {
-            return block.loadModel(this, version)
+            return block.loadModel(this, version) // TODO: assets version
         }
-        return loadState(block, block.identifier.blockState())
+        var identifier = block.identifier
+        if (!version.flattened) {
+            identifier = PreFlatteningModelFixer.fix(identifier)
+        }
+        return loadState(block, identifier.blockState())
     }
 
     fun load(latch: AbstractLatch?) {
