@@ -28,7 +28,7 @@ abstract class FileTextureLoader(val file: ResourceLocation) : TextureLoader {
     protected abstract fun read(assets: AssetsManager): TextureBuffer
 
     override fun load(context: RenderContext): TextureLoaderResult {
-        val assets = context.session.assetsManager
+        val assets = context.session.assets
         val buffer = read(assets)
         val properties = assets.readImageProperties(file)
 

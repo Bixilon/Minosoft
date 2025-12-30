@@ -61,7 +61,7 @@ class LegacyUnicodeFontType(
         private const val WIDTH_SCALE = FontProperties.CHAR_BASE_HEIGHT / CHAR_SIZE.toFloat()
 
         override fun build(context: RenderContext, manager: FontManager, data: Map<String, Any>): LegacyUnicodeFontType? {
-            val assets = context.session.assetsManager
+            val assets = context.session.assets
             val template = data["template"]?.toString() ?: throw IllegalArgumentException("template missing!")
             val sizes = data.loadSizes(assets) ?: return null
 

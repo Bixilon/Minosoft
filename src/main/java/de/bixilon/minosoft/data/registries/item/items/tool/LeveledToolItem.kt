@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,16 +22,16 @@ import de.bixilon.minosoft.tags.TagManager
 
 abstract class LeveledToolItem(identifier: ResourceLocation) : ToolItem(identifier), LeveledTool {
 
-    private fun isLevelSuitable(tagManager: TagManager, blockState: BlockState): Boolean? {
+    private fun isLevelSuitable(tags: TagManager, state: BlockState): Boolean? {
         val miningTag = this.tag ?: return null
-        val blockTags = tagManager[MinecraftTagTypes.BLOCK] ?: return null
-        val tag = blockTags[miningTag] ?: return null
-        if (blockState.block !in tag) {
+        val tags = tags[MinecraftTagTypes.BLOCK] ?: return null
+        val tag = tags[miningTag] ?: return null
+        if (state.block !in tag) {
             return false
         }
         for (level in ToolLevels.REVERSED) {
-            val levelTag = blockTags[level.tag ?: continue] ?: continue
-            if (blockState.block in levelTag) {
+            val levelTag = tags[level.tag ?: continue] ?: continue
+            if (state.block in levelTag) {
                 // minimum tool level required
                 return this.level >= level
             }
@@ -39,7 +39,7 @@ abstract class LeveledToolItem(identifier: ResourceLocation) : ToolItem(identifi
         return true
     }
 
-    override fun isLevelSuitable(session: PlaySession, blockState: BlockState): Boolean? {
-        return isLevelSuitable(session.tags, blockState) ?: isLevelSuitable(session.legacyTags, blockState)
+    override fun isLevelSuitable(session: PlaySession, state: BlockState): Boolean? {
+        return isLevelSuitable(session.tags, state) ?: isLevelSuitable(session.legacyTags, state)
     }
 }

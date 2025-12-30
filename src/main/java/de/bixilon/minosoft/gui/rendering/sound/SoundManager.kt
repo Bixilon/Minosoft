@@ -34,7 +34,7 @@ class SoundManager(
 
 
     fun load() {
-        val soundsIndex = session.assetsManager.getOrNull(SOUNDS_INDEX_FILE)?.readJsonObject()
+        val soundsIndex = session.assets.getOrNull(SOUNDS_INDEX_FILE)?.readJsonObject()
         if (soundsIndex == null) {
             Log.log(LogMessageType.AUDIO, LogLevels.WARN) { "Can not find $SOUNDS_INDEX_FILE. Can not load audio files!" }
             return
@@ -62,7 +62,7 @@ class SoundManager(
                 if (!sound.preload) {
                     continue
                 }
-                sound.load(session.assetsManager)
+                sound.load(session.assets)
             }
         }
     }

@@ -48,7 +48,7 @@ object BakedModelTestUtil {
         for (name in names) {
             assets.push(name.toResourceLocation().texture(), texture)
         }
-        session::assetsManager.forceSet(assets.box())
+        session::assets.forceSet(assets.box())
 
         return rendering.context.textures
     }

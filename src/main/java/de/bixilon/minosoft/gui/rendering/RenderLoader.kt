@@ -23,7 +23,6 @@ import de.bixilon.kutil.unit.UnitFormatter.format
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
@@ -63,7 +62,7 @@ object RenderLoader {
         registerRenderer()
 
         window.init(session.profiles.rendering)
-        ignoreAll { window.setDefaultIcon(session.assetsManager) }
+        ignoreAll { window.setDefaultIcon(session.assets) }
 
         camera.init()
 
@@ -78,7 +77,7 @@ object RenderLoader {
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.lab().format()})..." }
-        initLatch.inc(); runAsync { tints.init(session.assetsManager); initLatch.dec() }
+        initLatch.inc(); runAsync { tints.init(session.assets); initLatch.dec() }
         textures.dynamic.load(initLatch); textures.dynamic.upload(initLatch)
         textures.initializeSkins(session)
         textures.loadDefaultTextures()

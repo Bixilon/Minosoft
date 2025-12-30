@@ -199,7 +199,7 @@ class AudioPlayer(
         }
         position?.let { if (!shouldPlay(sound, position)) return }
         queue += add@{
-            sound.load(session.assetsManager)
+            sound.load(session.assets)
             position?.let { if (!shouldPlay(sound, position)) return@add }
             val source = getAvailableSource()
             if (source == null) {

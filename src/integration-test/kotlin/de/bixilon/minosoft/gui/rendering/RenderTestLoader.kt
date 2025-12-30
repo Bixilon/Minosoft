@@ -31,8 +31,8 @@ class RenderTestLoader {
     fun init() {
         val session = createSession(5)
         val latch = SimpleLatch(1)
-        session::assetsManager.forceSet(AssetsLoader.create(session.profiles.resources, session.version))
-        session.assetsManager.load(latch)
+        session::assets.forceSet(AssetsLoader.create(session.profiles.resources, session.version))
+        session.assets.load(latch)
         session::error.forceSet(DataObserver(null))
         RenderTestUtil.rendering = Rendering(session)
         RenderTestUtil.rendering.start(latch, audio = false)

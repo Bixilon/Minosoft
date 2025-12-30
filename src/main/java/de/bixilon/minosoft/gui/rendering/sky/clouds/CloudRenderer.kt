@@ -86,7 +86,7 @@ class CloudRenderer(
             }
         }
         sky.profile.clouds::maxDistance.observe(this, instant = true) { this.maxDistance = it }
-        sky.profile.clouds::generator.observe(this, instant = true) { this.generator = CloudGenerator.of(it, context.session.assetsManager) } // TODO: flush cache
+        sky.profile.clouds::generator.observe(this, instant = true) { this.generator = CloudGenerator.of(it, context.session.assets) } // TODO: flush cache
         session::state.observe(this) {
             if (it == PlaySessionStates.SPAWNING) {
                 if (baseHeight == null) return@observe

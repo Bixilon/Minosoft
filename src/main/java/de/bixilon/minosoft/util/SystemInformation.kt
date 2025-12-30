@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.kutil.string.WhitespaceUtil.removeMultipleWhitespaces
 import de.bixilon.kutil.unit.Bytes.Companion.bytes
 import oshi.SystemInfo
 
@@ -25,5 +26,5 @@ object SystemInformation {
     val SYSTEM_MEMORY = HARDWARE_SYSTEM_INFO.memory.total.bytes
     val OS_TEXT: String = "${System.getProperty("os.name")}: ${SYSTEM_INFO.operatingSystem.family} ${SYSTEM_INFO.operatingSystem.bitness}bit"
 
-    val PROCESSOR_TEXT = "${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
+    val PROCESSOR_TEXT = "${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.removeMultipleWhitespaces()}"
 }
