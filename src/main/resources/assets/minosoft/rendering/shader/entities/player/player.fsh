@@ -14,7 +14,6 @@
 #version 330 core
 
 #define FOG
-#define DISABLE_ALPHA_DISCARD
 
 out lowp vec4 foutColor;
 
@@ -31,9 +30,16 @@ void main() {
     if (finTintColor.a == 0.0f) discard;
     applyDefaults();
     applyTint();
-    applyTexel();
-    if (finAllowTransparency > 0u) {
-        if (foutColor.a < 0.5f) discard;
+    vec4 texel = getTexture(finTextureArray, vec3(finTextureUV, finTextureLayer));
+    if (finAllowTransparency != 0u) {
+        if (texel.a < 0.5f) discard;
+    } else {
+        texel.a = 1.0f;
     }
-    foutColor.a = 1.0f;
+
+    foutColor *= texel;
+
+    #ifdef FOG
+    fog_set();
+    #endif
 }
