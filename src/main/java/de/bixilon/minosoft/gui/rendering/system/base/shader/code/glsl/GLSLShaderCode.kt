@@ -80,7 +80,7 @@ class GLSLShaderCode(
 
                         }
 
-                        val includeCode = GLSLShaderCode(context, context.session.assetsManager[include].readAsString())
+                        val includeCode = GLSLShaderCode(context, context.session.assets[include].readAsString())
 
                         code.appendLine()
                         code.append("// ").append(STAR).appendLine()

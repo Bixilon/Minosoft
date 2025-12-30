@@ -95,7 +95,7 @@ class PlaySession(
     val sequence = AtomicInteger(1)
 
 
-    lateinit var assetsManager: SessionAssetsManager
+    lateinit var assets: SessionAssetsManager
         private set
     lateinit var language: Translator
 
@@ -144,7 +144,7 @@ class PlaySession(
                 }
             } else {
                 established = true
-                assetsManager.unload()
+                assets.unload()
                 state = PlaySessionStates.DISCONNECTED
                 ACTIVE_CONNECTIONS -= this
                 if (CLI.session === this) {
@@ -204,8 +204,8 @@ class PlaySession(
 
             worker += {
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
-                assetsManager = AssetsLoader.create(profiles.resources, version)
-                assetsManager.load(latch)
+                assets = AssetsLoader.create(profiles.resources, version)
+                assets.load(latch)
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             }
 
@@ -219,7 +219,7 @@ class PlaySession(
 
             state = PlaySessionStates.LOADING
 
-            language = LanguageUtil.load(profiles.session.language ?: profiles.eros.general.language, version, assetsManager)
+            language = LanguageUtil.load(profiles.session.language ?: profiles.eros.general.language, version, assets)
 
             this::player.forceSet(LocalPlayerEntity(account, this, keyManagement))
             world.entities.add(null, null, player)
@@ -236,8 +236,8 @@ class PlaySession(
             }
         } catch (exception: Throwable) {
             Log.log(LogMessageType.LOADING, level = LogLevels.FATAL) { exception }
-            if (this::assetsManager.isInitialized) {
-                assetsManager.unload()
+            if (this::assets.isInitialized) {
+                assets.unload()
             }
             error = exception
             retry = false

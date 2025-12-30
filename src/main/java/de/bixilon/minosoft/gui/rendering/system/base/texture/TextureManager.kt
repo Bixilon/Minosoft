@@ -50,7 +50,7 @@ abstract class TextureManager {
 
     fun initializeSkins(session: PlaySession) {
         skins = SkinManager(this)
-        skins.initialize(session.account, session.assetsManager)
+        skins.initialize(session.account, session.assets)
     }
 
     fun use(shader: TextureShader, name: String = ShaderUniforms.TEXTURES) {

@@ -61,7 +61,7 @@ class CloudRenderer(
     }
 
     override fun asyncInit(latch: AbstractLatch) {
-        matrix.load(session.assetsManager)
+        matrix.load(session.assets)
 
         context.camera.offset::offset.observe(this) { reset() }
     }

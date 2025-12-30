@@ -50,7 +50,7 @@ class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
         private val OVERLAY_TEXTURE = "misc/powder_snow_outline".toResourceLocation().texture()
 
         override fun build(context: RenderContext): PowderSnowOverlay? {
-            if (!context.session.assetsManager.contains(OVERLAY_TEXTURE)) {
+            if (!context.session.assets.contains(OVERLAY_TEXTURE)) {
                 // overlay not yet available (< 1.17)
                 return null
             }

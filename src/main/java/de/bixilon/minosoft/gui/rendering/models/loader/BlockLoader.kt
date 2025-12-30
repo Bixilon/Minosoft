@@ -37,7 +37,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class BlockLoader(private val loader: ModelLoader) {
     private val cache: MutableMap<ResourceLocation, BlockModel> = LockMap(HashMap(loader.context.session.registries.block.size))
-    val assets = loader.context.session.assetsManager
+    val assets = loader.context.session.assets
     val version = loader.context.session.version
 
     fun loadBlock(name: ResourceLocation): BlockModel? {

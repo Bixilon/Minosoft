@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ModelLoader(
     val context: RenderContext,
 ) {
-    val packFormat = context.session.assetsManager.properties.pack.format
+    val packFormat = context.session.assets.properties.pack.format
     val fluids = FluidModelLoader(this)
     val block = BlockLoader(this)
     val item = ItemLoader(this)

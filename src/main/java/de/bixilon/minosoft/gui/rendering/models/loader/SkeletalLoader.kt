@@ -41,7 +41,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
         for ((_, registered) in this.registered) {
             var template = templates[registered.template]
             if (template == null) {
-                template = loader.context.session.assetsManager.getOrNull(registered.template)?.readJson()
+                template = loader.context.session.assets.getOrNull(registered.template)?.readJson()
                 if (template == null) {
                     Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find skeletal model ${registered.template}" }
                     continue

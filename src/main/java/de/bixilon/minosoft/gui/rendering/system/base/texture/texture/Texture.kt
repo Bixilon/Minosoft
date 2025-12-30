@@ -94,7 +94,7 @@ class Texture(
             if (error !is FileNotFoundException) {
                 Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
             }
-            return TextureLoaderResult(context.session.assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture(), null)
+            return TextureLoaderResult(context.session.assets[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture(), null)
         }
     }
 

@@ -58,7 +58,7 @@ object SessionTestUtil {
     private val CONNECTION = PlaySession::connection.field
     private val EVENTS = PlaySession::events.field
     private val PROFILES = PlaySession::profiles.field
-    private val ASSETS_MANAGER = PlaySession::assetsManager.field
+    private val ASSETS_MANAGER = PlaySession::assets.field
     private val STATE = PlaySession::state.field
     private val TAGS = PlaySession::tags.field
     private val LEGACY_TAGS = PlaySession::legacyTags.field

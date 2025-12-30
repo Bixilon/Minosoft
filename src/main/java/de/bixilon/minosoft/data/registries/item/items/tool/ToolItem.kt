@@ -29,22 +29,22 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
     open val tag: ResourceLocation? get() = null
 
 
-    private fun isInTag(tagManager: TagManager, blockState: BlockState): Boolean? {
+    private fun isInTag(tags: TagManager, state: BlockState): Boolean? {
         val miningTag = this.tag ?: return null
-        val blockTags = tagManager[MinecraftTagTypes.BLOCK] ?: return null
-        val tag = blockTags[miningTag] ?: return null
-        if (blockState.block !in tag) {
+        val tags = tags[MinecraftTagTypes.BLOCK] ?: return null
+        val tag = tags[miningTag] ?: return null
+        if (state.block !in tag) {
             return false
         }
         return true
     }
 
-    private fun isInTag(session: PlaySession, blockState: BlockState): Boolean? {
-        return isInTag(session.tags, blockState) ?: isInTag(session.legacyTags, blockState)
+    private fun isInTag(session: PlaySession, state: BlockState): Boolean? {
+        return isInTag(session.tags, state) ?: isInTag(session.legacyTags, state)
     }
 
-    protected open fun isLevelSuitable(session: PlaySession, blockState: BlockState): Boolean? {
-        return isInTag(session, blockState)
+    protected open fun isLevelSuitable(session: PlaySession, state: BlockState): Boolean? {
+        return isInTag(session, state)
     }
 
     override fun isSuitableFor(session: PlaySession, state: BlockState, stack: ItemStack): Boolean {
