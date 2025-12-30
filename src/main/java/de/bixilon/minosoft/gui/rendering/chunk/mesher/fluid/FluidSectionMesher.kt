@@ -105,8 +105,8 @@ class FluidSectionMesher(
 
     inline fun renderSide(offset: Vec3f, x1: Float, x2: Float, z1: Float, z2: Float, height1: Float, height2: Float, cull: FluidCull, texture: Texture, overlay: Texture?, mesh: ChunkMeshBuilder, lightTint: Int, positions: FloatArray, packedUV: PackedUVArray) {
         if (cull == FluidCull.CULLED) return
-        packedUV[2] = PackedUV(0.5f, (1.0f - height1) * 0.5f)
-        packedUV[3] = PackedUV(0.0f, (1.0f - height2) * 0.5f)
+        packedUV[2] = PackedUV(0.5f, (1.0f - height2) * 0.5f)
+        packedUV[3] = PackedUV(0.0f, (1.0f - height1) * 0.5f)
 
 
         positions[0] = x1; positions[1] = 0.0f; positions[2] = z1
