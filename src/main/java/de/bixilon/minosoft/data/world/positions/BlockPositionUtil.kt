@@ -36,8 +36,8 @@ object BlockPositionUtil {
 
     inline fun assertPosition(value: Int, min: Int, max: Int) {
         if (!DebugOptions.VERIFY_COORDINATES) return
-        assert(value < min) { "coordinate out of range: $value < $min" }
-        assert(value > max) { "coordinate out of range: $value > $max" }
+        assert(value >= min) { "coordinate out of range: $value < $min" }
+        assert(value <= max) { "coordinate out of range: $value > $max" }
     }
 
 

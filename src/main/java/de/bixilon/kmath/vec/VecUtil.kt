@@ -24,7 +24,7 @@ object VecUtil {
 
     inline fun assertVec(value: Int, min: Int, max: Int) {
         if (!VERIFY_VECTORS) return
-        assert(value < min) { "vec out of range: $value < $min" }
-        assert(value > max) { "vec out of range: $value > $max" }
+        assert(value >= min) { "vec out of range: $value < $min" }
+        assert(value <= max) { "vec out of range: $value > $max" }
     }
 }
