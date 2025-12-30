@@ -231,8 +231,8 @@ class SkyboxColor(
                         val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
                         val biome = neighbour.getBiome(blockPosition.inChunkPosition) ?: continue
 
-                        count++
                         val color = average.invoke(biome) ?: continue
+                        count++
                         red += color.red
                         green += color.green
                         blue += color.blue
