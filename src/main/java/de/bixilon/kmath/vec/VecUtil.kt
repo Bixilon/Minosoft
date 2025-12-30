@@ -19,12 +19,12 @@ object VecUtil {
 
     inline fun assertVec(condition: Boolean) {
         if (!VERIFY_VECTORS) return
-        if (!condition) throw AssertionError("Vector assert failed!")
+        assert(condition) { "Vector assert failed!" }
     }
 
     inline fun assertVec(value: Int, min: Int, max: Int) {
         if (!VERIFY_VECTORS) return
-        if (value < min) throw AssertionError("vec out of range: $value < $min")
-        if (value > max) throw AssertionError("vec out of range: $value > $max")
+        assert(value < min) { "vec out of range: $value < $min" }
+        assert(value > max) { "vec out of range: $value > $max" }
     }
 }
