@@ -13,45 +13,34 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
-import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.clouds.generator.CloudGenerator
+import de.bixilon.minosoft.gui.rendering.sky.clouds.mesh.CloudStyle
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
-import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
-import kotlin.time.Duration.Companion.seconds
+import kotlin.math.abs
 
 class CloudRenderer(
     private val sky: SkyRenderer,
     val session: PlaySession,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer {
-    private val color = CloudColor(sky)
+) : WorldRenderer {
     override val layers = LayerSettings()
-    val shader = context.system.shader.create(minosoft("sky/clouds")) { CloudShader(it) }
+    private val color = CloudColor(sky)
+    private val shader = context.system.shader.create(minosoft("sky/clouds")) { CloudShader(it) }
     var generator: CloudGenerator? = null
-    private val cloudLayers: MutableList<CloudLayer> = mutableListOf()
-    private var position = Vec2i(Int.MIN_VALUE)
-    private var baseHeight: Int? = null
-    private var maxDistance = 0.0f
-    private var nextLayers = 0
-    var flat: Boolean = false
-        private set
-    private var toUnload: MutableSet<CloudLayer> = mutableSetOf()
+    var style = CloudStyle.VOLUME
 
-    private var time = now()
-    var delta = 0.0f
-        private set
+
+    private var baseHeight: Int? = null
 
     private var reset = false
 
@@ -61,103 +50,30 @@ class CloudRenderer(
     }
 
     override fun asyncInit(latch: AbstractLatch) {
-        context.camera.offset::offset.observe(this) { reset() }
+        context.camera.offset::offset.observe(this) { reset = true }
     }
 
     private fun canSkip(): Boolean {
-        if (baseHeight == null) return true
+        val baseHeight = baseHeight ?: return true
         if (!sky.profile.clouds.enabled) return true
-        if (cloudLayers.isEmpty()) return true
         if (session.profiles.block.viewDistance < 3) return true
-        if ((session.camera.entity.physics.position.y + 10) < session.world.dimension.minY) return true
+        if (abs(session.camera.entity.physics.position.y - baseHeight) > MAX_VERTICAL_VIEW_DISTANCE) return true
 
         return false
     }
 
-    private fun getCloudHeight(index: Int): Int {
-        return baseHeight!! + index * CLOUD_HEIGHT
-    }
-
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        sky.profile.clouds::movement.observe(this, instant = true) {
-            for (layer in cloudLayers) {
-                layer.movement = it
-            }
-        }
-        sky.profile.clouds::maxDistance.observe(this, instant = true) { this.maxDistance = it }
+        sky.profile.clouds::enabled.observe(this) { reset = true }
+        sky.profile.clouds::movement.observe(this) { reset = true }
         sky.profile.clouds::generator.observe(this, instant = true) { this.generator = CloudGenerator.of(it, context.session.assets) } // TODO: flush cache
-        session::state.observe(this) {
-            if (it == PlaySessionStates.SPAWNING) {
-                if (baseHeight == null) return@observe
-
-                // reset clouds
-                position = Vec2i(Int.MIN_VALUE)
-                for ((index, layer) in this.cloudLayers.withIndex()) {
-                    layer.height = getCloudHeight(index)
-                }
-            }
-        }
-        sky.profile.clouds::layers.observe(this, instant = true) { this.nextLayers = it }
-        sky.profile.clouds::flat.observe(this, instant = true) { this.flat = it }
+        session::state.observe(this) { reset = true }
+        sky.profile.clouds::style.observe(this, instant = true) { this.style = it; reset = true }
     }
-
-    private fun reset() {
-        reset = true
-    }
-
-    private fun updateLayers(layers: Int) {
-        while (layers < this.cloudLayers.size) {
-            toUnload += this.cloudLayers.removeAt(this.cloudLayers.size - 1)
-        }
-        for (index in this.cloudLayers.size until layers) {
-            val layer = CloudLayer(sky, this, index, getCloudHeight(index))
-            this.cloudLayers += layer
-        }
-    }
-
-    override fun prepareDrawAsync() {
-        if (baseHeight == null) return
-
-        if (reset) {
-            updateLayers(0)
-            updateLayers(nextLayers)
-            reset = false
-        }
-        if (cloudLayers.size != nextLayers) {
-            updateLayers(nextLayers)
-        }
-
-        val time = now()
-        val delta = time - this.time
-        this.delta = (delta / 1.seconds).toFloat()
-        this.time = time
-
-        for (layer in cloudLayers) {
-            layer.prepareAsync()
-        }
-    }
-
-    override fun postPrepareDraw() {
-        for (unload in toUnload) {
-            unload.unload()
-        }
-        if (baseHeight == null) {
-            return
-        }
-        for (layer in cloudLayers) {
-            layer.prepare()
-        }
-    }
-
 
     private fun draw() {
-        shader.cloudsColor = color.calculate()
+        shader.color = color.calculate()
 
-
-        for (layer in cloudLayers) {
-            layer.draw()
-        }
     }
 
     private object CloudRenderLayer : RenderLayer {
@@ -166,7 +82,7 @@ class CloudRenderer(
     }
 
     companion object : RendererBuilder<CloudRenderer> {
-        const val CLOUD_HEIGHT = 4
+        const val MAX_VERTICAL_VIEW_DISTANCE = 256
 
         override fun build(session: PlaySession, context: RenderContext): CloudRenderer? {
             val sky = context.renderer[SkyRenderer] ?: return null

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.clouds
+package de.bixilon.minosoft.gui.rendering.sky.clouds.mesh
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
@@ -19,26 +19,56 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.sky.clouds.generator.CloudGenerator
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadMeshBuilder
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 
-class CloudMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, CloudMeshStruct) {
+class CloudMeshBuilder(
+    context: RenderContext,
+    generator: CloudGenerator,
+    val offset: Vec2i,
+    val style: CloudStyle,
+) : QuadMeshBuilder(context, CloudMeshStruct) {
 
-    fun addVertex(start: Vec3f, side: Directions) {
-        data.add(
-            start.x, start.y, start.z,
-            side.ordinal.buffer(),
-        )
+    fun addVertex(x: Float, y: Float, z: Float, side: Directions) = data.add(
+        x, y, z,
+        side.ordinal.buffer(),
+    )
+
+    fun addVertex(position: Vec3f, side: Directions) = addVertex(position.x, position.y, position.z, side)
+
+    init {
+        /*
+        for (z in 0 until MESH_SIZE) {
+            for (x in 0 until MESH_SIZE) {
+                val realX = offset.x + x
+                val realZ = offset.y + z
+
+                if (!generator[realX, realZ]) continue
+
+                val start = (this.offset * ARRAY_SIZE + Vec2i(x, z) + (layer.index * ARRAY_SIZE)) * CLOUD_SIZE
+
+                val cull = booleanArrayOf(
+                    generator[realX + 0, realZ - 1], // NORTH
+                    generator[realX + 0, realZ + 1], // SOUTH
+                    generator[realX - 1, realZ + 0], // WEST
+                    generator[realX + 1, realZ + 0], // EAST
+                )
+                createCloud(start, start + CLOUD_SIZE, offset, layer.height, layer.height + CLOUD_HEIGHT, layer.clouds.flat, cull)
+            }
+        }
+
+         */
     }
 
 
-    fun createCloud(start: Vec2i, end: Vec2i, offset: BlockPosition, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
+    private fun add(start: Vec2i, end: Vec2i, offset: BlockPosition, yStart: Int, yEnd: Int, culling: BooleanArray) {
         val start = Vec3f(start.x - offset.x, yStart - offset.y, start.y - offset.z) + CLOUD_OFFSET
         val end = Vec3f(end.x - offset.x, yEnd - offset.y, end.y - offset.z) + CLOUD_OFFSET
 
         addYQuad(Vec2f(start.x, start.z), start.y, Vec2f(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }
-        if (!flat) {
+        if (style == CloudStyle.VOLUME) {
             addYQuad(Vec2f(start.x, start.z), end.y, Vec2f(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
 
 
@@ -66,6 +96,10 @@ class CloudMeshBuilder(context: RenderContext) : QuadMeshBuilder(context, CloudM
     }
 
     companion object {
-        private const val CLOUD_OFFSET = 0.24f // prevents face fighting with pretty much all blocks
+        const val CLOUD_HEIGHT = 4
+        const val CLOUD_OFFSET = 0.24f // prevents face fighting with pretty much all blocks
+
+        const val CLOUD_SIZE = 12
+        const val MESH_SIZE = CLOUD_SIZE * 16
     }
 }

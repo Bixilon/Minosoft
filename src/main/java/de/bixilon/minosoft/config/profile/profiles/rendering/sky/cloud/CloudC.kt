@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.config.profile.profiles.rendering.sky.cloud
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
-import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.sky.clouds.generator.CloudGenerators
+import de.bixilon.minosoft.gui.rendering.sky.clouds.mesh.CloudStyle
 
 class CloudC(profile: RenderingProfile) {
 
@@ -27,27 +26,12 @@ class CloudC(profile: RenderingProfile) {
      */
     var enabled by BooleanDelegate(profile, true)
 
-    /**
-     * Renders clouds flat and not 3d
-     */
-    var flat by BooleanDelegate(profile, false)
+    var style by EnumDelegate(profile, CloudStyle.VOLUME, CloudStyle)
 
     /**
      * Moves clouds from time to time
      */
     var movement by BooleanDelegate(profile, true)
-
-    /**
-     * Max y axis distance to clouds
-     */
-    @Deprecated("shit")
-    var maxDistance by FloatDelegate(profile, 60.0f)
-
-
-    /**
-     * Number of cloud layers
-     */
-    var layers by IntDelegate(profile, 3, arrayOf(0..10))
 
     var generator by EnumDelegate(profile, CloudGenerators.TEXTURE, CloudGenerators)
 }

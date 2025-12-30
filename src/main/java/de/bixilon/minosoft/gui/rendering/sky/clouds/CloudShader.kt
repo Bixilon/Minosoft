@@ -28,6 +28,6 @@ class CloudShader(
     override var cameraPosition: Vec3f by cameraPosition()
     override var fog: FogManager by fog()
 
-    var cloudsColor by uniform("uCloudsColor", Vec3f.EMPTY)
+    var color by uniform("uCloudsColor", Vec3f.EMPTY)
     var offset by uniform("uOffset", 0.0f)
 }

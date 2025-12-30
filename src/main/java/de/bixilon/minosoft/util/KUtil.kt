@@ -78,6 +78,7 @@ object KUtil {
     val NULL_UUID = UUID(0L, 0L)
     val EMPTY_BYTE_ARRAY = ByteArray(0)
 
+    @Deprecated("kutil 1.30.3 bit set")
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
     }
