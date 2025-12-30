@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.Purpur
+import de.bixilon.minosoft.data.registries.blocks.types.building.nether.Glowstone
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.Netherrack
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSoil
@@ -164,7 +165,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     WoodenChestBlock.Chest, WoodenChestBlock.TrappedChest, EnderChestBlock,
     ShulkerBoxBlock, ShulkerBoxBlock.White, ShulkerBoxBlock.Orange, ShulkerBoxBlock.Magenta, ShulkerBoxBlock.LightBlue, ShulkerBoxBlock.Yellow, ShulkerBoxBlock.Lime, ShulkerBoxBlock.Pink, ShulkerBoxBlock.Gray, ShulkerBoxBlock.LightGray, ShulkerBoxBlock.Cyan, ShulkerBoxBlock.Purple, ShulkerBoxBlock.Blue, ShulkerBoxBlock.Brown, ShulkerBoxBlock.Green, ShulkerBoxBlock.Green, ShulkerBoxBlock.Red, ShulkerBoxBlock.Black,
 
-    Netherrack, SoulSand, SoulSoil,
+    Glowstone, Netherrack, SoulSand, SoulSoil,
 
     RedstoneTorchBlock.Standing, RedstoneTorchBlock.Wall,
     TorchBlock.NormalTorchBlock.Standing, TorchBlock.NormalTorchBlock.Wall,
