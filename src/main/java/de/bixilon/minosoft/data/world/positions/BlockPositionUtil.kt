@@ -26,18 +26,18 @@ object BlockPositionUtil {
 
     inline fun assertPosition(condition: Boolean) {
         if (!DebugOptions.VERIFY_COORDINATES) return
-        if (!condition) throw AssertionError("Position assert failed!")
+        assert(condition) { "Position assert failed!" }
     }
 
     inline fun assertPosition(condition: Boolean, message: String) {
         if (!DebugOptions.VERIFY_COORDINATES) return
-        if (!condition) throw AssertionError("Position assert failed: $message")
+        assert(condition) { "Position assert failed: $message" }
     }
 
     inline fun assertPosition(value: Int, min: Int, max: Int) {
         if (!DebugOptions.VERIFY_COORDINATES) return
-        if (value < min) throw AssertionError("coordinate out of range: $value < $min")
-        if (value > max) throw AssertionError("coordinate out of range: $value > $max")
+        assert(value < min) { "coordinate out of range: $value < $min" }
+        assert(value > max) { "coordinate out of range: $value > $max" }
     }
 
 
