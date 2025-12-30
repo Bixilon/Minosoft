@@ -20,9 +20,7 @@ import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 object FullbrightLightUpdater : LightmapUpdater {
 
     override fun update(force: Boolean, buffer: LightmapBuffer) {
-        if (!force) {
-            return
-        }
+        if (!force) return
 
         for (sky in 0 until LightLevel.LEVELS) {
             for (block in 0 until LightLevel.LEVELS) {

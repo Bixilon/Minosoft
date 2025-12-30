@@ -21,9 +21,7 @@ import java.util.*
 object DebugLightUpdater : LightmapUpdater {
 
     override fun update(force: Boolean, buffer: LightmapBuffer) {
-        if (!force) {
-            return
-        }
+        if (!force) return
 
         val random = Random(10000L)
         for (sky in 0 until LightLevel.LEVELS) {
