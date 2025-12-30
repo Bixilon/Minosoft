@@ -171,9 +171,9 @@ class FluidSectionMesher(
                     val east = canFluidCull(section, inSection, Directions.EAST, fluid, 1.0f)
 
 
-                    val sides = down != FluidCull.CULLED || north != FluidCull.CULLED || south != FluidCull.CULLED || west != FluidCull.CULLED && east == FluidCull.CULLED
+                    val sides = north != FluidCull.CULLED || south != FluidCull.CULLED || west != FluidCull.CULLED || east == FluidCull.CULLED
 
-                    if (!up && !sides) {
+                    if (!up && down == FluidCull.CULLED && !sides) {
                         continue
                     }
 
