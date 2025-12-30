@@ -33,8 +33,7 @@ object EndEffects : DimensionEffects {
     override val moon: Boolean get() = false
     override val stars: Boolean get() = false
 
-    override val clouds: Boolean get() = false
-    override fun getCloudHeight(session: PlaySession): IntRange = Broken()
+    override fun getCloudHeight(session: PlaySession) = null
 
     override val brighten = Vec3f(0.99f, 1.12f, 1.0f) // bit more green
 

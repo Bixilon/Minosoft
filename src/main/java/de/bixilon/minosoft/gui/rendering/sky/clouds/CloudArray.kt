@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.sky.clouds.CloudRenderer.Companion.CLOUD_HEIGHT
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 class CloudArray(
@@ -51,7 +52,7 @@ class CloudArray(
                     generator[matrixX - 1, matrixZ + 0], // WEST
                     generator[matrixX + 1, matrixZ + 0], // EAST
                 )
-                mesh.createCloud(start, start + CLOUD_SIZE, offset, layer.height.first, layer.height.last, layer.clouds.flat, cull)
+                mesh.createCloud(start, start + CLOUD_SIZE, offset, layer.height, layer.height + CLOUD_HEIGHT, layer.clouds.flat, cull)
             }
         }
 

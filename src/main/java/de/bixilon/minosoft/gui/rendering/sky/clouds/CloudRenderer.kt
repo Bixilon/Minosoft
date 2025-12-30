@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.PlaySessionStates
-import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 class CloudRenderer(
@@ -43,8 +42,8 @@ class CloudRenderer(
     var generator: CloudGenerator? = null
     private val cloudLayers: MutableList<CloudLayer> = mutableListOf()
     private var position = Vec2i(Int.MIN_VALUE)
+    private var baseHeight: Int? = null
     private var maxDistance = 0.0f
-    private var baseHeight = 0
     private var nextLayers = 0
     var flat: Boolean = false
         private set
@@ -66,7 +65,7 @@ class CloudRenderer(
     }
 
     private fun canSkip(): Boolean {
-        if (!sky.effects.clouds) return true
+        if (baseHeight == null) return true
         if (!sky.profile.clouds.enabled) return true
         if (cloudLayers.isEmpty()) return true
         if (session.profiles.block.viewDistance < 3) return true
@@ -75,12 +74,8 @@ class CloudRenderer(
         return false
     }
 
-    private fun getCloudHeight(index: Int): IntRange {
-        val base = sky.effects.getCloudHeight(session)
-        this.baseHeight = base.first
-        val cloudHeight = base.last - base.first
-
-        return IntRange(baseHeight + index * cloudHeight, baseHeight + (index + 1) * cloudHeight)
+    private fun getCloudHeight(index: Int): Int {
+        return baseHeight!! + index * CLOUD_HEIGHT
     }
 
     override fun postInit(latch: AbstractLatch) {
@@ -94,9 +89,8 @@ class CloudRenderer(
         sky.profile.clouds::generator.observe(this, instant = true) { this.generator = CloudGenerator.of(it, context.session.assetsManager) } // TODO: flush cache
         session::state.observe(this) {
             if (it == PlaySessionStates.SPAWNING) {
-                if (!sky.effects.clouds) {
-                    return@observe
-                }
+                if (baseHeight == null) return@observe
+
                 // reset clouds
                 position = Vec2i(Int.MIN_VALUE)
                 for ((index, layer) in this.cloudLayers.withIndex()) {
@@ -123,9 +117,8 @@ class CloudRenderer(
     }
 
     override fun prepareDrawAsync() {
-        if (!sky.effects.clouds) {
-            return
-        }
+        if (baseHeight == null) return
+
         if (reset) {
             updateLayers(0)
             updateLayers(nextLayers)
@@ -149,7 +142,7 @@ class CloudRenderer(
         for (unload in toUnload) {
             unload.unload()
         }
-        if (!sky.effects.clouds) {
+        if (baseHeight == null) {
             return
         }
         for (layer in cloudLayers) {
@@ -158,22 +151,8 @@ class CloudRenderer(
     }
 
 
-    private fun setYOffset() {
-        val y = (context.session.camera.entity.renderInfo.eyePosition.y - context.camera.offset.offset.y).toFloat()
-        var yOffset = 0.0f
-        val over = (baseHeight - y)
-        if (over > 0.0f) {
-            yOffset = -(over / 15.0f).pow(2)
-            if (yOffset < -80.0f) {
-                yOffset = -80.0f
-            }
-        }
-        shader.yOffset = yOffset
-    }
-
     private fun draw() {
         shader.cloudsColor = color.calculate()
-        setYOffset()
 
 
         for (layer in cloudLayers) {
@@ -187,6 +166,7 @@ class CloudRenderer(
     }
 
     companion object : RendererBuilder<CloudRenderer> {
+        const val CLOUD_HEIGHT = 4
 
         override fun build(session: PlaySession, context: RenderContext): CloudRenderer? {
             val sky = context.renderer[SkyRenderer] ?: return null

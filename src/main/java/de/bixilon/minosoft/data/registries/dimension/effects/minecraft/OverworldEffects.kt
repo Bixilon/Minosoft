@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,13 +30,12 @@ object OverworldEffects : DimensionEffects {
     override val moon: Boolean get() = true
     override val stars: Boolean get() = true
 
-    override val clouds: Boolean get() = true
-    override fun getCloudHeight(session: PlaySession): IntRange {
+    override fun getCloudHeight(session: PlaySession): Int {
         val height = session.world.dimension.height
-        if (height > DimensionProperties.DEFAULT_HEIGHT) {
-            return 192..196
+        if (height > DimensionProperties.DEFAULT_HEIGHT) { // TODO: make that dynamic, based on the dimension height
+            return 192
         }
-        return 128..132
+        return 128
     }
 
     override val fog = FogEffects()

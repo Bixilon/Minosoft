@@ -28,8 +28,7 @@ interface DimensionEffects : Identified {
     val moon: Boolean
     val stars: Boolean
 
-    val clouds: Boolean
-    fun getCloudHeight(session: PlaySession): IntRange
+    fun getCloudHeight(session: PlaySession): Int?
 
     val brighten: Vec3f? get() = null
 

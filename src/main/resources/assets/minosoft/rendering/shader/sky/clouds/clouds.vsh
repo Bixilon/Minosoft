@@ -22,13 +22,11 @@ flat out float finBrightness;
 
 uniform mat4 uViewProjectionMatrix;
 uniform float uOffset;
-uniform float uYOffset;
 
 
 void main() {
     vec3 position = vinPosition;
     position.x -= uOffset;
-    position.y += uYOffset;
 
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0);
 

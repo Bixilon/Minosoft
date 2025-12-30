@@ -27,7 +27,7 @@ class CloudLayer(
     private val sky: SkyRenderer,
     val clouds: CloudRenderer,
     val index: Int,
-    var height: IntRange,
+    var height: Int,
 ) {
     private var position = ChunkPosition(-ChunkPosition.MAX_X, -ChunkPosition.MAX_Z)
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(3 * 3).unsafeCast()
@@ -169,6 +169,7 @@ class CloudLayer(
     }
 
     companion object {
+        @Deprecated("does not exist anymore")
         private const val MAX_OFFSET = 256 * CloudArray.CLOUD_SIZE
     }
 }
