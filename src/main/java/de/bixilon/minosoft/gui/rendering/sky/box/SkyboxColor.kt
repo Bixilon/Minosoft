@@ -27,7 +27,9 @@ import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer.Companion.DEFAULT_SKY_COLOR
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
+import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.time.Duration
@@ -43,63 +45,6 @@ class SkyboxColor(
 
     var color: RGBColor? = null
         private set
-
-    private fun calculateBiomeAvg(average: (Biome) -> RGBColor?): RGBColor? {
-        val entity = sky.session.camera.entity
-        val eyePosition = entity.renderInfo.eyePosition
-        val chunk = entity.physics.positionInfo.chunk ?: return null
-
-        var radius = sky.profile.biomeRadius
-        radius *= radius
-
-        var red = 0
-        var green = 0
-        var blue = 0
-        var count = 0
-
-        val offset = MVec3i(eyePosition.x.toInt() - (chunk.position.x shl 4), eyePosition.y.toInt(), eyePosition.z.toInt() - (chunk.position.z shl 4))
-
-        val dimension = sky.session.world.dimension
-        val yRange: IntRange
-
-        if (dimension.supports3DBiomes) {
-            if (offset.y - radius < dimension.minY) {
-                offset.y = dimension.minY
-                yRange = IntRange(0, radius)
-            } else if (offset.y + radius > dimension.maxY) {
-                offset.y = dimension.maxY
-                yRange = IntRange(-radius, 0)
-            } else {
-                yRange = IntRange(-radius, radius)
-            }
-        } else {
-            yRange = 0..1
-        }
-
-        for (xOffset in -radius..radius) {
-            for (yOffset in yRange) {
-                for (zOffset in -radius..radius) {
-                    if (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset > radius) {
-                        continue
-                    }
-                    val blockPosition = BlockPosition(offset.x + xOffset, offset.y + yOffset, offset.z + zOffset)
-                    val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
-                    val biome = neighbour.getBiome(blockPosition.inChunkPosition) ?: continue
-
-                    count++
-                    val color = average.invoke(biome) ?: continue
-                    red += color.red
-                    green += color.green
-                    blue += color.blue
-                }
-            }
-        }
-
-        if (count == 0) {
-            return null
-        }
-        return RGBColor(red / count, green / count, blue / count)
-    }
 
 
     fun lightning(original: Vec3f): Vec3f {
@@ -210,7 +155,7 @@ class SkyboxColor(
         }
         if (!properties.daylightCycle) {
             // no daylight cycle (e.g. nether)
-            return calculateBiomeAvg { it.fogColor } // ToDo: Optimize
+            return sky.session.calculateBiomeAvg(sky.profile.biomeRadius, Biome::fogColor) ?: DEFAULT_SKY_COLOR // ToDo: Optimize
         }
         // TODO: Check if wither is present
 
@@ -233,7 +178,7 @@ class SkyboxColor(
     }
 
     fun updateBase() {
-        baseColor = calculateBiomeAvg(Biome::skyColor)
+        baseColor = sky.session.calculateBiomeAvg(sky.profile.biomeRadius, Biome::skyColor)
     }
 
     companion object {
@@ -242,5 +187,63 @@ class SkyboxColor(
         private val SUNRISE_BASE_COLOR = Vec3f(0.95f, 0.78f, 0.56f)
         private val SUNSET_BASE_COLOR = Vec3f(0.95f, 0.68f, 0.56f)
         private val NIGHT_BASE_COLOR = Vec3f(0.02f, 0.04f, 0.09f)
+
+
+        @Deprecated("biome sampler; biome blending branch")
+        fun PlaySession.calculateBiomeAvg(_radius: Int, average: (Biome) -> RGBColor?): RGBColor? {
+            val entity = camera.entity
+            val eyePosition = entity.renderInfo.eyePosition
+            val chunk = entity.physics.positionInfo.chunk ?: return null
+
+            val radius = _radius * _radius
+
+            var red = 0
+            var green = 0
+            var blue = 0
+            var count = 0
+
+            val offset = MVec3i(eyePosition.x.toInt() - (chunk.position.x shl 4), eyePosition.y.toInt(), eyePosition.z.toInt() - (chunk.position.z shl 4))
+
+            val dimension = world.dimension
+            val yRange: IntRange
+
+            if (dimension.supports3DBiomes) {
+                if (offset.y - _radius < dimension.minY) {
+                    offset.y = dimension.minY
+                    yRange = IntRange(0, _radius)
+                } else if (offset.y + _radius > dimension.maxY) {
+                    offset.y = dimension.maxY
+                    yRange = IntRange(-_radius, 0)
+                } else {
+                    yRange = IntRange(-_radius, _radius)
+                }
+            } else {
+                yRange = 0..1
+            }
+
+            for (xOffset in -_radius.._radius) {
+                for (yOffset in yRange) {
+                    for (zOffset in -_radius.._radius) {
+                        if (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset > radius) {
+                            continue
+                        }
+                        val blockPosition = BlockPosition(offset.x + xOffset, offset.y + yOffset, offset.z + zOffset)
+                        val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
+                        val biome = neighbour.getBiome(blockPosition.inChunkPosition) ?: continue
+
+                        count++
+                        val color = average.invoke(biome) ?: continue
+                        red += color.red
+                        green += color.green
+                        blue += color.blue
+                    }
+                }
+            }
+
+            if (count == 0) {
+                return null
+            }
+            return RGBColor(red / count, green / count, blue / count)
+        }
     }
 }

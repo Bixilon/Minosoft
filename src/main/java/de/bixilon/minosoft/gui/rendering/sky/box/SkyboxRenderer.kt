@@ -139,6 +139,6 @@ class SkyboxRenderer(
     }
 
     companion object {
-        private val DEFAULT_SKY_COLOR = "#ecff89".rgb()
+        val DEFAULT_SKY_COLOR = "#ecff89".rgb()
     }
 }

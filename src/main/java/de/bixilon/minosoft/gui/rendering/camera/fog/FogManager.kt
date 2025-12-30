@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.fog
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
+import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxColor.Companion.calculateBiomeAvg
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
@@ -62,7 +64,7 @@ class FogManager(
                 val end = context.session.world.view.viewDistance.toFloat() * ChunkSize.SECTION_WIDTH_X
                 val distance = end / 8.0f
 
-                FogOptions(effects.start * (end - distance), end)
+                FogOptions(effects.start * (end - distance), end, color = context.session.calculateBiomeAvg(5, Biome::fogColor))
             }
         }
     }
