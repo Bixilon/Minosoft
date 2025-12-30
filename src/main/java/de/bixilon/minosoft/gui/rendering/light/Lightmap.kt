@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
 import de.bixilon.minosoft.gui.rendering.light.updater.normal.NormalLightmapUpdater
 import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class Lightmap(private val light: RenderLight) {
     private val profile = light.context.session.profiles.rendering
@@ -45,6 +44,7 @@ class Lightmap(private val light: RenderLight) {
 
     private fun setLightmapUpdater() {
         this.updater = getLightmapUpdater()
+        force = true
     }
 
     private fun getLightmapUpdater(): LightmapUpdater {

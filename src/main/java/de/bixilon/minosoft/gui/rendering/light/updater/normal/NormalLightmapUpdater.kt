@@ -56,7 +56,7 @@ class NormalLightmapUpdater(
         val skylight = dimension.skyLight && dimension.effects.daylightCycle
         val time = now()
 
-        if (!force || !this.force) {
+        if (!(force || this.force)) {
             if (!skylight) {
                 // do not recalculate if skylight does not change (e.g. nether or end)
                 return
