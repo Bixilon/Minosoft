@@ -11,22 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config
+package de.bixilon.minosoft.gui.rendering.sky.clouds.generator
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Test
+import de.bixilon.minosoft.assets.AssetsManager
 
-class DebugOptionsTest {
+interface CloudGenerator {
 
-    @Test
-    fun `check that all debug options are turned off`() {
-        assertFalse(DebugOptions.INFINITE_TORCHES)
-        assertFalse(DebugOptions.SIMULATE_TIME)
-        assertFalse(DebugOptions.LIGHTMAP_DEBUG_WINDOW)
-        assertFalse(DebugOptions.LIGHT_DEBUG_MODE)
-        assertFalse(DebugOptions.LOG_RAW_CHAT)
-        assertFalse(DebugOptions.FORCE_CHEST_ANIMATION)
-        assertFalse(DebugOptions.EMPTY_BUFFERS)
-        assertFalse(DebugOptions.FORCE_CHECK_UPDATES)
+    operator fun get(x: Int, z: Int): Boolean
+
+
+    companion object {
+
+        fun of(type: CloudGenerators, assets: AssetsManager) = when (type) {
+            CloudGenerators.RASTER -> RasterCloudGenerator
+            CloudGenerators.TEXTURE -> TextureCloudGenerator.load(assets = assets)
+            CloudGenerators.NONE -> null
+        }
     }
 }

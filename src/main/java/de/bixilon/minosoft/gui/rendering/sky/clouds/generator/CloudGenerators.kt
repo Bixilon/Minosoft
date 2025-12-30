@@ -11,22 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config
+package de.bixilon.minosoft.gui.rendering.sky.clouds.generator
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Test
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 
-class DebugOptionsTest {
+enum class CloudGenerators {
+    RASTER,
+    TEXTURE,
+    NONE,
+    ;
 
-    @Test
-    fun `check that all debug options are turned off`() {
-        assertFalse(DebugOptions.INFINITE_TORCHES)
-        assertFalse(DebugOptions.SIMULATE_TIME)
-        assertFalse(DebugOptions.LIGHTMAP_DEBUG_WINDOW)
-        assertFalse(DebugOptions.LIGHT_DEBUG_MODE)
-        assertFalse(DebugOptions.LOG_RAW_CHAT)
-        assertFalse(DebugOptions.FORCE_CHEST_ANIMATION)
-        assertFalse(DebugOptions.EMPTY_BUFFERS)
-        assertFalse(DebugOptions.FORCE_CHECK_UPDATES)
+    companion object : ValuesEnum<CloudGenerators> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
     }
 }

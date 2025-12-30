@@ -24,12 +24,12 @@ class CloudArray(
     private val mesh = build()
 
     init {
-        mesh.load()
+        mesh?.load()
     }
 
-    private fun build(): Mesh {
+    private fun build(): Mesh? {
+        val generator = layer.clouds.generator ?: return null
         val offset = layer.clouds.context.camera.offset.offset
-        val matrix = layer.clouds.matrix
         val matrixOffset = (offset * ARRAY_SIZE) and 0xFF
 
         val mesh = CloudMeshBuilder(layer.clouds.context)
@@ -39,17 +39,17 @@ class CloudArray(
                 val matrixX = matrixOffset.x + x
                 val matrixZ = matrixOffset.y + z
 
-                if (!matrix[matrixX, matrixZ]) {
+                if (!generator[matrixX, matrixZ]) {
                     continue
                 }
 
                 val start = (this.offset * ARRAY_SIZE + Vec2i(x, z) + (layer.index * ARRAY_SIZE)) * CLOUD_SIZE
 
                 val cull = booleanArrayOf(
-                    matrix[matrixX + 0, matrixZ - 1], // NORTH
-                    matrix[matrixX + 0, matrixZ + 1], // SOUTH
-                    matrix[matrixX - 1, matrixZ + 0], // WEST
-                    matrix[matrixX + 1, matrixZ + 0], // EAST
+                    generator[matrixX + 0, matrixZ - 1], // NORTH
+                    generator[matrixX + 0, matrixZ + 1], // SOUTH
+                    generator[matrixX - 1, matrixZ + 0], // WEST
+                    generator[matrixX + 1, matrixZ + 0], // EAST
                 )
                 mesh.createCloud(start, start + CLOUD_SIZE, offset, layer.height.first, layer.height.last, layer.clouds.flat, cull)
             }
@@ -60,7 +60,7 @@ class CloudArray(
 
 
     override fun draw() {
-        mesh.draw()
+        mesh?.draw()
     }
 
     fun unload() { // TODO????

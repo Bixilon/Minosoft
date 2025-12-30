@@ -18,6 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.sky.clouds.generator.TextureCloudGenerator
 import de.bixilon.minosoft.util.Backports.nextFloatPort
 import java.util.*
 import kotlin.math.abs
@@ -168,6 +169,6 @@ class CloudLayer(
     }
 
     companion object {
-        private const val MAX_OFFSET = CloudMatrix.CLOUD_MATRIX_MASK * CloudArray.CLOUD_SIZE
+        private const val MAX_OFFSET = 256 * CloudArray.CLOUD_SIZE
     }
 }

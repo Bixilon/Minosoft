@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.sky.clouds.generator.CloudGenerator
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -39,7 +40,7 @@ class CloudRenderer(
     private val color = CloudColor(sky)
     override val layers = LayerSettings()
     val shader = context.system.shader.create(minosoft("sky/clouds")) { CloudShader(it) }
-    val matrix = CloudMatrix()
+    var generator: CloudGenerator? = null
     private val cloudLayers: MutableList<CloudLayer> = mutableListOf()
     private var position = Vec2i(Int.MIN_VALUE)
     private var maxDistance = 0.0f
@@ -61,8 +62,6 @@ class CloudRenderer(
     }
 
     override fun asyncInit(latch: AbstractLatch) {
-        matrix.load(session.assetsManager)
-
         context.camera.offset::offset.observe(this) { reset() }
     }
 
@@ -92,6 +91,7 @@ class CloudRenderer(
             }
         }
         sky.profile.clouds::maxDistance.observe(this, instant = true) { this.maxDistance = it }
+        sky.profile.clouds::generator.observe(this, instant = true) { this.generator = CloudGenerator.of(it, context.session.assetsManager) } // TODO: flush cache
         session::state.observe(this) {
             if (it == PlaySessionStates.SPAWNING) {
                 if (!sky.effects.clouds) {

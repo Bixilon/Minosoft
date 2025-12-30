@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2025 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,9 @@ package de.bixilon.minosoft.config.profile.profiles.rendering.sky.cloud
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.gui.rendering.sky.clouds.generator.CloudGenerators
 
 class CloudC(profile: RenderingProfile) {
 
@@ -38,6 +40,7 @@ class CloudC(profile: RenderingProfile) {
     /**
      * Max y axis distance to clouds
      */
+    @Deprecated("shit")
     var maxDistance by FloatDelegate(profile, 60.0f)
 
 
@@ -45,4 +48,6 @@ class CloudC(profile: RenderingProfile) {
      * Number of cloud layers
      */
     var layers by IntDelegate(profile, 3, arrayOf(0..10))
+
+    var generator by EnumDelegate(profile, CloudGenerators.TEXTURE, CloudGenerators)
 }
