@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.rgb
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.tint.sampler.TintSampler
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
 import de.bixilon.minosoft.gui.rendering.tint.tints.plants.FoliageTintCalculator
@@ -81,15 +82,6 @@ class TintManager(val session: PlaySession) {
         return tints
     }
 
-    fun getBlockTint(state: BlockState, chunk: Chunk, position: InChunkPosition, cache: RGBArray?): RGBArray? {
-        if (BlockStateFlags.TINTED !in state.flags) return null
-        val tintProvider = state.block.unsafeCast<TintedBlock>().tintProvider ?: return null
-
-        val biome = session.world.biomes.accessor.get(chunk, position)
-        val offset = chunk.position.blockPosition(position)
-
-        return getBlockTint(state, offset, biome, cache, tintProvider)
-    }
 
     fun getParticleTint(state: BlockState, position: BlockPosition): RGBColor {
         if (BlockStateFlags.TINTED !in state.flags || state.block !is TintedBlock) return Colors.WHITE_RGB

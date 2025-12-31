@@ -54,14 +54,14 @@ class RadiusTintSampler(val radius: Int = 5) : TintSampler {
         var offset = 1
         while (true) {
             val weight = (radius - offset).pow(2)
-            sampleFluid(chunk, position, BlockPosition(-radius, 0, 0), weight, provider)
-            sampleFluid(chunk, position, BlockPosition(radius, 0, 0), weight, provider)
+            sampleFluid(chunk, position, BlockPosition(-offset, 0, 0), weight, provider)
+            sampleFluid(chunk, position, BlockPosition(offset, 0, 0), weight, provider)
 
-            sampleFluid(chunk, position, BlockPosition(0, -radius, 0), weight, provider)
-            sampleFluid(chunk, position, BlockPosition(0, radius, 0), weight, provider)
+            sampleFluid(chunk, position, BlockPosition(0, -offset, 0), weight, provider)
+            sampleFluid(chunk, position, BlockPosition(0, offset, 0), weight, provider)
 
-            sampleFluid(chunk, position, BlockPosition(0, 0, -radius), weight, provider)
-            sampleFluid(chunk, position, BlockPosition(0, 0, radius), weight, provider)
+            sampleFluid(chunk, position, BlockPosition(0, 0, -offset), weight, provider)
+            sampleFluid(chunk, position, BlockPosition(0, 0, offset), weight, provider)
 
             offset += radius / 3
             if (offset >= radius) break

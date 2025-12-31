@@ -194,6 +194,7 @@ class SkyboxColor(
             val entity = camera.entity
             val eyePosition = entity.renderInfo.eyePosition
             val chunk = entity.physics.positionInfo.chunk ?: return null
+            val accessor = world.biomes.accessor
 
             val radius = _radius * _radius
 
@@ -229,7 +230,7 @@ class SkyboxColor(
                         }
                         val blockPosition = BlockPosition(offset.x + xOffset, offset.y + yOffset, offset.z + zOffset)
                         val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
-                        val biome = neighbour.getBiome(blockPosition.inChunkPosition) ?: continue
+                        val biome = accessor[neighbour, blockPosition.inChunkPosition] ?: continue
 
                         val color = average.invoke(biome) ?: continue
                         count++
