@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,13 +27,14 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
-import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxColor.Companion.calculateBiomeAvg
+import de.bixilon.minosoft.gui.rendering.tint.sampler.gaussian.GaussianTintSampler
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 class FogManager(
     private val context: RenderContext,
 ) {
+    private val sampler = GaussianTintSampler()
     private val player = context.session.player
 
     private var interpolation = FogInterpolationStart()
@@ -64,7 +65,10 @@ class FogManager(
                 val end = context.session.world.view.viewDistance.toFloat() * ChunkSize.SECTION_WIDTH_X
                 val distance = end / 8.0f
 
-                FogOptions(effects.start * (end - distance), end, color = context.session.calculateBiomeAvg(5, Biome::fogColor))
+                val position = context.session.camera.entity.physics.positionInfo
+                val color = position.chunk?.let { sampler.sampleCustom(it, position.eyePosition, Biome::fogColor) }
+
+                FogOptions(effects.start * (end - distance), end, color = color)
             }
         }
     }

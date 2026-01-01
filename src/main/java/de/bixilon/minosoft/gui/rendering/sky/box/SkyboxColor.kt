@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,22 +14,20 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kmath.vec.vec3.f.Vec3f
-import de.bixilon.kmath.vec.vec3.i.MVec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer.Companion.DEFAULT_SKY_COLOR
+import de.bixilon.minosoft.gui.rendering.tint.sampler.gaussian.GaussianTintSampler
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil.interpolateLinear
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.time.Duration
@@ -38,6 +36,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class SkyboxColor(
     val sky: SkyRenderer,
 ) {
+    private val sampler = GaussianTintSampler(sky.profile.biomeRadius)
     private var lastStrike = TimeUtil.NULL
     private var strikeDuration = Duration.ZERO
 
@@ -144,6 +143,11 @@ class SkyboxColor(
         return clear(time)?.let { RGBColor(it) }
     }
 
+    private fun sample(sampler: (Biome) -> RGBColor?): RGBColor? {
+        val position = sky.context.session.camera.entity.physics.positionInfo
+        return position.chunk?.let { this.sampler.sampleCustom(it, position.eyePosition, sampler) }
+    }
+
 
     fun calculate(): RGBColor? {
         sky.context.camera.fog.state.color?.let { return it.rgb() }
@@ -155,7 +159,7 @@ class SkyboxColor(
         }
         if (!properties.daylightCycle) {
             // no daylight cycle (e.g. nether)
-            return sky.session.calculateBiomeAvg(sky.profile.biomeRadius, Biome::fogColor) ?: DEFAULT_SKY_COLOR // ToDo: Optimize
+            return sample(Biome::fogColor) ?: DEFAULT_SKY_COLOR
         }
         // TODO: Check if wither is present
 
@@ -178,7 +182,7 @@ class SkyboxColor(
     }
 
     fun updateBase() {
-        baseColor = sky.session.calculateBiomeAvg(sky.profile.biomeRadius, Biome::skyColor)
+        baseColor = sample(Biome::skyColor)
     }
 
     companion object {
@@ -187,64 +191,5 @@ class SkyboxColor(
         private val SUNRISE_BASE_COLOR = Vec3f(0.95f, 0.78f, 0.56f)
         private val SUNSET_BASE_COLOR = Vec3f(0.95f, 0.68f, 0.56f)
         private val NIGHT_BASE_COLOR = Vec3f(0.02f, 0.04f, 0.09f)
-
-
-        @Deprecated("biome sampler; biome blending branch")
-        fun PlaySession.calculateBiomeAvg(_radius: Int, average: (Biome) -> RGBColor?): RGBColor? {
-            val entity = camera.entity
-            val eyePosition = entity.renderInfo.eyePosition
-            val chunk = entity.physics.positionInfo.chunk ?: return null
-            val accessor = world.biomes.accessor
-
-            val radius = _radius * _radius
-
-            var red = 0
-            var green = 0
-            var blue = 0
-            var count = 0
-
-            val offset = MVec3i(eyePosition.x.toInt() - (chunk.position.x shl 4), eyePosition.y.toInt(), eyePosition.z.toInt() - (chunk.position.z shl 4))
-
-            val dimension = world.dimension
-            val yRange: IntRange
-
-            if (dimension.supports3DBiomes) {
-                if (offset.y - _radius < dimension.minY) {
-                    offset.y = dimension.minY
-                    yRange = IntRange(0, _radius)
-                } else if (offset.y + _radius > dimension.maxY) {
-                    offset.y = dimension.maxY
-                    yRange = IntRange(-_radius, 0)
-                } else {
-                    yRange = IntRange(-_radius, _radius)
-                }
-            } else {
-                yRange = 0..1
-            }
-
-            for (xOffset in -_radius.._radius) {
-                for (yOffset in yRange) {
-                    for (zOffset in -_radius.._radius) {
-                        if (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset > radius) {
-                            continue
-                        }
-                        val blockPosition = BlockPosition(offset.x + xOffset, offset.y + yOffset, offset.z + zOffset)
-                        val neighbour = chunk.neighbours.traceChunk(blockPosition.chunkPosition) ?: continue
-                        val biome = accessor[neighbour, blockPosition.inChunkPosition] ?: continue
-
-                        val color = average.invoke(biome) ?: continue
-                        count++
-                        red += color.red
-                        green += color.green
-                        blue += color.blue
-                    }
-                }
-            }
-
-            if (count == 0) {
-                return null
-            }
-            return RGBColor(red / count, green / count, blue / count)
-        }
     }
 }
