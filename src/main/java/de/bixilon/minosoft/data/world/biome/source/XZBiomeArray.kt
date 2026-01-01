@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.data.world.biome.source
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class XZBiomeArray(private val biomes: Array<Biome?>) : BiomeSource {
+    override val flags = IntInlineEnumSet<BiomeSourceFlags>() + BiomeSourceFlags.VERTICAL
 
     init {
         assert(biomes.size == ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }

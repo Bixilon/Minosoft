@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.TestBiomes
 import de.bixilon.minosoft.data.world.World
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
 import de.bixilon.minosoft.data.world.biome.accessor.SourceBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.data.world.biome.source.BiomeSourceFlags
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -118,6 +120,7 @@ class WorldBiomesTest {
         val biome: Biome?,
         val fallback: Biome?,
     ) : BiomeSource {
+        override val flags get() = Broken()
 
         override fun get(position: InChunkPosition): Biome? {
             if (this.position != position) return fallback
@@ -126,6 +129,7 @@ class WorldBiomesTest {
     }
 
     private class CounterSource(var biome: Biome?) : BiomeSource {
+        override val flags get() = Broken()
         var counter = 0
 
         override fun get(position: InChunkPosition): Biome? {
