@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,12 +21,11 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
-import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateTestUtil.collectUpdates
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.chunk.update.block.ProposedBlockChange
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.test.ITUtil.allocate
@@ -52,14 +51,14 @@ class ChunkTest {
 
     fun `apply single update`() {
         val chunk = create()
-        chunk.apply(ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1))
+        chunk.apply(ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.TEST1))
 
         assertEquals(chunk[InChunkPosition(1, 2, 3)], TestBlockStates.TEST1)
     }
 
     fun `apply single update with block entity`() {
         val chunk = create()
-        chunk.apply(ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.ENTITY1))
+        chunk.apply(ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.ENTITY1))
 
         assertTrue(chunk.getBlockEntity(InChunkPosition(1, 2, 3)) is TestBlockEntities.TestBlockEntity)
     }
@@ -67,8 +66,8 @@ class ChunkTest {
     fun `apply multiple updates`() {
         val chunk = create()
         chunk.apply(
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1),
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2),
+            ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.TEST1),
+            ProposedBlockChange(InChunkPosition(1, 30, 3), TestBlockStates.TEST2),
         )
 
         assertEquals(chunk[InChunkPosition(1, 2, 3)], TestBlockStates.TEST1)
@@ -78,8 +77,8 @@ class ChunkTest {
     fun `apply multiple updates with entities`() {
         val chunk = create()
         chunk.apply(
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.ENTITY1),
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.ENTITY2),
+            ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.ENTITY1),
+            ProposedBlockChange(InChunkPosition(1, 30, 3), TestBlockStates.ENTITY2),
         )
 
         assertTrue(chunk.getBlockEntity(InChunkPosition(1, 2, 3)) is TestBlockEntities.TestBlockEntity)
@@ -89,8 +88,8 @@ class ChunkTest {
     fun `don't create section if just clearing blocks`() {
         val chunk = create()
         chunk.apply(
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), null),
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 5, 3), null),
+            ProposedBlockChange(InChunkPosition(1, 2, 3), null),
+            ProposedBlockChange(InChunkPosition(1, 5, 3), null),
         )
 
         assertNull(chunk[0])
@@ -99,13 +98,16 @@ class ChunkTest {
     fun `trigger update event`() {
         val chunk = create()
         val updates = setOf(
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1),
-            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2),
+            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), null, TestBlockStates.TEST1),
+            ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), null, TestBlockStates.TEST2),
         )
 
         val events = chunk.world.collectUpdates()
 
-        chunk.apply(*updates.toTypedArray())
+        chunk.apply(
+            ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.TEST1),
+            ProposedBlockChange(InChunkPosition(1, 30, 3), TestBlockStates.TEST2),
+        )
 
 
         assertEquals(events, listOf(
@@ -116,8 +118,9 @@ class ChunkTest {
     fun `trigger update event only changes`() {
         val chunk = create()
 
-        val update1 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1)
-        val update2 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2)
+        val update1 = ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.TEST1)
+        val actual1 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), null, TestBlockStates.TEST1)
+        val update2 = ProposedBlockChange(InChunkPosition(1, 30, 3), TestBlockStates.TEST2)
 
         chunk.apply(update2)
 
@@ -128,15 +131,15 @@ class ChunkTest {
 
 
         assertEquals(updates, listOf(
-            ChunkLocalBlockUpdate(chunk, setOf(update1)),
+            ChunkLocalBlockUpdate(chunk, setOf(actual1)),
         ))
     }
 
     fun `trigger update event without changes`() {
         val chunk = create()
 
-        val update1 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 2, 3), TestBlockStates.TEST1)
-        val update2 = ChunkLocalBlockUpdate.Change(InChunkPosition(1, 30, 3), TestBlockStates.TEST2)
+        val update1 = ProposedBlockChange(InChunkPosition(1, 2, 3), TestBlockStates.TEST1)
+        val update2 = ProposedBlockChange(InChunkPosition(1, 30, 3), TestBlockStates.TEST2)
 
         chunk.apply(update1); chunk.apply(update2)
 

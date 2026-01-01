@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -157,7 +157,7 @@ class ChunkSectionTest {
         section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST1
 
         assertEquals(updates, listOf(
-            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST1),
+            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), null, TestBlockStates.TEST1),
         ))
     }
 
@@ -170,7 +170,7 @@ class ChunkSectionTest {
         section[InSectionPosition(2, 3, 4)] = null
 
         assertEquals(updates, listOf(
-            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), null),
+            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST1, null),
         ))
     }
 
@@ -183,7 +183,7 @@ class ChunkSectionTest {
         section[InSectionPosition(2, 3, 4)] = TestBlockStates.TEST2
 
         assertEquals(updates, listOf(
-            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST2),
+            SingleBlockUpdate(section.chunk, BlockPosition(2, 35, 4), TestBlockStates.TEST1, TestBlockStates.TEST2),
         ))
     }
 
