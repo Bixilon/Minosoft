@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Unreachable
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -25,6 +27,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
+import de.bixilon.minosoft.gui.rendering.tint.sampler.gaussian.GaussianTintSampler
 
 interface TintSampler {
 
@@ -57,13 +60,17 @@ interface TintSampler {
         return tints
     }
 
+    fun sampleCustom(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor?
+
 
     companion object {
 
         // TODO: Optimize the special case of VoronoiBiomeAccessor (we know what points are next and then can use sample those instead of the naive gaussian sampler)
-        fun of(enabled: Boolean, radius: Int) = when {
+        fun of(enabled: Boolean, algorithm: BlendingAlgorithms, radius: Int) = when {
             !enabled || radius <= 0 -> SingleTintSampler
-            else -> RadiusTintSampler(radius)
+            algorithm == BlendingAlgorithms.SIMPLE -> RadiusTintSampler(radius)
+            algorithm == BlendingAlgorithms.GAUSSIAN -> GaussianTintSampler(radius)
+            else -> Unreachable()
         }
     }
 }

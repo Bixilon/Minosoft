@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.sampler
 
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -32,5 +33,10 @@ object SingleTintSampler : TintSampler {
         for (tintIndex in 0 until provider.count) {
             result[tintIndex] = provider.getBlockTint(state, biome, position, tintIndex)
         }
+    }
+
+    override fun sampleCustom(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor? {
+        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition] ?: return null
+        return sampler.invoke(biome)
     }
 }
