@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -46,7 +46,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.chunk.update.block.ProposedBlockChange
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -107,8 +107,8 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         val nextOpen = !state[OPEN]
 
         chunk.apply(
-            ChunkLocalBlockUpdate.Change(inChunk, state.withProperties(OPEN to nextOpen)),
-            ChunkLocalBlockUpdate.Change(otherPosition, otherState.withProperties(OPEN to nextOpen)),
+            ProposedBlockChange(inChunk, state.withProperties(OPEN to nextOpen)),
+            ProposedBlockChange(otherPosition, otherState.withProperties(OPEN to nextOpen)),
         )
     }
 

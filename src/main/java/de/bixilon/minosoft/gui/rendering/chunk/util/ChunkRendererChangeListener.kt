@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.util
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
@@ -36,8 +39,28 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 object ChunkRendererChangeListener {
 
+    private fun canIgnore(state: BlockState?, previous: BlockState?): Boolean {
+        val model = state?.block?.model ?: state?.model
+        if (state != null && state.block is FluidBlock) {
+            return state.block.fluid.getHeight(state) == state.block.fluid.getHeight(previous)
+        }
+
+        if (model == null && previous?.model == null) return true
+        if ((model == null) != (previous?.model == null)) return false
+        if (state == null || model == null) Broken()
+
+
+        // TODO: light update, tints
+
+        return model.matches(state, previous)
+    }
+
     private fun ChunkRenderer.handle(update: SingleBlockUpdate) {
         if (!update.chunk.neighbours.complete) return
+        if (canIgnore(update.state, update.previous)) {
+            return
+        }
+
         val neighbours = update.chunk.neighbours
         val sectionHeight = update.position.sectionHeight
 
@@ -64,7 +87,15 @@ object ChunkRendererChangeListener {
     private fun ChunkRenderer.handle(update: ChunkLocalBlockUpdate) {
         if (!update.chunk.neighbours.complete) return
         val sectionHeights: Int2ObjectOpenHashMap<BooleanArray> = Int2ObjectOpenHashMap()
-        for ((position, _) in update.change) {
+        var updates = 0
+
+        for (change in update.change) {
+            val position = change.position
+            if (canIgnore(change.state, change.previous)) {
+                continue
+            }
+            updates++
+
             val neighbours = sectionHeights.getOrPut(position.sectionHeight) { BooleanArray(Directions.SIZE) }
             val inSectionHeight = position.y.inSectionHeight
             if (inSectionHeight == 0) {
@@ -83,6 +114,8 @@ object ChunkRendererChangeListener {
                 neighbours[Directions.O_EAST] = true
             }
         }
+        if (updates == 0) return
+
         val neighbours = update.chunk.neighbours
         for ((sectionHeight, neighbourUpdates) in sectionHeights) {
             invalidate(update.chunk, sectionHeight)

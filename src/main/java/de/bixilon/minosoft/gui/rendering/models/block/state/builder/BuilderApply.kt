@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 class BuilderApply(
     val applies: List<BlockStateApply>
 ) : BlockStateApply {
+    private var cache: BuiltModel? = null
 
     override fun load(textures: TextureManager) {
         for (apply in applies) {
@@ -37,6 +38,7 @@ class BuilderApply(
     }
 
     override fun bake(): BlockRender? {
+        this.cache?.let { return it }
         val static: MutableList<BakedModel> = mutableListOf()
         val dynamic: MutableList<BlockRender> = mutableListOf()
 
@@ -56,7 +58,9 @@ class BuilderApply(
         if (dynamic.isEmpty()) return combined
 
 
-        return BuiltModel(combined, dynamic.toTypedArray())
+        val built = BuiltModel(combined, dynamic.toTypedArray())
+        this.cache = built
+        return built
     }
 
 

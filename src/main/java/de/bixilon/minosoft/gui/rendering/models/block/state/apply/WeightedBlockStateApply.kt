@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 data class WeightedBlockStateApply(
     val models: List<WeightedApply>
 ) : BlockStateApply {
+    private var cache: WeightedBlockRender? = null
 
     override fun load(textures: TextureManager) {
         for (model in models) {
@@ -31,6 +32,7 @@ data class WeightedBlockStateApply(
     }
 
     override fun bake(): WeightedBlockRender? {
+        cache?.let { return it }
         val baked: Array<WeightedBlockRender.WeightedEntry?> = arrayOfNulls(models.size)
         var totalWeight = 0
 
@@ -42,7 +44,10 @@ data class WeightedBlockStateApply(
 
         if (totalWeight == 0) return null
 
-        return WeightedBlockRender(baked.cast(), totalWeight)
+        val render = WeightedBlockRender(baked.cast(), totalWeight)
+        this.cache = render
+
+        return render
     }
 
     data class WeightedApply(

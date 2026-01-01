@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 class BuilderBlockModel(
     val parts: List<Apply>,
 ) : DirectBlockModel {
+    private var cache: HashMap<List<BlockStateApply>, BuilderApply> = HashMap()
 
     override fun choose(properties: Map<BlockProperty<*>, Any>, unconditional: Boolean): BlockStateApply? {
         val applies: MutableList<BlockStateApply> = mutableListOf()
@@ -42,7 +43,7 @@ class BuilderBlockModel(
 
         if (applies.isEmpty()) return null
 
-        return BuilderApply(applies)
+        return this.cache.getOrPut(applies) { BuilderApply(applies) }
     }
 
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,6 +48,7 @@ data class SingleBlockStateApply(
     val rotation: Vec2f? = null,
 ) : BlockStateApply {
     private var particle: Texture? = null
+    private var cache: BakedModel? = null
 
     private fun FaceVertexData.rotateX(steps: Int) {
         for (step in 0 until steps) {
@@ -130,6 +131,7 @@ data class SingleBlockStateApply(
 
 
     override fun bake(): BakedModel? {
+        cache?.let { return it }
         if (model.elements == null) return null
 
         val bakedFaces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
@@ -139,7 +141,9 @@ data class SingleBlockStateApply(
             element.bake(bakedFaces, properties)
         }
 
-        return BakedModel(bakedFaces.compact(), properties.compactProperties(), model.display, this.particle)
+        val baked = BakedModel(bakedFaces.compact(), properties.compactProperties(), model.display, this.particle)
+        this.cache = baked
+        return baked
     }
 
     private fun Vec2f.applyRotation(axis: Axes, data: FaceVertexData) {
