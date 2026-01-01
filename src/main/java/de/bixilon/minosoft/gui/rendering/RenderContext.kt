@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
-import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -65,8 +64,6 @@ class RenderContext(
 
     var renderStats: AbstractRenderStats = RenderStats()
         private set
-
-    val query = system.createQuery(QueryTypes.TIME)
 
     var font: FontManager = unsafeNull()
 

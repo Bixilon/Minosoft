@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,9 +29,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.FileOutputStream
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.measureTime
 
 class RenderLoop(
     private val context: RenderContext,
@@ -43,28 +41,6 @@ class RenderLoop(
 
     init {
         context.profile.performance::slowRendering.observe(this) { this.slowRendering = it }
-    }
-
-    private fun RenderContext.burn() {
-        var time = Duration.ZERO
-        while (true) {
-            var burned = false
-
-            time += measureTime {
-                if (queue.size > 0) burned = true
-                profiler("queue") { queue.work(5) }
-                profiler("burn") { renderer.forEach { if (it.burnTime()) burned = true } }
-
-                if (!burned) {
-                    profiler("sleep") { sleep(1.milliseconds) }
-                }
-            }
-
-            if (time >= 1.milliseconds) {
-                if (query.isReady) break
-                time = Duration.ZERO
-            }
-        }
     }
 
     private fun loop() {
@@ -96,12 +72,7 @@ class RenderLoop(
         context.profiler("input") { context.input.draw() }
         context.profiler("camera") { context.camera.draw() }
 
-        context.query.begin()
         context.profiler("draw") { context.renderer.draw() }
-        context.query.end()
-
-
-        context.profiler("burn") { context.burn() }
 
 
         context.profiler("post draw") { context.renderer.forEach { it.postDraw() } }

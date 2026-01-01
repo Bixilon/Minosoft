@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,24 +41,6 @@ class MeshLoadingQueue(
     fun sort() = lock.locked {
         comparator.update(renderer.visibility.eyePosition)
         meshes.sortWith(comparator)
-    }
-
-    fun burn(): Boolean {
-        if (meshes.isEmpty()) return false
-
-        lock.locked {
-            var index = 0
-            while (meshes.isNotEmpty()) {
-                if (++index >= BATCH_SIZE) break
-                val mesh = this.meshes.removeFirst()
-                this.positions -= mesh.position
-
-                renderer.context.profiler("load") { mesh.load() }
-
-                renderer.loaded += mesh
-            }
-        }
-        return true
     }
 
     fun work() {
