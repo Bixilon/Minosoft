@@ -14,18 +14,9 @@
 package de.bixilon.minosoft.data.world.chunk.update.block
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
-data class ChunkLocalBlockUpdate(
-    override val chunk: Chunk,
-    val change: Set<Change>,
-) : AbstractWorldUpdate {
-
-    data class Change(
-        val position: InChunkPosition,
-        val previous: BlockState?,
-        val state: BlockState?,
-    )
-}
+data class ProposedBlockChange(
+    val position: InChunkPosition,
+    val state: BlockState?,
+)

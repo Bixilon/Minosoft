@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -60,7 +60,7 @@ class ChunkSection(
             chunk.light.onBlockChange(InChunkPosition(position.x, this.height * ChunkSize.SECTION_HEIGHT_Y + position.y, position.z), this, previous, state)
         }
 
-        SingleBlockUpdate(chunk, BlockPosition.of(chunk.position, height, position), state).fire(chunk.world.session)
+        SingleBlockUpdate(chunk, BlockPosition.of(chunk.position, height, position), previous, state).fire(chunk.world.session)
     }
 
     fun traceBlock(offset: BlockPosition): BlockState? {

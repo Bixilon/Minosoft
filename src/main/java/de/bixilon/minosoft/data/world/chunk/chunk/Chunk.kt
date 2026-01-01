@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,10 +16,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.LockUtil.acquired
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
 import de.bixilon.kutil.concurrent.lock.locks.reentrant.ReentrantRWLock
-import de.bixilon.kutil.math.simple.IntMath.clamp
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
@@ -27,6 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.section.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.chunk.update.block.ProposedBlockChange
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate.Causes
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -64,11 +63,11 @@ class Chunk(
         return this[position.sectionHeight]?.entities?.update(position.inSectionPosition)
     }
 
-    fun apply(update: ChunkLocalBlockUpdate.Change) {
+    fun apply(update: ProposedBlockChange) {
         this[update.position] = update.state
     }
 
-    private fun unsafeApply(vararg updates: ChunkLocalBlockUpdate.Change): MutableSet<ChunkLocalBlockUpdate.Change> {
+    private fun unsafeApply(vararg updates: ProposedBlockChange): Set<ChunkLocalBlockUpdate.Change> {
         val executed: MutableSet<ChunkLocalBlockUpdate.Change> = HashSet(updates.size)
 
         for (update in updates) {
@@ -89,13 +88,13 @@ class Chunk(
 
             section.entities.update(position.inSectionPosition)
 
-            executed += update
+            executed += ChunkLocalBlockUpdate.Change(update.position, previous, update.state)
         }
 
         return executed
     }
 
-    fun apply(vararg updates: ChunkLocalBlockUpdate.Change) {
+    fun apply(vararg updates: ProposedBlockChange) {
         if (updates.isEmpty()) return
         if (updates.size == 1) return apply(updates.first())
 

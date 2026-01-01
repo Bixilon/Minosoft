@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.chunk.update.block.ProposedBlockChange
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
@@ -60,7 +60,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             return
         }
 
-        val updates: MutableMap<Chunk, MutableSet<ChunkLocalBlockUpdate.Change>> = HashMap(3 * 3)
+        val updates: MutableMap<Chunk, MutableSet<ProposedBlockChange>> = HashMap(3 * 3)
 
         var chunk: Chunk? = null
 
@@ -77,7 +77,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val inChunkPosition = total.inChunkPosition
             if (chunk[inChunkPosition] == null) continue
 
-            val update = ChunkLocalBlockUpdate.Change(inChunkPosition, null)
+            val update = ProposedBlockChange(inChunkPosition, null)
 
             updates.getOrPut(chunk) { HashSet(5) } += update
         }
