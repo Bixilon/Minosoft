@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,7 +47,10 @@ object ChunkMeshDetails {
     const val SIDE_EAST = 17
 
 
-    // TODO: border blocks, texture animations, biome blending, ... See https://gitlab.bixilon.de/bixilon/minosoft/-/issues/128
+    const val BIOME_SAMPLING = 18
+
+
+    // TODO: border blocks, texture animations, ... See https://gitlab.bixilon.de/bixilon/minosoft/-/issues/128
 
 
     private const val SIDE_MIN = 2
@@ -99,6 +102,9 @@ object ChunkMeshDetails {
 
         if (delta.x < -SIDE_NORMAL) details -= SIDE_WEST
         if (delta.x > +SIDE_NORMAL) details -= SIDE_EAST
+
+
+        if (distanceXZ > 10 * 10 || distance > 15 * 15) details -= BIOME_SAMPLING
 
         return details
     }
@@ -170,6 +176,9 @@ object ChunkMeshDetails {
 
         if (delta.x < -SIDE_MAX) details -= SIDE_WEST
         if (delta.x > +SIDE_MAX) details -= SIDE_EAST
+
+
+        if (distanceXZ < 8 * 8 || distance < 13 * 13) details += BIOME_SAMPLING
 
         return details
     }

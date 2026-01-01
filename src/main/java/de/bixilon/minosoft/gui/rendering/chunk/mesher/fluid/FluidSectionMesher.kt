@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,6 +41,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
+import de.bixilon.minosoft.gui.rendering.tint.sampler.SingleTintSampler
 import de.bixilon.minosoft.gui.rendering.util.mesh.builder.quad.QuadConsumer.Companion.iterate
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.PackedUV
 import de.bixilon.minosoft.gui.rendering.util.mesh.uv.array.PackedUVArray
@@ -142,7 +143,7 @@ class FluidSectionMesher(
         val positions = FloatArray(4 * Vec3f.LENGTH)
         val offsetPosition = MVec3f()
 
-        val sampler = context.tints.createSampler()
+        val sampler = if (ChunkMeshDetails.BIOME_SAMPLING in builder.details) context.tints.createSampler() else SingleTintSampler
 
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
