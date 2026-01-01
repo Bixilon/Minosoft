@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.datafixer.rls.PreFlatteningModelFixer
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
@@ -32,7 +33,7 @@ open class LegacyBlock(
     override var hardness: Float = 0.0f
     override var tintProvider: TintProvider? = null
 
-    override val modelName = model ?: identifier
+    override val modelName = model ?: PreFlatteningModelFixer.fix(identifier)
 
     // TODO: No shapes are provided in minosoft-meta, fallback to always full
     override val collisionShape = AABB.BLOCK

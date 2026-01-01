@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -68,11 +68,7 @@ class BlockLoader(private val loader: ModelLoader) {
         if (block is CustomModel) {
             return block.loadModel(this, version) // TODO: assets version
         }
-        var identifier = block.identifier
-        if (!version.flattened) {
-            identifier = PreFlatteningModelFixer.fix(identifier)
-        }
-        return loadState(block, identifier.blockState())
+        return loadState(block, block.identifier.blockState())
     }
 
     fun load(latch: AbstractLatch?) {
