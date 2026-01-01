@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -108,7 +108,6 @@ class ChunkMeshingQueue(
         DefaultThreadPool += ThreadPoolRunnable(forcePool = true, priority = if (distance <= 1) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.LOW) {
             val position = SectionPosition.of(section)
 
-            val previous = renderer.loaded[position]
             val cache = renderer.cache[position] ?: ChunkMeshCache(renderer.context)
 
             val mesh = try {

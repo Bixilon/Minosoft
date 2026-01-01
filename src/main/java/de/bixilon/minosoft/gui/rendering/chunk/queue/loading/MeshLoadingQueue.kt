@@ -15,23 +15,24 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.concurrent.lock.LockUtil.locked
-import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
-import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.kutil.unit.Bytes.Companion.bytes
 import de.bixilon.kutil.unit.Bytes.Companion.gigabytes
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
+import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.loader.AbstractMeshLoader
+import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.loader.SynchronizedLoader
 
 class MeshLoadingQueue(
-    private val renderer: ChunkRenderer,
+    val renderer: ChunkRenderer,
 ) {
     private val comparator = LoadingQueueComparator()
     private val meshes = ArrayDeque<ChunkMeshes>(100)
     private val positions: MutableSet<SectionPosition> = HashSet()
     private val lock = Lock.lock()
+
+    private val loader: AbstractMeshLoader = SynchronizedLoader(this)
 
 
     val max = if (Runtime.getRuntime().maxMemory().bytes > 1.gigabytes) 120 else 60
@@ -44,31 +45,22 @@ class MeshLoadingQueue(
     }
 
     fun work() {
-        if (meshes.isEmpty()) return
-        val start = now()
-        val maxTime = renderer.maxBusyTime
-
-        var index = 0
-        lock.locked {
-            while (meshes.isNotEmpty()) {
-                if (++index % BATCH_SIZE == 0 && now() - start >= maxTime) break
-
-                val mesh = this.meshes.removeFirst()
-                this.positions -= mesh.position
-
-                renderer.context.profiler("load$index") { mesh.load() }
-
-                renderer.loaded += mesh
-            }
-        }
+        this.loader.work()
     }
 
+    fun take(): ChunkMeshes? = lock.locked {
+        val mesh = this.meshes.removeFirstOrNull() ?: return null
+        this.positions -= mesh.position
+
+        return mesh
+    }
 
     operator fun plusAssign(mesh: ChunkMeshes) = lock.locked {
         this.meshes += mesh
         sort()
 
         this.positions += mesh.position
+        loader.queue()
     }
 
 
