@@ -145,7 +145,7 @@ class SkyboxColor(
 
     private fun sample(sampler: (Biome) -> RGBColor?): RGBColor? {
         val position = sky.context.session.camera.entity.physics.positionInfo
-        return position.chunk?.let { this.sampler.sampleCustom(it, position.eyePosition, sampler) }
+        return position.chunk?.let { this.sampler.getCustomColor(it, position.eyePosition, sampler) }
     }
 
 

@@ -66,7 +66,7 @@ class FogManager(
                 val distance = end / 8.0f
 
                 val position = context.session.camera.entity.physics.positionInfo
-                val color = position.chunk?.let { sampler.sampleCustom(it, position.eyePosition, Biome::fogColor) }
+                val color = position.chunk?.let { sampler.getCustomColor(it, position.eyePosition, Biome::fogColor) }
 
                 FogOptions(effects.start * (end - distance), end, color = color)
             }

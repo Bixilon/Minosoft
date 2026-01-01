@@ -11,32 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.sampler
+package de.bixilon.minosoft.gui.rendering.tint.sampler.gaussian
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.sampler.RadiusColorSampler
 
-object SingleTintSampler : TintSampler {
+class GaussianTintSampler(radius: Int = 5) : RadiusColorSampler(radius) {
+    private val kernel = GaussianKernel.get2D(radius)
 
-    override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
-        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition]
-        return provider.getFluidTint(biome, position)
+    // TODO: check if biome source actually supports 3d biomes
+    override fun sampleFluid(chunk: Chunk, position: BlockPosition, provider: TintProvider) {
+        kernel.iterate { x, y, z, weight -> sampleFluid(chunk, position, BlockPosition(x, y, z), weight, provider) }
     }
 
-    override fun getBlockTint(chunk: Chunk, state: BlockState, position: BlockPosition, result: RGBArray, provider: TintProvider) {
-        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition]
-        for (tintIndex in 0 until provider.count) {
-            result[tintIndex] = provider.getBlockTint(state, biome, position, tintIndex)
-        }
+    override fun sampleBlock(chunk: Chunk, state: BlockState, position: BlockPosition, provider: TintProvider) {
+        kernel.iterate { x, y, z, weight -> sampleBlock(chunk, state, position, BlockPosition(x, y, z), weight, provider) }
     }
 
-    override fun getCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor? {
-        val biome = chunk.world.biomes.accessor[chunk, position.inChunkPosition] ?: return null
-        return sampler.invoke(biome)
+    override fun sampleCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?) {
+        kernel.iterate { x, y, z, weight -> sampleCustom(chunk, position, BlockPosition(x, y, z), weight, sampler) }
     }
 }

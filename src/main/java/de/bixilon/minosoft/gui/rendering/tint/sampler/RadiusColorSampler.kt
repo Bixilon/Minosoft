@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.tint.sampler
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-abstract class MultiColorSampler(val radius: Int) : TintSampler {
+abstract class RadiusColorSampler(val radius: Int) : TintSampler {
     protected val sampled = SampledColor()
     protected var multiple = Array(1) { SampledColor() }
 
@@ -45,6 +46,16 @@ abstract class MultiColorSampler(val radius: Int) : TintSampler {
         sampled.add(color, weight)
     }
 
+    protected abstract fun sampleFluid(chunk: Chunk, position: BlockPosition, provider: TintProvider)
+
+    override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
+        // TODO: check if biome source actually supports 3d biomes
+        sampled.clear()
+        sampleFluid(chunk, position, provider)
+        return sampled.toColor()
+    }
+
+
     protected fun sampleBlock(chunk: Chunk, state: BlockState, position: BlockPosition, offset: BlockPosition, weight: Int, provider: TintProvider) {
         val biome = chunk.neighbours.traceBiome(position.inChunkPosition, offset) ?: return
 
@@ -56,11 +67,38 @@ abstract class MultiColorSampler(val radius: Int) : TintSampler {
         }
     }
 
+    protected abstract fun sampleBlock(chunk: Chunk, state: BlockState, position: BlockPosition, provider: TintProvider)
+
+
+    override fun getBlockTint(chunk: Chunk, state: BlockState, position: BlockPosition, result: RGBArray, provider: TintProvider) {
+        ensureSize(provider.count)
+        for (index in 0 until provider.count) {
+            this.multiple[index].clear()
+        }
+
+        sampleBlock(chunk, state, position, provider)
+
+        for (index in 0 until provider.count) {
+            result[index] = this.multiple[index].toColor()
+        }
+    }
+
+
     protected fun sampleCustom(chunk: Chunk, position: BlockPosition, offset: BlockPosition, weight: Int, sampler: (Biome) -> RGBColor?) {
         val biome = chunk.neighbours.traceBiome(position.inChunkPosition, offset) ?: return
 
         val color = sampler.invoke(biome) ?: return
 
         sampled.add(color, weight)
+    }
+    protected abstract fun sampleCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?)
+
+
+    override fun getCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor? {
+        sampled.clear()
+
+        sampleCustomColor(chunk, position, sampler)
+
+        return sampled.toNullColor()
     }
 }

@@ -11,23 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.sampler
+package de.bixilon.minosoft.gui.rendering.tint.sampler.simple
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.sampler.RadiusColorSampler
 
-class RadiusTintSampler(radius: Int = 5) : MultiColorSampler(radius) {
-
+class SimpleTintSampler(radius: Int = 5) : RadiusColorSampler(radius) {
 
     // TODO: check if biome source actually supports 3d biomes
-    override fun getFluidTint(chunk: Chunk, position: BlockPosition, provider: TintProvider): RGBColor {
-        sampled.clear()
-
+    override fun sampleFluid(chunk: Chunk, position: BlockPosition, provider: TintProvider) {
         sampleFluid(chunk, position, BlockPosition(0, 0, 0), 100, provider)
 
         val diameter = radius * radius
@@ -50,18 +47,10 @@ class RadiusTintSampler(radius: Int = 5) : MultiColorSampler(radius) {
 
             offset += radius / 5
         }
-
-        return sampled.toColor()
     }
 
 
-    override fun getBlockTint(chunk: Chunk, state: BlockState, position: BlockPosition, result: RGBArray, provider: TintProvider) {
-        ensureSize(provider.count)
-        for (index in 0 until provider.count) {
-            this.multiple[index].clear()
-        }
-
-
+    override fun sampleBlock(chunk: Chunk, state: BlockState, position: BlockPosition, provider: TintProvider) {
         sampleBlock(chunk, state, position, BlockPosition(0, 0, 0), 100, provider)
 
         val diameter = radius * radius
@@ -84,15 +73,9 @@ class RadiusTintSampler(radius: Int = 5) : MultiColorSampler(radius) {
 
             offset += radius / 5
         }
-
-        for (index in 0 until provider.count) {
-            result[index] = this.multiple[index].toColor()
-        }
     }
 
-    override fun sampleCustom(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor? {
-        sampled.clear()
-
+    override fun sampleCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?) {
         sampleCustom(chunk, position, BlockPosition(0, 0, 0), 100, sampler)
 
         val diameter = radius * radius
@@ -115,7 +98,5 @@ class RadiusTintSampler(radius: Int = 5) : MultiColorSampler(radius) {
 
             offset += radius / 5
         }
-
-        return sampled.toNullColor()
     }
 }

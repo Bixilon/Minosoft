@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
-import de.bixilon.minosoft.gui.rendering.tint.sampler.BlendingAlgorithms
+import de.bixilon.minosoft.gui.rendering.tint.sampler.SamplingAlgorithms
 
 class BlendingC(profile: RenderingProfile) {
     /**
@@ -31,5 +31,5 @@ class BlendingC(profile: RenderingProfile) {
     var radius by IntDelegate(profile, 5, ranges = arrayOf(0..15))
 
 
-    var algorithm by EnumDelegate(profile, BlendingAlgorithms.GAUSSIAN, BlendingAlgorithms)
+    var algorithm by EnumDelegate(profile, SamplingAlgorithms.GAUSSIAN, SamplingAlgorithms)
 }

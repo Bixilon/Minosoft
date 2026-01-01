@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintProviderFlags
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.sampler.gaussian.GaussianTintSampler
+import de.bixilon.minosoft.gui.rendering.tint.sampler.simple.SimpleTintSampler
 
 interface TintSampler {
 
@@ -60,16 +61,16 @@ interface TintSampler {
         return tints
     }
 
-    fun sampleCustom(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor?
+    fun getCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?): RGBColor?
 
 
     companion object {
 
         // TODO: Optimize the special case of VoronoiBiomeAccessor (we know what points are next and then can use sample those instead of the naive gaussian sampler)
-        fun of(enabled: Boolean, algorithm: BlendingAlgorithms, radius: Int) = when {
+        fun of(enabled: Boolean, algorithm: SamplingAlgorithms, radius: Int) = when {
             !enabled || radius <= 0 -> SingleTintSampler
-            algorithm == BlendingAlgorithms.SIMPLE -> RadiusTintSampler(radius)
-            algorithm == BlendingAlgorithms.GAUSSIAN -> GaussianTintSampler(radius)
+            algorithm == SamplingAlgorithms.SIMPLE -> SimpleTintSampler(radius)
+            algorithm == SamplingAlgorithms.GAUSSIAN -> GaussianTintSampler(radius)
             else -> Unreachable()
         }
     }
