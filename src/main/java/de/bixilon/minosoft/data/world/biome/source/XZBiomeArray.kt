@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSize
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 
 class XZBiomeArray(private val biomes: Array<Biome?>) : BiomeSource {
-    override val flags = IntInlineEnumSet<BiomeSourceFlags>() + BiomeSourceFlags.VERTICAL
+    override val flags = IntInlineEnumSet<BiomeSourceFlags>() + BiomeSourceFlags.HORIZONTAL
 
     init {
         assert(biomes.size == ChunkSize.SECTION_WIDTH_X * ChunkSize.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }

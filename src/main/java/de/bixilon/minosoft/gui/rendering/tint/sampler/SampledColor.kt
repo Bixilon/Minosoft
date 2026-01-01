@@ -33,6 +33,7 @@ class SampledColor {
     }
 
     fun toColor(): RGBColor {
+        assert(count >= 0 && count < (1 shl 24))
         if (count == 0) {
             return Colors.WHITE_RGB
         }
@@ -40,6 +41,7 @@ class SampledColor {
     }
 
     fun toNullColor(): RGBColor? {
+        assert(count >= 0 && count < (1 shl 24))
         if (count == 0) return null
 
         return RGBColor(this.red / count, this.green / count, this.blue / count)

@@ -18,6 +18,7 @@ import kotlin.math.exp
 // who would have though that the computer vision course at university would help me someday...
 object GaussianKernel {
     const val MAX_RADIUS = 15
+    val SINGLE = listOf(GaussianSample(0, 0, 0, 1)).pack()
     private val cache2D: Array<GaussianSampleList?> = arrayOfNulls(MAX_RADIUS)
     private val cache3D: Array<GaussianSampleList?> = arrayOfNulls(MAX_RADIUS)
 

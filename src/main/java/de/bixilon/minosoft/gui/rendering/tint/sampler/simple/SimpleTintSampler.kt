@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.tint.sampler.simple
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.biome.source.BiomeSourceFlags
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
@@ -23,10 +24,19 @@ import de.bixilon.minosoft.gui.rendering.tint.sampler.RadiusColorSampler
 
 class SimpleTintSampler(radius: Int = 5) : RadiusColorSampler(radius) {
 
-    // TODO: check if biome source actually supports 3d biomes
+    private fun getRadius(chunk: Chunk): Int {
+        val source = chunk.biomeSource ?: return 0
+
+        if (BiomeSourceFlags.HORIZONTAL !in source.flags) return 0
+
+        return this.radius
+    }
+
+    // TODO: support 3d sampling
     override fun sampleFluid(chunk: Chunk, position: BlockPosition, provider: TintProvider) {
         sampleFluid(chunk, position, BlockPosition(0, 0, 0), 100, provider)
 
+        val radius = getRadius(chunk)
         val diameter = radius * radius
 
         var offset = 1
@@ -53,6 +63,7 @@ class SimpleTintSampler(radius: Int = 5) : RadiusColorSampler(radius) {
     override fun sampleBlock(chunk: Chunk, state: BlockState, position: BlockPosition, provider: TintProvider) {
         sampleBlock(chunk, state, position, BlockPosition(0, 0, 0), 100, provider)
 
+        val radius = getRadius(chunk)
         val diameter = radius * radius
 
         var offset = 1
@@ -78,6 +89,7 @@ class SimpleTintSampler(radius: Int = 5) : RadiusColorSampler(radius) {
     override fun sampleCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?) {
         sampleCustom(chunk, position, BlockPosition(0, 0, 0), 100, sampler)
 
+        val radius = getRadius(chunk)
         val diameter = radius * radius
 
         var offset = 1

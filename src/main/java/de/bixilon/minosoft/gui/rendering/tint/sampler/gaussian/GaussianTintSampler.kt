@@ -16,24 +16,38 @@ package de.bixilon.minosoft.gui.rendering.tint.sampler.gaussian
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.biome.source.BiomeSourceFlags
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.sampler.RadiusColorSampler
 
 class GaussianTintSampler(radius: Int = 5) : RadiusColorSampler(radius) {
-    private val kernel = GaussianKernel.get2D(radius)
+    private var kernel: GaussianSampleList? = null
 
-    // TODO: check if biome source actually supports 3d biomes
+    private fun getKernel(chunk: Chunk): GaussianSampleList? {
+        kernel?.let { return it }
+        val source = chunk.biomeSource ?: return null
+
+        val kernel = when {
+            BiomeSourceFlags.HORIZONTAL !in source.flags -> GaussianKernel.SINGLE
+            BiomeSourceFlags.VERTICAL in source.flags -> GaussianKernel.get3D(radius)
+            else -> GaussianKernel.get2D(radius)
+        }
+        this.kernel = kernel
+
+        return kernel
+    }
+
     override fun sampleFluid(chunk: Chunk, position: BlockPosition, provider: TintProvider) {
-        kernel.iterate { x, y, z, weight -> sampleFluid(chunk, position, BlockPosition(x, y, z), weight, provider) }
+        getKernel(chunk)?.iterate { x, y, z, weight -> sampleFluid(chunk, position, BlockPosition(x, y, z), weight, provider) }
     }
 
     override fun sampleBlock(chunk: Chunk, state: BlockState, position: BlockPosition, provider: TintProvider) {
-        kernel.iterate { x, y, z, weight -> sampleBlock(chunk, state, position, BlockPosition(x, y, z), weight, provider) }
+        getKernel(chunk)?.iterate { x, y, z, weight -> sampleBlock(chunk, state, position, BlockPosition(x, y, z), weight, provider) }
     }
 
     override fun sampleCustomColor(chunk: Chunk, position: BlockPosition, sampler: (Biome) -> RGBColor?) {
-        kernel.iterate { x, y, z, weight -> sampleCustom(chunk, position, BlockPosition(x, y, z), weight, sampler) }
+        getKernel(chunk)?.iterate { x, y, z, weight -> sampleCustom(chunk, position, BlockPosition(x, y, z), weight, sampler) }
     }
 }
