@@ -11,40 +11,41 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
+package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
+import de.bixilon.minosoft.config.DebugOptions
+import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGlGpuBuffer
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil.copy
 import org.lwjgl.opengl.GL15.*
-import org.lwjgl.opengl.GL15C
-import org.lwjgl.system.MemoryUtil.memAddress0
-import org.lwjgl.system.MemoryUtil.memFree
+import org.lwjgl.opengl.GL15C.nglBufferSubData
+import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
 
-class FloatOpenGlBuffer(
+class VertexDataOpenGlBuffer(
     system: OpenGlRenderSystem,
     val data: FloatBuffer,
     val free: Boolean,
 ) : OpenGlGpuBuffer(system) {
-
     override val glType get() = GL_ARRAY_BUFFER
 
 
     private fun uploadMapped(size: Int): Boolean {
         val mapped = gl { glMapBuffer(glType, GL_WRITE_ONLY) }?.asFloatBuffer() ?: return false
-        system.context.profiler.invoke("copy") { data.copy(0, mapped, 0, size) }
+        Rendering.currentContext?.profiler.invoke("copy") { data.copy(0, mapped, 0, size) }
         assert(gl { glUnmapBuffer(glType) })
 
         return true
     }
 
     override fun initialUpload() {
-        val size = if (EMPTY_BUFFERS) 0 else data.limit()
-        gl { glBufferData(glType, size * 4L, GL_STATIC_DRAW) }
+        val size = if (DebugOptions.EMPTY_BUFFERS) 0 else data.limit()
+        gl { glBufferData(glType, Integer.toUnsignedLong(size) * Float.SIZE_BYTES, GL_STATIC_DRAW) }
+
         if (!uploadMapped(size)) {
             gl { nglBufferSubData(glType, data, size) }
         }
@@ -52,16 +53,16 @@ class FloatOpenGlBuffer(
     }
 
     override fun unsafeDrop() {
-        if (free && data.isDirect) memFree(this.data)
+        if (free && data.isDirect) MemoryUtil.memFree(this.data)
         this::data.forceSet(null)
     }
 
 
-    private fun nglBufferSubData(target: Int, buffer: FloatBuffer, length: Int) {
+    private fun nglBufferSubData(target: Int, buffer: FloatBuffer, size: Int) {
         if (buffer.isDirect) {
-            gl { GL15C.nglBufferSubData(target, 0L, Integer.toUnsignedLong(length) * Float.SIZE_BYTES, memAddress0(buffer)) }
+            gl { nglBufferSubData(target, 0L, Integer.toUnsignedLong(size) * Float.SIZE_BYTES, MemoryUtil.memAddress0(buffer)) }
         } else {
-            val array = if (length == 0) FloatArray(0) else buffer.array() // TODO: support length
+            val array = if (size == 0) FloatArray(0) else buffer.array() // TODO: support length
             gl { glBufferSubData(target, 0L, array) }
         }
     }

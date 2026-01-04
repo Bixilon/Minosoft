@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingCause
 import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class LoadedMeshes(
@@ -36,6 +37,7 @@ class LoadedMeshes(
 
     operator fun get(position: SectionPosition) = lock.acquired { meshes[position.chunkPosition]?.get(position.y) }
     operator fun plusAssign(mesh: ChunkMeshes) {
+        assert(mesh.state == MeshStates.LOADED)
         lock.lock()
         val chunk = meshes.getOrPut(mesh.position.chunkPosition) { Int2ObjectOpenHashMap() }
 

@@ -62,7 +62,7 @@ class RenderContext(
 
     val skeletal = SkeletalManager(this)
 
-    var renderStats: AbstractRenderStats = RenderStats()
+    var stats: AbstractRenderStats = RenderStats()
         private set
 
     var font: FontManager = unsafeNull()
@@ -75,6 +75,6 @@ class RenderContext(
     var profiler: StackedProfiler? = null
 
     init {
-        profile.experimental::fps.observe(this, true) { renderStats = if (it) ExperimentalRenderStats() else RenderStats() }
+        profile.experimental::fps.observe(this, true) { stats = if (it) ExperimentalRenderStats() else RenderStats() }
     }
 }

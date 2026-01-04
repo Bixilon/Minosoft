@@ -18,4 +18,7 @@ object OpenGlOptions {
     const val ASSERT_BEFORE = false
     const val ASSERT_AFTER = false
     const val DEBUG_OUTPUT = false
+
+
+    const val DIRTY_BUFFER_UNBIND = true // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
 }

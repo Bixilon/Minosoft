@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -45,7 +46,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.KEY_CODE_MA
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.glfw
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.scalePosition
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwUtil.unscalePosition
-import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
@@ -62,11 +62,13 @@ import org.lwjgl.system.MemoryUtil
 
 class GlfwWindow(
     private val context: RenderContext,
-    private val eventMaster: AbstractEventMaster = context.session.events,
 ) : Window {
     private var mouse = Vec2f.EMPTY
     private var skipMouse = true
     private var window = -1L
+
+    var loader: GlfwGlBufferLoader? = null
+        private set
 
 
     // TODO: on poll events get correct window and fire event there
@@ -169,8 +171,17 @@ class GlfwWindow(
             field = value
         }
 
+    private fun initLoader() {
+        loader = when (context.system) {
+            is OpenGlRenderSystem -> GlfwGlBufferLoader()
+            else -> null
+        }
+    }
+
     override fun init(profile: RenderingProfile) {
         initLatch.await() // wait for async glfw init
+        initLoader()
+
         glfwDefaultWindowHints()
         if (context.profile.advanced.preferQuads) {
             // yes, this is dirty. We can only use a geometry shader in 3.3+, but in 3.3+ we can not use GL_QUAD.
@@ -204,7 +215,7 @@ class GlfwWindow(
         }
 
 
-        window = glfwCreateWindow(size.x, size.y, RunConfiguration.APPLICATION_NAME, MemoryUtil.NULL, MemoryUtil.NULL)
+        window = glfwCreateWindow(size.x, size.y, RunConfiguration.APPLICATION_NAME, MemoryUtil.NULL, loader?.let { it.await(); it.window } ?: MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
             try {
                 destroy()

@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.loader.AbstractMeshLoader
-import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.loader.SynchronizedLoader
+import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.loader.AsyncLoader
+import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.loader.SyncLoader
 
 class MeshLoadingQueue(
     val renderer: ChunkRenderer,
@@ -32,7 +32,7 @@ class MeshLoadingQueue(
     private val positions: MutableSet<SectionPosition> = HashSet()
     private val lock = Lock.lock()
 
-    private val loader: AbstractMeshLoader = SynchronizedLoader(this)
+    private val loader = renderer.context.system.loader?.let { AsyncLoader(this, it) } ?: SyncLoader(this)
 
 
     val max = if (Runtime.getRuntime().maxMemory().bytes > 1.gigabytes) 120 else 60

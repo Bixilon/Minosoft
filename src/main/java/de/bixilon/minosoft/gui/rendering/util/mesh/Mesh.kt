@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 
 open class Mesh(
@@ -24,7 +25,10 @@ open class Mesh(
 
     open fun load() {
         assert(state == MeshStates.PREPARING) { "Invalid mesh state: $state" }
-        buffer.init()
+        if (buffer.state != GpuBufferStates.INITIALIZED) {
+            // buffer might have been loaded async
+            buffer.init()
+        }
         state = MeshStates.LOADED
     }
 

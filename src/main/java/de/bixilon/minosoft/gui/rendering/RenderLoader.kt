@@ -59,7 +59,6 @@ object RenderLoader {
         setThread()
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating window..." }
         val stopwatch = Stopwatch()
-        registerRenderer()
 
         window.init(session.profiles.rendering)
         ignoreAll { window.setDefaultIcon(session.assets) }
@@ -74,9 +73,10 @@ object RenderLoader {
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "We are running on ${system.vendorString} (detected ${system.vendor}). Version is ${system.version} and we got an ${system.gpuType}." }
 
-        // Init stage
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.lab().format()})..." }
+        registerRenderer()
+
         initLatch.inc(); runAsync { tints.init(session.assets); initLatch.dec() }
         textures.dynamic.load(initLatch); textures.dynamic.upload(initLatch)
         textures.initializeSkins(session)

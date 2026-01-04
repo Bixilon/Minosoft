@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -27,10 +26,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL30.*
 
 class OpenGlVertexBuffer(
-    system: OpenGlRenderSystem,
+    val system: OpenGlRenderSystem,
     override val primitive: PrimitiveTypes,
     override val struct: MeshStruct,
-    val data: FloatOpenGlBuffer,
+    val data: VertexDataOpenGlBuffer,
     val index: OpenGlIndexBuffer?,
 ) : VertexBuffer {
     override var state = GpuBufferStates.PREPARING
@@ -67,6 +66,40 @@ class OpenGlVertexBuffer(
 
         unbind()
         state = GpuBufferStates.INITIALIZED
+    }
+
+    private fun onAsyncChange(callback: () -> Unit) {
+        if (data.state != GpuBufferStates.INITIALIZED || (index != null && index.state != GpuBufferStates.INITIALIZED)) return
+
+
+        val vao = gl { glGenVertexArrays() }
+        glBindVertexArray(vao)
+
+        data.bind()
+        gl { glVertexAttribPointer(0, 1, GL_FLOAT, false, 0, 0L) }
+        gl { glEnableVertexAttribArray(0) }
+
+        index?.bind()
+        glDrawElements(primitive.gl, 1, GL_UNSIGNED_INT, 0)
+
+        gl { glDeleteVertexArrays(vao) }
+
+        system.context.queue += {
+            this.data.bind()
+            this.vao.init()
+            this.unbind()
+
+            state = GpuBufferStates.INITIALIZED
+            callback.invoke()
+        }
+
+    }
+
+    fun initAsync(callback: () -> Unit) {
+        prepareInit()
+
+        data.initAsync { onAsyncChange(callback) }
+        index?.initAsync { onAsyncChange(callback) }
     }
 
     private fun unbind() {

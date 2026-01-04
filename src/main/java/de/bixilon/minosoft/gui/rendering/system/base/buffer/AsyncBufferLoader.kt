@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-enum class GpuBufferStates {
-    PREPARING,
-    INITIALIZING,
-    INITIALIZED,
-    UNLOADED,
-    ;
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
+
+interface AsyncBufferLoader {
+
+    fun load(buffer: VertexBuffer, callback: () -> Unit)
 }

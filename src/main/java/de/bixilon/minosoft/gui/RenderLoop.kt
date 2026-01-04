@@ -55,11 +55,13 @@ class RenderLoop(
         }
 
         context.profiler = if (RenderingOptions.profileFrames) StackedProfiler() else null
-        context.renderStats.startFrame()
+        context.stats.startFrame()
 
         context.profiler("window poll events") { context.window.pollEvents() }
 
         context.profiler("begin") { context.window.begin() }
+        context.profiler("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
+
 
         context.profiler("framebuffer update") {
             context.framebuffer.update()
@@ -80,7 +82,7 @@ class RenderLoop(
         // handle opengl context tasks, but limit it per frame
         context.profiler("queue") { context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME) }
 
-        context.renderStats.endDraw()
+        context.stats.endDraw()
 
 
         context.profiler("light") {
@@ -105,9 +107,9 @@ class RenderLoop(
         }
 
         if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-            context.window.title = "${RunConfiguration.APPLICATION_NAME} | FPS: ${context.renderStats.smoothAvgFPS.rounded10}"
+            context.window.title = "${RunConfiguration.APPLICATION_NAME} | FPS: ${context.stats.smoothAvgFPS.rounded10}"
         }
-        context.renderStats.endFrame()
+        context.stats.endFrame()
 
 
 

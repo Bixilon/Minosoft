@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.profiler.stack.StackedProfiler.Companion.invoke
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
@@ -32,17 +33,18 @@ import de.bixilon.minosoft.gui.rendering.system.base.query.QueryTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlUtil.gl
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGlFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGlUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlIndexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.OpenGlVertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.VertexDataOpenGlBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlError
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.OpenGlException
 import de.bixilon.minosoft.gui.rendering.system.opengl.query.OpenGlQuery
 import de.bixilon.minosoft.gui.rendering.system.opengl.shader.OpenGlShaderManagement
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGlTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGlVendor
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindow
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -73,6 +75,8 @@ class OpenGlRenderSystem(
         private set
     var blendingDestination = BlendingFunctions.ZERO
         private set
+
+    override val loader get() = context.window.nullCast<GlfwWindow>()?.loader // TODO: remove stinky cast
 
 
     var boundVao = -1
@@ -228,7 +232,7 @@ class OpenGlRenderSystem(
     }
 
     override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitive: PrimitiveTypes, index: IntBuffer?, reused: Boolean): OpenGlVertexBuffer {
-        val buffer = FloatOpenGlBuffer(this, data, !reused)
+        val buffer = VertexDataOpenGlBuffer(this, data, !reused)
         val index = index?.let { OpenGlIndexBuffer(this, it, !reused) }
         return OpenGlVertexBuffer(this, primitive, struct, buffer, index)
     }
@@ -301,22 +305,25 @@ class OpenGlRenderSystem(
             DefaultThreadPool += { INITIALIZE.invoke(null) }
         }
 
-        inline fun <T> gl(runnable: () -> T): T {
+        inline fun <T> gl(thread: Boolean = OpenGlOptions.ASSERT_THREAD, runnable: () -> T): T {
             val context = Rendering.currentContext
-            if (OpenGlOptions.ASSERT_THREAD && context == null) {
+            if (thread && context == null) {
                 throw IllegalStateException("No open gl context!")
             }
             if (OpenGlOptions.ASSERT_BEFORE) {
-                val error = glGetError()
-                if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
+                assertError()
             }
             val profiler = context?.profiler
             val result = profiler("gl") { runnable.invoke() }
             if (OpenGlOptions.ASSERT_AFTER) {
-                val error = glGetError()
-                if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
+                assertError()
             }
             return result
+        }
+
+        fun assertError() {
+            val error = glGetError()
+            if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
         }
     }
 }

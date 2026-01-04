@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlOptions
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.util.mesh.struct.MeshStruct
@@ -57,7 +57,7 @@ class OpenGlVao(
     }
 
     private fun unsafeUnbind() {
-        if (RenderConstants.DIRTY_BUFFER_UNBIND) {
+        if (OpenGlOptions.DIRTY_BUFFER_UNBIND) {
             return
         }
         gl { glBindVertexArray(-1) }

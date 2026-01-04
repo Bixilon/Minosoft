@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue.Companion.BATCH_SIZE
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
 
-class SynchronizedLoader(
+class SyncLoader(
     val loader: MeshLoadingQueue,
 ) : AbstractMeshLoader {
     private var queue = false

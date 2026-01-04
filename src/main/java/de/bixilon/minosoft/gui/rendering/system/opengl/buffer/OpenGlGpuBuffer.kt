@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
-import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.minosoft.gui.rendering.RenderingOptions
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.GpuBufferStates
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlOptions
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem.Companion.gl
 import de.bixilon.minosoft.gui.rendering.system.opengl.error.MemoryLeakException
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GlfwWindow
 import org.lwjgl.opengl.GL15.*
 
 abstract class OpenGlGpuBuffer(
@@ -30,12 +32,12 @@ abstract class OpenGlGpuBuffer(
         private set
 
     protected var id: Int = -1
-        private set
 
     protected abstract val glType: Int
 
     override fun init() {
         if (this.state != GpuBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
+        this.state = GpuBufferStates.INITIALIZING
         system.log { "Init gpu buffer $this" }
         id = gl { glGenBuffers() }
 
@@ -44,6 +46,29 @@ abstract class OpenGlGpuBuffer(
         unsafeUnbind()
 
         state = GpuBufferStates.INITIALIZED
+    }
+
+    fun initAsync(callback: () -> Unit) {
+        if (this.state != GpuBufferStates.PREPARING) throw IllegalStateException("Already initialized (buffer=$this, state=$state)")
+        this.state = GpuBufferStates.INITIALIZING
+
+        system.log { "Init gpu buffer async $this" }
+
+        system.context.window.cast<GlfwWindow>().loader!! += {
+            id = gl { glGenBuffers() }
+
+
+            glBindBuffer(glType, id)
+            initialUpload()
+
+
+            if (!OpenGlOptions.DIRTY_BUFFER_UNBIND) {
+                glBindBuffer(glType, -1)
+            }
+
+            this.state = GpuBufferStates.INITIALIZED
+            callback.invoke()
+        }
     }
 
     protected abstract fun initialUpload()
@@ -64,8 +89,7 @@ abstract class OpenGlGpuBuffer(
     }
 
     protected fun unsafeUnbind() {
-        if (RenderConstants.DIRTY_BUFFER_UNBIND) {
-            // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
+        if (OpenGlOptions.DIRTY_BUFFER_UNBIND) {
             return
         }
         gl { glBindBuffer(glType, -1) }
