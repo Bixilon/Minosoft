@@ -678,6 +678,7 @@ tasks.register("upload") {
 }
 
 tasks.register<Exec>("nsight") {
+    dependsOn("processResources", "compileKotlin", "compileJava")
     // thanks: https://hub.jmonkeyengine.org/t/gradle-nvidia-nsight-graphics/48130
     group = "application"
     val run = tasks.named<JavaExec>("run").get()
