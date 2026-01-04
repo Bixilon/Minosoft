@@ -305,9 +305,19 @@ class OpenGlRenderSystem(
             DefaultThreadPool += { INITIALIZE.invoke(null) }
         }
 
-        inline fun <T> gl(thread: Boolean = OpenGlOptions.ASSERT_THREAD, runnable: () -> T): T {
+        inline fun <T> gl(runnable: () -> T): T {
+            // TODO: Queue does not log exceptions; fixed in kutil 1.31
+            try {
+                return _gl(runnable)
+            } catch (error: Throwable) {
+                error.printStackTrace()
+                throw error
+            }
+        }
+
+        inline fun <T> _gl(runnable: () -> T): T {
             val context = Rendering.currentContext
-            if (thread && context == null) {
+            if (OpenGlOptions.ASSERT_THREAD && context == null) {
                 throw IllegalStateException("No open gl context!")
             }
             if (OpenGlOptions.ASSERT_BEFORE) {
@@ -323,7 +333,9 @@ class OpenGlRenderSystem(
 
         fun assertError() {
             val error = glGetError()
-            if (error != GL_NO_ERROR) throw OpenGlException(OpenGlError(error))
+            if (error == GL_NO_ERROR) return
+
+            throw OpenGlException(OpenGlError(error))
         }
     }
 }
