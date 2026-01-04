@@ -20,9 +20,9 @@ import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.stream.InputStreamUtil.copy
-import org.ajoberstar.grgit.Commit
-import org.ajoberstar.grgit.Grgit
-import org.ajoberstar.grgit.operation.LogOp
+import de.bixilon.kutil.stream.InputStreamUtil.readAsString
+import de.bixilon.kutil.string.WhitespaceUtil.removeMultipleWhitespaces
+import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.jvm.tasks.Jar
@@ -50,7 +50,6 @@ plugins {
     kotlin("jvm") version "2.3.0"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.3.3"
     id("com.github.ben-manes.versions") version "0.53.0"
 }
 
@@ -442,31 +441,63 @@ tasks.test {
     useJUnitPlatform()
 }
 
-var git: Grgit? = null
-var commit: Commit? = null
+fun getEnv(name: String): String? = System.getenv(name)?.takeIf { it.isNotBlank() }
 
+data class GitStatus(
+    val commit: String,
+    val branch: String,
+    val clean: Boolean,
+    val tag: String?,
+)
 
-fun Commit.shortId() = id.substring(0, 10)
+fun loadGitFromEnv(): GitStatus? {
+    val commit = getEnv("CI_COMMIT_SHA") ?: return null
+    val branch = getEnv("CI_COMMIT_BRANCH") ?: return null
+    val tag = getEnv("CI_COMMIT_TAG")
+    return GitStatus(commit, branch, true, tag)
+}
+
+val hasGit by lazy { project.rootDir.resolve(".git").exists() }
+
+fun executeGit(vararg args: String): String? {
+    if (!hasGit) return null
+
+    val process = ProcessBuilder()
+        .command(*(arrayOf("git") + args))
+        .directory(project.rootDir)
+        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+        .start()
+    if (process.waitFor() != 0) return null
+
+    return process.inputStream.readAsString()
+        .trimWhitespaces()
+        .trim { it == '\n' || it == '\r' }
+        .removeMultipleWhitespaces()
+        .takeIf { it.isNotBlank() }
+}
+
+fun loadGitFromGit(): GitStatus? {
+    val commit = executeGit("rev-parse", "HEAD") ?: return null
+    val branch = executeGit("branch", "--show-current") ?: return null
+    val clean = executeGit("status", "--porcelain") == null
+    val tag = executeGit("describe", "--exact-match", "--tags")
+
+    return GitStatus(commit, branch, clean, tag)
+}
+
+val git by lazy { loadGitFromEnv() ?: loadGitFromGit() }
+val GitStatus.commitShort get() = commit.substring(0, 10)
+
 
 fun loadGit() {
-    try {
-        git = Grgit.open(mapOf("currentDir" to project.rootDir))
-    } catch (error: Throwable) {
-        logger.warn("Can not open git folder: $error")
-        return
-    }
-    val git = git!!
-    commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
-    val commit = commit!!
-    val tag = git.tag.list().find { it.commit == commit }
-    var nextVersion = if (tag != null) {
+    val git = git ?: return
+    var nextVersion = if (git.tag != null) {
         stable = true
-        tag.name
+        git.tag
     } else {
-        commit.shortId()
+        git.commitShort
     }
-    val status = git.status()
-    if (!status.isClean) {
+    if (!git.clean) {
         nextVersion += "-dirty"
     }
     if (project.version != nextVersion) {
@@ -481,13 +512,12 @@ val versionJsonTask = tasks.register("versionJson") {
     outputs.upToDateWhen { false }
 
     doFirst {
-        fun generateGit(git: Grgit, commit: Commit): Map<String, Any> {
-            val status = git.status()
+        fun generateGit(git: GitStatus): Map<String, Any> {
             return mapOf(
-                "branch" to (System.getenv()["CI_COMMIT_BRANCH"] ?: git.branch.current().name),
-                "commit" to commit.id,
-                "commit_short" to commit.shortId(),
-                "dirty" to !status.isClean,
+                "branch" to git.branch,
+                "commit" to git.commit,
+                "commit_short" to git.commitShort,
+                "dirty" to !git.clean,
             )
         }
 
@@ -499,15 +529,7 @@ val versionJsonTask = tasks.register("versionJson") {
                 "updates" to updates,
             )
         )
-        try {
-            val git = git
-            val commit = commit
-            if (git != null && commit != null) {
-                versionInfo["git"] = generateGit(git, commit)
-            }
-        } catch (exception: Throwable) {
-            exception.printStackTrace()
-        }
+        git?.let { versionInfo["git"] = generateGit(it) }
         val file = project.layout.buildDirectory.get().asFile.resolve("resources/main/assets/minosoft/version.json")
         file.writeText(groovy.json.JsonOutput.toJson(versionInfo))
     }
