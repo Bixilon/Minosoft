@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -675,4 +675,23 @@ tasks.register("upload") {
         val response = client.send(request.build(), HttpResponse.BodyHandlers.ofString())
         if (response.statusCode() != 200) throw IOException("Could not upload: $response")
     }
+}
+
+tasks.register<Exec>("nsight") {
+    // thanks: https://hub.jmonkeyengine.org/t/gradle-nvidia-nsight-graphics/48130
+    group = "application"
+    val run = tasks.named<JavaExec>("run").get()
+    val home = run.javaLauncher.get().metadata.installationPath.asFile.absolutePath
+
+
+    commandLine = listOf(
+        System.getenv("NGFX"),
+        "--activity=Frame Debugger",
+        "--wait-hotkey",
+        "--dir", ".",
+        "--output-dir", ".",
+        "--exe", "$home/bin/java",
+        "--args",
+        "-classpath " + sourceSets.main.get().runtimeClasspath.asPath + " " + application.mainClass.get() + " --no-cursor-catch --connect --address 127.0.0.1 --no-eros",
+    )
 }
