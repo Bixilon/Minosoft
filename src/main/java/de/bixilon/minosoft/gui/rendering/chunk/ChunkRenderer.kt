@@ -207,8 +207,11 @@ class ChunkRenderer(
         context.profiler("loading") { loadingQueue.work() }
     }
 
+
     override fun postDraw() {
         val meshes = visibility.meshes
+        meshes.lock.locked { meshes.opaque.firstOrNull() }?.updateOcclusion() // don't lock all meshes, updateOcclusion is a blocking operation
+
         meshes.lock.locked {
             meshes.opaque.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
             meshes.translucent.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
@@ -216,9 +219,11 @@ class ChunkRenderer(
         }
     }
 
-    private fun drawBlocksOpaque() = visibility.meshes.apply { lock.locked { opaque.forEach(ChunkMesh::draw) } }
-    private fun drawBlocksTranslucent() = visibility.meshes.apply { lock.locked { translucent.forEach(ChunkMesh::draw) } }
-    private fun drawText() = visibility.meshes.apply { lock.locked { text.forEach(ChunkMesh::draw) } }
+    private fun drawLocked(meshes: ArrayList<ChunkMesh>) = visibility.meshes.lock.locked { meshes.forEach(ChunkMesh::draw) }
+
+    private fun drawBlocksOpaque() = drawLocked(visibility.meshes.opaque)
+    private fun drawBlocksTranslucent() = drawLocked(visibility.meshes.translucent)
+    private fun drawText() = drawLocked(visibility.meshes.text)
     private fun drawBlockEntities() = visibility.meshes.apply { lock.locked { entities.forEach(BlockEntityRenderer::draw) } }
 
     override fun unload() {
