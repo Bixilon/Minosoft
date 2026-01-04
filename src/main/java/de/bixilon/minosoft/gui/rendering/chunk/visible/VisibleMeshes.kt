@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,19 +24,22 @@ import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.types.ChunkMeshTypes
 import de.bixilon.minosoft.util.KUtil.format
 
 class VisibleMeshes(
     val camera: BlockPosition = BlockPosition.EMPTY,
     previous: VisibleMeshes? = null,
 ) {
-    val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
-    val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
-    val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
+    val meshes: Array<ArrayList<ChunkMesh>> = arrayOf(
+        ArrayList(previous?.meshes?.get(ChunkMeshTypes.OPAQUE.ordinal)?.size ?: 128),
+        ArrayList(previous?.meshes?.get(ChunkMeshTypes.TRANSLUCENT.ordinal)?.size ?: 16),
+        ArrayList(previous?.meshes?.get(ChunkMeshTypes.TEXT.ordinal)?.size ?: 16),
+    )
     val entities: ArrayList<BlockEntityRenderer> = ArrayList(previous?.entities?.size ?: 128)
 
     val sizeString: String
-        get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${entities.size.format()}"
+        get() = "${meshes.map { it.size.format() }.joinToString { "|" }}|${entities.size.format()}"
 
     val lock = ReentrantLock()
 
@@ -68,20 +71,10 @@ class VisibleMeshes(
         mesh.result = frustum
 
 
-        mesh.opaque?.let {
-            it.distance = distance
-            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
-            opaque += it
-        }
-        mesh.translucent?.let {
-            it.distance = -distance
-            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
-            translucent += it
-        }
-        mesh.text?.let {
-            it.distance = distance
-            if (occlusion) it.occlusion = ChunkMesh.OcclusionStates.MAYBE
-            text += it
+        mesh.meshes.forEach { type, mesh ->
+            mesh.distance = distance * if (type.inverseDistance) -1 else 1
+            if (occlusion) mesh.occlusion = ChunkMesh.OcclusionStates.MAYBE
+            this.meshes[type.ordinal] += mesh
         }
         mesh.entities?.let {
             entities += it
@@ -94,26 +87,24 @@ class VisibleMeshes(
     fun sort() {
         val worker = UnconditionalWorker(pool = RenderingThreadPool)
         lock.locked {
-            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
-            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
-            worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
+            for (mesh in meshes) {
+                worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { mesh.sort() }
+            }
             // TODO: sort entities
             worker.work()
         }
     }
 
     operator fun minusAssign(mesh: ChunkMeshes): Unit = lock.locked {
-        mesh.opaque?.let { opaque -= it }
-        mesh.translucent?.let { translucent -= it }
-        mesh.text?.let { text -= it }
+        mesh.meshes.forEach { type, mesh ->
+            this.meshes[type.ordinal] -= mesh
+        }
         mesh.entities?.let { entities -= it }
     }
 
 
     fun clear() {
-        opaque.clear()
-        translucent.clear()
-        text.clear()
+        this.meshes.forEach { it.clear() }
         entities.clear()
     }
 }

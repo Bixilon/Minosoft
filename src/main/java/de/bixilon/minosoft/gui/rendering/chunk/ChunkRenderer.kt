@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.cache.ChunkCacheManager
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.types.ChunkMeshTypes
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.culled.CulledQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue
@@ -76,10 +77,17 @@ class ChunkRenderer(
 
     var limitChunkTransferTime = true
 
+    private fun registerMeshLayer(layer: RenderLayer, shader: ChunkShader, type: ChunkMeshTypes) {
+        layers.register(layer, shader, {
+            val meshes = visibility.meshes
+            meshes.lock.locked { meshes.meshes[type.ordinal].forEach(ChunkMesh::draw) }
+        }) { visibility.meshes.meshes[type.ordinal].isEmpty() }
+    }
+
     override fun registerLayers() {
-        layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visibility.meshes.opaque.isEmpty() }
-        layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visibility.meshes.translucent.isEmpty() }
-        layers.register(TextLayer, textShader, this::drawText) { visibility.meshes.text.isEmpty() }
+        registerMeshLayer(OpaqueLayer, shader, ChunkMeshTypes.OPAQUE)
+        registerMeshLayer(TranslucentLayer, shader, ChunkMeshTypes.TRANSLUCENT)
+        registerMeshLayer(TextLayer, textShader, ChunkMeshTypes.TEXT)
         layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visibility.meshes.entities.isEmpty() }
     }
 
@@ -210,20 +218,15 @@ class ChunkRenderer(
 
     override fun postDraw() {
         val meshes = visibility.meshes
-        meshes.lock.locked { meshes.opaque.firstOrNull() }?.updateOcclusion() // don't lock all meshes, updateOcclusion is a blocking operation
+        meshes.lock.locked { meshes.meshes[ChunkMeshTypes.OPAQUE.ordinal].firstOrNull() }?.updateOcclusion() // don't lock all meshes, updateOcclusion is a blocking operation
 
         meshes.lock.locked {
-            meshes.opaque.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
-            meshes.translucent.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
-            meshes.text.removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
+            for (type in ChunkMeshTypes) {
+                meshes.meshes[type.ordinal].removeIf { it.updateOcclusion(); it.occlusion == ChunkMesh.OcclusionStates.INVISIBLE }
+            }
         }
     }
 
-    private fun drawLocked(meshes: ArrayList<ChunkMesh>) = visibility.meshes.lock.locked { meshes.forEach(ChunkMesh::draw) }
-
-    private fun drawBlocksOpaque() = drawLocked(visibility.meshes.opaque)
-    private fun drawBlocksTranslucent() = drawLocked(visibility.meshes.translucent)
-    private fun drawText() = drawLocked(visibility.meshes.text)
     private fun drawBlockEntities() = visibility.meshes.apply { lock.locked { entities.forEach(BlockEntityRenderer::draw) } }
 
     override fun unload() {

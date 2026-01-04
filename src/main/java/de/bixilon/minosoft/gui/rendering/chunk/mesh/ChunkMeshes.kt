@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.positions.InSectionPosition
 import de.bixilon.minosoft.data.world.positions.SectionPosition
 import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.types.ChunkMeshTypeMap
 
 class ChunkMeshes(
     val section: ChunkSection,
@@ -29,9 +30,7 @@ class ChunkMeshes(
 
     val details: IntInlineSet,
 
-    val opaque: ChunkMesh?,
-    val translucent: ChunkMesh?,
-    val text: ChunkMesh?,
+    val meshes: ChunkMeshTypeMap,
     val entities: Array<BlockEntityRenderer>?,
 ) {
     val center = BlockPosition.of(position, InSectionPosition(8, 8, 8))
@@ -43,21 +42,15 @@ class ChunkMeshes(
     var sort = 0
 
     fun load() {
-        this.opaque?.load()
-        this.translucent?.load()
-        this.text?.load()
+        meshes.forEach { _, mesh -> mesh.load() }
         entities?.forEach { it.load() }
     }
 
     fun unload() {
-        opaque?.unload()
-        translucent?.unload()
-        text?.unload()
+        meshes.forEach { _, mesh -> mesh.unload() }
     }
 
     fun drop() {
-        this.opaque?.drop()
-        this.translucent?.drop()
-        this.text?.drop()
+        meshes.forEach { _, mesh -> mesh.drop() }
     }
 }
