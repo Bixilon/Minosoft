@@ -49,22 +49,11 @@ class VisibleMeshes(
         val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
 
         assert(frustum != FrustumResults.OUTSIDE)
-        var occlusion = force || frustum == FrustumResults.PARTLY_INSIDE || (mesh.result == FrustumResults.PARTLY_INSIDE)
 
-        // TODO: fog
-        // TODO: handle block changes
-
-        if (distance >= 128 * 128) {
-            val next = delta - mesh.delta
-            val length2 = next.x * next.x + next.y * next.y + next.z * next.z
-
-            if (length2 >= 2 * 2) {
-                occlusion = true
-            }
+        var occlusion = true
+        if (!force && (delta - mesh.delta) == BlockPosition.EMPTY && mesh.result == FrustumResults.FULLY_INSIDE) {
+            occlusion = false
         } else {
-            occlusion = true
-        }
-        if (occlusion) {
             mesh.delta = delta
         }
 
