@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,6 +36,7 @@ class OpenGlTextureAttachment(
         id = gl { glGenTextures() }
         gl { glActiveTexture(GL_TEXTURE0 + system.framebufferTextureIndex) }
         gl { glBindTexture(GL_TEXTURE_2D, id) }
+        system.boundTexture = id
         gl { glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?) }
         gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
         gl { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
@@ -47,8 +48,12 @@ class OpenGlTextureAttachment(
     fun bind() {
         if (state != AttachmentStates.GENERATED) throw IllegalStateException("Not loaded (state=$state)")
 
-        glActiveTexture(GL_TEXTURE0 + system.framebufferTextureIndex)
-        gl { glBindTexture(GL_TEXTURE_2D, id) }
+
+        if (system.boundTexture != id) {
+            gl { glActiveTexture(GL_TEXTURE0 + system.framebufferTextureIndex) }
+            gl { glBindTexture(GL_TEXTURE_2D, id) }
+            system.boundTexture = id
+        }
     }
 
     override fun unload() {
