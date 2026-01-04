@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -115,9 +115,10 @@ class OpenGlTextureArray(
         val handle = handles[indices.indexOf(data.array)]
         assert(handle >= 0)
 
-
-        gl { glActiveTexture(GL_TEXTURE0 + data.array) }
-        gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
+        if (system.boundTexture != handle) {
+            gl { glBindTexture(GL_TEXTURE_2D_ARRAY, handle) }
+            system.boundTexture = handle
+        }
 
         glUpload(texture)
     }

@@ -78,6 +78,7 @@ class OpenGlRenderSystem(
     var boundVao = -1
     var boundBuffer = Int2IntOpenHashMap(3).apply { defaultReturnValue(-1) }
 
+    var boundTexture = -1
     var nextUniformBufferIndex = 0
     var nextTextureIndex = 0
     val framebufferTextureIndex = nextTextureIndex++

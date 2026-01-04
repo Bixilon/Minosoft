@@ -44,7 +44,7 @@ class FloatOpenGlBuffer(
 
     override fun initialUpload() {
         val size = if (EMPTY_BUFFERS) 0 else data.limit()
-        glBufferData(glType, size * 4L, GL_STATIC_DRAW)
+        gl { glBufferData(glType, size * 4L, GL_STATIC_DRAW) }
         if (!uploadMapped(size)) {
             gl { nglBufferSubData(glType, data, size) }
         }

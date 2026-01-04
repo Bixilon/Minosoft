@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,8 +40,9 @@ class OpenGlVertexBuffer(
         private set
 
 
-    override fun init() {
+    private fun prepareInit() {
         assert(state == GpuBufferStates.PREPARING)
+        this.state = GpuBufferStates.INITIALIZING
 
         vertices = when {
             EMPTY_BUFFERS -> 0
@@ -52,19 +53,20 @@ class OpenGlVertexBuffer(
         if (vertices == 0) {
             Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Empty vertex buffer: $this" }
         }
+    }
+
+    override fun init() {
+        prepareInit()
 
         data.init()
+        data.bind()
+
         vao.init()
+
         index?.init()
 
         unbind()
         state = GpuBufferStates.INITIALIZED
-    }
-
-    private fun bind() {
-        data.bind()
-        vao.bind()
-        index?.bind()
     }
 
     private fun unbind() {
@@ -77,15 +79,17 @@ class OpenGlVertexBuffer(
     override fun draw() {
         check(state == GpuBufferStates.INITIALIZED) { "Vertex buffer is not uploaded: $state" }
 
-        bind()
+        vao.bind()
 
         if (index == null) {
             gl { glDrawArrays(primitive.gl, 0, vertices) }
         } else {
-            gl { glDrawElements(primitive.gl, vertices, GL_UNSIGNED_INT, 0); }
+            index.bind()
+            gl { glDrawElements(primitive.gl, vertices, GL_UNSIGNED_INT, 0) }
+            index.unbind()
         }
 
-        unbind()
+        vao.unbind()
     }
 
     override fun drop() {
