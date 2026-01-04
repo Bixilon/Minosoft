@@ -43,13 +43,12 @@ object GaussianKernel {
         val sigma2 = 2.0f * sigma * sigma
 
         val yRange = if (vertical) radius else 0
-
-        for (x in -radius..radius) {
-            val distanceX = x * x
-            for (y in -yRange..yRange) {
-                val distanceXY = distanceX + y * y
-                for (z in -radius..radius) {
-                    val distanceXYZ = distanceXY + z * z
+        for (y in -yRange..yRange) {
+            val distanceY = y * y
+            for (z in -radius..radius) {
+                val distanceYZ = distanceY + z * z
+                for (x in -radius..radius) {
+                    val distanceXYZ = x * x + distanceYZ
                     if (distanceXYZ > radius2) continue
 
                     val weight = exp(-distanceXYZ / sigma2)
