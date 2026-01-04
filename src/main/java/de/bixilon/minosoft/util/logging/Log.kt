@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@ package de.bixilon.minosoft.util.logging
 
 import de.bixilon.kutil.ansi.ANSI.RESET
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
+import de.bixilon.kutil.exception.StacklessException
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.format1
@@ -100,6 +101,7 @@ object Log {
     private fun formatMessage(message: Any?, vararg formatting: Any) = when (message) {
         is ChatComponent -> message
         is TextFormattable -> ChatComponent.of(message.toText())
+        is StacklessException -> TextComponent("StacklessException: " + message.message)
         is Throwable -> {
             val stringWriter = StringWriter()
             message.printStackTrace(PrintWriter(stringWriter))

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.exception.FastException
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanProperty
@@ -176,7 +177,7 @@ object BlockProperties {
 
     @Deprecated("not block specific")
     fun parseFallbackProperty(group: String, value: Any): Pair<BlockProperty<*>, Any> {
-        val properties = PROPERTIES[group] ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
+        val properties = PROPERTIES[group] ?: throw FastException("Can not find group: $group, expected value $value")
 
         var property: BlockProperty<*>? = null
         var retValue: Any? = null
@@ -191,7 +192,7 @@ object BlockProperties {
         }
 
         if (property == null || retValue == null) {
-            throw IllegalArgumentException("Can not parse value $value for group $group")
+            throw FastException("Can not parse value $value for group $group")
         }
         return Pair(property, retValue)
     }
