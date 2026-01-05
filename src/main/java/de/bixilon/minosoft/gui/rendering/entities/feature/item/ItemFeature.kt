@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -77,7 +77,7 @@ open class ItemFeature(
         val tint = renderer.renderer.context.tints.getItemTint(stack)
 
         val count = if (many) distance.getCount(stack.count) else 1
-        val spread = maxOf(0.1f, count / 30.0f)
+        val spread = minOf(0.1f, count / 30.0f)
 
         model.render(offset.unsafe, mesh, stack, tint) // 0 without offset
 
