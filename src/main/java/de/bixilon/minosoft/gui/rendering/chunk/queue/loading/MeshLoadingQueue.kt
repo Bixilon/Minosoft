@@ -38,6 +38,15 @@ class MeshLoadingQueue(
     val size get() = meshes.size
 
 
+    var updates = 0
+        get() {
+            val value = field
+            field = 0
+            return value
+        }
+
+
+
     fun sort() = lock.locked {
         comparator.update(renderer.visibility.eyePosition)
         meshes.sortWith(comparator)
@@ -58,6 +67,7 @@ class MeshLoadingQueue(
 
                 renderer.context.profiler("load$index") { mesh.load() }
 
+                updates++
                 renderer.loaded += mesh
             }
         }

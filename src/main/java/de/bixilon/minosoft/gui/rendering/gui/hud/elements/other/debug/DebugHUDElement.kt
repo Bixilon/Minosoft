@@ -91,7 +91,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r, t=§d${context.renderStats.avgDrawTime.avg.format().replace('µ', 'u')}" } // rendering of µ eventually broken
         context.renderer[ChunkRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "C v=${visibility.meshes.sizeString}, l=${loaded.size.format()}, cq=${culledQueue.size.format()}, m=${meshingQueue.size.format()}, mqt=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lq=${loadingQueue.size.format()}/${loadingQueue.max.format()}, w=${session.world.chunks.chunks.size.format()}" }
+            layout += AutoTextElement(guiRenderer, 1) { "C v=${visibility.meshes.sizeString}, l=${loaded.size.format()}, cq=${culledQueue.size.format()}, m=${meshingQueue.size.format()}, mqt=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lq=${loadingQueue.size.format()}/${loadingQueue.max.format()}, w=${session.world.chunks.chunks.size.format()} d=+${loadingQueue.updates}|-${unloadingQueue.updates}" }
         }
 
         layout += context.renderer[EntitiesRenderer]?.let {
