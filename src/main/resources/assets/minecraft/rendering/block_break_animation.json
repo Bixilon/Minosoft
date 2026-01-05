@@ -1,0 +1,15 @@
+{
+  "interpolate": true,
+  "frames": [
+    "block/destroy_stage_0",
+    "block/destroy_stage_1",
+    "block/destroy_stage_2",
+    "block/destroy_stage_3",
+    "block/destroy_stage_4",
+    "block/destroy_stage_5",
+    "block/destroy_stage_6",
+    "block/destroy_stage_7",
+    "block/destroy_stage_8",
+    "block/destroy_stage_9"
+  ]
+}
