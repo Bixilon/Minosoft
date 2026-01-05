@@ -53,6 +53,7 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
+import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ticks
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.format
@@ -89,22 +90,22 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4f(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r, t=§d${context.renderStats.avgDrawTime.avg.format().replace('µ', 'u')}" } // rendering of µ eventually broken
+        layout += AutoTextElement(guiRenderer) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r, t=§d${context.renderStats.avgDrawTime.avg.format().replace('µ', 'u')}" } // rendering of µ eventually broken
         context.renderer[ChunkRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "C v=${visibility.meshes.sizeString}, l=${loaded.size.format()}, cq=${culledQueue.size.format()}, m=${meshingQueue.size.format()}, mqt=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lq=${loadingQueue.size.format()}/${loadingQueue.max.format()}, w=${session.world.chunks.chunks.size.format()} d=+${loadingQueue.updates}|-${unloadingQueue.updates}" }
+            layout += AutoTextElement(guiRenderer) { "C v=${visibility.meshes.sizeString}, l=${loaded.size.format()}, cq=${culledQueue.size.format()}, m=${meshingQueue.size.format()}, mqt=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lq=${loadingQueue.size.format()}/${loadingQueue.max.format()}, w=${session.world.chunks.chunks.size.format()} d=+${loadingQueue.updates.format()}|-${unloadingQueue.updates.format()}" }
         }
 
         layout += context.renderer[EntitiesRenderer]?.let {
-            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.drawer.size, ", t=", it.renderers.size, ", w=", session.world.entities.size) }
-        } ?: AutoTextElement(guiRenderer, 1) { "E w=${session.world.entities.size.format()}" }
+            AutoTextElement(guiRenderer) { BaseComponent("E v=", it.drawer.size, ", t=", it.renderers.size, ", w=", session.world.entities.size) }
+        } ?: AutoTextElement(guiRenderer) { "E w=${session.world.entities.size.format()}" }
 
         context.renderer[ParticleRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "P t=${size.format()}" }
+            layout += AutoTextElement(guiRenderer) { "P t=${size.format()}" }
         }
 
         val audioProfile = session.profiles.audio
 
-        layout += AutoTextElement(guiRenderer, 1) {
+        layout += AutoTextElement(guiRenderer) {
             BaseComponent().apply {
                 this += "S "
                 if (session.profiles.audio.skipLoading || !audioProfile.enabled) {
@@ -133,10 +134,10 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         session.camera.entity.physics.apply {
             // ToDo: Only update when the position changes
-            layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.position) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${position.inSectionPosition.format()} in (${chunkPosition.x.format()} ${position.sectionHeight.format()} ${chunkPosition.z.format()})" } }
-            layout += AutoTextElement(guiRenderer, 1) {
+            layout += AutoTextElement(guiRenderer) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer) { with(positionInfo.position) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer) { with(positionInfo) { "Chunk ${position.inSectionPosition.format()} in (${chunkPosition.x.format()} ${position.sectionHeight.format()} ${chunkPosition.z.format()})" } }
+            layout += AutoTextElement(guiRenderer) {
                 val text = BaseComponent("Facing ")
 
                 Directions.byDirection(rotation.front).apply {
@@ -185,7 +186,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
 
-        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebuffer.world.`fun`.effect?.identifier.format() }
+        layout += AutoTextElement(guiRenderer) { "Fun effect: " + context.framebuffer.world.`fun`.effect?.identifier.format() }
 
         return layout
     }
@@ -198,15 +199,15 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 1, RIGHT) { "Allocation rate ${AllocationRate.allocationRate}/s" }
+        layout += AutoTextElement(guiRenderer, properties = RIGHT) { "Allocation rate ${AllocationRate.allocationRate}/s" }
 
         SystemInformation.RUNTIME.apply {
-            layout += AutoTextElement(guiRenderer, 1, RIGHT) {
+            layout += AutoTextElement(guiRenderer, properties = RIGHT) {
                 val total = maxMemory().bytes
                 val used = totalMemory().bytes - freeMemory().bytes
                 "Memory ${(used.bytes * 100.0 / total.bytes).rounded10}% $used / $total"
             }
-            layout += AutoTextElement(guiRenderer, 1, RIGHT) {
+            layout += AutoTextElement(guiRenderer, properties = RIGHT) {
                 val total = maxMemory().bytes
                 val allocated = totalMemory().bytes
                 "Allocated ${(allocated.bytes * 100.0 / total.bytes).rounded10}% $allocated / $total"
@@ -246,12 +247,12 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 20, properties = RIGHT) { "Dynamic textures ${context.textures.dynamic.size.format()}/${context.textures.dynamic.capacity.format()}" }
+        layout += AutoTextElement(guiRenderer, 20.ticks, properties = RIGHT) { "Dynamic textures ${context.textures.dynamic.size.format()}/${context.textures.dynamic.capacity.format()}" }
 
         layout += LineSpacerElement(guiRenderer)
 
         context.session.camera.target.apply {
-            layout += AutoTextElement(guiRenderer, 1, properties = RIGHT) {
+            layout += AutoTextElement(guiRenderer, properties = RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
             }
@@ -291,10 +292,10 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 }
                 clear()
 
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", entity.session.world.dimension.effects) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", entity.physics.positionInfo.biome) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.session.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", this.block, ", sky=", this.sky) } }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", chunk.neighbours.complete) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer) { BaseComponent("Sky properties ", entity.session.world.dimension.effects) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer) { BaseComponent("Biome ", entity.physics.positionInfo.biome) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer) { with(entity.session.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", this.block, ", sky=", this.sky) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer) { BaseComponent("Fully loaded: ", chunk.neighbours.complete) }
 
                 lastChunk.value = chunk
             }

@@ -21,13 +21,11 @@ import de.bixilon.minosoft.protocol.network.session.play.tick.Ticks.Companion.ti
 
 class AutoTextElement(
     guiRenderer: GUIRenderer,
-    var interval: Ticks,
+    var interval: Ticks = 1.ticks,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
     private val updater: () -> Any,
 ) : TextElement(guiRenderer, EmptyComponent, properties = properties) {
     private var remainingTicks = 0.ticks
-
-    constructor(guiRenderer: GUIRenderer, ticks: Int, properties: TextRenderProperties = TextRenderProperties.DEFAULT, updater: () -> Any) : this(guiRenderer, ticks.ticks, properties, updater)
 
     init {
         text = updater()
