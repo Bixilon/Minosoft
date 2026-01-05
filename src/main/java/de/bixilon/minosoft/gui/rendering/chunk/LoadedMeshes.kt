@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.camera.frustum.FrustumResults
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.details.ChunkMeshDetails
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingCause
-import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibilityGraphInvalidReason
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class LoadedMeshes(
@@ -55,9 +55,10 @@ class LoadedMeshes(
         }
 
         meshes.lock.locked {
-            meshes.unsafeAdd(mesh, frustum, true)
+            meshes.unsafeAdd(mesh, frustum)
             meshes.sort() // TODO: replace mesh (no need to sort again)
         }
+        renderer.visibility.invalidate(VisibilityGraphInvalidReason.MESH_UPDATE)
     }
 
     operator fun minusAssign(position: SectionPosition) {
@@ -92,7 +93,8 @@ class LoadedMeshes(
         meshes.clear()
     }
 
-    fun addTo(visible: VisibleMeshes, force: Boolean) = lock.acquired {
+
+    fun forEachVisible(consumer: (meshes: ChunkMeshes, result: FrustumResults) -> Unit) = lock.acquired {
         // TODO: somehow cache the sorting
 
         val frustum = renderer.context.camera.frustum
@@ -108,7 +110,7 @@ class LoadedMeshes(
                 val result = renderer.visibility.contains(mesh.position, mesh.min, mesh.max)
                 if (result == FrustumResults.OUTSIDE) continue
 
-                visible.unsafeAdd(mesh, result, force)
+                consumer.invoke(mesh, result)
             }
         }
     }

@@ -11,29 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.camera.fog
+package de.bixilon.minosoft.gui.rendering.chunk.visible
 
-import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
-
-data class FogState(
-    var enabled: Boolean = true,
-    var start: Float = 0.0f,
-    var end: Float = 0.0f,
-    var color: RGBAColor? = null,
-) {
-    var revision by observed(-1)
-
-
-    fun flags(): Int {
-        var flags = 0
-        if (enabled) {
-            flags = flags or FogFlags.ENABLE.mask
-        }
-        if (color != null) {
-            flags = flags or FogFlags.USE_COLOR.mask
-        }
-
-        return flags
-    }
+enum class VisibilityGraphInvalidReason {
+    VISIBILITY_GRAPH,
+    FOG,
+    MESH_UPDATE,
+    ;
 }

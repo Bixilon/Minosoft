@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.visible
 
+import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkUtil.isInViewDistance
@@ -34,12 +36,23 @@ class ChunkVisibilityManager(
     var sectionPosition = SectionPosition()
         private set
 
-    private var invalid = true
+    private var reasons: IntInlineEnumSet<VisibilityGraphInvalidReason> = IntInlineEnumSet()
     private var viewDistance = renderer.context.session.world.view.viewDistance
-    private var fog = -1
+
+    init {
+        val state = renderer.context.camera.fog.state
+        var end = 0.0f
+        state::revision.observe(this) {
+            if (state.end < end) {
+                reasons += VisibilityGraphInvalidReason.FOG
+            }
+
+            end = state.end
+        }
+    }
 
 
-    var meshes = VisibleMeshes()
+    var meshes = VisibleMeshes(this)
         private set
 
 
@@ -58,9 +71,16 @@ class ChunkVisibilityManager(
 
     fun contains(position: SectionPosition, min: InSectionPosition, max: InSectionPosition) = visibility.isSectionVisible(position, min, max, true)
 
-    private fun updateVisibleMeshes(force: Boolean) {
-        this.meshes = VisibleMeshes(eyePosition, this.meshes)
-        renderer.loaded.addTo(meshes, force)
+    private fun collectVisibleMeshes(force: Boolean) {
+        this.meshes = VisibleMeshes(this, eyePosition, this.meshes)
+
+        renderer.loaded.forEachVisible { meshes, result ->
+            if (force) {
+                meshes.resetOcclusion()
+            }
+            this.meshes.unsafeAdd(meshes, result)
+        }
+
         meshes.sort()
     }
 
@@ -90,24 +110,33 @@ class ChunkVisibilityManager(
     }
 
 
-    fun invalidate() {
-        invalid = true
+    fun invalidate(reason: VisibilityGraphInvalidReason) {
+        this.reasons += reason
     }
 
     fun update() {
         updateViewDistance() // TODO: delay that for 100ms to not cause rapid loading/unloading
 
-        val fog = renderer.context.camera.fog.revision
-        val force = this.fog != fog
-        this.fog = fog
+        val reasons = reasons
+        if (reasons.size == 0) return
 
-        if (invalid) {
+        if (VisibilityGraphInvalidReason.VISIBILITY_GRAPH in reasons) {
             onVisibilityChange()
-            updateVisibleMeshes(force)
-            invalid = false
-        } else if (force) {
-            updateVisibleMeshes(true)
         }
+
+
+        // TODO: only recalculate if partly visible, fog/world change, do not if frustum only moved
+
+        var force = false
+
+        if (VisibilityGraphInvalidReason.FOG in reasons || VisibilityGraphInvalidReason.MESH_UPDATE in reasons) { // TODO: only set mesh update if shape changed
+            force = true
+        }
+
+
+        collectVisibleMeshes(force)
+
+        this.reasons = IntInlineEnumSet()
     }
 
     private fun updateViewDistance() {

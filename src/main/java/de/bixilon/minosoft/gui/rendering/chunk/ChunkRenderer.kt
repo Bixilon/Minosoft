@@ -41,6 +41,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.chunk.visible.ChunkVisibilityManager
+import de.bixilon.minosoft.gui.rendering.chunk.visible.VisibilityGraphInvalidReason
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -97,7 +98,7 @@ class ChunkRenderer(
         textShader.load()
 
 
-        session.events.listen<VisibilityGraphChangeEvent> { visibility.invalidate() }
+        session.events.listen<VisibilityGraphChangeEvent> { visibility.invalidate(VisibilityGraphInvalidReason.VISIBILITY_GRAPH) }
 
         ChunkRendererChangeListener.register(this)
 
@@ -137,7 +138,7 @@ class ChunkRenderer(
         meshingQueue.tasks.interrupt(false)
 
         context.queue += { unloadingQueue.work() }
-        visibility.invalidate()
+        visibility.invalidate(VisibilityGraphInvalidReason.MESH_UPDATE)
     }
 
     fun unload(chunk: Chunk) {

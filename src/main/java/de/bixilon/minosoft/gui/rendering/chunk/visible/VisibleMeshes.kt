@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.types.ChunkMeshTypes
 import de.bixilon.minosoft.util.KUtil.format
 
 class VisibleMeshes(
+    val visibility: ChunkVisibilityManager,
     val camera: BlockPosition = BlockPosition.EMPTY,
     previous: VisibleMeshes? = null,
 ) {
@@ -39,38 +40,24 @@ class VisibleMeshes(
     val entities: ArrayList<BlockEntityRenderer> = ArrayList(previous?.entities?.size ?: 128)
 
     val sizeString: String
-        get() = "${meshes.map { it.size.format() }.joinToString { "|" }}|${entities.size.format()}"
+        get() = "${meshes.joinToString("|") { it.size.format().legacy }}|${entities.size.format()}"
 
     val lock = ReentrantLock()
 
 
-    private fun add(mesh: ChunkMeshes, frustum: FrustumResults, force: Boolean) {
-        val delta = (camera - mesh.center)
-        val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
-
-        assert(frustum != FrustumResults.OUTSIDE)
-
-        var occlusion = true
-        if (!force && (delta - mesh.delta) == BlockPosition.EMPTY && mesh.result == FrustumResults.FULLY_INSIDE) {
-            occlusion = false
-        } else {
-            mesh.delta = delta
-        }
-
-        mesh.result = frustum
-
+    private fun add(mesh: ChunkMeshes, frustum: FrustumResults) {
+        mesh.update(camera, frustum)
 
         mesh.meshes.forEach { type, mesh ->
-            mesh.distance = distance * if (type.inverseDistance) -1 else 1
-            if (occlusion) mesh.occlusion = ChunkMesh.OcclusionStates.MAYBE
+            if (mesh.occlusion == ChunkMesh.OcclusionStates.INVISIBLE) return@forEach
+
             this.meshes[type.ordinal] += mesh
         }
-        mesh.entities?.let {
-            entities += it
-        }
+
+        mesh.entities?.let { entities += it }
     }
 
-    fun unsafeAdd(mesh: ChunkMeshes, frustum: FrustumResults, force: Boolean) = add(mesh, frustum, force)
+    fun unsafeAdd(mesh: ChunkMeshes, frustum: FrustumResults) = add(mesh, frustum)
 
 
     fun sort() {
@@ -89,11 +76,14 @@ class VisibleMeshes(
             this.meshes[type.ordinal] -= mesh
         }
         mesh.entities?.let { entities -= it }
-    }
 
+        visibility.invalidate(VisibilityGraphInvalidReason.MESH_UPDATE)
+    }
 
     fun clear() {
         this.meshes.forEach { it.clear() }
         entities.clear()
+
+        visibility.invalidate(VisibilityGraphInvalidReason.MESH_UPDATE)
     }
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.fog
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.now
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -41,9 +42,12 @@ class FogManager(
     val state = FogState()
     private var options: FogOptions? = null
 
+    private var updateShaders = false
 
-    var revision = -1
-        private set
+
+    init {
+        state::revision.observe(this) { updateShaders = true }
+    }
 
     fun draw() {
         update()
@@ -126,11 +130,7 @@ class FogManager(
 
 
     private fun updateShaders() {
-        val revision = state.revision
-
-        if (revision == this.revision) {
-            return
-        }
+        if (!updateShaders) return
 
         val start = state.start * state.start
         val end = state.end * state.end
@@ -144,7 +144,7 @@ class FogManager(
             }
             shader.update(start, distance, color, flags)
         }
-        this.revision = revision
+        this.updateShaders = false
     }
 
     fun use(shader: AbstractShader) {

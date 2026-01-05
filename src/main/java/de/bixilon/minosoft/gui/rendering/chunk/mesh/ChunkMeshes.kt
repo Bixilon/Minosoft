@@ -53,4 +53,30 @@ class ChunkMeshes(
     fun drop() {
         meshes.forEach { _, mesh -> mesh.drop() }
     }
+
+    fun update(camera: BlockPosition, frustum: FrustumResults) {
+        val delta = (camera - center)
+        val distance = delta.x * delta.x + (delta.y * delta.y / 4) + delta.z * delta.z
+
+        var occlusion = true
+        if ((delta - this.delta) == BlockPosition.EMPTY && this.result == FrustumResults.FULLY_INSIDE) {
+            occlusion = false
+        } else {
+            this.delta = delta
+        }
+
+        this.result = frustum
+
+
+        meshes.forEach { type, mesh ->
+            mesh.distance = distance * if (type.inverseDistance) -1 else 1
+            if (occlusion) mesh.occlusion = ChunkMesh.OcclusionStates.MAYBE
+        }
+    }
+
+    fun resetOcclusion() {
+        meshes.forEach { _, mesh ->
+            mesh.occlusion = ChunkMesh.OcclusionStates.MAYBE
+        }
+    }
 }
