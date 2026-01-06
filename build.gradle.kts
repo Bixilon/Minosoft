@@ -14,6 +14,7 @@
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.base64.Base64Util.toBase64
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
@@ -485,7 +486,7 @@ fun loadGitFromGit(): GitStatus? {
     return GitStatus(commit, branch, clean, tag)
 }
 
-val git by lazy { loadGitFromEnv() ?: loadGitFromGit() }
+val git by lazy { loadGitFromEnv() ?: ignoreAll { loadGitFromGit() } }
 val GitStatus.commitShort get() = commit.substring(0, 10)
 
 
