@@ -10,15 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
+package de.bixilon.minosoft.gui.rendering.chunk.breaking
+
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
-class BlockBreakAnimationEvent(
-    session: PlaySession,
-    val id: Int,
+class BreakInstance(
     val position: BlockPosition,
-    val progress: Float?,
-) : PlaySessionEvent(session), CancelableEvent
+    val state: BlockState,
+    var progress: Float,
+    val mesh: Mesh,
+)

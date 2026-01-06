@@ -22,22 +22,28 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
 class BreakAnimation(
-    val interpolate: Boolean,
     val frames: Array<Texture>,
 ) {
+
+    operator fun get(progress: Float): Texture? {
+        if (progress < 0.0f) return null
+        if (progress > 1.0f) return null
+
+        // TODO: last frame never shown
+        return this.frames[(progress * frames.size).toInt()]
+    }
 
     companion object {
         val ANIMATION = minecraft("rendering/block_break_animation.json")
 
         private class Prototype(
-            val interpolate: Boolean = true,
             val frames: Array<ResourceLocation>
         )
 
         fun load(texture: TextureManager, assets: AssetsManager): BreakAnimation {
             val prototype = assets[ANIMATION].readJson<Prototype>()
 
-            return BreakAnimation(prototype.interpolate, prototype.frames.map { texture.static.create(it.texture()) }.toTypedArray())
+            return BreakAnimation(prototype.frames.map { texture.static.create(it.texture()) }.toTypedArray())
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2026 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,15 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.modding.event.events.session.play.PlaySessionEvent
-import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+#version 330 core
 
-class BlockBreakAnimationEvent(
-    session: PlaySession,
-    val id: Int,
-    val position: BlockPosition,
-    val progress: Float?,
-) : PlaySessionEvent(session), CancelableEvent
+#define FOG
+
+out lowp vec4 foutColor;
+
+
+#include "minosoft:tint"
+#include "minosoft:texture"
+#include "minosoft:alpha"
+#include "minosoft:fog"
+#include "minosoft:animation"
+
+void main() {
+    applyDefaults();
+    applyTint();
+    applyTexel();
+}
