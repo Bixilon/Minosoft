@@ -42,6 +42,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
@@ -211,7 +212,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
 
     }
 
-    abstract class WoodenDoor(identifier: ResourceLocation, settings: BlockSettings) : DoorBlock(identifier, settings), AxeRequirement {
+    abstract class WoodenDoor(identifier: ResourceLocation, settings: BlockSettings) : DoorBlock(identifier, settings), HandBreakable, AxeRequirement {
         override val hardness get() = 3.0f
 
         override fun interact(session: PlaySession, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {

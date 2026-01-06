@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,24 +13,23 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.building.nether
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.protocol.versions.Version
 
-open class Glowstone(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), PickaxeRequirement, FullBlock, BlockWithItem<Item> {
+open class Glowstone(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), HandBreakable, PickaxeRequirement, FullBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.3f
 

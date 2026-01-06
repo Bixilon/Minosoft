@@ -30,7 +30,7 @@ open class LegacyBlock(
     settings: BlockSettings,
     model: ResourceLocation?,
 ) : Block(identifier, settings), OutlinedBlock, CollidableBlock, CustomModel, TintedBlock {
-    override var hardness: Float = 0.0f
+    override var hardness: Float = 1.0f
     override var tintProvider: TintProvider? = null
 
     override val modelName = model ?: PreFlatteningModelFixer.fix(identifier)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,11 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-class Gravel(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullBlock, ShovelRequirement, BlockWithItem<Item> {
+class Gravel(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullBlock, HandBreakable, ShovelRequirement, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.6f
 

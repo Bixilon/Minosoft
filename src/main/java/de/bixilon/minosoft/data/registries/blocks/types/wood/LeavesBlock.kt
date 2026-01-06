@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
@@ -39,7 +40,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 
-abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, CollidableBlock, OutlinedBlock, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
+abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, CollidableBlock, OutlinedBlock, HandBreakable, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
     override val hardness get() = 0.2f
     override val item: Item = this::item.inject(identifier)
     override val tintProvider: TintProvider? = null

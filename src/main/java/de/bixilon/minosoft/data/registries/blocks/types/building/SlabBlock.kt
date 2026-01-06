@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.shape.Shape
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -114,7 +115,7 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    abstract class WoodSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement {
+    abstract class WoodSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement, HandBreakable {
         override val hardness get() = 2.0f
     }
 

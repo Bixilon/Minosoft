@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FlowerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.WoodenChestBlock
@@ -43,9 +44,12 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_4
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.test.ITUtil.allocate
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -198,9 +202,27 @@ object VerifyIntegratedBlockRegistry {
         errors.append(integratedItem)
     }
 
+
+    private fun compareToolRequirement(pixlyzer: Block, integrated: Block, errors: StringBuilder) {
+        if (integrated is Bedrock) return
+        val requiresTool = (integrated is ToolRequirement && integrated !is HandBreakable)
+        if (pixlyzer !is PixLyzerBlock) return
+
+        if (pixlyzer.requiresTool == requiresTool) return
+
+        errors.appendBlock(pixlyzer)
+        errors.append("requiresTool: e=")
+        errors.append(pixlyzer.requiresTool)
+        errors.append(", a=")
+        errors.append(requiresTool)
+    }
+
     private fun compare(session: PlaySession, pixlyzer: PixLyzerBlock, integrated: Block, errors: StringBuilder) {
         compareHardness(pixlyzer, integrated, errors)
         compareItem(pixlyzer, integrated, errors)
+        if (session.version.versionId != V_1_19_4) {
+            compareToolRequirement(pixlyzer, integrated, errors)
+        }
         for (state in pixlyzer.states) {
             val integratedState = try {
                 integrated.states.withProperties(state.properties)
