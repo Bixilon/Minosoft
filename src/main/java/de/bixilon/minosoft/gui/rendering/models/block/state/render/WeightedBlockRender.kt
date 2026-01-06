@@ -78,8 +78,9 @@ class WeightedBlockRender(
         models.first().model.render(gui, offset, consumer, options, size, stack, tints)
     }
 
-    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        models.first().model.render(consumer, state, tints)
+
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?, offset: Vec3f?, light: ByteArray?) {
+        models.first().model.render(consumer, state, tints, offset, light)
     }
 
     override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {

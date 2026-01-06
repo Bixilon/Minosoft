@@ -85,7 +85,7 @@ class BakedModel(
                     aoRaw = ao.apply(direction, position.inSectionPosition)
                 }
 
-                face.render(offset, mesh, light, tints, aoRaw)
+                face.render(offset, mesh, tints, light, aoRaw)
 
                 rendered = true
             }
@@ -94,16 +94,19 @@ class BakedModel(
         return rendered
     }
 
-    private fun render(offset: Vec3f, mesh: BlockVertexConsumer, tints: RGBArray?) {
+    private fun render(offset: Vec3f, mesh: BlockVertexConsumer, tints: RGBArray?, light: ByteArray?) {
         for (side in this.faces) {
             for (face in side) {
-                face.render(offset, mesh, tints)
+                face.render(offset, mesh, tints, light, null)
             }
         }
     }
 
-    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) = render(Vec3f.EMPTY, consumer, tints)
-    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = render(offset, consumer, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?, offset: Vec3f?, light: ByteArray?) {
+        render(offset ?: Vec3f.EMPTY, consumer, tints, light)
+    }
+
+    override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) = render(offset, consumer, tints, null)
 
     override fun getDisplay(position: DisplayPositions): ModelDisplay? {
         return this.display?.get(position)

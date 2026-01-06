@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,8 +38,8 @@ interface NeighbourBlockRender : BlockRender {
         default?.render(gui, offset, consumer, options, size, stack, tints)
     }
 
-    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        default?.render(consumer, state, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?, offset: Vec3f?, light: ByteArray?) {
+        default?.render(consumer, state, tints, offset, light)
     }
 
     override fun render(offset: Vec3f, consumer: BlockVertexConsumer, stack: ItemStack, tints: RGBArray?) {

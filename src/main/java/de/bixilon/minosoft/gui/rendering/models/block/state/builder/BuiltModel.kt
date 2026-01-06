@@ -58,10 +58,10 @@ class BuiltModel(
         }
     }
 
-    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?) {
-        model.render(consumer, state, tints)
+    override fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?, offset: Vec3f?, light: ByteArray?) {
+        model.render(consumer, state, tints, offset, light)
         for (dynamic in this.dynamic) {
-            dynamic.render(consumer, state, tints)
+            dynamic.render(consumer, state, tints, offset, light)
         }
     }
 

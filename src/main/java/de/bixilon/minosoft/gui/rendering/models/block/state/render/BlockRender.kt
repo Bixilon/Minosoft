@@ -36,7 +36,7 @@ interface BlockRender : ItemRender {
     fun getParticleTexture(random: Random?, position: BlockPosition): Texture? = null
 
     fun render(props: WorldRenderProps, position: BlockPosition, state: BlockState, entity: BlockEntity?, tints: RGBArray?): Boolean
-    fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?)
+    fun render(consumer: BlockVertexConsumer, state: BlockState, tints: RGBArray?, offset: Vec3f?, light: ByteArray?)
 
 
     override fun render(gui: GUIRenderer, offset: Vec2f, consumer: GuiVertexConsumer, options: GUIVertexOptions?, size: Vec2f, stack: ItemStack, tints: RGBArray?) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kmath.vec.vec3.f.Vec3f
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.chunk.light.types.LightLevel
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.light.ao.AmbientOcclusionUtil
@@ -47,18 +48,11 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: Vec3f, consumer: BlockVertexConsumer, light: ByteArray, tints: RGBArray?, ao: IntArray) {
+    fun render(offset: Vec3f, consumer: BlockVertexConsumer, tints: RGBArray?, light: ByteArray?, ao: IntArray?) {
         val tint = color(tints.getOr0(tintIndex))
-        val light = light[lightIndex].toInt()
+        val light = light?.get(lightIndex)?.toInt() ?: LightLevel.MAX_LEVEL
 
-        consumer.addQuad(offset, this.positions, packedUV, texture, light, tint, ao)
-    }
-
-
-    fun render(offset: Vec3f, consumer: BlockVertexConsumer, tints: RGBArray?) {
-        val tint = color(tints.getOr0(tintIndex))
-
-        consumer.addQuad(offset, this.positions, packedUV, texture, 0xFF, tint, AmbientOcclusionUtil.EMPTY)
+        consumer.addQuad(offset, this.positions, packedUV, texture, light, tint, ao ?: AmbientOcclusionUtil.EMPTY)
     }
 
 
