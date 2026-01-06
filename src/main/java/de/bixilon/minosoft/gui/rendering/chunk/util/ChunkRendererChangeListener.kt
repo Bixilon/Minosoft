@@ -44,9 +44,10 @@ object ChunkRendererChangeListener {
         if (state != null && state.block is FluidBlock) {
             return state.block.fluid.getHeight(state) == state.block.fluid.getHeight(previous)
         }
+        val previousModel = previous?.model ?: previous?.block?.model
 
-        if (model == null && previous?.model == null) return true
-        if ((model == null) != (previous?.model == null)) return false
+        if (model == null && previousModel == null) return true
+        if ((model == null) != (previousModel == null)) return false
         if (state == null || model == null) Broken()
 
 
