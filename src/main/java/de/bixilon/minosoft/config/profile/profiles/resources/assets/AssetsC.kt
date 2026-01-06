@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.resources.assets
 
-import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.LATEST_PACK_FORMAT
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.LATEST
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
@@ -29,5 +29,5 @@ class AssetsC(profile: ResourcesProfile) {
 
     val resourcePacks: List<ResourcePack> by ListDelegate(profile, mutableListOf())
 
-    val packFormat by IntDelegate(profile, -1, arrayOf(-1..-1, 0..LATEST_PACK_FORMAT))
+    val packFormat by IntDelegate(profile, -1, arrayOf(-1..-1, 0..LATEST))
 }

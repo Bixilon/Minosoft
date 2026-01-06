@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,30 +19,38 @@ import de.bixilon.minosoft.assets.resource.ResourceAssetsManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.FileNotFoundException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 
 object ResourcesAssetsUtil {
 
+    private fun Path.getParent(up: Int): Path {
+        var path = this
+        for (i in 0 until up) {
+            path = path.parent
+        }
+        return path
+    }
+
     fun create(clazz: Class<*>, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): AssetsManager {
-        val rootResources = clazz.classLoader.getResource(prefix) ?: clazz.classLoader.getResource("$prefix/.assets")
-        if (rootResources === null) {
-            Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not find \"$prefix\" assets root for $clazz" }
-            return ResourceAssetsManager(clazz, prefix)
+        val root = clazz.classLoader.getResource(prefix) ?: clazz.classLoader.getResource("$prefix/.assets")
+        if (root === null) {
+            throw FileNotFoundException("Can not find \"$prefix\" assets root for $clazz")
         }
 
-        return when (rootResources.protocol) {
-            "file" -> DirectoryAssetsManager(Path.of(rootResources.toURI()).parent, canUnload, prefix)
+        return when (root.protocol) {
+            "file" -> DirectoryAssetsManager(Path.of(root.toURI()).getParent(prefix.count { it == '/' } + 1), canUnload, prefix)
             "jar" -> {
-                val path: String = rootResources.path
+                val path: String = root.path
                 val jarPath = path.substring(5, path.indexOf("!"))
                 val zip = URLDecoder.decode(jarPath, StandardCharsets.UTF_8)
                 ZipAssetsManager(zip, canUnload = canUnload, prefix = prefix)
             }
 
             else -> {
-                Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Can not find resource manager for $rootResources" }
+                Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Can not find resource manager for $root" }
 
                 ResourceAssetsManager(clazz, prefix)
             }

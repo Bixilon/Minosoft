@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 
 object MinecraftPackFormat {
     const val FLATTENING = 4
-    const val LATEST_PACK_FORMAT = 19
+    const val LATEST = 19
 
     val Version.packFormat: Int
         get() = when {
@@ -55,7 +55,7 @@ object MinecraftPackFormat {
             versionId < V_23W32A -> 16
             versionId < V_1_20_2_PRE2 -> 17
             versionId < V_23W42A -> 18
-            else -> LATEST_PACK_FORMAT
+            else -> LATEST
         }
 
 }

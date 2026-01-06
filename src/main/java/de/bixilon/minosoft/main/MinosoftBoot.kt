@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,7 +47,7 @@ object MinosoftBoot {
 
         tree += TreeTask(identifier = BootTasks.KEYS, executor = { YggdrasilUtil.load(); UpdateKey.load() })
 
-        tree += TreeTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
+        tree += TreeTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { latch -> IntegratedAssets.VERSIONED.forEach { it?.load(latch) }; IntegratedAssets.OVERRIDE.load(latch) })
         tree += TreeTask(identifier = BootTasks.MODS, executor = { DefaultModPhases.BOOT.load(it) })
         tree += TreeTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
         tree += TreeTask(identifier = BootTasks.CLI, priority = ThreadPool.Priorities.LOW, executor = CLI::startThread)
