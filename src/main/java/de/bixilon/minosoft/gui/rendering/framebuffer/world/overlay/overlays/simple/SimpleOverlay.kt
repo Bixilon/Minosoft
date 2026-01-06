@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager.Companion.OVERLAY_Z
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.integrated.SimpleTextureMeshBuilder
@@ -37,7 +37,13 @@ abstract class SimpleOverlay(
     protected fun updateMesh(): Mesh {
         val mesh = SimpleTextureMeshBuilder(context)
 
-        mesh.addZQuad(Vec2f(-1.0f, -1.0f), OverlayManager.OVERLAY_Z, Vec2f(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, color ?: ChatColors.WHITE) }
+        val color = color ?: ChatColors.WHITE
+
+        mesh.addVertex(-1.0f, -1.0f, OVERLAY_Z, texture, Vec2f(uvStart.x, uvEnd.y), color)
+        mesh.addVertex(-1.0f, +1.0f, OVERLAY_Z, texture, Vec2f(uvStart.x, uvStart.y), color)
+        mesh.addVertex(+1.0f, +1.0f, OVERLAY_Z, texture, Vec2f(uvEnd.x, uvStart.y), color)
+        mesh.addVertex(+1.0f, -1.0f, OVERLAY_Z, texture, Vec2f(uvEnd.x, uvEnd.y), color)
+        mesh.addIndexQuad()
 
         return mesh.bake().apply { load() }
     }

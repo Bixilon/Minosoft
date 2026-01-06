@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager.Companion.OVERLAY_Z
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -55,19 +56,18 @@ class FireOverlay(
         val mesh = SimpleTextureMeshBuilder(context)
 
         // ToDo: Minecraft does this completely different...#
-        // TODO: flip upside down
         mesh.addQuad(arrayOf(
-            Vec3f(-2.0f, -2.4f, +0.0f),
-            Vec3f(-2.0f, +0.4f, +0.0f),
-            Vec3f(+0.0f, +0.4f, +0.0f),
-            Vec3f(+0.0f, -2.4f, +0.0f),
+            Vec3f(+0.0f, +0.4f, OVERLAY_Z),
+            Vec3f(+0.0f, -2.4f, OVERLAY_Z),
+            Vec3f(-2.0f, -2.4f, OVERLAY_Z),
+            Vec3f(-2.0f, +0.4f, OVERLAY_Z),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
 
         mesh.addQuad(arrayOf(
-            Vec3f(-0.0f, -2.4f, +0.0f),
-            Vec3f(-0.0f, +0.4f, +0.0f),
-            Vec3f(+2.0f, +0.4f, +0.0f),
-            Vec3f(+2.0f, -2.4f, +0.0f),
+            Vec3f(+2.0f, +0.4f, OVERLAY_Z),
+            Vec3f(+2.0f, -2.4f, OVERLAY_Z),
+            Vec3f(-0.0f, -2.4f, OVERLAY_Z),
+            Vec3f(-0.0f, +0.4f, OVERLAY_Z),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
 
         this.mesh = mesh.bake()
