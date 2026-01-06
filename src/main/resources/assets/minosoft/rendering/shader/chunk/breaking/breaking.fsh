@@ -28,4 +28,7 @@ void main() {
     applyDefaults();
     applyTint();
     applyTexel();
+
+    if (foutColor.a < 0.1f) discard;
+    foutColor.a *= 0.5f;
 }

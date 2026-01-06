@@ -29,8 +29,7 @@ class BreakAnimation(
         if (progress < 0.0f) return null
         if (progress > 1.0f) return null
 
-        // TODO: last frame never shown
-        return this.frames[(progress * frames.size).toInt()]
+        return this.frames[(progress * (frames.size - 1)).toInt()]
     }
 
     companion object {

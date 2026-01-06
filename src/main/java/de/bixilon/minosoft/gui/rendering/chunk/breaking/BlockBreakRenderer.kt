@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStates
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.modding.event.events.BlockBreakAnimationEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
@@ -66,6 +67,9 @@ class BlockBreakRenderer(
                 return
             }
             unload(id)
+        }
+        while (instances.size >= MAX_INSTANCES) {
+            unload(instances.keys.first())
         }
         val model = state.model ?: state.block.model ?: return
         val builder = BreakingMeshBuilder(context)
@@ -106,6 +110,10 @@ class BlockBreakRenderer(
 
     private fun draw() = lock.locked {
         for (instance in instances.values) {
+            val distance = (instance.position - context.session.camera.entity.renderInfo.position.blockPosition).length2()
+            if (distance > MAX_DISTANCE) continue
+
+            if (instance.mesh.state == MeshStates.PREPARING) continue // created after preparing state
             val texture = animation[instance.progress] ?: continue
             shader.texture = texture.shaderId
 
@@ -123,6 +131,8 @@ class BlockBreakRenderer(
     }
 
     companion object : RendererBuilder<BlockBreakRenderer> {
+        const val MAX_DISTANCE = 64 * 64
+        const val MAX_INSTANCES = 64
         const val SELF_ID = -1
 
         override fun build(session: PlaySession, context: RenderContext): BlockBreakRenderer? {

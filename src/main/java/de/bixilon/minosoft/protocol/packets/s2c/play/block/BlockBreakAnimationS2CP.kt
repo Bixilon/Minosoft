@@ -27,7 +27,7 @@ class BlockBreakAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val stage = buffer.readUnsignedByte()
 
     override fun handle(session: PlaySession) {
-        val progress = if (stage < 0 || stage > 8) null else stage / 8.0f
+        val progress = if (stage < 0 || stage > 8) null else stage / 9.0f
 
 
         session.events.fire(BlockBreakAnimationEvent(session, id, position, progress))
