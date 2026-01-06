@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -34,13 +35,20 @@ object VerifyIntegratedItemRegistry {
         if (pixlyzer.maxDurability == 0) return
         integrated as DurableItem
         if (pixlyzer.maxDurability != integrated.maxDurability) {
-            errors.append("Durability mismatch: ${pixlyzer.identifier}. e=${pixlyzer.maxDurability}, a=${integrated.maxDurability}")
+            errors.append("Durability mismatch: ${pixlyzer.identifier}. e=${pixlyzer.maxDurability}, a=${integrated.maxDurability}\n")
         }
+    }
+
+    private fun compareStackSize(pixlyzer: PixLyzerItem, integrated: Item, errors: StringBuilder) {
+        val max = if (integrated is StackableItem) integrated.maxStackSize else 1
+        if (max == pixlyzer.maxStackSize) return
+        errors.append("Max stack size: ${pixlyzer.identifier}. e=${pixlyzer.maxStackSize}, a=${max}\n")
     }
 
 
     private fun compare(pixlyzer: PixLyzerItem, integrated: Item, errors: StringBuilder) {
         compareDurability(pixlyzer, integrated, errors)
+        compareStackSize(pixlyzer, integrated, errors)
     }
 
     fun verify(registries: Registries, version: Version, data: Map<String, JsonObject>) {

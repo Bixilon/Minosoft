@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,10 +19,12 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.throwable.ThrowableItem
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 // TODO
-class SnowballItem(identifier: ResourceLocation = this.identifier) : Item(identifier), ThrowableItem {
+class SnowballItem(identifier: ResourceLocation = this.identifier) : Item(identifier), ThrowableItem, StackableItem {
+    override val maxStackSize get() = 16
 
     companion object : ItemFactory<SnowballItem> {
         override val identifier = minecraft("snowball")
