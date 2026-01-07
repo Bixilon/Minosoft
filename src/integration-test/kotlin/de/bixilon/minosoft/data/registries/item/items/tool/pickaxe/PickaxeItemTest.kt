@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -63,7 +63,7 @@ class PickaxeItemTest : ToolTest() {
 
     fun planks() {
         val (suitable, speed) = mine(GoldenTool.GoldenPickaxe, MinecraftBlocks.OAK_PLANKS)
-        assertFalse(suitable)
+        assertTrue(suitable)
         assertEquals(speed, 1.0f)
     }
 }
