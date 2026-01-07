@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.door
+package de.bixilon.minosoft.data.registries.blocks.types.building
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.size.DoubleSizeBlock
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
@@ -168,8 +168,8 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     companion object {
-        val HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
-        val HINGE = EnumProperty("hinge", Sides)
+        val HALF = EnumProperty("half", Halves.Companion, Halves.set(Halves.UPPER, Halves.LOWER))
+        val HINGE = EnumProperty("hinge", Sides.Companion)
         val POWERED = BlockProperties.POWERED
         val FACING = BlockProperties.FACING_HORIZONTAL
         val OPEN = BooleanProperty("open")
@@ -229,7 +229,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
 
         companion object : BlockFactory<IronDoor> {
-            override val identifier = minecraft("iron_door")
+            override val identifier = Namespaces.minecraft("iron_door")
 
             override fun build(registries: Registries, settings: BlockSettings) = IronDoor(settings = settings)
         }

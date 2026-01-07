@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,13 +20,13 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.CarpetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.Gravel
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.brick.*
 import de.bixilon.minosoft.data.registries.blocks.types.building.copper.*
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.Dirt
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.Purpur
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.Glowstone
