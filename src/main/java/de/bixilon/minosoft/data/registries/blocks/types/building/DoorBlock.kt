@@ -37,6 +37,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.size.DoubleSizeBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.size.DoubleSizeBlock.Companion.HALF
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -168,7 +169,6 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     companion object {
-        val HALF = EnumProperty("half", Halves.Companion, Halves.set(Halves.UPPER, Halves.LOWER))
         val HINGE = EnumProperty("hinge", Sides.Companion)
         val POWERED = BlockProperties.POWERED
         val FACING = BlockProperties.FACING_HORIZONTAL

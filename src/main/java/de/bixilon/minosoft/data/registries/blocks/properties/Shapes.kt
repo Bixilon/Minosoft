@@ -17,21 +17,7 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Shapes {
-    @Deprecated("stairs")
     STRAIGHT,
-
-    @Deprecated("stairs")
-    INNER_LEFT,
-
-    @Deprecated("stairs")
-    INNER_RIGHT,
-
-    @Deprecated("stairs")
-    OUTER_LEFT,
-
-    @Deprecated("stairs")
-    OUTER_RIGHT,
-
     NORTH_SOUTH,
     SOUTH_EAST,
     SOUTH_WEST,

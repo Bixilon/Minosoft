@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.enums.inline.IntInlineSet
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyList
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
@@ -31,13 +32,13 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 object FlattenedBlockStateCodec {
 
-    fun deserialize(block: Block, flags: IntInlineSet, data: JsonObject, version: Version, registries: Registries): BlockStateManager {
+    fun deserialize(block: Block, propertyList: BlockPropertyList, flags: IntInlineSet, data: JsonObject, version: Version, registries: Registries): BlockStateManager {
         val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
 
         for ((stateId, stateJson) in data["states"].asAnyMap()) {
-            val settings = BlockStateBuilder.of(block, flags, registries, stateJson.unsafeCast())
+            val settings = BlockStateBuilder.of(block, propertyList, flags, registries, stateJson.unsafeCast())
             val state = block.buildState(version, settings)
 
             states += state

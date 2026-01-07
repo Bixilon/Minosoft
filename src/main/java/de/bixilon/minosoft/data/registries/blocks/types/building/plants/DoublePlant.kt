@@ -19,7 +19,6 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
-import de.bixilon.minosoft.data.registries.blocks.properties.EnumProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.Random
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.size.DoubleSizeBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.size.DoubleSizeBlock.Companion.HALF
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -101,10 +101,6 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         override fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender? {
             return if (state.block is UpperBlock) return top else bottom
         }
-    }
-
-    companion object {
-        val HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
     }
 
     open class Sunflower(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings) {

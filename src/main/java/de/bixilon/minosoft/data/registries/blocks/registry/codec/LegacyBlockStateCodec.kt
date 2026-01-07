@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ object LegacyBlockStateCodec {
         if (statesData == null) {
             // block has only a single state
             if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
-            val settings = BlockStateBuilder.of(block, flags, registries, data)
+            val settings = BlockStateBuilder.of(block, block.properties, flags, registries, data)
             val state = block.buildState(version, settings)
             registries.blockState[id, meta] = state
 
@@ -51,7 +51,7 @@ object LegacyBlockStateCodec {
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet(statesData.size)
         for (stateJson in statesData) {
-            val settings = BlockStateBuilder.of(block, flags, registries, stateJson.unsafeCast())
+            val settings = BlockStateBuilder.of(block, block.properties, flags, registries, stateJson.unsafeCast())
             val state = block.buildState(version, settings)
 
             states += state

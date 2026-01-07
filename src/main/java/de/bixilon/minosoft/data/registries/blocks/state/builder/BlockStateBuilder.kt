@@ -118,9 +118,9 @@ class BlockStateBuilder(
             return lightProperties
         }
 
-        fun of(block: Block, flags: IntInlineSet, registries: Registries, data: JsonObject): BlockStateBuilder {
+        fun of(block: Block, properties: BlockPropertyList, flags: IntInlineSet, registries: Registries, data: JsonObject): BlockStateBuilder {
             val implemented = !(block is PixLyzerBlock || block is LegacyBlock || block is FenceBlock || block is StairsBlock) // TODO: implement missing shapes
-            val properties = data.getProperties(block.properties) ?: emptyMap()
+            val properties = data.getProperties(properties) ?: emptyMap()
             val collisionShape = if (!implemented) data.getCollisionShape(registries.shape) else null
             val outlineShape = if (!implemented) data.getOutlineShape(registries.shape) else null
 

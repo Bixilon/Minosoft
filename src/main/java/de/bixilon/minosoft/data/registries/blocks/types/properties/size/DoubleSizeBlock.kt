@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.properties.size
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.EnumProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -24,9 +24,9 @@ import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 interface DoubleSizeBlock : MultiSizeBlock {
 
 
-    fun isTop(state: BlockState, session: PlaySession) = state.properties[BlockProperties.STAIR_HALF] == Halves.UPPER
-    fun getTop(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER)
-    fun getBottom(state: BlockState, session: PlaySession): BlockState = state.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER)
+    fun isTop(state: BlockState, session: PlaySession) = state[HALF] == Halves.UPPER
+    fun getTop(state: BlockState, session: PlaySession): BlockState = state.withProperties(HALF to Halves.UPPER)
+    fun getBottom(state: BlockState, session: PlaySession): BlockState = state.withProperties(HALF to Halves.LOWER)
 
     override fun onBreak(session: PlaySession, position: BlockPosition, state: BlockState, entity: BlockEntity?) {
         val offset = if (isTop(state, session)) Directions.DOWN else Directions.UP
@@ -41,5 +41,9 @@ interface DoubleSizeBlock : MultiSizeBlock {
         val otherState = if (top) getTop(state, session) else getBottom(state, session)
 
         session.world[position + offset] = otherState
+    }
+
+    companion object {
+        val HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
     }
 }

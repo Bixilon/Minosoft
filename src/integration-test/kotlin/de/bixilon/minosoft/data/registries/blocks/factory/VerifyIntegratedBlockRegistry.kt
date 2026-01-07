@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.FenceBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
+import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FlowerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
@@ -125,6 +126,9 @@ object VerifyIntegratedBlockRegistry {
         if (block is FenceBlock) {
             flags -= BlockStateFlags.FULL_COLLISION
             flags -= BlockStateFlags.FULL_OUTLINE
+        }
+        if (block is DoublePlant) {
+            flags -= BlockStateFlags.OFFSET
         }
 
         return flags
@@ -233,7 +237,7 @@ object VerifyIntegratedBlockRegistry {
             fake.setParent(registries)
             SHAPES[fake] = registries.shape
 
-            val states = FlattenedBlockStateCodec.deserialize(parsed, BlockStateFlags.of(parsed), value, version, fake)
+            val states = FlattenedBlockStateCodec.deserialize(parsed, integrated.properties, BlockStateFlags.of(parsed), value, version, fake)
 
             Block.STATES[parsed] = states
 
