@@ -115,11 +115,11 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    abstract class WoodSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement, HandBreakable {
+    abstract class Wooden(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement, HandBreakable {
         override val hardness get() = 2.0f
     }
 
-    abstract class AbstractStoneSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), PickaxeRequirement
+    abstract class Stone(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), PickaxeRequirement
 
 
     /*

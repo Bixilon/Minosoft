@@ -45,7 +45,17 @@ interface Oak {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Oak {
+    class PetrifiedSlab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), Oak {
+        override val hardness get() = 2.0f
+
+        companion object : BlockFactory<PetrifiedSlab> {
+            override val identifier = minecraft("petrified_oak_slab")
+
+            override fun build(registries: Registries, settings: BlockSettings) = PetrifiedSlab(settings = settings)
+        }
+    }
+
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Oak {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("oak_slab")
@@ -63,7 +73,7 @@ interface Oak {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Oak, FlatteningRenamedModel {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Oak, FlatteningRenamedModel {
         override val legacyModelName get() = FLATTENING_MODEL
 
         companion object : BlockFactory<Fence> {

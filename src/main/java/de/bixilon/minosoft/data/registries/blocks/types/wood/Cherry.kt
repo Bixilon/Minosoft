@@ -43,7 +43,7 @@ interface Cherry {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Cherry {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Cherry {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("cherry_slab")
@@ -61,7 +61,7 @@ interface Cherry {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Cherry {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Cherry {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("cherry_fence")

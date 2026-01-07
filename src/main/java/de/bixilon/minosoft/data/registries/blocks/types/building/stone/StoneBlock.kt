@@ -36,7 +36,7 @@ interface StoneBlock : Stone {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), StoneBlock {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), StoneBlock {
         override val hardness get() = 2.0f
 
         companion object : BlockFactory<Slab> {

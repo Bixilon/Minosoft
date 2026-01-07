@@ -49,7 +49,7 @@ interface Spruce {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Spruce {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Spruce {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("spruce_slab")
@@ -66,7 +66,7 @@ interface Spruce {
             override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
         }
     }
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Spruce {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Spruce {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("spruce_fence")

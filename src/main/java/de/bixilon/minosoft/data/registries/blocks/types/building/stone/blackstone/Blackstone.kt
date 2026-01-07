@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,47 +11,46 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.stone
+package de.bixilon.minosoft.data.registries.blocks.types.building.stone.blackstone
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface Deepslate : Stone {
-    override val hardness get() = 3.5f
+interface Blackstone : Stone {
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Deepslate {
-        override val hardness get() = 3.0f
-
-        override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Blackstone {
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("deepslate")
+            override val identifier = minecraft("blackstone")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
         }
     }
 
-    open class Cobbled(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Deepslate {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), Blackstone {
+        override val hardness get() = 2.0f
 
-        companion object : BlockFactory<Cobbled> {
-            override val identifier = minecraft("cobbled_deepslate")
+        companion object : BlockFactory<Slab> {
+            override val identifier = minecraft("blackstone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Cobbled(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Deepslate {
+    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Stone(identifier, settings), Blackstone {
+        override val hardness get() = super<Blackstone>.hardness
 
-        companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("cobbled_deepslate_slab")
+        companion object : BlockFactory<Stairs> {
+            override val identifier = minecraft("blackstone_stairs")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }
     }
 }

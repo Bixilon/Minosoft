@@ -43,7 +43,7 @@ interface Azalea {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Azalea {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Azalea {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("azalea_slab")
@@ -61,7 +61,7 @@ interface Azalea {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Azalea {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Azalea {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("azalea_fence")

@@ -49,7 +49,7 @@ interface Birch {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Birch {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Birch {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("birch_slab")
@@ -67,7 +67,7 @@ interface Birch {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Birch {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Birch {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("birch_fence")

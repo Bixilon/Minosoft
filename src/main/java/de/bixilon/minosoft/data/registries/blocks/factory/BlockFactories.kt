@@ -44,7 +44,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.quartz.SmoothQu
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.*
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.blackstone.Blackstone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.blackstone.PolishedBlackstone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.blackstone.PolishedBlackstoneBrick
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.deepslate.*
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.sand.*
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.tuff.PolishedTuff
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.tuff.Tuff
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.tuff.TuffBrick
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.EnderChestBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
@@ -72,56 +79,66 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     SmoothStone.Block, SmoothStone.Slab,
     StoneBrick.Block, StoneBrick.Slab, StoneBrick.Stairs,
     Cobblestone.Block, Cobblestone.Slab, Cobblestone.Stairs,
+    MossyCobblestone.Block, MossyCobblestone.Slab, MossyCobblestone.Stairs,
     Granite.Block, Granite.Slab, Granite.Stairs,
     PolishedGranite.Block, PolishedGranite.Slab, PolishedGranite.Stairs,
     Diorite.Block, Diorite.Slab, Diorite.Stairs,
     PolishedDiorite.Block, PolishedDiorite.Slab, PolishedDiorite.Stairs,
     Andesite.Block, Andesite.Slab, Andesite.Stairs,
     PolishedAndesite.Block, PolishedAndesite.Slab, PolishedAndesite.Stairs,
-    Tuff.Block, Tuff.Slab,
-    Deepslate.Block, Deepslate.Cobbled, Deepslate.Slab,
+    Tuff.Block, Tuff.Slab, Tuff.Stairs,
+    TuffBrick.Block, TuffBrick.Slab, TuffBrick.Stairs,
+    PolishedTuff.Block, PolishedTuff.Slab, PolishedTuff.Stairs,
+    Deepslate.Block,
+    CobbledDeepslate.Block, CobbledDeepslate.Slab, CobbledDeepslate.Stairs,
+    PolishedDeepslate.Block, PolishedDeepslate.Slab, PolishedDeepslate.Stairs,
+    DeepslateBricks.Block, DeepslateBricks.Slab, DeepslateBricks.Stairs,
+    DeepslateTile.Block, DeepslateTile.Slab, DeepslateTile.Stairs,
+
+    Blackstone.Block, Blackstone.Slab, Blackstone.Stairs,
+    PolishedBlackstone.Block, PolishedBlackstone.Slab, PolishedBlackstone.Stairs,
+    PolishedBlackstoneBrick.Block, PolishedBlackstoneBrick.Slab, PolishedBlackstoneBrick.Stairs,
 
     Dripstone.Block,
 
     Gravel,
 
-    Sandstone.Block, Sandstone.Slab,
+    Sandstone.Block, Sandstone.Slab, Sandstone.Stairs,
     CutSandstone.Block, CutSandstone.Slab,
-    SmoothSandstone.Block, SmoothSandstone.Slab,
-    RedSandstone.Block, RedSandstone.Slab,
+    SmoothSandstone.Block, SmoothSandstone.Slab, SmoothSandstone.Stairs,
+    RedSandstone.Block, RedSandstone.Slab, RedSandstone.Stairs,
     CutRedSandstone.Block, CutRedSandstone.Slab,
-    SmoothRedSandstone.Block, SmoothRedSandstone.Slab,
+    SmoothRedSandstone.Block, SmoothRedSandstone.Slab, SmoothRedSandstone.Stairs,
 
-    QuartzBlock.Block, QuartzBlock.Slab,
-    SmoothQuartz.Block, SmoothQuartz.Slab,
+    QuartzBlock.Block, QuartzBlock.Slab, QuartzBlock.Stairs,
+    SmoothQuartz.Block, SmoothQuartz.Slab, SmoothQuartz.Stairs,
 
-    Brick.Block, Brick.Slab,
-    NetherBrick.Block, NetherBrick.Slab,
-    MudBrick.Block, MudBrick.Slab,
-    MossyStoneBrick.Block, MossyStoneBrick.Slab,
-    MossyCobblestone.Block, MossyCobblestone.Slab,
-    RedNetherBrick.Block, RedNetherBrick.Slab,
+    Brick.Block, Brick.Slab, Brick.Stairs,
+    NetherBrick.Block, NetherBrick.Slab, NetherBrick.Fence, NetherBrick.Stairs,
+    MudBrick.Block, MudBrick.Slab, MudBrick.Stairs,
+    MossyStoneBrick.Block, MossyStoneBrick.Slab, MossyStoneBrick.Stairs,
+    RedNetherBrick.Block, RedNetherBrick.Slab, RedNetherBrick.Stairs,
 
 
-    Prismarine.Block, Prismarine.Slab,
-    PrismarineBrick.Block, PrismarineBrick.Slab,
-    DarkPrismarine.Block, DarkPrismarine.Slab,
+    Prismarine.Block, Prismarine.Slab, Prismarine.Stairs,
+    PrismarineBrick.Block, PrismarineBrick.Slab, PrismarineBrick.Stairs,
+    DarkPrismarine.Block, DarkPrismarine.Slab, DarkPrismarine.Stairs,
 
-    EndStoneBrick.Block, EndStoneBrick.Slab,
-    Purpur.Block, Purpur.Slab,
+    EndStoneBrick.Block, EndStoneBrick.Slab, EndStoneBrick.Stairs,
+    Purpur.Block, Purpur.Slab, Purpur.Stairs,
 
 
     OxidizedCopper.Block, OxidizedCopper.Slab,
-    OxidizedCutCopper.Block, OxidizedCutCopper.Slab,
-    WaxedOxidizedCutCopper.Block, WaxedOxidizedCutCopper.Slab,
+    OxidizedCutCopper.Block, OxidizedCutCopper.Slab, OxidizedCutCopper.Stairs,
+    WaxedOxidizedCutCopper.Block, WaxedOxidizedCutCopper.Slab, WaxedOxidizedCutCopper.Stairs,
     WeatheredCopper.Block, WeatheredCopper.Slab,
-    WeatheredCutCopper.Block, WeatheredCutCopper.Slab,
-    WaxedWeatheredCutCopper.Block, WaxedWeatheredCutCopper.Slab,
+    WeatheredCutCopper.Block, WeatheredCutCopper.Slab, WeatheredCutCopper.Stairs,
+    WaxedWeatheredCutCopper.Block, WaxedWeatheredCutCopper.Slab, WaxedWeatheredCutCopper.Stairs,
     ExposedCopper.Block, ExposedCopper.Slab,
-    ExposedCutCopper.Block, ExposedCutCopper.Slab,
-    WaxedExposedCutCopper.Block, WaxedExposedCutCopper.Slab,
-    CutCopper.Block, CutCopper.Slab,
-    WaxedCutCopper.Block, WaxedCutCopper.Slab,
+    ExposedCutCopper.Block, ExposedCutCopper.Slab, ExposedCutCopper.Stairs,
+    WaxedExposedCutCopper.Block, WaxedExposedCutCopper.Slab, WaxedExposedCutCopper.Stairs,
+    CutCopper.Block, CutCopper.Slab, CutCopper.Stairs,
+    WaxedCutCopper.Block, WaxedCutCopper.Slab, WaxedCutCopper.Stairs,
 
     Dirt,
     GrassBlock,
@@ -141,7 +158,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     DoorBlock.IronDoor,
 
-    Oak.Leaves, Oak.Door, Oak.Slab, Oak.Planks, Oak.Fence, Oak.Stairs,
+    Oak.Leaves, Oak.Door, Oak.PetrifiedSlab, Oak.Slab, Oak.Planks, Oak.Fence, Oak.Stairs,
     Spruce.Leaves, Spruce.Door, Spruce.Slab, Spruce.Planks, Spruce.Fence, Spruce.Stairs,
     Birch.Leaves, Birch.Door, Birch.Slab, Birch.Planks, Birch.Fence, Birch.Stairs,
     Jungle.Leaves, Jungle.Door, Jungle.Slab, Jungle.Planks, Jungle.Fence, Jungle.Stairs,

@@ -11,44 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.copper
+package de.bixilon.minosoft.data.registries.blocks.types.building.stone.deepslate
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface CutCopper : Copper {
+interface Deepslate : Stone {
+    override val hardness get() = 3.5f
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), CutCopper {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Deepslate {
+        override val hardness get() = 3.0f
+
+        override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("cut_copper")
+            override val identifier = minecraft("deepslate")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
-        }
-    }
-
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), CutCopper {
-
-        companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("cut_copper_slab")
-
-            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
-        }
-    }
-
-    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Stone(identifier, settings), CutCopper {
-        override val hardness get() = super<CutCopper>.hardness
-
-        companion object : BlockFactory<Stairs> {
-            override val identifier = minecraft("cut_copper_stairs")
-
-            override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }
     }
 }

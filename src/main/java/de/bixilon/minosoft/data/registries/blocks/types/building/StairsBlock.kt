@@ -111,7 +111,7 @@ abstract class StairsBlock(identifier: ResourceLocation, settings: BlockSettings
         return shape
     }
 
-    inner class StairsRenderer(
+    private inner class StairsRenderer(
         val models: Array<BlockRender?>,
     ) : NeighbourBlockRender {
         override val default: BlockRender? get() = models[Shapes.STRAIGHT.ordinal]

@@ -28,6 +28,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.RGBArray
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -76,7 +79,7 @@ abstract class FenceBlock(identifier: ResourceLocation, settings: BlockSettings)
     }
 
 
-    class FenceRenderer(
+    private class FenceRenderer(
         val none: BlockRender?,
         val sides: Array<BlockRender?>,
     ) : NeighbourBlockRender {
@@ -98,6 +101,14 @@ abstract class FenceBlock(identifier: ResourceLocation, settings: BlockSettings)
 
             return rendered
         }
+    }
+
+    abstract class Wooden(identifier: ResourceLocation, settings: BlockSettings) : FenceBlock(identifier, settings), HandBreakable, AxeRequirement {
+        override val hardness get() = 2.0f
+    }
+
+    abstract class Stone(identifier: ResourceLocation, settings: BlockSettings) : FenceBlock(identifier, settings), PickaxeRequirement {
+        override val hardness get() = 1.5f
     }
 
 

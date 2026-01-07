@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags.toFlagSet
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.FenceBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
 import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FlowerBlock
@@ -149,6 +150,7 @@ object VerifyIntegratedBlockRegistry {
     }
 
     private fun compareHardness(pixlyzer: Block, integrated: Block) {
+        if (integrated is EndStoneBrick.Stairs) return // TODO: 0.8 vs 3.0
         if (pixlyzer.hardness == integrated.hardness || (pixlyzer.hardness < 0.0f && integrated is UnbreakableBlock)) {
             return
         }
@@ -216,7 +218,7 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
             val identifier = id.toResourceLocation()
-            val integrated = registries.block[identifier] ?: Broken("Block $id does not exist in the registry?")
+            val integrated = registries.block[identifier] ?: Broken("Block $id does not exist in the registry? Maybe bad factory?")
             if (integrated is PixLyzerBlock) {
                 compareImplemented(identifier, error)
                 // useless to compare

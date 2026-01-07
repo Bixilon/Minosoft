@@ -34,7 +34,7 @@ interface Cobblestone : Stone {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Cobblestone {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), Cobblestone {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("cobblestone_slab")

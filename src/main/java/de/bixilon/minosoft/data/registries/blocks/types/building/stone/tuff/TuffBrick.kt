@@ -11,45 +11,46 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.prismarine
+package de.bixilon.minosoft.data.registries.blocks.types.building.stone.tuff
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface Prismarine : HardnessBlock {
-    override val hardness get() = 1.5f
-    // TODO: Light up
+interface TuffBrick : Stone {
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Prismarine {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), TuffBrick {
+
+        override val flags get() = super.flags + BlockStateFlags.CAVE_SURFACE
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("prismarine")
+            override val identifier = minecraft("tuff_brick")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), Prismarine {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), TuffBrick {
 
         companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("prismarine_slab")
+            override val identifier = minecraft("tuff_brick_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }
     }
 
-    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Stone(identifier, settings), Prismarine {
-        override val hardness get() = super<Prismarine>.hardness
+    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Stone(identifier, settings), TuffBrick {
+        override val hardness get() = super<TuffBrick>.hardness
 
         companion object : BlockFactory<Stairs> {
-            override val identifier = minecraft("prismarine_stairs")
+            override val identifier = minecraft("tuff_brick_stairs")
 
             override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }

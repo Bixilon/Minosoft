@@ -43,7 +43,7 @@ interface Bamboo {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Bamboo {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Bamboo {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("bamboo_slab")
@@ -60,7 +60,7 @@ interface Bamboo {
             override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
         }
     }
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Bamboo {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Bamboo {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("bamboo_fence")

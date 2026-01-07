@@ -43,7 +43,7 @@ interface Warped {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Warped {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Warped {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("warped_slab")
@@ -61,10 +61,10 @@ interface Warped {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Warped {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Warped {
 
         companion object : BlockFactory<Fence> {
-            override val identifier = minecraft("warped#_fence")
+            override val identifier = minecraft("warped_fence")
 
             override fun build(registries: Registries, settings: BlockSettings) = Fence(settings = settings)
         }

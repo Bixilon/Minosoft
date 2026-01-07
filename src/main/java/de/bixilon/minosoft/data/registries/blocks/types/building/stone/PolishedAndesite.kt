@@ -35,7 +35,7 @@ interface PolishedAndesite : Stone {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), PolishedAndesite {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), PolishedAndesite {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("polished_andesite_slab")

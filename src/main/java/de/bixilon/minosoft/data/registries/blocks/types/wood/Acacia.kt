@@ -43,7 +43,7 @@ interface Acacia {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Acacia {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Acacia {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("acacia_slab")
@@ -61,7 +61,7 @@ interface Acacia {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Acacia {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Acacia {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("acacia_fence")

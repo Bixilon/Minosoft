@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 interface BambooMosaic {
 
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), BambooMosaic {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), BambooMosaic {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("bamboo_mosaic_slab")

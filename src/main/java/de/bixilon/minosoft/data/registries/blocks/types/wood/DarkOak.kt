@@ -43,7 +43,7 @@ interface DarkOak {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), DarkOak {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), DarkOak {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("dark_oak_slab")
@@ -61,7 +61,7 @@ interface DarkOak {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), DarkOak {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), DarkOak {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("dark_oak_fence")

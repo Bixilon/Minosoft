@@ -43,7 +43,7 @@ interface Jungle {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Jungle {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Jungle {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("jungle_slab")
@@ -61,7 +61,7 @@ interface Jungle {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Jungle {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Jungle {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("jungle_fence")

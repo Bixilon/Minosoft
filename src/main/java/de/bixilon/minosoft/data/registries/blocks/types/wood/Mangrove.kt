@@ -43,7 +43,7 @@ interface Mangrove {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Mangrove {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Wooden(identifier, settings), Mangrove {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("mangrove_slab")
@@ -61,7 +61,7 @@ interface Mangrove {
         }
     }
 
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Mangrove {
+    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock.Wooden(identifier, settings), Mangrove {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("mangrove_fence")

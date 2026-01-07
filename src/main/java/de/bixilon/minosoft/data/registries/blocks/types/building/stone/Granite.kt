@@ -36,7 +36,7 @@ interface Granite : Stone {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Granite {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), Granite {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("granite_slab")

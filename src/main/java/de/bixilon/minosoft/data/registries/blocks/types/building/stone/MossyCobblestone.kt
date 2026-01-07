@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -32,12 +33,22 @@ interface MossyCobblestone : Cobblestone {
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), MossyCobblestone {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.Stone(identifier, settings), MossyCobblestone {
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("mossy_cobblestone_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
+        }
+    }
+
+    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Stone(identifier, settings), MossyCobblestone {
+        override val hardness get() = super<MossyCobblestone>.hardness
+
+        companion object : BlockFactory<Stairs> {
+            override val identifier = minecraft("mossy_cobblestone_stairs")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }
     }
 }
