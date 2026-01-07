@@ -60,56 +60,37 @@ import de.bixilon.minosoft.util.logging.Log
 object VerifyIntegratedBlockRegistry {
     private val SHAPES = Registries::shape.field
 
-    private fun StringBuilder.appendBlock(block: Block) {
-        append("\n")
-        append(block.identifier)
-        append(": ")
-    }
-
-    private fun StringBuilder.appendState(pixlyzer: BlockState, integrated: BlockState) {
-        appendBlock(pixlyzer.block)
-        if (pixlyzer.properties.isNotEmpty()) {
-            append("p=")
-            append(pixlyzer.properties)
-            append(": ")
-        }
-        if (integrated.properties.isNotEmpty() && pixlyzer.properties != integrated.properties) {
-            append("i=")
-            append(integrated.properties)
-            append(": ")
+    private fun StringBuilder.compare(comparison: () -> Unit) {
+        try {
+            comparison.invoke()
+        } catch (error: IntegratedBlockError) {
+            this.append(error.message).appendLine()
+        } catch (error: IntegratedBlockStateError) {
+            this.append(error.message).appendLine()
         }
     }
 
-    private fun compareCollisionShape(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
+    private fun compareCollisionShape(pixlyzer: BlockState, integrated: BlockState) {
         if (integrated.block is ScaffoldingBlock || integrated.block is ShulkerBoxBlock) return
         val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(pixlyzer) else null
         val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(integrated) else null
 
-        if (expected == actual) {
-            return
-        }
-        errors.appendState(pixlyzer, integrated)
-        errors.append("collision: e=")
-        errors.append(expected)
-        errors.append(", a=")
-        errors.append(actual)
+        if (expected == actual) return
+
+        throw IntegratedBlockStateError(pixlyzer, "collision", expected, actual)
     }
 
-    private fun compareOutlineShape(session: PlaySession, pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
+    private fun compareOutlineShape(session: PlaySession, pixlyzer: BlockState, integrated: BlockState) {
         if (integrated.block is ScaffoldingBlock) return
         if (integrated.block is OffsetBlock) return // Don't compare, pixlyzer is probably wrong
 
         val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, BlockPosition.EMPTY, pixlyzer) else null
         val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(session, BlockPosition.EMPTY, pixlyzer) else null
 
-        if (expected == actual) {
-            return
-        }
-        errors.appendState(pixlyzer, integrated)
-        errors.append("outline: e=")
-        errors.append(expected)
-        errors.append(", a=")
-        errors.append(actual)
+
+        if (expected == actual) return
+
+        throw IntegratedBlockStateError(pixlyzer, "outline", expected, actual)
     }
 
     private fun IntInlineSet.fixed(block: Block): IntInlineSet {
@@ -148,19 +129,15 @@ object VerifyIntegratedBlockRegistry {
         return flags
     }
 
-    private fun compareFlags(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
+    private fun compareFlags(pixlyzer: BlockState, integrated: BlockState) {
         val fixedIntegrated = integrated.flags.fixed(integrated.block)
         val pixlyzerFixed = pixlyzer.flags.fixed(integrated.block)
         if (fixedIntegrated == pixlyzerFixed) return
 
-        errors.appendState(pixlyzer, integrated)
-        errors.append("flags: p=")
-        errors.append(pixlyzerFixed.toFlagSet())
-        errors.append(", i=")
-        errors.append(fixedIntegrated.toFlagSet())
+        throw IntegratedBlockStateError(pixlyzer, "flags", pixlyzerFixed.toFlagSet(), fixedIntegrated.toFlagSet())
     }
 
-    private fun compareLightProperties(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
+    private fun compareLightProperties(pixlyzer: BlockState, integrated: BlockState) {
         if (integrated.block is ShulkerBoxBlock || integrated.block is WoodenChestBlock<*> || integrated.block is SlimeBlock || BlockStateFlags.WATERLOGGED in integrated.flags || integrated.block is FenceBlock) return
 
         val lightPixlyzer = pixlyzer.block.getLightProperties(pixlyzer)
@@ -168,26 +145,17 @@ object VerifyIntegratedBlockRegistry {
 
         if (lightPixlyzer == lightIntegrated) return
 
-        errors.appendState(pixlyzer, integrated)
-        errors.append("light: p=")
-        errors.append(lightPixlyzer)
-        errors.append(", i=")
-        errors.append(lightIntegrated)
+        throw IntegratedBlockStateError(pixlyzer, "flags", lightPixlyzer, lightIntegrated)
     }
 
-    private fun compareHardness(pixlyzer: Block, integrated: Block, errors: StringBuilder) {
+    private fun compareHardness(pixlyzer: Block, integrated: Block) {
         if (pixlyzer.hardness == integrated.hardness || (pixlyzer.hardness < 0.0f && integrated is UnbreakableBlock)) {
             return
         }
-
-        errors.appendBlock(pixlyzer)
-        errors.append("hardness: e=")
-        errors.append(pixlyzer.hardness)
-        errors.append(", a=")
-        errors.append(integrated.hardness)
+        throw IntegratedBlockError(pixlyzer.identifier, "hardness", pixlyzer.hardness, integrated.hardness)
     }
 
-    private fun compareItem(pixlyzer: Block, integrated: Block, errors: StringBuilder) {
+    private fun compareItem(pixlyzer: Block, integrated: Block) {
         if (integrated is PowderSnowBlock) return
 
         val item = pixlyzer.nullCast<BlockWithItem<*>>()?.item
@@ -196,33 +164,25 @@ object VerifyIntegratedBlockRegistry {
             return
         }
 
-        errors.appendBlock(pixlyzer)
-        errors.append("item: e=")
-        errors.append(item)
-        errors.append(", a=")
-        errors.append(integratedItem)
+        throw IntegratedBlockError(pixlyzer.identifier, "item", item, integratedItem)
     }
 
 
-    private fun compareToolRequirement(pixlyzer: Block, integrated: Block, errors: StringBuilder) {
+    private fun compareToolRequirement(pixlyzer: Block, integrated: Block) {
         if (integrated is Bedrock) return
         val requiresTool = (integrated is ToolRequirement && integrated !is HandBreakable)
         if (pixlyzer !is PixLyzerBlock) return
 
         if (pixlyzer.requiresTool == requiresTool) return
 
-        errors.appendBlock(pixlyzer)
-        errors.append("requiresTool: e=")
-        errors.append(pixlyzer.requiresTool)
-        errors.append(", a=")
-        errors.append(requiresTool)
+        throw IntegratedBlockError(pixlyzer.identifier, "requires_tool", pixlyzer.requiresTool, requiresTool)
     }
 
     private fun compare(session: PlaySession, pixlyzer: PixLyzerBlock, integrated: Block, errors: StringBuilder) {
-        compareHardness(pixlyzer, integrated, errors)
-        compareItem(pixlyzer, integrated, errors)
+        errors.compare { compareHardness(pixlyzer, integrated) }
+        errors.compare { compareItem(pixlyzer, integrated) }
         if (session.version.versionId != V_1_19_4) {
-            compareToolRequirement(pixlyzer, integrated, errors)
+            errors.compare { compareToolRequirement(pixlyzer, integrated) }
         }
         for (state in pixlyzer.states) {
             val integratedState = try {
@@ -231,10 +191,10 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
 
-            compareCollisionShape(state, integratedState, errors)
-            compareOutlineShape(session, state, integratedState, errors)
-            compareFlags(state, integratedState, errors)
-            compareLightProperties(state, integratedState, errors)
+            errors.compare { compareCollisionShape(state, integratedState) }
+            errors.compare { compareOutlineShape(session, state, integratedState) }
+            errors.compare { compareFlags(state, integratedState) }
+            errors.compare { compareLightProperties(state, integratedState) }
         }
     }
 

@@ -27,28 +27,36 @@ import de.bixilon.minosoft.util.logging.Log
 
 object VerifyIntegratedItemRegistry {
 
-    private fun compareDurability(pixlyzer: PixLyzerItem, integrated: Item, errors: StringBuilder) {
+    private fun StringBuilder.compare(comparison: () -> Unit) {
+        try {
+            comparison.invoke()
+        } catch (error: IntegratedItemError) {
+            this.append(error.message).appendLine()
+        }
+    }
+
+    private fun compareDurability(pixlyzer: PixLyzerItem, integrated: Item) {
         if (pixlyzer.maxDurability > 0 != integrated is DurableItem) {
-            errors.append("Durability ability: ${pixlyzer.identifier}")
-            return
+            throw IntegratedItemError(pixlyzer.identifier, "durability_ability", pixlyzer.maxDurability > 0, integrated is DurableItem)
         }
         if (pixlyzer.maxDurability == 0) return
         integrated as DurableItem
-        if (pixlyzer.maxDurability != integrated.maxDurability) {
-            errors.append("Durability mismatch: ${pixlyzer.identifier}. e=${pixlyzer.maxDurability}, a=${integrated.maxDurability}\n")
-        }
+        if (pixlyzer.maxDurability == integrated.maxDurability) return
+
+        throw IntegratedItemError(pixlyzer.identifier, "max_durability", pixlyzer.maxDurability, integrated.maxDurability)
     }
 
     private fun compareStackSize(pixlyzer: PixLyzerItem, integrated: Item, errors: StringBuilder) {
         val max = if (integrated is StackableItem) integrated.maxStackSize else 1
         if (max == pixlyzer.maxStackSize) return
-        errors.append("Max stack size: ${pixlyzer.identifier}. e=${pixlyzer.maxStackSize}, a=${max}\n")
+
+        throw IntegratedItemError(pixlyzer.identifier, "max_stack_size", pixlyzer.maxStackSize, max)
     }
 
 
     private fun compare(pixlyzer: PixLyzerItem, integrated: Item, errors: StringBuilder) {
-        compareDurability(pixlyzer, integrated, errors)
-        compareStackSize(pixlyzer, integrated, errors)
+        errors.compare { compareDurability(pixlyzer, integrated) }
+        errors.compare { compareStackSize(pixlyzer, integrated, errors) }
     }
 
     fun verify(registries: Registries, version: Version, data: Map<String, JsonObject>) {
