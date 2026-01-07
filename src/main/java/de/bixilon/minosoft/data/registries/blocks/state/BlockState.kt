@@ -50,8 +50,10 @@ class BlockState(
         // if (BlockStateFlags.FULL_COLLISION !in flags && BlockStateFlags.COLLISIONS in flags && block is CollidableBlock && block.getCollisionShape(this) == null) flags -= BlockStateFlags.COLLISIONS
         // if (BlockStateFlags.FULL_OUTLINE !in flags && BlockStateFlags.OUTLINE in flags && block is OutlinedBlock && block.getOutlineShape(this) == null) flags -= BlockStateFlags.OUTLINE
 
-        if (BlockStateFlags.COLLISIONS in flags && BlockStateFlags.FULL_COLLISION !in flags && block is CollidableBlock && block.getCollisionShape(this) == AABB.BLOCK) flags += BlockStateFlags.FULL_COLLISION
-        if (BlockStateFlags.OUTLINE in flags && BlockStateFlags.FULL_OUTLINE !in flags && block is OutlinedBlock && block.getOutlineShape(this) == AABB.BLOCK) flags += BlockStateFlags.FULL_OUTLINE
+        if (BlockStateFlags.OFFSET !in flags) {
+            if (BlockStateFlags.COLLISIONS in flags && BlockStateFlags.FULL_COLLISION !in flags && block is CollidableBlock && block.getCollisionShape(this) == AABB.BLOCK) flags += BlockStateFlags.FULL_COLLISION
+            if (BlockStateFlags.OUTLINE in flags && BlockStateFlags.FULL_OUTLINE !in flags && block is OutlinedBlock && block.getOutlineShape(this) == AABB.BLOCK) flags += BlockStateFlags.FULL_OUTLINE
+        }
 
         if (block is PixLyzerBlock) {
             if (block.getCollisionShape(this) == null) {

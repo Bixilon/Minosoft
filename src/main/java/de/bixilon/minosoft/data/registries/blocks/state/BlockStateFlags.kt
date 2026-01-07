@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -70,13 +70,13 @@ object BlockStateFlags {
 
         if (block is CollidableBlock) {
             flags += COLLISIONS
-            if (block.collisionShape == AABB.BLOCK) {
+            if (block.collisionShape == AABB.BLOCK && OFFSET !in flags) {
                 flags += FULL_COLLISION
             }
         }
         if (block is OutlinedBlock) {
             flags += OUTLINE
-            if (block.outlineShape == AABB.BLOCK) {
+            if (block.outlineShape == AABB.BLOCK && OFFSET !in flags) {
                 flags += FULL_OUTLINE
             }
         }
