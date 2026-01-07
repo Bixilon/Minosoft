@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,12 +23,15 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3fUtil
 
 enum class Directions(
     val axis: Axes,
     val index: SVec3i,
-) : _Vec3i {
+) : _Vec3i, TextFormattable {
     DOWN(Axes.Y, SVec3i(1, -1, 1)),  // y-
     UP(Axes.Y, SVec3i(3, -1, 3)),    // y+
     NORTH(Axes.Z, SVec3i(0, 0, -1)), // z-
@@ -58,6 +61,8 @@ enum class Directions(
             Directions[ordinal - 1]
         }
     }
+
+    override fun toText() = TextComponent(name.lowercase()).color(ChatColors.YELLOW)
 
     operator fun get(axis: Axes): Int {
         return vector[axis]

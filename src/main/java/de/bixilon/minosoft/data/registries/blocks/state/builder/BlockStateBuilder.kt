@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockStateFlags
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.FenceBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
@@ -118,7 +119,7 @@ class BlockStateBuilder(
         }
 
         fun of(block: Block, flags: IntInlineSet, registries: Registries, data: JsonObject): BlockStateBuilder {
-            val implemented = !(block is PixLyzerBlock || block is LegacyBlock || block is FenceBlock)
+            val implemented = !(block is PixLyzerBlock || block is LegacyBlock || block is FenceBlock || block is StairsBlock) // TODO: implement missing shapes
             val properties = data.getProperties(block.properties) ?: emptyMap()
             val collisionShape = if (!implemented) data.getCollisionShape(registries.shape) else null
             val outlineShape = if (!implemented) data.getOutlineShape(registries.shape) else null

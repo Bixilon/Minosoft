@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,21 +55,23 @@ abstract class BlockTest<T : Block> {
         setup()
     }
 
-    fun BlockState.testLightProperties(
-        luminance: Int,
-        propagatesLight: Boolean,
-        skylightEnters: Boolean,
-        filtersSkylight: Boolean,
-        propagates: BooleanArray,
-    ) {
-        assertEquals(this.luminance, luminance)
-        val light = this.block.getLightProperties(this)
-        assertEquals(light.propagatesLight, propagatesLight, "Mismatching: propagates")
-        assertEquals(light.skylightEnters, skylightEnters, "Mismatching: enters")
-        assertEquals(light.filtersSkylight, filtersSkylight, "Mismatching: filters")
+    companion object {
+        fun BlockState.testLightProperties(
+            luminance: Int,
+            propagatesLight: Boolean,
+            skylightEnters: Boolean,
+            filtersSkylight: Boolean,
+            propagates: BooleanArray,
+        ) {
+            assertEquals(this.luminance, luminance)
+            val light = this.block.getLightProperties(this)
+            assertEquals(light.propagatesLight, propagatesLight, "Mismatching: propagates")
+            assertEquals(light.skylightEnters, skylightEnters, "Mismatching: enters")
+            assertEquals(light.filtersSkylight, filtersSkylight, "Mismatching: filters")
 
-        for (direction in Directions.VALUES) {
-            assertEquals(light.propagatesLight(direction), propagates[direction.ordinal], "$direction failed")
+            for (direction in Directions.VALUES) {
+                assertEquals(light.propagatesLight(direction), propagates[direction.ordinal], "$direction failed")
+            }
         }
     }
 }

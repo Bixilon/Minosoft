@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,13 @@
 
 package de.bixilon.minosoft.data.world.chunk.light.place
 
-import de.bixilon.minosoft.data.registries.blocks.*
+import de.bixilon.minosoft.data.registries.blocks.GlassTest0
+import de.bixilon.minosoft.data.registries.blocks.LeavesTest0
+import de.bixilon.minosoft.data.registries.blocks.SlimeTest0
+import de.bixilon.minosoft.data.registries.blocks.WaterTest0
 import de.bixilon.minosoft.data.registries.blocks.state.TestBlockStates
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebTest0
+import de.bixilon.minosoft.data.registries.blocks.types.wood.Oak
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -63,8 +67,8 @@ class HeightmapPlaceTest {
 
     fun testHeightmapStairs() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[InChunkPosition(0, 0, 0)] = StairsTest0.state
-        chunk[InChunkPosition(0, 1, 0)] = StairsTest0.state
+        chunk[InChunkPosition(0, 0, 0)] = IT.REGISTRIES.block[Oak.Stairs]!!.states.default
+        chunk[InChunkPosition(0, 1, 0)] = IT.REGISTRIES.block[Oak.Stairs]!!.states.default
         assertEquals(chunk.light.heightmap[0, 0], 1)
     }
 

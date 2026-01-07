@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,11 +17,21 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Shapes {
+    @Deprecated("stairs")
     STRAIGHT,
+
+    @Deprecated("stairs")
     INNER_LEFT,
+
+    @Deprecated("stairs")
     INNER_RIGHT,
+
+    @Deprecated("stairs")
     OUTER_LEFT,
+
+    @Deprecated("stairs")
     OUTER_RIGHT,
+
     NORTH_SOUTH,
     SOUTH_EAST,
     SOUTH_WEST,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
-import de.bixilon.minosoft.data.registries.blocks.StairsTest0
+import de.bixilon.minosoft.data.registries.blocks.types.wood.Oak
 import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
@@ -55,7 +55,7 @@ class GeneralHeightmapTest {
 
     fun `top of the world and entering`() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[InChunkPosition(2, 255, 3)] = StairsTest0.state
+        chunk[InChunkPosition(2, 255, 3)] = IT.REGISTRIES.block[Oak.Stairs]!!.states.default
         assertEquals(chunk.light.heightmap[2, 3], 255)
     }
 

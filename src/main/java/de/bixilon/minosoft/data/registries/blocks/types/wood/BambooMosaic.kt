@@ -15,32 +15,15 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.types.building.DoorBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.FenceBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
+// TODO: They
 interface BambooMosaic {
 
-    class Leaves(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : LeavesBlock(identifier, settings), BambooMosaic {
-
-        companion object : BlockFactory<Leaves> {
-            override val identifier = minecraft("bamboo_mosaic_leaves")
-
-            override fun build(registries: Registries, settings: BlockSettings) = Leaves(settings = settings)
-        }
-    }
-
-    class Door(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : DoorBlock.WoodenDoor(identifier, settings), BambooMosaic {
-
-        companion object : BlockFactory<Door> {
-            override val identifier = minecraft("bamboo_mosaic_door")
-
-            override fun build(registries: Registries, settings: BlockSettings) = Door(settings = settings)
-        }
-    }
 
     class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), BambooMosaic {
 
@@ -51,20 +34,21 @@ interface BambooMosaic {
         }
     }
 
-    class Planks(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : PlanksBlock(identifier, settings), BambooMosaic {
+    class Wood(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : PlanksBlock(identifier, settings), BambooMosaic {
 
-        companion object : BlockFactory<Planks> {
-            override val identifier = minecraft("bamboo_mosaic_planks")
+        companion object : BlockFactory<Wood> {
+            override val identifier = minecraft("bamboo_mosaic")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Wood(settings = settings)
         }
     }
-    class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), BambooMosaic {
 
-        companion object : BlockFactory<Fence> {
-            override val identifier = minecraft("bamboo_mosaic_fence")
+    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Wooden(identifier, settings), BambooMosaic {
 
-            override fun build(registries: Registries, settings: BlockSettings) = Fence(settings = settings)
+        companion object : BlockFactory<Stairs> {
+            override val identifier = minecraft("bamboo_mosaic_stairs")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }
     }
 }

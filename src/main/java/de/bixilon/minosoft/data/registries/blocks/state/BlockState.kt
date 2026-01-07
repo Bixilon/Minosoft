@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.state
 import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.inline.IntInlineSet
-import de.bixilon.kutil.enums.inline.enums.IntInlineEnumSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
@@ -132,7 +131,7 @@ class BlockState(
     }
 
 
-    fun withProperties(): BaseComponent {
+    fun toTextProperties(): BaseComponent {
         val component = BaseComponent()
         var first = true
         for ((property, value) in properties) {

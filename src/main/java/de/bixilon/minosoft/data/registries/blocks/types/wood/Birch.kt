@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.FenceBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -65,12 +66,22 @@ interface Birch {
             override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
         }
     }
+
     class Fence(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FenceBlock(identifier, settings), Birch {
 
         companion object : BlockFactory<Fence> {
             override val identifier = minecraft("birch_fence")
 
             override fun build(registries: Registries, settings: BlockSettings) = Fence(settings = settings)
+        }
+    }
+
+    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Wooden(identifier, settings), Birch {
+
+        companion object : BlockFactory<Stairs> {
+            override val identifier = minecraft("birch_stairs")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }
     }
 }

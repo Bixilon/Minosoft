@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.kmath.vec.vec3.i
 
 import de.bixilon.kmath.vec.Vec
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.KUtil.format
 
 interface _Vec3i : Vec {
@@ -28,5 +29,5 @@ interface _Vec3i : Vec {
     operator fun component3() = z
 
     fun toArray() = intArrayOf(x, y, z)
-    override fun toText() = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
+    override fun toText(): ChatComponent = BaseComponent("(", x.format(), " ", y.format(), " ", z.format(), ")")
 }

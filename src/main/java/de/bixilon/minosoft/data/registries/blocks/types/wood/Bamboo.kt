@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.FenceBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.StairsBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -54,7 +55,7 @@ interface Bamboo {
     class Planks(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : PlanksBlock(identifier, settings), Bamboo {
 
         companion object : BlockFactory<Planks> {
-            override val identifier = minecraft("bamboo_planks") // TODO: do the exist?
+            override val identifier = minecraft("bamboo_planks")
 
             override fun build(registries: Registries, settings: BlockSettings) = Planks(settings = settings)
         }
@@ -65,6 +66,15 @@ interface Bamboo {
             override val identifier = minecraft("bamboo_fence")
 
             override fun build(registries: Registries, settings: BlockSettings) = Fence(settings = settings)
+        }
+    }
+
+    class Stairs(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : StairsBlock.Wooden(identifier, settings), Bamboo {
+
+        companion object : BlockFactory<Stairs> {
+            override val identifier = minecraft("bamboo_stairs")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Stairs(settings = settings)
         }
     }
 }

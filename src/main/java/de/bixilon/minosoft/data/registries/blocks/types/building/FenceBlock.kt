@@ -60,7 +60,7 @@ abstract class FenceBlock(identifier: ResourceLocation, settings: BlockSettings)
     override fun buildState(version: Version, settings: BlockStateBuilder): BlockState {
         if (version.flattened) return super<Block>.buildState(version, settings)
 
-        return settings.build(this, collisionShape = AABB.BLOCK, outlineShape = AABB.BLOCK) // TODO: outline/collision shape (also remove in FlattenedBlockStateCodec)
+        return settings.build(this, collisionShape = AABB.BLOCK, outlineShape = AABB.BLOCK) // TODO: outline/collision shape (also remove in BlockStateBuilder)
     }
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
