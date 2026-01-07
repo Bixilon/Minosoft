@@ -44,6 +44,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.HandBreakable
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -237,6 +238,13 @@ object VerifyIntegratedBlockRegistry {
         }
     }
 
+    private fun compareImplemented(identifier: ResourceLocation, errors: StringBuilder) {
+        if (identifier.path.endsWith("_fence")) errors.append("Fence not implemented: $identifier\n")
+        if (identifier.path.endsWith("_stairs")) errors.append("Stairs not implemented: $identifier\n")
+        if (identifier.path.endsWith("_slab")) errors.append("Slab not implemented: $identifier\n")
+        if (identifier.path.endsWith("_leaves")) errors.append("Leaves not implemented: $identifier\n")
+    }
+
     fun verify(registries: Registries, version: Version, data: Map<String, JsonObject>) {
         val error = StringBuilder()
 
@@ -250,6 +258,7 @@ object VerifyIntegratedBlockRegistry {
             val identifier = id.toResourceLocation()
             val integrated = registries.block[identifier] ?: Broken("Block $id does not exist in the registry?")
             if (integrated is PixLyzerBlock) {
+                compareImplemented(identifier, error)
                 // useless to compare
                 continue
             }
