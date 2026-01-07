@@ -29,15 +29,16 @@ abstract class SimpleOverlay(
     protected abstract val texture: Texture
     protected open val shader = context.shaders.genericTexture2dShader
     private var mesh: Mesh? = null
-    protected var color: RGBAColor? = null
-    protected open var uvStart = Vec2f(0.0f, 0.0f)
-    protected open var uvEnd = Vec2f(1.0f, 1.0f)
+    protected open val color: RGBAColor get() = ChatColors.WHITE
+    protected open val uvStart get() = Vec2f.EMPTY
+    protected open val uvEnd get() = Vec2f.ONE
+    protected var invalid = true
 
 
-    protected fun updateMesh(): Mesh {
+    protected open fun createMesh(): Mesh {
         val mesh = SimpleTextureMeshBuilder(context)
 
-        val color = color ?: ChatColors.WHITE
+        val color = color
 
         mesh.addVertex(-1.0f, -1.0f, OVERLAY_Z, texture, Vec2f(uvStart.x, uvEnd.y), color)
         mesh.addVertex(-1.0f, +1.0f, OVERLAY_Z, texture, Vec2f(uvStart.x, uvStart.y), color)
@@ -45,13 +46,20 @@ abstract class SimpleOverlay(
         mesh.addVertex(+1.0f, -1.0f, OVERLAY_Z, texture, Vec2f(uvEnd.x, uvEnd.y), color)
         mesh.addIndexQuad()
 
-        return mesh.bake().apply { load() }
+        return mesh.bake()
+    }
+
+    private fun updateMesh() {
+        if (this.mesh == null || invalid) {
+            mesh?.unload()
+        }
+        this.mesh = createMesh()
+        this.invalid = false
     }
 
     override fun draw() {
-        mesh?.unload()
-        val mesh = updateMesh() // ToDo: Don't update every time
-        this.mesh = mesh
+        updateMesh()
+        val mesh = this.mesh ?: return
 
         shader.use()
         mesh.draw()

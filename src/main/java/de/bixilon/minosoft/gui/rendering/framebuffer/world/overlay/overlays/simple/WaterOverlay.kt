@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,11 +27,16 @@ class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
     override val texture: Texture = context.textures.static.create(TEXTURE)
     override val render: Boolean
         get() = player.gamemode != Gamemodes.SPECTATOR && player.physics.submersion.eye is WaterFluid
+    override var color: RGBAColor = super.color
 
     override fun draw() {
         // TODO: make brightness depend on ambient light (e.g. rain gradient, thunder gradient, time, ...)
         val brightness = context.session.world.getBrightness(context.session.player.physics.positionInfo.position) * 0.5f
-        color = RGBAColor(brightness, brightness, brightness, 0.1f)
+        val color = RGBAColor(brightness, brightness, brightness, 0.1f)
+        if (this.color != color) {
+            this.color = color
+            invalid = true
+        }
 
         // ToDo: Minecraft sets the uv coordinates according to the yaw and pitch (see InGameOverlayRenderer::renderUnderwaterOverlay)
 

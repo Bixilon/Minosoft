@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.sim
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -50,28 +51,28 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
             }
             return true
         }
-    override var uvEnd: Vec2f
-        get() = Vec2f(0.3f, context.window.size.x.toFloat() / context.window.size.y.toFloat() / 3.0f) // To make pixels squares and make it look more like minecraft
-        set(value) {}
+    override val color get() = TINT
+    override val uvEnd get() = Vec2f(0.3f, context.window.size.x.toFloat() / context.window.size.y.toFloat() / 3.0f) // To make pixels squares and make it look more like minecraft
     private val random = Random()
+
+    override fun init() {
+        context.window::size.observe(this) { invalid = true }
+    }
 
     override fun update() {
         position = player.renderInfo.eyePosition.blockPosition
-        blockState = context.session.world[position]
-    }
-
-
-    override fun draw() {
+        val blockState = context.session.world[position]
+        if (this.blockState == blockState) return
+        this.blockState = blockState
         random.setSeed(position.hash)
         texture = blockState?.model?.getParticleTexture(random, position) ?: return
 
-        color = RGBAColor(0.1f, 0.1f, 0.1f, 1.0f)
-
-        super.draw()
+        invalid = true
     }
 
 
     companion object : OverlayFactory<WallOverlay> {
+        val TINT = RGBAColor(0.1f, 0.1f, 0.1f, 1.0f)
 
         override fun build(context: RenderContext): WallOverlay {
             return WallOverlay(context)

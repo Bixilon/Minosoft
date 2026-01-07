@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,6 +28,7 @@ class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val strength = FloatAverage(1.seconds, 0.0f)
     override var render: Boolean = false
         get() = config.powderSnow && field
+    override var color = super.color
 
     override fun update() {
         val ticksFrozen = context.session.player.ticksFrozen
@@ -41,7 +42,10 @@ class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
             return
         }
         this.render = true
-        color = RGBAColor(1.0f, 1.0f, 1.0f, avg)
+        val color = RGBAColor(1.0f, 1.0f, 1.0f, avg)
+        if (this.color == color) return
+        this.color = color
+        invalid = true
     }
 
 

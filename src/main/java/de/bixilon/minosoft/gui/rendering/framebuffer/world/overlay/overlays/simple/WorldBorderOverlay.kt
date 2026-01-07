@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,13 +26,14 @@ class WorldBorderOverlay(context: RenderContext) : SimpleOverlay(context) {
     override val render: Boolean
         get() = config.worldBorder && context.session.world.border.isOutside(context.session.player.physics.position)
 
-    override fun update() {
-        color = RGBAColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
-    }
+    override val color get() = TINT
+
 
 
     companion object : OverlayFactory<WorldBorderOverlay> {
         private val OVERLAY_TEXTURE = "misc/vignette".toResourceLocation().texture()
+
+        val TINT = RGBAColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
 
         override fun build(context: RenderContext): WorldBorderOverlay {
             return WorldBorderOverlay(context)

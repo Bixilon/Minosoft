@@ -48,11 +48,9 @@ class FireOverlay(
             }
             return player.isOnFire
         }
-    private lateinit var mesh: Mesh
-    private val tintColor = RGBAColor(1.0f, 1.0f, 1.0f, 0.9f)
+    private val mesh by lazy { createMesh() }
 
-
-    private fun updateMesh() {
+    private fun createMesh(): Mesh {
         val mesh = SimpleTextureMeshBuilder(context)
 
         // ToDo: Minecraft does this completely different...#
@@ -61,27 +59,24 @@ class FireOverlay(
             Vec3f(+0.0f, -2.4f, OVERLAY_Z),
             Vec3f(-2.0f, -2.4f, OVERLAY_Z),
             Vec3f(-2.0f, +0.4f, OVERLAY_Z),
-        )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
+        )) { position, uv -> mesh.addVertex(position, texture, uv, TINT) }
 
         mesh.addQuad(arrayOf(
             Vec3f(+2.0f, +0.4f, OVERLAY_Z),
             Vec3f(+2.0f, -2.4f, OVERLAY_Z),
             Vec3f(-0.0f, -2.4f, OVERLAY_Z),
             Vec3f(-0.0f, +0.4f, OVERLAY_Z),
-        )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
+        )) { position, uv -> mesh.addVertex(position, texture, uv, TINT) }
 
-        this.mesh = mesh.bake()
-        this.mesh.load()
+        return mesh.bake()
     }
 
     override fun postInit() {
-        updateMesh()
+        this.mesh.load()
     }
 
 
     override fun draw() {
-        mesh.unload()
-        updateMesh()
         context.system.reset(blending = true, depthTest = false)
         shader.use()
         mesh.draw()
@@ -91,6 +86,8 @@ class FireOverlay(
     companion object : OverlayFactory<FireOverlay> {
         private val TEXTURE = minecraft("block/fire_1").texture()
         private val LEGACY_TEXTURE = minecraft("blocks/fire_layer_1").texture()
+
+        val TINT = RGBAColor(1.0f, 1.0f, 1.0f, 0.9f)
 
         override fun build(context: RenderContext): FireOverlay {
             return FireOverlay(context)
