@@ -31,6 +31,7 @@ import org.testng.annotations.Test
 class StairsBlockTest {
     private val block by lazy { IT.REGISTRIES_LEGACY.block[Oak.Stairs] ?: throw SkipException("") }
     private val state by lazy { block.states.default }
+    private val stateModern by lazy { IT.REGISTRIES.block[Oak.Stairs]!!.states.default }
     private val getShape by lazy { StairsBlock::class.java.getDeclaredMethod("getShape", BlockState::class.java, Array<BlockState?>::class.java).apply { setUnsafeAccessible() } }
 
     fun BlockState.getShape(neighbours: Array<BlockState?>): StairsBlock.Shapes {
@@ -108,18 +109,18 @@ class StairsBlockTest {
 
 
     fun `light properties north`() {
-        state.withProperties(FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))
+        stateModern.withProperties(FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))
     }
 
     fun `light properties south`() {
-        state.withProperties(FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
+        stateModern.withProperties(FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
     }
 
     fun `light properties west`() {
-        state.withProperties(FACING to Directions.WEST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, false, true))
+        stateModern.withProperties(FACING to Directions.WEST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, false, true))
     }
 
     fun `light properties east`() {
-        state.withProperties(FACING to Directions.EAST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, true, false))
+        stateModern.withProperties(FACING to Directions.EAST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, true, false))
     }
 }
