@@ -110,6 +110,8 @@ object ChunkMeshDetails {
     }
 
     fun update(previous: IntInlineSet, position: SectionPosition, camera: SectionPosition): IntInlineSet {
+        return previous // TODO: This disables LOD completely
+
         var details = previous
         val delta = position - camera
 
