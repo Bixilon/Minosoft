@@ -214,6 +214,73 @@ minosoft:menu.options.broadcast=Broadcast Settings...
 minosoft:menu.options.video=Video Settings...
 minosoft:menu.options.controls=Controls...
 minosoft:menu.options.language=Language...
+
+### Controls Settings
+
+minosoft:key.title=Controls
+minosoft:key.reset_all=Reset All
+minosoft:key.mouse_sensitivity=Mouse Sensitivity
+
+# Category Headers
+minosoft:key.category.movement=Movement
+minosoft:key.category.gameplay=Gameplay
+minosoft:key.category.hotbar=Inventory
+minosoft:key.category.camera=Camera
+minosoft:key.category.miscellaneous=Miscellaneous
+minosoft:key.category.debug=Debug
+
+# Movement
+minosoft:key.move_forward=Move Forward
+minosoft:key.move_backwards=Move Backwards
+minosoft:key.move_left=Strafe Left
+minosoft:key.move_right=Strafe Right
+minosoft:key.move_jump=Jump
+minosoft:key.move_sneak=Sneak
+minosoft:key.move_sprint=Sprint
+
+# Gameplay
+minosoft:key.attack=Attack/Destroy
+minosoft:key.use_item=Use Item/Place Block
+minosoft:key.pick_item=Pick Block
+minosoft:key.drop_item=Drop Item
+minosoft:key.swap_items=Swap Item in Hands
+minosoft:key.local_inventory=Open/Close Inventory
+minosoft:key.stop_spectating=Stop Spectating
+
+# Hotbar
+minosoft:key.hotbar_slot_1=Hotbar Slot 1
+minosoft:key.hotbar_slot_2=Hotbar Slot 2
+minosoft:key.hotbar_slot_3=Hotbar Slot 3
+minosoft:key.hotbar_slot_4=Hotbar Slot 4
+minosoft:key.hotbar_slot_5=Hotbar Slot 5
+minosoft:key.hotbar_slot_6=Hotbar Slot 6
+minosoft:key.hotbar_slot_7=Hotbar Slot 7
+minosoft:key.hotbar_slot_8=Hotbar Slot 8
+minosoft:key.hotbar_slot_9=Hotbar Slot 9
+
+# Camera
+minosoft:key.zoom=Zoom
+minosoft:key.camera_third_person=Toggle Third Person
+
+# Misc
+minosoft:key.take_screenshot=Take Screenshot
+minosoft:key.toggle_fullscreen=Toggle Fullscreen
+minosoft:key.open_chat=Open Chat
+minosoft:key.open_command=Open Command
+minosoft:key.enable_hud=Toggle HUD
+
+# Debug
+minosoft:key.debug_polygon=Toggle Polygon Mode
+minosoft:key.cursor_mode=Toggle Cursor Mode
+minosoft:key.pause_incoming=Pause Incoming Packets
+minosoft:key.pause_outgoing=Pause Outgoing Packets
+minosoft:key.camera_debug_view=Toggle Debug Camera
+minosoft:key.toggle_hitboxes=Toggle Hitboxes
+minosoft:key.chunk_border=Toggle Chunk Borders
+minosoft:key.clear_chunk_cache=Clear Chunk Cache
+minosoft:key.recalculate_light=Recalculate Light
+minosoft:key.fullbright=Toggle Fullbright
+minosoft:key.switch_fun_effects=Switch Fun Effects
 minosoft:menu.options.chat=Chat Settings...
 minosoft:menu.options.resource_packs=Resource Packs...
 minosoft:menu.options.snooper=Snooper Settings...

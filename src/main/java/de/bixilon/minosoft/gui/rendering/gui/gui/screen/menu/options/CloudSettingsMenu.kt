@@ -29,24 +29,20 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 class CloudSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WIDTH) {
     private val cloudProfile = guiRenderer.context.profile.sky.clouds
 
+    private val cloudsEnabledButton: ButtonElement
+    private val cloudsFlatButton: ButtonElement
+    private val cloudsMovementButton: ButtonElement
+    private val maxDistanceSlider: SliderElement
+    private val layersSlider: SliderElement
+
     init {
         this += TextElement(guiRenderer, "menu.options.clouds.title".i18n(), background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 2.0f))
         this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
 
-        lateinit var cloudsFlatButton: ButtonElement
-        lateinit var cloudsMovementButton: ButtonElement
-
-        fun updateCloudsDisabledStates() {
-            val cloudsDisabled = !cloudProfile.enabled
-            cloudsFlatButton.disabled = cloudsDisabled
-            cloudsMovementButton.disabled = cloudsDisabled
-        }
-
-        lateinit var cloudsEnabledButton: ButtonElement
         cloudsEnabledButton = ButtonElement(guiRenderer, formatEnabled("menu.options.clouds.enabled", cloudProfile.enabled)) {
             cloudProfile.enabled = !cloudProfile.enabled
             cloudsEnabledButton.textElement.text = formatEnabled("menu.options.clouds.enabled", cloudProfile.enabled)
-            updateCloudsDisabledStates()
+            updateDisabledStates()
         }
         this += cloudsEnabledButton
 
@@ -62,18 +58,28 @@ class CloudSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_
         }
         this += cloudsMovementButton
 
-        this += SliderElement(guiRenderer, translate("menu.options.clouds.max_distance"), 0.0f, 200.0f, cloudProfile.maxDistance) {
+        maxDistanceSlider = SliderElement(guiRenderer, translate("menu.options.clouds.max_distance"), 0.0f, 200.0f, cloudProfile.maxDistance) {
             cloudProfile.maxDistance = it
         }
+        this += maxDistanceSlider
 
-        this += SliderElement(guiRenderer, translate("menu.options.clouds.layers"), 1.0f, 3.0f, cloudProfile.layers.toFloat()) {
+        layersSlider = SliderElement(guiRenderer, translate("menu.options.clouds.layers"), 1.0f, 3.0f, cloudProfile.layers.toFloat()) {
             cloudProfile.layers = it.toInt()
         }
+        this += layersSlider
 
         this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
 
-        updateCloudsDisabledStates()
+        updateDisabledStates()
+    }
+
+    private fun updateDisabledStates() {
+        val cloudsDisabled = !cloudProfile.enabled
+        cloudsFlatButton.disabled = cloudsDisabled
+        cloudsMovementButton.disabled = cloudsDisabled
+        maxDistanceSlider.disabled = cloudsDisabled
+        layersSlider.disabled = cloudsDisabled
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<CloudSettingsMenu>> {

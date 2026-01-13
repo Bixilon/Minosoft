@@ -58,7 +58,7 @@ class OptionsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WIDTH)
             JavaFXUtil.runLater { Eros.setVisibility(true) }
         }
         this += ButtonElement(guiRenderer, "menu.options.controls".i18n()) {
-            JavaFXUtil.runLater { Eros.setVisibility(true) }
+            guiRenderer.gui.push(ControlsSettingsMenu)
         }
         this += ButtonElement(guiRenderer, "menu.pause.options.debug".i18n()) {
             guiRenderer.gui.push(DebugMenu)

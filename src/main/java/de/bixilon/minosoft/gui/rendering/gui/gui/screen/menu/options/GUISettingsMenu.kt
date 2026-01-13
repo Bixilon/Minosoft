@@ -47,7 +47,7 @@ class GUISettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WI
             val currentIndex = HUD_SCALE_OPTIONS.indexOf(guiProfile.scale).let { if (it == -1) 0 else it }
             val nextIndex = (currentIndex + 1) % HUD_SCALE_OPTIONS.size
             guiProfile.scale = HUD_SCALE_OPTIONS[nextIndex]
-            hudScaleButton.textElement.text = "${translate("menu.options.gui.hud_scale")}: ${HUD_SCALE_OPTIONS[nextIndex].toInt()}x" // The text breaks when clicked if we dont do it like this... TODO: HUD scaling should be related to window size percentage! But I'm tired for now.
+            hudScaleButton.textElement.text = "${translate("menu.options.gui.hud_scale")}: ${HUD_SCALE_OPTIONS[nextIndex].toInt()}x"
         }
         this += hudScaleButton
 

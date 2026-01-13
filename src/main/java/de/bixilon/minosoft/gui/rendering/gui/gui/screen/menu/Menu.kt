@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseCapturing
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -39,6 +40,8 @@ abstract class Menu(
 
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
+    private var capturingElement: MouseCapturing? = null
+    private var capturingElementOffset: Vec2f = Vec2f.EMPTY
 
     override fun forceSilentApply() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0.0f)
@@ -84,6 +87,17 @@ abstract class Menu(
     }
 
     override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
+        // Check if an element is capturing mouse
+        val capturing = capturingElement
+        if (capturing != null && capturing.isCapturingMouse) {
+            val relativeX = position.x - capturingElementOffset.x
+            capturing.onMouseMoveOutside(relativeX)
+            return true
+        }
+        if (capturing != null && !capturing.isCapturingMouse) {
+            capturingElement = null
+        }
+        
         super<AbstractLayout>.onMouseMove(position, absolute)
         return true
     }
@@ -94,8 +108,26 @@ abstract class Menu(
     }
 
     override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+        val capturing = capturingElement
+        if (capturing != null && capturing.isCapturingMouse) {
+            val relativeX = position.x - capturingElementOffset.x
+            if (capturing.onMouseActionOutside(relativeX, button, action)) {
+                if (!capturing.isCapturingMouse) {
+                    capturingElement = null
+                }
+                return true
+            }
+        }
+        
         val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action, count)
+        
+        // Track elements that start capturing mouse
+        if (element is MouseCapturing && element.isCapturingMouse) {
+            capturingElement = element
+            capturingElementOffset = Vec2f(position.x - delta.x, position.y - delta.y)
+        }
+        
         return true
     }
 
