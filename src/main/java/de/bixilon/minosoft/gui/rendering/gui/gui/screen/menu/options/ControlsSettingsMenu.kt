@@ -31,7 +31,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.slider.SliderElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.textbox.TextBoxElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
@@ -52,8 +54,12 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
 
     private val listItems: MutableList<ListItem> = mutableListOf()
     private val keyBindingEntries: MutableList<KeyBindingEntry> = mutableListOf()
+    private var filteredItems: List<ListItem> = emptyList()
     private var scrollOffset = 0
     private val maxVisibleEntries = 8
+    
+    private var searchText: String = ""
+    private val searchBar = TextBoxElement(guiRenderer, "", "Search controls... (Search in quotes for key bindings)", maxLength = 50, onChangeCallback = { onSearchChanged() }).apply { parent = this@ControlsSettingsMenu }
 
     private var isDraggingScrollbar = false
     private var dragStartY = 0f
@@ -65,6 +71,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
 
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
+    private var focusedElement: Element? = null
 
     // Mouse sensitivity slider (range matches profile limits: 0.01 to 10.0, displayed as 1% to 1000%)
     private val sensitivitySlider = SliderElement(guiRenderer, translate("minosoft:key.mouse_sensitivity"), 1.0f, 200.0f, controlsProfile.mouse.sensitivity * 100f) {
@@ -73,8 +80,67 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
 
     init {
         buildKeyBindingEntries()
+        filteredItems = listItems.toList()
         updateDuplicateStatus()
         forceSilentApply()
+    }
+    
+    private fun onSearchChanged() {
+        searchText = searchBar.value
+        updateFilteredItems()
+        scrollOffset = 0
+        cacheUpToDate = false
+    }
+    
+    private fun updateFilteredItems() {
+        if (searchText.isBlank()) {
+            filteredItems = listItems.toList()
+            return
+        }
+        
+        val query = searchText.lowercase()
+        // Check if query is in quotes for key binding search
+        val isKeySearch = query.startsWith("\"") && query.endsWith("\"") && query.length > 2
+        val keyQuery = if (isKeySearch) query.substring(1, query.length - 1) else null
+        
+        val matchingEntries = keyBindingEntries.filter { entry ->
+            val displayName = KeyBindingEntry.getDisplayName(entry.bindingName).lowercase()
+            val bindingPath = entry.bindingName.path.lowercase()
+            
+            if (keyQuery != null) {
+                // Search only key bindings when in quotes
+                val keyDisplayText = KeyBindingEntry.getKeyDisplayText(entry.getCurrentBinding()).lowercase()
+                keyDisplayText.contains(keyQuery)
+            } else {
+                // Normal search by name and path only
+                displayName.contains(query) || bindingPath.contains(query)
+            }
+        }.toSet()
+        
+        // Build filtered list including category headers that have matching entries
+        val result = mutableListOf<ListItem>()
+        var currentHeader: CategoryHeader? = null
+        var headerHasMatches = false
+        
+        for (item in listItems) {
+            when (item) {
+                is CategoryHeader -> {
+                    currentHeader = item
+                    headerHasMatches = false
+                }
+                is KeyBindingEntry -> {
+                    if (item in matchingEntries) {
+                        if (currentHeader != null && !headerHasMatches) {
+                            result += currentHeader
+                            headerHasMatches = true
+                        }
+                        result += item
+                    }
+                }
+            }
+        }
+        
+        filteredItems = result
     }
 
     private fun buildKeyBindingEntries() {
@@ -128,9 +194,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         return bindingMap
     }
 
-    /**
-     * Updates the duplicate status for all key binding entries then changes their color to red.
-     */
+    // Updates the duplicate status for all key binding entries then changes their color to red.
     fun updateDuplicateStatus() {
         val bindingMap = buildBindingMap()
         for (entry in keyBindingEntries) {
@@ -207,6 +271,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         doneButton.size = Vec2f(elementWidth / 2 - 2f, doneButton.size.y)
         resetButton.size = Vec2f(elementWidth / 2 - 2f, resetButton.size.y)
         sensitivitySlider.size = Vec2f(elementWidth, sensitivitySlider.size.y)
+        searchBar.size = Vec2f(elementWidth, SEARCH_BAR_HEIGHT)
         
         for (item in listItems) {
             when (item) {
@@ -229,11 +294,11 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         val elementWidth = calculateElementWidth()
         val currentOffset = MVec2f(offset)
 
-        val visibleCount = minOf(maxVisibleEntries, listItems.size)
-        val listHeight = visibleCount * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
+        val listHeight = maxVisibleEntries * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
         val totalHeight = titleElement.size.y + SPACING + 
                          sensitivitySlider.size.y + SPACING +
                          listHeight + ENTRY_Y_MARGIN +
+                         SEARCH_BAR_HEIGHT + SPACING +
                          SPACING + BUTTON_HEIGHT
         
         currentOffset.y += (screenSize.y - totalHeight) / 2
@@ -247,10 +312,10 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
 
         val listStartY = currentOffset.y
         val startIndex = scrollOffset
-        val endIndex = minOf(startIndex + maxVisibleEntries, listItems.size)
+        val endIndex = minOf(startIndex + maxVisibleEntries, filteredItems.size)
         
         for (i in startIndex until endIndex) {
-            val item = listItems[i]
+            val item = filteredItems[i]
             val itemHeight = when (item) {
                 is CategoryHeader -> CATEGORY_HEIGHT
                 is KeyBindingEntry -> ENTRY_HEIGHT
@@ -259,20 +324,27 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             currentOffset.y += itemHeight + ENTRY_Y_MARGIN
         }
 
-        if (listItems.size > maxVisibleEntries) {
+        if (filteredItems.size > maxVisibleEntries) {
             val scrollbarX = offset.x + (screenSize.x - elementWidth - SCROLLBAR_WIDTH - SCROLLBAR_MARGIN) / 2 + elementWidth + SCROLLBAR_MARGIN
-            val trackElement = ColorElement(guiRenderer, Vec2f(SCROLLBAR_WIDTH, listHeight + ENTRY_Y_MARGIN), SCROLLBAR_TRACK_COLOR)
+            val scrollbarListHeight = maxVisibleEntries * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
+            val trackElement = ColorElement(guiRenderer, Vec2f(SCROLLBAR_WIDTH, scrollbarListHeight + ENTRY_Y_MARGIN), SCROLLBAR_TRACK_COLOR)
             trackElement.render(Vec2f(scrollbarX, listStartY), consumer, options)
-            val maxScroll = listItems.size - maxVisibleEntries
-            val thumbHeight = maxOf(SCROLLBAR_MIN_THUMB_HEIGHT, (listHeight + ENTRY_Y_MARGIN) * maxVisibleEntries / listItems.size)
-            val thumbTravel = listHeight + ENTRY_Y_MARGIN - thumbHeight
+            val maxScroll = filteredItems.size - maxVisibleEntries
+            val thumbHeight = maxOf(SCROLLBAR_MIN_THUMB_HEIGHT, (scrollbarListHeight + ENTRY_Y_MARGIN) * maxVisibleEntries / filteredItems.size)
+            val thumbTravel = scrollbarListHeight + ENTRY_Y_MARGIN - thumbHeight
             val thumbY = listStartY + (thumbTravel * scrollOffset / maxScroll)
             
             val thumbElement = ColorElement(guiRenderer, Vec2f(SCROLLBAR_WIDTH, thumbHeight), SCROLLBAR_THUMB_COLOR)
             thumbElement.render(Vec2f(scrollbarX, thumbY), consumer, options)
         }
 
+        // Move to fixed position after list area
+        currentOffset.y = listStartY + listHeight + ENTRY_Y_MARGIN
         currentOffset.y += SPACING - ENTRY_Y_MARGIN
+        
+        // Render search bar
+        searchBar.render(currentOffset.unsafe + Vec2f((elementWidth - searchBar.size.x) / 2, 0f), consumer, options)
+        currentOffset.y += SEARCH_BAR_HEIGHT + SPACING
 
         val buttonY = currentOffset.y
         resetButton.render(currentOffset.unsafe + Vec2f((elementWidth / 2 - resetButton.size.x) / 2, 0f), consumer, options)
@@ -282,7 +354,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
     override fun onScroll(position: Vec2f, scrollOffset: Vec2f): Boolean {
         if (editingEntry != null) return true
         
-        val maxScroll = maxOf(0, listItems.size - maxVisibleEntries)
+        val maxScroll = maxOf(0, filteredItems.size - maxVisibleEntries)
         this.scrollOffset = (this.scrollOffset - scrollOffset.y.toInt()).coerceIn(0, maxScroll)
         cacheUpToDate = false
         
@@ -352,7 +424,16 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             return true
         }
         
-        val (element, delta) = getAt(position) ?: return true
+        // This part solves the focus issue, its about the parent class losing focus when not hovered, but search button should still keep focus...
+        val (element, delta) = getAt(position) ?: run {
+            if (action == MouseActions.PRESS) {
+                focusedElement = null
+            }
+            return true
+        }
+        if (action == MouseActions.PRESS) {
+            focusedElement = element
+        }
         
         element.onMouseAction(delta, button, action, count)
         return true
@@ -369,11 +450,11 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         if (isDraggingScrollbar) {
             val screenSize = size
             val elementWidth = calculateElementWidth()
-            val visibleCount = minOf(maxVisibleEntries, listItems.size)
+            val visibleCount = minOf(maxVisibleEntries, filteredItems.size)
             val listHeight = visibleCount * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
             
-            val maxScroll = listItems.size - maxVisibleEntries
-            val thumbHeight = maxOf(SCROLLBAR_MIN_THUMB_HEIGHT, (listHeight + ENTRY_Y_MARGIN) * maxVisibleEntries / listItems.size)
+            val maxScroll = filteredItems.size - maxVisibleEntries
+            val thumbHeight = maxOf(SCROLLBAR_MIN_THUMB_HEIGHT, (listHeight + ENTRY_Y_MARGIN) * maxVisibleEntries / filteredItems.size)
             val thumbTravel = listHeight + ENTRY_Y_MARGIN - thumbHeight
             
             val deltaY = position.y - dragStartY
@@ -417,15 +498,16 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
     }
 
     private fun getScrollbarHitArea(position: Vec2f): Vec2f? {
-        if (listItems.size <= maxVisibleEntries) return null
+        if (filteredItems.size <= maxVisibleEntries) return null
         
         val screenSize = size
         val elementWidth = calculateElementWidth()
-        val visibleCount = minOf(maxVisibleEntries, listItems.size)
+        val visibleCount = minOf(maxVisibleEntries, filteredItems.size)
         val listHeight = visibleCount * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
         val totalHeight = titleElement.size.y + SPACING + 
                          sensitivitySlider.size.y + SPACING +
                          listHeight + ENTRY_Y_MARGIN +
+                         SEARCH_BAR_HEIGHT + SPACING +
                          SPACING + BUTTON_HEIGHT
         
         val startY = (screenSize.y - totalHeight) / 2
@@ -437,8 +519,8 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         
         if (position.x < scrollbarX || position.x >= scrollbarX + SCROLLBAR_WIDTH) return null
         if (position.y < listStartY || position.y >= listStartY + trackHeight) return null
-        val maxScroll = listItems.size - maxVisibleEntries
-        val thumbHeight = maxOf(SCROLLBAR_MIN_THUMB_HEIGHT, trackHeight * maxVisibleEntries / listItems.size)
+        val maxScroll = filteredItems.size - maxVisibleEntries
+        val thumbHeight = maxOf(SCROLLBAR_MIN_THUMB_HEIGHT, trackHeight * maxVisibleEntries / filteredItems.size)
         val thumbTravel = trackHeight - thumbHeight
         val thumbY = listStartY + (thumbTravel * scrollOffset / maxScroll)
         return Vec2f(position.x - scrollbarX, position.y - thumbY)
@@ -448,11 +530,12 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         val screenSize = size
         val elementWidth = calculateElementWidth()
         
-        val visibleCount = minOf(maxVisibleEntries, listItems.size)
-        val listHeight = visibleCount * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
+        // Used fixed list height based on maxVisibleEntries to prevent hitbox bouncing when scrolling.
+        val listHeight = maxVisibleEntries * (ENTRY_HEIGHT + ENTRY_Y_MARGIN) - ENTRY_Y_MARGIN
         val totalHeight = titleElement.size.y + SPACING + 
                          sensitivitySlider.size.y + SPACING +
                          listHeight + ENTRY_Y_MARGIN +
+                         SEARCH_BAR_HEIGHT + SPACING +
                          SPACING + BUTTON_HEIGHT
         
         val startY = (screenSize.y - totalHeight) / 2
@@ -472,11 +555,12 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         }
         currentY += sensitivitySlider.size.y + SPACING
         
+        val listStartY = currentY
         val startIndex = scrollOffset
-        val endIndex = minOf(startIndex + maxVisibleEntries, listItems.size)
+        val endIndex = minOf(startIndex + maxVisibleEntries, filteredItems.size)
         
         for (i in startIndex until endIndex) {
-            val item = listItems[i]
+            val item = filteredItems[i]
             val itemHeight = if (item is CategoryHeader) CATEGORY_HEIGHT else ENTRY_HEIGHT
             
             if (position.y >= currentY && position.y < currentY + itemHeight) {
@@ -490,7 +574,16 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             currentY += itemHeight + ENTRY_Y_MARGIN
         }
         
+        currentY = listStartY + listHeight + ENTRY_Y_MARGIN
         currentY += SPACING - ENTRY_Y_MARGIN
+        
+        if (position.y >= currentY && position.y < currentY + SEARCH_BAR_HEIGHT) {
+            val delta = Vec2f(position.x - startX - (elementWidth - searchBar.size.x) / 2, position.y - currentY)
+            if (delta.x >= 0 && delta.x < searchBar.size.x) {
+                return Pair(searchBar, delta)
+            }
+        }
+        currentY += SEARCH_BAR_HEIGHT + SPACING
         
         if (position.y >= currentY && position.y < currentY + BUTTON_HEIGHT) {
             val resetX = startX + (elementWidth / 2 - resetButton.size.x) / 2
@@ -550,7 +643,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
                     return true
                 }
                 KeyCodes.KEY_DOWN -> {
-                    val maxScroll = maxOf(0, listItems.size - maxVisibleEntries)
+                    val maxScroll = maxOf(0, filteredItems.size - maxVisibleEntries)
                     if (scrollOffset < maxScroll) {
                         scrollOffset++
                         cacheUpToDate = false
@@ -560,8 +653,12 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
                 else -> {}
             }
         }
-        activeElement?.onKey(key, type)
+        focusedElement?.onKey(key, type)
         return true
+    }
+
+    override fun onCharPress(char: Int): Boolean {
+        return focusedElement?.onCharPress(char) ?: false
     }
 
     override fun onChildChange(child: Element) {
@@ -574,6 +671,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         doneButton.tick()
         resetButton.tick()
         sensitivitySlider.tick()
+        searchBar.tick()
         for (item in listItems) {
             if (item is KeyBindingEntry) {
                 item.tick()
@@ -800,6 +898,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         private const val CATEGORY_HEIGHT = 18.0f
         private const val BUTTON_HEIGHT = 20.0f
         private const val SPACING = 10.0f
+        private const val SEARCH_BAR_HEIGHT = 20.0f
         
         private const val SCROLLBAR_WIDTH = 6.0f
         private const val SCROLLBAR_MARGIN = 4.0f
