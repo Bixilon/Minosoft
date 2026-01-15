@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -71,6 +73,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
 
     init {
         buildKeyBindingEntries()
+        updateDuplicateStatus()
         forceSilentApply()
     }
 
@@ -106,7 +109,35 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         }
         controlsProfile.storage?.invalidate()
         guiRenderer.context.input.bindings.clear()
+        updateDuplicateStatus()
         cacheUpToDate = false
+    }
+
+    /**
+     * Builds a map of binding signature to list of binding names that use it.
+     * Used to detect duplicate key bindings.
+     */
+    private fun buildBindingMap(): Map<String, List<ResourceLocation>> {
+        val bindingMap = mutableMapOf<String, MutableList<ResourceLocation>>()
+        for (entry in keyBindingEntries) {
+            val signature = KeyBindingEntry.getBindingSignature(entry.getCurrentBinding())
+            if (signature.isNotEmpty()) {
+                bindingMap.getOrPut(signature) { mutableListOf() }.add(entry.bindingName)
+            }
+        }
+        return bindingMap
+    }
+
+    /**
+     * Updates the duplicate status for all key binding entries.
+     */
+    fun updateDuplicateStatus() {
+        val bindingMap = buildBindingMap()
+        for (entry in keyBindingEntries) {
+            val signature = KeyBindingEntry.getBindingSignature(entry.getCurrentBinding())
+            val isDuplicate = signature.isNotEmpty() && (bindingMap[signature]?.size ?: 0) > 1
+            entry.setDuplicateStatus(isDuplicate)
+        }
     }
 
     fun startEditing(entry: KeyBindingEntry) {
@@ -150,6 +181,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             
             controlsProfile.storage?.invalidate()
             guiRenderer.context.input.bindings.clear()
+            updateDuplicateStatus()
         }
         
         editingEntry = null
@@ -613,9 +645,19 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             }
         
         private var currentPressedKeys: Set<KeyCodes> = emptySet()
+        private var isDuplicate: Boolean = false
         
         init {
             updateKeyButtonText()
+        }
+        
+        fun getCurrentBinding(): KeyBinding = binding
+        
+        fun setDuplicateStatus(duplicate: Boolean) {
+            if (isDuplicate != duplicate) {
+                isDuplicate = duplicate
+                updateKeyButtonText()
+            }
         }
         
         fun updateBinding(newBinding: KeyBinding) {
@@ -635,7 +677,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         }
         
         private fun updateKeyButtonText() {
-            keyButton.textElement.text = if (isEditing) {
+            val displayText = if (isEditing) {
                 if (currentPressedKeys.isEmpty()) {
                     "> ??? <"
                 } else {
@@ -644,6 +686,13 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             } else {
                 currentPressedKeys = emptySet()
                 getKeyDisplayText(binding)
+            }
+            
+            // Apply red color if this binding has duplicate keys
+            keyButton.textElement.text = if (isDuplicate && !isEditing) {
+                TextComponent(displayText).color(ChatColors.RED)
+            } else {
+                displayText
             }
         }
         
@@ -730,6 +779,18 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
                 } else {
                     keys.joinToString(" + ")
                 }
+            }
+            
+            /**
+             * Creates a unique signature for a key binding based on its key codes.
+             * Used for duplicate detection.
+             */
+            fun getBindingSignature(binding: KeyBinding): String {
+                val allKeys = mutableSetOf<KeyCodes>()
+                for ((_, codes) in binding.action) {
+                    allKeys.addAll(codes)
+                }
+                return allKeys.sortedBy { it.ordinal }.joinToString("+") { it.name }
             }
         }
     }
