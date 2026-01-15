@@ -100,7 +100,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             if (existingBinding != null) {
                 existingBinding.action.clear()
                 for ((action, codes) in entry.defaultBinding.action) {
-                    existingBinding.action[action] = codes.toMutableSet()
+                    existingBinding.action[action] = codes.toCollection(linkedSetOf())
                 }
                 entry.updateBinding(existingBinding)
             } else {
@@ -129,7 +129,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
     }
 
     /**
-     * Updates the duplicate status for all key binding entries.
+     * Updates the duplicate status for all key binding entries then changes their color to red.
      */
     fun updateDuplicateStatus() {
         val bindingMap = buildBindingMap()
@@ -157,12 +157,13 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
         if (keys.isNotEmpty() && KeyCodes.KEY_ESCAPE !in keys) {
             val defaultAction = entry.defaultBinding.action.keys.firstOrNull() ?: KeyActions.CHANGE
             
+            // Use LinkedHashSet to save and display controls same order as entered by player after the restart.
             val newAction: Map<KeyActions, Set<KeyCodes>> = if (keys.size == 1) {
-                mapOf(defaultAction to keys.toSet())
+                linkedMapOf(defaultAction to linkedSetOf(keys.first()))
             } else {
-                mapOf(
-                    KeyActions.MODIFIER to keys.dropLast(1).toSet(),
-                    defaultAction to setOf(keys.last())
+                linkedMapOf(
+                    KeyActions.MODIFIER to keys.dropLast(1).toCollection(linkedSetOf()),
+                    defaultAction to linkedSetOf(keys.last())
                 )
             }
             
@@ -170,7 +171,7 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
             if (existingBinding != null) {
                 existingBinding.action.clear()
                 for ((action, codes) in newAction) {
-                    existingBinding.action[action] = codes.toMutableSet()
+                    existingBinding.action[action] = codes.toCollection(linkedSetOf())
                 }
                 entry.updateBinding(existingBinding)
             } else {
@@ -781,10 +782,6 @@ class ControlsSettingsMenu(guiRenderer: GUIRenderer) : Screen(guiRenderer), Abst
                 }
             }
             
-            /**
-             * Creates a unique signature for a key binding based on its key codes.
-             * Used for duplicate detection.
-             */
             fun getBindingSignature(binding: KeyBinding): String {
                 val allKeys = mutableSetOf<KeyCodes>()
                 for ((_, codes) in binding.action) {

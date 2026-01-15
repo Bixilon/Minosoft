@@ -14,23 +14,25 @@
 package de.bixilon.minosoft.config.key
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import de.bixilon.minosoft.util.KUtil.synchronizedDeepCopy
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 class KeyBinding(
+    @field:JsonDeserialize(contentAs = LinkedHashSet::class)
     val action: MutableMap<KeyActions, MutableSet<KeyCodes>>,
     @JsonInclude(JsonInclude.Include.NON_DEFAULT) var ignoreConsumer: Boolean = false,
     ignored: Boolean = true, // to prevent constructor overloading
 ) {
-    constructor(keyBinding: KeyBinding) : this(keyBinding.action.synchronizedDeepCopy())
+    constructor(keyBinding: KeyBinding) : this(keyBinding.action.copy(), keyBinding.ignoreConsumer)
     constructor(action: Map<KeyActions, Set<KeyCodes>>, ignoreConsumer: Boolean = false) : this(action.copy(), ignoreConsumer)
     constructor(vararg action: Pair<KeyActions, Set<KeyCodes>>, ignoreConsumer: Boolean = false) : this(mapOf(*action), ignoreConsumer)
 
 
     companion object {
         private fun Map<KeyActions, Set<KeyCodes>>.copy(): MutableMap<KeyActions, MutableSet<KeyCodes>> {
-            val next: MutableMap<KeyActions, MutableSet<KeyCodes>> = mutableMapOf()
+            val next: MutableMap<KeyActions, MutableSet<KeyCodes>> = linkedMapOf()
             for ((action, codes) in this) {
-                next[action] = codes.toMutableSet()
+                // Use LinkedHashSet to save and display controls same order as entered by player after the restart.
+                next[action] = LinkedHashSet(codes)
             }
             return next
         }

@@ -110,6 +110,9 @@ class BindingsManager(
         val satisfiedBindings = mutableMapOf<ResourceLocation, Int>() // name -> total key count
         var maxKeyCount = 0
         
+        // Track if the current key is part of a partially satisfied combination
+        val partiallyMatchedBindings = mutableSetOf<ResourceLocation>()
+        
         if (pressed) {
             // Check which bindings are satisfied
             for ((name, state) in bindings) {
@@ -117,6 +120,16 @@ class BindingsManager(
                 
                 val binding = state.binding
                 val modifierKeys = binding.action[KeyActions.MODIFIER] ?: emptySet()
+                
+                // Check if the current key is a modifier key for this binding and if other modifier keys are pressed
+                if (code in modifierKeys) {
+                    val otherModifiers = modifierKeys - code
+                    // This is for combination building, it ignores cases like if you press keys in different order than you set.
+                    if (otherModifiers.isEmpty() || otherModifiers.any { input.isKeyDown(it) }) {
+                        partiallyMatchedBindings += name
+                    }
+                }
+                
                 // Check if all modifier keys are currently pressed (if any)
                 if (modifierKeys.isNotEmpty() && !input.areKeysDown(modifierKeys)) continue
                 
@@ -163,7 +176,37 @@ class BindingsManager(
                     }
                     
                     if (usesCurrentKey) {
-                        // Skip this binding because more specific combinations take priority
+                        continue
+                    }
+                }
+            }
+            
+            // Skip satisfied bindings if the current key is being used in another combination.
+            if (pressed && partiallyMatchedBindings.isNotEmpty() && name !in partiallyMatchedBindings) {
+                val binding = state.binding
+                val bindingModifiers = binding.action[KeyActions.MODIFIER] ?: emptySet()
+                val usesCurrentKey = binding.action.values.any { code in it }
+                
+                if (usesCurrentKey) {
+                    // Check if any partially matched binding has more keys than this one
+                    val thisBindingKeyCount = bindingModifiers.size + binding.action.entries
+                        .filter { it.key != KeyActions.MODIFIER }
+                        .flatMap { it.value }
+                        .toSet().size
+                    
+                    val anyLargerPartialMatch = partiallyMatchedBindings.any { partialName ->
+                        val partialState = bindings[partialName] ?: return@any false
+                        val partialBinding = partialState.binding
+                        val partialModifiers = partialBinding.action[KeyActions.MODIFIER] ?: emptySet()
+                        val partialActionKeys = partialBinding.action.entries
+                            .filter { it.key != KeyActions.MODIFIER }
+                            .flatMap { it.value }
+                            .toSet()
+                        val partialKeyCount = partialModifiers.size + partialActionKeys.size
+                        partialKeyCount > thisBindingKeyCount
+                    }
+                    
+                    if (anyLargerPartialMatch) {
                         continue
                     }
                 }
