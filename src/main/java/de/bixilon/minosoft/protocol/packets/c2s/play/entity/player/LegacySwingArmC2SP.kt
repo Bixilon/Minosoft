@@ -21,20 +21,19 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class SwingArmC2SP(
-    val arm: Hands,
+class LegacySwingArmC2SP(
+    val entityId: Int,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        if (buffer.versionId >= ProtocolVersions.V_15W31A) {
-            buffer.writeVarInt(arm.ordinal)
-        }
+        buffer.writeInt(entityId)
+        buffer.writeByte(1)
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Swing arm (arm=$arm)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Legacy swing arm" }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,9 @@ import de.bixilon.minosoft.input.interaction.InteractionUtil.canInteract
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
 import de.bixilon.minosoft.input.interaction.use.UseHandler
 import de.bixilon.minosoft.protocol.network.session.play.tick.TickUtil
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.LegacySwingArmC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 class InteractionManager(val camera: SessionCamera) : Tickable {
     val session = camera.session
@@ -74,7 +76,11 @@ class InteractionManager(val camera: SessionCamera) : Tickable {
 
     fun swingHand(hand: Hands) {
         swingArmRateLimiter += {
-            session.connection.send(SwingArmC2SP(hand))
+            if (session.version <= ProtocolVersions.V_14W03B) {
+                session.connection.send(LegacySwingArmC2SP(session.player.id))
+            } else {
+                session.connection.send(SwingArmC2SP(hand))
+            }
             session.player.swingHand(hand)
         }
     }
