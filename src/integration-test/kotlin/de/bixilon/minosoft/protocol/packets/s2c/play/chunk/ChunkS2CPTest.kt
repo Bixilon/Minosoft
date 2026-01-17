@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -118,6 +118,30 @@ class ChunkS2CPTest {
         assertEquals(blocks[3]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.STONE)
         assertEquals(blocks[3]!![1, 11, 0]!!.block.identifier, MinecraftBlocks.DIRT)
         assertEquals(blocks[4]!![4, 3, 4]!!.block.identifier, MinecraftBlocks.STONE)
+    }
+
+    fun `viabackwards 1_8_9`() {
+        val packet = read("viabackwards_1_8_9", "1.8.9", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
+        assertEquals(packet.position, ChunkPosition(5843 - 1))
+        val blocks = packet.prototype.blocks
+        assertNotNull(blocks); blocks!!
+
+        assertEquals(blocks[4]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[5]!![129]!!.block.identifier, MinecraftBlocks.TERRACOTTA)
+        assertEquals(blocks[5]!![205]!!.block.identifier, MinecraftBlocks.TERRACOTTA)
+        assertEquals(blocks[6]!![361]!!.block.identifier, MinecraftBlocks.COBBLESTONE_WALL)
+    }
+
+    fun `viabackwards 1_7_10`() {
+        val packet = read("viabackwards_1_7_10", "1.7.10", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
+        assertEquals(packet.position, ChunkPosition(5843 - 1))
+        val blocks = packet.prototype.blocks
+        assertNotNull(blocks); blocks!!
+
+        assertEquals(blocks[4]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[5]!![129]!!.block.identifier, MinecraftBlocks.TERRACOTTA)
+        assertEquals(blocks[5]!![205]!!.block.identifier, MinecraftBlocks.TERRACOTTA)
+        assertEquals(blocks[6]!![361]!!.block.identifier, MinecraftBlocks.COBBLESTONE_WALL)
     }
 
 //    fun benchmark() {

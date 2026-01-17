@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -58,7 +58,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val prototype: ChunkData = ChunkData()
     var action: ChunkAction = ChunkAction.CREATE
         private set
-    private lateinit var readingData: ChunkReadingData
+    private var readingData: ChunkReadingData? = null
 
     init {
         val dimension = buffer.session.world.dimension
@@ -67,15 +67,12 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             action = if (buffer.readBoolean()) ChunkAction.CREATE else ChunkAction.UPDATE
         }
         if (buffer.versionId < V_14W26A) { // ToDo
-            val sectionBitMask = BitSet.valueOf(buffer.readByteArray(2))
-            val addBitMask = BitSet.valueOf(buffer.readByteArray(2))
+            val sectionBitMask = buffer.readLegacyBitSet(2)
+            val addBitMask = buffer.readLegacyBitSet(2)
 
             // decompress chunk data
-            val decompressed: PlayInByteBuffer = if (buffer.versionId < V_14W28A) {
-                PlayInByteBuffer(buffer.readByteArray(buffer.readInt()).decompress(), buffer.session)
-            } else {
-                buffer
-            }
+            val decompressed = if (buffer.versionId < V_14W28A) PlayInByteBuffer(buffer.readByteArray(buffer.readInt()).decompress(), buffer.session) else buffer
+
             val chunkData = ChunkPacketUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, action == ChunkAction.CREATE, dimension.skyLight)
             if (chunkData == null) {
                 action = ChunkAction.UNLOAD
@@ -175,7 +172,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun ChunkReadingData.readChunkData() {
-        val chunkData = if (readingData.buffer.versionId < V_21W37A) ChunkPacketUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight) else ChunkPacketUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false)
+        val chunkData = if (buffer.versionId < V_21W37A) ChunkPacketUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight) else ChunkPacketUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false)
         ALLOCATOR.free(data)
         if (chunkData == null) {
             action = ChunkAction.UNLOAD
@@ -185,7 +182,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     fun parse() {
-        this.readingData.readChunkData()
+        this.readingData?.readChunkData()
     }
 
     override fun handle(session: PlaySession) {
