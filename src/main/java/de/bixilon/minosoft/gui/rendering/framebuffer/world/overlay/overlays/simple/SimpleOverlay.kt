@@ -50,15 +50,16 @@ abstract class SimpleOverlay(
     }
 
     private fun updateMesh() {
-        if (this.mesh == null || invalid) {
-            mesh?.unload()
-        }
+        this.mesh?.unload()
         this.mesh = createMesh()
+        this.mesh?.load()
         this.invalid = false
     }
 
     override fun draw() {
-        updateMesh()
+        if (invalid) {
+            updateMesh()
+        }
         val mesh = this.mesh ?: return
 
         shader.use()
