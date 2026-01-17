@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,11 +51,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         dimension = when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
-                val id = if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
-                    buffer.readByte().toInt()
-                } else {
-                    buffer.readInt()
-                }
+                val id = buffer.readInt()
                 buffer.session.registries.dimension[id].properties
             }
 
