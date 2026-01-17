@@ -1,5 +1,14 @@
 {
-  "0": [
+  "0": {
+    "1": "START_SNEAKING",
+    "2": "STOP_SNEAKING",
+    "3": "LEAVE_BED",
+    "4": "START_SPRINTING",
+    "5": "STOP_SPRINTING",
+    "6": "START_JUMPING_WITH_HORSE",
+    "7": "OPEN_HORSE_INVENTORY"
+  },
+  "47": [
     "START_SNEAKING",
     "STOP_SNEAKING",
     "LEAVE_BED",
