@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -99,7 +99,7 @@ object LanguageUtil {
     }
 
 
-    fun load(language: String, version: Version?, assets: AssetsManager, path: ResourceLocation = ResourceLocation.of("lang/")): Translator {
+    fun load(language: String, version: Version?, assets: AssetsManager, path: ResourceLocation = ResourceLocation.of("lang/"), integrated: Boolean = true): Translator {
         val name = language.lowercase()
         val json = version != null && version.jsonLanguage
 
@@ -113,6 +113,10 @@ object LanguageUtil {
             }
         }
         loadLanguage(FALLBACK_LANGUAGE, assets, json, path)?.let { translators += it }
+
+        if (integrated) {
+            translators += IntegratedLanguage.LANGUAGE
+        }
 
         if (translators.size == 1) {
             return translators.first()
