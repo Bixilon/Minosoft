@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,8 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.options
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -26,14 +24,14 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.buttons.BooleanDelegateButton
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.buttons.EnumDelegateButton
 
 class ChatSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_WIDTH) {
     private val chatProfile = guiRenderer.context.session.profiles.gui.chat
 
     private val hiddenButton: ButtonElement
-    private val textFilteringButton: ButtonElement
     private val chatColorsButton: ButtonElement
-    private val chatModeButton: ButtonElement
 
     init {
         this += TextElement(guiRenderer, "menu.options.chat.title".i18n(), background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 2.0f))
@@ -45,11 +43,7 @@ class ChatSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_W
         }
         this += hiddenButton
 
-        textFilteringButton = ButtonElement(guiRenderer, formatEnabled("menu.options.chat.text_filtering", chatProfile.textFiltering)) {
-            chatProfile.textFiltering = !chatProfile.textFiltering
-            textFilteringButton.textElement.text = formatEnabled("menu.options.chat.text_filtering", chatProfile.textFiltering)
-        }
-        this += textFilteringButton
+        this += BooleanDelegateButton(guiRenderer, "menu.options.chat.text_filtering".i18n(), delegate = chatProfile::textFiltering)
 
         chatColorsButton = ButtonElement(guiRenderer, formatEnabled("menu.options.chat.colors", chatProfile.chatColors)) {
             chatProfile.chatColors = !chatProfile.chatColors
@@ -57,14 +51,7 @@ class ChatSettingsMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer, PREFERRED_W
         }
         this += chatColorsButton
 
-        chatModeButton = ButtonElement(guiRenderer, "${translate("menu.options.chat.mode")}: ${chatProfile.chatMode.name}") {
-            val modes = chatProfile.chatMode.javaClass.enumConstants
-            val currentIndex = modes.indexOf(chatProfile.chatMode)
-            val nextIndex = (currentIndex + 1) % modes.size
-            chatProfile.chatMode = modes[nextIndex]
-            chatModeButton.textElement.text = BaseComponent("menu.options.chat.mode".i18n(), TextComponent(": ${chatProfile.chatMode.name}"))
-        }
-        this += chatModeButton
+        this += EnumDelegateButton(guiRenderer, "menu.options.chat.mode".i18n(), delegate = chatProfile::chatMode)
 
         this += SpacerElement(guiRenderer, Vec2f(0.0f, 10.0f))
         this += ButtonElement(guiRenderer, "menu.options.done".i18n()) { guiRenderer.gui.pop() }
