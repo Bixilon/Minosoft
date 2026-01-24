@@ -122,7 +122,7 @@ class ChunkS2CPTest {
 
     fun `viabackwards 1_8_9`() {
         val packet = read("viabackwards_1_8_9", "1.8.9", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
-        assertEquals(packet.position, ChunkPosition(5843 - 1))
+        assertEquals(packet.position, ChunkPosition(5842, 0))
         val blocks = packet.prototype.blocks
         assertNotNull(blocks); blocks!!
 
@@ -134,7 +134,7 @@ class ChunkS2CPTest {
 
     fun `viabackwards 1_7_10`() {
         val packet = read("viabackwards_1_7_10", "1.7.10", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
-        assertEquals(packet.position, ChunkPosition(5843 - 1))
+        assertEquals(packet.position, ChunkPosition(5842, 0))
         val blocks = packet.prototype.blocks
         assertNotNull(blocks); blocks!!
 
