@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2024 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,7 +51,13 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { Jackson.MAPPER.writeValueAsString(it) },
-            bodyBuilder = { if (it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
+            bodyBuilder = {
+                when {
+                    it.isBlank() -> null
+                    it.startsWith("{") -> Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>?
+                    else -> throw IllegalArgumentException("Unexpected JSON: $it")
+                }
+            },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
@@ -64,7 +70,7 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { this.toQuery() },
-            bodyBuilder = { if(it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
+            bodyBuilder = { if (it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
             headers = headers.extend(
                 "Content-Type" to "application/x-www-form-urlencoded",
             )
@@ -86,7 +92,7 @@ object HTTP2 {
 
     fun String.getJson(headers: Map<String, Any> = emptyMap()): HTTPResponse<Map<String, Any>?> {
         return this.get(
-            bodyBuilder = { if(it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
+            bodyBuilder = { if (it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
