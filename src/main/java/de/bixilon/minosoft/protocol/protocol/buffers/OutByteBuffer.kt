@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.protocol.buffers
 
 import de.bixilon.kmath.vec.vec3.d.Vec3d
 import de.bixilon.kmath.vec.vec3.f.Vec3f
+import de.bixilon.kutil.compression.zlib.GzipUtil.compress
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -51,7 +52,18 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
 
     fun writeNBT(nbt: Any?, compressed: Boolean, named: Boolean) {
         if (compressed) {
-            TODO("Can not write compressed NBT yet!")
+            if (nbt == null) {
+                writeShort(-1)
+                return
+            }
+            val out = OutByteBuffer()
+            out.writeNBT(nbt, false, named)
+
+            val compressed = out.data.toArray().compress() // TODO: Optimize (reduce allocations)
+
+            writeShort(compressed.size)
+            writeBareByteArray(compressed)
+            return
         }
         if (nbt is Map<*, *>) {
             if (nbt.isEmpty()) {
