@@ -120,18 +120,17 @@ class UnihexFontType(
             return array
         }
 
-        private fun InputStream.readUnihex(chars: Int2ObjectOpenHashMap<ByteArray>): Int {
-            val buffer = ByteArray(64)
-            var totalWidth = 0
-            while (this.available() > 0) {
-                val codePoint = readHexInt()
-                if (codePoint == -1) continue
-                val data = this.readUnihexData(buffer)
-                chars[codePoint] = data
-                totalWidth += data.size / (UnifontRasterizer.HEIGHT / Byte.SIZE_BITS)
-            }
+       private fun InputStream.readUnihex(chars: Int2ObjectOpenHashMap<ByteArray>): Int {
+           val buffer = ByteArray(64)
+           var totalWidth = 0
+           while (this.available() > 0) {
+               val codePoint = readHexInt()
+               if (codePoint == -1) continue
+               val data = this.readUnihexData(buffer)
+               if (chars.putIfAbsent(codePoint, data) == null) {
+                   totalWidth += data.size / (UnifontRasterizer.HEIGHT / Byte.SIZE_BITS)
+               }
+           }
 
-            return totalWidth
-        }
-    }
-}
+           return totalWidth
+       }
