@@ -2,7 +2,7 @@
  * Minosoft
  * Copyright (C) 2020-2026 Moritz Zwerger
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
@@ -102,6 +102,40 @@ class UnihexFontType(
                 val byte = this.read()
                 if (byte < 0) break
                 if (byte == '\n'.code) break // separator
+                val hex = byte.fromHex()
+                if (hex < 0) throw IllegalArgumentException("Invalid hex char: ${byte.toChar()}!")
+
+
+                if (index % 2 == 0) {
+                    // most significant bits
+                    buffer[index / 2] = ((buffer[index / 2].toInt() and 0x0F) or (hex shl 4)).toByte()
+                } else {
+                    buffer[index / 2] = ((buffer[index / 2].toInt() and 0xF0) or hex).toByte()
+                }
+                index++
+            }
+
+            val array = ByteArray(index / 2)
+            System.arraycopy(buffer, 0, array, 0, array.size)
+            return array
+        }
+
+        private fun InputStream.readUnihex(chars: Int2ObjectOpenHashMap<ByteArray>): Int {
+            val buffer = ByteArray(64)
+            var totalWidth = 0
+            while (this.available() > 0) {
+                val codePoint = readHexInt()
+                if (codePoint == -1) continue
+                val data = readUnihexData(buffer)
+                if (chars.putIfAbsent(codePoint, data) == null) {
+                    totalWidth += data.size / (UnifontRasterizer.HEIGHT / Byte.SIZE_BITS)
+                }
+            }
+
+            return totalWidth
+        }
+    }
+}                if (byte == '\n'.code) break // separator
                 val hex = byte.fromHex()
                 if (hex < 0) throw IllegalArgumentException("Invalid hex char: ${byte.toChar()}!")
 
