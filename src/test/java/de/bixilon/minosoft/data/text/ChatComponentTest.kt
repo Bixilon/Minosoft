@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.language.lang.LanguageFile
+import de.bixilon.minosoft.data.language.manager.Language
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
@@ -328,6 +329,16 @@ internal class ChatComponentTest {
             TextComponent("Port 25566").color(ChatColors.GOLD),
             TextComponent("!").color(ChatColors.DARK_GREEN),
         )
+        assertEquals(text, expected)
+    }
+
+    @Test
+    fun `translate with placeholder with translator set`() { // LibreMC
+        val string = """{"with":[{"color":"white","text":"<Bixilon> hello"}],"translate":"%s"}"""
+        val text = ChatComponent.of(string, translator = LanguageFile("en_US", Namespaces.MINECRAFT, mutableMapOf()))
+
+        val expected = TextComponent("<Bixilon> hello").color(ChatColors.WHITE)
+
         assertEquals(text, expected)
     }
 
