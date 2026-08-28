@@ -33,6 +33,12 @@ object HTTP2 {
         return headers.toTypedArray()
     }
 
+    private fun String.json() = when {
+        isBlank() -> null
+        startsWith("{") -> Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE) as Map<String, Any>?
+        else -> throw IllegalArgumentException("Unexpected JSON: $this")
+    }
+
     fun <Payload, Response> post(url: String, data: Payload, bodyPublisher: (Payload) -> String, bodyBuilder: (String) -> Response, headers: Map<String, Any> = emptyMap()): HTTPResponse<Response> {
         val client = HttpClient.newHttpClient()
         val request = HttpRequest.newBuilder()
@@ -51,13 +57,7 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { Jackson.MAPPER.writeValueAsString(it) },
-            bodyBuilder = {
-                when {
-                    it.isBlank() -> null
-                    it.startsWith("{") -> Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>?
-                    else -> throw IllegalArgumentException("Unexpected JSON: $it")
-                }
-            },
+            bodyBuilder = { it.json() },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
@@ -70,7 +70,7 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { this.toQuery() },
-            bodyBuilder = { if (it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
+            bodyBuilder = { it.json() },
             headers = headers.extend(
                 "Content-Type" to "application/x-www-form-urlencoded",
             )
@@ -92,7 +92,7 @@ object HTTP2 {
 
     fun String.getJson(headers: Map<String, Any> = emptyMap()): HTTPResponse<Map<String, Any>?> {
         return this.get(
-            bodyBuilder = { if (it.isBlank()) null else Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any>? },
+            bodyBuilder = { it.json() },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
