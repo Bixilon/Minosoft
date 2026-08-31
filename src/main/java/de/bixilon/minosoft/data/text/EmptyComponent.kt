@@ -21,6 +21,7 @@ object EmptyComponent : ChatComponent {
     override val message: String get() = ""
 
     override fun toJson(): Any = emptyList<Any>()
+    override fun toNbt() = ""
 
     override fun setFallbackColor(color: RGBAColor) = this
 

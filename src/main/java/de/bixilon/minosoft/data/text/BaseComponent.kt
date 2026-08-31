@@ -102,15 +102,23 @@ class BaseComponent : ChatComponent, Iterable<ChatComponent> {
     }
 
     override fun toJson(): Any {
-        if (parts.isEmpty()) {
-            return emptyList<Any>()
-        }
-        if (parts.size == 1) {
-            return parts.first().toJson()
-        }
+        if (parts.isEmpty()) return emptyList<Any>()
+        if (parts.size == 1) return parts.first().toJson()
+
         val list = mutableListOf<Any>()
         for (part in parts) {
             list += part.toJson()
+        }
+        return list
+    }
+
+    override fun toNbt(): Any {
+        if (parts.isEmpty()) return emptyList<Any>()
+        if (parts.size == 1) return parts.first().toNbt()
+
+        val list = mutableListOf<Any>()
+        for (part in parts) {
+            list += part.toNbt()
         }
         return list
     }
