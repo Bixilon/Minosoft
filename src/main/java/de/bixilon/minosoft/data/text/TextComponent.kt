@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -111,16 +111,16 @@ open class TextComponent(
             return builder.toString()
         }
 
-    override fun toJson(): Any {
+    private fun serialize(boolean: Boolean): Map<String, Any> {
         if (message.isEmpty()) {
-            return emptyMap<String, Any>()
+            return emptyMap()
         }
         val json: MutableJsonObject = mutableMapOf(
             "text" to message
         )
 
         for (formatting in formatting) {
-            json[formatting.json] = true
+            json[formatting.json] = if (boolean) true else 1.toByte()
         }
 
         color?.let { json["color"] = ChatColors.NAME_MAP.getKey(it) ?: it.toString() }
@@ -129,6 +129,9 @@ open class TextComponent(
 
         return json
     }
+
+    override fun toJson() = serialize(true)
+    override fun toNbt() = serialize(false)
 
     fun copy(message: Any? = this.message, color: RGBAColor? = this.color, formatting: BitEnumSet<FormattingCodes> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent) = TextComponent(
         message = message,

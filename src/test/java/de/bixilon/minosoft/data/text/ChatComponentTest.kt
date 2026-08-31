@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.text
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.language.lang.LanguageFile
-import de.bixilon.minosoft.data.language.manager.Language
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
@@ -179,28 +178,41 @@ internal class ChatComponentTest {
     }
 
     @Test
-    fun testJson1() {
+    fun `convert to json 1`() {
         val text = TextComponent("dummy")
         assertEquals(text.toJson(), mapOf("text" to "dummy"))
     }
 
     @Test
-    fun testJson2() {
+    fun `convert to json 2`() {
         val text = ChatComponent.of("dummy")
         assertEquals(text.toJson(), mapOf("text" to "dummy"))
     }
 
     @Test
-    fun testJson3() {
+    fun `convert to json 3`() {
         val text = ChatComponent.of("dummy§knext")
         assertEquals(text.toJson(), listOf(mapOf("text" to "dummy"), mapOf("text" to "next", "obfuscated" to true)))
     }
 
     @Test
-    fun testJson4() {
+    fun `convert to json 4`() {
         val text = ChatComponent.of("dummy§anext")
         assertEquals(text.toJson(), listOf(mapOf("text" to "dummy"), mapOf("text" to "next", "color" to "green")))
     }
+
+    @Test
+    fun `convert to nbt 1`() {
+        val text = ChatComponent.of("dummy§anext")
+        assertEquals(text.toNbt(), listOf(mapOf("text" to "dummy"), mapOf("text" to "next", "color" to "green")))
+    }
+
+    @Test
+    fun `convert to nbt 2`() {
+        val text = ChatComponent.of("dummy§knext")
+        assertEquals(text.toNbt(), listOf(mapOf("text" to "dummy"), mapOf("text" to "next", "obfuscated" to 1.toByte())))
+    }
+
 
     @Test
     fun hypixelMotd() {                                                                     // ↓ Note that extra paragraph
