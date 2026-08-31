@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,6 +33,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.cop
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.system.SystemUtil
 
 class ItemElement(
     guiRenderer: GUIRenderer,
@@ -167,6 +169,14 @@ class ItemElement(
 
         if (action != null) {
             container.execute(action)
+        }
+
+        if (key == KeyCodes.KEY_I && context.input.isKeyDown(KeyCodes.KEY_F3)) {
+            val nbt = this.stack?.toNbt(context.session.version, context.session.registries) ?: return false
+            val string = Jackson.MAPPER.writeValueAsString(nbt)
+            SystemUtil.api?.setClipboard(string) ?: return false
+            context.session.util.sendDebugMessage("Item NBT copied to clipboard: $string")
+            return true
         }
 
         return true
