@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.A8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -49,6 +50,7 @@ object OpenGlTextureUtil {
         get() = when (this) {
             is RGBA8Buffer -> GL_RGBA
             is RGB8Buffer -> GL_RGB
+            is A8Buffer -> GL_RED
             // is RGBA2Buffer -> GL_RGBA
             else -> throw IllegalArgumentException("Can not get glFormat of $this")
         }
@@ -56,6 +58,7 @@ object OpenGlTextureUtil {
         get() = when (this) {
             is RGBA8Buffer -> GL_UNSIGNED_BYTE
             is RGB8Buffer -> GL_UNSIGNED_BYTE
+            is A8Buffer -> GL_UNSIGNED_BYTE
             //  is RGBA2Buffer -> GL_UNSIGNED_BYTE
             else -> throw IllegalArgumentException("Can not get glFormat of $this")
         }

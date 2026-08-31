@@ -14,58 +14,39 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kmath.vec.vec2.i.Vec2i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import java.nio.ByteBuffer
 
-class RGBA8Buffer(
+class A8Buffer(
     override var size: Vec2i,
     override var data: ByteBuffer,
 ) : TextureBuffer {
     override val bits get() = 8
-    override val bytes get() = 4
-    override val components get() = 4
+    override val bytes get() = 1
+    override val components get() = 1
     override val alpha get() = true
 
-
     constructor(size: Vec2i, array: ByteArray) : this(size, ByteBuffer.wrap(array))
-    constructor(size: Vec2i) : this(size, ByteBuffer.allocateDirect(size.x * size.y * 4))
+    constructor(size: Vec2i) : this(size, ByteBuffer.allocateDirect(size.x * size.y * 1))
 
 
-    fun fill(red: Int, green: Int, blue: Int, alpha: Int) {
-        for (index in 0 until size.x * size.y) {
-            val offset = index * components
-            data.put(offset + 0, red.toByte())
-            data.put(offset + 1, green.toByte())
-            data.put(offset + 2, blue.toByte())
-            data.put(offset + 3, alpha.toByte())
-        }
+    fun setA(x: Int, y: Int, alpha: Int) {
+        data.put(offset(x, y), alpha.toByte())
     }
-
-    fun fill(x: Int, y: Int, sizeX: Int, sizeY: Int, red: Int, green: Int, blue: Int, alpha: Int) {
-        for (y in y..y + sizeY) {
-            for (x in x..x + sizeX) {
-                setRGBA(x, y, red, green, blue, alpha)
-            }
-        }
-    }
-
 
     override fun setRGBA(x: Int, y: Int, red: Int, green: Int, blue: Int, alpha: Int) {
-        val offset = offset(x, y)
-        data.put(offset + 0, red.toByte())
-        data.put(offset + 1, green.toByte())
-        data.put(offset + 2, blue.toByte())
-        data.put(offset + 3, alpha.toByte())
+        setA(x, y, alpha)
     }
 
-    override fun setRGB(x: Int, y: Int, value: RGBColor) = setRGBA(x, y, value.red, value.green, value.blue, 0xFF)
-    override fun setRGBA(x: Int, y: Int, value: RGBAColor) = setRGBA(x, y, value.red, value.green, value.blue, value.alpha)
+    override fun setRGB(x: Int, y: Int, value: RGBColor) = Broken("No alpha!")
+    override fun setRGBA(x: Int, y: Int, value: RGBAColor) = setA(x, y, value.alpha)
 
-    override fun copy() = RGBA8Buffer(size, ByteBuffer.allocateDirect(data.limit()).apply { put(data) })
+    override fun copy() = A8Buffer(size, ByteBuffer.allocateDirect(data.limit()).apply { put(data) })
 
-    override fun create(size: Vec2i) = RGBA8Buffer(size)
+    override fun create(size: Vec2i) = A8Buffer(size)
 
     private operator fun get(index: Int): Int {
         return data[index].toInt() and 0xFF
@@ -73,21 +54,25 @@ class RGBA8Buffer(
 
     override fun getRGBA(x: Int, y: Int): RGBAColor {
         val offset = offset(x, y)
-        return RGBAColor(this[offset + 0], this[offset + 1], this[offset + 2], this[offset + 3])
+        val alpha = this[offset + 0]
+        return RGBAColor(alpha, alpha, alpha, alpha)
     }
 
     override fun getRGB(x: Int, y: Int): RGBColor {
         val offset = offset(x, y)
-        return RGBColor(this[offset + 0], this[offset + 1], this[offset + 2])
+        val alpha = this[offset + 0]
+        return RGBColor(alpha, alpha, alpha)
     }
 
-    override fun getR(x: Int, y: Int) = this[offset(x, y) + 0]
-    override fun getG(x: Int, y: Int) = this[offset(x, y) + 1]
-    override fun getB(x: Int, y: Int) = this[offset(x, y) + 2]
-    override fun getA(x: Int, y: Int) = this[offset(x, y) + 3]
+
+    override fun getR(x: Int, y: Int) = this[offset(x, y)]
+    override fun getG(x: Int, y: Int) = this[offset(x, y)]
+    override fun getB(x: Int, y: Int) = this[offset(x, y)]
+    override fun getA(x: Int, y: Int) = this[offset(x, y)]
+
 
     private fun offset(x: Int, y: Int): Int {
-        if (x < 0 || y < 0 || x >= size.x || y >= size.y) throw IndexOutOfBoundsException("Can not access pixel at ($x,$y), exceeds size: $size")
+        if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
     }
 
@@ -95,7 +80,7 @@ class RGBA8Buffer(
         assert(a.size == b.size)
         assert(a.size == size)
 
-        if (a !is RGBA8Buffer || b !is RGBA8Buffer) return super.interpolate(a, b, progress)
+        if (a !is A8Buffer || b !is A8Buffer) return super.interpolate(a, b, progress)
 
         ColorBufferUtil.interpolate(a.data, b.data, this.data, progress)
     }
@@ -104,7 +89,7 @@ class RGBA8Buffer(
     override fun getTransparency(): TextureTransparencies {
         var transparency = TextureTransparencies.OPAQUE
         for (index in 0 until size.x * size.y) {
-            val alpha = this[index * components + 3]
+            val alpha = this[index * components]
             if (alpha == 0x00) {
                 transparency = TextureTransparencies.TRANSPARENT
             } else if (alpha < 0xFF) {
@@ -113,9 +98,5 @@ class RGBA8Buffer(
             }
         }
         return transparency
-    }
-
-    companion object : TextureBufferFactory<RGBA8Buffer> {
-        override fun create(size: Vec2i) = RGBA8Buffer(size)
     }
 }

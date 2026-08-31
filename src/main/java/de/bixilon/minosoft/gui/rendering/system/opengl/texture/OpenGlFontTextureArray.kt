@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,6 +20,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.file.PNGTextureLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGlRenderSystem
@@ -65,12 +68,23 @@ class OpenGlFontTextureArray(
             texture.renderData = OpenGlTextureData(this.index, index++, uvEnd)
 
             val buffer = texture.data.buffer
-            buffer.data.position(0)
-            buffer.data.limit(buffer.data.capacity())
-            if (compression != FontCompressions.NONE && texture.loader is PNGTextureLoader) {
-                buffer.data.copyAlphaToRGB()
+            val next = when {
+                compression == FontCompressions.NONE -> RGBA8Buffer(texture.size)
+                else -> buffer
             }
-            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, index - 1, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data) }
+
+            next.data.position(0)
+            next.data.limit(next.data.capacity())
+
+            if (next is RGBA8Buffer) {
+                buffer.copyAlphaToRGB(next)
+            }
+
+            if (compression != FontCompressions.NONE && texture.loader is PNGTextureLoader && next is RGBA8Buffer) {
+                next.copyAlphaToRGB()
+            }
+
+            gl { glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, index - 1, next.size.x, next.size.y, 1, next.glFormat, next.glType, next.data) }
         }
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${textures.size} font textures" }
@@ -101,15 +115,25 @@ class OpenGlFontTextureArray(
     private companion object {
         const val RESOLUTION = 1024
 
-
-        private fun ByteBuffer.copyAlphaToRGB() {
-            val pixels = this.limit() / 4
+        private fun RGBA8Buffer.copyAlphaToRGB() {
+            val pixels = data.limit() / bytes
             for (index in 0 until pixels) {
-                val offset = index * 4
-                val alpha = this[offset + 3]
-                this.put(offset + 0, alpha)
+                val offset = index * bytes
+                val alpha = data[offset + 3]
+                data.put(offset + 0, alpha)
                 // this.put(offset + 1, alpha)
                 // this.put(offset + 2, alpha)
+            }
+        }
+
+        private fun TextureBuffer.copyAlphaToRGB(next: RGBA8Buffer) {
+            assert(size == next.size)
+
+            for (x in 0 until size.x) {
+                for (y in 0 until size.y) {
+                    val alpha = this.getA(x, y)
+                    next.setRGBA(x, y, 0xFF, 0xFF, 0xFF, alpha)
+                }
             }
         }
     }

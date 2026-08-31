@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.kmath.vec.vec2.i.Vec2i
-import de.bixilon.kutil.buffer.ByteBufferUtil.readRemaining
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.test.ITUtil.allocate
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
@@ -66,15 +66,15 @@ class UnihexFontTypeTest {
         assertEquals(char, byteArrayOf(0x00, 0x00, 0x00, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E, 0x00, 0x0E))
     }
 
-    private fun ByteArray.assertPixel(index: Int, set: Boolean = true) {
-        val offset = index * 4
+    private fun TextureBuffer.assertPixel(x: Int, y: Int, set: Boolean = true) {
+        val color = this.getRGBA(x, y)
 
-        val value = this[offset + 0].toInt() or this[offset + 1].toInt() or this[offset + 2].toInt() or this[offset + 3].toInt()
+        val value = maxOf(color.red, color.green, color.blue, color.alpha)
 
         if (set) {
-            assertTrue(value != 0, "Did expect pixel at $index")
+            assertTrue(value != 0, "Did expect pixel at $x,$y")
         } else {
-            assertTrue(value == 0, "Did not expect pixel at $index")
+            assertTrue(value == 0, "Did not expect pixel at $x,$y")
         }
     }
 
@@ -99,17 +99,19 @@ class UnihexFontTypeTest {
         assertEquals(code.uvEnd, Vec2f(0.1872f, 1.0f))
 
         assertEquals(remaining, intArrayOf(13))
-        val data = texture.buffer.data.readRemaining()
+        val buffer = texture.buffer
 
 
-        for (index in 0 until 48) {
-            data.assertPixel(index, false)
+        for (y in 0 until 3) {
+            for (x in 0 until 16) {
+                buffer.assertPixel(x, y, false)
+            }
         }
 
-        data.assertPixel(48)
-        data.assertPixel(49)
-        data.assertPixel(50)
-        data.assertPixel(51, false)
+        buffer.assertPixel(0, 3)
+        buffer.assertPixel(1, 3)
+        buffer.assertPixel(2, 3)
+        buffer.assertPixel(3, 3, false)
     }
 
 

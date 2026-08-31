@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.A8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.loader.MemoryLoader
@@ -34,7 +35,7 @@ class UnifontTexture(
     val size: Vec2i = Vec2i(resolution)
     private val pixel = 1.0f / size.x
 
-    val buffer = RGBA8Buffer(size)
+    val buffer = A8Buffer(size)
     val texture = Texture(MemoryLoader { buffer }, 0)
 
     val remaining = IntArray(rows) { resolution }
@@ -52,8 +53,8 @@ class UnifontTexture(
         return null
     }
 
-    private fun TextureBuffer.set(row: Int, offset: Int, x: Int, y: Int) {
-        setRGBA(offset + x, (row * UnifontRasterizer.HEIGHT + y), 0xFFFFFFFF.toInt().rgba())
+    private fun A8Buffer.set(row: Int, offset: Int, x: Int, y: Int) {
+        setA(offset + x, (row * UnifontRasterizer.HEIGHT + y), 0xFF)
     }
 
     private fun rasterize(row: Int, offset: Int, start: Int, end: Int, dataWidth: Int, data: ByteArray): CodePointRenderer {
@@ -73,6 +74,7 @@ class UnifontTexture(
     }
 
     companion object {
+
         fun ByteArray.isPixelSet(index: Int): Boolean {
             val byte = this[index / Byte.SIZE_BITS].toInt()
             return byte.isBit(7 - (index % Byte.SIZE_BITS))
