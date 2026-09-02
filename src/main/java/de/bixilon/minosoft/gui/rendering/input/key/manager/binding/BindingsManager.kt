@@ -103,10 +103,115 @@ class BindingsManager(
     }
 
     fun onKey(code: KeyCodes, pressed: Boolean, handler: InputHandler?, time: ValueTimeMark) {
+        // Find all satisfied bindings that use this key and track their key counts
+        // This part of the code is to make sure that combination keys take priority over single keys AND combination keys that include other combination keys.
+        // It can have problems in a schenario if a third combination that has more keys but includes another combination exists. But who in their right name bother with that... 
+        // This should technically include all possible use cases.
+        val satisfiedBindings = mutableMapOf<ResourceLocation, Int>() // name -> total key count
+        var maxKeyCount = 0
+        
+        // Track if the current key is part of a partially satisfied combination
+        val partiallyMatchedBindings = mutableSetOf<ResourceLocation>()
+        
+        if (pressed) {
+            // Check which bindings are satisfied
+            for ((name, state) in bindings) {
+                if (handler != null && !state.binding.ignoreConsumer) continue
+                
+                val binding = state.binding
+                val modifierKeys = binding.action[KeyActions.MODIFIER] ?: emptySet()
+                
+                // Check if the current key is a modifier key for this binding and if other modifier keys are pressed
+                if (code in modifierKeys) {
+                    val otherModifiers = modifierKeys - code
+                    // This is for combination building, it ignores cases like if you press keys in different order than you set.
+                    if (otherModifiers.isEmpty() || otherModifiers.any { input.isKeyDown(it) }) {
+                        partiallyMatchedBindings += name
+                    }
+                }
+                
+                // Check if all modifier keys are currently pressed (if any)
+                if (modifierKeys.isNotEmpty() && !input.areKeysDown(modifierKeys)) continue
+                
+                // Check if this binding uses the current key (in any action that's not MODIFIER)
+                val usesCurrentKey = binding.action.entries.any { (action, keys) ->
+                    action != KeyActions.MODIFIER && code in keys
+                }
+                
+                if (usesCurrentKey) {
+                    // Count total keys in this binding (modifiers + action keys)
+                    val actionKeys = binding.action.entries
+                        .filter { it.key != KeyActions.MODIFIER }
+                        .flatMap { it.value }
+                        .toSet()
+                    val totalKeyCount = modifierKeys.size + actionKeys.size
+                    
+                    satisfiedBindings[name] = totalKeyCount
+                    if (totalKeyCount > maxKeyCount) {
+                        maxKeyCount = totalKeyCount
+                    }
+                }
+            }
+        }
+        
         for ((name, state) in bindings) {
             if (handler != null && !state.binding.ignoreConsumer) {
                 continue
             }
+            
+            // If there are satisfied bindings, only trigger those with the maximum key count
+            if (pressed && satisfiedBindings.isNotEmpty()) {
+                val keyCount = satisfiedBindings[name]
+                
+                if (keyCount != null) {
+                    // This binding is satisfied, but skip if it's not the most specific
+                    if (keyCount < maxKeyCount) {
+                        continue
+                    }
+                } else {
+                    // This binding is not in satisfiedBindings, check if it uses the current key
+                    val binding = state.binding
+                    val usesCurrentKey = binding.action.entries.any { (action, keys) ->
+                        action != KeyActions.MODIFIER && code in keys
+                    }
+                    
+                    if (usesCurrentKey) {
+                        continue
+                    }
+                }
+            }
+            
+            // Skip satisfied bindings if the current key is being used in another combination.
+            if (pressed && partiallyMatchedBindings.isNotEmpty() && name !in partiallyMatchedBindings) {
+                val binding = state.binding
+                val bindingModifiers = binding.action[KeyActions.MODIFIER] ?: emptySet()
+                val usesCurrentKey = binding.action.values.any { code in it }
+                
+                if (usesCurrentKey) {
+                    // Check if any partially matched binding has more keys than this one
+                    val thisBindingKeyCount = bindingModifiers.size + binding.action.entries
+                        .filter { it.key != KeyActions.MODIFIER }
+                        .flatMap { it.value }
+                        .toSet().size
+                    
+                    val anyLargerPartialMatch = partiallyMatchedBindings.any { partialName ->
+                        val partialState = bindings[partialName] ?: return@any false
+                        val partialBinding = partialState.binding
+                        val partialModifiers = partialBinding.action[KeyActions.MODIFIER] ?: emptySet()
+                        val partialActionKeys = partialBinding.action.entries
+                            .filter { it.key != KeyActions.MODIFIER }
+                            .flatMap { it.value }
+                            .toSet()
+                        val partialKeyCount = partialModifiers.size + partialActionKeys.size
+                        partialKeyCount > thisBindingKeyCount
+                    }
+                    
+                    if (anyLargerPartialMatch) {
+                        continue
+                    }
+                }
+            }
+            
             onKey(name, state, pressed, code, time)
         }
     }

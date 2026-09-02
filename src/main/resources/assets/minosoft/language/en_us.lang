@@ -193,12 +193,145 @@ minosoft:profiles.profile.list.button.create=Create profile
 ### Pause
 
 minosoft:menu.pause.back_to_game=Back to game
+minosoft:menu.pause.options=Options
 minosoft:menu.pause.options.debug=Debug options
 minosoft:menu.pause.disconnect=Disconnect
 minosoft:menu.pause.disconnect.confirm=§cClick again to disconnect
 minosoft:menu.pause.show_eros=Show eros again
 minosoft:menu.pause.exit=Exit
 minosoft:menu.pause.exit.confirm=§cClick again to exit
+
+### Options Menu
+
+minosoft:menu.options.title=Options
+minosoft:menu.options.fov=FOV
+minosoft:menu.options.master_volume=Master Volume
+minosoft:menu.options.realms_notifications=Realms Notifications: ON
+minosoft:menu.options.skin_customization=Skin Customization...
+minosoft:menu.options.secret_settings=Super Secret Settings...
+minosoft:menu.options.music=Music & Sounds...
+minosoft:menu.options.broadcast=Broadcast Settings...
+minosoft:menu.options.video=Video Settings...
+minosoft:menu.options.controls=Controls...
+minosoft:menu.options.language=Language...
+
+### Controls Settings
+
+minosoft:key.title=Controls
+minosoft:key.reset_all=Reset All
+minosoft:key.mouse_sensitivity=Mouse Sensitivity
+
+# Category Headers
+minosoft:key.category.movement=Movement
+minosoft:key.category.gameplay=Gameplay
+minosoft:key.category.hotbar=Inventory
+minosoft:key.category.camera=Camera
+minosoft:key.category.miscellaneous=Miscellaneous
+minosoft:key.category.debug=Debug
+
+# Movement
+minosoft:key.move_forward=Move Forward
+minosoft:key.move_backwards=Move Backwards
+minosoft:key.move_left=Strafe Left
+minosoft:key.move_right=Strafe Right
+minosoft:key.move_jump=Jump
+minosoft:key.move_sneak=Sneak
+minosoft:key.move_sprint=Sprint
+
+# Gameplay
+minosoft:key.attack=Attack/Destroy
+minosoft:key.use_item=Use Item/Place Block
+minosoft:key.pick_item=Pick Block
+minosoft:key.drop_item=Drop Item
+minosoft:key.swap_items=Swap Item in Hands
+minosoft:key.local_inventory=Open/Close Inventory
+minosoft:key.stop_spectating=Stop Spectating
+
+# Hotbar
+minosoft:key.hotbar_slot_1=Hotbar Slot 1
+minosoft:key.hotbar_slot_2=Hotbar Slot 2
+minosoft:key.hotbar_slot_3=Hotbar Slot 3
+minosoft:key.hotbar_slot_4=Hotbar Slot 4
+minosoft:key.hotbar_slot_5=Hotbar Slot 5
+minosoft:key.hotbar_slot_6=Hotbar Slot 6
+minosoft:key.hotbar_slot_7=Hotbar Slot 7
+minosoft:key.hotbar_slot_8=Hotbar Slot 8
+minosoft:key.hotbar_slot_9=Hotbar Slot 9
+
+# Camera
+minosoft:key.zoom=Zoom
+minosoft:key.camera_third_person=Toggle Third Person
+
+# Misc
+minosoft:key.take_screenshot=Take Screenshot
+minosoft:key.toggle_fullscreen=Toggle Fullscreen
+minosoft:key.open_chat=Open Chat
+minosoft:key.open_command=Open Command
+minosoft:key.enable_hud=Toggle HUD
+
+# Debug
+minosoft:key.debug_polygon=Toggle Polygon Mode
+minosoft:key.cursor_mode=Toggle Cursor Mode
+minosoft:key.pause_incoming=Pause Incoming Packets
+minosoft:key.pause_outgoing=Pause Outgoing Packets
+minosoft:key.camera_debug_view=Toggle Debug Camera
+minosoft:key.toggle_hitboxes=Toggle Hitboxes
+minosoft:key.chunk_border=Toggle Chunk Borders
+minosoft:key.clear_chunk_cache=Clear Chunk Cache
+minosoft:key.recalculate_light=Recalculate Light
+minosoft:key.fullbright=Toggle Fullbright
+minosoft:key.switch_fun_effects=Switch Fun Effects
+minosoft:menu.options.chat=Chat Settings...
+minosoft:menu.options.resource_packs=Resource Packs...
+minosoft:menu.options.snooper=Snooper Settings...
+minosoft:menu.options.done=Done
+
+### Video Settings
+
+minosoft:menu.options.video.title=Video Settings
+minosoft:menu.options.video.gui=GUI Settings...
+minosoft:menu.options.video.clouds=Clouds...
+minosoft:menu.options.video.fullscreen=Fullscreen
+minosoft:menu.options.video.render_distance=Render Distance
+minosoft:menu.options.video.biome_radius=Biome Radius
+minosoft:menu.options.video.brightness=Brightness
+minosoft:menu.options.video.view_bobbing=View Bobbing
+minosoft:menu.options.video.fullbright=Fullbright
+minosoft:menu.options.video.fog=Fog
+minosoft:menu.options.video.dynamic_fov=Dynamic FOV
+
+### Cloud Settings
+
+minosoft:menu.options.clouds.title=Cloud Settings
+minosoft:menu.options.clouds.enabled=Clouds
+minosoft:menu.options.clouds.flat=Flat Clouds
+minosoft:menu.options.clouds.movement=Cloud Movement
+minosoft:menu.options.clouds.max_distance=Max Distance
+minosoft:menu.options.clouds.layers=Cloud Layers
+
+### Chat Settings
+
+minosoft:menu.options.chat.title=Chat Settings
+minosoft:menu.options.chat.hidden=Hidden
+minosoft:menu.options.chat.text_filtering=Text Filtering
+minosoft:menu.options.chat.colors=Chat Colors
+minosoft:menu.options.chat.mode=Chat Mode
+
+### Language Settings
+
+minosoft:menu.options.language.title=Language Settings
+
+### GUI Settings
+
+minosoft:menu.options.gui.title=GUI Settings
+minosoft:menu.options.gui.hud_scale=HUD Scale
+minosoft:menu.options.gui.wawla=WAWLA
+minosoft:menu.options.gui.wawla_limit_reach=WAWLA Limit Reach
+minosoft:menu.options.gui.wawla_identifier=WAWLA Identifier
+minosoft:menu.options.gui.wawla_block=WAWLA Block Info
+minosoft:menu.options.gui.wawla_entity=WAWLA Entity Info
+minosoft:menu.options.gui.wawla_entity_health=WAWLA Entity Health
+minosoft:menu.options.gui.wawla_entity_hand=WAWLA Entity Hand
 
 
 minosoft:main.about.text=Glad that you test my software :)\nThis project is in a really early stage, don't use it on online servers!\nI am looking for contributors :) Please help me and make this usable

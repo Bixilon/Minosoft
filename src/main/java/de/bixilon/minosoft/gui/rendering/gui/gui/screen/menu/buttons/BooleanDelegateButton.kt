@@ -11,17 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.delegate.types
+package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.buttons
 
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
-import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.data.language.translate.Translatable
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import kotlin.reflect.KMutableProperty0
 
-open class EnumDelegate<T : Enum<*>>(
-    override val profile: Profile,
-    default: T,
-    val values: ValuesEnum<T>,
-) : SimpleDelegate<T>(profile, default) {
+class BooleanDelegateButton(guiRenderer: GUIRenderer, key: Translatable, delegate: KMutableProperty0<Boolean>) : DelegateButton<Boolean>(guiRenderer, key, delegate) {
 
-    override fun validate(value: T) = Unit
+    override fun formatValue(value: Boolean) = if (value) TextComponent("ON").color(ChatColors.GREEN) else TextComponent("OFF").color(ChatColors.RED) // TODO: i18n
+
+    override fun submit() {
+        super.submit()
+        delegate.set(!value)
+    }
 }

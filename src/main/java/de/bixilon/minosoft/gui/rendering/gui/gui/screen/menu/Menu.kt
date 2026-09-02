@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2025 Moritz Zwerger
+ * Copyright (C) 2020-2026 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,10 +16,13 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 import de.bixilon.kmath.vec.vec2.f.MVec2f
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.language.IntegratedLanguage
+import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseCapturing
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -37,6 +40,8 @@ abstract class Menu(
 
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
+    private var capturingElement: MouseCapturing? = null
+    private var capturingElementOffset: Vec2f = Vec2f.EMPTY
 
     override fun forceSilentApply() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0.0f)
@@ -82,6 +87,17 @@ abstract class Menu(
     }
 
     override fun onMouseMove(position: Vec2f, absolute: Vec2f): Boolean {
+        // Check if an element is capturing mouse
+        val capturing = capturingElement
+        if (capturing != null && capturing.isCapturingMouse) {
+            val relativeX = position.x - capturingElementOffset.x
+            capturing.onMouseMoveOutside(relativeX)
+            return true
+        }
+        if (capturing != null && !capturing.isCapturingMouse) {
+            capturingElement = null
+        }
+        
         super<AbstractLayout>.onMouseMove(position, absolute)
         return true
     }
@@ -92,8 +108,26 @@ abstract class Menu(
     }
 
     override fun onMouseAction(position: Vec2f, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+        val capturing = capturingElement
+        if (capturing != null && capturing.isCapturingMouse) {
+            val relativeX = position.x - capturingElementOffset.x
+            if (capturing.onMouseActionOutside(relativeX, button, action)) {
+                if (!capturing.isCapturingMouse) {
+                    capturingElement = null
+                }
+                return true
+            }
+        }
+        
         val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action, count)
+        
+        // Track elements that start capturing mouse
+        if (element is MouseCapturing && element.isCapturingMouse) {
+            capturingElement = element
+            capturingElementOffset = Vec2f(position.x - delta.x, position.y - delta.y)
+        }
+        
         return true
     }
 
@@ -220,5 +254,15 @@ abstract class Menu(
 
     private companion object {
         const val BUTTON_Y_MARGIN = 5.0f
+    }
+
+    @Deprecated("i18n")
+    protected fun translate(key: String): String {
+        return IntegratedLanguage.LANGUAGE.forceTranslate(key.i18n().translationKey).message
+    }
+
+    @Deprecated("i18n")
+    protected fun formatEnabled(key: String, enabled: Boolean): String {
+        return "${translate(key)}: ${if (enabled) "ON" else "OFF"}"
     }
 }

@@ -65,7 +65,13 @@ interface KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, time: ValueTimeMark) {
             if (!pressed) {
-                filter.satisfied = false
+                // On release, check if the released key is a modifier key for this binding
+                // Just having filter.satisfied = false breaks combination keys when player stops holding the keys.
+                if (code in codes) {
+                    // A modifier key was released, allow the binding deactivation
+                    filter.result = false
+                    return
+                }
                 return
             }
             if (code in codes) return

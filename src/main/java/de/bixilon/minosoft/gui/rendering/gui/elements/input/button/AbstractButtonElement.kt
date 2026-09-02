@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.kmath.vec.vec2.f.Vec2f
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -28,16 +27,18 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
 import de.bixilon.minosoft.gui.rendering.gui.mesh.consumer.GuiVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 
 abstract class AbstractButtonElement(
     guiRenderer: GUIRenderer,
     text: Any,
     disabled: Boolean = false,
 ) : Element(guiRenderer) {
-    protected val textElement = TextElement(guiRenderer, text, background = null, parent = this)
+    val textElement = TextElement(guiRenderer, text, background = null, parent = this)
     protected abstract val disabledAtlas: AtlasElement?
     protected abstract val normalAtlas: AtlasElement?
     protected abstract val hoveredAtlas: AtlasElement?
@@ -80,7 +81,7 @@ abstract class AbstractButtonElement(
             if (_disabled == value) {
                 return
             }
-            _disabled = disabled
+            _disabled = value
             forceApply()
         }
 
@@ -113,8 +114,10 @@ abstract class AbstractButtonElement(
         background.size = size
         val textSize = textElement.size
 
-        background.render(offset, consumer, options)
-        textElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, options)
+        val renderOptions = if (disabled) options.copy(alpha = 0.4f) else options
+
+        background.render(offset, consumer, renderOptions)
+        textElement.render(offset + Vec2f(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, renderOptions)
     }
 
     override fun forceSilentApply() {
@@ -188,7 +191,7 @@ abstract class AbstractButtonElement(
     }
 
     private companion object {
-        val CLICK_SOUND = minecraft("ui.button.click")
+        val CLICK_SOUND = minecraft("ui.button.click") // This still doesnt play sound for some reason...
         const val TEXT_PADDING = 4
     }
 }

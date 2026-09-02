@@ -128,3 +128,8 @@ minosoft:general.dialog.profile.create.cancel_button=Cancelar
 minosoft:profiles.profile.name=Nombre
 minosoft:profiles.profile.description=Descripción
 minosoft:profiles.profile.disk_path=Ruta del disco
+
+### Language Settings
+
+minosoft:menu.options.language.title=Ajustes de Idioma
+minosoft:menu.options.done=Hecho
